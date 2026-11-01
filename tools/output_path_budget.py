@@ -10,10 +10,10 @@ The model is sheet resistance:
 
     R = rho(T) * (L / W) / t          = R_sheet * squares
 
-which is exact for a rectangle carrying uniform current and *conservative*
-everywhere else.  Real current fans out at a corner, so the true resistance of
-a neck is lower than the square count says; treating it as an upper bound is the
-right direction for a pass/fail question.  It is **not** a substitute for a
+which is exact for uniform current in an ideal rectangle; a branching 2D
+board has no rigorous upper bound from this square-count approximation.
+Crucially, each SR group carries about 25 A, not 100 A through the worst
+branch. Four-group power must sum the four I_branch**2 * R_branch terms.  It is **not** a substitute for a
 finite-element solve, and it says nothing about local hot spots -- a 2 oz plane
 carrying 25 A through a 15 mm channel is a strip, and the strip runs hot.
 
@@ -132,8 +132,8 @@ def _versus_the_model(worst: dict, total_r: float) -> dict:
         "pout_at_48v_w": round(pout, 1),
         "efficiency_points_lost": round(100.0 * extra / pout, 2),
         "vout_at_48v_v": round(vout, 3),
-        "note": "r_out_equiv 是在理想输出节点上测的，不含 PCB 铜；"
-                "单组 PCB 路径若已超过它，说明模型与版图不是同一台机器。",
+        "note": "r_out_equiv 是整机输出折算阻抗，单组平面 R 是局部支路量；"
+                "两者不能直接相加。该比值只提示布局与均流风险。",
     }
 
 
@@ -142,7 +142,10 @@ def budget(thickness_m: float = 2 * OZ_M, temp_c: float = T_C) -> dict:
     geom = _geometry()
     rows = per_group(geom, thickness_m, temp_c)
     worst = max(rows, key=lambda r: r["r_mohm"])
-    plane_r = worst["r_mohm"] * 1e-3           # the groups are in parallel
+    # Equal 25 A branches: P_plane = sum((25 A)**2 * R_g).
+    # Equivalent at the 100 A system port is R_eq = sum(R_g) / 16.
+    # Using the worst group's R as 100 A series R was a major overestimate.
+    plane_r = sum(row["r_mohm"] for row in rows) * 1e-3 / 16.0
     r_sq = sheet_ohm_square(thickness_m, temp_c)
 
     import connector_budget as cb
@@ -185,12 +188,13 @@ def budget(thickness_m: float = 2 * OZ_M, temp_c: float = T_C) -> dict:
         "versus_the_model": _versus_the_model(worst, total_r),
         "model": {
             "method": "R = R_sheet * squares; uniform current in each segment",
-            "direction": "upper bound -- real current fans out at corners and necks",
+            "direction": "equal-current lane approximation; not a rigorous geometric upper bound",
             "not_modelled": [
                 "finite-element spreading at the neck (would lower R)",
                 "local hot spots and the strip's own self-heating",
                 "via resistance between layers (no via field is placed yet)",
                 "the Cout bank's parallel path (modelled only as the lane width)",
+                "actual four-way current sharing; exactly 25 A per branch is assumed",
             ],
         },
         "remedy": remedy(thickness_m, temp_c),
@@ -228,13 +232,14 @@ def remedy(thickness_m: float, temp_c: float = T_C) -> dict:
                         (f"加宽到 {wide_mm:.0f} mm 覆盖四组", wide_bar)):
             rows = per_group(geom, oz * OZ_M, temp_c, b)
             worst = max(r["r_mohm"] for r in rows) * 1e-3
+            plane_eq = sum(r["r_mohm"] for r in rows) * 1e-3 / 16.0
             options.append({
                 "copper_oz": oz, "busbar": name,
                 "worst_group_mohm": round(worst * 1e3, 3),
                 "spread_ratio": round(
                     max(r["r_mohm"] for r in rows) / min(r["r_mohm"] for r in rows), 2),
-                "path_total_mohm": round((worst + fixed) * 1e3, 3),
-                "feasible_on_design_basis": worst + fixed <= DESIGN_BASIS_OHM,
+                "path_total_mohm": round((plane_eq + fixed) * 1e3, 3),
+                "feasible_on_design_basis": plane_eq + fixed <= DESIGN_BASIS_OHM,
             })
     return {
         "groups_outside_the_busbar": outside,
@@ -242,10 +247,9 @@ def remedy(thickness_m: float, temp_c: float = T_C) -> dict:
         "sr_row_span_mm": [round(min(xs), 1), round(max(xs), 1)],
         "busbar_widening_needed_mm": round(wide_mm - bar["w_mm"], 1),
         "options": options,
-        "note": "加宽铜排不改铜厚、不改板框，是唯一不动叠层的杠杆；"
-                "铜厚每翻一倍方块预算翻一倍，但两者都要制造商确认叠层与压合能力。"
-                "注意：即使 4 oz + 加宽，path_total 仍高于 0.15 mΩ —— 瓶颈这时已经"
-                "转到接点（占位 2×50 µΩ = 0.1 mΩ），那是首件四线法才能关闭的量。",
+        "note": "path_total = ΣR_group/16 + R_bar + R_joint，假设每组等分 25 A。"
+                "加宽铜排有利于减小路径不均衡；接点仍按未经实测的 2×50 µΩ。"
+                "这不是几何不可能性证明：均流与电阻需 PCB 提取和实测。",
     }
 
 
@@ -259,10 +263,9 @@ def main() -> None:
     worst = data["worst_group"]
     outside = data["remedy"]["groups_outside_the_busbar"]
     data["finding"] = (
-        f"第 {worst['group']} 组要 {worst['squares']:.2f} 个方块，"
-        f"而 0.15 mΩ 预算只有 {data['budget_in_squares']:.2f} 个方块"
-        f"（{data['copper_weight_oz']:g} oz 铜、{args.oz and data['temperature_c']:g} °C）；"
-        f"第 {', '.join(map(str, outside))} 组的铜排不在头顶，是主因。")
+        f"最差组局部路径 {worst['squares']:.2f} 方块；"
+        f"四组等分 100 A 的平面等效 {data['resistance']['plane_mohm']:.3f} mΩ，"
+        f"第 {', '.join(map(str, outside))} 组铜排不在正上方，需改善均流路径。")
 
     args.json.parent.mkdir(parents=True, exist_ok=True)
     args.json.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n",
