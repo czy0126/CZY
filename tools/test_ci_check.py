@@ -109,3 +109,11 @@ def test_present_raw_mtime_drift_is_still_reported():
     old = manifest([{"path":"sim/v3/run.raw","bytes":200,"sha256":"skipped-large-raw","mtime":1}])
     fresh = manifest([{"path":"sim/v3/run.raw","bytes":200,"sha256":"skipped-large-raw","mtime":2}])
     assert "mtime" in " ".join(compare_manifests(old, fresh))
+
+
+def test_missing_raw_status_row_in_clean_checkout_is_not_a_mismatch():
+    old = manifest([{"path":"sim/v3/run.raw","kind":"raw","bytes":400,
+                     "sha256":"skipped-large-raw","mtime":123}])
+    fresh = manifest([{"path":"sim/v3/run.raw","kind":"raw","status":"missing"}],
+                     missing=["sim/v3/run.raw"])
+    assert compare_manifests(old, fresh) == []
