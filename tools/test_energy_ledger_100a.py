@@ -17,9 +17,9 @@ import pytest
 from array import array
 
 from energy_ledger_100a import (
-    CDS_FIT, CGD_FIT, ROOT, _charge_area, _simpson, averaged_storage_terms, build,
-    cds_charge_c, cgd_charge_c, charge_energy_j, gate_window, phase_alignment,
-    read_raw_header, repo_relative, stream_points, transformer_energy_j,
+    CDS_FIT, CGD_FIT, RL, ROOT, VIN, _charge_area, _simpson, averaged_storage_terms, build,
+    cds_charge_c, cgd_charge_c, charge_energy_j, gate_window, parse_args, phase_alignment,
+    port_terms, read_raw_header, repo_relative, stream_points, transformer_energy_j,
     trapezoid_mean,
 )
 from lr_design import LR_TOTAL_H, resonant_khz
@@ -38,6 +38,36 @@ def test_trapezoid_mean_weights_by_time_not_by_sample_count():
     t = [0.0, 1.0, 10.0]
     y = [2.0, 2.0, 0.0]
     assert trapezoid_mean(t, y) == pytest.approx((2.0 * 1.0 + 1.0 * 9.0) / 10.0)
+
+
+def test_the_port_power_follows_the_deck_it_was_given():
+    """A candidate deck is the same tank at a different VIN/RL.
+
+    ``port_terms`` used to read the module constants, which is correct only for
+    the mother deck.  Pointed at a 50 V / 15.4 mOhm candidate it would report
+    48 V / 18.9 mOhm power against the candidate's waveform -- an error that
+    looks like a loss the circuit does not have.
+    """
+    t = array("d", [0.0, 1.0])
+    d = {"iin": array("d", [2.0, 2.0]), "vin": array("d", [48.0, 48.0]),
+         "vout": array("d", [1.0, 1.0])}
+    mother = port_terms(t, d, 0, 1)
+    assert mother["pin_source_w"] == pytest.approx(48.0 * 2.0)
+    assert mother["pin_after_rin_w"] == pytest.approx(48.0 * 2.0)
+    assert mother["pout_w"] == pytest.approx(1.0 / 18.9e-3)
+    candidate = port_terms(t, d, 0, 1, vin=50.0, rl=15.4e-3)
+    assert candidate["pin_source_w"] == pytest.approx(100.0)
+    assert candidate["pout_w"] == pytest.approx(1.0 / 15.4e-3)
+    # The defaults must stay the frozen 100 A deck, or every committed number
+    # in energy_ledger_100a.json changes meaning without a re-run.
+    assert (VIN, RL) == (48.0, 18.9e-3)
+
+
+def test_the_cli_can_be_pointed_at_a_candidate_deck():
+    default = parse_args([])
+    assert (default.vin, default.rl) == (VIN, RL)
+    given = parse_args(["--vin", "50", "--rl", "0.0154"])
+    assert (given.vin, given.rl) == (50.0, 0.0154)
 
 
 def test_the_window_falls_back_to_the_complete_periods_it_has():
@@ -141,11 +171,30 @@ def test_the_primary_bias_is_reported_outside_the_port():
     Pin-Pout would make the residual look larger for no physical reason."""
     summary = json.loads(LEDGER.read_text(encoding="utf-8"))
     outside = summary["outside_port"]
-    assert set(outside) == {"vreg_w", "vaux_w", "driver_output_w"}
+    assert set(outside) == {"vreg_w", "vaux_w", "driver_output_w", "regularisation"}
     # The deck's gate B-sources draw nothing from Vreg, so the ideal driver
     # energy is reported instead of pretending the pin current paid for it.
     assert abs(outside["vreg_w"]) < 0.01
     assert outside["driver_output_w"] > 0.0
+
+
+def test_the_cpin_regulariser_is_closed_form_and_not_a_hidden_load():
+    """Issue #6 asks what the numerical regulariser contributes.
+
+    ``Cpin G S`` sits inside the measured gate current, so it *is* in
+    ``driver_output_w``.  Because it is a linear capacitor, its share over the
+    window is exactly 1/2*C*dV^2 at the two ends -- zero when both ends sit at
+    the same phase -- so it cannot hide energy.  The number is reported so a
+    reader does not have to take that on trust, and it is required to stay far
+    below the 0.2 W target.
+    """
+    outside = json.loads(LEDGER.read_text(encoding="utf-8"))["outside_port"]
+    reg = outside["regularisation"]
+    assert reg["cpin_f"] == 100e-12
+    assert set(reg) == {"cpin_f", "edge_power_w", "full_swing_energy_per_device_j", "note"}
+    assert abs(reg["edge_power_w"]) < 0.01
+    # 1/2 * 100 pF * (10.9 V)^2 = 5.94 nJ per device per edge.
+    assert reg["full_swing_energy_per_device_j"] == pytest.approx(5.94e-9, rel=1e-3)
 
 
 def test_every_loss_term_carries_a_confidence_class():
@@ -290,6 +339,107 @@ def test_the_step_check_compares_two_timesteps_and_the_endpoint_moves():
     # re-assert convergence without the numbers contradicting it.
     for name in ("port_w", "closure_period_averaged_w"):
         assert f"{step['terms'][name]['delta_w']:+.3f} W" in step["note"]
+
+
+def test_three_timesteps_report_the_last_leg_and_each_loss_item(monkeypatch):
+    """Issue #6 asks for 5 / 2 / 1 ns, not just a pair.
+
+    A pair cannot distinguish a converging move from a constant error: the
+    5 -> 2 ns leg and the 2 -> 1 ns leg can be the same size for different
+    reasons.  So the report must carry the whole series, the last leg, and a
+    per-item breakdown -- the aggregate "loss list moved 0.6 W" is only
+    actionable once a reader can see which item carries it.
+    """
+    import energy_ledger_100a as mod
+
+    def fake_build(raw, periods=16, alt_periods=(), vin=None, rl=None):
+        mult = {Path("a.raw"): 0.0, Path("b.raw"): 1.0, Path("c.raw"): 2.0}[Path(raw)]
+        port = 10.0 + 0.4 * mult
+        loss = 11.0 + 0.1 * mult
+        stored = 0.1 - 0.2 * mult
+        stored_avg = 0.0 + 0.1 * mult
+        driver = 0.2
+        return {
+            "raw": {"path": str(raw), "max_step_s": (5 - mult) * 1e-9},
+            "port": {"pin_minus_pout_w": port},
+            "loss_total_w": loss,
+            "stored_energy_w": stored,
+            "outside_port": {"driver_output_w": driver,
+                             "regularisation": {"edge_power_w": 1e-6 * (mult + 1)}},
+            "balance": {
+                "loss_residual_w": port - loss,
+                "closure_residual_w": port + driver - loss - stored,
+                "period_averaged": {
+                    "stored_energy_w": stored_avg,
+                    "closure_residual_w": port + driver - loss - stored_avg,
+                },
+            },
+            "window": {"vout_end_v": 1.87 + 0.001 * mult,
+                       "vout_start_v": 1.873},
+            "losses": {"lr": {"w": 1.0 + 0.01 * mult},
+                       "sr_channel_body_x4": {"w": 7.0 + 0.1 * mult}},
+        }
+
+    monkeypatch.setattr(mod, "build", fake_build)
+    step = mod.step_check(Path("a.raw"), Path("b.raw"), periods=133,
+                          a=fake_build(Path("a.raw")), extra=(Path("c.raw"),))
+
+    assert step["periods"] == 133
+    assert step["steps_s"] == pytest.approx([5e-9, 4e-9, 3e-9])
+    port = step["terms"]["port_w"]
+    assert port["series_w"] == pytest.approx([10.0, 10.4, 10.8])
+    assert port["delta_w"] == pytest.approx(0.4)          # 5 -> 2 ns
+    assert port["delta_first_last_w"] == pytest.approx(0.8)
+    # The note must state the last leg *and* the first-to-last move, because
+    # "last leg much smaller" is the only evidence of a plateau.
+    assert "last leg moves port +0.400 W" in step["note"]
+    assert "+0.800 / +0.200 / +0.400 W" in step["note"]
+    # Per item, the two legs are visible separately: a single 0.02 W move can
+    # either continue or stop, and only the split says which.
+    lr = step["loss_items"]["lr"]
+    assert lr["steps_w"] == pytest.approx([1.0, 1.01, 1.02])
+    assert lr["delta_first_last_w"] == pytest.approx(0.02)
+    assert lr["delta_last_leg_w"] == pytest.approx(0.01)
+    # The regulariser is compared as its own column so a reader can see that
+    # the numerical pad is not what moves the ledger between steps.
+    assert step["terms"]["regularisation_edge_w"]["series_w"] == pytest.approx(
+        [1e-6, 2e-6, 3e-6])
+
+
+def test_every_step_column_uses_the_supply_and_load_it_was_told(monkeypatch):
+    """A parameter-only candidate changes VIN/RL, not the circuit.
+
+    If ``step_check`` let the extra columns fall back to the mother deck's
+    constants, the "step" series would silently also carry a parameter change,
+    and the last-leg-vs-first-leg plateau test would be measuring the wrong
+    difference.  The three columns must all be built with the caller's values.
+    """
+    import energy_ledger_100a as mod
+
+    seen = []
+
+    def fake_build(raw, periods=16, alt_periods=(), vin=None, rl=None):
+        seen.append((Path(raw).name, vin, rl))
+        return {
+            "raw": {"path": str(raw), "max_step_s": 5e-9},
+            "port": {"pin_minus_pout_w": 10.0},
+            "loss_total_w": 11.0,
+            "stored_energy_w": 0.0,
+            "outside_port": {"driver_output_w": 0.0,
+                             "regularisation": {"edge_power_w": 0.0}},
+            "balance": {"loss_residual_w": -1.0, "closure_residual_w": -1.0,
+                        "period_averaged": {"stored_energy_w": 0.0,
+                                            "closure_residual_w": -1.0}},
+            "window": {"vout_end_v": 1.87, "vout_start_v": 1.87},
+            "losses": {},
+        }
+
+    monkeypatch.setattr(mod, "build", fake_build)
+    mod.step_check(Path("a.raw"), Path("b.raw"), periods=133,
+                   extra=(Path("c.raw"),), vin=50.0, rl=0.0154)
+    # a.raw is built here only because this call does not hand in a summary.
+    assert seen == [("a.raw", 50.0, 0.0154), ("b.raw", 50.0, 0.0154),
+                    ("c.raw", 50.0, 0.0154)]
 
 
 def _ripple_plus_drift(n: int = 21, per_period: int = 10,

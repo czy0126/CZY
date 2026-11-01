@@ -138,6 +138,7 @@ LCT1_H = 2e-6           # CT primary, in series with Lr
 LCT2_H = 20e-3          # CT secondary
 CIN_F = 20e-6
 CDH_F = 560e-12         # primary high-side snubber
+CPIN_F = 100e-12        # SR_TIMING ``Cpin G S`` on every gate; regulariser, not a part
 GATE_HZ = 200.622e3     # UCC25600 RT setting used by the decks
 # The deck's LR_TOTAL is the external part; the model adds 4 * Lp(1-k^2) of
 # leakage, and the tank resonance is set by the sum (see tools/lr_design.py).
@@ -522,12 +523,20 @@ def cap_integral_diag(t: array, d: dict[str, array], edges: Sequence[int],
     return out
 
 
-def port_terms(t: array, d: dict[str, array], i0: int, i1: int) -> dict[str, float]:
-    """Terminal powers.  Pout is average(v^2/R), never average(v)^2/R."""
+def port_terms(t: array, d: dict[str, array], i0: int, i1: int,
+               vin: float = VIN, rl: float = RL) -> dict[str, float]:
+    """Terminal powers.  Pout is average(v^2/R), never average(v)^2/R.
+
+    ``vin``/``rl`` default to the 100 A deck this tool was written for.  A
+    parameter-only candidate (``make_high_output_decks.py``) runs the same tank
+    at a different VIN/RL, so the two scalars must be supplied rather than
+    inherited -- silently reusing 48 V / 18.9 mOhm would report the mother
+    deck's power against the candidate's waveform.
+    """
     return {
-        "pin_source_w": VIN * _mean(t, d["iin"], i0, i1),
+        "pin_source_w": vin * _mean(t, d["iin"], i0, i1),
         "pin_after_rin_w": _mean_product(t, d["vin"], d["iin"], i0, i1),
-        "pout_w": _mean(t, array("d", (v * v / RL for v in d["vout"])), i0, i1),
+        "pout_w": _mean(t, array("d", (v * v / rl for v in d["vout"])), i0, i1),
     }
 
 
@@ -540,6 +549,35 @@ def driver_w(t: array, d: dict[str, array], i0: int, i1: int) -> float:
     """
     return -4.0 * (_mean_product(t, d["vga"], d["bd1"], i0, i1)
                    + _mean_product(t, d["vgb"], d["bd2"], i0, i1))
+
+
+def regularisation_terms(t: array, d: dict[str, array], i0: int,
+                         i1: int) -> dict[str, float | str]:
+    """Exact share of ``driver_w`` that belongs to the CPIN regulariser.
+
+    ``driver_w`` integrates -V(G,S)*I(Bdrive) at the gate pin, and KCL at that
+    pin puts ``Cpin G S`` inside the measurement.  Cpin is a *linear* capacitor,
+    so its contribution over any window is closed-form, not estimated:
+
+        integral V dQ = 1/2 C (V(i1)^2 - V(i0)^2)
+
+    Over whole gate periods at the same phase that is zero -- the pad returns
+    every coulomb it takes -- so CPIN is a regulariser in the ledger, not a
+    hidden source or sink.  The only non-zero part is the partial cycle at the
+    window ends, which is what this returns.  Groups 2-4 are mirrored from
+    pair 1, the same symmetry assumption ``driver_w`` already makes.
+    """
+    per_group_j = 0.5 * CPIN_F * (
+        (float(d["vga"][i1]) ** 2 - float(d["vga"][i0]) ** 2)
+        + (float(d["vgb"][i1]) ** 2 - float(d["vgb"][i0]) ** 2))
+    span = t[i1] - t[i0]
+    return {
+        "cpin_f": CPIN_F,
+        "edge_power_w": 4.0 * per_group_j / span,
+        "full_swing_energy_per_device_j": 0.5 * CPIN_F * 10.9 ** 2,
+        "note": "exact 1/2*C*dV^2 at the two window ends; zero over a whole "
+                "number of cycles at the same phase",
+    }
 
 
 def main_loss_names(losses: dict[str, dict[str, object]]) -> list[str]:
@@ -763,7 +801,8 @@ def repo_relative(path: Path) -> str:
 
 
 def build(raw: Path = RAW, periods: int = 16,
-          alt_periods: Sequence[int] = (8, 12)) -> dict[str, object]:
+          alt_periods: Sequence[int] = (8, 12),
+          vin: float = VIN, rl: float = RL) -> dict[str, object]:
     raw = Path(raw).resolve()
     names, _ = read_raw_header(raw)
     wanted = dict(WANTED)
@@ -775,7 +814,7 @@ def build(raw: Path = RAW, periods: int = 16,
     i0, i1 = gate_window(t, d["vga"], periods)
     span = t[i1] - t[i0]
 
-    port = port_terms(t, d, i0, i1)
+    port = port_terms(t, d, i0, i1, vin=vin, rl=rl)
     p_in_src = port["pin_source_w"]
     p_in_after_rin = port["pin_after_rin_w"]
     p_out = port["pout_w"]
@@ -888,7 +927,7 @@ def build(raw: Path = RAW, periods: int = 16,
         "ct_gap_is_reported_as_a_result":
             "ct_terms_account_for_the_gap_before_ct" in results,
         "stored_energy_reported_not_folded_in": True,
-        "pout_uses_v_squared": abs(p_out - _mean(t, d["vout"], i0, i1) ** 2 / RL) > 0.0,
+        "pout_uses_v_squared": abs(p_out - _mean(t, d["vout"], i0, i1) ** 2 / rl) > 0.0,
         "coupled_energy_never_negative": min(e_mag[(i0):(i1 + 1)]) >= 0.0,
         "closure_status_follows_from_the_results":
             (closure_status == "CLOSED") == closure_ok,
@@ -936,7 +975,7 @@ def build(raw: Path = RAW, periods: int = 16,
             "vout_start_v": float(d["vout"][i0]),
         },
         "port": {
-            "vin_v": VIN, "rl_ohm": RL,
+            "vin_v": vin, "rl_ohm": rl,
             "pin_source_w": p_in_src,
             "pin_after_rin_w": p_in_after_rin,
             "pout_w": p_out,
@@ -957,7 +996,8 @@ def build(raw: Path = RAW, periods: int = 16,
         },
         "cap_integral_diag": diag,
         "outside_port": {"vreg_w": vreg_w, "vaux_w": vaux_w,
-                         "driver_output_w": drv},
+                         "driver_output_w": drv,
+                         "regularisation": regularisation_terms(t, d, i0, i1)},
         "efficiency": {
             "port_pct": 100.0 * p_out / p_in_src,
             "closure_including_storage_pct": 100.0 * p_out / (p_out + loss_main + d_stored_w),
@@ -1024,37 +1064,57 @@ def max_step_of(raw: Path) -> float | None:
 
 
 def step_check(raw_a: Path, raw_b: Path, periods: int = 16,
-               a: dict[str, object] | None = None) -> dict[str, object]:
-    """Compare port, branch losses and closure between two timesteps (issue #6).
+               a: dict[str, object] | None = None,
+               extra: tuple[Path, ...] = (),
+               vin: float = VIN, rl: float = RL) -> dict[str, object]:
+    """Compare port, branch losses and closure across timesteps (issue #6).
 
     ``a`` lets a caller hand in a summary of ``raw_a`` it has already built; the
     aligned window's raw is 2.4 GB and re-reading it only to compare is a minute
     of I/O for nothing.  ``alt_periods`` only appends entries to ``windows``, so
-    the fields read here are identical either way.
+    the fields read here is identical either way.
+
+    ``extra`` adds further timesteps after ``raw_b``.  Issue #6 asks for
+    5 / 2 / 1 ns, and two pairwise comparisons of the *aggregates* cannot say
+    whether the loss list is settling or just moving — so every column is also
+    broken down per loss item in ``loss_items``.
     """
     if a is None:
-        a = build(raw_a, periods, alt_periods=())
-    b = build(raw_b, periods, alt_periods=())
+        a = build(raw_a, periods, alt_periods=(), vin=vin, rl=rl)
+    b = build(raw_b, periods, alt_periods=(), vin=vin, rl=rl)
+    columns = [a, b] + [build(r, periods, alt_periods=(), vin=vin, rl=rl) for r in extra]
     rows: dict[str, object] = {}
-    for name, x, y in (("port_w", a["port"]["pin_minus_pout_w"], b["port"]["pin_minus_pout_w"]),
-                       ("loss_total_w", a["loss_total_w"], b["loss_total_w"]),
-                       ("stored_w", a["stored_energy_w"], b["stored_energy_w"]),
-                       ("driver_w", a["outside_port"]["driver_output_w"],
-                        b["outside_port"]["driver_output_w"]),
-                       ("residual_w", a["balance"]["loss_residual_w"],
-                        b["balance"]["loss_residual_w"]),
-                       ("closure_residual_w", a["balance"]["closure_residual_w"],
-                        b["balance"]["closure_residual_w"]),
+    def getter(*path: str):
+        """Read one scalar out of a build() summary, walking ``path`` down."""
+        def read(col: dict[str, object]) -> float:
+            node: object = col
+            for key in path:
+                node = node[key]            # type: ignore[index]
+            return float(node)              # type: ignore[arg-type]
+        return read
+
+    for name, path in (("port_w", ("port", "pin_minus_pout_w")),
+                       ("loss_total_w", ("loss_total_w",)),
+                       ("stored_w", ("stored_energy_w",)),
+                       ("driver_w", ("outside_port", "driver_output_w")),
+                       # The CPIN regulariser's *exact* share of driver_w; it is
+                       # reported beside the driver so a reader can see that the
+                       # pad is not what moves the ledger between steps.
+                       ("regularisation_edge_w",
+                        ("outside_port", "regularisation", "edge_power_w")),
+                       ("residual_w", ("balance", "loss_residual_w")),
+                       ("closure_residual_w", ("balance", "closure_residual_w")),
                        # The period-averaged reading is the one the report quotes,
                        # so the step check has to compare *it*, not only the
                        # single-sample number that period averaging replaced.
                        ("stored_period_averaged_w",
-                        a["balance"]["period_averaged"]["stored_energy_w"],
-                        b["balance"]["period_averaged"]["stored_energy_w"]),
+                        ("balance", "period_averaged", "stored_energy_w")),
                        ("closure_period_averaged_w",
-                        a["balance"]["period_averaged"]["closure_residual_w"],
-                        b["balance"]["period_averaged"]["closure_residual_w"])):
-        rows[name] = {"step_a_w": x, "step_b_w": y, "delta_w": y - x}
+                        ("balance", "period_averaged", "closure_residual_w"))):
+        series = [getter(*path)(col) for col in columns]
+        rows[name] = {"step_a_w": series[0], "step_b_w": series[1],
+                      "delta_w": series[1] - series[0],
+                      "series_w": series, "delta_first_last_w": series[-1] - series[0]}
     # The endpoint itself is not shared between two runs: a smaller max step
     # lands on a different point of the output ripple, and 4 mF turns a few
     # millivolts there into most of a watt over this window.
@@ -1085,11 +1145,48 @@ def step_check(raw_a: Path, raw_b: Path, periods: int = 16,
         "times a few millivolts is tens of microjoules, which over this span is most "
         "of a watt."
     )
+    if len(columns) > 2:
+        # Three or more steps can answer the question a pair cannot: is the
+        # move shrinking (a plateau) or repeating (no plateau)?  Report the
+        # last leg against the first leg instead of asserting convergence.
+        steps_ns = [float(col["raw"]["max_step_s"]) * 1e9 for col in columns]
+
+        def _leg(name: str) -> float:
+            return float(rows[name]["series_w"][-1]) - float(rows[name]["series_w"][-2])
+
+        short += (
+            f"  With {len(columns)} steps ({' / '.join(f'{s:.0f}' for s in steps_ns)} ns) "
+            f"the last leg moves port {_leg('port_w'):+.3f} W, loss "
+            f"{_leg('loss_total_w'):+.3f} W, period-averaged closure "
+            f"{_leg('closure_period_averaged_w'):+.3f} W, against a first-to-last move of "
+            f"{float(rows['port_w']['delta_first_last_w']):+.3f} / "
+            f"{float(rows['loss_total_w']['delta_first_last_w']):+.3f} / "
+            f"{float(rows['closure_period_averaged_w']['delta_first_last_w']):+.3f} W.  "
+            "A last leg much smaller than the first is a plateau; a last leg of "
+            "the same size is not convergence, only a constant error."
+        )
+    # Per-item breakdown: the aggregate loss total moved 0.625 W between 5 ns and
+    # 2 ns on this window, and "the closure survived while the loss list did not"
+    # is only actionable if a reader can see *which* item carries the move.
+    # ``sr_channel_body_x4`` is defined as 4 x pair1 and must not be added to it.
+    names = sorted({k for col in columns for k in col["losses"]})
+    loss_items = {
+        name: {
+            "steps_w": [float(col["losses"][name]["w"]) for col in columns],
+            "delta_first_last_w":
+                float(columns[-1]["losses"][name]["w"]) - float(columns[0]["losses"][name]["w"]),
+            "delta_last_leg_w":
+                float(columns[-1]["losses"][name]["w"]) - float(columns[-2]["losses"][name]["w"]),
+        }
+        for name in names
+    }
     return {
         "step_a_s": a["raw"]["max_step_s"], "step_b_s": b["raw"]["max_step_s"],
+        "steps_s": [col["raw"]["max_step_s"] for col in columns],
         "raw_a": a["raw"]["path"], "raw_b": b["raw"]["path"],
         "periods": periods,
         "terms": rows,
+        "loss_items": loss_items,
         "note": short,
     }
 
@@ -1103,7 +1200,8 @@ def write(path: Path = OUT, step_raw: Path | None = None) -> dict[str, object]:
     return summary
 
 
-def main() -> None:
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    """Command line, kept separate from ``main`` so the parameters are testable."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw", type=Path, default=RAW)
     parser.add_argument("--json", type=Path, default=OUT)
@@ -1114,12 +1212,30 @@ def main() -> None:
                         help="skip the timestep comparison; it needs two raws "
                              "that share the window (ledger/ledger2n for 16 "
                              "periods, aligned/aligned2n for 133)")
-    args = parser.parse_args()
-    summary = build(args.raw, args.periods)
+    parser.add_argument("--also-raw", type=Path, action="append", default=[],
+                        help="further timesteps to add as columns (issue #6 asks "
+                             "for 5 / 2 / 1 ns); may be repeated")
+    parser.add_argument("--vin", type=float, default=VIN,
+                        help=f"source voltage actually run by this raw (default {VIN:g}); "
+                             "a parameter-only candidate changes it")
+    parser.add_argument("--rl", type=float, default=RL,
+                        help=f"load resistance actually run by this raw (default {RL:g}); "
+                             "Pout is mean(v^2/R), so this must be the deck's value")
+    return parser.parse_args(argv)
+
+
+def main() -> None:
+    args = parse_args()
+    summary = build(args.raw, args.periods, vin=args.vin, rl=args.rl)
     if (not args.no_step_check and args.compare_raw is not None
             and args.compare_raw.exists()):
+        extra = tuple(p for p in args.also_raw if p.exists())
+        # The step columns must use the same VIN/RL as column A, otherwise the
+        # comparison mixes a parameter change into what it calls a step change.
         summary["step_check"] = step_check(args.raw, args.compare_raw, args.periods,
-                                           a=summary)
+                                           a=summary, extra=extra,
+                                           vin=args.vin, rl=args.rl)
+
     args.json.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
                          encoding="utf-8")
     balance = summary["balance"]
