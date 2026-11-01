@@ -1,6 +1,8 @@
 """Keep missing CAD magnetic symbols aligned with physical winding polarity and golden nets."""
 from __future__ import annotations
 
+import sys
+
 import magnetics_cad_contract as mc
 
 
@@ -25,6 +27,7 @@ def test_dot_relation_cannot_be_inverted_to_appear_done():
             assert pins["PRI_B"] == "NON_DOT"
 
 
-def test_saved_contract_is_fresh_and_does_not_claim_native_cad():
+def test_saved_contract_is_fresh_and_does_not_claim_native_cad(monkeypatch):
+    monkeypatch.setattr(sys, 'argv', ['magnetics_cad_contract'])
     mc.main()
     assert all(p["physical_pad"] is None for s in mc.build()["symbols"] for p in s["pins"])
