@@ -7,6 +7,7 @@
     "golden_subnet_matches": true,
     "all_golden_refs_and_magnetic_physical_pads_verified": false,
     "no_electrical_placeholders_or_unselected_bom": false,
+    "all_required_real_hardware_bom_refs_in_native_design": false,
     "native_erc_evidence": false,
     "routed_pcb_to_schematic_evidence": false,
     "manufacturing_package_evidence": false
@@ -222,6 +223,28 @@
         "mpn": "TO SELECT",
         "status": "VALUE FROZEN"
       }
+    ],
+    "real_hardware_bom_refs_not_in_golden": [
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
+      "C110",
+      "C111",
+      "C112",
+      "C13",
+      "R10",
+      "R7",
+      "R8",
+      "R9"
+    ],
+    "external_bias_interface_to_document": [
+      "PS1"
     ]
   },
   "manual_evidence": {
@@ -244,6 +267,7 @@
   "blockers": [
     "all_golden_refs_and_magnetic_physical_pads_verified",
     "no_electrical_placeholders_or_unselected_bom",
+    "all_required_real_hardware_bom_refs_in_native_design",
     "native_erc_evidence",
     "routed_pcb_to_schematic_evidence",
     "manufacturing_package_evidence"
@@ -251,6 +275,7 @@
   "limitations": [
     "Subset netlist check is NOT a complete schematic pin or footprint check",
     "The golden netlist was derived from a SPICE deck, not all physical components",
+    "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
     "A JSON approval record must refer to genuine independently reviewed native EDA/DFM evidence",
     "Power and efficiency from LTspice do not constitute hardware continuous rating",
     "Thermal and cold plate design intentionally deferred; continuous rating stays unapproved"
