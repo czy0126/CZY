@@ -758,9 +758,9 @@
     {
       "path": "design/v3/power_priority/48V110A_实测_2026-11-01.md",
       "kind": "doc",
-      "bytes": 11717,
+      "bytes": 12335,
       "mtime": 1793537400.105749,
-      "sha256": "64d79731ee6be70b852e3f9272f1fcf2ac0d261f245e2f72c30bc0632ed8fe3e"
+      "sha256": "80cd802ff6d6d463dee567fd6a4ed7deacd328c95492320bacc21ee15fdf3bbb"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -866,10 +866,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -877,10 +877,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -888,10 +888,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -899,10 +899,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -910,10 +910,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -921,10 +921,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -932,10 +932,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -943,10 +943,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -954,10 +954,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
       "tran": ".tran 0 1000u 880u 2n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 2e-09,
+      "display_offset_us": 880,
+      "max_step_s": 2e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -965,10 +965,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
       "tran": ".tran 0 1550u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.00067,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -976,10 +976,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
       "tran": ".tran 0 1550u 880u 2n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.00067,
-      "display_offset_us": 880.0,
-      "max_step_s": 2e-09,
+      "display_offset_us": 880,
+      "max_step_s": 2e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -987,10 +987,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
       "tran": ".tran 0 1550u 880u 1n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.00067,
-      "display_offset_us": 880.0,
-      "max_step_s": 1e-09,
+      "display_offset_us": 880,
+      "max_step_s": 1e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -998,10 +998,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1009,10 +1009,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1020,10 +1020,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1031,10 +1031,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1042,10 +1042,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1053,10 +1053,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0.0,
-      "max_step_s": 1e-08,
+      "display_offset_us": 0,
+      "max_step_s": 1e-8,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -1064,10 +1064,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0.0,
-      "max_step_s": 1e-08,
+      "display_offset_us": 0,
+      "max_step_s": 1e-8,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -1075,10 +1075,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0.0,
-      "max_step_s": 1e-08,
+      "display_offset_us": 0,
+      "max_step_s": 1e-8,
       "has_ic": false,
       "uic": true,
       "cold_start": true
