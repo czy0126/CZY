@@ -166,3 +166,11 @@ def test_four_branches_not_one_hundred_amps_through_worst_lane():
         sum(g["p_w"] for g in data["groups"]), abs=0.004)
     assert data["resistance"]["plane_mohm"] < data["worst_group"]["r_mohm"] / 4.0
     assert data["loss_w_at_100a"]["total"] < 4.0  # previous 13.33 W was a math error
+
+
+def test_loss_for_power_scenario_not_confused_with_released_rating():
+    data = opb.budget(2 * opb.OZ_M)
+    assert data["feasible_on_design_basis"] is False
+    assert data["within_exploratory_budget"] is True
+    assert data["exploratory_budget_is_not_rating"] is True
+    assert data["targets"]["exploratory_mohm"] == pytest.approx(0.30)
