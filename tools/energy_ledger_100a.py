@@ -282,7 +282,8 @@ def transformer_energy_j(lp_h: float, k: float, ip: float, isa: float, isb: floa
 
 
 def _simpson(f, a: float, b: float, n: int = 4000) -> float:
-    """Composite Simpson over [a, b] with an even number of panels."""
+    """Composite Simpson over [a, b] -- the reference the closed form is tested
+    against; ``charge_energy_j`` uses the exact antiderivative instead."""
     if b == a:
         return 0.0
     if b < a:
@@ -295,27 +296,53 @@ def _simpson(f, a: float, b: float, n: int = 4000) -> float:
     return total * h / 3.0
 
 
-CDS_BREAK_V = 10.0021
-CGD_BREAK_V = 8.52972
+# Piecewise fit of the SR device charges, transcribed from models/sr_device_v3.lib.
+# (break_v, low_a, low_b, c0, k, a1, tau1, a2, tau2): below break_v the charge is
+# ``low_a*x - low_b*x^2/2``; above it, ``c0 + k*d + a1*(1-exp(-d/tau1))
+# + a2*(1-exp(-d/tau2))`` with ``d = x - break_v``.
+CDS_FIT = (10.0021, 6154.29e-12, 297.645e-12, 46.666e-9, 62.6184e-12,
+           9147.4e-12, 5.29689, 69821e-12, 50.3394)
+CGD_FIT = (8.52972, 735.774e-12, 56.7507e-12, 4.2116e-9, 26.6784e-12,
+           892.3e-12, 3.96525, 0.0, 1.0)
+CDS_BREAK_V = CDS_FIT[0]
+CGD_BREAK_V = CGD_FIT[0]
+
+
+def _charge(fit: tuple[float, ...], x: float) -> float:
+    break_v, low_a, low_b, c0, k, a1, tau1, a2, tau2 = fit
+    if x <= break_v:
+        return low_a * x - low_b * x * x / 2.0
+    d = x - break_v
+    return (c0 + k * d
+            + a1 * (1.0 - math.exp(-d / tau1))
+            + a2 * (1.0 - math.exp(-d / tau2)))
+
+
+def _charge_area(fit: tuple[float, ...], x: float) -> float:
+    """Closed form of integral_0^x Q(u) du.
+
+    Every term of the fit is elementary, so this is exact; the shipped values
+    used to come from a 4000-panel Simpson, which was both approximate and far
+    too slow to evaluate once per sample (``storage_arrays`` needs O(n) of them).
+    """
+    break_v, low_a, low_b, c0, k, a1, tau1, a2, tau2 = fit
+    if x <= break_v:
+        return low_a * x ** 2 / 2.0 - low_b * x ** 3 / 6.0
+    d = x - break_v
+    base = low_a * break_v ** 2 / 2.0 - low_b * break_v ** 3 / 6.0
+    return (base + c0 * d + k * d * d / 2.0
+            + a1 * (d - tau1 * (1.0 - math.exp(-d / tau1)))
+            + a2 * (d - tau2 * (1.0 - math.exp(-d / tau2))))
 
 
 def cds_charge_c(x: float) -> float:
     """Cds charge (coulombs) at |Vds| = x, transcribed from models/sr_device_v3.lib."""
-    if x <= CDS_BREAK_V:
-        return 6154.29e-12 * x - 297.645e-12 * x * x / 2.0
-    d = x - CDS_BREAK_V
-    return (46.666e-9 + 62.6184e-12 * d
-            + 9147.4e-12 * (1.0 - math.exp(-d / 5.29689))
-            + 69821e-12 * (1.0 - math.exp(-d / 50.3394)))
+    return _charge(CDS_FIT, x)
 
 
 def cgd_charge_c(x: float) -> float:
     """Cgd charge (coulombs) at |Vgd| = x, transcribed from models/sr_device_v3.lib."""
-    if x <= CGD_BREAK_V:
-        return 735.774e-12 * x - 56.7507e-12 * x * x / 2.0
-    d = x - CGD_BREAK_V
-    return (4.2116e-9 + 26.6784e-12 * d
-            + 892.3e-12 * (1.0 - math.exp(-d / 3.96525)))
+    return _charge(CGD_FIT, x)
 
 
 def charge_energy_j(v: float, charge_c) -> float:
@@ -329,13 +356,8 @@ def charge_energy_j(v: float, charge_c) -> float:
     x = abs(v)
     if x == 0.0:
         return 0.0
-    # split at the fit breakpoint so Simpson never straddles the kink
-    break_v = CDS_BREAK_V if charge_c is cds_charge_c else CGD_BREAK_V
-    if x <= break_v:
-        area = _simpson(charge_c, 0.0, x)
-    else:
-        area = _simpson(charge_c, 0.0, break_v) + _simpson(charge_c, break_v, x)
-    return x * charge_c(x) - area
+    fit = CDS_FIT if charge_c is cds_charge_c else CGD_FIT
+    return x * _charge(fit, x) - _charge_area(fit, x)
 
 
 def cgs_energy_j(v: float, c: float = CGS_F) -> float:
@@ -371,33 +393,73 @@ def sr_storage_j(d: dict[str, array], i: int, half: str) -> tuple[float, float]:
     return cap, ind
 
 
-def storage_terms(t: array, d: dict[str, array], i0: int, i1: int,
-                  e_mag: array | None = None) -> dict[str, float]:
-    """Stored-energy change (joules) across the window, element by element."""
-    if e_mag is None:
-        e_mag = magnetic_energy_array(d)
-    cap = ind = 0.0
+def storage_arrays(d: dict[str, array], e_mag: array) -> dict[str, array]:
+    """Stored energy of every element at every sample (J).
+
+    One array per element, so the same quantity can be read at a single sample
+    (``storage_terms``) or averaged over a whole period
+    (``averaged_storage_terms``).  Keeping one source of truth for the formulas
+    matters: the two readings must differ only in *where* they are evaluated.
+    """
+    n = len(d["ilr"])
+    cap = array("d", bytes(8 * n))
+    ind = array("d", bytes(8 * n))
     for half in ("a", "b"):
-        c0, l0 = sr_storage_j(d, i0, half)
-        c1, l1 = sr_storage_j(d, i1, half)
-        cap += c1 - c0
-        ind += l1 - l0
+        for i in range(n):
+            c, l = sr_storage_j(d, i, half)
+            cap[i] += c
+            ind[i] += l
     return {
-        "magnetic_coupled_j": e_mag[i1] - e_mag[i0],
-        "sr_capacitance_j": 4.0 * cap,
-        "sr_package_inductance_j": 4.0 * ind,
-        "lr_j": 0.5 * LR_H * (d["ilr"][i1] ** 2 - d["ilr"][i0] ** 2),
-        "cr_j": 0.5 * CR_F * ((d["vsw"][i1] - d["vnr"][i1]) ** 2
-                              - (d["vsw"][i0] - d["vnr"][i0]) ** 2),
-        "cout_j": 0.5 * COUT_F * (d["vout"][i1] ** 2 - d["vout"][i0] ** 2),
+        "magnetic_coupled_j": e_mag,
+        "sr_capacitance_j": array("d", (4.0 * v for v in cap)),
+        "sr_package_inductance_j": array("d", (4.0 * v for v in ind)),
+        "lr_j": array("d", (0.5 * LR_H * v ** 2 for v in d["ilr"])),
+        "cr_j": array("d", (0.5 * CR_F * (d["vsw"][i] - d["vnr"][i]) ** 2
+                            for i in range(n))),
+        "cout_j": array("d", (0.5 * COUT_F * v ** 2 for v in d["vout"])),
         # Lct1 sits between Cr and Lr with nothing else on nr/nct, so it carries
         # exactly I(Lr); the CT bridge makes |i(Lct2)| = I(Rbur).
-        "ct_primary_j": 0.5 * LCT1_H * (d["ilr"][i1] ** 2 - d["ilr"][i0] ** 2),
-        "ct_secondary_j": 0.5 * LCT2_H * (d["irbur"][i1] ** 2 - d["irbur"][i0] ** 2),
-        "cin_j": 0.5 * CIN_F * (d["vin"][i1] ** 2 - d["vin"][i0] ** 2),
-        "primary_dvdt_snubber_j": 0.5 * CDH_F * (
-            (d["vin"][i1] - d["vsw"][i1]) ** 2 - (d["vin"][i0] - d["vsw"][i0]) ** 2),
+        "ct_primary_j": array("d", (0.5 * LCT1_H * v ** 2 for v in d["ilr"])),
+        "ct_secondary_j": array("d", (0.5 * LCT2_H * v ** 2 for v in d["irbur"])),
+        "cin_j": array("d", (0.5 * CIN_F * v ** 2 for v in d["vin"])),
+        "primary_dvdt_snubber_j": array("d", (
+            0.5 * CDH_F * (d["vin"][i] - d["vsw"][i]) ** 2 for i in range(n))),
     }
+
+
+def storage_terms(t: array, d: dict[str, array], i0: int, i1: int,
+                  e_mag: array | None = None,
+                  arrays: dict[str, array] | None = None) -> dict[str, float]:
+    """Stored-energy change (joules) across the window, element by element."""
+    if arrays is None:
+        if e_mag is None:
+            e_mag = magnetic_energy_array(d)
+        arrays = storage_arrays(d, e_mag)
+    return {name: v[i1] - v[i0] for name, v in arrays.items()}
+
+
+def averaged_storage_terms(t: array, arrays: dict[str, array],
+                           edges: Sequence[int], i0: int, i1: int) -> dict[str, float]:
+    """Stored-energy change between one-period *means* at the two ends.
+
+    Reading the endpoints at single samples makes every storage term inherit
+    the sample-to-sample jitter of the raw -- and those terms are then divided
+    by the window length, so on a short window the jitter alone can exceed the
+    0.2 W target.  Averaging one gate period at each end removes it: one gate
+    period (4.9845 us) is within 0.75 % of one tank period (4.9473 us), so the
+    tank-frequency component is attenuated by |sinc(pi*f_tank/f_gate)| = 0.0075,
+    about 130x.  What survives is the period-to-period spread of the period
+    means themselves, not the phase of the sample we happened to stop on.
+
+    Both ``i0`` and ``i1`` must be gate edges (``gate_window`` guarantees it),
+    so the averaging periods are whole gate periods.
+    """
+    if i0 not in edges or i1 not in edges:
+        raise ValueError("period averaging needs the window ends to be gate edges")
+    first = edges[edges.index(i0) + 1]
+    last = edges[edges.index(i1) - 1]
+    return {name: _mean(t, v, last, i1) - _mean(t, v, i0, first)
+            for name, v in arrays.items()}
 
 
 def cap_integral_diag(t: array, d: dict[str, array], edges: Sequence[int],
@@ -460,12 +522,13 @@ def main_loss_names(losses: dict[str, dict[str, object]]) -> list[str]:
             if name not in ("sr_gate_resistor_x8", "sr_channel_body_pair1")]
 
 
-def window_terms(t: array, d: dict[str, array], i0: int, i1: int) -> dict[str, float]:
+def window_terms(t: array, d: dict[str, array], i0: int, i1: int,
+                 arrays: dict[str, array] | None = None) -> dict[str, float]:
     """Port, loss, storage and closure numbers for one window."""
     port = port_terms(t, d, i0, i1)
     losses = loss_terms(t, d, i0, i1)
     loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
-    stored = storage_terms(t, d, i0, i1)
+    stored = storage_terms(t, d, i0, i1, arrays=arrays)
     span = t[i1] - t[i0]
     stored_w = sum(stored.values()) / span
     drv = driver_w(t, d, i0, i1)
@@ -572,29 +635,7 @@ def phase_alignment(max_periods: int = 400) -> dict[str, float | int]:
     }
 
 
-def residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
-                   i0: int, i1: int, target_w: float = 0.2,
-                   e_mag: array | None = None) -> dict[str, object]:
-    """Per-period closure residual, and the standard error of its window mean.
-
-    A window mean can land inside the target by cancellation while the
-    individual periods are far outside it.  Resolving ``target_w`` needs about
-    ``(sd / target_w)^2`` periods, so a window shorter than that cannot
-    demonstrate the target no matter what its mean happens to be.
-    """
-    if e_mag is None:
-        e_mag = magnetic_energy_array(d)
-    values: list[float] = []
-    for a, b in zip(edges[:-1], edges[1:]):
-        if a < i0 or b > i1:
-            continue
-        port = port_terms(t, d, a, b)
-        losses = loss_terms(t, d, a, b)
-        loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
-        stored = sum(storage_terms(t, d, a, b, e_mag).values())
-        span = t[b] - t[a]
-        values.append(port["pin_source_w"] - port["pout_w"] + driver_w(t, d, a, b)
-                      - loss_main - stored / span)
+def _noise_stats(values: list[float], target_w: float) -> dict[str, object]:
     n = len(values)
     if n < 2:
         raise ValueError(f"need at least two periods for a spread, got {n}")
@@ -616,8 +657,84 @@ def residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
     }
 
 
+def residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
+                   i0: int, i1: int, target_w: float = 0.2,
+                   e_mag: array | None = None,
+                   arrays: dict[str, array] | None = None) -> dict[str, object]:
+    """Per-period closure residual, and the standard error of its window mean.
+
+    A window mean can land inside the target by cancellation while the
+    individual periods are far outside it.  Resolving ``target_w`` needs about
+    ``(sd / target_w)^2`` periods, so a window shorter than that cannot
+    demonstrate the target no matter what its mean happens to be.
+    """
+    if arrays is None:
+        if e_mag is None:
+            e_mag = magnetic_energy_array(d)
+        arrays = storage_arrays(d, e_mag)
+    values: list[float] = []
+    for a, b in zip(edges[:-1], edges[1:]):
+        if a < i0 or b > i1:
+            continue
+        port = port_terms(t, d, a, b)
+        losses = loss_terms(t, d, a, b)
+        loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
+        stored = sum(storage_terms(t, d, a, b, arrays=arrays).values())
+        span = t[b] - t[a]
+        values.append(port["pin_source_w"] - port["pout_w"] + driver_w(t, d, a, b)
+                      - loss_main - stored / span)
+    return _noise_stats(values, target_w)
+
+
+def averaged_residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
+                            i0: int, i1: int, arrays: dict[str, array],
+                            target_w: float = 0.2) -> dict[str, object]:
+    """The same residual with each period's storage read from period means.
+
+    Period ``k`` (``edges[k]..edges[k+1]``) uses the mean stored energy over
+    that period minus the mean over the period before it, so the endpoint sample
+    jitter is averaged out before the division by the period length.  The
+    series needs one period of lead-in, so it has one fewer point than
+    ``residual_noise``.  Its mean is *not* the window closure -- that is
+    ``averaged_storage_terms`` -- it exists to size the spread, which is what
+    decides whether the window can resolve ``target_w``.
+    """
+    spans = [(a, b) for a, b in zip(edges[:-1], edges[1:]) if a >= i0 and b <= i1]
+    if len(spans) < 3:
+        raise ValueError("period averaging needs at least three periods")
+    means = [{name: _mean(t, v, a, b) for name, v in arrays.items()}
+             for a, b in spans]
+    values: list[float] = []
+    for k in range(1, len(spans)):
+        a, b = spans[k]
+        port = port_terms(t, d, a, b)
+        losses = loss_terms(t, d, a, b)
+        loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
+        stored = sum(means[k][name] - means[k - 1][name] for name in arrays)
+        span = t[b] - t[a]
+        values.append(port["pin_source_w"] - port["pout_w"] + driver_w(t, d, a, b)
+                      - loss_main - stored / span)
+    return _noise_stats(values, target_w)
+
+
+def repo_relative(path: Path) -> str:
+    """Path as written in the JSON: always absolute first, then relative to ROOT.
+
+    A ``--raw`` given on the command line is relative to the caller's directory,
+    and ``Path.relative_to()`` refuses to guess -- it raised after a 22-minute
+    scan of the aligned raw, throwing the whole result away.  Resolving here
+    means the same raw is named the same way whichever way it was passed.
+    """
+    resolved = Path(path).resolve()
+    try:
+        return str(resolved.relative_to(ROOT)).replace("\\", "/")
+    except ValueError:                    # outside the repo: keep it absolute
+        return resolved.as_posix()
+
+
 def build(raw: Path = RAW, periods: int = 16,
           alt_periods: Sequence[int] = (8, 12)) -> dict[str, object]:
+    raw = Path(raw).resolve()
     names, _ = read_raw_header(raw)
     wanted = dict(WANTED)
     for half, probes in PAIR1_INTERNALS.items():
@@ -642,13 +759,20 @@ def build(raw: Path = RAW, periods: int = 16,
     loss_residual = port_w - loss_main
 
     e_mag = magnetic_energy_array(d)
-    stored = storage_terms(t, d, i0, i1, e_mag)
+    arrays = storage_arrays(d, e_mag)
+    stored = storage_terms(t, d, i0, i1, arrays=arrays)
     d_stored_w = sum(stored.values()) / span
+    # Issue #6: the same change read from one-period means at each end.  Single
+    # endpoint samples carry the raw's sample-to-sample jitter; on a short
+    # window that jitter alone can exceed the 0.2 W target.
+    stored_avg = averaged_storage_terms(t, arrays, edges, i0, i1)
+    d_stored_avg_w = sum(stored_avg.values()) / span
     drv = driver_w(t, d, i0, i1)
     # Full closure: the system boundary is {Vbus source, load, 8 SR gate
     # B-sources}.  Everything else the deck supplies (Vreg, Vaux, and the
     # primary gate B-sources) is ideal and outside it; see ``outside_port``.
     closure_residual = port_w + drv - loss_main - d_stored_w
+    closure_residual_avg = port_w + drv - loss_main - d_stored_avg_w
 
     vreg_w = -_mean_product(t, d["vreg"], d["ivreg"], i0, i1)
     vaux_w = -12.0 * _mean(t, d["ivaux"], i0, i1)
@@ -660,33 +784,57 @@ def build(raw: Path = RAW, periods: int = 16,
     mag_std = (sum((x - mag_mean) ** 2 for x in per_period) / len(per_period)) ** 0.5 \
         if per_period else 0.0
 
-    windows = [{"periods": periods, **window_terms(t, d, i0, i1)}]
+    windows = [{"periods": periods, **window_terms(t, d, i0, i1, arrays)}]
     for p in alt_periods:
         try:
             a, b = gate_window(t, d["vga"], p)
         except ValueError:
             continue
         if (a, b) != (i0, i1):
-            windows.append({"periods": p, **window_terms(t, d, a, b)})
+            windows.append({"periods": p, **window_terms(t, d, a, b, arrays)})
 
     # Issue #6: a mean inside 0.2 W is not a closure unless the window can
     # resolve 0.2 W.  Both conditions are required, and the reason is recorded
     # separately from the status so "not closed" is never read as "missing
     # energy" when it is really "too short a run".
-    noise = residual_noise(t, d, edges, i0, i1, e_mag=e_mag)
+    noise = residual_noise(t, d, edges, i0, i1, arrays=arrays)
+    try:
+        noise_avg = averaged_residual_noise(t, d, edges, i0, i1, arrays)
+    except ValueError as exc:                     # window shorter than 3 periods
+        noise_avg = {"error": str(exc), "sem_w": float("inf"), "periods": 0,
+                     "periods_for_target": None, "mean_w": None, "sd_w": None}
     align = phase_alignment()
     within = abs(closure_residual) <= 0.2
     resolved = float(noise["sem_w"]) <= 0.2
-    closure_ok = within and resolved
+    within_avg = abs(closure_residual_avg) <= 0.2
+    resolved_avg = float(noise_avg["sem_w"]) <= 0.2
+    # Both readings must agree that the residual is inside the target; the
+    # period-averaged one is the resolution instrument, because it is the one
+    # whose spread is not set by which sample the run happened to stop on.
+    # The target itself is untouched -- see `checks` for why the physical
+    # outcome is reported in `results` and never gates `checks.ok`.
+    closure_ok = within and within_avg and resolved_avg
     closure_status = "CLOSED" if closure_ok else "NOT_CLOSED"
     if closure_ok:
-        closure_reason = "within 0.2 W and the window resolves 0.2 W"
+        closure_reason = ("both readings are inside 0.2 W and the period-averaged "
+                          "estimator resolves 0.2 W on this window")
+    elif within and not within_avg:
+        closure_reason = (f"the single-sample reading {closure_residual:+.3f} W is "
+                          f"inside the target but the period-averaged reading "
+                          f"{closure_residual_avg:+.3f} W is outside it; the two "
+                          f"disagree, so neither is trusted")
+    elif within and within_avg:
+        closure_reason = (f"both readings are inside the target ({closure_residual:+.3f} W, "
+                          f"{closure_residual_avg:+.3f} W) but the period-averaged "
+                          f"estimator resolves only "
+                          f"{2.0 * float(noise_avg['sem_w']):.2f} W on this window")
     elif within:
         closure_reason = (f"residual {closure_residual:+.3f} W is inside the target "
                           f"but this window resolves only {2.0 * float(noise['sem_w']):.2f} W")
     else:
         closure_reason = (f"residual {closure_residual:+.3f} W is outside the target "
-                          f"(window resolves {2.0 * float(noise['sem_w']):.2f} W)")
+                          f"(period-averaged {closure_residual_avg:+.3f} W, window "
+                          f"resolves {2.0 * float(noise_avg['sem_w']):.2f} W)")
     # `results` are what the physics did; `checks` are invariants of the report
     # itself, and only those gate `ok`.  Folding the physical outcome into the
     # gate would make an honest NOT_CLOSED read as a broken tool -- and would
@@ -695,6 +843,8 @@ def build(raw: Path = RAW, periods: int = 16,
         "loss_residual_within_0p2_w": abs(loss_residual) <= 0.2,
         "closure_within_0p2_w": within,
         "window_resolves_0p2_w": resolved,
+        "closure_period_averaged_within_0p2_w": within_avg,
+        "window_resolves_0p2_w_period_averaged": resolved_avg,
         "closure_including_storage_within_0p2_w": closure_ok,
     }
     checks = {
@@ -704,6 +854,8 @@ def build(raw: Path = RAW, periods: int = 16,
         "coupled_energy_never_negative": min(e_mag[(i0):(i1 + 1)]) >= 0.0,
         "closure_status_follows_from_the_results":
             (closure_status == "CLOSED") == closure_ok,
+        "closure_status_is_derived_from_both_readings":
+            closure_ok == (within and within_avg and resolved_avg),
         "closure_reason_states_which_condition_failed":
             bool(closure_reason) and (closure_ok or ("resolves" in closure_reason
                                                      or "outside" in closure_reason)),
@@ -715,20 +867,23 @@ def build(raw: Path = RAW, periods: int = 16,
     if not closure_ok:
         limits.append(f"closure including storage: {closure_reason}; the status is "
                       f"NOT_CLOSED and the 0.2 W target is unchanged")
-    if not resolved:
+    if not resolved_avg:
+        need = noise_avg.get("periods_for_target")
         limits.append(
-            f"this window spans {periods} gate periods but needs about "
-            f"{noise['periods_for_target']} to resolve 0.2 W; the tank and the "
-            f"clock are not commensurate, so the first phase-aligned window is "
-            f"{align['aligned_periods']} periods "
-            f"({float(align['aligned_span_s']) * 1e6:.1f} us).  "
-            f"Only {100.0 * periods / float(align['aligned_periods']):.0f} % of it "
-            f"is in this raw.  Do not quote the window mean as a closure")
+            f"this window spans {periods} gate periods; the period-averaged "
+            f"estimator resolves only {2.0 * float(noise_avg['sem_w']):.2f} W here"
+            + (f" and needs about {need} periods to resolve 0.2 W" if need else "")
+            + f".  The single-sample reading needs {noise['periods_for_target']} "
+            f"periods.  The tank and the clock are not commensurate, so the first "
+            f"phase-aligned window is {align['aligned_periods']} periods "
+            f"({float(align['aligned_span_s']) * 1e6:.1f} us); this raw holds "
+            f"{100.0 * periods / float(align['aligned_periods']):.0f} % of it.  "
+            f"Do not quote the window mean as a closure")
     if abs(d_stored_w) > 0.2:
         limits.append(f"stored-energy rate is {d_stored_w:+.3f} W over this "
                       f"window; see windows[] for how it moves with the window")
     return {
-        "raw": {"path": str(raw.relative_to(ROOT)).replace("\\", "/"),
+        "raw": {"path": repo_relative(raw),
                 "bytes": raw.stat().st_size, "mtime": raw.stat().st_mtime,
                 "variables": len(names),
                 "max_step_s": max_step_of(raw)},
@@ -782,6 +937,19 @@ def build(raw: Path = RAW, periods: int = 16,
             "resolution": {**noise, "phase_alignment": align},
             "stored_energy_endpoint_w": d_stored_w,
             "stored_energy_phase_limit_w": abs(d_stored_w),
+            "period_averaged": {
+                "stored_energy_w": d_stored_avg_w,
+                "closure_residual_w": closure_residual_avg,
+                "periods": noise_avg.get("periods"),
+                "sd_w": noise_avg.get("sd_w"),
+                "sem_w": noise_avg.get("sem_w"),
+                "periods_for_target": noise_avg.get("periods_for_target"),
+                "definition": "each storage term is averaged over one whole gate "
+                              "period at each end of the window; one gate period "
+                              "is within 0.75 % of one tank period, so the tank-"
+                              "frequency part of the endpoint error is attenuated "
+                              "by about 130x",
+            },
             "note": "residual_w is Pin - Pout - summed element losses (the issue #3 "
                     "number).  closure_residual_w additionally adds the measured SR "
                     "gate-supply energy and subtracts the stored-energy rate, i.e. it "
@@ -869,9 +1037,13 @@ def main() -> None:
     parser.add_argument("--periods", type=int, default=16)
     parser.add_argument("--compare-raw", type=Path, default=STEP_RAW,
                         help="second raw at a different max timestep (issue #6)")
+    parser.add_argument("--no-step-check", action="store_true",
+                        help="skip the timestep comparison (it only makes sense "
+                             "for the 16-period window both raws share)")
     args = parser.parse_args()
     summary = build(args.raw, args.periods)
-    if args.compare_raw is not None and args.compare_raw.exists():
+    if (not args.no_step_check and args.compare_raw is not None
+            and args.compare_raw.exists()):
         summary["step_check"] = step_check(args.raw, args.compare_raw, args.periods)
     args.json.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
                          encoding="utf-8")
@@ -890,6 +1062,7 @@ def main() -> None:
                           "aligned_periods": res["phase_alignment"]["aligned_periods"],
                           "aligned_span_us":
                               float(res["phase_alignment"]["aligned_span_s"]) * 1e6},
+                      "period_averaged": balance["period_averaged"],
                       "results": summary["results"],
                       "checks": summary["checks"]}, indent=2, ensure_ascii=False))
 

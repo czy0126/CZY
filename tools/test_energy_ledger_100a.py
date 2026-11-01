@@ -10,12 +10,16 @@ from __future__ import annotations
 
 import json
 import math
+from pathlib import Path
 
 import pytest
 
+from array import array
+
 from energy_ledger_100a import (
-    ROOT, build, cds_charge_c, cgd_charge_c, charge_energy_j, gate_window,
-    phase_alignment, read_raw_header, stream_points, transformer_energy_j,
+    CDS_FIT, CGD_FIT, ROOT, _charge_area, _simpson, averaged_storage_terms, build,
+    cds_charge_c, cgd_charge_c, charge_energy_j, gate_window, phase_alignment,
+    read_raw_header, repo_relative, stream_points, transformer_energy_j,
     trapezoid_mean,
 )
 from lr_design import LR_TOTAL_H, resonant_khz
@@ -219,14 +223,22 @@ def test_a_window_that_cannot_resolve_the_target_is_not_reported_as_closed():
     balance = summary["balance"]
     results = summary["results"]
     resolves = balance["resolution"]["sem_w"] <= 0.2
+    resolves_avg = balance["period_averaged"]["sem_w"] <= 0.2
     assert results["window_resolves_0p2_w"] is resolves
+    assert results["window_resolves_0p2_w_period_averaged"] is resolves_avg
+    # Both readings must be inside the target, and the period-averaged one --
+    # the estimator whose spread is not set by the endpoint sample -- must
+    # resolve it.  Requiring the noisier single-sample reading to resolve as
+    # well would only mean a longer run, not a stronger claim.
     assert results["closure_including_storage_within_0p2_w"] is (
-        results["closure_within_0p2_w"] and resolves)
+        results["closure_within_0p2_w"]
+        and results["closure_period_averaged_within_0p2_w"] and resolves_avg)
     assert balance["closure_status"] == (
         "CLOSED" if results["closure_including_storage_within_0p2_w"] else "NOT_CLOSED")
-    if not resolves:
-        assert any("resolve" in text for text in balance["limits"]), balance["limits"]
-        assert "resolves only" in balance["closure_reason"]
+    if not resolves_avg:
+        assert any("period-averaged" in text for text in balance["limits"]), balance["limits"]
+        assert ("resolves" in balance["closure_reason"]
+                or "disagree" in balance["closure_reason"]), balance["closure_reason"]
     # the report invariants are the gate, not the physics outcome
     assert summary["checks"]["ok"], summary["checks"]
 
@@ -242,3 +254,100 @@ def test_the_step_check_compares_two_timesteps_and_the_endpoint_moves():
     assert abs(loss["delta_w"]) < 0.05           # quadrature has converged
     assert abs(step["terms"]["vout_end_v"]["delta"]) > 1e-3   # the endpoint has not
     assert "vout_end_v" in summary["window"]
+
+
+def _ripple_plus_drift(n: int = 21, per_period: int = 10,
+                       tank_samples: float = 9.925, amplitude: float = 100.0,
+                       drift: float = 0.01) -> tuple[array, array, list[int]]:
+    """A storage trace whose history is a tank-frequency ripple plus a real drift.
+
+    The 0.75 % detuning of ``tank_samples`` from the gate period is what the
+    real deck has (4.9473 us tank inside a 4.9845 us clock period), and it is
+    the reason a period average is not a perfect canceller.
+    """
+    t = array("d", (float(i) for i in range(n * per_period + 1)))
+    y = array("d", (amplitude * math.sin(2.0 * math.pi * i / tank_samples) + drift * i
+                    for i in range(len(t))))
+    edges = [k * per_period for k in range(n + 1)]
+    return t, y, edges
+
+
+def test_period_averaging_beats_a_single_sample_by_the_detuning_ratio():
+    """Issue #6's storage terms are endpoint differences, so which sample the raw
+    happens to end on becomes a watts-scale error.  Averaging one gate period
+    removes the tank-frequency part: one gate period is within 0.75 % of one
+    tank period, so what is left is ~0.75 % of the ripple, not 100 % of it.
+
+    The test is written to fail if the averaging is removed: it asserts the
+    single-sample reading is *far* worse, so a no-op implementation cannot pass
+    on tolerance alone.
+    """
+    t, y, edges = _ripple_plus_drift()
+    arrays = {"x": y}
+    i0, i1 = edges[0], edges[20]
+    true_change = 0.01 * (i1 - i0)
+    single = y[i1] - y[i0]
+    averaged = averaged_storage_terms(t, arrays, edges, i0, i1)["x"]
+    assert abs(single - true_change) > 50.0, "the ripple must dominate a single sample"
+    assert abs(averaged - true_change) < 1.5, "period averaging must remove the ripple"
+
+
+def test_period_averaging_refuses_a_window_that_is_not_on_gate_edges():
+    """Averaging over a partial period would silently read a different phase at
+    each end, which is the error it is meant to remove."""
+    t, y, edges = _ripple_plus_drift()
+    with pytest.raises(ValueError, match="gate edges"):
+        averaged_storage_terms(t, {"x": y}, edges, 1, edges[20])
+
+
+def test_the_committed_closure_status_is_derived_from_both_readings():
+    """The single-sample and the period-averaged readings must agree before the
+    status may read CLOSED -- otherwise a short window that landed a favourable
+    endpoint would close issue #6 on its own."""
+    data = json.loads(LEDGER.read_text(encoding="utf-8"))
+    results = data["results"]
+    balance = data["balance"]
+    expected = (results["closure_within_0p2_w"]
+                and results["closure_period_averaged_within_0p2_w"]
+                and results["window_resolves_0p2_w_period_averaged"])
+    assert results["closure_including_storage_within_0p2_w"] == expected
+    assert (balance["closure_status"] == "CLOSED") == expected
+    assert balance["target_w"] == 0.2, "the target is not negotiable"
+    assert "period_averaged" in balance
+    assert "130x" in balance["period_averaged"]["definition"]
+
+
+def test_the_closed_form_charge_integral_matches_simpson():
+    """``storage_arrays`` evaluates the SR capacitor energy at *every* sample, so
+    the integral has to be both exact and cheap.  The closed form replaced a
+    4000-panel Simpson; they must agree to Simpson's own error, which is why the
+    tolerance is loose enough to be Simpson's and tight enough that a wrong
+    antiderivative cannot pass."""
+    for fit, q in ((CDS_FIT, cds_charge_c), (CGD_FIT, cgd_charge_c)):
+        for x in (0.5, 5.0, fit[0], 20.0, 40.0):
+            simpson = (_simpson(q, 0.0, x) if x <= fit[0]
+                       else _simpson(q, 0.0, fit[0]) + _simpson(q, fit[0], x))
+            assert _charge_area(fit, x) == pytest.approx(simpson, rel=1e-8), (q.__name__, x)
+
+
+def test_the_stored_energy_of_the_linear_segment_is_the_antiderivative():
+    """Below the fit breakpoint Q = a*x - b*x^2/2, so E = a*x^2/2 - b*x^3/3 in
+    closed form.  Checking against that identity catches a lost factor of two
+    in the antiderivative, which the Simpson comparison alone would not."""
+    a, b = CDS_FIT[1], CDS_FIT[2]
+    for x in (1.0, 4.0, 9.0):
+        assert charge_energy_j(x, cds_charge_c) == pytest.approx(
+            a * x ** 2 / 2.0 - b * x ** 3 / 3.0, rel=1e-15)
+
+
+def test_a_raw_named_on_the_command_line_is_still_written_relative_to_the_repo(
+        monkeypatch, tmp_path):
+    """A ``--raw`` passed relatively crashed the whole 22-minute aligned scan:
+    ``Path.relative_to`` does not resolve first.  The same raw must be named the
+    same way whichever way the caller spelled it, and a raw outside the repo
+    must come out absolute rather than raise."""
+    monkeypatch.chdir(ROOT)
+    assert repo_relative(Path("sim/v3/x.raw")) == "sim/v3/x.raw"
+    assert repo_relative(ROOT / "sim/v3/x.raw") == "sim/v3/x.raw"
+    outside = tmp_path / "y.raw"
+    assert repo_relative(outside) == outside.resolve().as_posix()

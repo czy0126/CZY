@@ -38,6 +38,10 @@ python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 **结束 LTspice 只能按 PID**：`kill <pid>`（`ps -W` 查）。禁止 `taskkill //IM LTspice.exe`
 ——权限分类器会拒绝，且会误杀其他会话的仿真。
+`ps -W` 里的进程名是 **`LTspice`（没有 `.exe`）**，所以 `ps -W | grep LTspice.exe` 会返回空，
+看起来像"仿真早就退出了"。判断跑没跑看 raw 是否在长大、以及 `rm` 是否报
+`Device or resource busy`；不要信名字 grep。批量模式一次要跑十几分钟到数十分钟
+（120 µs 窗口 176 s / 224 s；670 µs 约 2.4 GB、~40 min），别按"没输出"判死。
 
 **不要随手重跑 `python tools/make_round4_decks.py`**：`main()` 会重写全部已冻结 deck，
 刷新 mtime，破坏"raw 与 deck 是否同一输入"的比对（见下）。只用它新增 deck 时，
@@ -141,10 +145,22 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   后者每通道每周期残留 −290 pJ（8 只合计约 0.2 mW），是求积误差不是物理量。
 - **储能端点差 0.232 W 单独报告**（含此前漏掉的 Lct1/Lct2/Cin/Cdh 四项）；并入它才叫
   "含储能闭合残差"，16 周期为 −0.118 W。两个数不是同一个量，引用必须写明。
-- **闭合残差没有 0.2 W 的分辨率（Issue #6，未关闭）**：单周期残差 sd 5.02 W，16 周期标准误
+- **储能端点是周期平均，不是单点采样**：`storage_terms()` 读单个采样点；
+  `averaged_storage_terms()` 把每一项在端点所在的那个**门极周期**内做梯形平均。一个门极周期
+  （4.9845 µs）与一个谐振周期（4.9473 µs）只差 0.75 %，所以 `|sinc(π·f_tank/f_gate)| ≈ 0.0075`，
+  把谐振频率分量压掉约 130 倍。16 周期窗口上两个读数分别是 **−0.118 W 与 −0.222 W**，
+  差 0.10 W——`closure_status` 要求**两个读数都在 0.2 W 内、且周期平均读数能分辨 0.2 W**；
+  只有单点读数满足不算闭合（`results.closure_including_storage_within_0p2_w` 已经这样算）。
+- **`charge_energy_j()` 用闭式原函数**：器件充放电拟合是"分段线性 + 双指数"，积分有初等原函数。
+  旧实现每次调用跑 4000 段 Simpson（≈1 ms），只够算两个端点；`storage_arrays()` 需要**每个采样点**
+  都算，所以换成闭式（与 Simpson 差 ~1e-9，就是 Simpson 自身误差）。**不要退回 Simpson。**
+- **闭合残差没有 0.2 W 的分辨率（Issue #6）**：单周期残差 sd 5.02 W，16 周期标准误
   1.26 W，压到 0.2 W 需约 632 个周期，而 raw 只有 24 个。均值落在目标内是正负相消，不是闭合。
+  周期平均估计量把 sd 降到 1.96 W（16 周期、15 个可用点），仍需约 96 个周期。
   根因是**时钟与谐振腔不通约**（200.622 对 202.131 kHz，拍频 1509 Hz）：最短相位对齐窗口是
   **133 个门极周期 = 662.9 µs**，由 `phase_alignment()` 算出，**不要手抄**。
+  deck 变体 `ledger_aligned`（`make_physical_decks.py`，只改 `.tran` 的 **Tstop**，880 µs 起始点不动）
+  就是为这个窗口准备的；注意 `.tran` 字段序是 `Tstep Tstop Tstart Tmaxstep`。
 - **5 ns 对 2 ns**：损耗 11.117→11.141 W（+0.22 %）已收敛，但 `V(out)` 端点差 7.6 mV，
   4 mF×1.87 V×7.6 mV≈57 µJ 折算 1.3 W，闭合残差 −0.118→**+0.404 W 不收敛**。
   瓶颈是端点采样，不是梯形积分。`ledger2n` 变体由 `make_physical_decks.py` 只改 `.tran` 步长生成。

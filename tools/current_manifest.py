@@ -44,6 +44,9 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
+        # issue #6: the same instrumented deck saved over the first phase-
+        # aligned window (133 gate periods = 662.9 us).
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
         "sim/v3/sr_tank_dual_v33_cold_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
@@ -123,6 +126,7 @@ V3_SOURCES = {
         "design/v3/stage_f/powerup_checklist.json",
         "design/v3/stage_f/上电检查表.md",
         "design/v3/stage_f/energy_ledger_100a.json",
+        "design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -147,6 +151,7 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
         # the hash list; their .log files are the committed measurements.
     ],
@@ -386,6 +391,11 @@ REPRODUCE = {
         "python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md "
         "--json design/v3/stage_f/powerup_checklist.json",
         "python tools/make_physical_decks.py",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
+        "python tools/energy_ledger_100a.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw --periods 133 "
+        "--no-step-check "
+        "--json design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
         "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
         "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw "
         "--rl 0.0189 --periods 22 --json design/v3/magnetics/operating_point_100a_cout7m.json",

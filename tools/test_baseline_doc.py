@@ -21,6 +21,7 @@ COUT = ROOT / "design/v3/bom/cout_bank.json"
 LR = ROOT / "design/v3/bom/lr_design.json"
 CONNECTOR = ROOT / "design/v3/bom/connector_budget.json"
 LEDGER = ROOT / "design/v3/stage_f/energy_ledger_100a.json"
+LEDGER_ALIGNED = ROOT / "design/v3/stage_f/energy_ledger_100a_phase_aligned.json"
 MAGNETICS = ROOT / "design/v3/magnetics/magnetics_design.json"
 OP = ROOT / "design/v3/magnetics/operating_point_100a.json"
 CT = ROOT / "design/v3/bom/ct_design.json"
@@ -143,6 +144,28 @@ def test_energy_balance_matches_the_measured_ledger():
     assert f"{data['window']['end_s'] * 1e6:.2f}" in doc
     assert f"{data['window']['periods']} 个门极周期" in doc
     assert f"{data['outside_port']['driver_output_w']:.3f} W" in doc
+
+
+def test_the_phase_aligned_window_is_quoted_from_its_own_json():
+    """§2.3 quotes the 133-period window; every number there must be read off the
+    aligned JSON.  Hand-copying the 16-period figures would leave the two
+    readings indistinguishable in the document, which is the one thing this
+    section exists to prevent."""
+    if not LEDGER_ALIGNED.exists():
+        pytest.skip("the aligned-window ledger has not been generated")
+    data = load(LEDGER_ALIGNED)
+    doc = text()
+    window = data["window"]
+    balance = data["balance"]
+    avg = balance["period_averaged"]
+    align = balance["resolution"]["phase_alignment"]
+    assert f"{window['periods']} 个门极周期" in doc
+    assert f"{window['span_s'] * 1e6:.1f} µs" in doc
+    assert f"{align['aligned_periods']} 个门极周期" in doc
+    assert f"{balance['closure_residual_w']:+.3f} W" in doc
+    assert f"{avg['closure_residual_w']:+.3f} W" in doc
+    assert f"{avg['sem_w']:.3f} W" in doc
+    assert f"`{balance['closure_status']}`" in doc
 
 
 def test_ripple_quotes_the_22_period_value_not_the_2_period_one():

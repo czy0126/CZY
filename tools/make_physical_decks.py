@@ -42,7 +42,7 @@ LR_TOTAL_RE = re.compile(r"^Lr \S+ \S+ \{LR_TOTAL\} ", re.M)
 
 
 def variant_text(source: str, lr: str | None = None, cout: str | None = None,
-                 step: str | None = None) -> str:
+                 step: str | None = None, stop: str | None = None) -> str:
     """Return the deck text with the requested values swapped in.
 
     ``None`` leaves an element untouched.  Each pattern must occur exactly once:
@@ -60,35 +60,45 @@ def variant_text(source: str, lr: str | None = None, cout: str | None = None,
         source = pattern.sub(value, source)
     if lr is not None and not LR_TOTAL_RE.search(source):
         raise ValueError("the Lr element does not use LR_TOTAL; the param swap would not reach it")
-    if step is not None:
+    if step is not None or stop is not None:
         match = TRAN_RE.search(source)
         if not match:
-            raise ValueError("no '.tran <stop> <start> <tstart> <step> uic' line to rewrite")
+            raise ValueError("no '.tran <Tstep> <Tstop> <Tstart> <Tmaxstep> uic' line to rewrite")
+        # LTspice field order is Tstep Tstop Tstart Tmaxstep: the deck's
+        # `.tran 0 1000u 880u 5n uic` saves nothing extra, stops at 1000 us,
+        # starts writing at 880 us and steps at most 5 ns.
         source = source[:match.start()] + (
-            f".tran {match.group(1)} {match.group(2)} {match.group(3)} {step} uic"
+            f".tran {match.group(1)} {stop or match.group(2)} {match.group(3)} "
+            f"{step or match.group(4)} uic"
         ) + source[match.end():]
     return source
 
 
-# name -> (source, target, external Lr, Cout, max timestep)
-VARIANTS: dict[str, tuple[str, str, str | None, str | None, str | None]] = {
-    "phys": (SS_100A, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir", "1u", "7.05m", None),
-    "cout7m": (SS_100A, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir", ".92u", "7.05m", None),
-    "lrmin": (SS_100A, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir", ".875u", "7.05m", None),
-    "cold_phys": (COLD, "sim/v3/sr_tank_dual_v33_cold_phys.cir", "1u", "7.05m", None),
-    "cold_oc_phys": (COLD_OC, "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir", "1u", "7.05m", None),
-    "cold_oc_lrmin": (COLD_OC, "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir", ".875u", "7.05m", None),
+# name -> (source, target, external Lr, Cout, max timestep, stop time)
+VARIANTS: dict[str, tuple[str, str, str | None, str | None, str | None, str | None]] = {
+    "phys": (SS_100A, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir", "1u", "7.05m", None, None),
+    "cout7m": (SS_100A, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir", ".92u", "7.05m", None, None),
+    "lrmin": (SS_100A, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir", ".875u", "7.05m", None, None),
+    "cold_phys": (COLD, "sim/v3/sr_tank_dual_v33_cold_phys.cir", "1u", "7.05m", None, None),
+    "cold_oc_phys": (COLD_OC, "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir", "1u", "7.05m", None, None),
+    "cold_oc_lrmin": (COLD_OC, "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir", ".875u", "7.05m", None, None),
     # Issue #6: the same instrumented deck at half the timestep, so the
     # port/branch integrals can be compared at 5 ns and 2 ns.
     "ledger2n": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
-                 None, None, "2n"),
+                 None, None, "2n", None),
+    # Issue #6: the same instrumented deck saved over the first *phase-aligned*
+    # window (133 gate periods = 662.9 us, the length at which the 200.622 kHz
+    # clock and the 202.131 kHz tank return to the same relative phase).  Only
+    # the stop time changes, so the 880 us settle is untouched.
+    "ledger_aligned": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
+                       None, None, None, "1550u"),
 }
 
 
 def write(name: str) -> None:
-    src, dst, lr, cout, step = VARIANTS[name]
+    src, dst, lr, cout, step, stop = VARIANTS[name]
     source = (ROOT / src).read_text(encoding="utf-8")
-    (ROOT / dst).write_text(variant_text(source, lr, cout, step), encoding="utf-8")
+    (ROOT / dst).write_text(variant_text(source, lr, cout, step, stop), encoding="utf-8")
     print(f"wrote {dst}")
 
 

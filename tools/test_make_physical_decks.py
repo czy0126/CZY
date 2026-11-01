@@ -44,9 +44,9 @@ def test_an_lr_element_that_ignores_the_param_is_rejected():
 
 
 def test_the_variants_cover_the_issue_4_cases():
-    assert VARIANTS["phys"][2:] == ("1u", "7.05m", None)
-    assert VARIANTS["cout7m"][2:] == (".92u", "7.05m", None)
-    assert VARIANTS["lrmin"][2:] == (".875u", "7.05m", None)
+    assert VARIANTS["phys"][2:] == ("1u", "7.05m", None, None)
+    assert VARIANTS["cout7m"][2:] == (".92u", "7.05m", None, None)
+    assert VARIANTS["lrmin"][2:] == (".875u", "7.05m", None, None)
     assert VARIANTS["cold_oc_lrmin"][2] == ".875u"
 
 
@@ -65,6 +65,17 @@ def test_a_deck_without_a_parsable_tran_line_is_rejected():
 
 
 def test_the_ledger_2n_variant_only_changes_the_timestep():
-    src, dst, lr, cout, step = VARIANTS["ledger2n"]
+    src, dst, lr, cout, step, stop = VARIANTS["ledger2n"]
     assert src.endswith("_ledger.cir") and dst.endswith("_ledger2n.cir")
-    assert (lr, cout, step) == (None, None, "2n")
+    assert (lr, cout, step, stop) == (None, None, "2n", None)
+
+
+def test_the_aligned_variant_only_moves_the_stop_time():
+    """Issue #6 needs the same instrumented deck saved over one phase-
+    aligned window.  Start and Tstart must not move, or the run would no
+    longer sample the same settled 100 A state as the 16-period raw."""
+    src, dst, lr, cout, step, stop = VARIANTS["ledger_aligned"]
+    assert (lr, cout, step) == (None, None, None), "only the stop may change"
+    out = variant_text(SAMPLE, stop=stop)
+    assert out.strip().endswith(".tran 0 1550u 880u 5n uic")
+    assert "LR_TOTAL=.92u" in out and "Cout out sgnd 4m" in out
