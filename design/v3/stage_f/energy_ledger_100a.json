@@ -149,7 +149,13 @@
   "outside_port": {
     "vreg_w": -0.0,
     "vaux_w": 0.00017928675847035116,
-    "driver_output_w": 0.20529789599564718
+    "driver_output_w": 0.20529789599564718,
+    "regularisation": {
+      "cpin_f": 1e-10,
+      "edge_power_w": 2.667509661617939e-06,
+      "full_swing_energy_per_device_j": 5.9405e-09,
+      "note": "exact 1/2*C*dV^2 at the two window ends; zero over a whole number of cycles at the same phase"
+    }
   },
   "efficiency": {
     "port_pct": 94.46748938332946,
@@ -282,6 +288,10 @@
   "step_check": {
     "step_a_s": 5e-09,
     "step_b_s": 2e-09,
+    "steps_s": [
+      5e-09,
+      2e-09
+    ],
     "raw_a": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
     "raw_b": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.raw",
     "periods": 16,
@@ -289,42 +299,92 @@
       "port_w": {
         "step_a_w": 11.025362304380707,
         "step_b_w": 10.635527788940777,
-        "delta_w": -0.3898345154399294
+        "delta_w": -0.3898345154399294,
+        "series_w": [
+          11.025362304380707,
+          10.635527788940777
+        ],
+        "delta_first_last_w": -0.3898345154399294
       },
       "loss_total_w": {
         "step_a_w": 11.116801367648165,
         "step_b_w": 11.141192929056013,
-        "delta_w": 0.024391561407847817
+        "delta_w": 0.024391561407847817,
+        "series_w": [
+          11.116801367648165,
+          11.141192929056013
+        ],
+        "delta_first_last_w": 0.024391561407847817
       },
       "stored_w": {
         "step_a_w": 0.23213198138533306,
         "step_b_w": -0.703958195329094,
-        "delta_w": -0.9360901767144271
+        "delta_w": -0.9360901767144271,
+        "series_w": [
+          0.23213198138533306,
+          -0.703958195329094
+        ],
+        "delta_first_last_w": -0.9360901767144271
       },
       "driver_w": {
         "step_a_w": 0.20529789599564718,
         "step_b_w": 0.2057043735156623,
-        "delta_w": 0.00040647752001510273
+        "delta_w": 0.00040647752001510273,
+        "series_w": [
+          0.20529789599564718,
+          0.2057043735156623
+        ],
+        "delta_first_last_w": 0.00040647752001510273
+      },
+      "regularisation_edge_w": {
+        "step_a_w": 2.667509661617939e-06,
+        "step_b_w": 7.187837623260482e-06,
+        "delta_w": 4.520327961642543e-06,
+        "series_w": [
+          2.667509661617939e-06,
+          7.187837623260482e-06
+        ],
+        "delta_first_last_w": 4.520327961642543e-06
       },
       "residual_w": {
         "step_a_w": -0.09143906326745821,
         "step_b_w": -0.5056651401152354,
-        "delta_w": -0.41422607684777724
+        "delta_w": -0.41422607684777724,
+        "series_w": [
+          -0.09143906326745821,
+          -0.5056651401152354
+        ],
+        "delta_first_last_w": -0.41422607684777724
       },
       "closure_residual_w": {
         "step_a_w": -0.11827314865714397,
         "step_b_w": 0.4039974287295204,
-        "delta_w": 0.5222705773866644
+        "delta_w": 0.5222705773866644,
+        "series_w": [
+          -0.11827314865714397,
+          0.4039974287295204
+        ],
+        "delta_first_last_w": 0.5222705773866644
       },
       "stored_period_averaged_w": {
         "step_a_w": 0.3361548777844547,
         "step_b_w": -0.4579831449655972,
-        "delta_w": -0.7941380227500519
+        "delta_w": -0.7941380227500519,
+        "series_w": [
+          0.3361548777844547,
+          -0.4579831449655972
+        ],
+        "delta_first_last_w": -0.7941380227500519
       },
       "closure_period_averaged_w": {
         "step_a_w": -0.2222960450562656,
         "step_b_w": 0.15802237836602362,
-        "delta_w": 0.3803184234222892
+        "delta_w": 0.3803184234222892,
+        "series_w": [
+          -0.2222960450562656,
+          0.15802237836602362
+        ],
+        "delta_first_last_w": 0.3803184234222892
       },
       "vout_end_v": {
         "step_a": 1.870383672007268,
@@ -335,6 +395,128 @@
         "step_a": 1.868285191825988,
         "step_b": 1.870386315423183,
         "delta": 0.0021011235971950537
+      }
+    },
+    "loss_items": {
+      "cout_esr": {
+        "steps_w": [
+          0.5423643845091402,
+          0.5421961144878318
+        ],
+        "delta_first_last_w": -0.00016827002130836988,
+        "delta_last_leg_w": -0.00016827002130836988
+      },
+      "cr_esr": {
+        "steps_w": [
+          0.2679165400663468,
+          0.267027950902017
+        ],
+        "delta_first_last_w": -0.0008885891643298227,
+        "delta_last_leg_w": -0.0008885891643298227
+      },
+      "ct_bridge_diodes": {
+        "steps_w": [
+          0.097210604677678,
+          0.09702454005084019
+        ],
+        "delta_first_last_w": -0.00018606462683781744,
+        "delta_last_leg_w": -0.00018606462683781744
+      },
+      "ct_burden_resistor": {
+        "steps_w": [
+          0.0888579617330729,
+          0.08856623494226767
+        ],
+        "delta_first_last_w": -0.000291726790805219,
+        "delta_last_leg_w": -0.000291726790805219
+      },
+      "dh": {
+        "steps_w": [
+          9.95403040089974e-05,
+          0.0009465052562783076
+        ],
+        "delta_first_last_w": 0.0008469649522693102,
+        "delta_last_leg_w": 0.0008469649522693102
+      },
+      "dl": {
+        "steps_w": [
+          0.0024944531351148653,
+          0.0004968570983573142
+        ],
+        "delta_first_last_w": -0.001997596036757551,
+        "delta_last_leg_w": -0.001997596036757551
+      },
+      "lp_series": {
+        "steps_w": [
+          1.0716661602653872,
+          1.068111803608068
+        ],
+        "delta_first_last_w": -0.003554356657319291,
+        "delta_last_leg_w": -0.003554356657319291
+      },
+      "lr": {
+        "steps_w": [
+          0.4465275667772447,
+          0.44504658483669496
+        ],
+        "delta_first_last_w": -0.0014809819405497415,
+        "delta_last_leg_w": -0.0014809819405497415
+      },
+      "rin": {
+        "steps_w": [
+          0.04494151502743278,
+          0.04449740403545949
+        ],
+        "delta_first_last_w": -0.00044411099197329273,
+        "delta_last_leg_w": -0.00044411099197329273
+      },
+      "secondary_copper": {
+        "steps_w": [
+          0.476314585744074,
+          0.4749972270139712
+        ],
+        "delta_first_last_w": -0.0013173587301028022,
+        "delta_last_leg_w": -0.0013173587301028022
+      },
+      "sh": {
+        "steps_w": [
+          0.3681927264782007,
+          0.36273898104043545
+        ],
+        "delta_first_last_w": -0.005453745437765278,
+        "delta_last_leg_w": -0.005453745437765278
+      },
+      "sl": {
+        "steps_w": [
+          0.37064440524892994,
+          0.3675123842753802
+        ],
+        "delta_first_last_w": -0.003132020973549754,
+        "delta_last_leg_w": -0.003132020973549754
+      },
+      "sr_channel_body_pair1": {
+        "steps_w": [
+          1.8348927309203833,
+          1.8455075853771028
+        ],
+        "delta_first_last_w": 0.010614854456719502,
+        "delta_last_leg_w": 0.010614854456719502
+      },
+      "sr_channel_body_x4": {
+        "steps_w": [
+          7.339570923681533,
+          7.382030341508411
+        ],
+        "delta_first_last_w": 0.04245941782687801,
+        "delta_last_leg_w": 0.04245941782687801
+      },
+      "sr_gate_resistor_x8": {
+        "steps_w": [
+          0.18129702534331968,
+          0.18145400676802675
+        ],
+        "delta_first_last_w": 0.00015698142470707555,
+        "delta_last_leg_w": 0.00015698142470707555
       }
     },
     "note": "measured, not assumed: between the two steps the port term moves -0.390 W and the loss inventory +0.024 W; the storage rate moves -0.936 W as a single sample and -0.794 W period-averaged.  The closure therefore moves +0.522 W (single sample) and +0.380 W (period-averaged).  The port and storage errors are both larger than that and partly cancel, so the closure is not resolved by this check -- it is limited by it.  vout_end_v differs because a smaller step lands elsewhere on the output ripple; this deck's 4 mF times a few millivolts is tens of microjoules, which over this span is most of a watt."
