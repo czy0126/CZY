@@ -331,6 +331,94 @@ def test_the_vendored_footprint_matches_the_installed_library():
         "update the copy and PROVENANCE.md together")
 
 
+# ---------------------------------------------------------------- Issue #12
+# The first blocking question in #12 is what "≤10 mm" even measures.  These
+# gates keep the answer -- a datum, a tolerance chain, and an explicit hole
+# where TIM / cold plate / fasteners would go -- from drifting back into a
+# single number that looks signed off.
+def test_the_section_states_a_datum_and_leaves_the_undefined_as_none():
+    """A height with no datum is not a drawing.
+
+    Everything in ``PARTS`` is measured above the PCB top, but nothing above
+    that is defined anywhere in this repo.  So the section has to name the
+    datum and carry ``None`` for the case that includes TIM and a cold plate,
+    because filling that number in from imagination is the failure mode.
+    """
+    section = mbm.mechanical_section()
+    assert "PCB" in section["datum"] and "Z = 0" in section["datum"]
+    assert section["definitions"]["D_with_tim_and_cold_plate_mm"] is None
+    assert len(section["undefined_above_the_stack"]) >= 3
+    for item in ("TIM", "冷板", "紧固件"):
+        assert any(item in x for x in section["undefined_above_the_stack"]), item
+    assert "未签核" in section["gate"]
+
+
+def test_the_pocket_only_buys_back_the_clamp():
+    """The uncomfortable number, asserted so it cannot be quietly improved.
+
+    0.5 mm of pocket and 0.5 mm of clamp cancel: C equals A to the micron.
+    Anyone reading "we pocketed the cores, so we fit" is being told something
+    true and useless -- the margin is the original 60 um either way.
+    """
+    d = mbm.mechanical_section()["definitions"]
+    assert d["C_pocket_0p5_with_clamp_mm"] == pytest.approx(
+        d["A_flat_no_pocket_no_clamp_mm"], abs=1e-3)
+    assert d["B_pocket_0p5_no_clamp_mm"] < d["A_flat_no_pocket_no_clamp_mm"]
+
+
+def test_the_section_agrees_with_the_magnetics_height_stack():
+    """Two independent sums of the same stack must match.
+
+    `mechanical_section()` sums its own rows; `magnetics_design.json` sums its
+    own.  If they disagree the generator raises, so this test only has to prove
+    the check is live: perturb the glue constant and the section must refuse.
+    """
+    import magnetics_design as md
+    json_worst = (mbm._load("magnetics/magnetics_design.json")["height"]
+                  ["flat_no_pocket"]["worst_case_m"] * 1e3)
+    core = float(md.CORE["height_max_m"]) * 1e3
+    assert core + mbm.GLUE_MAX_MM + mbm.LABEL_MAX_MM == pytest.approx(json_worst, abs=1e-9)
+    original = mbm.GLUE_MAX_MM
+    try:
+        mbm.GLUE_MAX_MM = original + 0.05
+        with pytest.raises(SystemExit) as exc:
+            mbm.mechanical_section()
+        assert "magnetics_design.json" in str(exc.value)
+    finally:
+        mbm.GLUE_MAX_MM = original
+
+
+def test_the_report_carries_the_section():
+    section = mbm.report()["section"]
+    json.dumps(section, ensure_ascii=False)          # must serialise as-is
+    assert section == mbm.mechanical_section()
+
+
+def test_the_section_document_quotes_the_report():
+    """`A6_机械剖面_2026-11-01.md` is what a person reads before believing the
+    height claim.  Every number in it has to come from the report.
+
+    Same contract as the A5 document test: a hand-written table outlives the
+    data it describes, and the one that matters here is the ``C = A`` equality
+    -- if the pocket ever stops cancelling the clamp, the prose is wrong even
+    though the JSON is right.
+    """
+    doc = (mbm.OUT.parent.parent / "design/v3/A6_机械剖面_2026-11-01.md").read_text(encoding="utf-8")
+    doc = doc.replace("−", "-")          # the tables use a real minus sign
+    section = mbm.report()["section"]
+    d = section["definitions"]
+    assert f"{d['A_flat_no_pocket_no_clamp_mm']:.2f} mm" in doc
+    assert f"{d['B_pocket_0p5_no_clamp_mm']:.2f} mm" in doc
+    assert f"{d['C_pocket_0p5_with_clamp_mm']:.2f} mm" in doc
+    assert f"{section['clamp_case_margin_mm']:+.2f} mm" in doc
+    assert f"{section['pocket_case_margin_mm']:+.2f} mm" in doc
+    for row in section["upward"] + section["downward"]:
+        assert f"{abs(row['worst_mm']):.2f} mm" in doc, row["item"]
+    for item in section["undefined_above_the_stack"]:
+        assert item in doc, f"{item} is undefined but the doc omits it"
+    assert "Z = 0" in doc and "未签核" in doc
+
+
 def test_the_committed_drc_report_checked_courtyards():
     """The committed drc.json must come from a run where the check was on."""
     data = json.loads((mbm.OUT / "drc.json").read_text(encoding="utf-8"))

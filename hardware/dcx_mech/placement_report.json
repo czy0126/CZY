@@ -459,6 +459,72 @@
     ]
   },
   "overlaps": [],
+  "section": {
+    "datum": "PCB 顶面 Z = 0；向上为正。所有尺寸都相对这个面，不含 TIM、冷板与紧固件",
+    "upward": [
+      {
+        "item": "ELP32 磁芯对（B66287 半对 ×2）",
+        "nominal_mm": 9.5,
+        "worst_mm": 9.8,
+        "evidence": "datasheet",
+        "note": "9.5 标称 / 9.8 最大，已含研磨气隙"
+      },
+      {
+        "item": "胶层",
+        "nominal_mm": 0.05,
+        "worst_mm": 0.08,
+        "evidence": "ASSUMED",
+        "note": "本仓库没有胶的规格书，最大值是假设"
+      },
+      {
+        "item": "标签",
+        "nominal_mm": 0.05,
+        "worst_mm": 0.06,
+        "evidence": "ASSUMED",
+        "note": "可选；不做标签直接省掉 0.06 mm 的极端值"
+      },
+      {
+        "item": "压块",
+        "nominal_mm": 0.5,
+        "worst_mm": 0.5,
+        "evidence": "DESIGN",
+        "note": "五只裸磁芯不能悬空；压块形式与厚度都还没定"
+      }
+    ],
+    "downward": [
+      {
+        "item": "沉槽",
+        "nominal_mm": -0.5,
+        "worst_mm": -0.5,
+        "evidence": "DESIGN",
+        "note": "尚未与 PCB 厂确认 0.5 mm 沉槽工艺"
+      },
+      {
+        "item": "沉槽下剩余介质",
+        "nominal_mm": 1.1,
+        "worst_mm": 1.1,
+        "evidence": "DESIGN",
+        "note": "1.6 mm 板厚减沉槽；SR 回流电流与磁芯重量都走这层"
+      }
+    ],
+    "undefined_above_the_stack": [
+      "TIM / 导热垫厚度与压缩量",
+      "冷板或散热器离板面高度",
+      "紧固件头部 / 螺纹嵌件凸出",
+      "板弯与压块变形（装配态，不是零件公差）"
+    ],
+    "definitions": {
+      "A_flat_no_pocket_no_clamp_mm": 9.94,
+      "B_pocket_0p5_no_clamp_mm": 9.44,
+      "C_pocket_0p5_with_clamp_mm": 9.94,
+      "D_with_tim_and_cold_plate_mm": null
+    },
+    "definitions_note": "A/B/C 都是**模块相对 PCB 顶面**的数，可直接与 10 mm 比；D 需要结构专业给出 TIM 与冷板数据后才有意义，现在必须留空",
+    "finding": "0.5 mm 沉槽只是把 0.5 mm 压块买回来：C = A = 9.94 mm，余量仍是 +0.06 mm。沉槽不是额外余量，是让压块方案回到原点。要真余量，只能减胶/去标签，或把压块做进磁芯窗口而不是叠在上面",
+    "gate": "未签核：没有 TIM/冷板/紧固件定义，也没有制造商对 0.5 mm 沉槽的确认，因此不得宣称 ≤10 mm 机电签核通过（Issue #12 关闭条件）",
+    "clamp_case_margin_mm": -0.44,
+    "pocket_case_margin_mm": 0.06
+  },
   "provisional": [
     "CT",
     "Cr",

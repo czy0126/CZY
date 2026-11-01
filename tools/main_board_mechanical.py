@@ -270,6 +270,7 @@ def report() -> dict:
         "clearance": {"min_gap_mm": round(gap, 3), "between": [ga, gb]},
         "overlaps": [{"a": a, "b": b, "area_mm2": round(area, 3)}
                      for a, b, area in overlaps(PARTS)],
+        "section": mechanical_section(),
         "provisional": sorted(p.ref for p in PARTS if p.evidence == "PROVISIONAL"),
         "land_pattern_provisional": sorted(
             p.ref for p in PARTS
@@ -479,6 +480,97 @@ def stock_footprint_path(lib_id: str) -> Path:
     """Where the vendored copy of a stock footprint lives."""
     lib, name = lib_id.split(":", 1)
     return STOCK / f"{lib}.pretty" / f"{name}.kicad_mod"
+
+
+# ---------------------------------------------------------------- A6 section
+POCKET_MM = 0.5          # design choice, not yet cleared with a fabricator
+CLAMP_MM = 0.5           # 压块, an assumption: the cores cannot float
+GLUE_MM, GLUE_MAX_MM = 0.05, 0.08      # assumed: no adhesive data sheet here
+LABEL_MM, LABEL_MAX_MM = 0.05, 0.06    # assumed: optional, a label may be skipped
+
+
+def mechanical_section() -> dict:
+    """The Z stack-up with an explicit datum and tolerance chain (Issue #12).
+
+    Issue #12's first blocking question is what "10 mm" even measures.  The
+    repo has three answers in it and they are not the same number, so this
+    table states the datum first and then lists every contributor above and
+    below it, with the class of evidence behind its thickness.
+
+    Below the datum the pocket is *not* free: 0.5 mm out of a 1.6 mm board
+    leaves 1.1 mm of dielectric under five cores, which is the layer that has
+    to carry the SR return current as well as the cores' weight.
+
+    Above the stack there is nothing in this repository at all -- no TIM, no
+    cold plate, no fastener heads.  That is reported as UNKNOWN rather than
+    omitted, because omitting it is how a 10 mm claim gets made without anyone
+    deciding what the 10 mm covers.
+    """
+    data = _load("magnetics/magnetics_design.json")
+    core, height = data["core"], data["height"]
+    up = [
+        {"item": "ELP32 磁芯对（B66287 半对 ×2）",
+         "nominal_mm": round(core["height_nominal_m"] * 1e3, 3),
+         "worst_mm": round(core["height_max_m"] * 1e3, 3), "evidence": "datasheet",
+         "note": "9.5 标称 / 9.8 最大，已含研磨气隙"},
+        {"item": "胶层", "nominal_mm": GLUE_MM, "worst_mm": GLUE_MAX_MM,
+         "evidence": "ASSUMED", "note": "本仓库没有胶的规格书，最大值是假设"},
+        {"item": "标签", "nominal_mm": LABEL_MM, "worst_mm": LABEL_MAX_MM,
+         "evidence": "ASSUMED", "note": "可选；不做标签直接省掉 0.06 mm 的极端值"},
+        {"item": "压块", "nominal_mm": CLAMP_MM, "worst_mm": CLAMP_MM,
+         "evidence": "DESIGN", "note": "五只裸磁芯不能悬空；压块形式与厚度都还没定"},
+    ]
+    down = [
+        {"item": "沉槽", "nominal_mm": -POCKET_MM, "worst_mm": -POCKET_MM,
+         "evidence": "DESIGN", "note": "尚未与 PCB 厂确认 0.5 mm 沉槽工艺"},
+        {"item": "沉槽下剩余介质", "nominal_mm": BOARD_T - POCKET_MM,
+         "worst_mm": BOARD_T - POCKET_MM, "evidence": "DESIGN",
+         "note": f"{BOARD_T} mm 板厚减沉槽；SR 回流电流与磁芯重量都走这层"},
+    ]
+    glue = next(x for x in up if x["item"] == "胶层")
+    label = next(x for x in up if x["item"] == "标签")
+    core_row = up[0]
+    # Recompute from the rows and *check* against magnetics_design.json rather
+    # than trusting one of the two: two independent sums that must agree is a
+    # free consistency test, and a silent divergence here is exactly how the
+    # document and the JSON drift apart.
+    flat_rows = core_row["worst_mm"] + glue["worst_mm"] + label["worst_mm"]
+    flat_json = height["flat_no_pocket"]["worst_case_m"] * 1e3
+    if abs(flat_rows - flat_json) > 1e-6:
+        raise SystemExit(
+            f"height stack disagrees with magnetics_design.json: table {flat_rows} mm "
+            f"vs JSON {flat_json} mm -- update GLUE_MAX_MM/LABEL_MAX_MM and rerun "
+            f"python tools/magnetics_design.py")
+    with_clamp = flat_rows + CLAMP_MM
+    pocketed = with_clamp - POCKET_MM
+    pocketed_plain = flat_rows - POCKET_MM
+    return {
+        "datum": "PCB 顶面 Z = 0；向上为正。所有尺寸都相对这个面，"
+                 "不含 TIM、冷板与紧固件",
+        "upward": up,
+        "downward": down,
+        "undefined_above_the_stack": [
+            "TIM / 导热垫厚度与压缩量",
+            "冷板或散热器离板面高度",
+            "紧固件头部 / 螺纹嵌件凸出",
+            "板弯与压块变形（装配态，不是零件公差）",
+        ],
+        "definitions": {
+            "A_flat_no_pocket_no_clamp_mm": round(flat_rows, 3),
+            "B_pocket_0p5_no_clamp_mm": round(pocketed_plain, 3),
+            "C_pocket_0p5_with_clamp_mm": round(pocketed, 3),
+            "D_with_tim_and_cold_plate_mm": None,
+        },
+        "definitions_note": "A/B/C 都是**模块相对 PCB 顶面**的数，可直接与 10 mm 比；"
+                            "D 需要结构专业给出 TIM 与冷板数据后才有意义，现在必须留空",
+        "finding": "0.5 mm 沉槽只是把 0.5 mm 压块买回来：C = A = 9.94 mm，余量仍是 +0.06 mm。"
+                   "沉槽不是额外余量，是让压块方案回到原点。要真余量，只能减胶/去标签，"
+                   "或把压块做进磁芯窗口而不是叠在上面",
+        "gate": "未签核：没有 TIM/冷板/紧固件定义，也没有制造商对 0.5 mm 沉槽的确认，"
+                "因此不得宣称 ≤10 mm 机电签核通过（Issue #12 关闭条件）",
+        "clamp_case_margin_mm": round(HEIGHT_LIMIT_MM - with_clamp, 3),
+        "pocket_case_margin_mm": round(HEIGHT_LIMIT_MM - pocketed, 3),
+    }
 
 
 def _stock_footprint(lib_id: str) -> str:

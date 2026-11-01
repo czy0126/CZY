@@ -309,6 +309,21 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 - `pcb render` 只画**有 3D model** 的封装。生成的占位封装没有 model，所以磁件在 PNG 里
   只剩焊盘——要看轮廓用 1:1 SVG，不要以为渲染图里的空白是漏画。
 
+## A6 机械剖面（Issue #12）
+
+- **"≤10 mm" 没有规定量到哪**，而仓库里有三个不同的数。`mechanical_section()` 因此先定
+  基准面：**PCB 顶面 Z = 0**，`PARTS` 的 `h_mm_worst` 本来就是这个口径。剖面表在
+  `placement_report.json:section`，文档是 `design/v3/A6_机械剖面_2026-11-01.md`。
+- **沉槽只是把压块买回来**：A 平面 9.94 mm，C（0.5 mm 沉槽 + 0.5 mm 压块）也是 9.94 mm，
+  余量同为 +0.06 mm。不要写"开了沉槽就有余量"——`test_the_pocket_only_buys_back_the_clamp`
+  锁住 C = A（1 µm 内）。
+- **TIM / 冷板 / 紧固件 / 板弯在本仓库完全没有数据**，所以 `definitions` 里的 D 情形
+  必须是 `null`，不许填。`gate` 字段写明"A6 未签核"。填一个想象出来的 D 会让
+  "≤10 mm" 看起来签核过了——这正是 #12 要防的。
+- **剖面表自己加一遍、再与 `magnetics_design.json` 的 `height` 比对**，不一致直接
+  `SystemExit`。改 `GLUE_MAX_MM`/`LABEL_MAX_MM` 会立刻触发，这是有意的：两个独立的和
+  必须相等，否则文档与 JSON 会悄悄分叉。
+
 ## 数据与结论纪律
 
 - `design/v1/pin_connections.csv` 是 **v1 快照，不能直接照抄**：OC 脚写"100 Ω + 220 pF"，
