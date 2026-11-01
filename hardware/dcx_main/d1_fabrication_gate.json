@@ -1,0 +1,283 @@
+{
+  "gate": "D1_ELECTRICAL_FABRICATION",
+  "release_approved": false,
+  "status": "NOT_FOR_FAB",
+  "checks": {
+    "native_editable_project_present": true,
+    "golden_subnet_matches": true,
+    "all_golden_refs_and_magnetic_physical_pads_verified": false,
+    "no_electrical_placeholders_or_unselected_bom": false,
+    "all_required_real_hardware_bom_refs_in_native_design": false,
+    "native_erc_evidence": false,
+    "routed_pcb_to_schematic_evidence": false,
+    "manufacturing_package_evidence": false
+  },
+  "counts": {
+    "golden_references": 66,
+    "golden_logical_pins": 193,
+    "placed_references": 61,
+    "golden_pads_checked_by_subnet": 221,
+    "unplaced_references": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "magnetics_missing_physical_pads": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "refs_with_placeholders": [
+      "C10",
+      "C11",
+      "C12",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9",
+      "Cin",
+      "Cout",
+      "Cr",
+      "D_BT",
+      "Lr",
+      "R1",
+      "R15",
+      "R16",
+      "R17",
+      "R18",
+      "R19",
+      "R2",
+      "R20",
+      "R21",
+      "R22",
+      "R23",
+      "R24",
+      "R25",
+      "R26",
+      "R27",
+      "R28",
+      "R29",
+      "R3",
+      "R30",
+      "R31",
+      "R32",
+      "R33",
+      "R34",
+      "R35",
+      "R4",
+      "R5"
+    ],
+    "bom_rows_not_selected": [
+      {
+        "ref": "T1-T4",
+        "mpn": "TO BUILD",
+        "status": "TO BUILD"
+      },
+      {
+        "ref": "Lr",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "CT",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "Cr",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "Cin",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "Cout",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "J_OUT",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "J_IN",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "D_CT1-D_CT4",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "D_BT",
+        "mpn": "TO SELECT",
+        "status": "TO SELECT"
+      },
+      {
+        "ref": "R18",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R19",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R1",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R2",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R3",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R4 R5",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R20-R27",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R28-R35",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R7 R8 R9 R10",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C13",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C101-C112",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C5",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C6",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C7-C10",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R15",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R16",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "R17",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C11",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "C12",
+        "mpn": "TO ASSIGN",
+        "status": "VALUE FROZEN"
+      },
+      {
+        "ref": "PS1",
+        "mpn": "TO SELECT",
+        "status": "VALUE FROZEN"
+      }
+    ],
+    "real_hardware_bom_refs_not_in_golden": [
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
+      "C110",
+      "C111",
+      "C112",
+      "C13",
+      "R10",
+      "R7",
+      "R8",
+      "R9"
+    ],
+    "external_bias_interface_to_document": [
+      "PS1"
+    ]
+  },
+  "manual_evidence": {
+    "native_erc": {
+      "passed": false,
+      "reason": "evidence file absent",
+      "path": "hardware/dcx_main/native_erc_approved.json"
+    },
+    "pcb_to_schematic": {
+      "passed": false,
+      "reason": "evidence file absent",
+      "path": "hardware/dcx_main/pcb_to_schematic_verified.json"
+    },
+    "fab_approval": {
+      "passed": false,
+      "reason": "evidence file absent",
+      "path": "hardware/dcx_main/fabrication_approval.json"
+    }
+  },
+  "blockers": [
+    "all_golden_refs_and_magnetic_physical_pads_verified",
+    "no_electrical_placeholders_or_unselected_bom",
+    "all_required_real_hardware_bom_refs_in_native_design",
+    "native_erc_evidence",
+    "routed_pcb_to_schematic_evidence",
+    "manufacturing_package_evidence"
+  ],
+  "limitations": [
+    "Subset netlist check is NOT a complete schematic pin or footprint check",
+    "The golden netlist was derived from a SPICE deck, not all physical components",
+    "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
+    "A JSON approval record must refer to genuine independently reviewed native EDA/DFM evidence",
+    "Power and efficiency from LTspice do not constitute hardware continuous rating",
+    "Thermal and cold plate design intentionally deferred; continuous rating stays unapproved"
+  ]
+}
