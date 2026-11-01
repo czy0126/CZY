@@ -190,7 +190,7 @@ def budget(thickness_m: float = 2 * OZ_M, temp_c: float = T_C) -> dict:
             "method": "R = R_sheet * squares; uniform current in each segment",
             "direction": "equal-current lane approximation; not a rigorous geometric upper bound",
             "not_modelled": [
-                "finite-element spreading at the neck (would lower R)",
+                "finite-element spreading at the neck (could raise or lower effective R)",
                 "local hot spots and the strip's own self-heating",
                 "via resistance between layers (no via field is placed yet)",
                 "the Cout bank's parallel path (modelled only as the lane width)",
