@@ -70,6 +70,7 @@ def build() -> dict:
     placement = _read(HW / "placement_plan.json")
     review = _csv(REVIEW)
     bom = _csv(BOM)
+    bom_coverage = _read(HW / "bom_coverage.json")
 
     gold_refs = {x["ref"] for x in golden}
     present = set(placement["refs"])
@@ -98,11 +99,13 @@ def build() -> dict:
     # "ok" in a subset report is explicitly NOT a release decision.
     all_placed = not missing_refs and not net.get("not_placed") and not incomplete_magnets
     all_values_frozen = not placeholders and not undecided_bom
+    required_missing = bom_coverage["required_bom_refs_missing_from_golden"]
     checks = {
         "native_editable_project_present": (HW / "dcx_main_board.eprj2").is_file(),
         "golden_subnet_matches": logical_ok,
         "all_golden_refs_and_magnetic_physical_pads_verified": all_placed,
         "no_electrical_placeholders_or_unselected_bom": all_values_frozen,
+        "all_required_real_hardware_bom_refs_in_native_design": not required_missing,
         "native_erc_evidence": native_erc["passed"],
         "routed_pcb_to_schematic_evidence": pcb_diff["passed"],
         "manufacturing_package_evidence": fab_signoff["passed"],
@@ -122,6 +125,8 @@ def build() -> dict:
             "magnetics_missing_physical_pads": incomplete_magnets,
             "refs_with_placeholders": placeholders,
             "bom_rows_not_selected": undecided_bom,
+            "real_hardware_bom_refs_not_in_golden": sorted(x["ref"] for x in required_missing),
+            "external_bias_interface_to_document": [x["ref"] for x in bom_coverage["external_interfaces_not_in_golden"]],
         },
         "manual_evidence": {
             "native_erc": native_erc,
@@ -132,6 +137,7 @@ def build() -> dict:
         "limitations": [
             "Subset netlist check is NOT a complete schematic pin or footprint check",
             "The golden netlist was derived from a SPICE deck, not all physical components",
+            "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
             "A JSON approval record must refer to genuine independently reviewed native EDA/DFM evidence",
             "Power and efficiency from LTspice do not constitute hardware continuous rating",
             "Thermal and cold plate design intentionally deferred; continuous rating stays unapproved",
