@@ -34,6 +34,7 @@ python tools/energy_ledger_100a.py --json design/v3/stage_f/energy_ledger_100a.j
 python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐项比对
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
+python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
 ```
 
 LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
@@ -279,6 +280,20 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   `encoding="utf-8"`**（默认 GBK 会 `UnicodeDecodeError`）。
 - 给已存在的原理图补 `.kicad_pro` 会改变导出网表的 `Sheetname`/`Sheetfile`
   （`Root`→工程名、绝对→相对）。**连接关系不变**：本项目实测 107 个 node 完全相同。
+- **封装库的陷阱与符号库完全同构**：`pcb drc` 也只在板子旁边有 `.kicad_pro` 时才读
+  `fp-lib-table`。缺了它，每个 `dcx:` 封装报 `lib_footprint_issues`，而且**解析不了的封装
+  连 courtyard 都不查**——那种板子的 DRC 会显示"干净"，实际什么都没检查。
+  `tools/main_board_mechanical.py` 的 `project_file()` 就为这个存在。
+- `pcb export svg --mode-single --scale 1 --page-size-mode 2` 的 `width` 属性**就是**
+  板子的真实毫米尺寸（实测 155 mm 板 → `width="154.9908mm"`，差的是 cropped 到图元外沿），
+  所以 1:1 打印是成立的；`pcb export svg` 不给 `--mode-single` 时 `-o` 会被写成
+  一个**同名文件**而不是目录，下一次运行报"当文件已存在时无法创建该目录"。
+- **自定义封装的焊盘要对着摆放间距校核，不是只对着自身外框**：7.3 mm 体的电容按 7.6 mm
+  间距摆、焊盘放在 ±3 mm（宽 2 mm），相邻焊盘重叠 0.4 mm，DRC 报了 70 条 clearance；
+  改成 ±2 mm 才通。同理 courtyard 是体 +0.25 mm/边，7.6 mm 间距会让 courtyard 相碰
+  （换成 8.2 mm）。这两条都不是"看起来对"能发现的。
+- `pcb render` 只画**有 3D model** 的封装。生成的占位封装没有 model，所以磁件在 PNG 里
+  只剩焊盘——要看轮廓用 1:1 SVG，不要以为渲染图里的空白是漏画。
 
 ## 数据与结论纪律
 
