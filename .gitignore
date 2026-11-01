@@ -26,3 +26,8 @@ __pycache__/
 
 # LTspice run metadata cache; the .log and .cir are the committed evidence.
 *.db
+
+# KiCad per-user state (open documents, last view).  The .kicad_pro is NOT
+# ignored: without it kicad-cli never loads sym-lib-table and ERC reports every
+# custom-library symbol as an unknown library.
+*.kicad_prl

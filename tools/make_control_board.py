@@ -16,13 +16,20 @@ BOM stay authoritative either way.
 
 Usage:
     python tools/make_control_board.py
-    python tools/make_control_board.py --check     # run kicad-cli netlist + ERC
+    python tools/make_control_board.py --check     # kicad-cli netlist + ERC, fails on violations
+
+``--check`` also writes ``control_validation.kicad_pro``.  That file is not
+decoration: without it ``kicad-cli`` never loads ``sym-lib-table`` and ERC
+reports every symbol from the two project-local libraries as an unknown
+library (measured: 3 warnings without it, 0 violations with it).  See
+``project_file()`` for the experiment.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import subprocess
 import uuid
 from dataclasses import dataclass
@@ -459,16 +466,71 @@ def bom(parts_: list[Part]) -> None:
     print(f"wrote {path}")
 
 
+def project_file() -> str:
+    """The ``.kicad_pro`` without which ERC cannot see the project libraries.
+
+    ``sym-lib-table`` points at ``${KIPRJMOD}/UCC24624.kicad_sym`` and
+    ``${KIPRJMOD}/SR.kicad_sym``.  ``kicad-cli`` only loads that table when a
+    project file sits next to the schematic; with none it leaves KIPRJMOD
+    undefined, and every symbol from those two libraries is reported as an
+    unknown library.  Measured 2026-11-01 on this board (``--severity-all``):
+    no project file -> 3 ``lib_symbol_issues`` warnings, with project file ->
+    **0 violations**.  Passing ``-D KIPRJMOD=...`` on the command line does
+    *not* fix it; the table is never read at all.
+
+    The warnings said nothing about the circuit -- a reader could easily have
+    "cleared" them by editing the symbols instead.
+    """
+    return json.dumps({
+        "board": {}, "boards": [], "cvpcb": {}, "erc": {},
+        "libraries": {"pinned_footprint_libs": [], "pinned_symbol_libs": []},
+        "meta": {"filename": "control_validation.kicad_pro", "version": 1},
+        "net_settings": {}, "pcbnew": {},
+        "schematic": {"legacy_lib_dir": "", "legacy_lib_list": []},
+        # must match the root sheet's uuid in the generated schematic, or the
+        # project has no root sheet and the table is still not loaded
+        "sheets": [[uid("root"), "Root"]],
+        "text_variables": {},
+    }, indent=2) + "\n"
+
+
+def erc_violations() -> list[dict]:
+    """Every ERC violation in ``erc.json``, flattened across sheets.
+
+    Returns ``[]`` when the file is missing -- the caller decides whether that
+    is a skip or a failure, and this function does not pretend a missing report
+    is a clean one.
+    """
+    path = OUT / "erc.json"
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return [v for sheet in data.get("sheets", []) for v in sheet.get("violations", [])]
+
+
 def check() -> None:
     sch = OUT / "control_validation.kicad_sch"
     net = OUT / "control_validation.net"
+    pro = OUT / "control_validation.kicad_pro"
     erc = OUT / "erc.rpt"
+    pro.write_text(project_file(), encoding="utf-8")
     subprocess.run([str(KICAD_CLI), "sch", "export", "netlist", str(sch), "-o", str(net)], check=True)
-    subprocess.run([str(KICAD_CLI), "sch", "erc", str(sch), "-o", str(erc)], check=False)
+    # --severity-all: the default report skips exclusions, and "0 violations"
+    # has to mean every severity or it is not a sign-off.
+    subprocess.run([str(KICAD_CLI), "sch", "erc", "--severity-all", str(sch), "-o", str(erc)],
+                   check=False)
+    subprocess.run([str(KICAD_CLI), "sch", "erc", "--severity-all", "--format", "json",
+                    str(sch), "-o", str(OUT / "erc.json")], check=False)
     text = net.read_text(encoding="utf-8")
     nets = text.count("(net\n")
     print(f"netlist: {nets} nets -> {net.name}")
     print(f"ERC report -> {erc.name}")
+    violations = erc_violations()
+    print(f"ERC: {len(violations)} violation(s) at every severity")
+    if violations:
+        for v in violations:
+            print(f"  {v['severity']} {v['type']}: {v['description']}")
+        raise SystemExit("ERC is not clean -- fix the circuit or record why each one is accepted")
     missing = [n for n in ("VDD", "PGND", "REG", "SEC_A", "SEC_B", "VOUT", "VD1", "VD2")
                if f'"/{n}"' not in text and f'"{n}"' not in text]
     if missing:
