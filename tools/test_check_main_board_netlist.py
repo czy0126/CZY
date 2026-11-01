@@ -114,3 +114,36 @@ def test_a_missing_non_magnetic_part_fails():
     assert not res["ok"]
     assert "QL" in res["not_placed"]
     assert {"ref": "QL", "pad": "*", "want": "part present", "got": "absent"} in res["missing_or_wrong"]
+
+
+def test_partial_pass_never_means_manufacturing_ready():
+    res = cmn.compare(GOLDEN, expected_export(ALL_REFS), LIBRARY)
+    assert res["subset_ok"] is True
+    assert res["readiness"] == "PARTIAL_PASS"
+    assert res["manufacturing_ready"] is False
+    assert "CT" in res["not_placed"]
+    assert res["manufacturing_blockers"]
+
+
+def test_placing_a_magnetic_without_pin_and_dot_evidence_is_not_a_complete_pass():
+    export = expected_export(ALL_REFS)
+    export["T1"] = {"1": "UNVERIFIED"}
+    res = cmn.compare(GOLDEN, export, LIBRARY)
+    assert res["subset_ok"]
+    assert "T1" in res["unchecked_magnetics"]
+    assert res["manufacturing_ready"] is False
+
+
+def test_unexpected_extra_placed_component_is_detected():
+    export = expected_export(ALL_REFS)
+    export["GHOST"] = {"1": "VOUT"}
+    res = cmn.compare(GOLDEN, export, LIBRARY)
+    assert not res["subset_ok"]
+    assert res["unexpected_refs"] == ["GHOST"]
+
+
+def test_saved_native_evidence_is_labelled_as_partial_only():
+    native = json.loads((ROOT / "hardware/dcx_main/netlist_compare.json").read_text(encoding="utf-8"))
+    assert native["not_placed"] == sorted(mbs.MAGNETIC_GAPS)
+    assert native["manufacturing_ready"] is False
+    assert native["readiness"] == "PARTIAL_PASS"
