@@ -271,6 +271,7 @@ def report() -> dict:
         "overlaps": [{"a": a, "b": b, "area_mm2": round(area, 3)}
                      for a, b, area in overlaps(PARTS)],
         "section": mechanical_section(),
+        "pocket": pocket_requirements(),
         "provisional": sorted(p.ref for p in PARTS if p.evidence == "PROVISIONAL"),
         "land_pattern_provisional": sorted(
             p.ref for p in PARTS
@@ -570,6 +571,70 @@ def mechanical_section() -> dict:
                 "因此不得宣称 ≤10 mm 机电签核通过（Issue #12 关闭条件）",
         "clamp_case_margin_mm": round(HEIGHT_LIMIT_MM - with_clamp, 3),
         "pocket_case_margin_mm": round(HEIGHT_LIMIT_MM - pocketed, 3),
+    }
+
+
+def pocket_requirements() -> dict:
+    """What 0.5 mm deep, five times, does to the board (Issue #12 item 2).
+
+    A pocket is not a free vertical offset.  It is a routed cavity that removes
+    20 % of the board's copper area, leaves 1.1 mm of dielectric under the
+    heaviest parts on the assembly, and -- because it is on one side only --
+    makes the stack asymmetric, which is what makes a board bow.
+
+    The one thing that *can* be checked today is whether the cavities take
+    copper away from the 100 A output plane.  They do not: the five cores sit
+    at y <= 65 mm and the SR-to-busbar channel is y = 82..116 mm.  Recording a
+    checked non-issue is worth as much as a finding, because the next person
+    moving a transformer has no other way to know it was considered.
+    """
+    data = _load("magnetics/magnetics_design.json")
+    core = data["core"]
+    cores = [p for p in PARTS if p.footprint == ELP32_FP]
+    w = core["outer_length_m"] * 1e3
+    d = core["core_depth_m"] * 1e3
+    per_core = w * d
+    total = per_core * len(cores)
+    bw, bd = board_rect()
+    board_area = bw * bd
+    channel = (82.0, 116.0)                 # SR row to J_OUT, the output plane
+    core_top = max(part.y + part.d_mm / 2 for part in cores)
+    core_bottom = min(part.y - part.d_mm / 2 for part in cores)
+    return {
+        "cores": len(cores),
+        "pocket_per_core_mm2": round(per_core, 1),
+        "pocket_total_mm2": round(total, 1),
+        "board_area_mm2": round(board_area, 1),
+        "fraction_of_board_pct": round(100.0 * total / board_area, 1),
+        "depth_mm": POCKET_MM,
+        "remaining_dielectric_mm": round(BOARD_T - POCKET_MM, 2),
+        "depth_tolerance_mm": 0.1,          # typical routed-cavity tolerance
+        "remaining_dielectric_range_mm": [round(BOARD_T - POCKET_MM - 0.1, 2),
+                                          round(BOARD_T - POCKET_MM + 0.1, 2)],
+        "core_footprint_y_mm": [round(core_bottom, 1), round(core_top, 1)],
+        "output_channel_y_mm": list(channel),
+        "pocket_overlaps_output_plane": core_top > channel[0],
+        "checked_non_issues": [
+            "沉槽不占用 100 A 输出平面（磁芯 y ≤ "
+            f"{core_top:.0f} mm，通道 y = {channel[0]:.0f}..{channel[1]:.0f} mm）",
+        ],
+        "undefined": [
+            "叠层：沉槽只削顶层还是进到内层？内层铺铜是否也需要让开？",
+            "磁芯与 PCB 铜的绝缘等级（N97 是 MnZn 铁氧体，不能直接压在裸铜上）",
+            "绕组的引出方式与沉槽边缘的爬电距离",
+            "压块的受力点与反作用：压磁芯的力最终落在 1.1 mm 的介质上",
+            "板弯：单面开槽使叠层不对称，板弯直接进高度预算",
+        ],
+        "manufacturability": {
+            "ask_the_fabricator": [
+                "1.6 mm FR4 上 0.5 mm 深、31.75 × 25.4 mm 的腔体能否做，公差多少",
+                "腔体底部的铜（如有）是否保留，最小介质层厚是多少",
+                "单面五处腔体对板弯的典型值",
+            ],
+            "status": "未询问",
+        },
+        "gate": "沉槽深度与位置在制造商书面确认前不得冻结；"
+                "本表只说明它要什么，不说明它做得到",
     }
 
 

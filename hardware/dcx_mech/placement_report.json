@@ -525,6 +525,48 @@
     "clamp_case_margin_mm": -0.44,
     "pocket_case_margin_mm": 0.06
   },
+  "pocket": {
+    "cores": 5,
+    "pocket_per_core_mm2": 806.4,
+    "pocket_total_mm2": 4032.2,
+    "board_area_mm2": 20305.0,
+    "fraction_of_board_pct": 19.9,
+    "depth_mm": 0.5,
+    "remaining_dielectric_mm": 1.1,
+    "depth_tolerance_mm": 0.1,
+    "remaining_dielectric_range_mm": [
+      1.0,
+      1.2
+    ],
+    "core_footprint_y_mm": [
+      7.3,
+      64.7
+    ],
+    "output_channel_y_mm": [
+      82.0,
+      116.0
+    ],
+    "pocket_overlaps_output_plane": false,
+    "checked_non_issues": [
+      "沉槽不占用 100 A 输出平面（磁芯 y ≤ 65 mm，通道 y = 82..116 mm）"
+    ],
+    "undefined": [
+      "叠层：沉槽只削顶层还是进到内层？内层铺铜是否也需要让开？",
+      "磁芯与 PCB 铜的绝缘等级（N97 是 MnZn 铁氧体，不能直接压在裸铜上）",
+      "绕组的引出方式与沉槽边缘的爬电距离",
+      "压块的受力点与反作用：压磁芯的力最终落在 1.1 mm 的介质上",
+      "板弯：单面开槽使叠层不对称，板弯直接进高度预算"
+    ],
+    "manufacturability": {
+      "ask_the_fabricator": [
+        "1.6 mm FR4 上 0.5 mm 深、31.75 × 25.4 mm 的腔体能否做，公差多少",
+        "腔体底部的铜（如有）是否保留，最小介质层厚是多少",
+        "单面五处腔体对板弯的典型值"
+      ],
+      "status": "未询问"
+    },
+    "gate": "沉槽深度与位置在制造商书面确认前不得冻结；本表只说明它要什么，不说明它做得到"
+  },
   "provisional": [
     "CT",
     "Cr",

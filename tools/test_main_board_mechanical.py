@@ -394,6 +394,51 @@ def test_the_report_carries_the_section():
     assert section == mbm.mechanical_section()
 
 
+def test_the_pocket_table_is_derived_from_the_cores_on_the_board():
+    """Areas come from the ELP32 outline times the number of cores *placed*,
+    not from a remembered count of five."""
+    pocket = mbm.pocket_requirements()
+    cores = [p for p in mbm.PARTS if p.footprint == mbm.ELP32_FP]
+    assert pocket["cores"] == len(cores) == 5
+    w, d = mbm.board_rect()
+    assert pocket["board_area_mm2"] == pytest.approx(w * d, abs=0.2)
+    expected = 31.75 * 25.4 * len(cores)
+    assert pocket["pocket_total_mm2"] == pytest.approx(expected, abs=0.2)
+    # 20 % of the board is a number a fabricator will react to
+    assert 19.0 < pocket["fraction_of_board_pct"] < 21.0
+
+
+def test_the_pocket_does_not_eat_the_output_plane():
+    """The two A6 findings have to be checked against each other.
+
+    A 0.5 mm cavity under every core removes copper; the 100 A plane is already
+    three times over budget.  They happen not to collide -- cores at y <= 65,
+    the SR-to-busbar channel at y = 82..116 -- but "happen not to" is exactly
+    what a later edit can undo."""
+    pocket = mbm.pocket_requirements()
+    assert pocket["pocket_overlaps_output_plane"] is False
+    assert pocket["core_footprint_y_mm"][1] < pocket["output_channel_y_mm"][0]
+    assert pocket["checked_non_issues"]
+
+
+def test_the_pocket_leaves_a_known_dielectric_and_says_it_is_unconfirmed():
+    pocket = mbm.pocket_requirements()
+    assert pocket["remaining_dielectric_mm"] == pytest.approx(1.1, abs=1e-9)
+    # the routed-cavity tolerance moves the remaining layer, so it is a range
+    lo, hi = pocket["remaining_dielectric_range_mm"]
+    assert lo < 1.1 < hi
+    assert pocket["manufacturability"]["status"] == "未询问"
+    assert "不得冻结" in pocket["gate"]
+    for topic in ("叠层", "绝缘", "板弯"):
+        assert any(topic in x for x in pocket["undefined"]), topic
+
+
+def test_the_report_carries_the_pocket_table():
+    pocket = mbm.report()["pocket"]
+    json.dumps(pocket, ensure_ascii=False)
+    assert pocket == mbm.pocket_requirements()
+
+
 def test_the_section_document_quotes_the_report():
     """`A6_机械剖面_2026-11-01.md` is what a person reads before believing the
     height claim.  Every number in it has to come from the report.
@@ -417,6 +462,12 @@ def test_the_section_document_quotes_the_report():
     for item in section["undefined_above_the_stack"]:
         assert item in doc, f"{item} is undefined but the doc omits it"
     assert "Z = 0" in doc and "未签核" in doc
+    pocket = mbm.report()["pocket"]
+    for key in ("pocket_per_core_mm2", "pocket_total_mm2", "board_area_mm2", "depth_mm"):
+        assert f"{pocket[key]:.1f} mm²" in doc or f"{pocket[key]:.1f} mm" in doc, key
+    assert f"{pocket['fraction_of_board_pct']:.1f} %" in doc
+    assert f"{pocket['remaining_dielectric_mm']:.1f} mm" in doc
+    assert pocket["manufacturability"]["status"] in doc
 
 
 def test_the_committed_drc_report_checked_courtyards():
