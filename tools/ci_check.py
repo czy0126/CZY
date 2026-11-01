@@ -8,8 +8,8 @@ Two gates, no hardware and no LTspice:
    and doc, so a stale generated CSV or a changed model shows up as a named
    path instead of a silent mismatch.
 
-The manifest's ``generated`` date is deliberately not compared: a new day is
-not a drift.  The raw files over the hash limit are compared by size and mtime
+The manifest's ``generated`` date and tracked-file mtime are deliberately
+not compared: a new checkout or a new day is not a content drift.  The raw files over the hash limit are compared by size and mtime
 only, which is why a regenerated raw does fail this check.
 
 Usage:
@@ -53,8 +53,11 @@ def compare_manifests(committed: dict, fresh: dict) -> list[str]:
                 continue
             problems.append(f"{path}: in the committed manifest, no longer produced")
         else:
+            # Tracked file mtime is recreated on each checkout. Only hashes and
+            # size are portable. Preserve mtime comparison for present RAWs.
             changed = sorted(key for key in set(old[path]) | set(new[path])
-                             if old[path].get(key) != new[path].get(key))
+                             if (key != "mtime" or _is_raw(path))
+                             and old[path].get(key) != new[path].get(key))
             if changed:
                 problems.append(f"{path}: " + ", ".join(changed) + " differ")
 
