@@ -8,7 +8,8 @@
 python -m pytest tools -q          # 全部离线工具测试，必须全绿
 python tools/make_round4_decks.py  # 生成 round-4 deck（改母 deck 后必须重跑）
 python tools/magnetics_design.py --json design/v3/magnetics/magnetics_design.json
-python tools/draw_magnetics.py --out design/v3/magnetics
+python tools/draw_magnetics.py --out design/v3/magnetics   # 含 winding_connections.svg（带 DOT 端子图）
+python tools/winding_polarity.py --out design/v3/magnetics # 端子 DOT 表 + 首件极性记录（由 deck 派生）
 python tools/make_magnetics_manifest.py   # 改磁件包任一文件后重跑（含 SVG/源工具）
 python tools/thermal_precheck.py --json design/v3/stage_f/thermal_precheck.json
 python tools/passive_requirements.py --json design/v3/bom/passive_requirements.json
@@ -28,6 +29,10 @@ python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md \
 python tools/current_manifest.py --scope v3 \
     --json design/v3/manifest_current_candidate.json   # 可复现当前清单（v2 仍是不带 --scope 的默认）
 python tools/extract_op_point.py <raw> --rl <ohm> --periods 22 --json <out>
+python tools/energy_ledger_100a.py --json design/v3/stage_f/energy_ledger_100a.json
+    # 100 A 同窗口端口能量账；默认读 ..._100a_ledger.raw（424 MB，不入 Git）
+python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐项比对
+python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 ```
 
 LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
@@ -112,12 +117,29 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   ESR 要 15 只；按容量算会少买 6 只，整组 ESR 变 0.33 mΩ。`bank ESR = 单只/N` 只对电容本体成立，
   不含铺铜分布电阻。**0.2 mΩ 是模型 `Rser` 的值，不是规格**——项目没有 Vout 纹波上限定义，
   取 0.1 mΩ 数量翻倍到 30 只。见 `tools/cout_bank.py`。
+- **100 A 能量账只在同一窗口内成立**：`energy_ledger_100a.py` 用 16 个门极周期的 raw
+  直接积分，`Pin(source)=48·mean(I(Rin))`、`Pout=mean(Vout²/RL)`，逐项损耗 11.117 W、
+  Pin−Pout 11.025 W、残差 −0.091 W（目标 0.2 W）。CT 整流桥+负载 0.186 W 是最后补齐的一项。
+  SR 门极 B 源不取 `Vreg`，驱动 0.205 W **在端口之外**：真实偏置要付，但模型没计；
+  储能端点差 0.605 W 是门极边沿相位伪差，单独报告、不并入残差。
+  **门极边沿必须去抖**（200 ns）：5 ns 步长下每次上升沿两次穿过 2.5 V，
+  不去抖会把 24 个周期数成 48 个。
+- **纹波不能用 10 µs 窗口**：ledger 日志的 38.27 mVpp 只覆盖约 2 个周期，漏掉慢包络；
+  `operating_point_100a.json` 的 22 周期值是 49.73 mVpp，逼近自选的 50 mV 目标，
+  引用时写 22 周期值并说明余量只有 0.27 mV。
+- **94.47 % 与 93.06 % 是两个口径**：前者是 deck 电气端口效率（变压器无磁芯损耗元件），
+  后者加 0.353 W 磁芯估计；公布的 92.33 % 再含 0.15 mΩ 输出路径与 0.75 W 偏置。
+  引用效率必须写明含哪些损耗。
 - **主功率板网表是从 deck 派生的，不是重画的**：`board_netlist.py` 解析
   `sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir`，任何 deck 元素必须落在 `PARTS` 或 `SKIP`（带理由）里，
   否则 `UNMAPPED` 直接失败。改 deck 的元素名/节点名后必须重跑，`test_the_generated_files_are_current`
   会逐字节比对提交的 CSV。三条已知映射陷阱：`Bgh/Bgl/Xsr1..4` 是行为模型，板上是 U2/U3–U6（`CONTROLLERS` 显式补）；
   `VSa*/VSb*` 是 0 V 检测源，`da_n/db_n` 与 `a_n/b_n` 是同一块铜；变压器中心抽头是**一个**引脚，
   `Lsa` 写 `out a_n` 而 `Lsb` 写 `b_n out`，顺序不同但都归 `T.CTAP`（合并器只在矛盾时报错）。
+  **极性不是"同名端相连"**：SPICE 把 `L` 的第一个节点当 DOT，所以 CTAP 是 S_A 的 DOT、
+  却是 S_B 的非 DOT，S_B 的 DOT 在 `SEC_B`。`winding_layout()` 逐只校验节点顺序/引脚顺序/K 耦合；
+  `winding_polarity.py` 生成 `winding_polarity.csv`、`winding_connections.svg` 与首件记录。
+  旧工艺卡的"两同名端相连"已被 `test_a_reversed_secondary_half_fails_the_polarity_check` 锁死为错误。
   `design/v1/pin_connections.csv` 只取**引脚位置**，其 OC 网络已作废。
   引脚表要求 **10 只 2.2 Ω 门阻**（QH/QL + 八只 SR）和 **8 只 0 Ω 漏极开尔文链**
   （U3–U6 的 `VD1/VD2` 经 0 Ω 从 SR 漏极取信号，不能搭在焊盘上）；BOM 原行 `R4-R6` qty 3
@@ -175,6 +197,10 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 - 不为了让测试通过而放宽预算或判据。
 - `manifest_current_candidate.json` 把 `tools/current_manifest.py` **自身**也纳入哈希，所以改过这个工具后
   旧清单里必然有一处对不上——这是设计使然，重跑工具即可，不要当成文件被篡改去找原因。
+  生成文件的过期检查由 `tools/ci_check.py` 做：raw 缺席允许，存在时 size/mtime 必须一致，
+  `generated` 日期不参与比对；`.github/workflows/ci.yml` 在 windows-latest 上跑同一条命令。
+  当前候选基线是 `design/v3/当前候选基线_2026-11-01.md`，`tools/test_baseline_doc.py`
+  把表里的数字逐项对回生成它们的 JSON——改工具不改基线会红。
 - **网络检索到的器件参数不等于已核实**：本环境 `WebFetch` 对 `lcsc.com`、`chemi-con.co.jp`
   返回 "Unable to verify if domain … is safe to fetch"，只能拿到搜索摘要，读不到原厂 datasheet。
   这类数字（如 `cout_bank.py` 的 `CANDIDATES`）必须在文档和 JSON 里标明"检索摘要、未读 datasheet"，

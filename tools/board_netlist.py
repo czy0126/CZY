@@ -100,8 +100,20 @@ for _i in (1, 2, 3, 4):
     # one half-winding and second for the other.  Both must land on T.CTAP.
     PARTS[f"Lsa{_i}"] = (f"T{_i}", ("CTAP", "SEC_A"), "magnetics package")
     PARTS[f"Lsb{_i}"] = (f"T{_i}", ("SEC_B", "CTAP"), "magnetics package")
+
     PARTS[f"Xsa{_i}"] = (f"SR{_i}A", ("D", "G", "S"), "BSC010N04LS6")
     PARTS[f"Xsb{_i}"] = (f"SR{_i}B", ("D", "G", "S"), "BSC010N04LS6")
+
+# SPICE convention for coupled inductors: the FIRST node of an L element is the
+# DOT, and a positive K puts dotted terminals in phase.  The pin order in PARTS
+# follows the deck node order, so for each winding the first board pin must be
+# the one that carries the DOT.  This table is the single source for that claim;
+# winding_layout() checks the deck against it instead of trusting the prose.
+TRANSFORMER_WINDINGS = {
+    "Lp": ("PRI_A", "PRI_B"),    # PRI_A = DOT
+    "Lsa": ("CTAP", "SEC_A"),    # CTAP  = S_A DOT
+    "Lsb": ("SEC_B", "CTAP"),    # SEC_B = S_B DOT; CTAP is S_B's NON-dot
+}
 
 # Parts the deck replaces with behaviour.  Pin numbers are from
 # design/v1/pin_connections.csv (positions only).
@@ -236,6 +248,85 @@ def parse_elements(lines: list[str]) -> dict[str, list[str]]:
             continue
         elements[name] = nodes
     return elements
+
+
+def winding_layout(path: Path = ROOT / DECK) -> dict[str, object]:
+    """Verify the transformer DOT convention end to end and return the terminal map.
+
+    Net names alone cannot prove polarity: swapping the two nodes of ``Lsb1``
+    leaves every net label unchanged and reverses half the secondary.  The checks
+    below therefore compare *node order* (first node = DOT) and the first pin in
+    each ``PARTS`` entry, then verify the two half-windings meet dot-to-non-dot at
+    the centre tap and that the four primaries are series-aiding.
+    """
+    elements = parse_elements(deck_lines(path))
+    couplings: dict[str, list[str]] = {}
+    for line in deck_lines(path):
+        tokens = line.split()
+        if tokens and tokens[0].startswith("K") and len(tokens) >= 5:
+            couplings[tokens[0]] = tokens[1:4]
+
+    checks: list[dict[str, object]] = []
+
+    def check(name: str, ok: bool, detail: str = "") -> None:
+        checks.append({"name": name, "ok": bool(ok), "detail": detail})
+
+    transformers: dict[str, dict[str, dict[str, object]]] = {}
+    expected = {
+        "Lp": lambda i: [f"p{i}", "0" if i == 4 else f"p{i + 1}"],
+        "Lsa": lambda i: ["out", f"a{i}"],
+        "Lsb": lambda i: [f"b{i}", "out"],
+    }
+    keys = (("primary", "Lp"), ("secondary_a", "Lsa"), ("secondary_b", "Lsb"))
+    for i in (1, 2, 3, 4):
+        entry: dict[str, dict[str, object]] = {}
+        for key, prefix in keys:
+            element = f"{prefix}{i}"
+            nodes = elements.get(element)
+            check(f"T{i}.{prefix}.exists", nodes is not None, element)
+            nodes = nodes if nodes is not None else ["", ""]
+            pins = TRANSFORMER_WINDINGS[prefix]
+            check(f"T{i}.{prefix}.node_order", nodes == expected[prefix](i),
+                  f"{nodes} != {expected[prefix](i)}")
+            part = PARTS.get(element)
+            board_pins = list(part[1]) if part else []
+            check(f"T{i}.{prefix}.board_mapping", board_pins == list(pins), str(board_pins))
+            entry[key] = {
+                "element": element,
+                "dot_node": nodes[0],
+                "non_dot_node": nodes[1],
+                "dot_pin": pins[0],
+                "non_dot_pin": pins[1],
+                "board_pins": board_pins,
+            }
+        check(f"T{i}.S_A_dot_meets_S_B_non_dot_at_CTAP",
+              entry["secondary_a"]["dot_node"] == entry["secondary_b"]["non_dot_node"] == "out",
+              f"{entry['secondary_a']['dot_node']} / {entry['secondary_b']['non_dot_node']}")
+        check(f"T{i}.S_B_dot_is_not_at_CTAP",
+              entry["secondary_b"]["dot_node"] != entry["secondary_a"]["dot_node"],
+              f"{entry['secondary_b']['dot_node']} vs {entry['secondary_a']['dot_node']}")
+        coupled = set(couplings.get(f"K{i}", []))
+        check(f"T{i}.K_couples_all_three_windings",
+              coupled == {f"Lp{i}", f"Lsa{i}", f"Lsb{i}"}, str(sorted(coupled)))
+        entry["coupling"] = sorted(coupled)
+        transformers[f"T{i}"] = entry
+
+    for i in (1, 2, 3):
+        check(f"series.T{i}_non_dot_to_T{i + 1}_dot",
+              transformers[f"T{i}"]["primary"]["non_dot_node"]
+              == transformers[f"T{i + 1}"]["primary"]["dot_node"],
+              f"{transformers[f'T{i}']['primary']['non_dot_node']} / "
+              f"{transformers[f'T{i + 1}']['primary']['dot_node']}")
+    check("series.first_dot_at_p1", transformers["T1"]["primary"]["dot_node"] == "p1")
+    check("series.last_non_dot_at_pgnd", transformers["T4"]["primary"]["non_dot_node"] == "0")
+
+    return {
+        "deck": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),
+        "convention": "SPICE: first node of L is DOT; positive K puts dotted terminals in phase",
+        "ok": all(item["ok"] for item in checks),
+        "checks": checks,
+        "transformers": transformers,
+    }
 
 
 def build(path: Path = ROOT / DECK) -> dict[str, object]:

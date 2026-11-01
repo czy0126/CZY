@@ -3,6 +3,7 @@ core_set,"TDK B66287G0000X197 (ELP 32/6/20 N97) + B66287K0000X197 (I 32/3/20 N97
 gap_total,"0.121 mm nominal; acceptance by L = 10.0 uH +/-10 % at 100 kHz",micrometer on both centre legs plus LCR at 3 turns,100%,yes,"AL spread moves the required gap over 0.112-0.126 mm; grind both halves equally (0.0605 mm each nominal)"
 inductance,"10.0 uH +/-10 % per unit, 3 turns, 100 kHz, 25 C, small signal",4-wire LCR,100%,yes,"measure before potting; reject a unit whose gap was opened to hit L at the wrong turn count"
 turns_ratio,"3:1:1 centre-tapped, 3 primary turns and 1+1 secondary turns",continuity and visual turn count,100%,yes,"secondary halves must be identical; swap halves and re-measure DCR if in doubt"
+winding_polarity,"CTAP = S_A DOT = S_B NON-DOT; primary DOT at P1_IN, NON-DOT at P3_OUT; SEC_B is the S_B DOT","low voltage 1 kHz 1 Vpp through 100 ohm with SR MOSFETs not fitted (process card 4.1); record on first_article_polarity_record.csv",first article plus 5 per lot,yes,"never join the two secondary DOTs; generated from the deck into winding_polarity.csv and winding_connections.svg"
 primary_dcr,"1.72 mohm +/-10 % at 20 C, 4-wire",4-wire milliohm meter,100%,yes,"copper 0.10 mm x 18 mm, 3 turns x 60 mm mean turn"
 secondary_dcr,"0.287 mohm +/-10 % per half at 20 C, 4-wire",4-wire milliohm meter,100%,yes,"two 0.10 mm foils in parallel per half"
 foil_width,"18.0 +/-0.2 mm",caliper or vision,5 per lot,yes,"window depth is 25.4 mm; 18 mm leaves 3.7 mm each side"

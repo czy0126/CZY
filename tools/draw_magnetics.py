@@ -17,8 +17,9 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Arc, Circle, Rectangle
 
+from board_netlist import winding_layout
 from magnetics_design import CORE, winding_stack
 
 matplotlib.rcParams["svg.fonttype"] = "none"
@@ -26,6 +27,8 @@ COPPER = "#c87533"
 INSULATION = "#7fa8c9"
 CORE_GREY = "#8a8f98"
 GLUE = "#d9c27a"
+DOT = "#111111"
+WIRE = "#333333"
 
 
 def draw_winding_stack(path: Path) -> Path:
@@ -139,6 +142,100 @@ def draw_height_stack(path: Path) -> Path:
     return path
 
 
+def _dot(ax, x: float, y: float) -> None:
+    ax.add_patch(Circle((x, y), 0.055, fc=DOT, ec=DOT, zorder=6))
+
+
+def _vertical_coil(ax, x: float, y_top: float, turns: int, seg: float, colour: str) -> list[float]:
+    """A series chain drawn top-to-bottom; each hump starts at its top end."""
+    starts = []
+    for k in range(turns):
+        yc = y_top - seg / 2 - k * seg
+        ax.add_patch(Arc((x, yc), seg, seg, theta1=-90, theta2=90, lw=1.6, color=colour))
+        starts.append(y_top - k * seg)
+    return starts
+
+
+def _half_coil(ax, x0: float, x1: float, y: float, colour: str) -> None:
+    """One secondary half from x0 to x1, drawn as a single upward hump."""
+    ax.add_patch(Arc(((x0 + x1) / 2, y), x1 - x0, x1 - x0, theta1=0, theta2=180,
+                     lw=1.6, color=colour))
+
+
+def draw_winding_connections(path: Path) -> Path:
+    """Terminal-level DOT map: the one drawing the shop floor builds from.
+
+    Every DOT is a winding START.  Primary: each turn's non-dot end meets the next
+    turn's dot end (series-aiding).  Secondary: CTAP is S_A's DOT but S_B's
+    NON-dot, so the tap is NOT two dots joined -- this is the point issue #1 is
+    about.  Node order and pin names are asserted by board_netlist.winding_layout().
+    """
+    report = winding_layout()
+    if not report["ok"]:
+        raise SystemExit("refusing to draw: polarity checks failed")
+    names = list(report["transformers"])
+    fig, ax = plt.subplots(figsize=(12.0, 0.62 * len(names) + 3.4))
+    row_h, seg = 2.60, 0.55
+    x_pri, x_ctap, half = 2.20, 6.40, 1.20
+    bus_y = -(len(names) - 0.5) * row_h - 1.05
+
+    for n, name in enumerate(names):
+        y_top = -n * row_h
+        y_mid = y_top - 1.5 * seg
+        ax.text(x_pri - 2.00, y_mid, name, fontsize=12, fontweight="bold", va="center")
+        starts = _vertical_coil(ax, x_pri, y_top, 3, seg, COPPER)
+        for k, ys in enumerate(starts):
+            _dot(ax, x_pri, ys)
+            ax.text(x_pri - 0.34, ys, f"P{k + 1} DOT", fontsize=7, ha="right", va="center")
+        ax.text(x_pri + 0.42, y_top + 0.10, "PRI_A (DOT)", fontsize=7.5, va="bottom")
+        ax.text(x_pri + 0.42, y_top - 3 * seg - 0.10, "PRI_B (NON-DOT)",
+                fontsize=7.5, va="top")
+        # Primary series: this unit's non-dot to the next unit's dot.
+        if n + 1 < len(names):
+            ax.plot([x_pri, x_pri - 0.55, x_pri - 0.55, x_pri],
+                    [y_top - 3 * seg, y_top - 3 * seg, y_top - row_h, y_top - row_h],
+                    color=WIRE, lw=1.2)
+        else:
+            ax.plot([x_pri, x_pri], [y_top - 3 * seg, y_top - 3 * seg - 0.35],
+                    color=WIRE, lw=1.2)
+            ax.plot([x_pri - 0.22, x_pri + 0.22], [y_top - 3 * seg - 0.35] * 2,
+                    color=WIRE, lw=1.6)
+            ax.text(x_pri + 0.40, y_top - 3 * seg - 0.70, "PGND", fontsize=7.5, va="center")
+
+        # Secondary: SEC_A --(S_A, dot at right)-- CTAP --(S_B, dot at right)-- SEC_B
+        _half_coil(ax, x_ctap - half, x_ctap, y_mid, COPPER)
+        _half_coil(ax, x_ctap, x_ctap + half, y_mid, COPPER)
+        _dot(ax, x_ctap, y_mid)
+        _dot(ax, x_ctap + half, y_mid)
+        ax.text(x_ctap - half / 2, y_mid + 0.10, "S_A", fontsize=8, ha="center", va="bottom")
+        ax.text(x_ctap + half / 2, y_mid + 0.10, "S_B", fontsize=8, ha="center", va="bottom")
+        ax.plot([x_ctap - half, x_ctap - half], [y_mid, y_mid - 0.30], color=WIRE, lw=1.2)
+        ax.plot([x_ctap + half, x_ctap + half], [y_mid, y_mid - 0.30], color=WIRE, lw=1.2)
+        ax.plot([x_ctap, x_ctap], [y_mid, bus_y], color=WIRE, lw=1.2)
+        ax.text(x_ctap - half, y_mid - 0.42, f"SEC_{n + 1}A", fontsize=7.5, ha="center")
+        ax.text(x_ctap + half, y_mid - 0.42, f"SEC_{n + 1}B", fontsize=7.5, ha="center")
+        ax.text(x_ctap, y_mid + 0.62, "CTAP", fontsize=7.5, ha="center", va="bottom",
+                color="#8a2f2f", fontweight="bold")
+
+    ax.plot([x_ctap] * 2, [bus_y, bus_y], color=WIRE, lw=2.0)
+    ax.plot([x_ctap - 2.0, x_ctap + 2.0], [bus_y, bus_y], color=WIRE, lw=2.0)
+    ax.text(x_ctap + 2.1, bus_y, "VOUT bus (all four CTAP)", fontsize=8.5, va="center")
+    ax.text(0.0, 1.35,
+            "DOT = winding START.  SPICE puts the DOT on an L element's first node, and positive K couples DOT to DOT.\n"
+            "Deck:  Lsa_i out a_i  ->  CTAP is S_A's DOT;   Lsb_i b_i out  ->  SEC_B is S_B's DOT, CTAP is S_B's NON-dot.\n"
+            "Do NOT join the two DOTs at the centre tap: that makes both halves the same phase and the rectifier stops working.",
+            fontsize=8.2, va="bottom", family="monospace")
+    ax.set_xlim(-1.2, 9.6)
+    ax.set_ylim(bus_y - 0.9, 3.2)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title("T1-T4 winding connections with DOTs (generated from the deck by board_netlist.winding_layout)")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+    return path
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=Path("design/v3/magnetics"))
@@ -146,6 +243,7 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     print(draw_winding_stack(args.out / "winding_cross_section.svg"))
     print(draw_height_stack(args.out / "height_stackup.svg"))
+    print(draw_winding_connections(args.out / "winding_connections.svg"))
 
 
 if __name__ == "__main__":

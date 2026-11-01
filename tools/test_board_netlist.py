@@ -14,6 +14,7 @@ import pytest
 
 from board_netlist import (
     DECK, ROOT, bom_gaps, build, deck_lines, expand_refs, lint, merge, parse_elements,
+    winding_layout,
 )
 
 BOM = ROOT / "design/v3/bom/bom_draft.csv"
@@ -226,6 +227,85 @@ def test_the_deck_does_not_load_the_bootstrap_capacitor():
 
     bgh = next(line.split() for line in lines if line.startswith("Bgh "))
     assert bgh[1:3] == ["gh0", "sw"]
+
+
+def test_the_centre_tap_joins_s_a_dot_to_s_b_non_dot():
+    """The deck writes `Lsa out a1` and `Lsb b1 out`; SPICE puts the dot on the
+    first node.  So CTAP is S_A's DOT and S_B's NON-dot.  Joining the two DOTs at
+    the tap would make both halves the same polarity: the rectifier would no
+    longer be full-wave and the two SEC terminals would carry the same phase.
+    """
+    report = winding_layout()
+    assert report["ok"], [check for check in report["checks"] if not check["ok"]]
+    for i in (1, 2, 3, 4):
+        transformer = report["transformers"][f"T{i}"]
+        a, b = transformer["secondary_a"], transformer["secondary_b"]
+        assert (a["dot_pin"], a["non_dot_pin"]) == ("CTAP", "SEC_A")
+        assert (b["dot_pin"], b["non_dot_pin"]) == ("SEC_B", "CTAP")
+        assert a["dot_node"] == b["non_dot_node"] == "out"
+        assert a["non_dot_node"] == f"a{i}"
+        assert b["dot_node"] == f"b{i}"
+        assert a["dot_node"] != b["dot_node"]
+
+
+def test_the_primary_units_are_series_aiding():
+    """p1 -> p2 -> p3 -> p4 -> 0: each Lp's NON-dot meets the next Lp's DOT."""
+    report = winding_layout()
+    assert report["ok"], [check for check in report["checks"] if not check["ok"]]
+    transformers = report["transformers"]
+    for i in (1, 2, 3):
+        assert (transformers[f"T{i}"]["primary"]["non_dot_node"]
+                == transformers[f"T{i + 1}"]["primary"]["dot_node"])
+    assert transformers["T1"]["primary"]["dot_node"] == "p1"
+    assert transformers["T4"]["primary"]["non_dot_node"] == "0"
+
+
+def test_the_deck_dot_order_matches_the_board_pin_order():
+    """A pin name is only useful if it is the pin that carries the DOT."""
+    report = winding_layout()
+    assert report["ok"], [check for check in report["checks"] if not check["ok"]]
+    for i in (1, 2, 3, 4):
+        transformer = report["transformers"][f"T{i}"]
+        for key in ("primary", "secondary_a", "secondary_b"):
+            assert transformer[key]["board_pins"][0] == transformer[key]["dot_pin"]
+
+
+def test_a_reversed_secondary_half_fails_the_polarity_check(tmp_path):
+    """Net names alone cannot catch this: swapping the two nodes of one L keeps
+    every net label and only reverses that half-winding."""
+    text = (ROOT / DECK).read_text(encoding="utf-8", errors="replace")
+    assert "Lsb1 b1 out" in text
+    bad = tmp_path / "reversed.cir"
+    bad.write_text(text.replace("Lsb1 b1 out", "Lsb1 out b1"), encoding="utf-8")
+    report = winding_layout(bad)
+    assert report["ok"] is False
+    failed = [check["name"] for check in report["checks"] if not check["ok"]]
+    assert any("T1" in name and "S_B" in name for name in failed), failed
+
+
+def test_the_polarity_map_is_generated_and_current(tmp_path):
+    """The manufacturing CSV/JSON and the first-article record are generated, not
+    retyped; a stale file would let the shop floor build the old definition."""
+    import winding_polarity
+
+    winding_polarity.write(tmp_path)
+    for name in ("winding_polarity.json", "winding_polarity.csv",
+                 "first_article_polarity_record.csv"):
+        committed = ROOT / "design/v3/magnetics" / name
+        assert committed.exists(), name
+        assert (tmp_path / name).read_text(encoding="utf-8") == committed.read_text(encoding="utf-8"), name
+
+
+def test_the_polarity_map_covers_every_manufacturing_terminal():
+    """P1/P2/P3, S_A, S_B, CTAP, SEC_A and SEC_B must all be named somewhere."""
+    import winding_polarity
+
+    report = winding_polarity.build()
+    terminals = {row["terminal"] for row in report["terminals"]}
+    for expected in ("P1_IN", "P1_OUT", "P2_IN", "P2_OUT", "P3_IN", "P3_OUT",
+                     "CTAP", "SEC_A", "SEC_B"):
+        assert expected in terminals, expected
+    assert report["ok"], report["checks"]
 
 
 def test_the_generated_files_are_current(tmp_path):

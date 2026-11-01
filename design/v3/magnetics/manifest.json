@@ -2,7 +2,7 @@
   "date": "2026-11-01",
   "status": "design estimate, not hardware validated",
   "test_command": "python -m pytest tools -q",
-  "test_result": "92 passed in 0.72s",
+  "test_result": "189 passed in 1.10s",
   "files": {
     "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir": {
       "sha256": "84b3ee25c1ea05ec489ee66bf6f68874f4d9899f98996739a1dc8e640f27089a",
@@ -25,12 +25,20 @@
       "bytes": 4281
     },
     "tools/draw_magnetics.py": {
-      "sha256": "5773618f516b950bc415d2cc36686e68dc3d35f54f48678fe58cc480dd77e095",
-      "bytes": 5760
+      "sha256": "c85aa2a8e631a1f19f4328bab35191e07df56fd529e466835857435b934eb4c7",
+      "bytes": 10903
+    },
+    "tools/winding_polarity.py": {
+      "sha256": "e813434de7219bc4661d4a7051e31e3c52e05bfe4da21494e3ffa7fa9b5e2c0c",
+      "bytes": 7783
+    },
+    "tools/board_netlist.py": {
+      "sha256": "3701ef173bf665b70dc404ca4d4d596593c497ef500ef0fab2cf5933387ff76d",
+      "bytes": 21302
     },
     "tools/make_magnetics_manifest.py": {
-      "sha256": "08ac37df7bced805b3dbcb3efb0439865ee723546e1cc2fdd48436bd8ccbcb08",
-      "bytes": 2672
+      "sha256": "fec8c38e9757b45173fdc46a33ca4c7050b0e2eb20f39eef2a3cf4a571a0d664",
+      "bytes": 2979
     },
     "tools/test_magnetics_design.py": {
       "sha256": "8fe921ebaa748aa6bb4c43ac7f5da5782c12aecaba82a25399e93b4e75b7a1e2",
@@ -44,13 +52,17 @@
       "sha256": "35379cf7d65ceb7508f8f29ead73cee3cd32a6d1639aa636b58e86587a2b4748",
       "bytes": 964
     },
+    "tools/test_board_netlist.py": {
+      "sha256": "c6a8307e21169991281ee032fb9f6d1789c3593db0aed7e59977e9c80355c2bb",
+      "bytes": 13089
+    },
     "design/v3/magnetics/磁件设计包_2026-10-31.md": {
       "sha256": "d3a3f2e588b360e9613be44d54b21d4c184f973081cf4697ff3f6db0969b5b9f",
       "bytes": 13544
     },
     "design/v3/magnetics/绕组工艺卡_2026-11-01.md": {
-      "sha256": "57dda485cb90c62ee30dca4e58b2f4061052131b8a50bca5ecf29ac40733f22c",
-      "bytes": 4354
+      "sha256": "169a5fb33240ed9732038c1f09ca8693bda2a670bf849ed5abed96a99b385b00",
+      "bytes": 7052
     },
     "design/v3/magnetics/magnetics_design.json": {
       "sha256": "494dcefe3000004eaf698386b67d481fec59769ee2e3530dfc485f18d216c22d",
@@ -61,20 +73,36 @@
       "bytes": 1227
     },
     "design/v3/magnetics/winding_cross_section.svg": {
-      "sha256": "b5ba6a833f28b2566dcf0437993fe0b0b58998c3021ce5510ad943ca4d892dbc",
+      "sha256": "9df31b85aaf5da9b6b37116f4dfa5785cfe5dbea372bffba52744822b7c699a6",
       "bytes": 21490
     },
     "design/v3/magnetics/height_stackup.svg": {
-      "sha256": "633908c48785cfb8409284a203f75d271de9c67674759ac4ac64b5e65a90a433",
+      "sha256": "b83b1759930466326231c24ce99774446acfb24cd02cf668a160b10d23c8edbc",
       "bytes": 14435
+    },
+    "design/v3/magnetics/winding_connections.svg": {
+      "sha256": "e25535cbe1019943d412482f2e755765a3923f998a2a13f600502a8ac265b28a",
+      "bytes": 47043
+    },
+    "design/v3/magnetics/winding_polarity.json": {
+      "sha256": "dc93a8151bb58f53030936d64e925d2b5cc97ec5e8c099ed7271833bade872a0",
+      "bytes": 24650
+    },
+    "design/v3/magnetics/winding_polarity.csv": {
+      "sha256": "5241fb8936bed62042f3518551a89c0531a8fa795e08b4b3e0f34acc429518f3",
+      "bytes": 1992
+    },
+    "design/v3/magnetics/first_article_polarity_record.csv": {
+      "sha256": "22223d8c50bf0c324be4502740d68dcc7896e6f0fdc3a0951fcd4b6cf1b98259",
+      "bytes": 2564
     },
     "design/v3/magnetics/height_stackup.csv": {
       "sha256": "f025d9f4a5b3dbd0209083ee944f0291b5c47b1687d0e1fae32f0c0be54aa791",
       "bytes": 726
     },
     "design/v3/magnetics/inspection_spec.csv": {
-      "sha256": "475e8c29b57f7f2c1d5b6ea979aaf1f85937a7dd2bf3be8f236d7222a300dbdc",
-      "bytes": 2566
+      "sha256": "fe5f641ae63527e1d74701c6b07b2e79c8b3262e32e01ef4a009a22f8afab109",
+      "bytes": 2959
     }
   }
 }

@@ -1,0 +1,6 @@
+# Offline design tools and their tests.  LTspice is not a Python dependency;
+# raw files are produced outside Git by the decks in sim/.
+pytest>=8
+numpy>=1.26
+matplotlib>=3.8
+PyLTSpice>=5

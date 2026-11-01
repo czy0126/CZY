@@ -11,7 +11,9 @@ import json
 
 import pytest
 
-from powerup_checklist import ROOT, criteria, load, render, stages
+from powerup_checklist import (
+    ROOT, SOURCE_TYPES, STAGE_STATES, STATES, criteria, load, render, stages,
+)
 
 MD = ROOT / "design/v3/stage_f/上电检查表.md"
 
@@ -52,13 +54,94 @@ def test_the_inductor_peaks_come_from_the_saturation_study(sheet):
     assert c["fault_peak"] == f"{lr['peaks_a']['fault_fast_oc_13us']:.0f} A"
 
 
-def test_every_check_has_a_criterion_a_source_and_an_action(sheet):
+FIELDS = ("check", "criterion", "source", "action", "test_state",
+          "measurement_location", "source_type")
+
+
+def test_every_check_has_all_seven_fields(sheet):
     _, sheet_stages = sheet
     for stage in sheet_stages:
         assert stage["items"], stage["id"]
-        for item in stage["items"]:
-            check, criterion, source, action = item
-            assert check and criterion and source and action, item
+        for row in stage["items"]:
+            assert all(row.get(key) for key in FIELDS), row
+            assert row["test_state"] in STATES, row
+            assert row["source_type"] in SOURCE_TYPES, row
+
+
+def test_each_stage_uses_only_its_declared_states(sheet):
+    _, sheet_stages = sheet
+    for stage in sheet_stages:
+        allowed = STAGE_STATES[stage["id"]]
+        for row in stage["items"]:
+            assert row["test_state"] in allowed, (stage["id"], row["test_state"])
+
+
+def stage_text(sheet_stages, stage_id):
+    stage = next(s for s in sheet_stages if s["id"] == stage_id)
+    return " ".join(row["check"] + " " + row["criterion"] + " " + row["source"]
+                    for row in stage["items"])
+
+
+def test_rated_current_stress_is_not_in_the_no_load_stage(sheet):
+    """Issue #2: OC 0.573 V and Cr 41.4 V are 100 A numbers, not no-load ones."""
+    c, sheet_stages = sheet
+    text = stage_text(sheet_stages, "S3")
+    for token in (c["oc_pin"], c["cr_peak"], "100 A"):
+        assert token not in text, token
+
+
+def test_rated_current_stress_is_owned_by_the_rated_stage(sheet):
+    c, sheet_stages = sheet
+    text = stage_text(sheet_stages, "S4")
+    for token in (c["oc_pin"], c["cr_peak"], c["fault_peak"]):
+        assert token in text, token
+
+
+def test_the_low_bus_stage_separates_average_limit_from_peak(sheet):
+    """0.5 A average source limit cannot be compared with the 36.1 A 48 V peak."""
+    c, sheet_stages = sheet
+    text = stage_text(sheet_stages, "S2")
+    assert "平均" in text and "峰值" in text
+    assert c["startup_peak_12v"] in text
+    assert c["startup_peak"] not in text
+
+
+def test_the_48v_cold_start_peak_lives_in_the_48v_stage(sheet):
+    c, sheet_stages = sheet
+    assert c["startup_peak"] in stage_text(sheet_stages, "S3")
+
+
+def test_the_reg_criterion_is_a_chip_check_not_the_deck_pwl(sheet):
+    _, sheet_stages = sheet
+    s1 = next(s for s in sheet_stages if s["id"] == "S1")
+    row = next(r for r in s1["items"] if "REG" in r["check"])
+    assert row["source_type"] == "datasheet"
+    assert "PWL" not in row["criterion"] and "150" not in row["criterion"]
+
+
+def test_bias_only_does_not_claim_dynamic_sr_commutation(sheet):
+    _, sheet_stages = sheet
+    s1 = next(s for s in sheet_stages if s["id"] == "S1")
+    row = next(r for r in s1["items"] if "门极" in r["check"])
+    assert "静态" in row["criterion"]
+    assert "换流" not in row["criterion"]
+
+
+def test_the_bootstrap_rating_and_its_stress_are_split(sheet):
+    c, sheet_stages = sheet
+    s1 = next(s for s in sheet_stages if s["id"] == "S1")
+    rating = next(r for r in s1["items"] if "自举二极管" in r["check"])
+    assert "≥ 100 V" in rating["criterion"]
+    assert c["boot_reverse"] not in rating["criterion"]
+    assert c["boot_reverse"] in stage_text(sheet_stages, "S3")
+
+
+def test_the_thermal_criterion_is_measured_tj_not_a_design_rth(sheet):
+    _, sheet_stages = sheet
+    s4 = next(s for s in sheet_stages if s["id"] == "S4")
+    row = next(r for r in s4["items"] if "Tj" in r["check"])
+    assert "Tj ≤" in row["criterion"]
+    assert "50 K/W" in row["criterion"] and "模型假设" in row["criterion"]
 
 
 def test_the_sheet_stops_before_the_rated_matrix(sheet):
@@ -66,7 +149,7 @@ def test_the_sheet_stops_before_the_rated_matrix(sheet):
     _, sheet_stages = sheet
     last = sheet_stages[-1]
     assert last["id"] == "S4"
-    text = " ".join(" ".join(item) for item in last["items"])
+    text = " ".join(" ".join(str(value) for value in row.values()) for row in last["items"])
     assert "只能由" in text and "不得用短时波形替代" in text
 
 

@@ -37,6 +37,7 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
     ],
     "model": [
         "models/ucc25600_legacy_behaviour.lib",
@@ -59,6 +60,8 @@ V3_SOURCES = {
         "tools/connector_budget.py",
         "tools/board_netlist.py",
         "tools/powerup_checklist.py",
+        "tools/energy_ledger_100a.py",
+        "tools/ci_check.py",
         "tools/current_manifest.py",
         "tools/test_ascii_raw_window.py",
         "tools/test_magnetics_design.py",
@@ -75,6 +78,10 @@ V3_SOURCES = {
         "tools/test_connector_budget.py",
         "tools/test_board_netlist.py",
         "tools/test_powerup_checklist.py",
+        "tools/test_energy_ledger_100a.py",
+        "tools/test_control_validation_doc.py",
+        "tools/test_ci_check.py",
+        "tools/test_baseline_doc.py",
         "tools/test_bom_draft.py",
         "tools/test_current_manifest.py",
     ],
@@ -98,19 +105,27 @@ V3_SOURCES = {
         "design/v3/pcb/board_netlist.json",
         "design/v3/stage_f/powerup_checklist.json",
         "design/v3/stage_f/上电检查表.md",
+        "design/v3/stage_f/energy_ledger_100a.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
         "design/v3/magnetics/绕组工艺卡_2026-11-01.md",
         "design/v3/magnetics/winding_cross_section.svg",
         "design/v3/magnetics/height_stackup.svg",
+        "design/v3/当前候选基线_2026-11-01.md",
         "design/v3/stage_f/首样验证与额定值判定_2026-10-31.md",
         "design/v3/bom/功率级元件需求与BOM草案_2026-11-01.md",
         "design/v3/pcb/主功率板连接网表_2026-11-01.md",
+        "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
+    ],
+    "config": [
+        "requirements.txt",
+        ".github/workflows/ci.yml",
     ],
     "raw": [
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
     ],
 }
 
@@ -348,6 +363,7 @@ REPRODUCE = {
         "python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md "
         "--json design/v3/stage_f/powerup_checklist.json",
         "python -m pytest tools -q",
+        "python tools/ci_check.py",
     ],
 }
 

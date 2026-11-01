@@ -35,6 +35,13 @@
       "sha256": "0c910c81dd7a3e2aab93a30dc60d0efbc8b97b91218024d86597ab4410f49b48"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
+      "kind": "deck",
+      "bytes": 11371,
+      "mtime": 1793499909.2742877,
+      "sha256": "2059e26b39a55bc0bfd12b0fba9a16ee80e136260f179b31b7a7c2bb51da79d7"
+    },
+    {
       "path": "models/ucc25600_legacy_behaviour.lib",
       "kind": "model",
       "bytes": 11675,
@@ -72,16 +79,16 @@
     {
       "path": "tools/draw_magnetics.py",
       "kind": "script",
-      "bytes": 5760,
-      "mtime": 1793461387.9873123,
-      "sha256": "5773618f516b950bc415d2cc36686e68dc3d35f54f48678fe58cc480dd77e095"
+      "bytes": 10903,
+      "mtime": 1793499688.352612,
+      "sha256": "c85aa2a8e631a1f19f4328bab35191e07df56fd529e466835857435b934eb4c7"
     },
     {
       "path": "tools/make_magnetics_manifest.py",
       "kind": "script",
-      "bytes": 2672,
-      "mtime": 1793466642.1847034,
-      "sha256": "08ac37df7bced805b3dbcb3efb0439865ee723546e1cc2fdd48436bd8ccbcb08"
+      "bytes": 2979,
+      "mtime": 1793499747.0408347,
+      "sha256": "fec8c38e9757b45173fdc46a33ca4c7050b0e2eb20f39eef2a3cf4a571a0d664"
     },
     {
       "path": "tools/extract_op_point.py",
@@ -149,23 +156,37 @@
     {
       "path": "tools/board_netlist.py",
       "kind": "script",
-      "bytes": 16838,
-      "mtime": 1793469145.3296309,
-      "sha256": "9cd37eaac2d8678ab12ee37113c51fe7cb756f718f21534ee10186f4dacb2551"
+      "bytes": 21302,
+      "mtime": 1793499589.1477184,
+      "sha256": "3701ef173bf665b70dc404ca4d4d596593c497ef500ef0fab2cf5933387ff76d"
     },
     {
       "path": "tools/powerup_checklist.py",
       "kind": "script",
-      "bytes": 10934,
-      "mtime": 1793469633.7350366,
-      "sha256": "d2d2fe24da28c2ac6c8b46e44292b208f306676fa25ff1d7ed2ca3da27ac4e29"
+      "bytes": 17019,
+      "mtime": 1793500041.3286147,
+      "sha256": "59828e06a89a714f7aa55e3ecf9bd904120fb7f0eb5f668dc1e8ad09b4828df5"
+    },
+    {
+      "path": "tools/energy_ledger_100a.py",
+      "kind": "script",
+      "bytes": 16155,
+      "mtime": 1793500500.3036008,
+      "sha256": "ffc8a07544be762a0831941874624a3ae44ea471dc921df440c38039748c04ed"
+    },
+    {
+      "path": "tools/ci_check.py",
+      "kind": "script",
+      "bytes": 4657,
+      "mtime": 1793500920.2781692,
+      "sha256": "e12decb43399d9f1d2437e72ccbd892088f501ea20d245b98fa0956fd850fab9"
     },
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 17294,
-      "mtime": 1793469656.9292681,
-      "sha256": "01df4518d051e2c808a249429702a6e06e3d7a12dfdb88b613ea6f3f6a070230"
+      "bytes": 17974,
+      "mtime": 1793500908.7798655,
+      "sha256": "b06837d562f93e214eb9bf66e9cb68b5ef414a17263b5ffbcf04159c3c8ec506"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -261,16 +282,44 @@
     {
       "path": "tools/test_board_netlist.py",
       "kind": "script",
-      "bytes": 9290,
-      "mtime": 1793469396.784806,
-      "sha256": "fcf384315bd8c3079223c780bf094a859ae838de491cad31123a085e4a173941"
+      "bytes": 13089,
+      "mtime": 1793499756.1610906,
+      "sha256": "c6a8307e21169991281ee032fb9f6d1789c3593db0aed7e59977e9c80355c2bb"
     },
     {
       "path": "tools/test_powerup_checklist.py",
       "kind": "script",
-      "bytes": 3034,
-      "mtime": 1793469640.9608958,
-      "sha256": "cd5c478cfb90309b12d8e1be0d7d1775594b47db13707e030752fbfa13a7be5f"
+      "bytes": 6210,
+      "mtime": 1793500038.6585915,
+      "sha256": "930f19e278d490649b0fe9f7765777fe54dad5f1096c28dbb68ddd8990f744af"
+    },
+    {
+      "path": "tools/test_energy_ledger_100a.py",
+      "kind": "script",
+      "bytes": 4976,
+      "mtime": 1793500716.4581528,
+      "sha256": "d50500fd7e8b27feb3b747c70c1b81ae1cbfb4345517929ab03198fba8ff0635"
+    },
+    {
+      "path": "tools/test_control_validation_doc.py",
+      "kind": "script",
+      "bytes": 3349,
+      "mtime": 1793500519.874885,
+      "sha256": "5d1cd9a293ffa2f20b64dc1d765c26c819f3c2e253dbca7aaf89f03e15d80ab2"
+    },
+    {
+      "path": "tools/test_ci_check.py",
+      "kind": "script",
+      "bytes": 3691,
+      "mtime": 1793500947.654281,
+      "sha256": "e94f1cf81eeb0bee7ca5f0ac38d1a9c30d274b0c8dbbed7686419bf81c49c7c9"
+    },
+    {
+      "path": "tools/test_baseline_doc.py",
+      "kind": "script",
+      "bytes": 7418,
+      "mtime": 1793500881.5280945,
+      "sha256": "828f951ca7dc6a7fb1eb1f380d385b7ed56b4ce761175f9a8206d3390952232d"
     },
     {
       "path": "tools/test_bom_draft.py",
@@ -303,9 +352,9 @@
     {
       "path": "design/v3/magnetics/manifest.json",
       "kind": "result",
-      "bytes": 3105,
-      "mtime": 1793467111.007886,
-      "sha256": "a395a6533b5f742f1b72c6b62d983218a39d77e03c35ae0b682bb629b772c87d"
+      "bytes": 4237,
+      "mtime": 1793499775.1348863,
+      "sha256": "4b8ae6e3f02c84500b15edefa22341c905837a877eb8daa3ccedf017eb855dfc"
     },
     {
       "path": "design/v3/magnetics/height_stackup.csv",
@@ -317,9 +366,9 @@
     {
       "path": "design/v3/magnetics/inspection_spec.csv",
       "kind": "result",
-      "bytes": 2566,
-      "mtime": 1793461215.6872253,
-      "sha256": "475e8c29b57f7f2c1d5b6ea979aaf1f85937a7dd2bf3be8f236d7222a300dbdc"
+      "bytes": 2959,
+      "mtime": 1793499722.7199123,
+      "sha256": "fe5f641ae63527e1d74701c6b07b2e79c8b3262e32e01ef4a009a22f8afab109"
     },
     {
       "path": "design/v3/stage_f/thermal_precheck.json",
@@ -408,16 +457,23 @@
     {
       "path": "design/v3/stage_f/powerup_checklist.json",
       "kind": "result",
-      "bytes": 6261,
-      "mtime": 1793469636.8496983,
-      "sha256": "7b0ee663f6c3369c2bfe3a795050b76956fa8e6036df94247d15452d5c225961"
+      "bytes": 14785,
+      "mtime": 1793500047.8961644,
+      "sha256": "b87dac7edb1356e63003d1861bb998b675ecd6aaa3d303286fe9ef4e71694d2b"
     },
     {
       "path": "design/v3/stage_f/上电检查表.md",
       "kind": "result",
-      "bytes": 5160,
-      "mtime": 1793469636.8496983,
-      "sha256": "3a9a13fb8a78b501589fe67024910d9be9d12e87bd06e0376b7e97edd6605085"
+      "bytes": 9169,
+      "mtime": 1793500047.8961644,
+      "sha256": "ec28d8846e7e644402aaf27b82fd53bec52dcf490d869b9825be8ed5bda3c30d"
+    },
+    {
+      "path": "design/v3/stage_f/energy_ledger_100a.json",
+      "kind": "result",
+      "bytes": 3697,
+      "mtime": 1793500510.8391232,
+      "sha256": "d36948b0090563c87c1f0a158d93aeadac899f1a3ca719347668ce84b6ea4f9e"
     },
     {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -429,23 +485,30 @@
     {
       "path": "design/v3/magnetics/绕组工艺卡_2026-11-01.md",
       "kind": "doc",
-      "bytes": 4354,
-      "mtime": 1793466638.5376158,
-      "sha256": "57dda485cb90c62ee30dca4e58b2f4061052131b8a50bca5ecf29ac40733f22c"
+      "bytes": 7052,
+      "mtime": 1793499725.526749,
+      "sha256": "169a5fb33240ed9732038c1f09ca8693bda2a670bf849ed5abed96a99b385b00"
     },
     {
       "path": "design/v3/magnetics/winding_cross_section.svg",
       "kind": "doc",
       "bytes": 21490,
-      "mtime": 1793461396.127324,
-      "sha256": "b5ba6a833f28b2566dcf0437993fe0b0b58998c3021ce5510ad943ca4d892dbc"
+      "mtime": 1793499663.1491067,
+      "sha256": "9df31b85aaf5da9b6b37116f4dfa5785cfe5dbea372bffba52744822b7c699a6"
     },
     {
       "path": "design/v3/magnetics/height_stackup.svg",
       "kind": "doc",
       "bytes": 14435,
-      "mtime": 1793461396.1878288,
-      "sha256": "633908c48785cfb8409284a203f75d271de9c67674759ac4ac64b5e65a90a433"
+      "mtime": 1793499663.208084,
+      "sha256": "b83b1759930466326231c24ce99774446acfb24cd02cf668a160b10d23c8edbc"
+    },
+    {
+      "path": "design/v3/当前候选基线_2026-11-01.md",
+      "kind": "doc",
+      "bytes": 8325,
+      "mtime": 1793500888.5459242,
+      "sha256": "5ebb04bcfdfb115e403ad007beaf5b66349ac840a024a1ba45b4b7ef3fc13ffd"
     },
     {
       "path": "design/v3/stage_f/首样验证与额定值判定_2026-10-31.md",
@@ -464,9 +527,30 @@
     {
       "path": "design/v3/pcb/主功率板连接网表_2026-11-01.md",
       "kind": "doc",
-      "bytes": 10812,
-      "mtime": 1793469401.6676726,
-      "sha256": "48b3c90219e6aa6f09a6ee8473bab5727f826b0b79cd26b7a03ba2ac4683b4b2"
+      "bytes": 11538,
+      "mtime": 1793499741.2641106,
+      "sha256": "bbb0de2a837594f663f1019fece41498439b3d67739d11d1d218426423c4e67b"
+    },
+    {
+      "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
+      "kind": "doc",
+      "bytes": 18433,
+      "mtime": 1793500531.0115094,
+      "sha256": "959000175510f5a70bb57eb177484867be7bfb5b795bff82384bda7cf5f231cb"
+    },
+    {
+      "path": "requirements.txt",
+      "kind": "config",
+      "bytes": 187,
+      "mtime": 1793500719.3579395,
+      "sha256": "7497111f831e31459de44a2a9ac9fca5e5efdf63ff1e6ef7b3eca7d7155b6fa7"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "kind": "config",
+      "bytes": 460,
+      "mtime": 1793500722.7373133,
+      "sha256": "82befe38caa3eb97de61b15f6511c5fb7eb487668c2af0aef7dfae6772ecb077"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
@@ -480,6 +564,13 @@
       "kind": "raw",
       "bytes": 323786842,
       "mtime": 1793466779.9403882,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
+      "kind": "raw",
+      "bytes": 424201312,
+      "mtime": 1793500090.4126365,
       "sha256": "skipped-large-raw"
     }
   ],
@@ -528,6 +619,17 @@
       "has_ic": true,
       "uic": true,
       "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
     }
   ],
   "raw_run_metadata": {},
@@ -552,6 +654,7 @@
     "python tools/connector_budget.py --json design/v3/bom/connector_budget.json",
     "python tools/board_netlist.py --json design/v3/pcb/board_netlist.json --csv design/v3/pcb/board_netlist.csv",
     "python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md --json design/v3/stage_f/powerup_checklist.json",
-    "python -m pytest tools -q"
+    "python -m pytest tools -q",
+    "python tools/ci_check.py"
   ]
 }

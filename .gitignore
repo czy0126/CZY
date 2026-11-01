@@ -19,3 +19,10 @@ __pycache__/
 .agents/skills/**/*.log
 .agents/**/bridge.stderr.log
 .agents/**/bridge.stdout.log
+
+# Session scratch: issue texts and temporary ledgers.
+.tmp_*/
+.tmp_*.png
+
+# LTspice run metadata cache; the .log and .cir are the committed evidence.
+*.db

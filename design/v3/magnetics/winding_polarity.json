@@ -1,0 +1,1014 @@
+{
+  "deck": "sim\\v3\\sr_tank_dual_v33_ss_1ms_100a.cir",
+  "convention": "SPICE: first node of L is DOT; positive K puts dotted terminals in phase",
+  "ok": true,
+  "checks": [
+    {
+      "name": "T1.Lp.exists",
+      "ok": true,
+      "detail": "Lp1"
+    },
+    {
+      "name": "T1.Lp.node_order",
+      "ok": true,
+      "detail": "['p1', 'p2'] != ['p1', 'p2']"
+    },
+    {
+      "name": "T1.Lp.board_mapping",
+      "ok": true,
+      "detail": "['PRI_A', 'PRI_B']"
+    },
+    {
+      "name": "T1.Lsa.exists",
+      "ok": true,
+      "detail": "Lsa1"
+    },
+    {
+      "name": "T1.Lsa.node_order",
+      "ok": true,
+      "detail": "['out', 'a1'] != ['out', 'a1']"
+    },
+    {
+      "name": "T1.Lsa.board_mapping",
+      "ok": true,
+      "detail": "['CTAP', 'SEC_A']"
+    },
+    {
+      "name": "T1.Lsb.exists",
+      "ok": true,
+      "detail": "Lsb1"
+    },
+    {
+      "name": "T1.Lsb.node_order",
+      "ok": true,
+      "detail": "['b1', 'out'] != ['b1', 'out']"
+    },
+    {
+      "name": "T1.Lsb.board_mapping",
+      "ok": true,
+      "detail": "['SEC_B', 'CTAP']"
+    },
+    {
+      "name": "T1.S_A_dot_meets_S_B_non_dot_at_CTAP",
+      "ok": true,
+      "detail": "out / out"
+    },
+    {
+      "name": "T1.S_B_dot_is_not_at_CTAP",
+      "ok": true,
+      "detail": "b1 vs out"
+    },
+    {
+      "name": "T1.K_couples_all_three_windings",
+      "ok": true,
+      "detail": "['Lp1', 'Lsa1', 'Lsb1']"
+    },
+    {
+      "name": "T2.Lp.exists",
+      "ok": true,
+      "detail": "Lp2"
+    },
+    {
+      "name": "T2.Lp.node_order",
+      "ok": true,
+      "detail": "['p2', 'p3'] != ['p2', 'p3']"
+    },
+    {
+      "name": "T2.Lp.board_mapping",
+      "ok": true,
+      "detail": "['PRI_A', 'PRI_B']"
+    },
+    {
+      "name": "T2.Lsa.exists",
+      "ok": true,
+      "detail": "Lsa2"
+    },
+    {
+      "name": "T2.Lsa.node_order",
+      "ok": true,
+      "detail": "['out', 'a2'] != ['out', 'a2']"
+    },
+    {
+      "name": "T2.Lsa.board_mapping",
+      "ok": true,
+      "detail": "['CTAP', 'SEC_A']"
+    },
+    {
+      "name": "T2.Lsb.exists",
+      "ok": true,
+      "detail": "Lsb2"
+    },
+    {
+      "name": "T2.Lsb.node_order",
+      "ok": true,
+      "detail": "['b2', 'out'] != ['b2', 'out']"
+    },
+    {
+      "name": "T2.Lsb.board_mapping",
+      "ok": true,
+      "detail": "['SEC_B', 'CTAP']"
+    },
+    {
+      "name": "T2.S_A_dot_meets_S_B_non_dot_at_CTAP",
+      "ok": true,
+      "detail": "out / out"
+    },
+    {
+      "name": "T2.S_B_dot_is_not_at_CTAP",
+      "ok": true,
+      "detail": "b2 vs out"
+    },
+    {
+      "name": "T2.K_couples_all_three_windings",
+      "ok": true,
+      "detail": "['Lp2', 'Lsa2', 'Lsb2']"
+    },
+    {
+      "name": "T3.Lp.exists",
+      "ok": true,
+      "detail": "Lp3"
+    },
+    {
+      "name": "T3.Lp.node_order",
+      "ok": true,
+      "detail": "['p3', 'p4'] != ['p3', 'p4']"
+    },
+    {
+      "name": "T3.Lp.board_mapping",
+      "ok": true,
+      "detail": "['PRI_A', 'PRI_B']"
+    },
+    {
+      "name": "T3.Lsa.exists",
+      "ok": true,
+      "detail": "Lsa3"
+    },
+    {
+      "name": "T3.Lsa.node_order",
+      "ok": true,
+      "detail": "['out', 'a3'] != ['out', 'a3']"
+    },
+    {
+      "name": "T3.Lsa.board_mapping",
+      "ok": true,
+      "detail": "['CTAP', 'SEC_A']"
+    },
+    {
+      "name": "T3.Lsb.exists",
+      "ok": true,
+      "detail": "Lsb3"
+    },
+    {
+      "name": "T3.Lsb.node_order",
+      "ok": true,
+      "detail": "['b3', 'out'] != ['b3', 'out']"
+    },
+    {
+      "name": "T3.Lsb.board_mapping",
+      "ok": true,
+      "detail": "['SEC_B', 'CTAP']"
+    },
+    {
+      "name": "T3.S_A_dot_meets_S_B_non_dot_at_CTAP",
+      "ok": true,
+      "detail": "out / out"
+    },
+    {
+      "name": "T3.S_B_dot_is_not_at_CTAP",
+      "ok": true,
+      "detail": "b3 vs out"
+    },
+    {
+      "name": "T3.K_couples_all_three_windings",
+      "ok": true,
+      "detail": "['Lp3', 'Lsa3', 'Lsb3']"
+    },
+    {
+      "name": "T4.Lp.exists",
+      "ok": true,
+      "detail": "Lp4"
+    },
+    {
+      "name": "T4.Lp.node_order",
+      "ok": true,
+      "detail": "['p4', '0'] != ['p4', '0']"
+    },
+    {
+      "name": "T4.Lp.board_mapping",
+      "ok": true,
+      "detail": "['PRI_A', 'PRI_B']"
+    },
+    {
+      "name": "T4.Lsa.exists",
+      "ok": true,
+      "detail": "Lsa4"
+    },
+    {
+      "name": "T4.Lsa.node_order",
+      "ok": true,
+      "detail": "['out', 'a4'] != ['out', 'a4']"
+    },
+    {
+      "name": "T4.Lsa.board_mapping",
+      "ok": true,
+      "detail": "['CTAP', 'SEC_A']"
+    },
+    {
+      "name": "T4.Lsb.exists",
+      "ok": true,
+      "detail": "Lsb4"
+    },
+    {
+      "name": "T4.Lsb.node_order",
+      "ok": true,
+      "detail": "['b4', 'out'] != ['b4', 'out']"
+    },
+    {
+      "name": "T4.Lsb.board_mapping",
+      "ok": true,
+      "detail": "['SEC_B', 'CTAP']"
+    },
+    {
+      "name": "T4.S_A_dot_meets_S_B_non_dot_at_CTAP",
+      "ok": true,
+      "detail": "out / out"
+    },
+    {
+      "name": "T4.S_B_dot_is_not_at_CTAP",
+      "ok": true,
+      "detail": "b4 vs out"
+    },
+    {
+      "name": "T4.K_couples_all_three_windings",
+      "ok": true,
+      "detail": "['Lp4', 'Lsa4', 'Lsb4']"
+    },
+    {
+      "name": "series.T1_non_dot_to_T2_dot",
+      "ok": true,
+      "detail": "p2 / p2"
+    },
+    {
+      "name": "series.T2_non_dot_to_T3_dot",
+      "ok": true,
+      "detail": "p3 / p3"
+    },
+    {
+      "name": "series.T3_non_dot_to_T4_dot",
+      "ok": true,
+      "detail": "p4 / p4"
+    },
+    {
+      "name": "series.first_dot_at_p1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "series.last_non_dot_at_pgnd",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "ctap_definition": "CTAP = S_A DOT = S_B NON-DOT",
+  "primary_series_order": [
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "transformers": {
+    "T1": {
+      "primary": {
+        "element": "Lp1",
+        "dot_node": "p1",
+        "non_dot_node": "p2",
+        "dot_pin": "PRI_A",
+        "non_dot_pin": "PRI_B",
+        "board_pins": [
+          "PRI_A",
+          "PRI_B"
+        ]
+      },
+      "secondary_a": {
+        "element": "Lsa1",
+        "dot_node": "out",
+        "non_dot_node": "a1",
+        "dot_pin": "CTAP",
+        "non_dot_pin": "SEC_A",
+        "board_pins": [
+          "CTAP",
+          "SEC_A"
+        ]
+      },
+      "secondary_b": {
+        "element": "Lsb1",
+        "dot_node": "b1",
+        "non_dot_node": "out",
+        "dot_pin": "SEC_B",
+        "non_dot_pin": "CTAP",
+        "board_pins": [
+          "SEC_B",
+          "CTAP"
+        ]
+      },
+      "coupling": [
+        "Lp1",
+        "Lsa1",
+        "Lsb1"
+      ]
+    },
+    "T2": {
+      "primary": {
+        "element": "Lp2",
+        "dot_node": "p2",
+        "non_dot_node": "p3",
+        "dot_pin": "PRI_A",
+        "non_dot_pin": "PRI_B",
+        "board_pins": [
+          "PRI_A",
+          "PRI_B"
+        ]
+      },
+      "secondary_a": {
+        "element": "Lsa2",
+        "dot_node": "out",
+        "non_dot_node": "a2",
+        "dot_pin": "CTAP",
+        "non_dot_pin": "SEC_A",
+        "board_pins": [
+          "CTAP",
+          "SEC_A"
+        ]
+      },
+      "secondary_b": {
+        "element": "Lsb2",
+        "dot_node": "b2",
+        "non_dot_node": "out",
+        "dot_pin": "SEC_B",
+        "non_dot_pin": "CTAP",
+        "board_pins": [
+          "SEC_B",
+          "CTAP"
+        ]
+      },
+      "coupling": [
+        "Lp2",
+        "Lsa2",
+        "Lsb2"
+      ]
+    },
+    "T3": {
+      "primary": {
+        "element": "Lp3",
+        "dot_node": "p3",
+        "non_dot_node": "p4",
+        "dot_pin": "PRI_A",
+        "non_dot_pin": "PRI_B",
+        "board_pins": [
+          "PRI_A",
+          "PRI_B"
+        ]
+      },
+      "secondary_a": {
+        "element": "Lsa3",
+        "dot_node": "out",
+        "non_dot_node": "a3",
+        "dot_pin": "CTAP",
+        "non_dot_pin": "SEC_A",
+        "board_pins": [
+          "CTAP",
+          "SEC_A"
+        ]
+      },
+      "secondary_b": {
+        "element": "Lsb3",
+        "dot_node": "b3",
+        "non_dot_node": "out",
+        "dot_pin": "SEC_B",
+        "non_dot_pin": "CTAP",
+        "board_pins": [
+          "SEC_B",
+          "CTAP"
+        ]
+      },
+      "coupling": [
+        "Lp3",
+        "Lsa3",
+        "Lsb3"
+      ]
+    },
+    "T4": {
+      "primary": {
+        "element": "Lp4",
+        "dot_node": "p4",
+        "non_dot_node": "0",
+        "dot_pin": "PRI_A",
+        "non_dot_pin": "PRI_B",
+        "board_pins": [
+          "PRI_A",
+          "PRI_B"
+        ]
+      },
+      "secondary_a": {
+        "element": "Lsa4",
+        "dot_node": "out",
+        "non_dot_node": "a4",
+        "dot_pin": "CTAP",
+        "non_dot_pin": "SEC_A",
+        "board_pins": [
+          "CTAP",
+          "SEC_A"
+        ]
+      },
+      "secondary_b": {
+        "element": "Lsb4",
+        "dot_node": "b4",
+        "non_dot_node": "out",
+        "dot_pin": "SEC_B",
+        "non_dot_pin": "CTAP",
+        "board_pins": [
+          "SEC_B",
+          "CTAP"
+        ]
+      },
+      "coupling": [
+        "Lp4",
+        "Lsa4",
+        "Lsb4"
+      ]
+    }
+  },
+  "terminals": [
+    {
+      "transformer": "T1",
+      "terminal": "P1_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "p1",
+      "deck_pin": "PRI_A",
+      "board_net": "PRI_T1",
+      "connects_to": "overall primary DOT (= PRI_A)"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "P1_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_IN"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "P2_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P1_OUT"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "P2_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P3_IN"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "P3_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_OUT"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "P3_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "p2",
+      "deck_pin": "PRI_B",
+      "board_net": "PRI_12",
+      "connects_to": "overall primary NON-DOT (= PRI_B)"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "CTAP",
+      "winding": "SECONDARY",
+      "dot": "S_A DOT / S_B NON-DOT",
+      "deck_node": "out",
+      "deck_pin": "CTAP",
+      "board_net": "VOUT",
+      "connects_to": "S_A start and S_B finish (one copper terminal)"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "SEC_A",
+      "winding": "SEC_A",
+      "dot": "NON-DOT",
+      "deck_node": "a1",
+      "deck_pin": "SEC_A",
+      "board_net": "SEC1_A",
+      "connects_to": "S_A finish"
+    },
+    {
+      "transformer": "T1",
+      "terminal": "SEC_B",
+      "winding": "SEC_B",
+      "dot": "DOT",
+      "deck_node": "b1",
+      "deck_pin": "SEC_B",
+      "board_net": "SEC1_B",
+      "connects_to": "S_B start"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "P1_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "p2",
+      "deck_pin": "PRI_A",
+      "board_net": "PRI_12",
+      "connects_to": "overall primary DOT (= PRI_A)"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "P1_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_IN"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "P2_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P1_OUT"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "P2_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P3_IN"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "P3_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_OUT"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "P3_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "p3",
+      "deck_pin": "PRI_B",
+      "board_net": "PRI_23",
+      "connects_to": "overall primary NON-DOT (= PRI_B)"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "CTAP",
+      "winding": "SECONDARY",
+      "dot": "S_A DOT / S_B NON-DOT",
+      "deck_node": "out",
+      "deck_pin": "CTAP",
+      "board_net": "VOUT",
+      "connects_to": "S_A start and S_B finish (one copper terminal)"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "SEC_A",
+      "winding": "SEC_A",
+      "dot": "NON-DOT",
+      "deck_node": "a2",
+      "deck_pin": "SEC_A",
+      "board_net": "SEC2_A",
+      "connects_to": "S_A finish"
+    },
+    {
+      "transformer": "T2",
+      "terminal": "SEC_B",
+      "winding": "SEC_B",
+      "dot": "DOT",
+      "deck_node": "b2",
+      "deck_pin": "SEC_B",
+      "board_net": "SEC2_B",
+      "connects_to": "S_B start"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "P1_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "p3",
+      "deck_pin": "PRI_A",
+      "board_net": "PRI_23",
+      "connects_to": "overall primary DOT (= PRI_A)"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "P1_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_IN"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "P2_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P1_OUT"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "P2_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P3_IN"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "P3_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_OUT"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "P3_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "p4",
+      "deck_pin": "PRI_B",
+      "board_net": "PRI_34",
+      "connects_to": "overall primary NON-DOT (= PRI_B)"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "CTAP",
+      "winding": "SECONDARY",
+      "dot": "S_A DOT / S_B NON-DOT",
+      "deck_node": "out",
+      "deck_pin": "CTAP",
+      "board_net": "VOUT",
+      "connects_to": "S_A start and S_B finish (one copper terminal)"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "SEC_A",
+      "winding": "SEC_A",
+      "dot": "NON-DOT",
+      "deck_node": "a3",
+      "deck_pin": "SEC_A",
+      "board_net": "SEC3_A",
+      "connects_to": "S_A finish"
+    },
+    {
+      "transformer": "T3",
+      "terminal": "SEC_B",
+      "winding": "SEC_B",
+      "dot": "DOT",
+      "deck_node": "b3",
+      "deck_pin": "SEC_B",
+      "board_net": "SEC3_B",
+      "connects_to": "S_B start"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "P1_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "p4",
+      "deck_pin": "PRI_A",
+      "board_net": "PRI_34",
+      "connects_to": "overall primary DOT (= PRI_A)"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "P1_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_IN"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "P2_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P1_OUT"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "P2_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P3_IN"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "P3_IN",
+      "winding": "PRIMARY",
+      "dot": "DOT",
+      "deck_node": "",
+      "deck_pin": "",
+      "board_net": "",
+      "connects_to": "P2_OUT"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "P3_OUT",
+      "winding": "PRIMARY",
+      "dot": "NON-DOT",
+      "deck_node": "0",
+      "deck_pin": "PRI_B",
+      "board_net": "PGND",
+      "connects_to": "overall primary NON-DOT (= PRI_B)"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "CTAP",
+      "winding": "SECONDARY",
+      "dot": "S_A DOT / S_B NON-DOT",
+      "deck_node": "out",
+      "deck_pin": "CTAP",
+      "board_net": "VOUT",
+      "connects_to": "S_A start and S_B finish (one copper terminal)"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "SEC_A",
+      "winding": "SEC_A",
+      "dot": "NON-DOT",
+      "deck_node": "a4",
+      "deck_pin": "SEC_A",
+      "board_net": "SEC4_A",
+      "connects_to": "S_A finish"
+    },
+    {
+      "transformer": "T4",
+      "terminal": "SEC_B",
+      "winding": "SEC_B",
+      "dot": "DOT",
+      "deck_node": "b4",
+      "deck_pin": "SEC_B",
+      "board_net": "SEC4_B",
+      "connects_to": "S_B start"
+    }
+  ],
+  "first_article": [
+    {
+      "transformer": "T1",
+      "test": "S_A polarity vs CTAP",
+      "excitation": "1 kHz, 1 Vpp square through 100 ohm into PRI_A-PRI_B; SR MOSFETs not fitted",
+      "expected": "V(SEC_A-CTAP) in phase with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T1",
+      "test": "S_B polarity vs CTAP",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "V(SEC_B-CTAP) in anti-phase (180 deg) with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T1",
+      "test": "S_A turns ratio",
+      "excitation": "same drive; measure both windings with differential probe",
+      "expected": "|V(SEC_A-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T1",
+      "test": "S_B turns ratio",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "|V(SEC_B-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T2",
+      "test": "S_A polarity vs CTAP",
+      "excitation": "1 kHz, 1 Vpp square through 100 ohm into PRI_A-PRI_B; SR MOSFETs not fitted",
+      "expected": "V(SEC_A-CTAP) in phase with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T2",
+      "test": "S_B polarity vs CTAP",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "V(SEC_B-CTAP) in anti-phase (180 deg) with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T2",
+      "test": "S_A turns ratio",
+      "excitation": "same drive; measure both windings with differential probe",
+      "expected": "|V(SEC_A-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T2",
+      "test": "S_B turns ratio",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "|V(SEC_B-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T3",
+      "test": "S_A polarity vs CTAP",
+      "excitation": "1 kHz, 1 Vpp square through 100 ohm into PRI_A-PRI_B; SR MOSFETs not fitted",
+      "expected": "V(SEC_A-CTAP) in phase with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T3",
+      "test": "S_B polarity vs CTAP",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "V(SEC_B-CTAP) in anti-phase (180 deg) with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T3",
+      "test": "S_A turns ratio",
+      "excitation": "same drive; measure both windings with differential probe",
+      "expected": "|V(SEC_A-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T3",
+      "test": "S_B turns ratio",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "|V(SEC_B-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T4",
+      "test": "S_A polarity vs CTAP",
+      "excitation": "1 kHz, 1 Vpp square through 100 ohm into PRI_A-PRI_B; SR MOSFETs not fitted",
+      "expected": "V(SEC_A-CTAP) in phase with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T4",
+      "test": "S_B polarity vs CTAP",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "V(SEC_B-CTAP) in anti-phase (180 deg) with V(PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T4",
+      "test": "S_A turns ratio",
+      "excitation": "same drive; measure both windings with differential probe",
+      "expected": "|V(SEC_A-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T4",
+      "test": "S_B turns ratio",
+      "excitation": "same drive; probe V(SEC_B-CTAP)",
+      "expected": "|V(SEC_B-CTAP)| / |V(PRI_A-PRI_B)| = 1/3, +/-5 %",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T1->T2",
+      "test": "primary series phase",
+      "excitation": "1 kHz, 1 Vpp across the series string; probe each unit",
+      "expected": "V(T{i+1} PRI_A-PRI_B) in phase with V(T{i} PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T2->T3",
+      "test": "primary series phase",
+      "excitation": "1 kHz, 1 Vpp across the series string; probe each unit",
+      "expected": "V(T{i+1} PRI_A-PRI_B) in phase with V(T{i} PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    },
+    {
+      "transformer": "T3->T4",
+      "test": "primary series phase",
+      "excitation": "1 kHz, 1 Vpp across the series string; probe each unit",
+      "expected": "V(T{i+1} PRI_A-PRI_B) in phase with V(T{i} PRI_A-PRI_B)",
+      "measured": "",
+      "pass": "",
+      "operator": "",
+      "date": "",
+      "note": ""
+    }
+  ]
+}

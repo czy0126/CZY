@@ -4,6 +4,7 @@
     "bar": "长 80 × 宽 20 × 厚 2 mm",
     "bar_ohm": "34.5 µΩ",
     "startup_peak": "36.1 A",
+    "startup_peak_12v": "9.0 A",
     "fault_peak": "65 A",
     "trace_width": "11.2 mm",
     "freq": "200.6 kHz",
@@ -30,198 +31,354 @@
       "id": "S0",
       "title": "板前（完全断电，万用表/四线法）",
       "items": [
-        [
-          "VIN_P 对 PGND 不短路",
-          "> 1 kΩ（Cout 充电后）",
-          "netlist",
-          "查铜排/电容极性/焊接桥"
-        ],
-        [
-          "八只 SR 漏源不短路",
-          "二极管档有值、非 0",
-          "netlist",
-          "拆管复测"
-        ],
-        [
-          "十只 2.2 Ω 门阻、八只 0 Ω 开尔文链在位",
-          "逐位号清点，合计 18 只",
-          "board_netlist",
-          "缺 0 Ω 则 SR 关断依赖焊盘 di/dt"
-        ],
-        [
-          "输出铜排 长 80 × 宽 20 × 厚 2 mm 的电阻",
-          "34.5 µΩ（20 °C，几何）",
-          "connector_budget",
-          "改宽度/厚度后重算"
-        ],
-        [
-          "两处接点四线法，单处 ≤ 57.8 µΩ",
-          "≤ 57.8 µΩ",
-          "connector_budget",
-          "超标则改压接或重算效率口径"
-        ],
-        [
-          "输入走线宽度 ≥ 11.2 mm",
-          "≥ 11.2 mm（2 oz 或等效）",
-          "connector_budget",
-          "改叠层/加铜厚"
-        ],
-        [
-          "输出电容 15 只、整组 ESR ≈ 0.20 mΩ",
-          "15 只；ESR 主导，不是容量",
-          "cout_bank",
-          "少买则 ESR 超标"
-        ],
-        [
-          "整机高度最坏 9.94 mm",
-          "≤ 10 mm",
-          "magnetics_design",
-          "改沉槽/夹具"
-        ],
-        [
-          "气隙 0.121 mm、四套 Lm 一致性",
-          "首件实测回填",
-          "magnetics_design",
-          "漏感实测前不冻结 Lr 料号"
-        ]
+        {
+          "check": "VIN_P 对 PGND 不短路",
+          "criterion": "> 1 kΩ（Cout 充电后）",
+          "source": "netlist",
+          "action": "查铜排/电容极性/焊接桥",
+          "test_state": "power_off",
+          "measurement_location": "J_IN P1–P2",
+          "source_type": "hardware"
+        },
+        {
+          "check": "八只 SR 漏源不短路",
+          "criterion": "二极管档有值、非 0",
+          "source": "netlist",
+          "action": "拆管复测",
+          "test_state": "power_off",
+          "measurement_location": "SR1A–SR4B 各 D–S 焊盘",
+          "source_type": "hardware"
+        },
+        {
+          "check": "十只 2.2 Ω 门阻、八只 0 Ω 开尔文链在位",
+          "criterion": "逐位号清点，合计 18 只",
+          "source": "board_netlist",
+          "action": "缺 0 Ω 则 SR 关断依赖焊盘 di/dt",
+          "test_state": "power_off",
+          "measurement_location": "R4/R5、R20–R27、R28–R35 位号",
+          "source_type": "hardware"
+        },
+        {
+          "check": "输出铜排 长 80 × 宽 20 × 厚 2 mm 的电阻",
+          "criterion": "34.5 µΩ（20 °C，几何）",
+          "source": "connector_budget",
+          "action": "改宽度/厚度后重算",
+          "test_state": "power_off",
+          "measurement_location": "J_OUT P–N 四线法",
+          "source_type": "hardware"
+        },
+        {
+          "check": "两处接点四线法，单处 ≤ 57.8 µΩ",
+          "criterion": "≤ 57.8 µΩ",
+          "source": "connector_budget",
+          "action": "超标则改压接或重算效率口径",
+          "test_state": "power_off",
+          "measurement_location": "J_OUT 两处接点",
+          "source_type": "hardware"
+        },
+        {
+          "check": "输入走线宽度 ≥ 11.2 mm",
+          "criterion": "≥ 11.2 mm（2 oz 或等效）",
+          "source": "connector_budget",
+          "action": "改叠层/加铜厚",
+          "test_state": "power_off",
+          "measurement_location": "输入铜箔截面（卡尺）",
+          "source_type": "design"
+        },
+        {
+          "check": "输出电容 15 只、整组 ESR ≈ 0.20 mΩ",
+          "criterion": "15 只；ESR 主导，不是容量",
+          "source": "cout_bank",
+          "action": "少买则 ESR 超标",
+          "test_state": "power_off",
+          "measurement_location": "Cout 组两端（LCR 100 kHz）",
+          "source_type": "hardware"
+        },
+        {
+          "check": "整机高度最坏 9.94 mm",
+          "criterion": "≤ 10 mm",
+          "source": "magnetics_design",
+          "action": "改沉槽/夹具",
+          "test_state": "power_off",
+          "measurement_location": "成品最高点（高度规）",
+          "source_type": "hardware"
+        },
+        {
+          "check": "气隙 0.121 mm、四套 Lm 一致性",
+          "criterion": "首件实测回填",
+          "source": "magnetics_design",
+          "action": "漏感实测前不冻结 Lr 料号",
+          "test_state": "power_off",
+          "measurement_location": "中柱（千分尺）+ 3 匝 LCR",
+          "source_type": "hardware"
+        },
+        {
+          "check": "Cr 整组 ESR ≤ 11.2 mΩ",
+          "criterion": "≤ 11.2 mΩ（1 W 允许）",
+          "source": "cr_stress",
+          "action": "换低 ESR 并联",
+          "test_state": "power_off",
+          "measurement_location": "Cr 两端（LCR 200 kHz）",
+          "source_type": "hardware"
+        }
       ]
     },
     {
       "id": "S1",
       "title": "仅偏置（主输入断开，12 V 限流 100 mA）",
       "items": [
-        [
-          "12 V 偏置静态电流",
-          "记录实测值（模型未建模，无判据）",
-          "CLAUDE.md",
-          "异常高则查短路"
-        ],
-        [
-          "U1 开关频率 200.6 kHz",
-          "200.6 kHz ± 5 %",
-          "operating_point",
-          "查 RT/DT 阻值"
-        ],
-        [
-          "U1 两路门极交替、死区可见",
-          "无重叠",
-          "ct_design",
-          "查 UCC27282 输入"
-        ],
-        [
-          "REG 建立到 11 V（150 µs PWL）",
-          "≈ 11 V",
-          "deck PWL",
-          "查 REG 电容/负载"
-        ],
-        [
-          "四组 UCC24624 门极有驱动、经 2.2 Ω",
-          "逐组可见",
-          "board_netlist",
-          "查 REG/VD 采样"
-        ],
-        [
-          "自举二极管反压 48 V",
-          "选型 ≥ 100 V（实测反压 = VIN）",
-          "bom_draft",
-          "25 V 件会雪崩击穿"
-        ],
-        [
-          "OC 脚静态电平 < 0.1 V",
-          "< 0.1 V",
-          "ct_design",
-          "查分压/滤波对地"
-        ]
+        {
+          "check": "12 V 偏置静态电流",
+          "criterion": "记录实测值（模型未建模，无判据）",
+          "source": "CLAUDE.md",
+          "action": "异常高则查短路",
+          "test_state": "bias_only",
+          "measurement_location": "12 V 输入串 mA 表",
+          "source_type": "hardware"
+        },
+        {
+          "check": "U1 VCC 建立并高于 UVLO",
+          "criterion": "高于 datasheet UVLO；记录值",
+          "source": "UCC25600 datasheet",
+          "action": "查 12 V 供电/限流",
+          "test_state": "bias_only",
+          "measurement_location": "U1.7–U1.6",
+          "source_type": "datasheet"
+        },
+        {
+          "check": "U1 开关频率 200.6 kHz",
+          "criterion": "200.6 kHz ± 5 %",
+          "source": "operating_point",
+          "action": "查 RT/DT 阻值",
+          "test_state": "bias_only",
+          "measurement_location": "U1.8/U1.5 对 U1.6",
+          "source_type": "model"
+        },
+        {
+          "check": "UCC24624 VDD 与 REG 静态电平",
+          "criterion": "VDD=12 V 时 REG≈11 V（datasheet）；记录实测",
+          "source": "UCC24624 datasheet",
+          "action": "查 REG 电容/负载；deck 的 PWL 只是模型设定，不是芯片判据",
+          "test_state": "bias_only",
+          "measurement_location": "U3–U6 pin7–pin2、pin3–pin2",
+          "source_type": "datasheet"
+        },
+        {
+          "check": "UCC24624 门极在无次级激励时的安全状态",
+          "criterion": "两路输出均为低；本阶段只查静态安全",
+          "source": "UCC24624 datasheet",
+          "action": "若高则查 VD 采样/干扰；动态换流留到有次级激励的 S4",
+          "test_state": "bias_only",
+          "measurement_location": "U3–U6 pin1/pin8 对 pin2",
+          "source_type": "hardware"
+        },
+        {
+          "check": "自举二极管选型",
+          "criterion": "额定 ≥ 100 V（选型检查；电压应力留到 S3 实测）",
+          "source": "bom_draft",
+          "action": "25 V 件会雪崩击穿",
+          "test_state": "bias_only",
+          "measurement_location": "D_BT 本体丝印/规格书",
+          "source_type": "datasheet"
+        },
+        {
+          "check": "OC 脚静态电平 < 0.1 V",
+          "criterion": "< 0.1 V",
+          "source": "ct_design",
+          "action": "查分压/滤波对地",
+          "test_state": "bias_only",
+          "measurement_location": "U1.3–U1.6",
+          "source_type": "hardware"
+        }
       ]
     },
     {
       "id": "S2",
-      "title": "限能首次上电（10–12 V 主输入，限流 0.5 A）",
+      "title": "限能首次上电（10–12 V 主输入，平均限流 0.5 A）",
       "items": [
-        [
-          "半桥无直通，SW 波形干净",
-          "无重叠导通",
-          "netlist",
-          "立即断电查门极"
-        ],
-        [
-          "Lr 启动峰值可被电源吸收",
-          "限流 ≥ 36.1 A（48 V 冷启动）",
-          "lr_design",
-          "电源必须先限流再升压"
-        ],
-        [
-          "OC 无跳闸；确认保护仍有效",
-          "故障峰值可达 65 A（OC 13 µs），门槛 24.2 A",
-          "lr_design",
-          "门槛偏离则查 CT 负载/分压"
-        ]
+        {
+          "check": "半桥无直通，SW 波形干净",
+          "criterion": "无重叠导通",
+          "source": "netlist",
+          "action": "立即断电查门极",
+          "test_state": "low_bus",
+          "measurement_location": "示波器 GH、GL、SW 对 PGND",
+          "source_type": "hardware"
+        },
+        {
+          "check": "输入源平均限流与 Lr 谐振峰值分开验收",
+          "criterion": "平均限流 0.5 A；12 V 下 Lr 峰值 ≈ 9.0 A（由 48 V 冷启动线性折算，模型估计）；电源峰值能力须 ≥ 该值",
+          "source": "lr_design",
+          "action": "平均限流不等于峰值能力；不足则加预充/软启动",
+          "test_state": "low_bus",
+          "measurement_location": "电源读数（平均）+ 电流探头 I(Lr)（峰值）",
+          "source_type": "model"
+        },
+        {
+          "check": "OC 在低压下不误跳",
+          "criterion": "低于门槛 24.2 A；触发则查 CT 负载/分压",
+          "source": "ct_design",
+          "action": "记录 V(ocd) 与 V(OC)",
+          "test_state": "low_bus",
+          "measurement_location": "U1.3–U1.6（差分）",
+          "source_type": "hardware"
+        },
+        {
+          "check": "自举电容电压 HB–SW",
+          "criterion": "≈ 12 V，无塌陷",
+          "source": "UCC27282 datasheet",
+          "action": "查 D_BT/Cbt 与 QH 开关",
+          "test_state": "low_bus",
+          "measurement_location": "HB–SW 差分",
+          "source_type": "hardware"
+        }
       ]
     },
     {
       "id": "S3",
-      "title": "升到 48 V、空载",
+      "title": "升到 48 V、空载（本阶段不引用额定电流应力）",
       "items": [
-        [
-          "开关频率 200.6 kHz",
-          "200.6 kHz ± 5 %",
-          "operating_point",
-          "查谐振参数"
-        ],
-        [
-          "空载 Vout ≈ 2.00 V",
-          "2.00 V（24:1 固定变比）",
-          "deck .param",
-          "查匝比/极性"
-        ],
-        [
-          "额定点 OC 脚 0.573 V @ 13.88 A",
-          "按负载比例外推；门槛 24.2 A",
-          "ct_design",
-          "偏差大则查 CT 负载/分压"
-        ],
-        [
-          "Cr 峰值 ≤ 41.4 V（额定点）",
-          "≤ 41.4 V；对 100 V 额定 2.4 倍",
-          "cr_stress",
-          "超则查谐振电容容量"
-        ],
-        [
-          "Cr 整组 ESR ≤ 11.2 mΩ",
-          "≤ 11.2 mΩ（1 W 允许）",
-          "cr_stress",
-          "换低 ESR 并联"
-        ],
-        [
-          "OC 网络共模注入",
-          "记录 OC 脚纹波；设计未建模",
-          "board_netlist §6",
-          "超标则改布局/加共模扼流"
-        ]
+        {
+          "check": "开关频率 200.6 kHz",
+          "criterion": "200.6 kHz ± 5 %",
+          "source": "operating_point",
+          "action": "查谐振参数",
+          "test_state": "no_load",
+          "measurement_location": "SW 上升沿，200 kHz 带宽探头",
+          "source_type": "model"
+        },
+        {
+          "check": "空载 Vout ≈ 2.00 V",
+          "criterion": "2.00 V（24:1 固定变比）",
+          "source": "deck .param",
+          "action": "查匝比/极性",
+          "test_state": "no_load",
+          "measurement_location": "VOUT–PGND（DC 档）",
+          "source_type": "model"
+        },
+        {
+          "check": "半桥与 SR 漏源空载振铃",
+          "criterion": "记录峰值；不超过器件额定",
+          "source": "datasheet",
+          "action": "超额定则查吸收/布局",
+          "test_state": "no_load",
+          "measurement_location": "SW、SR1A–SR4B D–S",
+          "source_type": "hardware"
+        },
+        {
+          "check": "自举二极管反压（QH 导通时）",
+          "criterion": "≈ 48 V（= VIN）",
+          "source": "model",
+          "action": "印证 S1 的 ≥100 V 选型",
+          "test_state": "no_load",
+          "measurement_location": "D_BT 两端差分",
+          "source_type": "model"
+        },
+        {
+          "check": "OC 脚空载电平与纹波",
+          "criterion": "接近 0；记录纹波峰值",
+          "source": "board_netlist §6",
+          "action": "超标则改布局/加共模扼流",
+          "test_state": "no_load",
+          "measurement_location": "U1.3–U1.6 交流耦合",
+          "source_type": "hardware"
+        },
+        {
+          "check": "Cr 空载摆幅",
+          "criterion": "记录实测；不把额定峰值当空载判据",
+          "source": "cr_stress",
+          "action": "异常大则查谐振参数",
+          "test_state": "no_load",
+          "measurement_location": "Cr 两端差分",
+          "source_type": "hardware"
+        },
+        {
+          "check": "48 V 冷启动 Lr 峰值",
+          "criterion": "≤ 36.1 A（模型）；电源峰值能力须 ≥ 该值，平均限流另设",
+          "source": "lr_design",
+          "action": "不足则加预充/软启动",
+          "test_state": "no_load",
+          "measurement_location": "电流探头 I(Lr)",
+          "source_type": "model"
+        }
       ]
     },
     {
       "id": "S4",
-      "title": "交接 Stage F 矩阵（本表不再展开）",
+      "title": "带载与故障（Stage F 矩阵；本表只列判据，不代替矩阵）",
       "items": [
-        [
-          "10/25/50/75/100 A 逐级加载",
-          "见 stage-F 矩阵",
-          "stage_f 文档",
-          "每级记录再升"
-        ],
-        [
-          "SR 单管 0.92 W @ 100 A → Tj",
-          "Tj ≤ 125 °C；40 °C 环境需 Rth ≤ 50 K/W",
-          "thermal_precheck",
-          "50 K/W 时最高环境 79.1 °C"
-        ],
-        [
-          "100 A 连续 / ≤10 mm",
-          "只能由本矩阵实测关闭",
-          "—",
-          "不得用短时波形替代"
-        ]
+        {
+          "check": "10/25/50/75/100 A 逐级加载",
+          "criterion": "每级记录再升；见 stage-F 矩阵",
+          "source": "stage_f 文档",
+          "action": "每级记录再升",
+          "test_state": "rated",
+          "measurement_location": "电子负载 + 输入功率计",
+          "source_type": "hardware"
+        },
+        {
+          "check": "100 A 时 OC 脚 0.573 V @ 13.88 A",
+          "criterion": "0.573 V @ 13.88 A；门槛 24.2 A",
+          "source": "ct_design",
+          "action": "偏差大则查 CT 负载/分压",
+          "test_state": "rated",
+          "measurement_location": "U1.3–U1.6（差分）",
+          "source_type": "model"
+        },
+        {
+          "check": "100 A 时 Cr 峰值 ≤ 41.4 V、RMS ≈ 9.45 A",
+          "criterion": "≤ 41.4 V；对 100 V 额定 2.4 倍",
+          "source": "cr_stress",
+          "action": "超则查谐振电容容量",
+          "test_state": "rated",
+          "measurement_location": "Cr 两端差分 + 电流探头",
+          "source_type": "model"
+        },
+        {
+          "check": "SR 单管损耗 0.92 W @ 100 A → Tj",
+          "criterion": "Tj ≤ 125 °C；50 K/W 是模型假设，不是判据；须用实测壳温与声明 Rth 换算",
+          "source": "thermal_precheck",
+          "action": "实测超标则改散热/降额",
+          "test_state": "rated",
+          "measurement_location": "SR 壳温（热电偶/红外）",
+          "source_type": "model"
+        },
+        {
+          "check": "100 A 输出纹波与负载瞬态",
+          "criterion": "按 Issue #4 冻结的输出包络",
+          "source": "design/v3 规范",
+          "action": "超包络则加 Cout/改布局",
+          "test_state": "rated",
+          "measurement_location": "VOUT 交流耦合，20 MHz 带宽",
+          "source_type": "design"
+        },
+        {
+          "check": "OC 13 µs 故障：Lr 峰值 ≤ 65 A",
+          "criterion": "≤ 65 A；驱动关断",
+          "source": "lr_design",
+          "action": "不关断则查 CT/OC 网络",
+          "test_state": "fault",
+          "measurement_location": "电流探头 I(Lr)、SW、OC",
+          "source_type": "model"
+        },
+        {
+          "check": "OC 2 V 闩锁",
+          "criterion": "闩锁并保持，断电复位",
+          "source": "UCC25600 datasheet",
+          "action": "2 V 是闩锁不是关断门槛",
+          "test_state": "fault",
+          "measurement_location": "U1.3–U1.6",
+          "source_type": "datasheet"
+        },
+        {
+          "check": "100 A 连续 / ≤10 mm",
+          "criterion": "只能由本矩阵实测关闭",
+          "source": "—",
+          "action": "不得用短时波形替代",
+          "test_state": "rated",
+          "measurement_location": "整机温升 + 高度规",
+          "source_type": "hardware"
+        }
       ]
     }
   ]

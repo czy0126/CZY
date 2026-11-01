@@ -1,0 +1,123 @@
+{
+  "raw": {
+    "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
+    "bytes": 424201312,
+    "mtime": 1793500090.4126365,
+    "variables": 80
+  },
+  "window": {
+    "start_s": 3.751894787634561e-05,
+    "end_s": 0.0001173594080356736,
+    "span_s": 7.984046015932798e-05,
+    "periods": 16,
+    "raw_time_start_s": 0.00088,
+    "display_offset_us": 880.0
+  },
+  "port": {
+    "vin_v": 48.0,
+    "rl_ohm": 0.0189,
+    "pin_source_w": 199.28316578659883,
+    "pin_after_rin_w": 199.23822427157086,
+    "pout_w": 188.25780348221812,
+    "pin_minus_pout_w": 11.025362304380707
+  },
+  "losses": {
+    "rin": {
+      "w": 0.04494151502743278,
+      "confidence": "measured-i2r"
+    },
+    "lr": {
+      "w": 0.4465275667772447,
+      "confidence": "measured-i2r"
+    },
+    "lp_series": {
+      "w": 1.0716661602653872,
+      "confidence": "measured-i2r"
+    },
+    "cr_esr": {
+      "w": 0.2679165400663468,
+      "confidence": "measured-i2r"
+    },
+    "cout_esr": {
+      "w": 0.5423643845091402,
+      "confidence": "measured-i2r"
+    },
+    "secondary_copper": {
+      "w": 0.476314585744074,
+      "confidence": "symmetry-assumption"
+    },
+    "sh": {
+      "w": 0.3681927264782007,
+      "confidence": "measured-commutation"
+    },
+    "sl": {
+      "w": 0.37064440524892994,
+      "confidence": "measured-commutation"
+    },
+    "dh": {
+      "w": 9.95403040089974e-05,
+      "confidence": "measured-commutation"
+    },
+    "dl": {
+      "w": 0.0024944531351148653,
+      "confidence": "measured-commutation"
+    },
+    "sr_channel_body_pair1": {
+      "w": 1.8348927309203833,
+      "confidence": "measured-commutation"
+    },
+    "sr_channel_body_x4": {
+      "w": 7.339570923681533,
+      "confidence": "symmetry-assumption"
+    },
+    "sr_gate_resistor_x8": {
+      "w": 0.18129702534331968,
+      "confidence": "symmetry-assumption"
+    },
+    "ct_bridge_diodes": {
+      "w": 0.097210604677678,
+      "confidence": "measured-commutation"
+    },
+    "ct_burden_resistor": {
+      "w": 0.0888579617330729,
+      "confidence": "measured-i2r"
+    }
+  },
+  "loss_total_w": 11.116801367648165,
+  "loss_before_ct_w": 10.930732801237413,
+  "stored_energy_j": {
+    "lr_j": 7.105064448892243e-07,
+    "lp_j": 3.089158456040106e-05,
+    "cr_j": 1.0175787025994023e-06,
+    "cout_j": 1.5691045030245655e-05
+  },
+  "stored_energy_w": 0.6050906350204831,
+  "outside_port": {
+    "vreg_w": -0.0,
+    "vaux_w": 0.00017928675847035116,
+    "driver_output_w": 0.20529789599564718
+  },
+  "balance": {
+    "residual_w": -0.09143906326745821,
+    "loss_residual_w": -0.09143906326745821,
+    "target_w": 0.2,
+    "stored_energy_endpoint_w": 0.6050906350204831,
+    "stored_energy_phase_limit_w": 0.6050906350204831,
+    "note": "residual_w is Pin - Pout - summed element losses.  The stored-energy endpoint term is reported separately because its sign and size change with the gate-edge phase; over 16 periods it is not resolvable below its own limit.",
+    "limits": [
+      "stored-energy endpoint term is phase-sensitive (0.605 W); it is excluded from the loss residual, not assumed to be zero"
+    ]
+  },
+  "sensitivity": {
+    "max_step_s": 5e-09,
+    "note": "5 ns max step, GEAR; a 2 ns rerun was not made, so the integration error is not bounded by repetition",
+    "device_parameters": "Rds/Isat fitted; package parasitics are ESTIMATE per models/sr_device_v3.lib"
+  },
+  "checks": {
+    "ok": true,
+    "loss_residual_within_0p2_w": true,
+    "ct_burden_closes_the_gap": true,
+    "stored_energy_reported_not_folded_in": true,
+    "pout_uses_v_squared": true
+  }
+}
