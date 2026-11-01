@@ -98,13 +98,13 @@ def first_article_rows(report: dict[str, object]) -> list[dict[str, str]]:
     for name in report["transformers"]:
         rows += [
             {"transformer": name, "test": "S_A polarity vs CTAP",
-             "excitation": "1 kHz, 1 Vpp square through 100 ohm into PRI_A-PRI_B; "
-                           "SR MOSFETs not fitted",
-             "expected": "V(SEC_A-CTAP) in phase with V(PRI_A-PRI_B)",
+             "excitation": "100 kHz, 2 Vpp sine through 10 ohm across full T1-T4 primary; "
+                           "measure each primary voltage, SR MOSFETs not fitted",
+             "expected": "V(SEC_A-CTAP) in anti-phase (180 deg) with V(PRI_A-PRI_B)",
              "measured": "", "pass": "", "operator": "", "date": "", "note": ""},
             {"transformer": name, "test": "S_B polarity vs CTAP",
              "excitation": "same drive; probe V(SEC_B-CTAP)",
-             "expected": "V(SEC_B-CTAP) in anti-phase (180 deg) with V(PRI_A-PRI_B)",
+             "expected": "V(SEC_B-CTAP) in phase with V(PRI_A-PRI_B)",
              "measured": "", "pass": "", "operator": "", "date": "", "note": ""},
             {"transformer": name, "test": "S_A turns ratio",
              "excitation": "same drive; measure both windings with differential probe",
@@ -119,8 +119,8 @@ def first_article_rows(report: dict[str, object]) -> list[dict[str, str]]:
         rows.append({
             "transformer": f"T{i}->T{i + 1}",
             "test": "primary series phase",
-            "excitation": "1 kHz, 1 Vpp across the series string; probe each unit",
-            "expected": "V(T{i+1} PRI_A-PRI_B) in phase with V(T{i} PRI_A-PRI_B)",
+            "excitation": "same 100 kHz, 2 Vpp sine through 10 ohm; probe each unit",
+            "expected": f"V(T{i + 1} PRI_A-PRI_B) in phase with V(T{i} PRI_A-PRI_B)",
             "measured": "", "pass": "", "operator": "", "date": "", "note": "",
         })
     return rows

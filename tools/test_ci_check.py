@@ -97,3 +97,57 @@ def test_skip_tests_does_not_claim_the_suite_passed(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "suite passed" not in out
     assert "manifest is current" in out
+
+
+def test_checkout_changes_mtime_without_changing_content():
+    old = manifest([{"path":"tools/x.py","bytes":3,"sha256":"same","mtime":1}])
+    fresh = manifest([{"path":"tools/x.py","bytes":3,"sha256":"same","mtime":2}])
+    assert compare_manifests(old, fresh) == []
+
+
+def test_present_raw_mtime_drift_is_still_reported():
+    old = manifest([{"path":"sim/v3/run.raw","bytes":200,"sha256":"skipped-large-raw","mtime":1}])
+    fresh = manifest([{"path":"sim/v3/run.raw","bytes":200,"sha256":"skipped-large-raw","mtime":2}])
+    assert "mtime" in " ".join(compare_manifests(old, fresh))
+
+
+def test_missing_raw_status_row_in_clean_checkout_is_not_a_mismatch():
+    old = manifest([{"path":"sim/v3/run.raw","kind":"raw","bytes":400,
+                     "sha256":"skipped-large-raw","mtime":123}])
+    fresh = manifest([{"path":"sim/v3/run.raw","kind":"raw","status":"missing"}],
+                     missing=["sim/v3/run.raw"])
+    assert compare_manifests(old, fresh) == []
+
+
+def test_crlf_historical_manifest_is_equal_to_lf_checkout(monkeypatch, tmp_path):
+    import ci_check
+    import hashlib
+
+    file = tmp_path / "source.cir"
+    lf = b".param X=1\nR1 a b 10k\n"
+    file.write_bytes(lf)
+    monkeypatch.setattr(ci_check, "ROOT", tmp_path)
+    crlf = lf.replace(b"\n", b"\r\n")
+    old = manifest([{"path": "source.cir", "kind": "deck", "bytes": len(crlf),
+                     "sha256": hashlib.sha256(crlf).hexdigest(), "mtime": 1.0}])
+    current = manifest([{"path": "source.cir", "kind": "deck", "bytes": len(lf),
+                         "sha256": hashlib.sha256(lf).hexdigest(), "mtime": 2.0}])
+    assert compare_manifests(old, current) == []
+
+    # A true value change is never forgiven just because old hashes used CRLF.
+    file.write_bytes(lf.replace(b"10k", b"11k"))
+    changed = manifest([{"path": "source.cir", "kind": "deck", "bytes": len(lf),
+                         "sha256": hashlib.sha256(file.read_bytes()).hexdigest()}])
+    assert "sha256" in " ".join(compare_manifests(old, changed))
+
+
+def test_binary_or_missing_content_does_not_bypass_manifest_mismatch(monkeypatch, tmp_path):
+    import ci_check
+    import hashlib
+
+    monkeypatch.setattr(ci_check, "ROOT", tmp_path)
+    f = tmp_path / "x.dat"
+    f.write_bytes(b"\x00\x01")
+    old = manifest([{"path": "x.dat", "bytes": 4, "sha256": hashlib.sha256(b"\x00\r\n\x01").hexdigest()}])
+    now = manifest([{"path": "x.dat", "bytes": 2, "sha256": hashlib.sha256(f.read_bytes()).hexdigest()}])
+    assert compare_manifests(old, now)
