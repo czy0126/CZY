@@ -86,6 +86,12 @@ def test_the_closure_is_reported_as_not_closed():
     balance = d["balance"]
     assert balance["closure_status"] == "NOT_CLOSED"
     assert abs(balance["closure_residual_w"]) > balance["target_w"]
-    assert "period-averaged" in balance["closure_reason"]
+    # The window has to resolve the target for NOT_CLOSED to mean anything:
+    # a window too noisy to see 0.2 W could not report a 0.56 W miss either.
+    assert d["results"]["window_resolves_0p2_w_period_averaged"] is True
+    averaged = balance["period_averaged"]
+    assert averaged["periods"] < d["window"]["periods"]     # one whole period per end
+    assert abs(averaged["closure_residual_w"]) > balance["target_w"]
+    assert balance["limits"]                                # the miss is published, not hidden
     assert d["checks"]["ok"] is True          # no invariant was bent to get here
     assert d["results"]["closure_including_storage_within_0p2_w"] is False
