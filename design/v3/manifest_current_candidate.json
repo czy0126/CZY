@@ -177,16 +177,16 @@
     {
       "path": "tools/ci_check.py",
       "kind": "script",
-      "bytes": 4657,
+      "bytes": 5094,
       "mtime": 1793500920.2781692,
-      "sha256": "e12decb43399d9f1d2437e72ccbd892088f501ea20d245b98fa0956fd850fab9"
+      "sha256": "685ad8969c8112e54006e92787cddcb0588598ffb7354c31c8627520fe280cca"
     },
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 17974,
+      "bytes": 17820,
       "mtime": 1793500908.7798655,
-      "sha256": "b06837d562f93e214eb9bf66e9cb68b5ef414a17263b5ffbcf04159c3c8ec506"
+      "sha256": "7b533fc924c44d8fd0fe08b9daa1a0093a6f4380999d1506ea56fb05be72d405"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -282,9 +282,9 @@
     {
       "path": "tools/test_board_netlist.py",
       "kind": "script",
-      "bytes": 13089,
+      "bytes": 13922,
       "mtime": 1793499756.1610906,
-      "sha256": "c6a8307e21169991281ee032fb9f6d1789c3593db0aed7e59977e9c80355c2bb"
+      "sha256": "62f586b2ec1cc1f2e1b01f081a539a718c2bd7cfdc0786dcce3a431b44e2a5c3"
     },
     {
       "path": "tools/test_powerup_checklist.py",
@@ -310,9 +310,9 @@
     {
       "path": "tools/test_ci_check.py",
       "kind": "script",
-      "bytes": 3691,
+      "bytes": 4667,
       "mtime": 1793500947.654281,
-      "sha256": "e94f1cf81eeb0bee7ca5f0ac38d1a9c30d274b0c8dbbed7686419bf81c49c7c9"
+      "sha256": "7620b856ed77bf2b65cab057897e374dc54da2e90015e3cdb9a950de75ebac85"
     },
     {
       "path": "tools/test_baseline_doc.py",
@@ -485,9 +485,9 @@
     {
       "path": "design/v3/magnetics/绕组工艺卡_2026-11-01.md",
       "kind": "doc",
-      "bytes": 7052,
+      "bytes": 7499,
       "mtime": 1793499725.526749,
-      "sha256": "169a5fb33240ed9732038c1f09ca8693bda2a670bf849ed5abed96a99b385b00"
+      "sha256": "ff88a444229b38d9cada4c8ec5cb8da27a30a60aff57d557f7eec7e4d5c560fb"
     },
     {
       "path": "design/v3/magnetics/winding_cross_section.svg",
@@ -506,9 +506,9 @@
     {
       "path": "design/v3/当前候选基线_2026-11-01.md",
       "kind": "doc",
-      "bytes": 8325,
+      "bytes": 8560,
       "mtime": 1793500888.5459242,
-      "sha256": "5ebb04bcfdfb115e403ad007beaf5b66349ac840a024a1ba45b4b7ef3fc13ffd"
+      "sha256": "633d75832ff75cdae70e420f771968ea1a949ffc925ca9761df78c17f70e3893"
     },
     {
       "path": "design/v3/stage_f/首样验证与额定值判定_2026-10-31.md",
@@ -548,9 +548,9 @@
     {
       "path": ".github/workflows/ci.yml",
       "kind": "config",
-      "bytes": 460,
+      "bytes": 513,
       "mtime": 1793500722.7373133,
-      "sha256": "82befe38caa3eb97de61b15f6511c5fb7eb487668c2af0aef7dfae6772ecb077"
+      "sha256": "c71183b036e8013093157643d9e6d42416c4e1aad1d6af6d1349553d5369d2ac"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
@@ -572,6 +572,36 @@
       "bytes": 424201312,
       "mtime": 1793500090.4126365,
       "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "tools/winding_polarity.py",
+      "kind": "script",
+      "bytes": 7826,
+      "sha256": "68479345fc7aa49e410b117d8a5e3e47ebdeb7f38ae4194f006222d945c79709"
+    },
+    {
+      "path": "design/v3/magnetics/first_article_polarity_record.csv",
+      "kind": "result",
+      "bytes": 2684,
+      "sha256": "5a4c8a784b36f75d7a132bcedd5de57da777e068bc6ba474f81d658105cab013"
+    },
+    {
+      "path": "design/v3/magnetics/winding_polarity.csv",
+      "kind": "result",
+      "bytes": 1955,
+      "sha256": "de6e2faf743657cdbda10864b509345ad86d921e43f620826f5f69bb4fa40baf"
+    },
+    {
+      "path": "design/v3/magnetics/winding_polarity.json",
+      "kind": "result",
+      "bytes": 23636,
+      "sha256": "a039165aa35b027825770e0d1f5a93d316d6cd1af114e5ea4577388b051a25aa"
+    },
+    {
+      "path": "design/v3/magnetics/winding_connections.svg",
+      "kind": "doc",
+      "bytes": 46337,
+      "sha256": "6d0a5c3cfceddd32857faed86eab63ed5338e81f1fec3ce9610e5e10fbd02a73"
     }
   ],
   "missing": [],
@@ -579,10 +609,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -590,10 +620,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -601,10 +631,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -612,10 +642,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -623,10 +653,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0.0,
+      "raw_time_start_s": 0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880.0,
-      "max_step_s": 5e-09,
+      "display_offset_us": 880,
+      "max_step_s": 5e-9,
       "has_ic": true,
       "uic": true,
       "cold_start": false
