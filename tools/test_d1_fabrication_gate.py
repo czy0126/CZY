@@ -18,6 +18,8 @@ def test_real_baseline_is_not_fabrication_approved():
     assert set(result["counts"]["magnetics_missing_physical_pads"]) == {"CT","T1","T2","T3","T4"}
     assert result["counts"]["refs_with_placeholders"]
     assert result["counts"]["bom_rows_not_selected"]
+    assert len(result["counts"]["real_hardware_bom_refs_not_in_golden"]) == 17
+    assert not result["checks"]["all_required_real_hardware_bom_refs_in_native_design"]
 
 
 def test_a_boolean_approved_is_not_evidence(tmp_path: Path):
