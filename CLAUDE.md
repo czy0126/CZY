@@ -33,6 +33,10 @@ python tools/energy_ledger_100a.py --json design/v3/stage_f/energy_ledger_100a.j
     # 100 A 同窗口端口能量账；默认读 ..._100a_ledger.raw（424 MB，不入 Git）
 python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐项比对
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
+python tools/main_board_schematic.py --write   # 金网表 -> 焊盘级放置计划 + A3 审表
+python tools/lceda_place_main_board.py --emit  # 生成 gen/slice_NN.js
+python tools/lceda_place_main_board.py --all --session <id>   # 需 LCEDA 客户端在跑
+python tools/check_main_board_netlist.py       # A4 验收：ok 必须 True，否则原理图有问题
 ```
 
 LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
@@ -173,6 +177,7 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   就是为这个窗口准备的；注意 `.tran` 字段序是 `Tstep Tstop Tstart Tmaxstep`。
 - **5 ns 对 2 ns**：损耗 11.117→11.141 W（+0.22 %）已收敛，但 `V(out)` 端点差 7.6 mV，
   4 mF×1.87 V×7.6 mV≈57 µJ 折算 1.3 W，闭合残差 −0.118→**+0.404 W 不收敛**。
+  `ledger2n` 变体由 `make_physical_decks.py` 只改 `.tran` 步长生成。
   瓶颈是端点采样，不是梯形积分。`ledger2n` 变体由 `make_physical_decks.py` 只改 `.tran` 步长生成。
 - JSON 的 `checks` 是**报告不变量**（只有它的 `ok` 是门），`results` 是**物理结果**。
   不要把"未闭合"塞进 `checks.ok`——那会诱使下一个人为了让测试变绿去放宽目标。
@@ -235,6 +240,37 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   类型包括 DOCHEAD/CANVAS/LAYER/LAYER_PHYS/ACTIVE_LAYER/RULE_TEMPLATE/RULE/
   PRIMITIVE(仅显示)/SILK_OPTS/D3_ATTRIBUTE/PREFERENCE/PANELIZE。
 - 中文厂商名经 CLI 文本通道会变 U+FFFD；必须走 xlsx 二进制 + base64。
+- **`--timeout` 上限是 60000 ms**（`--help` 里写 1800000 是错的，传大会直接报
+  `must be an integer in [1, 60000]`）。所以放置这类长任务要按片拆分。
+- **工程目录是 `C:\Users\27792\Documents\LCEDA-Pro\projects\`**（不是 `EasyEDA-Pro`）；
+  skill 文档里的目录名和超时上限都是错的。客户端处于半离线模式
+  （`sys_Environment.isHalfOfflineMode() === true`），**完整立创库可用**，按 MPN 搜得到真实封装。
+- **`createProject(..., 'eprj3')` 仍然产出 `.eprj2`**，`dmt_Project.EPRJ3` 未定义——本版本不支持
+  `.eprj3` 文件夹格式。skill 文档里那套 JSON-per-line 记录格式用不上。
+- **`eda.*` 不是"什么都返回函数"的桩**：`eda.sch_Drc` 原型上确实只有 `constructor` 和 `check`，
+  写错的名字会抛 `TypeError: ... is not a function`。所以 `not a function` 是真证据，
+  但反过来说"没报错就等于接口存在"仍然不成立（`getCheckErrorList` 返回的是 `undefined` 而不是抛错）。
+- **CLI 的 ERC 不能签核**：`eda.sch_Drc.check(strict, ui, verbose)` 在 `verbose=false` 时返回布尔，
+  `verbose=true` 时返回 `[{type:'warn',count:N}]` **直方图，无明细**，也不存在取明细的接口。
+  实测这个数字**不随页面变化**：61 器件 222 线 → 5；再放一只完全未连线的电阻 → 仍然 5；
+  **清空整页 → 8**。清空反而变多，说明它不是图页的 ERC 结果。
+  **不要引用这个数字**，ERC 必须在 GUI 里手工跑。复现见 `hardware/dcx_main/gen/drc_ab.js`
+  与 `gen/drc_empty_test.js`（后者的清页破坏性，跑完必须
+  `python tools/lceda_place_main_board.py --all` 恢复）。
+
+## 主功率板原生原理图（`hardware/dcx_main/`）
+
+- `design/v3/pcb/board_netlist.csv` 是 **deck 派生**的金网表，它把 MOS 引脚叫 `G/S/D`；
+  真实封装是 1/2/3 + 5..8(9)。**只连一个焊盘仍能导出"与金网表一致"的网表**——所以验收按
+  **焊盘**做（`tools/check_main_board_netlist.py`，221 个焊盘 + 1 个体焊盘），不按位号数量做。
+- 引脚映射必须来自**实测 dump**（`hardware/dcx_main/library_pins.json`，
+  `gen/probe_all_pins.js` 按精确 MPN 解析），不许手写 uuid 或猜引脚号；
+  `MappingError` 是设计使然，不是要绕过的障碍。
+- `U2`(UCC27282) 的裸露焊盘 11 在 `BONDED_PADS` 里接 `PGND`：VSON-10 的 EP 是散热路径与
+  门驱动的参考电位，SPICE 模型没有它，金网表无从表达。它**单独计数**，不混进金网表的 221。
+- 五只磁件（T1–T4、CT）**放不进去**：库里没有引脚拓扑对的符号（`EE16_65KHZ` 6 引脚，
+  `ZHT104A` 2 引脚）。记录在 `MAGNETIC_GAPS`，比对结果里进 `not_placed`，
+  `ok` 用**子集**判断——将来画出自定义符号、放上了磁件，检查不能因此变红。
 
 ## 数据与结论纪律
 
