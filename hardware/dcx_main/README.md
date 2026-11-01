@@ -23,6 +23,21 @@
 而 DFN/TDSON 封装的源极是 1、2、3 三个焊盘——只连其中一个，导出的网表仍然"和金网表一致"，
 错误要到出铜箔才暴露。
 
+## 评审用的导出图
+
+`main_board.svg` 是客户端自己导出的（`gen/export_svg.js` 调 `sch_ManufactureData.getSvgFile`），
+2048×5273，含全部 61 个位号与 6 个分区标题。它**不能替代工程文件**——只用来评审，
+改图后要重新导出：
+
+```bash
+/d/lceda-pro/lceda-pro.exe invoke --session <id> --ext-uuid eda --timeout 60000 \
+    --code "$(cat hardware/dcx_main/gen/export_svg.js)" > /tmp/svg.json
+python -c "import json;open('hardware/dcx_main/main_board.svg','w',encoding='utf-8') \
+    .write(json.load(open('/tmp/svg.json',encoding='utf-8'))['value']['svg'])"
+```
+
+`getSvgFile` 返回整个文件，CLI 输出很大，所以必须重定向；`getPngFile` 也在，但 SVG 可读、可比对。
+
 ## 图纸怎么分区
 
 A1 任务卡要求按六部分绘图，`tools/main_board_schematic.py` 的 `SECTIONS` 就是这六块，
@@ -121,4 +136,6 @@ gen/slice_NN.js               放置脚本（由 --emit 生成）
 gen/drc_ab.js                 证明 CLI ERC 直方图不随页面变化的实验
 gen/drc_empty_test.js         清空页面再测 ERC（破坏性，跑完要 --all 恢复）
 gen/api_probe.js              证明 eda.* 不是"什么都返回函数"的桩
+gen/export_svg.js             导出评审用 SVG
+main_board.svg                上述导出结果（2048×5273）
 ```
