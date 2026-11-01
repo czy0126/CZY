@@ -42,19 +42,23 @@ def _csv(path: Path) -> list[dict[str, str]]:
 
 
 def _manual_gate(path: Path, required: tuple[str, ...]) -> dict:
+    try:
+        display = path.relative_to(ROOT).as_posix()
+    except ValueError:
+        display = path.as_posix()
     if not path.is_file():
-        return {"passed": False, "reason": "evidence file absent", "path": path.relative_to(ROOT).as_posix()}
+        return {"passed": False, "reason": "evidence file absent", "path": display}
     try:
         doc = _read(path)
     except (ValueError, OSError) as exc:
         return {"passed": False, "reason": f"invalid evidence: {type(exc).__name__}",
-                "path": path.relative_to(ROOT).as_posix()}
+                "path": display}
     # A status without a cited external original is not evidence. Requiring all
     # nonempty strings makes accidentally generated 'approved=true' insufficient.
     ok = doc.get("approved") is True and all(
         isinstance(doc.get(k), str) and doc[k].strip() for k in required
     )
-    return {"passed": bool(ok), "path": path.relative_to(ROOT).as_posix(),
+    return {"passed": bool(ok), "path": display,
             "reason": "complete, subject to human verification" if ok else
                       "approval and source evidence fields incomplete"}
 
