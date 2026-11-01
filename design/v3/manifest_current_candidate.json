@@ -84,6 +84,48 @@
       "sha256": "549651c0565763ab919257bf9a01eb5defb2452516914e11b6f9b3ec921b956b"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
+      "kind": "deck",
+      "bytes": 11371,
+      "mtime": 1793522774.6625214,
+      "sha256": "57ab2a4ce4cb5fcc6348b8dd9756b0fbf9d31a359d4252d9d7169870cd3631bb"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
+      "kind": "deck",
+      "bytes": 10569,
+      "mtime": 1793536850.0216637,
+      "sha256": "36a89324a074aa9529854faeaf0cfdf0e8d4d28b1ec7770fddc53e8113cff2fa"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
+      "kind": "deck",
+      "bytes": 10569,
+      "mtime": 1793536850.0216637,
+      "sha256": "ea335d5ce4f130fbd74c54ce027a575a8fc40ad7d440a36e4cd661772fe812d2"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110.cir",
+      "kind": "deck",
+      "bytes": 10569,
+      "mtime": 1793536850.0216637,
+      "sha256": "8669053ced567b668c925bff0a16fca4b6a31640c83167809f0a4f9445c47a38"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120.cir",
+      "kind": "deck",
+      "bytes": 10569,
+      "mtime": 1793536850.0216637,
+      "sha256": "127a1cf1f37cadda0d22e4ef06d097bf06384fef972a2e12869b1c09efad89c5"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
+      "kind": "deck",
+      "bytes": 10867,
+      "mtime": 1793536850.0216637,
+      "sha256": "53913db0a63c863f40e299f4f49a36ec6576ac2de4ee715919d4004899afc81f"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "kind": "deck",
       "bytes": 11040,
@@ -240,16 +282,23 @@
     {
       "path": "tools/energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 55655,
-      "mtime": 1793533120.3521152,
-      "sha256": "cfeccb4b67a82b4bf3105032048765e2b32d308ab4c864225db01ba2defb38b6"
+      "bytes": 62079,
+      "mtime": 1793536564.1996331,
+      "sha256": "50293ded3f2420dc7a5561cf3038786cbc8c8aca74fa3a725ae80c13eefe7e4a"
     },
     {
       "path": "tools/make_physical_decks.py",
       "kind": "script",
-      "bytes": 6074,
-      "mtime": 1793533120.3521152,
-      "sha256": "254d1b0b68106810797807e12effc41ff067d0ab5dd61574ec38a930390636c6"
+      "bytes": 6489,
+      "mtime": 1793535076.0165336,
+      "sha256": "94c69f86d4d299a6f025399da9ea2c415cbb7fb68c0c3539325b7544ce21df2b"
+    },
+    {
+      "path": "tools/make_high_output_decks.py",
+      "kind": "script",
+      "bytes": 5002,
+      "mtime": 1793536808.8744051,
+      "sha256": "7c376b0518a3128a7996b566be15169209b1d49c4b72b360fbf5d0f3d5a6be5c"
     },
     {
       "path": "tools/ci_check.py",
@@ -261,9 +310,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 21194,
-      "mtime": 1793519389.3028557,
-      "sha256": "853664bff93c50faab3052757686ff4b2bbfe853b4a7f4b853b0707ee44be5f8"
+      "bytes": 23581,
+      "mtime": 1793537455.4586575,
+      "sha256": "2e53aa23a36a912df1d080ced2c828fb8875f1f90195622bf43adbc190b1e320"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -373,9 +422,9 @@
     {
       "path": "tools/test_energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 18776,
-      "mtime": 1793533120.3521152,
-      "sha256": "c5e3a4ee0b53616b4fa2bb0b3cd26e55fdfc33ab1c141853730bbfbfc8f12c46"
+      "bytes": 26194,
+      "mtime": 1793536623.0707252,
+      "sha256": "bfba575862c6a7228cdbec3c226fc254b008914afb5cf615a1df33aa9ea723bc"
     },
     {
       "path": "tools/test_make_physical_decks.py",
@@ -383,6 +432,27 @@
       "bytes": 3330,
       "mtime": 1793510323.3780248,
       "sha256": "3fe3474dc679f2052acce69ec260070605702064d28478ef91443d013689ce3e"
+    },
+    {
+      "path": "tools/test_make_high_output_decks.py",
+      "kind": "script",
+      "bytes": 3248,
+      "mtime": 1793536832.1397502,
+      "sha256": "05772459ae54090eea1aced5289030c11b80051f0f0b7136eb912e7c37cf0875"
+    },
+    {
+      "path": "tools/test_operating_point_110a.py",
+      "kind": "script",
+      "bytes": 3235,
+      "mtime": 1793535830.0451548,
+      "sha256": "adeead902624f3efe3b2221770fc73499a468eb5cc8240274574bb059878d8b9"
+    },
+    {
+      "path": "tools/test_energy_ledger_48v_110a.py",
+      "kind": "script",
+      "bytes": 4041,
+      "mtime": 1793537272.576059,
+      "sha256": "8fae60980d67b6fb29a4da49b35e43cd271dd97b4bbd890da40ca9f62fb5a0c1"
     },
     {
       "path": "tools/test_control_validation_doc.py",
@@ -590,9 +660,9 @@
     {
       "path": "design/v3/stage_f/energy_ledger_100a.json",
       "kind": "result",
-      "bytes": 13040,
-      "mtime": 1793533120.3531156,
-      "sha256": "0298aa07cd453dfcf45c34482a68e26ddc2a539c9de9e8990a00aa4966c06788"
+      "bytes": 18432,
+      "mtime": 1793535076.0145333,
+      "sha256": "b5a3351c6b996664f6ca4cf154bf0e8562ff0dc32c416f071b7df7558f9c31b6"
     },
     {
       "path": "design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
@@ -600,6 +670,27 @@
       "bytes": 19473,
       "mtime": 1793519897.945729,
       "sha256": "31bbf5310bc0ad82043d5861a74845a1f7cd7dc4c6247f72e6db369005e0412a"
+    },
+    {
+      "path": "design/v3/power_priority/operating_point_48v_110a.json",
+      "kind": "result",
+      "bytes": 1235,
+      "mtime": 1793535613.3377476,
+      "sha256": "87046394af62c762380fbb55453b0216376cd7cb9d34aa5605afff4532d3d61e"
+    },
+    {
+      "path": "design/v3/power_priority/scenarios.json",
+      "kind": "result",
+      "bytes": 9090,
+      "mtime": 1793535043.7522628,
+      "sha256": "259999603b3e69872ac8c20e9ff0b6d883dd5a083c550c85831eafd4f9c2f9ef"
+    },
+    {
+      "path": "design/v3/power_priority/energy_ledger_48v_110a.json",
+      "kind": "result",
+      "bytes": 10602,
+      "mtime": 1793537173.9538229,
+      "sha256": "c76e33a6e598025dbdbced53f98420d0e696627ac96117e0a062c2e9fc1d9357"
     },
     {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -663,6 +754,13 @@
       "bytes": 11725,
       "mtime": 1793502476.2266135,
       "sha256": "6576c416303ae858a35b807a9885f9b5ab65927d96f2e71d73dd9ccd0d91a845"
+    },
+    {
+      "path": "design/v3/power_priority/48V110A_实测_2026-11-01.md",
+      "kind": "doc",
+      "bytes": 11717,
+      "mtime": 1793537400.105749,
+      "sha256": "64d79731ee6be70b852e3f9272f1fcf2ac0d261f245e2f72c30bc0632ed8fe3e"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -739,6 +837,27 @@
       "kind": "raw",
       "bytes": 2247195062,
       "mtime": 1793517457.6778996,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.raw",
+      "kind": "raw",
+      "bytes": 3781605817,
+      "mtime": 1793523665.6113186,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw",
+      "kind": "raw",
+      "bytes": 359483293,
+      "mtime": 1793535548.2831655,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
+      "kind": "raw",
+      "bytes": 486828020,
+      "mtime": 1793537107.4558449,
       "sha256": "skipped-large-raw"
     }
   ],
@@ -866,6 +985,72 @@
       "cold_start": false
     },
     {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
+      "tran": ".tran 0 1550u 880u 1n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00067,
+      "display_offset_us": 880.0,
+      "max_step_s": 1e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
       "deck": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
       "raw_time_start_s": 0.0,
@@ -932,6 +1117,11 @@
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_phys.cir",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
+    "python tools/make_high_output_decks.py --write",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
+    "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw --rl 0.0169 --periods 22 --pairs 1 4 --json design/v3/power_priority/operating_point_48v_110a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw --periods 22 --vin 48 --rl 0.0169 --no-step-check --json design/v3/power_priority/energy_ledger_48v_110a.json",
     "python -m pytest tools -q",
     "python tools/ci_check.py"
   ]

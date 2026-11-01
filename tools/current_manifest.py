@@ -49,6 +49,17 @@ V3_SOURCES = {
         # half the max timestep so the step check covers the quoted number.
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
+        # issue #6 asks for 5 / 2 / 1 ns; the third leg is a .tran step change.
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
+        # High-output candidates (tools/make_high_output_decks.py): the 110 A
+        # one was run, the other three are targets that have never run.  All
+        # four say UNRUN in their header; see the 48V110A record for the
+        # measured point.  The _cin deck carries the 100 A ledger's probes.
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
         "sim/v3/sr_tank_dual_v33_cold_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
@@ -77,6 +88,7 @@ V3_SOURCES = {
         "tools/powerup_checklist.py",
         "tools/energy_ledger_100a.py",
         "tools/make_physical_decks.py",
+        "tools/make_high_output_decks.py",
         "tools/ci_check.py",
         "tools/current_manifest.py",
         "tools/test_ascii_raw_window.py",
@@ -96,6 +108,9 @@ V3_SOURCES = {
         "tools/test_powerup_checklist.py",
         "tools/test_energy_ledger_100a.py",
         "tools/test_make_physical_decks.py",
+        "tools/test_make_high_output_decks.py",
+        "tools/test_operating_point_110a.py",
+        "tools/test_energy_ledger_48v_110a.py",
         "tools/test_control_validation_doc.py",
         "tools/test_ci_check.py",
         "tools/test_baseline_doc.py",
@@ -129,6 +144,11 @@ V3_SOURCES = {
         "design/v3/stage_f/上电检查表.md",
         "design/v3/stage_f/energy_ledger_100a.json",
         "design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
+        # High-output candidate: the run record, its writeup, and the ledger
+        # taken from the probe deck (input power, hence efficiency).
+        "design/v3/power_priority/operating_point_48v_110a.json",
+        "design/v3/power_priority/scenarios.json",
+        "design/v3/power_priority/energy_ledger_48v_110a.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -140,6 +160,7 @@ V3_SOURCES = {
         "design/v3/stage_f/首样验证与额定值判定_2026-10-31.md",
         "design/v3/bom/功率级元件需求与BOM草案_2026-11-01.md",
         "design/v3/pcb/主功率板连接网表_2026-11-01.md",
+        "design/v3/power_priority/48V110A_实测_2026-11-01.md",
         "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
     ],
     "config": [
@@ -155,6 +176,9 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
         # the hash list; their .log files are the committed measurements.
     ],
@@ -409,6 +433,18 @@ REPRODUCE = {
         "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_phys.cir",
         "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
         "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
+        # High-output candidate: generate, run, extract, then the ledger on the
+        # probe deck (that deck differs from the candidate only in .save).
+        "python tools/make_high_output_decks.py --write",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
+        "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw "
+        "--rl 0.0169 --periods 22 --pairs 1 4 "
+        "--json design/v3/power_priority/operating_point_48v_110a.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
+        "python tools/energy_ledger_100a.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw --periods 22 "
+        "--vin 48 --rl 0.0169 --no-step-check "
+        "--json design/v3/power_priority/energy_ledger_48v_110a.json",
         "python -m pytest tools -q",
         "python tools/ci_check.py",
     ],
