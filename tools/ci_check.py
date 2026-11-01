@@ -20,6 +20,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -33,6 +34,30 @@ COMPARED = ("entries", "missing", "deck_timing")
 
 def _is_raw(path: str) -> bool:
     return path.endswith(".raw")
+
+
+def _historical_crlf_equivalent(path: str, old: dict, fresh: dict) -> bool:
+    """Recognize exact old Windows-CRLF hashes after a canonical Git-LF checkout.
+
+    The historic manifest was generated on Windows before Git normalized text
+    newlines. Match both historic SHA256 and byte count against current source
+    re-encoded with CRLF. Actual content changes must still fail.
+    """
+    if _is_raw(path) or "sha256" not in old or "bytes" not in old:
+        return False
+    full = ROOT / path
+    if not full.is_file():
+        return False
+    content = full.read_bytes()
+    if b"\x00" in content:
+        return False
+    normalized = content.replace(b"\r\n", b"\n")
+    historical = normalized.replace(b"\n", b"\r\n")
+    return (
+        len(historical) == old["bytes"]
+        and hashlib.sha256(historical).hexdigest() == old["sha256"]
+        and hashlib.sha256(content).hexdigest() == fresh.get("sha256")
+    )
 
 
 def compare_manifests(committed: dict, fresh: dict) -> list[str]:
@@ -61,6 +86,8 @@ def compare_manifests(committed: dict, fresh: dict) -> list[str]:
             changed = sorted(key for key in set(old[path]) | set(new[path])
                              if (key != "mtime" or _is_raw(path))
                              and old[path].get(key) != new[path].get(key))
+            if changed and _historical_crlf_equivalent(path, old[path], new[path]):
+                changed = [key for key in changed if key not in ("bytes", "sha256")]
             if changed:
                 problems.append(f"{path}: " + ", ".join(changed) + " differ")
 
