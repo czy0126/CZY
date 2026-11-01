@@ -1,5 +1,8 @@
 # DCX 主功率板 —— 原生原理图（A1）
 
+> **最新状态：NOT_FOR_FAB / A1-WIP。** 本目录已移入当前开发分支，保留嘉立创原生 `.eprj2` 和真实焊盘比对。**`netlist_compare.json:readiness=PARTIAL_PASS` 不是完整原理图或投板验收。** 缺少 T1–T4/CT 原生符号、物理端子号/极性验收及约 39 个占位 MPN/值，缺有效主板 ERC。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[直接整改路线](../../docs/D1_电气优先_增输出与设计整改_2026-11-01.md)。
+
+
 这是 `design/v3/pcb/board_netlist.csv`（由 v3 deck 派生的**金网表**）在嘉立创 EDA Pro 里的
 原生可编辑原理图，不是一份新的设计。器件、网络、位号全部来自金网表；本目录只解决一件事：
 把 SPICE 的 `G/S/D` 引脚名落到真实封装的**具体焊盘**上，并证明落对了。
