@@ -494,14 +494,18 @@ def project_file() -> str:
     }, indent=2) + "\n"
 
 
-def erc_violations() -> list[dict]:
+def erc_violations(path: Path | None = None) -> list[dict]:
     """Every ERC violation in ``erc.json``, flattened across sheets.
+
+    ``path`` lets a caller read a report written somewhere other than the
+    project directory -- the test does, so that running it does not rewrite a
+    committed file just to change its timestamp.
 
     Returns ``[]`` when the file is missing -- the caller decides whether that
     is a skip or a failure, and this function does not pretend a missing report
     is a clean one.
     """
-    path = OUT / "erc.json"
+    path = path or OUT / "erc.json"
     if not path.exists():
         return []
     data = json.loads(path.read_text(encoding="utf-8"))

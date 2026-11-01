@@ -64,11 +64,14 @@ def test_the_project_file_is_committed_next_to_the_schematic():
 
 
 @pytest.mark.skipif(not mcb.KICAD_CLI.exists(), reason="kicad-cli is not installed here")
-def test_erc_reports_no_violations_at_any_severity():
+def test_erc_reports_no_violations_at_any_severity(tmp_path):
+    """Writes to ``tmp_path`` on purpose: a test that rewrites the committed
+    ``erc.json`` leaves the tree dirty after every run, and the next person
+    cannot tell a real regeneration from a pytest side effect."""
     sch = BOARD / "control_validation.kicad_sch"
-    out = BOARD / "erc.json"
+    out = tmp_path / "erc.json"
     subprocess.run([str(mcb.KICAD_CLI), "sch", "erc", "--severity-all", "--format", "json",
                     str(sch), "-o", str(out)], check=False, capture_output=True)
-    violations = mcb.erc_violations()
+    violations = mcb.erc_violations(out)
     assert violations == [], [f"{v['severity']} {v['type']}: {v['description']}"
                               for v in violations]
