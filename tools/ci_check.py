@@ -52,6 +52,9 @@ def compare_manifests(committed: dict, fresh: dict) -> list[str]:
             if _is_raw(path):
                 continue
             problems.append(f"{path}: in the committed manifest, no longer produced")
+        elif _is_raw(path) and new[path].get("status") == "missing":
+            # Missing RAW on a clean checkout is intentional, not drift.
+            continue
         else:
             # Tracked file mtime is recreated on each checkout. Only hashes and
             # size are portable. Preserve mtime comparison for present RAWs.
