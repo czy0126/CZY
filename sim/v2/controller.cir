@@ -1,0 +1,17 @@
+* Controller surrogate nominal timing bench
+.include ../../models/ucc25600_legacy_behaviour.lib
+Vaux aux 0 PWL(0 0 2u 12 8m 12)
+Xctl dt rt oc ss gd2 0 aux gd1 R184_UCC25600
+Rdt dt 0 5.36k
+Rrt rt 0 976
+Css ss 0 10n
+Rss_dc ss 0 1G
+Voc oc 0 0
+Rload1 gd1 0 10k
+Rload2 gd2 0 10k
+.tran 0 7m 0 50n
+.save V(gd1) V(gd2) V(ss) V(xctl:n_f) V(xctl:n_td)
+.meas tran FREQ_END AVG V(xctl:n_f) FROM 6m TO 7m
+.meas tran FREQ_START FIND V(xctl:n_f) AT=100u
+.meas tran SS_END FIND V(ss) AT=6m
+.end

@@ -1,0 +1,7 @@
+* inductor DC test zero
+I1 0 a 10
+L1 a 0 1n Rser=0
+.op
+.meas op vla FIND V(a)
+.meas op rla FIND V(a)/10
+.end

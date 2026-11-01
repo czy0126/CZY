@@ -1,0 +1,11 @@
+* .ic vs switch interactions
+V1 vin 0 48
+Rsw vin sw 1k
+S1 sw 0 0 0 SWM
+D1 sw vin DM
+.model SWM SW(Ron=8m Roff=100Meg Vt=2)
+.model DM D(Vfwd=0.7 Ron=8m)
+C1 sw 0 1n
+.ic V(sw)=48
+.tran 0 5u 0 1n uic
+.end

@@ -1,0 +1,1269 @@
+
+--- PAGE 1 ---
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+14771
+High Current, High Power-Density Intermediate Bus
+Converters for Vertical Power Delivery to
+Next-Generation Processors
+Pranav Raj Prakash
+, Graduate Student Member, IEEE, Ahmed Nabih
+, Member, IEEE,
+Yan Liang
+, Student Member, IEEE, Sudhir Kudva, Member, IEEE, Mostafa Mosa,
+C. Thomas Gray
+, Senior Member, IEEE, and Qiang Li
+, Senior Member, IEEE
+Abstract—Advancements in artiﬁcial intelligence and machine
+learning are driving the development of a new generation of ex-
+tremely powerful graphics processing units (GPUs) with exponen-
+tially increasing transistor counts, requiring larger die sizes and
+more power. Today, employing the conventional two-stage lateral
+power delivery with a 12 V intermediate bus voltage (IBV) requires
+most of the real estate in the GPU cards to be occupied by power de-
+livery circuits. However, this is impractical for the next-generation
+GPUs with larger sizes and higher power consumptions, resulting
+in the interest to transition to vertical power delivery, where a
+lower IBV is used to reduce the size of the voltage regulators and
+move them vertically underneath the GPU. However, this increases
+the required step-down ratio for the ﬁrst-stage intermediate bus
+converter (IBC), making it challenging to maintain high efﬁciency
+while constrained to a limited footprint. This article proposes a
+high-density transformer unit-cell for the ﬁrst-stage LLC-based
+IBC, one or more of which can be connected to achieve different
+IBVs. To demonstrate an implementation of the transformer, an
+840 W 48 V/1.8 V LLC converter is designed with an array of 14
+transformers built into seven unit cells, distributed along the edge of
+the GPU package to minimize the power distribution networkPDN
+losses. The converter module can achieve up to 95.5% efﬁciency
+while showcasing a power density of 2200 W/in3.
+Index Terms—Graphics processing unit (GPU), high-density
+dc–dc, LLC converter, planar magnetics, vertical power delivery.
+I. INTRODUCTION
+I
+N RECENT decades, power management for data centers
+and telecom applications has received signiﬁcant attention
+due to its exponential increase in market growth and electricity
+demand. By 2030, the total electricity demand for informa-
+tion and communication technology is expected to increase
+Received 29 December 2024; revised 5 April 2025; accepted 7 May 2025.
+Date of publication 23 May 2025; date of current version 5 August 2025. Rec-
+ommended for publication by Associate Editor M. Monfared. (Corresponding
+author: Pranav Raj Prakash.)
+Pranav Raj Prakash, Yan Liang, and Qiang Li are with the Center for Power
+Electronics Systems (CPES), Virginia Polytechnic Institute and State University,
+Blacksburg, VA 24061 USA (e-mail: pranavraj@vt.edu).
+Ahmed Nabih and C. Thomas Gray are with the NVIDIA Corporation,
+Durham, North Carolina 27713 USA.
+Sudhir Kudva and Mostafa Mosa are with the NVIDIA Corporation, Santa
+Clara, California, CA 95051 USA.
+Color versions of one or more ﬁgures in this article are available at
+https://doi.org/10.1109/TPEL.2025.3572841.
+Digital Object Identiﬁer 10.1109/TPEL.2025.3572841
+Fig. 1.
+Power and die size trends of NVIDIA’s datacenter GPUs.
+to approximately 20% of the projected global energy demand,
+with hyperscale data centers accounting for 40% of this energy
+consumption [1]. In the past decade, the common practice was
+to employ a 12 V bus architecture to power the compute trays,
+which was adequate for the lower power levels. However, the
+recent boom in energy demand has led to an overhaul of the
+data center power architecture, with the bus voltage to the server
+racks increased to 48 V to reduce power delivery network (PDN)
+losses and conversion stages [2]. As a result, many companies
+such as Facebook and Google have transitioned to the 48 V
+bus architecture to reduce electrical conversion losses by up to
+30% [3].
+The two main options for general-purpose computing are
+central processing units (CPUs) and graphical processing units
+(GPUs). Fig. 1 shows the transistor count, power consumption,
+and die size of the Intel Core i9 CPU compared to the latest
+high-performance NVIDIA GPUs [4], [5], [6]. Even the newest
+CPU does not possess enough computing power to handle
+super-charged productivity, speed up workﬂows, and unlock
+the full potential of AI/ML that data scientists are striving for.
+Therefore, ultra-powerful GPUs are required to accelerate the
+pace of innovation. The increasing transistor counts have also
+brought increasing thermal design powers (TDP) and die sizes
+over the recent generations of GPUs. This is especially evident
+in the most recent Blackwell GPU, which increases the transistor
+count, die size, and TDP over the previous generation by 160%,
+200%, and 33%, respectively. Consequently, the global market
+0885-8993 © 2025 IEEE. All rights reserved, including rights for text and data mining, and training of artiﬁcial intelligence and similar technologies.
+Personal use is permitted, but republication/redistribution requires IEEE permission. See https://www.ieee.org/publications/rights/index.html for more information.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 2 ---
+14772
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+Fig. 2.
+Two-stage power delivery to the different domains in a GPU.
+Fig. 3.
+Lateral power delivery to NVIDIA’s Hopper GPU.
+for GPUs is also expected to increase to $477 billion by 2030 [7],
+indicating the need for faster and more powerful chips. However,
+the higher power requirements for the next-generation GPUs,
+albeit the increasing compute efﬁciencies, pose a big challenge
+for power management systems.
+The GPU chip has multiple independent frequency domains
+such as memory and core (graphics), where each requires a
+precise frequency and voltage to operate optimally, usually
+between 0.6 V to 1 V. Moreover, these domains have different
+load transient requirements. Therefore, as shown in Fig. 2, a
+two-stage power delivery system is preferred to convert the
+48 V dc entering the server rack to the 0.6 V–1 V dc required
+by the GPU. The commonly implemented power architecture
+has the ﬁrst stage as an unregulated intermediate bus converter
+(IBC) that steps down the 48 V to an intermediate bus voltage
+(IBV) with high efﬁciency. As the second stage, different volt-
+age regulators (VRs) provide the various GPU domains with
+precisely regulated voltage and frequency while dealing with
+their rigorous transient requirements.
+In addition to the losses of the two power stages, the total
+efﬁciencyofthetwo-stagepowerdeliveryisalsoimpactedbythe
+PDN losses between stage 1 and stage 2 and between stage 2 and
+the GPU load. A higher IBV would result in a lower bus current
+Ibus, and hence a lower PP DN = I2
+busRP DN for the same
+power. Fig. 3 shows the power delivery architecture of NVIDIA’s
+Hopper GPU, which requires around 700 W of power [6]. Here,
+an IBV of 12 V is implemented, with a 48 V/12 V IBC as the
+ﬁrst-stage (area in blue), followed by 12 V/1 V multiphase buck
+VRs as the second-stage (area in red) [8]. Since the two stages
+are cascaded on the same side of the GPU card, it is called lateral
+power delivery (LPD). As can be noted, the 1st-stage 4:1 IBC
+only occupies a small area in the corner (blue box), whereas the
+60 phases of the second-stage VRs require most of the real estate
+on the GPU card due to the large sizes of the discrete inductors
+needed for the 12 V/1 V VRs.
+TABLE I
+VOLTAGE REGULATORS WITH DIFFERENT IBVS
+An example of a 12 V/1 V VR is MPC22163 from MPS, as
+summarized in Table I. It typically switches at less than 1 MHz
+for high efﬁciency, resulting in a low bandwidth, a large inductor
+size and high output capacitance to meet the steady-state and
+transient requirements. Although having a 12 V bus can reduce
+the PDN loss, the large inductor sizes are unsuitable for future-
+generation GPUs, which have a much larger die size and require
+higher power, as seen in Fig. 1. This is a bottleneck with the
+existing lateral power delivery to supply next-generation GPUs
+effectively.
+This article provides a more in-depth and generalized analysis
+of the design and optimization process of the high-density IBC,
+building upon the ideas presented in a previously published
+conference paper [9].
+The rest of this article is organized as follows. Section II
+explores the innovations in the power delivery architecture to
+the GPU that require increasingly high powers and the required
+form factor of the IBC to minimize the PDN loss. Section III
+describes the topology selection of the LLC-based bus converter.
+Section IV describes the design of a high-density transformer
+unit-cell that can be cascaded to modify the IBV easily. Sec-
+tion V describes the design guideline for a 48 V/1.8 V IBC
+using the proposed unit-cell. Section VI presents the hardware
+prototype and testing of the 48 V/1.8 V IBC and compares its
+performance with estimations of IBCs with other IBVs using
+the same transformer unit-cell. Finally, Section VII concludes
+this article.
+II. VERTICAL POWER DELIVERY TO GPUS
+The limitations of the existing LPD for future GPUs requiring
+higher power demand a paradigm shift in the power delivery
+architecture. The PDN losses arising from the high load current
+can be reduced by placing the VRs vertically underneath the
+GPU,hencelimitingtheirdistancetothethicknessofthesystem-
+on-chip (SoC) card and the GPU substrate. This method, often
+labeled as vertical power delivery (VPD), can be implemented
+for both single-stage and two-stage power delivery solutions.
+Fig. 4(a) illustrates the VPD implementation for a single-
+stage VR, as described in [10] and [11]. The mini-LEGO PoL
+converter [10] integrates a switched-capacitor (SC) stage and
+a multiphase buck stage with a ﬂoating bus, vertically stacking
+them in a power module housed beneath the GPU. The switching
+bus converter in [11] vertically stacks a SC front-end stage
+with two series-capacitor-buck (SCB) back-end stages, utilizing
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 3 ---
+PRAKASH et al.: HIGH CURRENT, HIGH POWER-DENSITY INTERMEDIATE BUS CONVERTERS FOR VERTICAL POWER DELIVERY
+14773
+Fig. 4.
+(a) VPD with single-stage power delivery, (b) LPD with high IBV
+and large VRs, (c) reducing the IBV, moving the VRs vertically underneath the
+GPU, and moving the IBCs closer to GPU to reduce PDN loss, and (d) possible
+arrangement with very low IBVs to utilize ultralow proﬁle IVRs that ﬁt directly
+underneath the substrate.
+switching buses to merge them. These single-stage VRs offer ap-
+pealing options, as they eliminate the power distribution network
+(PDN) losses that must be accounted for in two-stage solutions.
+However, the operating frequency of the single-stage VRs is
+restricted to under 2 MHz to maintain optimal efﬁciency ([11]
+runs at 600 kHz while [10] runs at 1.5 MHz), thereby limiting
+the control bandwidth. In addition, the proﬁle constraints on the
+bottomsideoftheSoCcard(3–5mm)restrictthepeakloadcapa-
+bility and, consequently, the current densities (0.6–0.7 A/mm2)
+achievable, which is insufﬁcient for future GPUs. Furthermore,
+GPUs typically implement liquid cooling on the top side of the
+SoC card. While a few bottom-side cooling solutions do exist,
+the limited mechanical clearance and component density often
+restrict the effectiveness of thermal management for single-stage
+VRs on the underside. Consequently, splitting the high voltage
+step-down and regulation into distinct stages demands further
+investigation to address the previously mentioned limitations
+associated with single-stage VRs.
+The transition from LPD to VPD for a two-stage power
+conversion is described in Fig. 4. Fig. 4(b) shows the existing
+LPD with a high IBV and large VRs that hinder the GPU size
+and power expansion. Similar to the single-stage power delivery,
+the VRs must be moved to the bottom side of the SoC card,
+vertically underneath the GPU to accommodate the increasing
+size of the GPU die and enable VPD, as shown in Fig. 4(c).
+This also reduces the distance, and hence the PDN resistance
+from the VRs to the load. However, the proﬁle constraints on
+the bottom side are very tight (3–5 mm) for the legacy 12 V
+VRs. Although some innovations, such as a printed circuit board
+(PCB) embedded coupled-inductor structure [12], have been
+made, the low current densities (0.5A/mm2) are not adequate for
+the high-current GPUs. Although improvements to the magnetic
+design may reduce the proﬁle of the VRs [13], a pursuit of higher
+efﬁciencies and power densities is leading the industry away
+from the 12 V IBV to lower voltages [14].
+A lower IBV (e.g., 6 V, 3.3 V, 1.8 V) increases the duty
+cycle required by the buck VRs for the same output voltage.
+Therefore, for a ﬁxed inductance, the peak inductor current, and
+hence the device switching current, decreases to maintain charge
+balance. The lower switching current, coupled with the lower
+input voltage, reduces the device switching loss considerably,
+thereby facilitating the safe increase of switching frequencies.
+This results in smaller inductor sizes due to lower peak magnetic
+ﬂux. Moreover, with the recent development of new low-voltage
+devices with higher ﬁgures of merit (FOMs) and integrated
+gate drivers (DrMOS), the efﬁciency and densities can be im-
+proved [14]. An example of low IBV VRs is Fe1736 from
+Ferric, a 1.8 V/0.8 V VR as summarized in Table I. Thanks
+to the low IBV, switching the frequency can be increased to
+over 50 MHz, resulting in a smaller size, higher bandwidth, and
+reduced capacitance required for output regulation.
+However, reducing the IBV increases the PDN loss between
+the ﬁrst and the second stages. For example, with a RP DN =
+300 mΩ for a 1000W GPU, reducing the IBV from 12 V to
+1.8 V would increase the PDN loss by 44 times to around
+100W, which would drastically reduce the total efﬁciency by
+10%. Therefore, the ﬁrst stage IBCs must be moved closer to
+the GPU to minimize the PDN resistance, as shown in Fig. 4(c).
+This also enables the IBCs to share the liquid cooling thermal
+managementsystemfortheGPU,hencereducingthecomplexity
+and cost. Furthermore, with current and future innovations in
+ultra-low proﬁle (<1 mm), ultra-high frequency (>100 MHz)
+integrated voltage regulators (IVRs), they can be pushed closer
+to the GPU by embedding directly in the GPU substrate, thereby
+furtherminimizingthePDNlossesandimprovingoverallsystem
+efﬁciency [15], [16], [17]. Such high frequencies also virtually
+eliminate the requirement for output ﬁlter capacitors, further
+reducing the total real estate required for power delivery.
+In summary, a two-stage VPD architecture can effectively
+be implemented for high-current GPUs, but the IBV must be
+reduced from the traditional 12 V to ensure high current density
+and bandwidth. However, the optimal IBV to maximize overall
+system efﬁciency is still an ongoing research problem since
+it heavily inﬂuences the IBC, PDN, and VR losses. While
+research on all three fronts is ongoing, this work focuses on
+proposing a versatile, high-density design for the ﬁrst-stage IBC
+that can easily be scaled to accommodate various low IBVs. The
+transition to VPD also instills a unique design challenge on the
+IBCs, wherein they must have: 1) a narrow width to ﬁt between
+the GPU and the edge of the GPU card; 2) a wide length to
+distribute and supply the output current evenly and provide a
+strong connection to the VRs to minimize the PDN loss [4]; and
+3) a top-side cooled power module with all power devices on the
+top layer.
+III. LLC-BASED INTERMEDIATE BUS CONVERTER
+This section will discuss the selection of the preferred topol-
+ogy, devices, and resonant tank parameters.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 4 ---
+14774
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+A. Topology Selection
+To maximize the efﬁciency while conforming to the high
+power density requirements, the choice of converter topology
+is important [18]. Capacitor-based switched tank converters
+(STCs) can achieve high efﬁciencies and power densities with
+their ability for zero current switching (ZCS) and hence are
+potential candidates for this solution [19], [20]. However, an
+additional buck converter is required for startup and protection.
+Moreover, due to multiple resonant branches, it is sensitive to
+component tolerances and requires a special controller to adap-
+tively tune the operating frequency [21]. Besides component
+tolerances, the large number of components connected in series
+leads to signiﬁcant conduction losses as the current increases.
+This constrains the STC from extending to lower output voltages
+and higher output currents, where additional resonant branches
+are necessary to achieve a higher conversion ratio. Recently,
+hybrid resonant switched tank-based converters were proposed,
+combining the switched-capacitor networks with multitapped
+autotransformers to reduce the number of stages and the com-
+ponent count, improving the efﬁciency [22]. However, due to
+the low output voltage and low turns ratio, the effective peak
+magnetizing current iLm to charge/discharge the device Coss
+is low. Hence, the converter must be switched at fs > fo to
+increase the turn-off current, resulting in zero voltage switching
+(ZVS) loss at low to medium loads.
+Another well-reported topology is the unregulated LLC con-
+verter (DCX) [23], [24]. Due to the higher turns ratio n, the LLC
+DCX can achieve soft-switching at all load conditions and hence
+can be operated at high frequencies with high efﬁciency and
+power density. It is also less sensitive to component tolerances
+since there is only one resonant branch to be tuned, where the
+transformer’s leakage inductance Lk is utilized as the resonant
+inductance Lr and Class I capacitors are used for the resonant
+capacitance Cr to stabilize the resonant frequency fo across
+temperatures and voltages. Moreover, it is highly scalable and
+can easily be extended to lower IBVs by simply changing the
+turns ratio n.
+However, for such high-current transformers, several sig-
+niﬁcant challenges must be addressed, including paralleling
+multiple secondary rectiﬁers (SRs) and secondary windings to
+distribute the high secondary current and placing the multiple
+parallel SRs close to the termination to mitigate the secondary
+winding leakage inductances. To address these issues, the con-
+cept of matrix transformers can be implemented, wherein the
+output current can be divided among several smaller elementary
+transformers whose primary windings are in series, and the
+output sets are connected in parallel, thereby distributing the
+high current and facilitating easier SR termination, as shown in
+Fig. 5, [25].
+B. Primary Inverter Conﬁguration
+Theinverterontheprimarysidecouldeitherbeofafull-bridge
+(FB) or a half-bridge (HB) conﬁguration as shown in Fig. 5
+and whose differences are summarized in Table II. Although
+FB inverters reduce the losses per device, the device number
+and transformer turns ratio are higher, resulting in higher costs
+Fig. 5.
+n:1:1 LLC converter with N transformers using (a) half-bridge primary
+with n/2N turns for each transformer, and (b) full-bridge primary with n/N
+turns for each transformer.
+TABLE II
+PRIMARY INVERTER CONFIGURATION
+TABLE III
+PRIMARY DEVICE COMPARISON
+and added complexities in the transformer design, especially for
+such high step-down applications. The HB inverters would be
+preferred at low power levels due to lower driving loss and easier
+transformer winding layout. However, the devices would reach
+their thermal limit at higher power levels, requiring the switch
+to FB rectiﬁers.
+To determine the maximum power the devices can handle in
+an HB conﬁguration, selecting the best device is paramount.
+Although Si MOSFETs have been traditionally preferred in
+this voltage range, recent advances in GaN technology have
+resulted in low on-resistance GaN devices with better ﬁgures
+of merit (FoMs) than the best Si devices, as highlighted in
+Table III. As expected, the very low gate charges Qg and the low
+on-resistances Rdson provide a lower FoM to the GaN devices
+than the Si counterpart. Although the Rdson of the Si device
+can be reduced by increasing the driving voltage Vdr to result
+in a lower switching-loss FoM Rdson,max · Coss, it increases
+Qg signiﬁcantly, thereby paying the price of higher driving loss
+and light-load efﬁciency. Therefore, the 100V GaN FET can be
+selected as the primary device.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 5 ---
+PRAKASH et al.: HIGH CURRENT, HIGH POWER-DENSITY INTERMEDIATE BUS CONVERTERS FOR VERTICAL POWER DELIVERY
+14775
+Fig. 6.
+Preferred rated powers with HB and FB inverters.
+The thermal limit for the devices can be estimated based on
+the junction-to-ambient thermal resistance, Rth,J−A. which can
+either be obtained from device data sheets for a rough approx-
+imation, calculated using tools like [26] for a more accurate
+estimation, without having to run time-consuming ﬁnite element
+analysis (FEA) simulations. For this evaluation, the low-proﬁle
+IBCs placed close to the GPU share the same liquid cooling
+for thermal management. In addition, the primary devices have
+bottom-side cooling with thermal vias, and the power module is
+installed with an aluminum heat-spreader to reduce the thermal
+resistance from the case to the heatsink, as implemented in [27].
+Speciﬁcally, a thermal interface material (TIM) with a ther-
+mal conductivity k = 17.8 W/m · K, a 1 −mm thick aluminum
+heat-spreader, and a convection coefﬁcient h = 100 W/m2K is
+used to result in an RJ−A = 12.2 ◦C/W. It is noteworthy that
+RJ−A would change with heatsink dimensions and ﬂow speed
+and only provides a rough estimate for choosing the primary
+inverter conﬁguration or number of devices required in parallel.
+Based on this, the approximate temperature rise of the primary
+devices with increasing rated power can be evaluated for the HB
+and FB conﬁgurations. Assuming negligible dead time and op-
+eration when switching frequency fs equals the series resonant
+frequency fo, the device losses can be calculated as described
+in [28], and the temperature rise can be plotted for the devices
+in both HB and FB inverters. Assuming an ambient temperature
+of 60 ◦C–65 ◦C close to the GPU, a maximum temperature rise
+of 35 ◦C is permitted for safe operation. Based on this analysis,
+Fig. 6 shows the recommended power ranges for HB and FB
+inverters,whereHBinverterswouldofferlowerdevicecountand
+easier transformer winding layout for less than 850W, whereas
+FB inverters would be required for thermal management for
+higher power levels. Alternatively, multiple LLC converters with
+HB inverters can be paralleled to increase the total delivered
+power.
+C. Secondary Rectiﬁer Conﬁguration
+The choice between center-tap (CT) and FB rectiﬁers comes
+down to the trade-off between requiring two devices with a
+breakdown voltage of at least 2Vo (for CT rectiﬁers) or four
+devices with a breakdown voltage of at least Vo (for FB recti-
+ﬁers). For such low Vo applications, CT rectiﬁers are a better
+choice than FB rectiﬁers since a device of slightly higher, if not
+similar, breakdown voltage can be used even for a voltage stress
+of 2Vo. Although GaN devices have recently started emerging in
+TABLE IV
+TRANSFORMER AND SR SPECIFICATION AT DIFFERENT IBVS
+Fig. 7.
+(a) Number of parallel SRs required to limit ΔTc = 35 ◦C for different
+IBVs with increasing output power, and (b) number of parallel SRs required per
+transformer turn with a HB inverter; each 1:1 transformer would require one SR
+in parallel in the design region.
+the low voltage domain, Si MOSFETs still have the better FoM at
+the time of this article, and hence are chosen as the synchronous
+rectiﬁers (SRs). Table IV shows the selected SRs for the different
+IBVs considered in this article due to their low Rds,on small
+3.3 mm × 3.3 mm package and pin-to-pin compatibility across
+IBVs.
+The number of parallel SRs required depends on their thermal
+capabilities. However, unlike the primary devices, Since the
+SRs are placed on the PCB windings, only case-side cooling
+is possible, and hence RJ−A = 46.4 ◦C/W is obtained using
+the same setup as the primary devices. Assuming negligible
+driving loss, the maximum RMS current IRMS,max to limit the
+temperature rise to 35 ◦C can be calculated as listed in Table IV.
+Based on this, the number of parallel SRs required for different
+IBVs at increasing power levels can be determined, as shown
+in Fig. 7(a). The IBC modules described in this article are
+top-side cooled only; hence, all devices must be placed only
+on the top-side. This complicates paralleling multiple SRs on a
+single transformer. Therefore, it is preferred to have the same
+number of transformers as parallel SRs for modularity and ease
+of design. To determine the design range for the rated power,
+the ratio of the number of parallel SRs nSR to the required
+turns number (half-bridge) is plotted against power for different
+IBVs in Fig. 7(b). The ratio is close to and less than one around
+800W, so the power can be maximized without over-stressing
+the devices. The number of SRs and transformers would remain
+the same for FB inverters, but each transformer would have a
+turns ratio of 2:1 instead.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 6 ---
+14776
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+IV. HIGH-DENSITY PCB TRANSFORMER MODULE
+Based on the analysis in the previous sections, a 1:1 (for HB
+primary) and 2:1 (for FB primary) transformer is required to
+construct the IBC module. However, with such a large number of
+elemental transformers to be connected, it is clear that optimiz-
+ing the transformer design is key to maximizing the efﬁciency
+and power density of the converter. This includes considerations
+with the optimal number of PCB layers, type, and material of
+the transformer’s core, core and winding dimensions, switching
+frequency, and the SR rectiﬁer placement to maximize space
+utilization.
+A. Transformer Unit-Cell With High Space Utilization
+Each elemental transformer can be implemented using a
+UI/UU core, where the windings are wound around one leg,
+and the other leg is the magnetic ﬂux return path. However, two
+such transformers can be wound inversely such that the magnetic
+ﬂux in the return legs is equal and opposite. This way, the ﬂux
+return legs can be removed and the two winding-carrying legs
+can be integrated into a single UI/UU core [29].
+With increasing switching frequencies and reducing mag-
+netic sizes, PCB-based planar magnetics are preferred over the
+traditional litz wire-based transformers due to easier manufac-
+turability, strong repeatability to minimize leakage inductance
+mismatch, and a larger surface area resulting in low-proﬁle cores
+and better thermal capabilities [30]. However, multiple winding
+layers must be paralleled for high-current applications to prevent
+overheating. Based on this, a 12-layer PCB is implemented
+in [29], where the primary and secondary layers are interleaved
+to minimize the magneto-motive force (MMF) build-up. The
+four secondary layers per CT turn are connected in parallel
+through vias and then connected to the SRs and capacitors
+which are placed outside the transformer footprint to complete
+the ac SR termination loop. This termination pattern may be
+referred to as lateral SR termination since the SRs and capacitors
+are on the same layer as one of the secondary layers and the
+SR termination loop. However, this results in asymmetrical
+current-sharing between the parallel secondary windings, where
+the secondary winding on the top layer got the most current due
+to its lowest impedance path to the SRs on the same layer. This
+causes increased winding losses and a large footprint.
+To address this issue, [23] proposed a vertical SR termination
+technique, where two additional layers dedicated to housing the
+SRs and capacitors are added to the top and bottom of the PCB
+stack (14 total layers) and are connected to the parallel secondary
+layers with vias, as shown in Fig. 8(a). Fig. 8(b) shows the SRA
+and SRB termination loops of the two half-cycles, which connect
+the switching nodes SWA and SWB to the corresponding SRs
+and capacitors to return to the Vo node. Fig. 8(c), (d), and (e)
+show the secondary current ﬂow in the two half-cycles through
+the SA and SB layers to the termination layers. Since all the
+parallel secondary layers are now connected to the SRs through
+vias, the impedance is more symmetrical, resulting in improved
+current-sharing.
+The winding areas occupied by the SWA and SWB nodes
+are highlighted in green and pink, respectively. It may be noted
+Fig. 8.
+Transformer design in [23]: (a) 14-layer PCB stack-up with top and
+bottom layers dedicated for SR termination, (b) SR termination loops in the
+two half-cycles, (c) SRA loop current ﬂow and SWA node area, (d) SRB loop
+current ﬂow and SWB node area, and (e) under-utilized area in the top/bottom
+termination layers.
+that the switching nodes occupy half of each winding, although
+they only connect the winding terminal to the drain terminal
+of the device. This results in signiﬁcant underutilized space on
+either side of the UI core [Fig. 8(e)], thereby limiting the achiev-
+able power density. Moreover, the capacitors and SR devices
+are arranged along the converter’s width, which could require
+additionallengthtoaccommodatethem.Therefore,althoughthis
+termination method can improve the current sharing between the
+parallel secondary layers, poor space utilization is the bottleneck
+to maximizing its density.
+Other works haveattemptedtosolvesomeof thesechallenges.
+A similar design was implemented in [31], where the capacitors
+were moved to a separate submodule (double-layered vertical
+SR termination), and the devices are moved closer to reduce
+the length. However, the underutilization of the space between
+the cores persists, and the multiple-module system could result
+in complex implementation and packaging. The design in [32]
+utilized the transformer footprint effectively, with the capacitors
+and SRs all placed in a high-density form factor. However, the
+SRs are covered by the magnetic core, which would prevent
+proper thermal management of them, thereby limiting the max-
+imum power that could be pushed. Furthermore, the core legs
+must be elongated beyond the SRs’ proﬁle, increasing the total
+module proﬁle.
+To address the challenges with the previous literature, this
+article proposes a high-density transformer unit-cell, as shown
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 7 ---
+PRAKASH et al.: HIGH CURRENT, HIGH POWER-DENSITY INTERMEDIATE BUS CONVERTERS FOR VERTICAL POWER DELIVERY
+14777
+Fig. 9.
+Construction of proposed transformer unit-cell: (a) Rotating the sec-
+ondary windings of [23] by 90◦, rotating the SRs by 180◦and moving them
+next to the core, (b) resulting transformer unit-cell with high space-utilization,
+(c) Secondary current ﬂow in the two half-cycles, and (d) Current-sharing
+between parallel secondary layers.
+in Fig. 9. Considering the 14-layer PCB stack-up and wind-
+ing arrangement as [23] as the starting point in Fig. 9(a), the
+secondary windings are rotated by 90◦toward the transformer
+core, such that the area under the switching nodes SWA and
+SWB are reduced by half, as shown in Fig. 9(b). Now, the
+SRs must be rotated by 180◦and be placed adjacent to the
+transformer core to connect to the switching nodes. This now
+frees up space on the top and bottom of the transformer core
+to place the ﬁlter capacitors to complete the SR termination
+loop. This reinstates the single-layered vertical SR termination
+from [31], where a separate submodule is not required for the
+capacitors. This results in a high-density transformer unit-cell
+with an optimal space-utilization of the transformer footprint.
+Fig. 9(c) shows the secondary ac current ﬂow during the two
+half-cycles. The symmetry ensures equal leakage inductance
+along the two paths, thereby ensuring symmetrical operations
+too. Furthermore, the proposed arrangement does not impact the
+Fig. 10.
+“Serpentine” half-turn primary winding arrangement within a unit-
+cell: (a) PCB stack-up, (b) 2:1 ratio with all primary layers in series for FB
+inverter, and (c) 1:1 ratio with parallel layers P1/P3 in series with parallel layers
+P2/P4 for HB inverter.
+current-sharing between the parallel secondary layers [Fig. 9(d)]
+since all the windings are still connected symmetrically through
+vias to the SRs.
+B. Connecting Multiple Transformer Unit-Cells
+The primary windings within the proposed unit-cell are ar-
+ranged as shown in Fig. 10. Since each unit-cell consists of
+two elemental transformers, four and two primary turns per
+transformer for FB and HB inverters, respectively, are required.
+Using four primary layers [Fig. 10(a)], each layer can be imple-
+mented as a half-turn twisted to change direction from one leg to
+the other. This way, four primary turns can be implemented by
+connecting the four layers in series using limited vias only at the
+two ends of the unit-cell, as shown in Fig. 10(b) [33]. Similarly,
+to implement two turns for the HB inverter, the primary current
+ﬂows in through layers P1 and P3 in parallel and ﬂows out
+through layers P2 and P4 in parallel, as shown in Fig. 10(c).
+Interleaving the input and output paths also helps minimize the
+leakage inductance. Furthermore, the current densities of the
+primarylayerswouldideallybesimilarinFig.10(b)and(c)since
+the 2I current would be distributed between the two parallel
+layer sets.
+To implement the large turns ratio required by the IBC, the
+proposed unit-cells can easily be connected and arranged in a lin-
+ear array to minimize the total width of the converter module and
+distribute the output current along its length. Moreover, certain
+improvements are made to reduce the winding loss. The “ser-
+pentine” primary winding structure can be extended to connect
+multiple unit-cells, as shown for two unit-cells in Fig. 11(a) [33].
+The secondary windings can also be arranged by interleaving
+the SA and SB layers for symmetrical leakage inductance and
+connecting the outputs in parallel. The two switching and output
+nodes SWA, SWB, and Vo are also labeled, where it can
+be observed that the Vo nodes between the two unit-cells are
+adjacent to each other. This means that the secondary layers can
+be merged between two unit-cells, thereby reducing the current
+density in that area [34]. Furthermore, the twisting in the primary
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 8 ---
+14778
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+Fig. 11.
+Winding arrangement and current densities connecting two unit-cells:
+(a) “Serpentine” primary and interleaved secondary and (b) “semi-serpentine”
+primary and merged secondary between unit-cells.
+windings can also be reduced by switching from a “serpentine”
+winding structure to a “semi-serpentine” structure, as shown in
+Fig. 11(b). To achieve this, The ﬂux direction of the adjacent
+unit-cell is inverted, thereby resulting in the straightening of
+the primary winding between unit-cells. The improvements in
+winding arrangement help reduce the winding loss by 15%.
+Based on this concept, IBCs of various IBVs can easily be
+designed by connecting multiple 2:1 transformer unit-cells in
+series. For a given output power, a larger unit-cell number
+increases the transformer turns ratio, hence reducing the IBV.
+Simultaneously, more SRs are added in parallel to distribute
+the increasing output current evenly along the module length,
+thereby highlighting the scalability of the proposed design.
+Fig. 12 shows conceptual designs of HB LLC-based IBCs for
+6.25 V, 3.1 V and 1.8 V IBVs, which require 2 (4:1 ratio), 4 (8:1
+ratio), and 7 (14:1 ratio) unit-cells, respectively. The estimated
+dimensions and power densities are also provided, highlighting
+Fig. 12.
+Unit-cell-based IBCs for different IBVs, their estimated dimensions
+and power densities: (a) 2 unit-cells for IBV = 6.25 V, (b) 4 unit-cells for IBV
+= 3.1 V, and (c) 4 unit-cells for IBV = 1.8 V.
+Fig. 13.
+Possible arrangements of two parallel IBCs around the GPU: (a)
+Each IBC is a single module on either side of the GPU, and (b) Each IBC is two
+modules connected in series and placed around the GPU.
+the small size and high power density possible with the proposed
+transformer design.
+V. INTERMEDIATE BUS CONVERTER FOR 1.8 V IBV
+To demonstrate the scalability of the proposed transformer
+design and utilizing the ultra-low proﬁle, ultra-high bandwidth
+1.8 V-0.8 V VRs, a low IBV of 1.8 V is chosen, and an 840 W
+48 V:1.8 V HB LLC converter is designed. The 14:1 turns ratio
+is implemented with 14 1:1 transformers, each delivering 60 W,
+and implemented by connecting seven transformer unit-cells as
+demonstrated in the previous section. For future GPUs requiring
+>1500 W of power, [5], two such modules may be paralleled
+and, based on the GPU size and available space around the
+die, may be arranged in various conﬁgurations to minimize the
+PDN loss thanks to the modularity of the transformer unit-cell.
+Fig. 13(a) shows one arrangement where each module contains
+all seven unit-cells and is placed on either side of and close to
+the GPU to provide the IBV symmetrically to the IVRs with
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 9 ---
+PRAKASH et al.: HIGH CURRENT, HIGH POWER-DENSITY INTERMEDIATE BUS CONVERTERS FOR VERTICAL POWER DELIVERY
+14779
+Fig. 14.
+Loss evaluation at 600 kHz, 840 W for the (a) primary and
+(b) secondary devices.
+Fig.
+15.
+Inﬁneon
+15
+V
+device
+with
+different
+gate-pin
+locations:
+(a) IQE004NE1LM7SC and (b) IQE004NE1LM7CGSC.
+minimum PDN loss. Alternatively, depending on the GPU size,
+the IBCs can be separated into multiple modules, wherein three
+unit-cells and the HB inverter on one module are connected in
+series with the remaining four unit-cells on another module,
+as shown in Fig. 13(b). The intermodular connection would
+be made on the primary high-voltage side, thereby incurring
+negligiblei2R losses.Thishighlightsthesystem-levelversatility
+of the proposed transformer unit-cell. For this article, however,
+a single power module with seven unit-cells is designed. Since
+the transformer largely dominates the size and loss of the con-
+verter, its design is paramount in optimizing the converter’s
+performance.
+A. Device Selection
+Based on the analysis in Section III, the primary HB inverter
+uses the 100 V GaN FETs EPC2032. In addition to the low FoM,
+a 3 × 5 mm package combined with an exposed top for top-side
+thermal management makes it an excellent ﬁt for the converter.
+Fig. 14(a) shows the primary device loss breakdown at full load,
+which adds up to 4.3 W.
+Similarly, the secondary CT rectiﬁers employ the 15 V Si
+MOSFET, which offers a low FoM and a top-cooled package
+with a small 3.3 mm × 3.3 mm footprint. Fig. 14(b) shows the
+SR loss breakdown of all 28 devices at full load, which adds up
+to 17.1 W. Moreover, it is available with both center and side
+gate-pin conﬁgurations, as shown in Fig. 15, helping to minimize
+the gate loop inductance and easing the layout.
+B. Transformer Core Material Selection At High Bmax
+It is imperative to select the right Mn-Zn ferrite material for
+the transformer’s core to minimize the core loss and, hence,
+the transformer loss. For such high-density transformers, the
+limited available area results in the core suffering higher peak
+Fig. 16.
+Measured core loss density Pv of toroidal samples of three Proterial
+materials at high Bmax conditions: (a) 200 kHz, (b) 400 kHz, (c) 600 kHz,
+(d) 800 kHz, (e) 1000 kHz, (f) 1200 kHz, and (g) summary of optimal materials.
+magnetic ﬂux density (Bmax) than what is provided in their
+data sheets. For example, the Mn-Zn ferrite materials from
+Proterial, ML27D, and ML95s are recommended to be operated
+at Bmax < 150 mT, and ML91s at Bmax < 80 mT to provide
+the lowest core loss density Pv at their recommended frequency
+ranges [35]. However, no information is provided for high Bmax
+conditions (less than the saturation ﬂux density Bsat), which
+would be commonplace for high-density magnetics. Therefore,
+the Pv of toroidal core samples of the three materials (OD =
+9.9 mm, ID = 5.9 mm, H = 3 mm) is measured at different
+frequencies up to Bmax = 300 mT using the partial-cancellation
+method described in [36], as shown in Fig. 16. Table V sum-
+marizes the measurement results, showing that the material
+recommendations essentially hold in the recommended Bmax
+operating range. However, at high Bmax conditions, the Pv of
+ML95s and ML91s increase signiﬁcantly, resulting in ML27D
+providing the lowest Pv from 200 kHz–1.2 MHz. Therefore, this
+material is used for the transformer core in this article.
+The core loss is calculated using Mu’s model for rectangular
+ac voltages [37] as
+Pcore = 8
+π2 k(Bmax)βf α
+s Vcore
+(1)
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 10 ---
+14780
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+TABLE V
+LLC CONVERTER SPECIFICATIONS
+Fig. 17.
+Minimum half-load transformer loss vs footprint at 600 kHz.
+where Pcore is the core loss, k, α and β are the core loss
+coefﬁcients for the core material, Bmax is the peak magnetic ﬂux
+density, fs is the switching frequency, and Vcore is the effective
+core volume. The core loss coefﬁcients are curve-ﬁtted based on
+the measurements in Fig. 16 and used to calculate the core loss.
+C. Transformer Loss Optimization
+The winding loss is calculated based on the Dowell’s
+model [38] as
+Pw = RDC
+
+Re(Mw) + m2 −1
+3
+Re(Dw)
+
+I2
+RMSkfr.
+(2)
+Here, Rdc is the winding dc resistance, Mw and Dw are the
+Dowell’s ac coefﬁcients, m is the magnitude of the relative MMF
+in the layer, IRMS is the winding RMS current and kfr is the
+fringing effects coefﬁcient obtained from 2-D FEA simulations
+by dividing the simulated winding loss by the calculated winding
+loss using the Dowell’s model. The winding dc resistance Rdc
+calculation for a circular PCB winding and the loss evaluation
+process was described in [25].
+Based on the fact that GPUs operate at low-to-half load
+most of the time, the transformer’s dimensions are optimized
+to maximize the half-load efﬁciency. The transformer loss,
+Ptr = Pcore + Pw, is calculated for different core radii r and
+winding widths c, and the dimensions yielding minimum loss
+at each footprint are selected. This process is repeated at dif-
+ferent footprints, resulting in the curves shown in Fig. 17. For
+such low-voltage, high-current transformers, the winding loss is
+Fig. 18.
+Converter loss at half-load and power density vs fo.
+higher than the core loss, and the transformer loss reduces with
+increasing footprint at the penalty of lower power density. The
+core radius is limited such that Bmax does not exceed 300mT.
+This results in higher losses at low footprints since the resulting
+dimensions are not optimal. Therefore, the design region is
+selected based on the available footprint and around the “knee
+region”ofthecurvejustbeyondthenonoptimalpoints,wherethe
+tradeoff between efﬁciency and power density can be balanced.
+Because the LLC-DCX converter switches solely at the reso-
+nant frequency fo, choosing the optimal fo is essential for opti-
+mal performance. As the frequency increases, core loss in ferrite
+materials decreases for a given voltage within the recommended
+operating frequency range [29]. However, higher frequencies
+also increase RMS current and winding ac resistance, resulting
+in higher device and transformer winding losses [38]. There-
+fore, the converter losses (at half-load) and power densities are
+evaluated at different resonant frequencies as described in [39]
+and plotted in Fig. 18. As discussed, ML27D is used across
+the entire frequency range as it has the lowest Pv under high
+Bmax conditions. Moreover, as the RMS currents increase with
+frequency, the device losses also increase. However, due to the
+nonlinearity of the increase in core loss (due to its exponential
+dependence), the design region around 600–700 kHz can be
+selectedasagoodtradeoffbetweenefﬁciencyandpowerdensity.
+D. Further Design Optimizations
+The vias linking the parallel secondary layers to the SRs
+handle signiﬁcant ac currents, reaching approximately 60 A per
+transformer. These same vias must also conduct the ﬁltered dc
+current from the ﬁlter capacitors to the load. Therefore, meticu-
+lous design is essential to minimize via losses. Furthermore, the
+large cutouts in the PCB layers, necessitated by these through-
+hole vias, cause current crowding in the intermediate primary
+layers, which leads to increased winding losses. To overcome
+these challenges, the arrays of multiple vias are substituted
+with large, custom-shaped, copper-ﬁlled pads, as illustrated in
+Fig. 19. This change increases the effective hole circumference
+by approximately 30% and the area by about 120%, thereby
+decreasing both the ac and dc resistance of the termination
+pathways. As a result, FEA simulations indicate a signiﬁcant
+25% reduction in total via losses, which is crucial for high
+output-current applications.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 11 ---
+PRAKASH et al.: HIGH CURRENT, HIGH POWER-DENSITY INTERMEDIATE BUS CONVERTERS FOR VERTICAL POWER DELIVERY
+14781
+Fig. 19.
+Improving via design by replacing (a) arrays of multiple vias
+to and (b) custom-shaped large pads.
+To minimize the output voltage ripple, the maximum possible
+output ﬁlter capacitance is desirable. However, it depends on
+the space available on the PCB winding. Based on the narrow
+winding width, 10 V 0402-sized ceramic capacitors are selected.
+However, the proposed unit-cell design allows many of them to
+be paralleled on both the top and bottom layers to increase the
+total capacitance (14 per layer per elemental transformer in this
+case).
+A noteworthy phenomenon is that paralleling capacitors on
+the top and bottom layers, connected by the custom vias, in-
+troduces some parasitic inductance Ls between them, thereby
+causing an increase in the transformer’s ac resistance around
+the resonant frequency fs between Co and Ls [40]. To mitigate
+this, the parasitic impedance of the termination vias is simulated
+using Ansys Q3D, and ﬁnally, 22 μF capacitors for the top layer
+and 10 μF for the bottom layer are selected to move fs away
+from fo.
+E. Thermal Analysis With FEA Simulations
+To minimize the thermal resistance from the heat sources
+with varying proﬁles on the top layer (SR devices, transformer
+core and output capacitors) to the heatsink on the top, a cus-
+tomized aluminum heat spreader is added between the compo-
+nents and liquid cooling plate to essentially replace the thermal
+interface from a TIM of k = 17.8 W/m · K to aluminum of
+k = 240 W/m · K [27]. In addition, since FR4 is not a good
+conductor of heat (k = 0.2 W/m · K), the heat from the lower
+PCB winding layers requires an alternate thermal path to the am-
+bient environment. Therefore, large copper (k = 400 W/m · K)
+connectorsforthegroundoutputterminalareused,whichdouble
+as a low thermal and electrical impedance path from the module
+bottom layer to the GPU card, as shown in Fig. 20(a).
+It is impractical to set up an accurate thermal management
+system as in a real compute tray, where the GPUs are running
+next to the IBC power modules and sharing a common liq-
+uid cooling system. Therefore, steady-state thermal simulations
+were performed on ANSYS Workbench on one transformer
+(half a unit-cell) with the proposed thermal management and
+the results with a convection coefﬁcient of h = 100 W/m2K
+(nominal for liquid cooling) and ambient temperature of GPU
+Fig. 20.
+Thermal management of transformer: (a) Front-view of one unit-
+cell with an Al heat spreader on the top and Cu connectors on the bottom and
+(b) FEA steady-state thermal simulations of half a unit-cell (1 transformer) with
+h = 100 W/m2K and Tamb = 60 ◦C.
+Fig. 21.
+Hardware prototype of the 840 W 48 V/1.8 V IBC module.
+card Tamb = 60 ◦C. is shown in Fig. 20(b). The maximum
+temperature increase from Tamb is 15.2 ◦C in the middle of the
+transformer, leaving enough thermal margin from the 35 ◦C rise
+limit for unknown factors such as thermal coupling between
+transformers. However, the results do indicate effective thermal
+dissipation from both sides of the converter module.
+VI. HARDWARE DEMONSTRATION
+The proposed 840 W 48 V/1.8 V IBC module is developed
+as shown in Fig. 21. It measures 100 mm × 10 mm × 5.8 mm
+and conforms to the required form factor to provide the high
+current to the VRs distributed equally along its length. Since
+the primary GaN devices require a short gate loop for optimal
+operation, the primary half-bridge gate driver LM5113-Q1 is
+placed on board. On the other hand, the drivers for the Si
+MOSFET SRs, FAN3122, are placed on the motherboard to
+minimize the module size. However, they can be moved to the
+power module to increase the length to 110 mm, resulting in a
+total converter power density of 2200 W/in3.
+Fig. 22 shows the operating waveforms at light-load and
+full-load, where it can be noted that ZVS for all switches is
+achieved throughout the entire load range. The Vtr,sec waveform
+is the voltage across the two switching nodes SW1 and SW2
+[refer Fig. 8(b)] which combines the VDS of both SR devices.
+Furthermore, this voltage can be used to calculate and plot the
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 12 ---
+14782
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+Fig. 22.
+Operational waveforms: (a) 20% load and (b) 100% load.
+Fig. 23.
+Measured converter efﬁciencies at various operating conditions.
+Fig. 24.
+Loss breakdown for 50–1.8 V at full-load.
+magnetizing current iLm on the oscilloscope as
+iLm =
+
+Vtr,sec · n · Lm/2.
+(3)
+Fig. 23 shows the measured efﬁciencies (excluding the device
+driving losses) in the Vin range of 46–52V, a peak efﬁciency of
+95.6% at 46V and a full-load efﬁciency of 92.3% at 52V is
+achieved. The lower core loss at lower voltage results in higher
+peak efﬁciency, whereas the peak current at the same load is
+higher, reducing heavier load efﬁciencies. Fig. 24 shows the
+breakdown of the total converter loss at full load when operated
+at 50 V/1.8 V. Due to the low-voltage, high-current nature of
+the converter, the transformer winding loss and SR conduction
+losses are understandably dominant.
+The thermal performance of the converter operating for 5 min-
+utes at 80% load under 800 linear feel per minute (LFM) of air
+coolingfromtherighttoleftandnoheatsinksisshowninFig.25.
+It may be noted that the hot spot of 102.3 ◦C is on the transformer
+core which is excited with a high Bmax of 300 mT. The furthest
+Fig. 25.
+Steady-state thermal performance at 80% load under 800 LFM air
+cooling and no heat sinks.
+TABLE VI
+PERFORMANCE COMPARISON OF BUS CONVERTERS WITH LOW IBV
+SR devices have a temperature of 90.8 ◦C and primary devices
+have a temperature of 71.8 ◦C, thanks to the multiple thermal
+vias underneath them. Although heatsinks would be required to
+run the converter at full power under air cooling, the proposed
+thermal management described in Section V should help achieve
+the temperature rise requirements in the actual implementation.
+The performance of the proposed converter is compared with
+recent research on unregulated low voltage, high-current dc–dc
+converters for this application, as highlighted in Table VI. All ef-
+ﬁciencies listed exclude the device driving losses. The optimized
+frequency of operation of the proposed converter can enable
+higher currents to be pushed without incurring signiﬁcant ac
+losses, thereby increasing the power density signiﬁcantly while
+still maintaining high efﬁciencies across the load range.
+VII. CONCLUSION
+The power delivery must keep up with the rapidly increasing
+size and power consumption of SOCs. However, the existing
+two-stage lateral power delivery architecture with a 12 V IBV
+results in the second-stage VRs taking up a signiﬁcant chunk
+of the available real estate on the GPU card, thereby limiting
+the size and power increase of the GPUs. Moreover, the VRs
+operate at frequencies around 1 Mhz, which limits the bandwidth
+to hundreds of kHz and requires large capacitance to meet
+the steady-state and transient requirements. Therefore, vertical
+power delivery architecture is attracting signiﬁcant interest to
+address this challenge. By reducing the IBV, the size of the
+second-stage VR can be reduced signiﬁcantly and placed di-
+rectly underneath the GPU, thereby delivering the high current
+vertically with very low PDN loss. Furthermore, the operating
+frequencies of these low-IBV VRs can be increased 50–100
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 13 ---
+PRAKASH et al.: HIGH CURRENT, HIGH POWER-DENSITY INTERMEDIATE BUS CONVERTERS FOR VERTICAL POWER DELIVERY
+14783
+times, thereby increasing the bandwidth and reducing the re-
+quired capacitance signiﬁcantly. However, the ﬁrst stage IBC
+must be designed with a long and thin top-cooled form factor
+and placed very close to the GPU to reduce the high PDN loss
+due to the low IBV.
+To achieve this, the article proposed a highly scalable trans-
+formerunit-cellstructureconsistingoftwotransformersof1:1or
+2:1 turns each, coupled with a simple UU/UI core—furthermore,
+the high space utilization of the footprint results in high power
+densities.
+Toimplementthedesign,an840W,48V/1.8VHBLLC-DCX
+converter is designed with seven unit-cells connected in series to
+complete the required 14:1 turns ratio. For GPUs requiring even
+higher power, such modules may be connected in parallel from
+the input and placed on either side of the GPU to provide the high
+current symmetrically to the VRs. The design of the LLC-DCX
+is described in detail, which can achieve a power density of
+2200 W/in3 and a peak efﬁciency of 95.5%. Furthermore, the
+scalability of the proposed transformer unit-cell is highlighted,
+where high-density IBCs with different IBVs can efﬁciently be
+designed.Thisworkvalidatesthefeasibilityoftheverticalpower
+delivery solution to GPUs, thereby paving the way for future
+innovations in optimizing the IBV and further improving the
+performance.
+ACKNOWLEDGMENT
+The authors would like to thank the CPES Power Management
+Consortium (PMC) and High Density Integration (HDI) mini-
+consortia for sponsoring this research.
+REFERENCES
+[1] A. S. G. Andrae and T. Edler, “On global electricity usage of communica-
+tion technology: Trends to 2030,” Challenges, vol. 6, no. 1, pp. 117–157,
+2015.
+[2] S. Oliver, “From 48V direct to intel VR12.0: Saving ‘Big Data’ 500,000
+per data center, per year,” Jul. 2012. [Online]. Available: http://www.
+vicorpower.com/documents/whitepapers/wp_VR12.pdf
+[3] S. Taranovich, “Data center next generation power supply solu-
+tions
+for
+improved
+efﬁciency,”
+Apr.
+2016.
+[Online].
+Available:
+https://www.edn.com/data-center-next-generation-power-supply-
+solutions-for-improved-efﬁciency/
+[4] J. Choquette, W. Gandhi, O. Giroux, N. Stam, and R. Krashinsky, “Nvidia
+A100 tensor core GPU: Performance and innovation,” IEEE Micro, vol. 41,
+no. 2, pp. 29–35, Mar./Apr. 2021.
+[5] A. Tirumala and R. Wong, “NVIDIA blackwell platform: Advancing
+generative AI and accelerated computing,” in Proc. IEEE Hot Chips 36
+Symp., 2024, pp. 1–33.
+[6] J. Choquette, “NVIDIA hopper H100 GPU: Scaling performance,” IEEE
+Micro, vol. 43, no. 3, pp. 9–17, May/Jun. 2023.
+[7] R. K., “Graphics processing unit GPU market report 2024 (Global
+edition),” Cognitive Market Research, 2023.
+[8] S. Kudva, “Challenges to enabling vertical power delivery in high-power
+GPU applications,” in Proc. IEEE Appl. Power Electron. Conf. Expo.,
+2024.
+[9] P. R. Prakash et al., “A 2400 W/in3 1.8 V bus converter enabling vertical
+power delivery for next-generation processors,” in Proc. IEEE Appl. Power
+Electron. Conf. Expo., 2024, pp. 910–917.
+[10] Y. Elasser et al., “Mini-LEGO CPU voltage regulator,” IEEE Trans. Power
+Electron., vol. 39, no. 3, pp. 3391–3410, Mar. 2024.
+[11] Y. Zhu et al., “A compact 48-V-to-sub-1-V switching bus converter with
+4.7-mm height for processor vertical power delivery,” in Proc. IEEE
+Energy Convers. Congr. Expo., 2024, pp. 2596–2603.
+[12] F. Zhu and Q. Li, “A novel PCB-Embedded coupled inductor structure for
+a 20-MHz integrated voltage regulator,” IEEE Trans. Emerg. Sel. Topics
+Power Electron., vol. 10, no. 6, pp. 7452–7463, Dec. 2022.
+[13] A. M. Naradhipa, F. Zhu, and Q. Li, “Ultra-low-Proﬁle twisted core
+inductor for vertical power delivery voltage regulator,” in Proc. IEEE Appl.
+Power Electron. Conf. Expo., 2024, pp. 918–924.
+[14] S. Jiang and Z. Ye, “Next TLVR innovations: Topologies, magnetics and
+control,” in Proc. IEEE Appl. Power Electron. Conf. Expo., 2024.
+[15] K. Radhakrishnan, M. Swaminathan, and B. K. Bhattacharyya, “Power
+delivery for high-performance microprocessors—Challenges, solutions,
+and future trends,” IEEE Trans. Compon. Packag. Manuf. Technol., vol. 11,
+no. 4, pp. 655–671, Apr. 2021.
+[16] Empower, “3.3 V and 1.8 V IVRs,” [Online]. Available: https://www.
+empowersemi.com/integrated-voltage-regulators-ivr/
+[17] Ferric, “Fe1736,” [Online]. Available: https://www.ferric.com/products
+[18] M. Chen, S. Jiang, J. A. Cobos, and B. Lehman, “Design considerations
+for 48-V VRM: Architecture, magnetics, and performance tradeoffs,” in
+Proc. 4th Int. Symp. 3D Power Electron. Integration Manuf., 2023, pp. 1–9.
+[19] Y. Li, X. Lyu, D. Cao, S. Jiang, and C. Nan, “A 98.55% efﬁciency switched-
+tank converter for data center application,” IEEE Trans. Ind. Appl., vol. 54,
+no. 6, pp. 6205–6222, Nov./Dec. 2018.
+[20] S. Jiang, S. Saggini, C. Nan, X. Li, C. Chung, and M. Yazdani,
+“Switched tank converters,” IEEE Trans. Power Electron., vol. 34, no. 6,
+pp. 5048–5062, Jun. 2019.
+[21] Y. Li, X. Lyu, Z. Ni, D. Cao, C. Nan, and S. Jiang, “Adaptive on-time
+control for high efﬁciency switched-tank converter,” in Proc. 1st Workshop
+Wide Bandgap Power Devices Appl. Asia, 2018, pp. 169–175.
+[22] A.Dago,M.Balutto,S.Saggini,M.Leoncini,S.Levantino,andM.Ghioni,
+“Hybrid resonant switched tank converters for high step-down voltage con-
+version,” IEEE Trans. Power Electron., vol. 39, no. 11, pp. 14838–14851,
+Nov. 2024.
+[23] M. H. Ahmed, F. C. Lee, and Q. Li, “Two-stage 48-V VRM with interme-
+diate bus voltage optimization for data centers,” IEEE Trans. Emerg. Sel.
+Topics Power Electron., vol. 9, no. 1, pp. 702–715, Feb. 2021.
+[24] M. de Rooij and A. Negahdari, “Beyond 4 kW/in3 power-density for 48 V
+to 12 V conversion using eGaN FETs in an LLC DC-DC bus converter,”
+in Proc. PCIM Europe; Int. Exhib. Conf. Power Electron., Intell. Motion,
+Renewable Energy, Energy Manage., 2022, pp. 1–9.
+[25] C. Fei, F. C. Lee, and Q. Li, “High-efﬁciency high-power-density LLC con-
+verter with an integrated planar matrix transformer for high-output current
+applications,” IEEE Trans. Ind. Electron., vol. 64, no. 11, pp. 9072–9082,
+Nov. 2017.
+[26] EPC
+Thermal
+Model.
+Calculator
+Quick
+Start
+Guide,
+3rd
+Ed.,
+El Segundo, CA, USA: EPC Corporation, 2022. [Online]. Avail-
+able: https://epc-co.com/epc/Portals/0/epc/documents/guides/GaN-FET-
+Thermal-Calculator-qsg.pdf
+[27] P. R. Prakash, A. Nabih, S. Wang, P. P. Hieu, Y. Ruan, and Q. Li,
+“GaN-Based 400 V/48 V DC-DC converter with 97% efﬁciency and
+PCB magnetics for automotive applications,” in Proc. IEEE Appl. Power
+Electron. Conf. Expo., 2023, pp. 3201–3208.
+[28] A. Nabih and Q. Li, “Design of 98.8% efﬁcient 400-to-48-V LLC
+converter with optimized matrix transformer and matrix inductor,” IEEE
+Trans. Power Electron., vol. 38, no. 6, pp. 7207–7225, Jun. 2023.
+[29] D. Reusch and F. C. Lee, “High frequency bus converter with low loss
+integrated matrix transformer,” in Proc. 27th Annu. IEEE Appl. Power
+Electron. Conf. Expo., 2012, pp. 1392–1397.
+[30] Z. Ouyang and M. A. E. Andersen, “Overview of planar magnetic
+technology—Fundamental properties,” IEEE Trans. Power Electron.,
+vol. 29, no. 9, pp. 4888–4900, Sep. 2014.
+[31] P. Vinciarelli, “Delivering power to semiconductor loads,”
+US Patent
+US11398770B1, Jul. 2022.
+[32] H. Wu, Y. Song, X. Zhang, and Y. Zhang, “Current-cancellation-based het-
+erogeneous integration of LLC-DCX with ultralow-voltage high-current
+output for data centers,” IEEE Trans. Power Electron., vol. 39, no. 8,
+pp. 9144–9149, Aug. 2024.
+[33] K. Ngo, E. Alpizar, and J. Watson, “Modeling of losses in a sandwiched-
+winding matrix transformer,” IEEE Trans. Power Electron., vol. 10, no. 4,
+pp. 427–434, Jul. 1995.
+[34] Y. Cai, M. H. Ahmed, Q. Li, and F. C. Lee, “Optimal design of megahertz
+LLC converter for 48-V bus converter application,” IEEE Trans. Emerg.
+Sel. Topics Power Electron., vol. 8, no. 1, pp. 495–505, Mar. 2020.
+[35] Mn-Zn Soft Ferrite Cores for High Frequency Power Supplies MaDC-F,
+Proterial Ltd. Tokyo, Japan: Hitachi Metals, 2019.
+[36] D. Hou, M. Mu, F. C. Lee, and Q. Li, “New high-frequency core loss
+measurement method with partial cancellation concept,” IEEE Trans.
+Power Electron., vol. 32, no. 4, pp. 2987–2994, Apr. 2017.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 14 ---
+14784
+IEEE TRANSACTIONS ON POWER ELECTRONICS, VOL. 40, NO. 10, OCTOBER 2025
+[37] M. Mu and F. C. Lee, “A new core loss model for rectangular AC voltages,”
+in Proc. IEEE Energy Convers. Congr. Expo., 2014, pp. 5214–5220.
+[38] P. L. Dowell, “Effects of eddy currents in transformer windings,” in Proc.
+Inst. Elect. Engineers, 1966, vol. 113, no. 8, pp. 1387–1394.
+[39] P. R. Prakash, A. Nabih, and Q. Li, “Design optimization of PCB-Winding
+matrix transformer for 400 V/12 V unregulated LLC converter,” in Proc.
+2021 IEEE Energy Convers. Congr. Expo., 2021, pp. 1777–1784.
+[40] P. Prakash, A. Nabih, and Q. Li, “Termination design optimization of high-
+current PCB-Winding matrix transformers,” IEEE Trans. Power Electron.,
+vol. 38, no. 4, pp. 4957–4971, Apr. 2023.
+[41] X. Ren, J. Zhang, Y. Jiang, X. Li, and T. Long, “A 48-to-1 V LLC
+DC transformer,” in Proc. IEEE 24th Workshop Control Model. Power
+Electron., 2023, pp. 1–5.
+[42] K. Wang, Y. Ning, H. Li, and X. Yang, “Integrated planar transformer
+for high-voltage-ratio LLC DCX with high current and ultra-low voltage
+output,” IEEE Open J. Power Electron., vol. 5, pp. 1782–1791, 2024.
+[43] A. Figueroa, P. Mazariegos, J. Goicoechea, A. Castro, and J. A. Cobos,
+“Low-proﬁle direct power converter: 350 A/48V-1 V with planar matrix
+transformer using standard PCB and commercial cores,” in Proc. IEEE
+Appl. Power Electron. Conf. Expo., 2024, pp. 2172–2177.
+Pranav Raj Prakash (Graduate Student Member,
+IEEE) received the B.Tech. degree in electrical and
+electronics engineering from the Birla Institute of
+Technology and Science, Pilani, India, in 2018,
+and the M.S. degree in electrical engineering, in
+2021, from the Center for Power Electronics Systems
+(CPES), Virginia Tech, Blacksburg, VA, USA, where
+he is currently working toward the Ph.D. degree in
+electrical engineering.
+His research interests include the design and con-
+trol of high-frequency, high-density dc–dc converters
+employing wide band-gap devices, and planar magnetics.
+Ahmed Nabih (Member, IEEE) received the B.Sc.
+and M.Sc. degrees in electrical engineering from
+Cairo University, Giza, Egypt, in 2014 and 2017,
+respectively, and the Ph.D. degree in electrical en-
+gineering from Virginia Tech, Blacksburg, VA, USA,
+in 2023.
+He is currently a Research Scientist with Nvidia
+Corporation, Durham, NC, USA. His research inter-
+ests include wide bandgap technology, high-power
+drivers, digital control, high-frequency resonant
+converter design, and planar magnetics.
+Dr. Nabih was a recipient of the Best Paper Award of the 2020 OCP Future
+Technology Symposium, the 2023 IEEE TPEL prize paper award, and multiple
+APEC outstanding presentation awards.
+YanLiang(StudentMember,IEEE)receivedtheB.S.
+degree in electrical engineering from Beijing Jiaotong
+University, Beijing, China, in 2021. She is currently
+working toward the Ph.D. degree in electrical engi-
+neering with the Center for Power Electronics Sys-
+tems (CPES), Virginia Tech, Blacksburg, VA, USA.
+Her research interests include high-frequency,
+high-density dc–dc converters, and planar magnetics.
+Sudhir Kudva (Member, IEEE) received the B.E.
+degree in electronics and communcation engineering
+from the National Institute of Technology, Suratkal,
+India, in 2004, the M.E. degree in microelectronics
+from the Indian Institute of Science, Bangalore, India,
+in 2006, and the Ph.D. degree in electrical engineering
+from the University of Minnesota, MN, USA, in 2013.
+He is a Senior Research Scientist with the Circuit
+Research Lab of Nvidia Research, which he joined in
+2013. From 2006 to 2008, he also worked as a Design
+Engineer with AMD, India.
+His research interests include power delivery network design, regulator mod-
+ule implementation, fully-integrated voltage regulator, and regulator design for
+security-sensitive circuits.
+Mostafa Mosa received the B.S. degree in electrical
+engineering from South Valley University, Egypt, in
+2008, the M.S. degree in electrical engineering from
+Aswan University, Egypt, in 2012, and the Ph.D.
+degree in electrical and computer engineering from
+Texas A&M University, College Station, TX, USA,
+in 2018.
+He has authored or coauthored more than 22 jour-
+nal and conference papers, as well as one book and
+one book chapter in his area of expertise. He is also
+the Holder of two U.S. patents in the ﬁeld of power
+electronics and energy systems. He is currently working as a Power System
+Design Engineer with NVIDIA Corporation, Durham, NC, USA, where he
+focuses on developing advanced power solutions for data center applications.
+His research interests include power electronics for data center and renewable
+energy.
+C. Thomas Gray (Senior Member, IEEE) received
+the B.S. degree in computer science and mathematics
+from Mississippi College, Clinton, MS, USA, and the
+M.S. and Ph.D. degrees in computer engineering from
+North Carolina State University, Raleigh, NC, USA.
+From 1993 to 1998, he was an Advisory Engineer
+with IBM, Research Triangle Park, NC, USA, work-
+ing on transceiver design for communication systems.
+From 1998 to 2004, he was a Senior Staff Design En-
+gineer with the Analog/Mixed Signal Design Group,
+Cadence Design Systems, working on SerDes system
+architecture. From 2004 to 2010, he was a Consultant Design Engineer with
+Artisan/ARM and Technical Lead of SerDes architecture and design. In 2010,
+he joined Nethra Imaging as a System Architect. His work experience includes
+digital signal processing design and CMOS implementation of DSP blocks
+as well as high-speed serial link communication systems, architectures, and
+implementation. In 2011, he joined NVIDIA, Inc., Durham, NC, USA, where
+he is currently Senior Director of Circuit Research, leading activities related
+to high-speed signaling, photonics, security circuits, low-energy and resilient
+memories, circuits for machine learning, and variation-tolerant clocking and
+power delivery.
+Qiang Li (Senior Member, IEEE) received the B.S.
+and M.S. degrees in power electronics from Zhejiang
+University, Hangzhou, China, in 2003 and 2006, re-
+spectively, and the Ph.D. degree in electrical engi-
+neering from Virginia Tech, Blacksburg, VA, USA,
+in 2011.
+He is currently an Associate Professor with the
+Center for Power Electronics Systems, Virginia Tech.
+His current research interests include power manage-
+ment for distributed power systems, applications of
+wide bandgap power devices, high-frequency power
+conversion and controls, magnetics and electromagnetic interference, high-
+density electronics packaging and integration, and renewable energy.
+Dr. Li was the recipient of the First Place Prize Article Award for IEEE
+TRANSACTIONS ON POWER ELECTRONICS in 2016, and the 2017 U.S. National
+Science Foundation (NSF) Career Award.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:39:03 UTC from IEEE Xplore.  Restrictions apply. 

@@ -1,0 +1,18 @@
+* v2 baseline diagnostic (NOT a v3 check): v2 SR_TIMING with its undocumented BLOCK=req1 patch,
+* two independent exactly simultaneous requests.  Shows CH2 is structurally disabled rather than
+* arbitrated: req2 is held at 0 while req1 is high.  Does not modify sr_timing_v2.lib.
+.include ../../models/sr_timing_v2.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 20u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 8u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 8u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+.tran 0 7u 0 1n
+.save V(g1) V(g2) V(pre) V(xsr:q1) V(xsr:q2) V(xsr:req1) V(xsr:req2)
+.meas tran gate1_max MAX V(g1)
+.meas tran gate2_max MAX V(g2)
+.meas tran q1_max MAX V(xsr:q1)
+.meas tran q2_max MAX V(xsr:q2)
+.meas tran req1_max MAX V(xsr:req1)
+.meas tran req2_max MAX V(xsr:req2)
+.meas tran pre_final FIND V(pre) AT=6.9u
+.end

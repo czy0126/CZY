@@ -1,0 +1,22 @@
+* Gate charge, VDD=20 V, ID=50 A, Ig=5 mA (datasheet Qg topology; Q=I*t)
+.include sr_lin.lib
+Vdd vdd 0 20
+Iload vdd sd 50
+Dcl sd vdd DCL
+.model DCL D(IS=1e-9 N=1.2 RS=1m CJO=0)
+X1 sd g 0 SR_DEVICE
+Ig 0 g PWL(0 0 1n 5m 14u 5m)
+.tran 0 14u 0 2n
+.options plotwinsize=0
+.meas tran t10 WHEN V(g)=10
+.meas tran t45 WHEN V(g)=4.5
+.meas tran tp1 WHEN V(sd)=19.0 FALL=1
+.meas tran tp2 WHEN V(sd)=0.5 FALL=1
+.meas tran qg PARAM 5m*t10
+.meas tran qg45 PARAM 5m*t45
+.meas tran qgs PARAM 5m*tp1
+.meas tran qgd PARAM 5m*(tp2-tp1)
+.meas tran vplateau FIND V(g) WHEN V(sd)=10
+.meas tran vds_final FIND V(sd) AT 13u
+.meas tran vgmax MAX V(g)
+.end

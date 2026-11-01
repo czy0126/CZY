@@ -1,0 +1,17 @@
+* L0 turn-off, 50 A at the switching instant, rise=2 for fall time
+.include D:/workshop/design_48v-2v/references/models/infineon_optimos_pspice_40v/OptiMOS6_40V_LTSpice.lib
+Vbus bus 0 40
+Lload bus dsw 100u
+Dfw dsw bus DFW
+Vgp gsw 0 PULSE(10 0 30u 20n 20n 100u 200u)
+Xsw dsw gsw 0 BSC010N04LS6_L0
+.model DFW D(Is=1e-9 Rs=1m N=1.05 Cjo=500p)
+.ic I(Lload)=38
+.options plotwinsize=0
+.tran 0 50u 0 50p uic
+.meas TRAN Ion_off FIND I(Lload) AT 29.99u
+.meas TRAN Von_avg AVG V(dsw) FROM 20u TO 29.5u
+.meas TRAN Vds_peak MAX V(dsw) FROM 29.9u TO 33u
+.meas TRAN Vds_fw AVG V(dsw) FROM 40u TO 49u
+.meas TRAN t_fall TRIG V(dsw) VAL=36 RISE=2 TARG V(dsw) VAL=4 FALL=1
+.end

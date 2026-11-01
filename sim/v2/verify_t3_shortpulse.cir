@@ -1,0 +1,18 @@
+* v3 check P: 100 ns pulse (below TON=155 ns) must be filtered; 300 ns control pulse must pass.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 30u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.11u -.6 4.12u 4 6u 4 6.01u -.6 6.31u -.6 6.32u 4 30u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 30u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Bc1 c1 0 I=-1u*max(ddt(if(V(g1)>2,1,0)),0)
+Cc1 c1 0 1u
+Rc1 c1 0 1G
+.tran 0 10u 0 1n
+.save V(d1) V(g1) V(g2) V(pre) V(xsr:q1) V(c1)
+.meas tran early_max MAX V(g1) FROM=4u TO=5.9u
+.meas tran early_false_pulses FIND V(c1) AT=5.9u
+.meas tran gate1_max MAX V(g1)
+.meas tran g1_rise1 WHEN V(g1)=2 RISE=1
+.meas tran pulses1 FIND V(c1) AT=9.9u
+.meas tran q1_max MAX V(xsr:q1)
+.end

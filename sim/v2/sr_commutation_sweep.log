@@ -1,0 +1,59 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\sr_commutation_sweep.cir
+Start Time: Sat Oct 31 01:13:54 2026
+
+.step pgd=0 tdelay=5.5e-09
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=1 tdelay=5.5e-09
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=0 tdelay=2.3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=1 tdelay=2.3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=0 tdelay=4e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=1 tdelay=4e-08
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.736 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\sr_commutation_sweep.cir
+D:\workshop\design_48v-2v\models\sr_timing_v2.lib
+
+
+Measurement: reverse_peak
+  step	MAX((-I(Sa)) )	FROM	TO
+     1	8.94220924377	1e-05	2e-05
+     2	7.49837112427	1e-05	2e-05
+     3	9.79005336761	1e-05	2e-05
+     4	8.33216190338	1e-05	2e-05
+     5	10.6546010971	1e-05	2e-05
+     6	9.16302394867	1e-05	2e-05
+
+Measurement: forward_peak
+  step	MIN((-I(Sa)) )	FROM	TO
+     1	-39.9997711182	1e-05	2e-05
+     2	-39.9998092651	1e-05	2e-05
+     3	-40.0007362366	1e-05	2e-05
+     4	-39.9998130798	1e-05	2e-05
+     5	-40.0008392334	1e-05	2e-05
+     6	-40.0000534058	1e-05	2e-05
+
+Measurement: gate_overlap
+  step	MAX(min(V(ga),V(gb)) )	FROM	TO
+     1	0.00603731339797	1e-05	2e-05
+     2	0.00147506126668	1e-05	2e-05
+     3	0.00608942958061	1e-05	2e-05
+     4	0.0014361464011	1e-05	2e-05
+     5	0.00617435500026	1e-05	2e-05
+     6	0.00146372782765	1e-05	2e-05

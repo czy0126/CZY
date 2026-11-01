@@ -1,0 +1,66 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\gate_bench\gd_with_dev.cir
+Start Time: Sat Oct 31 12:36:36 2026
+Options:plotwinsize=0
+
+.step cg=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+
+.step cg=6.7e-09
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 1.876 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\gate_bench\gd_with_dev.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+
+Measurement: vg_peak
+  step	MAX(V(g) )	FROM	TO
+     1	10.8904809952	0	2e-06
+     2	10.8822946548	0	2e-06
+
+Measurement: tr_10_90_drv
+  step	tr_10_90_drv	FROM	TO
+     1	4.40684507217e-12	9.99997800909e-07	1.00000220775e-06
+     2	2.15542695869e-07	1.00808357972e-06	1.22362627559e-06
+
+Measurement: tr_10_90_die
+  step	tr_10_90_die	FROM	TO
+     1	9.0268407279e-08	1.00518134348e-06	1.09544975076e-06
+     2	2.14287752511e-07	1.01529667094e-06	1.22958442345e-06
+
+Measurement: tf_90_10_drv
+  step	tf_90_10_drv	FROM	TO
+     1	9.99973632999e-07	1.00003237165e-06	2.00000600465e-06
+     2	7.07676415254e-08	2.00226885351e-06	2.07303649503e-06
+
+Measurement: tf_90_10_die
+  step	tf_90_10_die	FROM	TO
+     1	2.69335260717e-08	2.00255423425e-06	2.02948776032e-06
+     2	6.67527373807e-08	2.00735779078e-06	2.07411052816e-06
+
+Measurement: ig_peak
+  step	MAX(abs(I(Vig)))	FROM	TO
+     1	2.41501688957	0	3e-06
+     2	3.50872778893	0	3e-06
+
+Measurement: q_rise
+  step	V(q) 	at
+     1	58.2332822745	1.95e-06
+     2	129.582433349	1.95e-06
+
+Measurement: q_end
+  step	V(q) 	at
+     1	-2.79171631816	2.95e-06
+     2	-2.53218507767	2.95e-06
+
+Measurement: e_cycle
+  step	V(e) 	at
+     1	609.151367188	2.95e-06
+     2	1406.95446777	2.95e-06

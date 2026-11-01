@@ -1,0 +1,24 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_dev_caps.cir
+Start Time: Sat Oct 31 10:06:50 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.164 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_dev_caps.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+qoss20: INTEG(-I(Vd) )=7.29964773584e-08 FROM 0 TO 2e-05
+coss10: -I(Vd) =0.0033938772363 at 9.9e-06
+crss10: -I(Vg) =-0.000186204963932 at 9.9e-06
+coss20: -I(Vd) =0.00150807243519 at 1.99e-05
+crss20: -I(Vg) =-3.94844841887e-05 at 1.99e-05
+coss40: -I(Vd) =0.000861332704701 at 3.99e-05
+crss40: -I(Vg) =-2.67603594686e-05 at 3.99e-05
+vfinal: V(d) =40 at 4e-05

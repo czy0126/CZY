@@ -1,0 +1,14 @@
+* test exponent and helper-node expressions
+Vg g 0 10
+Vd d 0 1
+Bvgd vgd 0 V=abs(V(g,d))
+Bq q 0 V=if(V(vgd)<=8.53, 735.774p*V(vgd)-56.75p*V(vgd)*V(vgd)/2, 4.2116n)
+Br r 0 V=1m+0.1*exp(-(V(g)-1.65)/0.3)
+Bp p 0 V=(2.0)**3.5
+Bq2 q2 0 V=(2.0)^3.5
+.tran 0 1u 0 0.1u
+.meas tran a FIND V(q) AT 1u
+.meas tran b FIND V(r) AT 1u
+.meas tran c FIND V(p) AT 1u
+.meas tran ee FIND V(vgd) AT 1u
+.end

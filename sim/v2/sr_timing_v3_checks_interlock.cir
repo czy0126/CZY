@@ -1,0 +1,24 @@
+* v3 check I: a pulse on the losing channel during the winner's on-blank is rejected, not queued.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 30u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 5u -.6 5.01u 4 30u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 4.29u 4 4.3u -.6 4.4u -.6 4.41u 4 6u 4 6.01u -.6 7u -.6 7.01u 4 30u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Bov ov 0 V=if(V(g1)>2,if(V(g2)>2,1,0),0)
+Bc2f c2f 0 I=-1u*max(ddt(if(V(g2)>2,if(time>4.2u,if(time<5.9u,1,0),0),0)),0)
+Cc2f c2f 0 1u
+Rc2f c2f 0 1G
+Bovt ovt 0 I=-1m*if(V(ov)>0.5,1,0)
+Covt ovt 0 1n
+Rovt ovt 0 1G
+.tran 0 9u 0 1n
+.save V(ovt) V(d1) V(d2) V(g1) V(g2) V(xsr:q1) V(xsr:q2) V(xsr:a1) V(xsr:a2) V(ov) V(c2f)
+.meas tran winner_g1_max MAX V(g1) FROM=4u TO=5.5u
+.meas tran loser_g2_max MAX V(g2) FROM=4.2u TO=5.9u
+.meas tran loser_false_pulses FIND V(c2f) AT=5.9u
+.meas tran g2_rise1 WHEN V(g2)=2 RISE=1
+.meas tran overlap_max MAX V(ov)
+.meas tran q1_max MAX V(xsr:q1)
+.meas tran q2_max MAX V(xsr:q2)
+.meas tran overlap_width_us FIND V(ovt) AT=5.9u
+.end

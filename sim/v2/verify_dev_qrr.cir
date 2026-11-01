@@ -1,0 +1,22 @@
+* Reverse recovery, forced diF/dt=400 A/us, VR=20 V, IF=10 A
+* CS=0 : body-diode only (capacitances disabled, metrology)
+* CS=1 : full device (capacitive charge included)
+.include ../../models/sr_device_v3.lib
+I1 a 0 PWL(0 10 100n 10 162.5n -15 400n -15)
+Dc a c DC
+Vc c 0 20
+.model DC D(IS=1e-9 N=1.2 RS=10m CJO=0)
+Vs a d 0
+X1 d g 0 SR_DEVICE CSCALE={CS}
+Vg g 0 0
+.step param CS list 0 1
+.tran 0 400n 0 0.05n
+.options plotwinsize=0 method=gear itl4=100 gmin=1e-9
+.meas tran IF90 FIND -I(Vs) AT 90n
+.meas tran IRR MIN -I(Vs) FROM 100n TO 300n
+.meas tran TZ WHEN -I(Vs)=0 FALL=1 TD=100n
+.meas tran TRET WHEN -I(Vs)=-0.05 RISE=1 TD=125n
+.meas tran QRR INTEG -I(Vs) FROM 125n TO 400n
+.meas tran TRR PARAM TRET-TZ
+.meas tran VAMAX MAX V(a) FROM 100n TO 300n
+.end

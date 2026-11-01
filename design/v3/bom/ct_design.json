@@ -1,0 +1,83 @@
+{
+  "status": "design study; burden and divider stay as built (10 ohm / 10k)",
+  "measured": {
+    "i_rms_a": 9.450157142630292,
+    "i_pk_a": 13.88141992151438,
+    "i_avg_a": 8.355706515752397,
+    "peak_to_average": 1.661310135216545,
+    "q_half_c": 2.0824413020211564e-05,
+    "period_s": 4.984476891559759e-06
+  },
+  "as_built": {
+    "turns_ratio": 100,
+    "burden_ohm": 10.0,
+    "rd1_ohm": 10000.0,
+    "divider_gain": 0.6857142857142857,
+    "slope_v_per_a_peak": 0.041275513293904366,
+    "oc_pin_v_at_ipk": 0.5729627325087358,
+    "trip_peak_a": 24.227439471907946,
+    "compliance_v": 1.1388055341428973,
+    "burden_power_w": 0.08930547002040634,
+    "flux_peak_t": 0.0024480677793427743
+  },
+  "burden_for_intended_trip_ohm": 10.57966789166286,
+  "burden_study": [
+    {
+      "burden_ohm": 10.0,
+      "burden_avg_v_at_ipk": 0.8355706515752397,
+      "oc_pin_v_at_ipk": 0.5729627325087358,
+      "trip_peak_a": 24.227439471907946,
+      "trip_margin_vs_rated": 1.745314212010732,
+      "burden_power_w": 0.08930547002040634,
+      "flux_peak_t": 0.0024480677793427743,
+      "flux_frac_bsat": 0.007200199351008159
+    },
+    {
+      "burden_ohm": 22.0,
+      "burden_avg_v_at_ipk": 1.8382554334655274,
+      "oc_pin_v_at_ipk": 1.260518011519219,
+      "trip_peak_a": 11.012472487230886,
+      "trip_margin_vs_rated": 0.79332464182306,
+      "burden_power_w": 0.19647203404489394,
+      "flux_peak_t": 0.0036913163178628676,
+      "flux_frac_bsat": 0.01085681269959667
+    },
+    {
+      "burden_ohm": 47.0,
+      "burden_avg_v_at_ipk": 3.9271820624036264,
+      "oc_pin_v_at_ipk": 2.6929248427910584,
+      "trip_peak_a": 5.1547743557250945,
+      "trip_margin_vs_rated": 0.37134344936398545,
+      "burden_power_w": 0.4197357090959098,
+      "flux_peak_t": 0.006281417439779728,
+      "flux_frac_bsat": 0.01847475717582273
+    },
+    {
+      "burden_ohm": 100.0,
+      "burden_avg_v_at_ipk": 8.355706515752397,
+      "oc_pin_v_at_ipk": 5.729627325087358,
+      "trip_peak_a": 2.4227439471907948,
+      "trip_margin_vs_rated": 0.1745314212010732,
+      "burden_power_w": 0.8930547002040634,
+      "flux_peak_t": 0.011772431818243475,
+      "flux_frac_bsat": 0.03462479946542198
+    }
+  ],
+  "deck_header_check": {
+    "header_slope_v_per_a": 0.043653927248062725,
+    "header_trip_a": 22.907446432425573,
+    "claimed": "0.04365 V/A and (2/pi)*24/35 -> 22.9 A",
+    "note": "the header idealises the tank current as a sinusoid; the real waveform's peak-to-average ratio is lower, which moves the trip up"
+  },
+  "core_candidate": {
+    "ae_m2": 2.01e-05,
+    "bsat_t": 0.34,
+    "note": "flux stays far below saturation at every burden tried"
+  },
+  "caveats": [
+    "peak_to_average is measured at the operating point; a fault current is peakier, so the trip peak computed from it is a lower bound",
+    "the magnetising branch (20 mH) is ignored: ~0.04 % of the secondary current at rated load, but not during a fault",
+    "flux assumes the AC primary self-resets; a fault with DC offset would walk the core and is not covered",
+    "the trip figures describe the DC-equivalent threshold, not the observed fault peak, which the 47 us RC filter lag stretches well beyond it"
+  ]
+}

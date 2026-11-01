@@ -1,0 +1,119 @@
+* ============================================================================
+* models/sr_device_v3.lib
+* Calibrated behavioural model of Infineon BSC010N04LS6 (OptiMOS6 40 V,
+* 1.0 mOhm, SuperSO8 / PG-TDSON-8), for 48V-2V SR commutation studies.
+*
+* PROVENANCE
+*   All electrical parameters below were fitted to numeric targets digitised
+*   from the Infineon datasheet BSC010N04LS6 (see
+*   design/v2/sr_device_v3_calibration.md/.json and design/v2/sr_device_bench/
+*   fit_*.py).  This model is a behavioural calibration; it is NOT the vendor
+*   model and does not reproduce the vendor model's internals.
+*
+*   The official Infineon LTspice model
+*   references/models/infineon_optimos_pspice_40v/OptiMOS6_40V_LTSpice.lib
+*   was evaluated and rejected as a sign-off model
+*   (design/v2/official_model_report.md): the L1 variant fails under the
+*   default solver ("Time step too small ... xdc:x1:e_eds2#branch") and both
+*   variants exhibit kA-level saturated currents.  It is therefore NOT mixed
+*   into this file.  Nothing here is copied from the vendor netlist.
+*
+* TOPOLOGY (drop-in for the v2 two-terminal channel + gate + body diode)
+*   SR_DEVICE  D G S : drain, gate, source (3-pin, common-source inductance
+*                      included in the gate loop)
+*   SR_DEVICE_KELVIN D G S K : 4-pin variant with a Kelvin source return K
+*
+* BLOCKS
+*   1. nonlinear channel, Rds(on)(Vgs) and Isat(Vgs) both fitted
+*   2. charge-defined nonlinear capacitances Cgd(|Vgd|), Cds(|Vds|),
+*      Cgs(Vgs)  (charge functions -> gate charge is a simulation result)
+*   3. body diode with reverse recovery (TT)
+*   4. package parasitics (LD, LS, LG, RG) -- ESTIMATE, see note
+*   5. temperature scaling of Rds(on) (TJ parameter)
+*
+* PACKAGE PARASITICS: ESTIMATE RANGE (no manufacturer data available)
+*   LD  (drain bond)          0.15 .. 0.5  nH   default 0.30 nH
+*   LS  (source bond)         0.40 .. 1.2  nH   default 0.80 nH
+*   LG  (gate bond)           1.50 .. 3.5  nH   default 2.50 nH
+*   RG  (internal gate R)     0.5  .. 2.0  ohm  default 1.0  ohm
+*   Effective source inductance seen by the power loop (die + bond + PCB
+*   footprint) is 0.7 .. 2.5 nH; set LS accordingly for a layout-specific run.
+*   These are marked ESTIMATE and must not be read as datasheet values.
+*
+* ASCII only.  LTspice 26 syntax.  Using "**" for exponentiation (caret is
+* XOR in LTspice).
+* ============================================================================
+
+.subckt SR_DEVICE D G S params: TJ=25 LD=0.3n LS=0.8n LG=2.5n RG=1 CSCALE=1
+* ---- package ----------------------------------------------------------------
+Ld D di {LD} Rser=0
+Ls S si {LS} Rser=0
+Lg G gn {LG} Rser=0
+Rg gn gi {RG}
+Rleak gi si 1G
+* ---- temperature factor for Rds(on), cubic fit, normalised to 25 C ----------
+*  fit of datasheet diagram "Rds(on)=f(Tj)" normalised curve; max residual 0.002
+Bkt kt 0 V=1+3.74740875m*(TJ-25)+9.04084303u*(TJ-25)**2+16.1532266n*(TJ-25)**3
+* ---- clamped internal gate-source voltage (numerical guard) -----------------
+Bvgs vgs 0 V=min(max(V(gi,si),-10),20)
+* ---- channel ----------------------------------------------------------------
+* Rds(Vgs) = R0 + R1*exp(-(Vgs-Vk)/T1) + R2*exp(-(Vgs-Vk)/T2), knee Vk=1.65 V
+*   (Vk is a fit knee, NOT the datasheet VGS(th); simulated VGS(th)=1.875 V)
+*   fitted to the datasheet Rds(on)-vs-Vgs curve at 25 C, ID=50 A
+*   (3.0 V 2.65 mOhm, 4.5 V 1.15 mOhm, 10 V 0.893 mOhm; residuals < 2.5 %)
+Br r 0 V=V(kt)*(0.891492m+0.1*exp(-(V(vgs)-1.65)/0.303313)+1.41369m*exp(-(V(vgs)-1.65)/1.52911))
+* Isat(Vgs) = KP * [ s*ln(1+exp((Vgs-Vz)/s)) ]**p , smoothly limited to IMAX
+*   fitted to the datasheet output-characteristic saturation points
+*   (2.7 V 50 A, 3.0 V 160 A; 3.5 V/4.5 V points lie at the plot edge and are
+*   used only as lower bounds).  Isat(2.5 V)=16 A, Isat(4.5 V)=1057 A.
+Bis isat 0 V=1/(1/(166.528*((0.08810546*log(1+exp((V(vgs)-1.976226)/0.08810546)))**3.606594))+1/1364.404)
+* Channel current with a smooth linear->saturation transition (n=3):
+*   Ids = Vds / ( R * (1 + (|Vds|/(R*Isat))**3 )**(1/3) )
+*   odd in Vds, so reverse (third-quadrant) conduction is not clamped.
+Bch di si I=V(di,si)/(V(r)*(1+(abs(V(di,si))/(V(r)*V(isat)))**3)**(1.0/3))
+* ---- body diode -------------------------------------------------------------
+* IS/N chosen so Vsd = 0.800 V at 50 A (datasheet 0.80 V typ, 1.0 max).
+* TT=27 ns: diode-only sim at IF=10 A, diF/dt=400 A/us gives Qrr=113 nC
+* (+16.6% vs 97 nC typ) and trr=25.4 ns (-15.4% vs 30 ns typ). A single
+* single-time-constant SPICE diode cannot hit both; TT is the compromise.
+* Cjo=0: device capacitance is modelled by Cds/Cgd above.
+* NOTE: TJ is applied to Rds(on) only; the diode is evaluated at the deck
+*       temperature (datasheet Vsd/Qrr/trr are 25 C values).
+Dbd si di DB
+.model DB D(IS=5e-11 N=1.05 TT=27n CJO=0 RS=1m)
+* ---- nonlinear capacitances (charge-defined) --------------------------------
+* Cgd: piecewise-linear below VK, two-exponential above; fit of the Crss
+*   diagram (0.5 V 783 pF ... 20 V 38.5 pF, 40 V 27 pF); Q(0..20 V)=5.36 nC
+Cgd gi di Q={CSCALE}*(if(V(gi,di)>=0,1,-1)*if(abs(V(gi,di))<=8.52972,735.774p*abs(V(gi,di))-56.7507p*abs(V(gi,di))*abs(V(gi,di))/2,4.2116n+26.6784p*(abs(V(gi,di))-8.52972)+892.3p*(1-exp(-(abs(V(gi,di))-8.52972)/3.96525))))
+* Cds: fit of Coss-Crss diagram (0.5 V 6117 pF ... 40 V 833 pF)
+*   Q(0..20 V)=67.6 nC ; Qoss = Qds+Qgd = 73.0 nC (datasheet 73 nC)
+Cds di si Q={CSCALE}*(if(V(di,si)>=0,1,-1)*if(abs(V(di,si))<=10.0021,6154.29p*abs(V(di,si))-297.645p*abs(V(di,si))*abs(V(di,si))/2,46.666n+62.6184p*(abs(V(di,si))-10.0021)+9147.4p*(1-exp(-(abs(V(di,si))-10.0021)/5.29689))+69821p*(1-exp(-(abs(V(di,si))-10.0021)/50.3394))))
+* Cgs: constant 5.1 nF.  Ciss = Cgs + Cgd(|Vds|) gives 5.14 nF at 20 V
+*   (datasheet 4.64 nF).  A constant Cgs is the compromise between the Ciss
+*   curve (~4.6 nF) and the Qg target (which would need ~6.6 nF); see the
+*   results document for the Qg/Qgd residuals this produces.
+Cgs gi si {CSCALE*5.1n}
+.ends SR_DEVICE
+
+* ---- 4-pin Kelvin-source variant -------------------------------------------
+* K is a separate source-sense pin bonded to the die source through LK
+* (ESTIMATE 0.2 .. 0.6 nH, default 0.4 nH).  In this variant the gate return
+* does NOT share LS, which is the point of a Kelvin connection.
+.subckt SR_DEVICE_KELVIN D G S K params: TJ=25 LD=0.3n LS=0.8n LG=2.5n RG=1 LK=0.4n CSCALE=1
+Ld D di {LD} Rser=0
+Ls S si {LS} Rser=0
+Lk K si {LK} Rser=0
+Lg G gn {LG} Rser=0
+Rg gn gi {RG}
+Rleak gi si 1G
+Bkt kt 0 V=1+3.74740875m*(TJ-25)+9.04084303u*(TJ-25)**2+16.1532266n*(TJ-25)**3
+Bvgs vgs 0 V=min(max(V(gi,si),-10),20)
+Br r 0 V=V(kt)*(0.891492m+0.1*exp(-(V(vgs)-1.65)/0.303313)+1.41369m*exp(-(V(vgs)-1.65)/1.52911))
+Bis isat 0 V=1/(1/(166.528*((0.08810546*log(1+exp((V(vgs)-1.976226)/0.08810546)))**3.606594))+1/1364.404)
+Bch di si I=V(di,si)/(V(r)*(1+(abs(V(di,si))/(V(r)*V(isat)))**3)**(1.0/3))
+Dbd si di DB
+.model DB D(IS=5e-11 N=1.05 TT=27n CJO=0 RS=1m)
+Cgd gi di Q={CSCALE}*(if(V(gi,di)>=0,1,-1)*if(abs(V(gi,di))<=8.52972,735.774p*abs(V(gi,di))-56.7507p*abs(V(gi,di))*abs(V(gi,di))/2,4.2116n+26.6784p*(abs(V(gi,di))-8.52972)+892.3p*(1-exp(-(abs(V(gi,di))-8.52972)/3.96525))))
+Cds di si Q={CSCALE}*(if(V(di,si)>=0,1,-1)*if(abs(V(di,si))<=10.0021,6154.29p*abs(V(di,si))-297.645p*abs(V(di,si))*abs(V(di,si))/2,46.666n+62.6184p*(abs(V(di,si))-10.0021)+9147.4p*(1-exp(-(abs(V(di,si))-10.0021)/5.29689))+69821p*(1-exp(-(abs(V(di,si))-10.0021)/50.3394))))
+Cgs gi si {CSCALE*5.1n}
+.ends SR_DEVICE_KELVIN

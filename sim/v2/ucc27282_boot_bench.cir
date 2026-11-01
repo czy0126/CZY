@@ -1,0 +1,59 @@
+* UCC27282 bootstrap bench (deck A)
+* Question: with the HS node parked near the bus, does HO stay off until the
+* low side has switched and charged Cboot?  This is the "GD2 first" requirement.
+* SIMULATION ONLY -- behavioural driver (models/ucc27282_behaviour.lib) and
+* behavioural MOSFETs; not hardware validation.
+.include ../../models/ucc27282_behaviour.lib
+.param VIN=48 CB=220n
+Vdd vdd 0 PWL(0 0 0.5u 0 2u 12)
+Ven en 0 12
+* 200 kHz complementary drive with 150 ns dead time; LI is the first to switch
+* (HI is already requesting from t=0, while HS is parked at the bus).
+Vclk clk 0 PULSE(0 1 5u 1n 1n 2.5u 5u)
+* pin-level logic must be 12 V: the UCC27282 receivers need 2.1 V
+Bli li 0 V=12*if(V(clk)>0.5, if(delay(V(clk),150n)>0.5,1,0), 0)
+Bhi hi 0 V=12*if(V(clk)<0.5, if(delay(V(clk),150n)<0.5,1,0), 0)
+* cold start imposed electrically (48 V bus already present, aux ramps later):
+* Spark parks HS at the bus and Sbt shorts Cboot while parked, so Cboot = 0 V.
+* Both release at 4.5 us, before the first low-side pulse; the driver must then
+* refuse HO until LI has pulled HS low and the bootstrap diode refilled Cboot.
+Vbus vin 0 PWL(0 0 1u {VIN})
+Vpark park 0 PWL(0 12 4.5u 12 4.51u 0)
+Spark vin sw park 0 SWP
+Sbt hb sw park 0 SWP
+.model SWP SW(Ron=1m Roff=1G Vt=6)
+* half bridge, HS parked at the bus until the low side turns on
+Rsw vin sw 1k
+Shs vin sw gh sw MAIN
+Dhs sw vin BODY
+Sls sw 0 gl 0 MAIN
+Dls 0 sw BODY
+* gate loop: driver output -> 4.8 ohm -> gate, 4 nF Cgs, 10 k gate-source
+Rgh ho gh 4.8
+Cgh gh sw 4n
+RgsH gh sw 10k
+Rgl lo gl 4.8
+Cgl gl 0 4n
+RgsL gl 0 10k
+Lload sw 0 1m
+Rload sw 0 1k
+.model MAIN SW(Ron=8m Roff=100Meg Vt=2 Vh=-.5)
+.model BODY D(Vfwd=0.7 Ron=8m Roff=1G)
+Xdrv vdd hb sw lo ho hi li en 0 UCC27282 PARAMS: T_EN=100p
+Cbt hb sw {CB} Rser=50m
+.options plotwinsize=0
+.tran 0 60u 0 5n uic
+.save V(sw) V(hb) V(ho) V(lo) V(gh) V(gl) V(hi) V(li) V(en) V(vdd) I(Cbt) I(RgsH) I(Rgh)
+.meas tran V_HI_PARK FIND V(hi) AT=3u
+.meas tran V_HO_PARK FIND V(ho,sw) AT=3u
+.meas tran VBOOT_PARK FIND V(hb,sw) AT=4u
+.meas tran LI_FIRST WHEN V(li)=6 RISE=1
+.meas tran LO_FIRST WHEN V(lo)=6 RISE=1
+.meas tran HO_FIRST WHEN V(ho,sw)=6 RISE=1
+.meas tran VBOOT_CHARGED FIND V(hb,sw) AT=7.5u
+.meas tran VBOOT_AT_HO FIND V(hb,sw) AT=8u
+.meas tran VBOOT_MAX MAX V(hb,sw) FROM 10u TO 60u
+.meas tran VBOOT_MIN MIN V(hb,sw) FROM 10u TO 60u
+.meas tran HO_MAX MAX V(ho,sw) FROM 10u TO 60u
+.meas tran HO_MID_MEAN AVG V(ho,sw) FROM 2u TO 5u
+.end

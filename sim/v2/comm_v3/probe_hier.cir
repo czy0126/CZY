@@ -1,0 +1,17 @@
+* Probe: can .meas/.save reach internal subcircuit nodes?
+.subckt DT A K
+D1 A K DM
+.model DM D(IS=1e-12 N=1)
+.ends
+V1 A 0 PWL(0 0 1u 1 2u 1)
+X1 A 0 DT
+.tran 0 3u 0 1n
+.save V(A) V(x1:a) V(x1:k)
+.meas tran VTOP FIND V(A) AT=1.5u
+.meas tran VINT1 FIND V(x1:a) AT=1.5u
+.meas tran VINT2 FIND V(x1:k) AT=1.5u
+.meas tran IPIN MAX I(X1:a)
+.meas tran IPIN2 MAX I(X1:k)
+.meas tran IDIO MAX I(X1:D1)
+.meas tran IDIO2 MAX I(X1:d1)
+.end

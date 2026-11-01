@@ -1,0 +1,11 @@
+* Ciss bench: drain held at 10/20 V DC, small 0->0.4 V gate ramp. Ciss=dIg/dt slope.
+.include ../../models/sr_device_v3.lib
+Vd d 0 {VD}
+Vg g 0 PWL(0 0 400n 0.4)
+X1 d g 0 SR_DEVICE
+.step param VD list 10 20
+.tran 0 400n 0 0.05n uic
+.options plotwinsize=0
+.meas tran ig FIND I(Vg) AT=399.9n
+.meas tran ciss PARAM -1*ig/1e6
+.end

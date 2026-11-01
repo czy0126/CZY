@@ -1,0 +1,13 @@
+* test if() inside Q= and cross-node Q
+V1 1 0 SIN(0 5 1meg)
+V2 2 0 SIN(0 5 2meg)
+C1 1 0 Q=if(V(1)>0, 1n*0.5*(1-exp(-V(1)/0.5))+0.1n*V(1), -1n*0.5*(1-exp(V(1)/0.5))+0.1n*V(1))
+C2 1 2 Q=if(V(2,1)>0, 0.8n*0.5*(1-exp(-V(2,1)/0.5)), -(0.8n*0.5*(1-exp(V(2,1)/0.5))))
+R1 1 0 1k
+R2 2 0 1k
+.tran 0 20u 0 1n
+.meas tran I1MAX MAX I(V1)
+.meas tran I1MIN MIN I(V1)
+.meas tran I2MAX MAX I(C2)
+.meas tran I2MIN MIN I(C2)
+.end

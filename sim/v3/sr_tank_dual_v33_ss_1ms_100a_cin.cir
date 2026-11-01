@@ -1,0 +1,212 @@
+* 100 A LOAD POINT (2026-10-31): identical to the round-4 1 ms deck except
+* RL=18.9 mOhm, chosen for ~100 A at the fixed 24:1 ratio.  Model evidence
+* only; no hardware.  Parent deck comments below still apply.
+* CONVERGENCE CONTROL (round 3): same deck as sr_tank_dual_v33_ss_fine.cir but
+* 1 ms long, saving 880..1000 us (24 SR periods) so a settling transient and a
+* slow limit cycle can be told apart.  Everything else is identical.
+* ============================================================================
+* Step 3 joint bench: the REAL 48 V -> ~2 V resonant cavity with BOTH SRs of
+* a rectifier pair replaced by the calibrated device model (SR_DEVICE) driven
+* by the current timing model (sr_timing_v3_3, CGATE=0 CPIN=100p).
+*
+* STEADY-STATE-INIT VARIANT (2026-10-31 round 3).  Same power stage as v33,
+* but SS is initialised at 4 V so the oscillator runs at its RT-only frequency
+* (1/[2(6ns*1A/2.5615mA + 150ns)] = 200.6 kHz), not the 284.4 kHz soft-start point.
+* THIS DECK: 1000 us, saved from 880 us (Tstart) -- see the .tran line; the
+* paragraph below describes the parent deck sr_tank_dual_v33_ss_fine.cir.
+* Parent deck: 500 us, saved from 440 us.  Differences from sr_tank_dual_v33.cir:
+*   1. SS initialised at 4 V (200.6 kHz) instead of ramping from 0 (soft start).
+*      VCC is ALSO held at 12 V from t=0.  .ic alone does NOT work with the
+*      ramped VCC: while UVLO is unsatisfied FAULT is asserted, and the model's
+*      SS discharge FET (RDIS=500) bleeds the 10 nF SS cap (tau = 5 us) for the
+*      whole 2 us VCC ramp.  Measured: .ic V(ss)=4 + PWL VCC settles to 3.03 V
+*      at 500 us -> 232.1 kHz, NOT the design point (probe _probe/ss_ic_b).
+*      With VCC present from t=0 the fault window is ~30 ns, the same .ic is
+*      preserved (V_SS 3.987 V at 20 us, 4.227 V at 500 us), and the oscillator
+*      is at 200.6 kHz (probe _probe/ss_ic_a).  This deck is an
+*      OPERATING-POINT initialisation, deliberately not a cold start; the
+*      cold-start path is the unmodified sr_tank_dual_v33.cir.
+*   2. FINE-TIMESTEP variant: 5 ns max step (the 30 ns run jittered period/Qrev by 1-5 %). Saves 440..500 us (Tstart=440u); it still runs 0..500 us.
+*      LTspice REBASES the saved time axis to zero, so this deck's .meas below use
+*      0..60 us, not the 440..500 us of the main deck.  Add 440 us to compare times.
+*   3. MEASUREMENT TRAP: the SR gate period jitters +-1.3 % because turn-on is a
+*      threshold event on the ringing drain; the PRIMARY period (V(sw)) is
+*      200.59 kHz.  SR on-time alternates, so average over an EVEN number of
+*      SR periods (this deck saves 12).
+*   2. .save adds pair-1 device internals so tools/sr_energy_ledger.py can build
+*      the branch energy ledger (channel, body diode, Cds/Cgd/Cgs, Ld/Ls/Lg, Rg).
+* Gate-drive current I(xsr1:x1:bdrive) includes the 100 pF CPIN regularisation pad,
+* so it is the total gate supply, not SR_DEVICE's gate pin alone.
+*
+* Derived from sim/v2/startup_ct.cir.  Power stage, transformer, resonant
+* components, CT sense chain and UCC25600 behaviour are unchanged.  Only the
+* four SR groups changed:
+*   - ideal switch (SW Ron=1.5m) + ideal body diode + 2 nF node cap
+*     -> Xsa/Xsb ... SR_DEVICE   (the 2 nF is dropped: SR_DEVICE carries Coss)
+*   - sr_timing_v2 -> sr_timing_v3_3, CGATE=0 CPIN=100p (same as the g0
+*     headline bench: the 6.7 nF surrogate is not used with a real device).
+*     v3_3 = v3_2 + the turn-off comparator fix.  On this bench v3_2 latched
+*     the first drain ring peak above OFFTH after the on-blank, so the gate
+*     dropped after 525-1683 ns (mean 719 ns) where v2 and v3_3 hold 1455 ns;
+*     the channel carried 5.2% of the SR energy (ech 0.571 uJ of ech+ebd
+*     10.89 uJ) instead of 44.8% on v3_3, i.e. 4.7x the loss per device
+*     (sr_tank_dual.raw, 1.5 ms run; sr_tank_dual_results.md section 4).
+*     v3_2 = v3_1 + a soft rail on the off-blank integrator; without it this
+*     deck never gets past t = 114.65 us (see the model header and
+*     design/v2/sr_tank_dual_results.md).  The rail is 9.9-10 V, 15x above the
+*     0.65 V decision level, so it does not change any timing result.
+*   - PGD=0: the 0-ohm / fixed-10.9 V baseline the review asks to keep.
+*
+* WHY this bench exists (review step 3): the forced-sinusoid commutation bench
+* imposes di/dt = 2*pi*f*I, so its "1.647 mV/A" VDS-peak slope is a property of
+* that stimulus, not of a real tank.  Here the reverse current comes from real
+* Lr/Cr energy exchange through the transformer leakage, so di/dt, reverse
+* charge and the two channels' overlap current are measured on the tank.
+*
+* MEASUREMENT NOTES
+*   Sign convention measured on sim/v2/startup_ct.raw (same power stage):
+*   I(VSa1) < 0  rectifying (winding -> SR -> ground -> load -> winding),
+*                and V(a1) = I*RdsOn < 0 as well
+*   I(VSa1) > 0  reverse (current keeps flowing from ground back into the
+*                winding while the channel is still on)
+*   V(a1)  is the SR drain node; source is sgnd, so V(a1) is VDS.
+*   ovl1 = min(max(-Ia,0), max(-Ib,0)): BOTH channels conducting FORWARD at the
+*          same instant -- a current-based interlock check, not a gate-voltage
+*          one (a wrong-signed probe here would measure reverse-current overlap,
+*          which is normal commutation, not a shoot-through).  ovg1 is the
+*          gate-voltage overlap kept only for contrast.
+*   Charge/energy integrals are computed offline from the .raw over exactly one
+*   switching period (tools/tank_metrics.py), so the window is explicit.
+* RUN LENGTH AND INITIALISATION
+*   The 1.5 ms deck (sr_tank_dual.cir) spends most of its run charging the 4 mF
+*   output and is not settled when it stops.  This deck starts at the operating
+*   point instead -- .ic V(out)=1.89 V(ss)=4 V, the real REG PWL kept because the pre-arm
+*   window needs REG to pass through 0.1..4.1 V while VD>ARM (Bpl/Bpre in the
+*   model; forcing REG=11 from t=0 latches the violation flag and every gate
+*   stays off) -- and stops at 500 us, well after the output has settled.
+*   This steady-state variant saves only 440-500 us (rebased to 0-60 us) and
+*   its .meas windows are therefore 0-60 us; tools/tank_metrics.py averages the
+*   last 8 periods of the saved window.
+*
+* Numerical result, not hardware validation.
+* ============================================================================
+.include ../../models/ucc25600_legacy_behaviour.lib
+.include ../../models/sr_timing_v3_3.lib
+.include ../../models/sr_device_v3.lib
+.param PGD=0
+.param VIN=48 RL=18.9m LP=10u LR_TOTAL=.92u CR_TOTAL=620n
+.param FS=1/(2*(6n/(2.5/976)+150n)) TS=1/FS DT=149n
+Vbus vin0 0 {VIN}
+Rin vin0 vin 1m
+Cin vin 0 20u Rser=5m
+Vaux aux 0 12
+Xctl dt rt oc ss gd2 0 aux gd1 R184_UCC25600
+Rdt dt 0 5.36k
+Rrt rt 0 976
+Css ss 0 10n
+Rss_dc ss 0 1G
+* ---- current transformer (unchanged from startup_ct.cir) -------------------
+Lct1 nr nct 2u
+Lct2 cs1 cs2 20m
+Kct Lct1 Lct2 0.9999
+D1 cs1 ocd DSCH
+D2 cs2 ocd DSCH
+D3 ocm cs1 DSCH
+D4 ocm cs2 DSCH
+.model DSCH D(Is=2n Rs=.3 N=1.2 Cjo=20p)
+Vctg ocm 0 0
+Rbur ocd ocm 10
+Rf ocd oc1 1k
+Cf oc1 ocm 47n
+Rd1 oc1 oc 10k
+Rd2 oc ocm 24k
+Coc oc ocm 10n
+* ---- primary side ----------------------------------------------------------
+Dbt aux hb DBOOT
+Cbt hb sw 220n Rser=.05
+.model DBOOT D(Is=10n Rs=.5 N=1.2)
+Bgh gh0 sw V=if(V(hb,sw)>5.5,if(delay(V(gd1),20n)>2,if(V(gd2)<2,V(hb,sw),0),0),0)
+Bgl gl0 0 V=if(V(aux)>5.5,if(delay(V(gd2),20n)>2,if(V(gd1)<2,V(aux),0),0),0)
+Rgh gh0 gh 3.2
+Rgl gl0 gl 3.2
+RgsH gh sw 10k
+RgsL gl 0 10k
+SH vin sw gh sw PRI_SW
+DH sw vin BODY_P
+Cgh gh sw 4n
+Cdh vin sw 560p
+SL sw 0 gl 0 PRI_SW
+DL 0 sw BODY_P
+Cgl gl 0 4n
+Cdl sw 0 560p
+.model PRI_SW SW(Ron=8m Roff=100Meg Vt=2.5 Vh=-.2)
+.model BODY_P D(Ron=8m Roff=1G Vfwd=.7)
+Cr sw nr {CR_TOTAL} Rser=3m
+Lr nct p1 {LR_TOTAL} Rser=5m
+Lp1 p1 p2 {LP} Rser=3m
+Lp2 p2 p3 {LP} Rser=3m
+Lp3 p3 p4 {LP} Rser=3m
+Lp4 p4 0 {LP} Rser=3m
+Lsa1 out a1 {LP/9} Rser=0.15m
+Lsb1 b1 out {LP/9} Rser=0.15m
+Lsa2 out a2 {LP/9} Rser=0.15m
+Lsb2 b2 out {LP/9} Rser=0.15m
+Lsa3 out a3 {LP/9} Rser=0.15m
+Lsb3 b3 out {LP/9} Rser=0.15m
+Lsa4 out a4 {LP/9} Rser=0.15m
+Lsb4 b4 out {LP/9} Rser=0.15m
+K1 Lp1 Lsa1 Lsb1 .999
+K2 Lp2 Lsa2 Lsb2 .999
+K3 Lp3 Lsa3 Lsb3 .999
+K4 Lp4 Lsa4 Lsb4 .999
+* ---- four rectifier groups, all real devices -------------------------------
+Vreg reg sgnd PWL(0 0 130u 0 150u 11 1m 11)
+VSa1 a1 da1 0
+Xsa1 da1 ga1 sgnd SR_DEVICE
+VSb1 b1 db1 0
+Xsb1 db1 gb1 sgnd SR_DEVICE
+Xsr1 a1 b1 ga1 gb1 reg sgnd pre1 SR_TIMING PGD={PGD} CGATE=0 CPIN=100p
+VSa2 a2 da2 0
+Xsa2 da2 ga2 sgnd SR_DEVICE
+VSb2 b2 db2 0
+Xsb2 db2 gb2 sgnd SR_DEVICE
+Xsr2 a2 b2 ga2 gb2 reg sgnd pre2 SR_TIMING PGD={PGD} CGATE=0 CPIN=100p
+VSa3 a3 da3 0
+Xsa3 da3 ga3 sgnd SR_DEVICE
+VSb3 b3 db3 0
+Xsb3 db3 gb3 sgnd SR_DEVICE
+Xsr3 a3 b3 ga3 gb3 reg sgnd pre3 SR_TIMING PGD={PGD} CGATE=0 CPIN=100p
+VSa4 a4 da4 0
+Xsa4 da4 ga4 sgnd SR_DEVICE
+VSb4 b4 db4 0
+Xsb4 db4 gb4 sgnd SR_DEVICE
+Xsr4 a4 b4 ga4 gb4 reg sgnd pre4 SR_TIMING PGD={PGD} CGATE=0 CPIN=100p
+Cout out sgnd 4m Rser=0.2m
+Rload out sgnd {RL}
+Vref sgnd 0 0
+* ---- overlap probes --------------------------------------------------------
+Bovl1 ovl1 0 V=min(max(-I(VSa1),0),max(-I(VSb1),0))
+Bovg1 ovg1 0 V=if(V(ga1)>2,if(V(gb1)>2,1,0),0)
+.options plotwinsize=0 method=gear
+.tran 0 1000u 880u 5n uic
+.ic V(out)=1.89 V(ss)=4
+.save V(out) V(sw) V(reg) V(ss) I(Lr) V(a1) V(b1) V(ga1) V(gb1) I(VSa1) I(VSb1) I(Cin) I(Rin)
++ V(pre1) V(xsr1:q1) V(xsr1:q2) V(ovl1) V(ovg1) V(oc)
++ V(a4) V(b4) V(ga4) V(gb4) I(VSa4) I(VSb4) V(ovl4)
+* ---- internal branch probes (pair 1 only): energy ledger ------------------
++ V(xsa1:di) V(xsa1:si) V(xsa1:gi) V(xsa1:gn) V(xsb1:di) V(xsb1:si) V(xsb1:gi) V(xsb1:gn)
++ I(xsa1:bch) I(xsa1:dbd) I(xsa1:cds) I(xsa1:cgd) I(xsa1:cgs) I(xsa1:rg) I(xsa1:lg) I(xsa1:ld) I(xsa1:ls)
++ I(xsb1:bch) I(xsb1:dbd) I(xsb1:cds) I(xsb1:cgd) I(xsb1:cgs) I(xsb1:rg) I(xsb1:lg) I(xsb1:ld) I(xsb1:ls)
++ I(xsr1:x1:bdrive) I(xsr1:x2:bdrive)
+.meas tran VOUT_AVG AVG V(out) FROM=0 TO=120u
+.meas tran VOUT_RIP PP V(out) FROM=110u TO=120u
+.meas tran VDS_A1_MIN MIN V(a1) FROM=0 TO=120u
+.meas tran VDS_A1_MAX MAX V(a1) FROM=0 TO=120u
+.meas tran IREV_A1 MAX I(VSa1) FROM=0 TO=120u
+.meas tran IFWD_A1 MAX -I(VSa1) FROM=0 TO=120u
+.meas tran OVL_CUR MAX V(ovl1) FROM=0 TO=120u
+.meas tran OVL_GATE MAX V(ovg1) FROM=0 TO=120u
+.meas tran IPRI_PK MAX abs(I(Lr)) FROM=0 TO=120u
+.meas tran OUT_LAST FIND V(out) AT=120u
+.end
+

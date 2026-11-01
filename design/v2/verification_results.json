@@ -1,0 +1,142 @@
+{
+  "controller": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "freq_end": 200609.859374,
+      "freq_start": 290425.336936,
+      "ss_end": 4.16664761234
+    }
+  },
+  "sr_good": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "gate_max": 10.8904104233,
+      "pre_final": 0.999991476536
+    }
+  },
+  "sr_bad_order": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "gate_max": 0.0,
+      "pre_final": 0.0
+    }
+  },
+  "sr_simultaneous": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "gate_max": 10.8904104233,
+      "pre_final": 0.999991476536
+    }
+  },
+  "sr_commutation_sweep": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "reverse_peak": [
+        8.94220924377,
+        7.49837112427,
+        9.79005336761,
+        8.33216190338,
+        10.6546010971,
+        9.16302394867
+      ],
+      "forward_peak": [
+        -39.9997711182,
+        -39.9998092651,
+        -40.0007362366,
+        -39.9998130798,
+        -40.0008392334,
+        -40.0000534058
+      ],
+      "gate_overlap": [
+        0.00603731339797,
+        0.00147506126668,
+        0.00608942958061,
+        0.0014361464011,
+        0.00617435500026,
+        0.00146372782765
+      ]
+    }
+  },
+  "sr_timestep_check": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "reverse_peak": [
+        8.93703365326,
+        7.46351051331,
+        9.78596019745,
+        8.35024547577,
+        10.6171140671,
+        9.17982578278
+      ],
+      "forward_peak": [
+        -39.9995880127,
+        -39.9995918274,
+        -39.9995880127,
+        -39.9995956421,
+        -39.9995918274,
+        -39.9995956421
+      ],
+      "gate_overlap": [
+        0.00607076222077,
+        0.00144849208882,
+        0.00598027026281,
+        0.00143057158566,
+        0.00604029905517,
+        0.00144060106832
+      ]
+    }
+  },
+  "sr_slow_off_negative": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "reverse_peak": 18.0853881836,
+      "forward_peak": -40.000869751,
+      "gate_overlap": 0.0061837090645
+    }
+  },
+  "integrated_pgd_sweep": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "vout_avg": [
+        1.44422599293,
+        1.42490800589
+      ],
+      "ipri_pk": [
+        36.3964347839,
+        36.3964347839
+      ],
+      "sr_reverse": [
+        16.8080635071,
+        11.5992288589
+      ],
+      "sr_gate_max": [
+        10.8905248642,
+        8.24951267242
+      ],
+      "pre_end": [
+        0.9999781847,
+        0.9999781847
+      ]
+    }
+  },
+  "integrated_oc_proxy": {
+    "status": "SIMULATION_COMPLETED_NOT_HARDWARE_VALIDATED",
+    "values": {
+      "Options": 0.0,
+      "vout_avg": 0.326410582672,
+      "ipri_pk": 17.525642395,
+      "sr_reverse": 1.93894198475e-08,
+      "sr_gate_max": 0.0,
+      "pre_end": 0.0
+    }
+  },
+  "integrated_oc_long": {
+    "status": "INCOMPLETE_OR_NUMERICAL_FAILURE",
+    "log": "D:\\workshop\\design_48v-2v\\sim\\v2\\integrated_oc_long.log"
+  },
+  "max_timestep_relative_change": 0.004649091166902449,
+  "model_hashes": {
+    "models\\sr_timing_v2.lib": "412e07a9256576d07cb92ab2298fb99fa827fadc0e0efa376596a3a20a81843a",
+    "models\\ucc25600_legacy_behaviour.lib": "b49c5dc13a44b383a97d11e90d9edc8f2f01f456a30857c729e3a8a12925ecc6"
+  }
+}

@@ -1,0 +1,10 @@
+* Test LTspice inductor DC resistance default
+I1 0 a 10
+L1 a 0 1n
+.op
+.meas op vla FIND V(a)
+I2 0 b 10
+L2 b 0 1n Rser=0
+.op2
+.meas op vlb FIND V(b)
+.end

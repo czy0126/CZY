@@ -1,0 +1,38 @@
+* Independent engineering surrogate, NOT TI's device model.
+* REG is an externally imposed internal rail for timing tests.
+* PRE flags the documented pre-UVLO drain history. Violations are unsupported,
+* not a prediction that actual silicon necessarily stays off.
+* PGD=1 uses an uncalibrated smooth gate law; sweep 0/1, do not sign off hardware.
+.subckt SR_TIMING D1 D2 G1 G2 REG S PRE params: TON=155n TOFF=23n BON=475n BOFF=650n ARM=1.5 ONTH=-.265 OFFTH=.0105 PGD=0 TAU=1n
+Cpre PRE S 1n IC=0
+Bpre PRE S I=if(V(REG,S)<1,V(PRE,S),if(V(REG,S)<4.5,if(max(V(D1,S),V(D2,S))>ARM,-(1-V(PRE,S)),0),0))
+Rpre PRE S 1G
+Cuv uv S 1n IC=0
+Buv uv S I=if(V(REG,S)>4.5,-(1-V(uv,S)),if(V(REG,S)<4,-V(uv,S)*(-1),0))
+Bok ok S V=if(V(PRE,S)>.5,if(V(uv,S)>.5,1,0),0)
+X1 D1 G1 REG S q2 ok q1 req1 S SR_CH TON={TON} TOFF={TOFF} BON={BON} BOFF={BOFF} ARM={ARM} ONTH={ONTH} OFFTH={OFFTH} PGD={PGD} TAU={TAU}
+X2 D2 G2 REG S q1 ok q2 req2 req1 SR_CH TON={TON} TOFF={TOFF} BON={BON} BOFF={BOFF} ARM={ARM} ONTH={ONTH} OFFTH={OFFTH} PGD={PGD} TAU={TAU}
+.ends SR_TIMING
+.subckt SR_CH D G REG S OTHER OK Q req BLOCK params: TON=155n TOFF=23n BON=475n BOFF=650n ARM=1.5 ONTH=-.265 OFFTH=.0105 PGD=0 TAU=1n
+Ca armstate S 1n IC=0
+Ba armstate S I=if(V(Q,S)>.5,V(armstate,S),if(V(D,S)>ARM,-(1-V(armstate,S)),0))
+Ra armstate S 1G
+* Timer voltages in microseconds, bounded at 10 us; reset tau=1 ns (numerical).
+Ctarm tarm S 1n IC=0
+Btarm tarm S I=if(V(armstate,S)>.5,if(V(tarm,S)<10,-1m,0),V(tarm,S))
+Brequest req S V=if(V(BLOCK,S)>.5,0,if(V(D,S)<ONTH,if(V(Q,S)<.5,if(V(OTHER,S)<.5,if(V(tarm,S)>BOFF*1e6,if(V(OK,S)>.5,1,0),0),0),0),0))
+Cton ton S 1n IC=0
+Bton ton S I=if(V(req,S)>.5,if(V(ton,S)<10,-1m,0),V(ton,S))
+Cage age S 1n IC=0
+Bage age S I=if(V(Q,S)>.5,if(V(age,S)<10,-1m,0),V(age,S))
+Ctoff toff S 1n IC=0
+Btoff toff S I=if(V(D,S)>OFFTH,if(V(age,S)>BON*1e6,if(V(toff,S)<10,-1m,0),V(toff,S)),V(toff,S))
+Cq Q S 1n IC=0
+Bq Q S I=if(V(OK,S)<.5,V(Q,S)*1n/TAU,if(V(OTHER,S)>.5,V(Q,S)*1n/TAU,if(V(Q,S)>.5,if(V(toff,S)>TOFF*1e6,V(Q,S)*1n/TAU,-(1-V(Q,S))*1n/TAU),if(V(ton,S)>TON*1e6,-(1-V(Q,S))*1n/TAU,V(Q,S)*1n/TAU))))
+Rq Q S 1G
+Bdrv drv S V=if(V(Q,S)>.5,if(PGD,limit(3+(-V(D,S)-.035)*80,2.6,10.9),min(10.9,V(REG,S))),0)
+* Driver nominal 6.5ohm source / .9ohm sink plus 2.2ohm external.
+Bdrive G S I=limit((V(G,S)-V(drv,S))/if(V(drv,S)>V(G,S),8.7,3.1),-1.5,4)
+Rgs G S 10k
+Cgate G S 6.7n
+.ends SR_CH

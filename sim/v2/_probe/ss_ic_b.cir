@@ -1,0 +1,16 @@
+* probe B: control -- the original VCC PWL(0 0 2u 12) with SS .ic=4
+.include ../../../models/ucc25600_legacy_behaviour.lib
+Vcc vcc 0 PWL(0 0 2u 12)
+Voc oc 0 0
+Rdt dt 0 5.36k
+Rrt rt 0 976
+Css ss 0 10n
+Xctl dt rt oc ss gd2 0 vcc gd1 R184_UCC25600
+.tran 0 500u 0 30n uic
+.ic V(ss)=4
+.save V(ss) V(gd1) V(gd2) V(en)
+.meas tran SS_MIN MIN V(ss) FROM=0 TO=10u
+.meas tran SS_END FIND V(ss) AT=500u
+.meas tran T_GD1_RISE WHEN V(gd1)=5 RISE=100
+.meas tran T_GD1_RISE2 WHEN V(gd1)=5 RISE=101
+.end

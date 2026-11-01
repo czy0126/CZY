@@ -1,0 +1,142 @@
+* ============================================================================
+* VARIANT v3roff_load (2026-10-31): Roffset x load sweep.
+* Same device (SR_DEVICE), timing model (sr_timing_v3_roff.lib) and
+* 17-22 us window as sr_commutation_v3_roff.cir.  Only the forced-current
+* amplitude and the .step list change.  ROFF=100/120 ohm (43.5/50.1 mV)
+* at ILOAD=10/25/40 A, PGD=0 only (decision case), TMAX=10n scoping run.  Purpose: test whether
+* a fixed mV threshold still turns off when di/dt falls with load.
+* Numerical result, not hardware validation.
+* ============================================================================
+* ============================================================================
+* Integrated SR commutation bench: real SR_DEVICE (v3) driven by SR_TIMING v3.
+* Derived from sim/v2/sr_commutation_sweep.cir.  Excitation and gate-drive
+* network are byte-identical to the v2 ideal bench except that the ideal
+* switch (SW Ron=1.5m), ideal body diode (Vfwd=0.65) and external Cda=2n are
+* replaced by "Xsr da ga 0 SR_DEVICE".  The external Cda is removed because
+* SR_DEVICE already contains Coss (Cds+Cgd); keeping it would double-count.
+*
+* The timing model is a COPY of v3 with the behavioural VSS offset added
+* (sr_timing_v3_roff.lib); the frozen v3 model is unchanged.  It retains
+* the 6.7 nF gate-node stand-in load, part of the same gate-drive network
+* the v2 bench used.  Removing that 6.7 nF was tried
+* (investigation/sr_timing_v3_cgate0.lib) and exposed a non-physical
+* 10 V / 44 ps gate-pin spike from the ideal current-source driver plus the
+* device's 2.5 nH package gate inductance; it is therefore not used for the
+* headline numbers.
+*
+* MEASUREMENT DEFINITIONS (all per channel 1 / per 5 us period):
+*   IREV_PEAK  max I(Vsa)                reverse (drain->source) current peak
+*   ICOND_PEAK min I(Vsa)                forward conduction current peak
+*   QREV_C     integral max(0,I(Vsa))    reverse charge per cycle
+*   QG_C       integral max(0,I(Vg1))    gate charge delivered to the device
+*   EBD_C      integral gate-off, V*I>0  body-diode terminal conduction energy
+*   ECH_C      integral gate-on,  V*I>0  channel conduction energy
+*   EGE_C      integral |Vgs*Ig|          gate-drive energy (charge+discharge)
+* Windows 15-20 us are one full 200 kHz period in steady state; 10-20 us for
+* peaks excludes the 3-10 us start-up.
+* ============================================================================
+.include ../../../models/sr_timing_v3_roff.lib
+.include ../../../models/sr_device_v3.lib
+.param ROFF=100 IOFF=330u PGD=0 ILOAD=40 TDELAY=23n TMAX=10n
+Vclamp bus 0 4
+Vreg reg 0 PWL(0 0 1u 0 2u 11 30u 11)
+Rinit1 bus d1 10k
+Rinit2 bus d2 10k
+Bload1 d1 0 I=if(time>3u,{ILOAD}*sin(2*pi*200k*(time-3u)),0)
+Bload2 d2 0 I=if(time>3u,-{ILOAD}*sin(2*pi*200k*(time-3u)),0)
+Dcl1 d1 bus CLAMP
+Dcl2 d2 bus CLAMP
+.model CLAMP D(Ron=.02 Roff=1G Vfwd=.2)
+Vsa d1 da 0
+Vsb d2 db 0
+Vg1 ga gda 0
+Vg2 gb gdb 0
+Xsr1 da gda 0 SR_DEVICE
+Xsr2 db gdb 0 SR_DEVICE
+Xsr d1 d2 ga gb reg 0 pre SR_TIMING PGD={PGD} TOFF={TDELAY} ROFF={ROFF} IOFF={IOFF}
+* ---- per-cycle integrators (5 us = one 200 kHz period) --------------------
+Bqr qr 0 I=-max(0,I(Vsa))
+Cqr qr 0 1n
+Rqr qr 0 1G
+Bqg qg 0 I=-max(0,I(Vg1))
+Cqg qg 0 1n
+Rqg qg 0 1G
+Bbd bd 0 I=-if(V(gda)<1,max(0,V(d1)*I(Vsa)),0)
+Cbd bd 0 1n
+Rbd bd 0 1G
+Bch ch 0 I=-if(V(gda)>1,max(0,V(d1)*I(Vsa)),0)
+Cch ch 0 1n
+Rch ch 0 1G
+Bge ge 0 I=-abs(V(gda)*I(Vg1))
+Cge ge 0 1n
+Rge ge 0 1G
+* ROFF is innermost, ILOAD outermost: cases 1-2 = 10 A, 3-4 = 25 A,
+* 5-6 = 40 A; within each, 100/120 ohm.  PGD=0 only.
+.step param ILOAD list 10 25 40
+.step param ROFF list 100 120
+.tran 0 22u 0 {TMAX}
+.save V(d1) V(d2) V(gda) V(gdb) V(ga) V(gb) V(pre) I(Vsa) I(Vsb) I(Vg1) I(Vg2) V(qr) V(qg) V(bd) V(ch) V(ge)
+.meas tran IREV_PEAK MAX I(Vsa) FROM 10u TO 20u
+.meas tran ICOND_PEAK MIN I(Vsa) FROM 10u TO 20u
+.meas tran VDS_MIN MIN V(d1) FROM 10u TO 20u
+.meas tran VDS_MAX MAX V(d1) FROM 10u TO 20u
+.meas tran VGS_MAX MAX V(gda) FROM 10u TO 20u
+.meas tran VGS_MIN MIN V(gda) FROM 10u TO 20u
+.meas tran GATE_OVERLAP MAX min(V(gda),V(gdb)) FROM 10u TO 20u
+.meas tran ISR_19 FIND I(Vsa) AT=19.25u
+.meas tran VGS_19 FIND V(gda) AT=19.25u
+.meas tran VDS_19 FIND V(d1) AT=19.25u
+.meas tran RDS_19 PARAM VDS_19/ISR_19
+.meas tran ISR2_19 FIND I(Vsb) AT=19.25u
+.meas tran VGS2_19 FIND V(gdb) AT=19.25u
+.meas tran VDS2_19 FIND V(d2) AT=19.25u
+.meas tran QR15 FIND V(qr) AT=15u
+.meas tran QR20 FIND V(qr) AT=20u
+.meas tran QREV_C PARAM (QR20-QR15)*1n
+.meas tran QG15 FIND V(qg) AT=15u
+.meas tran QG20 FIND V(qg) AT=20u
+.meas tran QG_C PARAM (QG20-QG15)*1n
+.meas tran BD15 FIND V(bd) AT=15u
+.meas tran BD20 FIND V(bd) AT=20u
+.meas tran EBD_C PARAM (BD20-BD15)*1n
+.meas tran CH15 FIND V(ch) AT=15u
+.meas tran CH20 FIND V(ch) AT=20u
+.meas tran ECH_C PARAM (CH20-CH15)*1n
+.meas tran GE15 FIND V(ge) AT=15u
+.meas tran GE20 FIND V(ge) AT=20u
+.meas tran EGE_C PARAM (GE20-GE15)*1n
+.meas tran P_BD PARAM (BD20-BD15)*1n*200k
+.meas tran P_CH PARAM (CH20-CH15)*1n*200k
+.meas tran P_GE PARAM (GE20-GE15)*1n*200k
+* ---- clean per-cycle window 17-22 us -------------------------------------
+* Contains exactly one turn-on dead-time interval (18.0 us) and one complete
+* turn-off event (trigger moves later as ROFF raises OFFTH; the PGD=0 baseline
+* triggers at 19.83 us, and 212 ohm is expected near/after the 20.5 us zero
+* crossing).  The 15-20 us values above are
+* kept only to quantify the boundary-straddle error.
+.meas tran IREV_CYC MAX I(Vsa) FROM 17u TO 22u
+.meas tran ICOND_CYC MIN I(Vsa) FROM 17u TO 22u
+.meas tran VDS_MIN_CYC MIN V(d1) FROM 17u TO 22u
+.meas tran VDS_MAX_CYC MAX V(d1) FROM 17u TO 22u
+.meas tran VGS_MAX_CYC MAX V(gda) FROM 17u TO 22u
+.meas tran VGS_MIN_CYC MIN V(gda) FROM 17u TO 22u
+.meas tran GATE_OVERLAP_CYC MAX min(V(gda),V(gdb)) FROM 17u TO 22u
+.meas tran QR17 FIND V(qr) AT=17u
+.meas tran QR22 FIND V(qr) AT=22u
+.meas tran QREV_CYC PARAM (QR22-QR17)*1n
+.meas tran QG17 FIND V(qg) AT=17u
+.meas tran QG22 FIND V(qg) AT=22u
+.meas tran QG_CYC PARAM (QG22-QG17)*1n
+.meas tran BD17 FIND V(bd) AT=17u
+.meas tran BD22 FIND V(bd) AT=22u
+.meas tran EBD_CYC PARAM (BD22-BD17)*1n
+.meas tran CH17 FIND V(ch) AT=17u
+.meas tran CH22 FIND V(ch) AT=22u
+.meas tran ECH_CYC PARAM (CH22-CH17)*1n
+.meas tran GE17 FIND V(ge) AT=17u
+.meas tran GE22 FIND V(ge) AT=22u
+.meas tran EGE_CYC PARAM (GE22-GE17)*1n
+.meas tran P_BD_CYC PARAM (BD22-BD17)*1n*200k
+.meas tran P_CH_CYC PARAM (CH22-CH17)*1n*200k
+.meas tran P_GE_CYC PARAM (GE22-GE17)*1n*200k
+.end

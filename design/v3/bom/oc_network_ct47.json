@@ -1,0 +1,50 @@
+{
+  "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_100a_ct47.raw",
+  "network": {
+    "burden_ohm": 47.0,
+    "rd1_ohm": 110000.0,
+    "rd2_ohm": 24000.0,
+    "rf_ohm": 1000.0
+  },
+  "window": {
+    "periods": 22,
+    "start_us": 77.3052,
+    "end_us": 119.605,
+    "period_us": 1.92272,
+    "points": 82895
+  },
+  "primary": {
+    "i_pk_a": 13.5674,
+    "i_avg_a": 8.37417,
+    "i_rms_a": 9.4318,
+    "peak_to_average": 1.62015
+  },
+  "measured": {
+    "v_ocd_mean_v": 3.932382,
+    "v_oc1_mean_v": 3.902835,
+    "v_oc_mean_v": 0.690402,
+    "v_oc_ripple_pp_v": 0.001849,
+    "divider_gain": 0.175568
+  },
+  "predicted": {
+    "v_ocd_mean_v": 3.935861,
+    "divider_gain": 0.177778,
+    "v_oc_mean_v": 0.699709
+  },
+  "residual": {
+    "v_ocd": -0.0009,
+    "divider_gain": -0.0124,
+    "v_oc": -0.0133
+  },
+  "trip": {
+    "threshold_v": 1.0,
+    "headroom_ratio": 1.448,
+    "extrapolated_a": 19.651,
+    "from_algebra_a": 19.39
+  },
+  "assumptions": [
+    "the CT is ideal: Lct2 is a fixed 20 mH with Kct=1, so magnetising current and core saturation are NOT in this number",
+    "the closed form omits the diode junction capacitance (Cjo=20p) that the deck has, which is why the burden residual is not zero",
+    "the deck starts from .ic, so this is a warm steady state, not a cold start"
+  ]
+}

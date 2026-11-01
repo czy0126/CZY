@@ -1,0 +1,182 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_param_bounds.cir
+Start Time: Sat Oct 31 12:47:03 2026
+
+.step bon=4e-07 boff=5.5e-07
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4.75e-07 boff=5.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=7e-07 boff=5.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4e-07 boff=6.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4.75e-07 boff=6.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=7e-07 boff=6.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4e-07 boff=7.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4.75e-07 boff=7.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=7e-07 boff=7.5e-07
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4e-07 boff=1e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=4.75e-07 boff=1e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step bon=7e-07 boff=1e-06
+.OP point found by inspection.
+.OP point found by inspection.
+Total elapsed time: 1.821 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_param_bounds.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3.lib
+
+
+Measurement: qrise
+  step	V(xsr:q1)=0.5 
+     1	4.1648524825e-06
+     2	4.1648524825e-06
+     3	4.1648524825e-06
+     4	4.1648524825e-06
+     5	4.1648524825e-06
+     6	4.1648524825e-06
+     7	4.1648524825e-06
+     8	4.1648524825e-06
+     9	4.1648524825e-06
+    10	4.1648524825e-06
+    11	4.1648524825e-06
+    12	4.1648524825e-06
+
+Measurement: qfall
+  step	V(xsr:q1)=0.5 
+     1	4.64516495645e-06
+     2	4.66345413923e-06
+     3	4.88845413923e-06
+     4	4.64516495645e-06
+     5	4.66345413923e-06
+     6	4.88845413923e-06
+     7	4.64516495645e-06
+     8	4.66345413923e-06
+     9	4.88845413923e-06
+    10	4.64516495645e-06
+    11	4.66345413923e-06
+    12	4.88845413923e-06
+
+Measurement: vd_rise
+  step	V(d1)=2 
+     1	4.62565217391e-06
+     2	4.62565217398e-06
+     3	4.62565217398e-06
+     4	4.62565217391e-06
+     5	4.62565217398e-06
+     6	4.62565217398e-06
+     7	4.62565217391e-06
+     8	4.62565217398e-06
+     9	4.62565217398e-06
+    10	4.62565217391e-06
+    11	4.62565217398e-06
+    12	4.62565217398e-06
+
+Measurement: age_at_vd
+  step	V(xsr:x1:age) 	at
+     1	0.465107828379	4.63e-06
+     2	0.465107828379	4.63e-06
+     3	0.465107828379	4.63e-06
+     4	0.465107828379	4.63e-06
+     5	0.465107828379	4.63e-06
+     6	0.465107828379	4.63e-06
+     7	0.465107828379	4.63e-06
+     8	0.465107828379	4.63e-06
+     9	0.465107828379	4.63e-06
+    10	0.465107828379	4.63e-06
+    11	0.465107828379	4.63e-06
+    12	0.465107828379	4.63e-06
+
+Measurement: off_t065
+  step	V(xsr:x1:off)=0.65 
+     1	5.29581742866e-06
+     2	5.31410664345e-06
+     3	5.53910664345e-06
+     4	5.29581742046e-06
+     5	5.31410664164e-06
+     6	5.53910664164e-06
+     7	5.29581742266e-06
+     8	5.31410662812e-06
+     9	5.53910662812e-06
+    10	5.29581742266e-06
+    11	5.31410662812e-06
+    12	5.53910662812e-06
+
+Measurement: g1r1
+  step	V(g1)=2 
+     1	4.17670964138e-06
+     2	4.17670964138e-06
+     3	4.17670964138e-06
+     4	4.17670964138e-06
+     5	4.17670964138e-06
+     6	4.17670964138e-06
+     7	4.17670964138e-06
+     8	4.17670964138e-06
+     9	4.17670964138e-06
+    10	4.17670964138e-06
+    11	4.17670964138e-06
+    12	4.17670964138e-06
+
+Measurement: g1r2
+  step	V(g1)=2 
+     1	5.37670964138e-06
+     2	5.38152377064e-06
+     3	5.60652377064e-06
+     4	5.46334036678e-06
+     5	5.48152377064e-06
+     6	5.70652377064e-06
+     7	5.56334036678e-06
+     8	5.58152377064e-06
+     9	failed
+    10	failed
+    11	failed
+    12	failed
+
+Measurement: g1_max2
+  step	MAX(V(g1) )	FROM	TO
+     1	10.8829488754	5.2e-06	6.5e-06
+     2	10.8884420395	5.2e-06	6.5e-06
+     3	10.8904819489	5.2e-06	6.5e-06
+     4	10.8829965591	5.2e-06	6.5e-06
+     5	10.8884420395	5.2e-06	6.5e-06
+     6	10.8904819489	5.2e-06	6.5e-06
+     7	10.8829965591	5.2e-06	6.5e-06
+     8	10.8884420395	5.2e-06	6.5e-06
+     9	3.29889576278e-06	5.2e-06	6.5e-06
+    10	2.68282167315e-11	5.2e-06	6.5e-06
+    11	6.47494419193e-11	5.2e-06	6.5e-06
+    12	3.29889576278e-06	5.2e-06	6.5e-06

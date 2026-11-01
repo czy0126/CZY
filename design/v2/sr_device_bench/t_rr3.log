@@ -1,0 +1,66 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\design\v2\sr_device_bench\t_rr3.cir
+Start Time: Sat Oct 31 09:32:36 2026
+
+.step tt=5e-09
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Changing Tseed to 5e-15
+Changing Tseed to 5e-17
+Changing Tseed to 5e-14
+Changing Tseed to 5e-18
+Changing Tseed to 5e-13
+Changing Tseed to 5e-19
+Changing Tseed to 5e-12
+Changing Tseed to 5e-20
+Changing Tseed to 5e-11
+Changing Tseed to 5e-21
+
+.step tt=1e-08
+
+.step tt=1.5e-08
+
+.step tt=2e-08
+
+.step tt=3e-08
+Total elapsed time: 0.185 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\design\v2\sr_device_bench\t_rr3.cir
+
+
+Measurement: irr
+  step	MIN(-I(Vs) )	FROM	TO
+     1	-1.99604094028	1e-07	3e-07
+     2	-3.86999988556	1e-07	3e-07
+     3	-5.55086326599	1e-07	3e-07
+     4	-7.04253673553	1e-07	3e-07
+     5	-9.58547401428	1e-07	3e-07
+
+Measurement: tz
+  step	-I(Vs)=0 
+     1	1.24999999998e-07
+     2	1.24999999998e-07
+     3	1.24999999998e-07
+     4	1.24999999998e-07
+     5	1.24999999998e-07
+
+Measurement: qrr
+  step	INTEG(-I(Vs) )	FROM	TO
+     1	-4.98022389201e-09	1.25e-07	3e-07
+     2	-1.87827944613e-08	1.25e-07	3e-07
+     3	-3.85151055878e-08	1.25e-07	3e-07
+     4	-6.19966420207e-08	1.25e-07	3e-07
+     5	-1.14851652085e-07	1.25e-07	3e-07
+
+Measurement: tret
+  step	-I(Vs)=-0.05 
+     1	1.29990102484e-07
+     2	1.34697861769e-07
+     3	1.38877158404e-07
+     4	1.42606342038e-07
+     5	1.48963686341e-07

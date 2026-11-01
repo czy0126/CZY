@@ -1,0 +1,24 @@
+* v3 check O: re-trigger inside the 650 ns off-blank.  A ring dip inside the blank must not
+* produce a gate pulse and must not be queued; the next real edge after the blank must work.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 30u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.6u -.6 4.61u 4 4.849u 4 4.85u -.6 4.9u -.6 4.91u 4 5.219u 4 5.22u -.6 5.28u -.6 5.29u 4 5.6u 4 5.61u -.6 6.3u -.6 6.31u 4 30u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 30u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Bc1f c1f 0 I=-1u*max(ddt(if(V(g1)>2,if(time>4.8u,if(time<5.55u,1,0),0),0)),0)
+Cc1f c1f 0 1u
+Rc1f c1f 0 1G
+Bc1 c1 0 I=-1u*max(ddt(if(V(g1)>2,1,0)),0)
+Cc1 c1 0 1u
+Rc1 c1 0 1G
+.tran 0 8u 0 1n
+.save V(d1) V(g1) V(xsr:q1) V(xsr:off) V(c1) V(c1f)
+.meas tran gate1_max MAX V(g1)
+.meas tran g1_fall1 WHEN V(g1)=2 FALL=1
+.meas tran g1_rise2 WHEN V(g1)=2 RISE=2
+.meas tran retrig_max MAX V(g1) FROM=4.8u TO=5.55u
+.meas tran retrig_false_pulses FIND V(c1f) AT=5.55u
+.meas tran pulses1 FIND V(c1) AT=7.9u
+.meas tran q1_fall1 WHEN V(xsr:q1)=0.5 FALL=1
+.meas tran q1_rise2 WHEN V(xsr:q1)=0.5 RISE=2
+.end

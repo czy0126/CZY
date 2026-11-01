@@ -1,0 +1,66 @@
+{
+  "status": "sizing only; part data is search-sourced, not datasheet-verified",
+  "requirements": {
+    "capacitance_f": 0.004,
+    "esr_ohm": 0.0002,
+    "irms_a": 52.4783,
+    "note": "capacitance and ESR are the values the 100 A model runs with; RMS is measured from the four SR currents"
+  },
+  "banks": [
+    {
+      "part": "KEMET A720V477M2R5APE003",
+      "counts": {
+        "capacitance": 9,
+        "esr": 15,
+        "rms": 5
+      },
+      "n": 15,
+      "governed_by": "esr",
+      "bank_capacitance_f": 0.00705,
+      "bank_esr_ohm": 0.0002,
+      "bank_irms_a": 175.35,
+      "v_rated": 2.5,
+      "height_mm": 1.9,
+      "esr_margin_frac": 1.0
+    },
+    {
+      "part": "KEMET A798D477M2R5PTE006",
+      "counts": {
+        "capacitance": 9,
+        "esr": 30,
+        "rms": 9
+      },
+      "n": 30,
+      "governed_by": "esr",
+      "bank_capacitance_f": 0.0141,
+      "bank_esr_ohm": 0.0002,
+      "bank_irms_a": 193.8,
+      "v_rated": 2.5,
+      "height_mm": 3.1,
+      "esr_margin_frac": 1.0
+    },
+    {
+      "part": "Chemi-Con APSF2R5ELL471MF08S",
+      "counts": {
+        "capacitance": 9,
+        "esr": 25,
+        "rms": 9
+      },
+      "n": 25,
+      "governed_by": "esr",
+      "bank_capacitance_f": 0.01175,
+      "bank_esr_ohm": 0.0002,
+      "bank_irms_a": 147.5,
+      "v_rated": 2.5,
+      "height_mm": 8.0,
+      "esr_margin_frac": 1.0
+    }
+  ],
+  "fewest_parts": "KEMET A720V477M2R5APE003",
+  "no_output_ripple_spec": true,
+  "caveats": [
+    "bank ESR = part ESR / N assumes zero interconnect resistance; at N>=15 the copper spreading resistance is not negligible and is not modelled here",
+    "0.2 mohm is the value the simulation ran with, not a specified limit; at 0.1 mohm the count doubles",
+    "part data is a vendor page summary; capacitance at 2 V bias, ESR at temperature and end of life are not included"
+  ]
+}

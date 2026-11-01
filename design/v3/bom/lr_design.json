@@ -1,0 +1,93 @@
+{
+  "status": "design estimate, not hardware validated",
+  "inductance_h": 1e-06,
+  "core": "TDK ELP32 N97 (B66287G0000X197 + B66287K0000X197)",
+  "rule": "peak flux at the worst current <= 0.9 x Bsat",
+  "peaks_a": {
+    "steady": 13.88142,
+    "startup": 36.07,
+    "fault_fast_oc_13us": 65.0,
+    "fault_slow_oc_51us": 73.68
+  },
+  "candidates": [
+    {
+      "turns": 1,
+      "gap_mm": 0.1374322119570392,
+      "flux_t": {
+        "steady": 0.10678015384615386,
+        "startup": 0.2774615384615385,
+        "fault_fast_oc_13us": 0.5,
+        "fault_slow_oc_51us": 0.5667692307692308
+      },
+      "worst_flux_t": 0.5667692307692308,
+      "worst_flux_frac_bsat": 1.828287841191067,
+      "isat_a": 40.3,
+      "passes_fast_oc": false,
+      "passes_slow_oc": false,
+      "r_dc_ohm": 0.0007423333333333333,
+      "fr": 1.0111891416021934,
+      "r_ac_ohm": 0.0007506394061160283,
+      "loss_w": 0.06703596177125772
+    },
+    {
+      "turns": 2,
+      "gap_mm": 0.627520665917047,
+      "flux_t": {
+        "steady": 0.05339007692307693,
+        "startup": 0.13873076923076924,
+        "fault_fast_oc_13us": 0.25,
+        "fault_slow_oc_51us": 0.2833846153846154
+      },
+      "worst_flux_t": 0.2833846153846154,
+      "worst_flux_frac_bsat": 0.9141439205955335,
+      "isat_a": 80.6,
+      "passes_fast_oc": true,
+      "passes_slow_oc": false,
+      "r_dc_ohm": 0.0014846666666666667,
+      "fr": 1.0531357950317657,
+      "r_ac_ohm": 0.0015635556103571614,
+      "loss_w": 0.13963356209271108
+    },
+    {
+      "turns": 3,
+      "gap_mm": 1.444334755850393,
+      "flux_t": {
+        "steady": 0.035593384615384624,
+        "startup": 0.0924871794871795,
+        "fault_fast_oc_13us": 0.16666666666666669,
+        "fault_slow_oc_51us": 0.18892307692307694
+      },
+      "worst_flux_t": 0.18892307692307694,
+      "worst_flux_frac_bsat": 0.6094292803970224,
+      "isat_a": 120.89999999999999,
+      "passes_fast_oc": true,
+      "passes_slow_oc": true,
+      "r_dc_ohm": 0.002227,
+      "fr": 1.1230468840810528,
+      "r_ac_ohm": 0.0025010254108485046,
+      "loss_w": 0.22335443951455575
+    },
+    {
+      "turns": 4,
+      "gap_mm": 2.587874481757078,
+      "flux_t": {
+        "steady": 0.026695038461538464,
+        "startup": 0.06936538461538462,
+        "fault_fast_oc_13us": 0.125,
+        "fault_slow_oc_51us": 0.1416923076923077
+      },
+      "worst_flux_t": 0.1416923076923077,
+      "worst_flux_frac_bsat": 0.45707196029776676,
+      "isat_a": 161.2,
+      "passes_fast_oc": true,
+      "passes_slow_oc": true,
+      "r_dc_ohm": 0.0029693333333333334,
+      "fr": 1.2209224087500548,
+      "r_ac_ohm": 0.0036253256057151625,
+      "loss_w": 0.3237602325869874
+    }
+  ],
+  "min_turns_fast_oc": 2,
+  "min_turns_slow_oc": 3,
+  "note": "Isat here is the current that reaches Bsat; ferrite loses permeability before that, so the 0.9 margin is the design point, not the limit"
+}

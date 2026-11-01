@@ -1,0 +1,35 @@
+* v3 check N: normal alternating operation, imposed drain voltages (not a power stage)
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 30u 11)
+* CH1 conducts 4.01-5.50 us, CH2 6.01-7.50 us, CH1 8.01-9.50 us, CH2 10.01-11.50 us.
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 5.5u -.6 5.51u 4 8u 4 8.01u -.6 9.5u -.6 9.51u 4 30u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 6u 4 6.01u -.6 7.5u -.6 7.51u 4 10u 4 10.01u -.6 11.5u -.6 11.51u 4 30u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Bov ov 0 V=if(V(g1)>2,if(V(g2)>2,1,0),0)
+Bc1 c1 0 I=-1u*max(ddt(if(V(g1)>2,1,0)),0)
+Cc1 c1 0 1u
+Rc1 c1 0 1G
+Bc2 c2 0 I=-1u*max(ddt(if(V(g2)>2,1,0)),0)
+Cc2 c2 0 1u
+Rc2 c2 0 1G
+Bovt ovt 0 I=-1m*if(V(ov)>0.5,1,0)
+Covt ovt 0 1n
+Rovt ovt 0 1G
+.tran 0 12u 0 1n
+.save V(ovt) V(d1) V(d2) V(g1) V(g2) V(reg) V(pre) V(xsr:viol) V(xsr:q1) V(xsr:q2) V(xsr:a1) V(xsr:a2) V(c1) V(c2) V(ov)
+.meas tran gate1_max MAX V(g1)
+.meas tran gate2_max MAX V(g2)
+.meas tran overlap_max MAX V(ov)
+.meas tran q1_max MAX V(xsr:q1)
+.meas tran q2_max MAX V(xsr:q2)
+.meas tran pre_final FIND V(pre) AT=11.9u
+.meas tran viol_final FIND V(xsr:viol) AT=11.9u
+.meas tran pulses1 FIND V(c1) AT=11.9u
+.meas tran pulses2 FIND V(c2) AT=11.9u
+.meas tran g1_rise1 WHEN V(g1)=2 RISE=1
+.meas tran g1_fall1 WHEN V(g1)=2 FALL=1
+.meas tran g2_rise1 WHEN V(g2)=2 RISE=1
+.meas tran g1_rise2 WHEN V(g1)=2 RISE=2
+.meas tran g2_rise2 WHEN V(g2)=2 RISE=2
+.meas tran overlap_width_us FIND V(ovt) AT=11.9u
+.end

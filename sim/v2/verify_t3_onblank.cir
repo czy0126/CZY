@@ -1,0 +1,21 @@
+* v3 check B: 475 ns on-blank anchored at Q assertion, VD ignored during the blank,
+* and a D crossing inside the blank neither turns the channel off nor extends the blank.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 30u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.3u -.6 4.31u .05 4.4u .05 4.41u -.6 4.7u -.6 4.71u 4 6u 4 6.01u -.6 6.4u -.6 6.41u .05 6.5u .05 6.51u -.6 6.7u -.6 6.71u 4 30u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 30u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+.tran 0 8u 0 1n
+.save V(d1) V(g1) V(xsr:q1) V(xsr:age)
+.meas tran gate_min_blank1 MIN V(g1) FROM=4.3u TO=4.69u
+.meas tran gate_fall1 WHEN V(g1)=2 FALL=1
+.meas tran gate_min_blank2 MIN V(g1) FROM=6.4u TO=6.69u
+.meas tran gate_fall2 WHEN V(g1)=2 FALL=2
+.meas tran gate1_max MAX V(g1)
+.meas tran g1_rise2 WHEN V(g1)=2 RISE=2
+.meas tran g1_rise1 WHEN V(g1)=2 RISE=1
+.meas tran q1_rise1 WHEN V(xsr:q1)=0.5 RISE=1
+.meas tran q1_fall1 WHEN V(xsr:q1)=0.5 FALL=1
+.meas tran q1_rise2 WHEN V(xsr:q1)=0.5 RISE=2
+.meas tran q1_fall2 WHEN V(xsr:q1)=0.5 FALL=2
+.end

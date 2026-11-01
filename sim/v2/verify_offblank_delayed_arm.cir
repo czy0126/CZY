@@ -1,0 +1,49 @@
+* Off-blank anchor check with a DELAYED VD>ARM crossing (2026-10-31 review item:
+* "use a stimulus whose ARM crossing is delayed to confirm the implementation").
+*
+* Timeline of V(d1):
+*   4.01 us  drain falls to -0.6 V  -> SR turns on (gate state rises ~4.165 us)
+*   4.80 us  drain starts a slow rise: -0.6 -> 4.0 V in 500 ns (9.2 V/us).
+*            +10.5 mV turn-off threshold crossed at 4.866 us; TOFF=23 ns puts the
+*            Q falling edge at ~4.889 us.
+*            1.5 V re-arm threshold crossed at 5.028 us -- about 139 ns AFTER the
+*            gate has fallen, so the VD comparator, not the gate edge, must
+*            anchor the 650 ns off-blank.
+*   Expected: off counter crosses 0.1 us at 5.128 us and 0.65 us at 5.678 us;
+*   the next gate rises at 5.678+0.155 = 5.833 us.
+*   If the model started the blank at the Q falling edge (4.889 us) instead, the
+*   counter would cross 0.1 us at 4.989 us and the gate would rise at ~5.694 us,
+*   139 ns earlier.  The difference, plus the saved internal V(xsr:x1:off), is
+*   the pass/fail discriminator.
+*
+* TD starts a long retrigger low (VD -> -0.6 V) requesting new conduction.
+* TD=5.35/5.50/5.70 us put the request inside the blank, so the gate is held
+* until expiry; TD=5.80 us requests after expiry, so the 155 ns on-delay alone
+* sets the gate.  All TD values are later than the 5.30 us end of the ramp.
+.include ../../models/sr_timing_v3.lib
+.param TD=5.35u
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 12u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.8u -.6 5.3u 4
++ {TD} 4 {TD+10n} -.6 6.2u -.6 6.21u 4 12u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 12u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Barm armin 0 V=if(V(d1)>1.5,1,0)
+.step param TD list 5.35u 5.50u 5.70u 5.80u
+.tran 0 12u 0 1n
+.save V(d1) V(g1) V(g2) V(xsr:q1) V(armin)
++ V(xsr:x1:arm) V(xsr:x1:off) V(xsr:x1:ton) V(xsr:a1) V(xsr:rq1) V(pre)
++ V(xsr:ok) V(xsr:uv) V(xsr:pl)
+* Anchor evidence: in the deck the first armin rise is the pre-arm at ~1.005 us,
+* so RISE=2 is the delayed re-arm crossing under test.
+.meas tran arm_t WHEN V(armin)=0.5 RISE=2
+.meas tran qfall WHEN V(xsr:q1)=0.5 FALL=1
+* Directly measured blank start (0.1 us into the running counter) and expiry.
+.meas tran off_t01 WHEN V(xsr:x1:off)=0.1 RISE=2
+.meas tran off_t065 WHEN V(xsr:x1:off)=0.65 RISE=2
+.meas tran q1rise2 WHEN V(xsr:q1)=0.5 RISE=2
+.meas tran g1rise2 WHEN V(g1)=2 RISE=2
+.meas tran g_at_495 FIND V(g1) AT=4.95u
+.meas tran g_at_540 FIND V(g1) AT=5.40u
+.meas tran g_at_580 FIND V(g1) AT=5.80u
+.meas tran g_at_600 FIND V(g1) AT=6.00u
+.end

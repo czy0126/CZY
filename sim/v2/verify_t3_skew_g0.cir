@@ -1,0 +1,25 @@
+* v3 check K: first-come-first-served arbitration under 50 ns and 5 ns skew, both directions.
+* Event1 CH2 50 ns early, Event2 CH1 50 ns early, Event3 CH2 5 ns early, Event4 CH1 5 ns early.
+.include ../../models/sr_timing_v3_1.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 30u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.05u -.6 4.5u -.6 4.51u 4 6.999u 4 7u -.6 7.5u -.6 7.51u 4 10u 4 10.005u -.6 10.4u -.6 10.41u 4 12.499u 4 12.5u -.6 12.9u -.6 12.91u 4 30u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 4u -.6 4.5u -.6 4.51u 4 7.049u 4 7.05u -.6 7.5u -.6 7.51u 4 10u -.6 10.4u -.6 10.41u 4 12.5u 4 12.505u -.6 12.9u -.6 12.91u 4 30u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING CGATE=0 CPIN=100p
+Bov ov 0 V=if(V(g1)>2,if(V(g2)>2,1,0),0)
+Bovt ovt 0 I=-1m*if(V(ov)>0.5,1,0)
+Covt ovt 0 1n
+Rovt ovt 0 1G
+.tran 0 14u 0 0.5n
+.save V(ovt) V(g1) V(g2) V(pre) V(xsr:q1) V(xsr:q2) V(xsr:a1) V(xsr:a2) V(ov)
+.meas tran e1_g1_max MAX V(g1) FROM=3.9u TO=5.5u
+.meas tran e1_g2_max MAX V(g2) FROM=3.9u TO=5.5u
+.meas tran e2_g1_max MAX V(g1) FROM=6.9u TO=8.5u
+.meas tran e2_g2_max MAX V(g2) FROM=6.9u TO=8.5u
+.meas tran e3_g1_max MAX V(g1) FROM=9.9u TO=11.5u
+.meas tran e3_g2_max MAX V(g2) FROM=9.9u TO=11.5u
+.meas tran e4_g1_max MAX V(g1) FROM=12.4u TO=14u
+.meas tran e4_g2_max MAX V(g2) FROM=12.4u TO=14u
+.meas tran overlap_max MAX V(ov)
+.meas tran pre_final FIND V(pre) AT=13.9u
+.meas tran overlap_width_us FIND V(ovt) AT=13.9u
+.end

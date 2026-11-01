@@ -1,0 +1,24 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\startup_seq_long.cir
+Start Time: Sat Oct 31 09:04:26 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 15.851 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\startup_seq_long.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v2.lib
+
+pre_at_1m: V(pre1,sgnd) =0.999132454395 at 0.001
+vout_avg: AVG(V(out,sgnd) )=0.5396528018 FROM 0.0012 TO 0.0015
+vout_max: MAX(V(out,sgnd) )=0.62583220005 FROM 0 TO 0.0015
+ipri_pk: MAX(abs(I(Lr)))=18.8679714203 FROM 0 TO 0.0015
+sr_reverse: MAX((-I(Sa1)) )=9.20035076141 FROM 0.0012 TO 0.0015
+sr_gate_max: MAX(V(ga1,sgnd))=6.6889128685 FROM 0 TO 0.0015
+sr_gate_at_1m: V(ga1,sgnd) =0 at 0.001

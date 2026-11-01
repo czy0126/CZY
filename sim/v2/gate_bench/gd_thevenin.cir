@@ -1,0 +1,31 @@
+* ============================================================================
+* Gate-drive calibration C: Thevenin driver topology (candidate fix).
+* The v3 timing model drives the gate pin with an ideal current source whose
+* value is (V(G)-V(drv))/R, clamped to (-1.5, 4) A.  With no lumped capacitor
+* at the pin (CGATE=0) that leaves the pin as an algebraic node fed by a
+* current source, and the solver reports a 10 V / ps step at the pin.
+* This deck replaces the current source with a behavioural series resistor to
+* the ideal driver voltage; the pin voltage is then defined through R at every
+* time point, and the same 8.7/3.1 ohm split is preserved.
+* CG=0 is the physically correct pairing with SR_DEVICE; CG=6.7n reproduces
+* the current comm_v3 benches for comparison.
+* Numerical result, not hardware validation.
+* ============================================================================
+.include ../../../models/sr_device_v3.lib
+Vds d 0 4
+X1 d g 0 SR_DEVICE
+Bdrv drv 0 V=if(time>2u,0,if(time>1u,10.9,0))
+Rdrv g drv R=if(V(drv)>V(g),8.7,3.1)
+Rgs g 0 10k
+Cgate g 0 {CG}
+.tran 0 3u 0 20p
+.save V(g) V(x1:gi) V(d) I(Rdrv)
+.options plotwinsize=0
+.step param CG list 0 100p 6.7n
+.meas tran vg_peak MAX V(g) FROM 0 TO 2u
+.meas tran tr_10_90_drv TRIG V(g)=1.089 RISE=1 TARG V(g)=9.801 RISE=1
+.meas tran tr_10_90_die TRIG V(x1:gi)=1.089 RISE=1 TARG V(x1:gi)=9.801 RISE=1
+.meas tran tf_90_10_drv TRIG V(g)=9.801 FALL=1 TARG V(g)=1.089 FALL=1
+.meas tran tf_90_10_die TRIG V(x1:gi)=9.801 FALL=1 TARG V(x1:gi)=1.089 FALL=1
+.meas tran ig_peak MAX abs(I(Rdrv))
+.end

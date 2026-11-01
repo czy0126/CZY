@@ -1,0 +1,7 @@
+* exact model Q expressions
+I1 0 b 1m
+C2 b 0 Q=if(V(b)>=0,1,-1)*if(abs(V(b))<=10.0021,6154.29p*abs(V(b))-297.645p*abs(V(b))*abs(V(b))/2,46.666n+62.6184p*(abs(V(b))-10.0021)+9147.4p*(1-exp(-(abs(V(b))-10.0021)/5.29689))+69821p*(1-exp(-(abs(V(b))-10.0021)/50.3394)))
+.tran 0 90u 0 50n uic
+.meas tran tb20 WHEN V(b)=20
+.meas tran tb40 WHEN V(b)=40
+.end

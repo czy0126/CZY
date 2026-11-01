@@ -1,0 +1,70 @@
+* BSC010N04LS6 model probe -- Infineon OptiMOS6 40V official library
+*
+* Candidate file (verbatim, unmodified):
+*   references/models/infineon_optimos_pspice_40v/OptiMOS6_40V_LTSpice.lib
+*   from Infineon archive
+*   Infineon-SimulationModel_OptiMOS_PowerMOSFET_PSpice_40V_N-Channel-SM-v01_00-EN.zip
+*   library header: "Level1/3 LTSPICE Library for OptiMOS6 40V", Version 310726
+*
+* Subcircuits available for this part:
+*   BSC010N04LS6_L0  drain gate source                  (simplified, LEVEL=3 NMOS)
+*   BSC010N04LS6_L1  drain gate source                  (Level 1, constant Tj)
+*   BSC010N04LS6     drain gate source Tj Tcase         (Level 3, self heating)
+*
+* This deck probes the Level 1 model: X<name> drain gate source.
+*
+* RUN NOTE: LTspice batch accepts only one analysis per deck, so the VDS sweep
+* is done quasi-statically inside one .tran: Vd is held on plateaus
+* 0.1 / 1 / 5 / 10 / 20 / 30 / 40 V for 20 us each, at VGS = 10 V and 4.5 V
+* (.step). The turn-off test follows at 150 us with 50 A in a 10 mH load.
+*
+* The Level 1 / Level 3 models do NOT converge with the default LTspice
+* solver (exact failure recorded in
+* references/models/infineon_optimos_pspice_40v/L1_default_solver_failure.txt).
+* They do run with LTspice's alternate solver:  LTspice.exe -b -alt model_probe.cir
+
+.include ../../references/models/infineon_optimos_pspice_40v/OptiMOS6_40V_LTSpice.lib
+
+* ---- part 1: VDS plateaus at fixed VGS = VG --------------------------------
+Vd   d    0   PWL(0 0 0.5u 0.1 20u 0.1 20.001u 1 40u 1 40.001u 5 60u 5
++ 60.001u 10 80u 10 80.001u 20 100u 20 100.001u 30 120u 30 120.001u 40 145u 40)
+Vg   g    0   {VG}
+Xdc  d    g   0   BSC010N04LS6_L1
+
+* ---- part 2: clamped inductive turn-off at 50 A ----------------------------
+Vbus  bus  0   40
+Lload bus  dsw 10m
+Dfw   dsw  bus DFW
+Vgp   gsw 0   PULSE(10 0 150u 20n 20n 400u 800u)
+Vsense dsw dswx 0
+Xsw   dswx gsw 0 BSC010N04LS6_L1
+
+.model DFW D(Is=1e-9 Rs=1m N=1.05 Cjo=500p)
+
+.ic I(Lload)=50
+.options plotwinsize=0
+.step param VG LIST 10 4.5
+
+.tran 0 200u 0 1n
+
+* static points (settled end of each plateau)
+.meas TRAN Id_0p1 FIND I(Vd) AT 19u
+.meas TRAN Id_1   FIND I(Vd) AT 39u
+.meas TRAN Id_5   FIND I(Vd) AT 59u
+.meas TRAN Id_10  FIND I(Vd) AT 79u
+.meas TRAN Id_20  FIND I(Vd) AT 99u
+.meas TRAN Id_30  FIND I(Vd) AT 119u
+.meas TRAN Id_40  FIND I(Vd) AT 139u
+.meas TRAN Ron_0p1 PARAM {0.1/Id_0p1}
+
+* turn-off
+.meas TRAN Ion_off FIND I(Lload) AT 149.9u
+.meas TRAN Von_avg AVG V(dswx) FROM 145u TO 149.5u
+.meas TRAN Vds_peak MAX V(dswx) FROM 149.9u TO 155u
+.meas TRAN Vds_clamp AVG V(dswx) FROM 170u TO 199u
+.meas TRAN t_vds_rise TRIG V(dswx) VAL=4 RISE=1 TARG V(dswx) VAL=36 RISE=1
+.meas TRAN t_id_fall TRIG I(Vsense) VAL=45 FALL=1 TARG I(Vsense) VAL=5 FALL=1
+.meas TRAN Vgs_off FIND V(gsw) AT 190u
+.meas TRAN Vf_diode PARAM {Vds_clamp-40}
+
+.end

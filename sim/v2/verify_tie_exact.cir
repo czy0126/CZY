@@ -1,0 +1,23 @@
+* Adversarial check: exact simultaneous request on two independent identical PWL sources.
+* Measure (a) whether both drains cross -265 mV at the same solver time, (b) the tie decision.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 12u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 7u 4 7.01u -.6 7.5u -.6 7.51u 4 12u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 7u 4 7.01u -.6 7.5u -.6 7.51u 4 12u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Bdd dd 0 V=V(d1)-V(d2)
+.tran 0 12u 0 1n
+.save V(d1) V(d2) V(g1) V(g2) V(xsr:q1) V(xsr:q2) V(xsr:a1) V(xsr:a2) V(dd)
+.meas tran tc1 WHEN V(d1)=-0.265 FALL=1
+.meas tran tc2 WHEN V(d2)=-0.265 FALL=1
+.meas tran tcsame PARAM tc1-tc2
+.meas tran ddiff_hi MAX V(dd)
+.meas tran ddiff_lo MIN V(dd)
+.meas tran g1r WHEN V(g1)=2 RISE=1
+.meas tran g1_dly PARAM g1r-tc1
+.meas tran g2max MAX V(g2) FROM=4u TO=6u
+.meas tran q1max MAX V(xsr:q1)
+.meas tran q2max MAX V(xsr:q2)
+.meas tran a1max MAX V(xsr:a1)
+.meas tran a2max MAX V(xsr:a2)
+.end

@@ -1,0 +1,15 @@
+* v3 check F5: extreme fast REG ramp (5 ns) with a qualifying VD>1.5 V present.
+* Stress on the 1.0-4.5 V pre-arm window.  Expect PRE=1, no violation, normal gate.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 1u 0 1.005u 11 20u 11)
+Vd1 d1 0 PWL(0 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 20u 4)
+Vd2 d2 0 4
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+.tran 0 9u 0 0.25n
+.save V(d1) V(g1) V(g2) V(reg) V(pre) V(xsr:viol) V(xsr:q1)
+.meas tran pre_final FIND V(pre) AT=8.9u
+.meas tran viol_final FIND V(xsr:viol) AT=8.9u
+.meas tran gate1_max MAX V(g1)
+.meas tran gate2_max MAX V(g2)
+.meas tran g1_rise1 WHEN V(g1)=2 RISE=1
+.end

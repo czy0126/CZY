@@ -1,0 +1,28 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\ucc27282_boot_bench.cir
+Start Time: Sat Oct 31 12:29:43 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.101 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\ucc27282_boot_bench.cir
+D:\workshop\design_48v-2v\models\ucc27282_behaviour.lib
+
+v_hi_park: V(hi) =12 at 3e-06
+v_ho_park: V(ho,sw) =0 at 3e-06
+vboot_park: V(hb,sw) =0 at 4e-06
+li_first: V(li)=6  AT 5.14936263586e-06
+lo_first: V(lo)=6  AT 5.17925696609e-06
+ho_first: V(ho,sw)=6  AT 7.68178734046e-06
+vboot_charged: V(hb,sw) =11.0947860568 at 7.5e-06
+vboot_at_ho: V(hb,sw) =10.9907467186 at 8e-06
+vboot_max: MAX(V(hb,sw) )=11.5398621559 FROM 1e-05 TO 6e-05
+vboot_min: MIN(V(hb,sw) )=10.9804267883 FROM 1e-05 TO 6e-05
+ho_max: MAX(V(ho,sw) )=11.330039978 FROM 1e-05 TO 6e-05
+ho_mid_mean: AVG(V(ho,sw) )=1.26167203188e-07 FROM 2e-06 TO 5e-06

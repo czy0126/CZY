@@ -1,0 +1,53 @@
+{
+  "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
+  "status": "connectivity generated from the simulated deck; values are NOT frozen",
+  "elements_parsed": 78,
+  "elements_skipped": 33,
+  "elements_unmapped": [],
+  "fallback_nets": [],
+  "conflicting_claims": [],
+  "checks": {
+    "nets": 65,
+    "refs": 66,
+    "pins": 193,
+    "single_pin_nets": [],
+    "conflicting_claims": [],
+    "ok": true,
+    "bom_refs_without_a_pin": []
+  },
+  "not_a_deck_element": {
+    "C101-C112": "VDD decoupling: 1 uF + 100 nF at each of the six ICs (12 caps)",
+    "C13": "1 nF EN filter at U2.6; the deck holds EN high",
+    "R7-R10": "U2.6 EN 10k pull-down (R7), 1k RUN jumper (R8), HI/LI 10k pull-downs (R9/R10)",
+    "PS1": "12 V control bias converter, off-board"
+  },
+  "bom_coverage": {
+    "bom_refs_without_a_pin": [],
+    "excluded": [
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
+      "C110",
+      "C111",
+      "C112",
+      "C13",
+      "PS1",
+      "R10",
+      "R7",
+      "R8",
+      "R9"
+    ]
+  },
+  "notes": [
+    "every deck element is either mapped to a board reference or SKIPped with a reason; an element that is neither fails the run",
+    "pin names are functional (D/S/G, PRI_A) for power parts and datasheet pin numbers for U1-U6, taken from design/v1/pin_connections.csv positions",
+    "U2 and U3-U6 are added because the deck models them as Bgh/Bgl and Xsr1..4",
+    "the deck ties the CT secondary common and the output return to one node (PGND); the board keeps that and it is flagged for review"
+  ]
+}

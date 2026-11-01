@@ -1,0 +1,72 @@
+* UCC27282 behavioural model -- LOCAL VALIDATION MODEL, not the vendor model.
+* Source: TI UCC27282 datasheet SNVSAQ5B (Nov 2018, revised May 2022).
+*
+* Implemented from the datasheet:
+*   VDD UVLO          5.0 V rising / 4.5 V falling
+*   HB  UVLO          3.7 V rising / 3.3 V falling, with respect to HS
+*   EN threshold      2.0 V rising / 1.21 V falling
+*   EN timing         T_EN 18 us, T_DIS 1.5 us
+*   HI/LI thresholds  2.1 V rising / 1.1 V falling (1.0 V hysteresis)
+*   propagation       TPD 16 ns typical (30 ns max), applied to both channels
+*   output drive      3 A peak -> 4 ohm totem pole (HO to HB/HS, LO to VDD/VSS)
+*   bstrap diode      integrated, VF 0.55 V @100 uA, ~0.9 V @80 mA, RD ~2.5 ohm
+*   HB leakage        240 kohm (50 uA max at 12 V)
+*   VDD quiescent     30 kohm (0.4 mA max)
+*
+* NOT modelled: delay matching (1/7 ns), minimum input pulse width (20 ns),
+* bootstrap diode reverse recovery (50 ns), input pulldown (250 kohm, add if the
+* controller cannot drive it), temperature, and the 0.1 mA HB operating current
+* at 500 kHz (negligible next to the 240 kohm leakage for Cboot sizing).
+*
+* Hysteretic states are B current sources into R/C nodes (a B voltage source
+* that reads its own node is a singular matrix in LTspice).
+*
+* Pin order: VDD HB HS LO HO HI LI EN VSS
+*
+.subckt UCC27282 VDD HB HS LO HO HI LI EN VSS
++ params: TPD=16n T_EN=18u T_DIS=1.5u
+
+* --- enable: hysteresis, then asymmetric turn-on / turn-off delay ---
+Byl   0 yl I=if(V(EN,VSS)>2.0,1m,if(V(EN,VSS)<1.21,-1m,0))
+Ryl   yl 0 1k
+Cyl   yl 0 10p
+Ben   en_d 0 V=if(V(yl)>0.5, delay(V(yl),T_EN), delay(V(yl),T_DIS))
+
+* --- supply and bootstrap UVLO, each with its own hysteresis ---
+Buvdd 0 uvdd I=if(V(VDD,VSS)>5.0,1m,if(V(VDD,VSS)<4.5,-1m,0))
+Ruvdd uvdd 0 1k
+Cuvdd uvdd 0 10p
+Buvhb 0 uvhb I=if(V(HB,HS)>3.7,1m,if(V(HB,HS)<3.3,-1m,0))
+Ruvhb uvhb 0 1k
+Cuvhb uvhb 0 10p
+
+* --- input receivers ---
+Bhil 0 hil I=if(V(HI,VSS)>2.1,1m,if(V(HI,VSS)<1.1,-1m,0))
+Rhil hil 0 1k
+Chil hil 0 10p
+Blil 0 lil I=if(V(LI,VSS)>2.1,1m,if(V(LI,VSS)<1.1,-1m,0))
+Rlil lil 0 1k
+Clil lil 0 10p
+
+* --- propagation delay, then UVLO / enable gating ---
+Bhod hod 0 V=if(delay(V(hil),TPD)>0.5,if(V(uvhb)>0.5,if(V(uvdd)>0.5,if(V(en_d)>0.5,1,0),0),0),0)
+Blod lod 0 V=if(delay(V(lil),TPD)>0.5,if(V(uvdd)>0.5,if(V(en_d)>0.5,1,0),0),0)
+Bhn  hn  0 V=1-V(hod)
+Bln  ln  0 V=1-V(lod)
+
+* --- totem-pole outputs: 3 A peak = 12 V / 4 ohm ---
+Sho_u HB  HO hod 0 SWDRV
+Sho_d HO  HS hn  0 SWDRV
+Slo_u VDD LO lod 0 SWDRV
+Slo_d LO  VSS ln 0 SWDRV
+.model SWDRV SW(Ron=4 Roff=1Meg Vt=0.5)
+
+* --- integrated bootstrap diode ---
+Dbs VDD HB DBS
+.model DBS D(Is=1e-11 Rs=2.5 N=1.2 Cjo=10p)
+
+* --- leakage and quiescent current ---
+Rhbs HB HS 240k
+Ridd VDD VSS 30k
+
+.ends UCC27282

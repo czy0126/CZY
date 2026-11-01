@@ -1,0 +1,51 @@
+{
+  "status": "model measurement, not hardware",
+  "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
+  "window_us": [
+    7.704687,
+    117.363517
+  ],
+  "iout_from_v_a": 99.82464,
+  "cout_ripple": {
+    "load_mean_a": 99.75156894071463,
+    "ripple_rms_a": 52.478279189636574,
+    "secondary_pp_a": 189.84161792273497,
+    "ripple_pk_a": 122.92980178175202,
+    "pair1_ac_rms_a": 13.11956979666167,
+    "pair4_ac_rms_a": 13.119569798156617,
+    "mean_check_pct": -0.07319942179142172
+  },
+  "cout_scope": {
+    "measured_pairs": [
+      1,
+      4
+    ],
+    "assumed_pairs": [
+      2,
+      3
+    ],
+    "note": "four groups are driven in phase, so the measured sum is the correlated (worst) case; layout skew would lower it toward sqrt(4) x one pair's AC RMS"
+  },
+  "cr_lr": {
+    "irms_a": 9.45014,
+    "ipk_a": 13.88142,
+    "v_rating_min_v": 100.0,
+    "lr_energy_at_ipk_j": 9.63469106082e-05,
+    "lr_flux_linkage_at_ipk_hA": 1.388142e-05
+  },
+  "path_loss_w": {
+    "0.05_mohm": 0.4982479375564801,
+    "0.10_mohm": 0.9964958751129602,
+    "0.15_mohm": 1.4947438126694401
+  },
+  "cin": {
+    "cin_mean_a": 4.2525212339288815e-06,
+    "cin_rms_ac_a": 0.22713142748444662,
+    "source_mean_a": 4.153222172940779,
+    "source_rms_ac_a": 5.2620531882751616,
+    "bridge_mean_a": 4.153217920419545,
+    "bridge_rms_a": 6.745809329902742,
+    "bridge_ac_rms_a": 5.315705449035795,
+    "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_100a_cin.raw"
+  }
+}

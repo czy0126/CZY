@@ -1,0 +1,20 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\sr_timing_v3_checks_fastreg20.cir
+Start Time: Sat Oct 31 09:29:34 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.171 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\sr_timing_v3_checks_fastreg20.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3.lib
+
+pre_final: V(pre) =0.999411046505 at 8.9e-06
+viol_final: V(xsr:viol) =0 at 8.9e-06
+gate1_max: MAX(V(g1))=10.8884506226 FROM 0 TO 9e-06
+gate2_max: MAX(V(g2))=0 FROM 0 TO 9e-06
+g1_rise1: V(g1)=2  AT 4.17681049012e-06

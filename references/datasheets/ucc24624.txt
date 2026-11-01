@@ -1,0 +1,2486 @@
+--- PAGE 1 ---
+UCC24624 Dual-Channel Synchronous Rectifier Controller for LLC Resonant 
+Converters
+1 Features
+•
+230-V VD pins rating
+•
+23-ns turn-off delay to support LLC operating 
+above resonant frequency and up to 625-kHz 
+switching frequency
+•
+Proportional gate drive to extend the SR 
+conduction time
+•
+Adjustable turn-off threshold for minimum body 
+diode conduction
+•
+Automatic standby mode detection with 180 µA of 
+low standby current
+•
+Wide 4.25-V to 26-V VDD operation range with 
+internal clamp
+•
+Adaptive turn-on delay for better DCM ring 
+rejection
+•
+Two-channel interlock to prevent shoot-through
+•
+Integrated 1.5-A source and 4-A sink capability 
+gate driver for N-channel MOSFETs
+•
+8-pin SOIC package
+2 Applications
+•
+Desktop PC, AIO PC, ATX and server power
+•
+AC-DC adaptors
+•
+LCD, LED, and OLED TVs
+•
+Industrial AC/DC and isolated DC/DC power
+•
+Power tool chargers, LED lighting power
+•
+Create a custom design using the UCC24624 with 
+WEBENCH® Power Designer
+3 Description
+The 
+UCC24624 
+high-performance 
+synchronous 
+rectifier (SR) controller is dedicated for LLC resonant 
+converters to replace the lossy diode output rectifiers 
+with SR MOSFETs and improve the overall system 
+efficiency.
+The UCC24624 SR controller uses drain-to-source 
+voltage sensing method to achieve on and off 
+control of the SR MOSFET. Proportional gate 
+drive is implemented to extend the SR conduction 
+time, minimize the body diode conduction time. To 
+compensate for the offset voltage caused by the 
+SR MOSFET parasitic inductance, the UCC24624 
+implements an adjustable positive turn-off threshold 
+to accommodate different SR MOSFET packages. 
+UCC24624 has a built-in 475-ns on-time blanking and 
+a fixed 650-ns off-time blanking to avoid SR false 
+turn-on and turn-off. UCC24624 also integrates a two-
+channel interlock function that prevents the two SRs 
+from being on at the same time. With 230-V voltage-
+sensing pins and 28-V ABS maximum VDD rating, it 
+can be directly used in converters with output voltage 
+up to 24.75 V. The internal clamp allows the controller 
+to support 36-V output voltage easily by adding an 
+external current limiting resistor on VDD.
+Device Information
+PART NUMBER
+PACKAGE
+BODY SIZE (NOM)
+UCC24624
+SOIC (8)
+4.90 mm × 3.91 mm
+space
+VG1
+PGND
+REG
+VD1
+VSS
+VD2
+VDD
+VG2
+UCC24624
+Q1
+Q2
+Lr
+Cr
+Vin
+Vout
+S1
+S2
+Typical Application Schematic
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+An IMPORTANT NOTICE at the end of this data sheet addresses availability, warranty, changes, use in safety-critical applications, 
+intellectual property matters and other important disclaimers. PRODUCTION DATA.
+
+--- PAGE 2 ---
+Table of Contents
+1 Features............................................................................1
+2 Applications.....................................................................1
+3 Description.......................................................................1
+4 Revision History.............................................................. 2
+5 Description, Continued...................................................2
+6 Pin Configuration and Functions...................................3
+Pin Functions.................................................................... 3
+7 Specifications.................................................................. 4
+7.1 Absolute Maximum Ratings........................................ 4
+7.2 ESD Ratings............................................................... 4
+7.3 Recommended Operating Conditions.........................5
+7.4 Thermal Information....................................................5
+7.5 Electrical Characteristics.............................................6
+7.6 Timing Requirements..................................................7
+7.7 Typical Characteristics................................................8
+8 Detailed Description......................................................10
+8.1 Overview...................................................................10
+8.2 Functional Block Diagram......................................... 11
+8.3 Feature Description...................................................12
+8.4 Device Functional Modes..........................................20
+9 Application and Implementation..................................21
+9.1 Application Information............................................. 21
+9.2 Typical Application.................................................... 21
+10 Power Supply Recommendations..............................25
+11 Layout...........................................................................27
+11.1 Layout Guidelines................................................... 27
+11.2 Layout Example...................................................... 27
+12 Device and Documentation Support..........................29
+12.1 Device Support....................................................... 29
+12.2 Receiving Notification of Documentation Updates..29
+12.3 Community Resources............................................29
+12.4 Trademarks.............................................................29
+4 Revision History
+NOTE: Page numbers for previous revisions may differ from page numbers in the current version.
+Changes from Revision B (November 2018) to Revision C (March 2022)
+Page
+•
+REG pin description............................................................................................................................................3
+•
+Power Management..........................................................................................................................................12
+•
+Run Mode......................................................................................................................................................... 20
+•
+Power Supply Recommendations.....................................................................................................................25
+Changes from Revision A (July 2018) to Revision B (November 2018)
+Page
+•
+Initial release.......................................................................................................................................................1
+5 Description, Continued
+With the built-in standby mode detection based on average switching frequency, UCC24624 enters the standby 
+mode automatically without using external components. The low standby mode current of 180µA supports 
+meeting modern no-load power consumption requirements such as CoC, and DoE regulations. UCC24624 can 
+be used with the UCC25630x LLC and UCC28056 PFC controllers to achieve high efficiency while maintaining 
+excellent light load and no-load performances. Other PFC controllers, such as UCC28064A, UCC28180, and 
+UCC28070 can be used to achieve higher power levels. 1.5-A peak source and 4-A peak sink driving capability 
+allows UCC24624 to support LLC converters up to 1 kW.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+2
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 3 ---
+6 Pin Configuration and Functions
+1
+2
+3
+8
+5
+PGND
+REG
+VG2
+VSS
+VG1
+4
+VD1
+6
+7
+VD2
+VDD
+Figure 6-1. D Package 8-Pin SOIC Top View 
+Pin Functions
+PIN
+I/O
+DESCRIPTION
+NO.
+NAME
+1
+VG1
+O
+VG1 is the controlled MOSFET gate drive for channel 1. Connect VG1 to the gate of the channel 
+1 SR MOSFET through a small series resistor using short PCB traces to achieve optimal switching 
+performance. The VG1 output can achieve 1.5-A peak source current, and 4-A peak sink current 
+when connected to a large N-channel power MOSFET.
+2
+PGND
+-
+PGND is the power return pin of the UCC24624. The IC bias current and high peak current from 
+the gate drivers return to this pin. Short PCB traces and the ceramic bypass capacitor are required 
+to minimize the high slew rate current impacts to the IC operation. The PGND should be connected 
+directly to the SR MOSFET source pins.
+3
+REG
+O
+REG is the internal linear regulator output and the device's internal bias pin. An internal linear 
+regulator from VDD to REG generates a well-regulated 11-V voltage. TI recommends putting a 2.2-μF 
+bypass capacitor from REG pin to PGND pin. Before REG pin reaches VREGON, one of the drain 
+voltages (VD1 or VD2) must switch above VTHARM.
+4
+VD1
+I
+VD1 is the channel 1 SR MOSFET drain voltage sensing input. Connect this pin to channel 1 SR 
+MOSFET drain pin. The layout should avoid the VD1 pin trace sharing the power path to minimize the 
+impacts of parasitic inductance.
+5
+VSS
+I
+VSS is used to sense the voltage drop across the SR MOSFETs. Since both channels are sharing the 
+same VSS pin to sense the MOSFET voltage, special attention is required. The layout should avoid 
+the VSS pin trace sharing the power path to minimize the impacts of parasitic inductor. See Section 
+11.2 for more details. A resistor can be added between VSS pin and SR MOSFET source pins to 
+adjust the SR turn-off threshold if it is needed.
+6
+VD2
+I
+VD2 is the channel 2 SR MOSFET drain voltage sensing input. Connect this pin to channel 2 SR 
+MOSFET drain pin. The layout must avoid the VD2 pin trace sharing the power path to minimize the 
+impacts of parasitic inductance.
+7
+VDD
+I
+VDD is the internal linear regulator input. Connect this pin to the output voltage when the output 
+voltage is less than 24.75 V. When the output voltage is higher than 24.75 V, add a series resistor 
+between LLC output voltage and the VDD pin to limit the internal clamping circuit current.
+8
+VG2
+O
+VG2 is the controlled MOSFET gate drive for channel 2. Connect VG2 to the gate of the channel 
+2 MOSFET through a small series resistor using short PCB traces to achieve optimal switching 
+performance. The VG2 output can achieve 1.5-A peak source current and 4-A peak sink current when 
+connected to a large N-channel power MOSFET.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+3
+
+--- PAGE 4 ---
+7 Specifications
+7.1 Absolute Maximum Ratings
+over operating free-air temperature range (unless otherwise noted)(1)
+MIN
+MAX
+UNIT
+Input voltage(1)
+VDD(3)
+–0.3
+28
+V
+VD1, VD2
+–0.7
+230
+V
+VD1, VD2 for IVD1, IVD2 ≤ –10 mA and less than 300 ns
+–2
+230
+V
+Output voltage
+VG1, VG2
+–0.3
+VREG+0.7
+V
+REG
+13.5
+V
+Output current, 
+peak
+VG1 or VG2(2) pulsed, tPULSE ≤ 4 ms, duty cycle ≤ 1%
+±4
+A
+TJ
+Junction temperature
+–40
+125
+°C
+Tstg
+Storage temperature
+–65
+150
+°C
+(1)
+Stresses beyond those listed under Absolute Maximum Rating may cause permanent damage to the device. These are stress 
+ratings only, which do not imply functional operation of the device at these or any other conditions beyond those indicated 
+under Recommended Operating Condition. Exposure to absolute-maximum-rated conditions for extended periods may affect device 
+reliability.
+(2)
+In normal use, VG1 or VG2 is connected to the gate of a power MOSFET through a small resistor. When used this way, VG1 or 
+VG2current is limited by the UCC24624 and no absolute maximum output current considerations are required. The series resistor 
+shall beselected to minimize overshoot and ringing due to series inductance of the VG1 or VG2 output and power-MOSFET gate-drive 
+loop.Continuous VG1 or VG2 current is subject to the maximum operating junction temperature limitation.
+(3)
+VDD is internally clamped at 27.5 V typical with 15 mA of sink current capability.
+7.2 ESD Ratings
+VALUE
+UNIT
+V(ESD)
+Electrostatic discharge
+Human body model (HBM), per 
+ANSI/ESDA/JEDEC JS-001(1)
+All pins except pins 4 and 6
+±2000
+V
+Pins 4 and 6
+±1000
+V
+Charged device model (CDM), 
+per JEDEC specificationJESD22-
+C101(2)
+All pins
+±500
+V
+(1)
+JEDEC document JEP155 states that 500-V HBM allows safe manufacturing with a standard ESD control process.
+(2)
+JEDEC document JEP157 states that 250-V CDM allows safe manufacturing with a standard ESD control process.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+4
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 5 ---
+7.3 Recommended Operating Conditions
+over operating free-air temperature range (unless otherwise noted)
+MIN
+NOM
+MAX
+UNIT
+VVDD
+Supply voltage
+4.25
+26
+V
+CVDD
+VDD bypass capacitor
+0.1
+µF
+CREG
+REG pin bypass capacitor
+2.2
+µF
+VVD1, VVD2
+Voltage on sensing pins
+–0.5
+200
+V
+fSW
+Switching frequency
+625
+kHz
+TJ
+Junction temperature
+-40
+125
+°C
+7.4 Thermal Information
+THERMAL METRIC(1)
+DEVICE
+UNIT
+D (SOIC)
+8 PINS
+RθJA
+Junction-to-ambient thermal resistance
+108.4
+°C/W
+RθJC(top)
+Junction-to-case (top) thermal resistance
+43.5
+°C/W
+RθJB
+Junction-to-board thermal resistance
+53.6
+°C/W
+ΨJT
+Junction-to-top characterization parameter
+4.9
+°C/W
+ΨJB
+Junction-to-board characterization parameter
+52.8
+°C/W
+RθJC(bot)
+Junction-to-case (bottom) thermal resistance
+N/A
+°C/W
+(1)
+For more information about traditional and new thermal metrics, see the Semiconductor and IC Package Thermal Metrics application 
+report.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+5
+
+--- PAGE 6 ---
+7.5 Electrical Characteristics
+At VVDD = 12 VDC, CVG1 = CVG2 = 0 pF, CREG = 2.2 µF VVD1 = VVD2 = 0 V, –40°C ≤ TJ = TA ≤ +125°C, all voltages are with 
+respect to PGND, and currents are positive into and negative out of the specified terminal, unless otherwise noted. Typical 
+values are at TJ = +25°C.
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+BIAS SUPPLY
+IVDDSTART
+VDD current, REG under voltage
+VVDD = 4 V, VVD1 = VVD2 = 0 V
+5
+150
+275
+µA
+IVDDRUN
+VDD current, run
+VVDD = 12 V
+0.77
+1.1
+1.5
+mA
+VVDD = 5 V
+0.7
+1
+1.5
+mA
+IVDDSTBY
+VDD current, standby mode
+VVDD = 12 V, 25℃
+110
+180
+200
+µA
+VVDD = 5 V, 25℃
+100
+180
+200
+µA
+VDDCLAMP
+VDD clamp voltage
+IVDD = 15 mA
+24.75
+27.5
+29.5
+V
+UNDER VOLTAGE LOCKOUT (UVLO)
+VREGON
+REG turn-on threshold
+4.1
+4.5
+4.8
+V
+VREGOFF
+REG turn-off threshold
+3.63
+4
+4.25
+V
+VREGHYST
+REG UVLO hysteresis
+VREGHYST = VREGON – VREGOFF
+0.450
+0.500
+0.555
+V
+MOSFET VOLTAGE SENSING
+VTHVGON
+SR turn-on threshold
+VVD1, or VVD2 falling
+–435
+–265
+–160
+mV
+VTHVGOFF
+SR turn-off threshold
+VVD1, or VVD2 rising
+2
+10.5
+18
+mV
+IVS_OFFSET
+VSS pin offset current for turn-off 
+threshold adjustment
+260
+330
+400
+µA
+VTHPGD_LO
+Low-level regulation threshold
+–80
+–35
+0
+mV
+VTHPGD_HI
+High-level regulation threshold
+–165
+–100
+–40
+mV
+VTHARM
+SR turn-on re-arming threshold
+1.4
+1.5
+1.7
+V
+IVDBIAS
+Bias current on VD1 or VD2
+VVD1 = VVD2 = -150 mV
+–10
+0
+0.5
+µA
+GATE DRIVER
+RVG_PU
+VG pull-up resistance
+3.5
+6.5
+11.25
+Ω
+RVG_PD
+VG pull-down resistance
+0.2
+0.9
+1.5
+Ω
+VGHI
+VG high clamp level
+IVG = 0 mA
+9.95
+10.9
+11.68
+V
+VGUV
+VG output low voltage, VDD low bias
+VVDD = 4 V, IVG = 25 mA
+1
+20
+100
+mV
+VGLO
+VG output low voltage
+VVDD = 12 V, IVG = 100 mA
+5
+100
+175
+mV
+IVGSOURCE
+VG maximum source current(1)
+0.9
+1.5
+2.4
+A
+IVGSINK
+VG maximum sink current(1)
+2.6
+4
+6.7
+A
+REG SUPPLY
+VREG
+REG pin regulation level
+VVDD = 15 V, ILOAD_REG = 0 mA
+9.9
+11
+11.9
+V
+VREGLG
+Load regulation on REG
+VVDD = 15 V, ILOAD_REG = 0 mA to 30 mA
+9
+25
+75
+mV
+VREGDO
+REG drop out on passthrough mode
+VVDD = 5 V, ILOAD_REG = 0 mA to 10 mA
+0.1
+0.28
+0.5
+V
+IREGSC
+REG short circuit current
+VVDD = 12 V, VREG = 0 V
+4.5
+9.5
+13
+mA
+IREGLIM
+REG current limit
+VVDD = 12 V, VREG = 8 V
+41
+60
+95
+mA
+(1)
+Ensured by design. Not production tested.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+6
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 7 ---
+7.6 Timing Requirements
+At VVDD = 12 VDC, CVG1 = CVG2 = 0 pF, CREG = 2.2 µF, VVD1 = VVD2 = 0 V, –40°C ≤ TJ = TA ≤ +125°C, all voltages are with 
+respect to PGND, and currents are positive into and negative out of the specified terminal, unless otherwise noted. Typical 
+values are at TJ = +25°C.
+PARAMETER
+TEST CONDITIONS
+MIN
+NOM
+MAX
+UNIT
+GATE DRIVER
+tdVGON
+SR turn-on propagation delay, for 
+both channels
+VVD1, VVD2 moves from 4.7 V to -0.5 V in 
+5 ns
+110
+155
+225
+ns
+tdVGOFF
+SR turn-off propagation delay, for 
+both channels
+VVD1, VVD2 moves from -0.5 V to 4.7 V in 
+5 ns
+5.5
+23
+40
+ns
+trVG
+VVG1, VVG2 rise time
+10% to 90%, VVDD = 12 V, CVG = 6.8 nF
+13
+23
+40
+ns
+tfVG
+VVG1, VVG2 fall time
+90% to 10%, VVDD = 12 V, CVG = 6.8 nF
+19
+35
+ns
+BLANKING TIME
+tONMIN
+On-time blanking
+325
+475
+625
+ns
+tMGPU
+Minimum gate pullup time
+IVG1, IVG2 = 1.5 A
+180
+275
+370
+ns
+tOFFMIN
+Off-time blanking
+440
+650
+855
+ns
+STANDBY
+tSTBY_DET
+Standby mode detection-time
+5.5
+7.5
+10
+ms
+fSLEEP
+Average frequency entering standby 
+mode
+6.55
+9
+12.2
+kHz
+fWAKE
+Average frequency coming out of 
+standby mode
+11.5
+15.6
+21
+kHz
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+7
+
+--- PAGE 8 ---
+7.7 Typical Characteristics
+Junction Temperature (oC)
+UVLO Thresholds (V)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+3.9
+3.95
+4
+4.05
+4.1
+4.15
+4.2
+4.25
+4.3
+4.35
+4.4
+4.45
+4.5
+D001
+UVLO ON
+UVLO OFF
+Figure 7-1. UVLO Thresholds vs Temperature
+Junction Temperature (oC)
+VDD Current RUN (IVDDRUN) (mA)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+0.5
+0.6
+0.7
+0.8
+0.9
+1
+1.1
+1.2
+1.3
+1.4
+1.5
+D002
+5-V VDD
+12-V VDD
+CVG1 = CVG2 = 0 pF
+VVD1= VVD2 = 1 V
+Figure 7-2. Bias Supply Current vs Temperature 
+(No Switching)
+Junction Temperature (oC)
+SR Turn-on Threshold VTHVGON (mV)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+-500
+-450
+-400
+-350
+-300
+-250
+-200
+-150
+-100
+-50
+0
+D003
+Figure 7-3. SR Turn-on Threshold Voltage vs 
+Temperature
+Junction Temperature (oC)
+SR Turn-off Threshold VTHVGOFF (mV)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+8.6
+8.8
+9
+9.2
+9.4
+9.6
+9.8
+10
+10.2
+10.4
+10.6
+10.8
+11
+11.2
+11.4
+11.6
+D004
+12-V VDD
+5-V VDD
+Figure 7-4. SR Turn-off Threshold Voltages vs 
+Temperature
+Junction Temperature (oC)
+Proportional Gate Drive Threshold VTHPGD_LO (mV)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+-50
+-48
+-46
+-44
+-42
+-40
+-38
+-36
+-34
+-32
+-30
+-28
+-26
+-24
+-22
+-20
+D005
+Figure 7-5. Proportional Gate Drive Threshold vs 
+Temperature
+Junction Temperature (oC)
+REG Pin Regulation Level VREG (V)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+10.5
+10.55
+10.6
+10.65
+10.7
+10.75
+10.8
+10.85
+10.9
+10.95
+11
+D006
+ILOAD_REG = 0 mA
+ILOAD_REG = 30 mA
+Figure 7-6. REG Pin Voltage vs Temperature at 
+Different Loading Conditions
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+8
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 9 ---
+Junction Temperature (oC)
+REG Drop-out in Pass-through Mode VREGDO (V)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+0.14
+0.16
+0.18
+0.2
+0.22
+0.24
+0.26
+0.28
+0.3
+D007
+ILOAD_REG = 10 mA
+Figure 7-7. REG Dropout in Pass-through Mode vs 
+Temperature
+Junction Temperature (oC)
+Blanking Time tONMIN and tOFFMIN (ns)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+450
+475
+500
+525
+550
+575
+600
+625
+650
+675
+D008
+On-time Blanking
+Off-time Blanking
+Figure 7-8. Blanking Time vs Temperature
+Junction Temperature (oC)
+Turn-on Propagation Delay tdVGON (ns)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+135
+140
+145
+150
+155
+160
+165
+170
+175
+180
+185
+190
+195
+D009
+Figure 7-9. SR Turn-on Delay Time vs Temperature
+Junction Temperature (oC)
+Turn-off Propagation Delay tdVGOFF (ns)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+20
+20.4
+20.8
+21.2
+21.6
+22
+22.4
+22.8
+23.2
+23.6
+24
+24.4
+24.8
+25.2
+25.6
+26
+D010
+Figure 7-10. SR Turn-off Propagation Delay vs 
+Temperature
+Junction Temperature (oC)
+VDD Standby Mode Current IVDDSTBY (PA)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+165
+170
+175
+180
+185
+190
+195
+200
+205
+D011
+12-V VDD
+5-V VDD
+Figure 7-11. Standby Current vs Temperature
+Junction Temperature (oC)
+VSS Pin Offset Current IVS_OFFSET (PA)
+-40
+-20
+0
+20
+40
+60
+80
+100
+120
+140
+312.5
+315
+317.5
+320
+322.5
+325
+327.5
+330
+332.5
+335
+337.5
+D012
+Figure 7-12. VSS Pin Offset Current vs 
+Temperature
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+9
+
+--- PAGE 10 ---
+8 Detailed Description
+8.1 Overview
+The UCC24624 is a high performance synchronous rectifier (SR) controller for LLC resonant converter 
+applications. It integrates two channels of SR control into a single 8-pin SOIC package, minimizes the external 
+components, and simplifies PCB layout. The UCC24624 synchronous rectifier controller uses drain-to-source 
+voltage (VDS) sensing to determine the SR MOSFET conduction interval. The SR MOSFET is turned on 
+when its VDS falls below –265-mV turn-on threshold, and is turned off when VDS rises above the turn-off 
+threshold (the turn-off threshold is user programmable at 10.5 mV or greater). The SR conduction voltage drop 
+is continuously monitored and regulated to minimize the conduction loss and body diode conduction time. The 
+extremely fast turn-off comparator and driving circuit allows the fast turn off of SR MOSFETs, even when the LLC 
+converter operates above its resonant frequency. Fixed 475-ns minimum on-time blanking allows the controller 
+to support the SR operating at up to 625-kHz switching frequency. The 650-ns minimum off-time blanking makes 
+the IC more robust against the noise caused by the parasitic ringing. The two channels have interlock logic to 
+prevent shoot-through between the two SR MOSFETs. To minimize standby power, automatic standby mode 
+disables the gate pulses when the average switching frequency of the converter becomes lower than 9 kHz. 
+When the load increases such that the average switching frequency on channel 1 rises above 15.6 kHz, the 
+controller resumes normal SR operation. In standby mode, two channels are turned off and the gate-drive 
+outputs are actively held low. Other functionality are disabled during standby mode to minimize the IC current 
+consumption. The wide VDD range and gate driver clamp make the controller applicable for different output 
+voltage applications. With an internal voltage clamp on the VDD pin, the UCC24624 can be directly powered by 
+an output voltage higher than 24.75 V with a series resistor between VDD and the LLC converter output.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+10
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 11 ---
+8.2 Functional Block Diagram
+REG
+VDD
+VD1
+START
+VG1
+PGND
++
+±
+-265mV
+VTHOFF
+(-35mV)
+Prop-DRV 
+threshold
+11-V Linear 
+Regulator
+REG 
+UVLO
+POWER & FAULT 
+MANAGEMENT
+PROPORTIONAL 
+GATE DRIVE 
+CONTROL
+GATE 
+DRIVER
++
+±
+S
+Q
+Q
+R
+Minimum
+OFF time
+ARM1
+Minimum
+ON time
++
+±
+1.5V
+ARM1
+ARM1
+SR2 ON
+SR1 ON
+VD2
+VG2
+VSS
++
+±
+-265mV
+VTHOFF
+(-35mV)
+Prop-DRV 
+threshold
+PROPORTIONAL 
+GATE DRIVE 
+CONTROL
+GATE 
+DRIVER
++
+±
+S
+Q
+Q
+R
+Minimum
+OFF time
+ARM2
+Minimum
+ON time
++
+±
+1.5V
+ARM2
+ARM2
+SR1 ON
+SR2 ON
+27.5V
+330 µA
+10.5 mV
+VTHOFF
+Turn-on 
+comparator, CH1
+Turn-off 
+comparator, CH1
+Turn-on 
+comparator, CH2
+Turn-off 
+comparator, CH2
+STBY
+START
+START
+FREQUENCY 
+DETECTION
+SR1 ON
+STBY
+REG
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+11
+
+--- PAGE 12 ---
+8.3 Feature Description
+8.3.1 Power Management
+The UCC24624 synchronous-rectifier (SR) controller is powered from the REG pin through an internal linear 
+regulator between the VDD pin and the REG pin. This configuration allows for optimal design of the gate driver 
+stage to achieve fast driving speed, low driving loss and high noise immunity.
+A typical application diagram of UCC24624 is shown in Figure 8-1. In most cases, the UCC24624 can be directly 
+powered from the LLC resonant converter output (See Section 8.4.3 for more details). Both SR MOSFETs are 
+located in the secondary side current return paths for easier voltage sensing, IC biasing, and gate driving.
+VG1
+PGND
+REG
+VD1
+VSS
+VD2
+VDD
+VG2
+UCC24624
+Q1
+Q2
+Lr
+Cr
+Vin
+Vout
+S1
+S2
+1
+2
+3
+4
+5
+6
+7
+8
+Figure 8-1. UCC24624 Application Diagram in LLC Resonant Converter
+During start-up, the output voltage rises from 0 V. With the rise of the output voltage, the internal linear regulator 
+operates in a pass-through mode, and the REG pin voltage rises together with the output voltage. The UVLO 
+function of UCC24624 monitors the voltage on REG pin instead of VDD pin. Before the REG pin voltage 
+increases above the UVLO on threshold (VREGON), UCC24624 consumes the minimum current of IVDDSTART. 
+Once the REG pin voltage rises above the UVLO on threshold, the device starts to consume the full operating 
+current, including IVDDRUN and the gate driving currents, and controls the on and off of the SR MOSFETs.
+When VDD voltage is above approximately 11 V, the internal linear regulator operates in the regulator mode. The 
+REG pin voltage is now well regulated to 11 V. This allows the optimal driving voltage for the SR MOSFET 
+without increasing the gate driver loss for typical power MOSFETs. The internal regulator is rated at 30 
+mA of load regulation capability for higher switching frequency operation, or driving high SR MOSFET gate 
+capacitances. It is required to have sufficient bypass capacitance on the REG pin to ensure stable operation of 
+the linear regulator. A 2.2-μF X5R or better ceramic bypass capacitor is recommended.
+When VDD voltage falls below 11 V, the internal linear regulator operates in the pass-through mode again. 
+Depending on the load current, the regulator has a voltage drop of approximately 0.2 V. The UCC24624 
+continues to operate during this mode until the REG pin voltage drops below the UVLO turn-off level (VREGOFF).
+A basic timing diagram of the VDD and the REG pin voltages can be found in Figure 8-2.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+12
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 13 ---
+VVDD
+VREG
+VVDD
+VREG
+VON
+VOFF
+SR Control Enable (internal signal)
+t
+t
+Figure 8-2. Timing diagram for VDD and REG
+The UCC24624 VDD may be connected directly to the converter output when the output voltage is less than 
+VDDCLAMP minimum value of 24.75 V. However, for the applications where the output voltage is higher than 
+that level, including special conditions such as over voltage transients, the UCC24624 can still work with some 
+simple modification. To allow UCC24624 to operate with higher output voltages, UCC24624 is equipped with 
+an internal voltage clamp, at 27.5 V typical clamping voltage. Add a series resistor between the LLC converter 
+output voltage and the UCC24624 VDD pin, as shown in Figure 8-3. This way the voltage on VDD is limited by 
+the internal clamp. The clamp current must be kept less than 15 mA. For example, at 36-V output, use a resistor 
+larger than 750 Ω. Because the gate drive voltage is only 11 V, this added resistor still allows enough voltage 
+on the gate drive to maintain the reliable operation of the SRs. Furthermore, the current consumption of the 
+SR controller is mainly caused by the SR MOSFET gate charge. The added resistor won't increase the power 
+consumption if the clamping circuit is not activated. Instead, it relocates some loss from the UCC24624 to the 
+resistor and improves the thermal handling of the UCC24624.
+VG1
+PGND
+REG
+VD1
+VSS
+VD2
+VDD
+VG2
+UCC24624
+Q1
+Q2
+Lr
+Cr
+Vin
+Vout
+S1
+S2
+Figure 8-3. UCC24624 Configuration for an Output Voltage Higher Than 24.75 V
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+13
+
+--- PAGE 14 ---
+8.3.2 Synchronous Rectifier Control
+The UCC24624 SR controller determines the conduction time of the SR-MOSFET by comparing the drain-to-
+source voltage of the MOSFET against a turn-on threshold and a turn-off threshold. The gate driver output is 
+driven high when the VDS of the MOSFET becomes more negative than VTHVGON and is driven low when VDS 
+becomes more positive than VTHVGOFF as illustrated in Figure 8-4.
+VTHVGON
+VTHREG
+VTHVGOFF
+10%
+90%
+tdVGON
+tr_VG
+ISD
+VDS
+VGATE
+t
+t
+Figure 8-4. SR Operation Principle
+Note that before SR MOSFET turns on, there is a small delay caused by the internal comparator delay and 
+the gate driver delay. During the delay time, the SR MOSFET body diode is conducting. For LLC resonant 
+converters, this delay is essential for appropriate operation. Due to the large junction capacitors of the SR 
+MOSFETs, the SR often sees a leading-edge current spike early in the conduction period, follow by the real 
+conduction current. Normally, a prolonged minimum on time can override this spike to make the circuit operate 
+normally. However, this causes large negative current that transfer the energy from the output to the input and 
+reduces the overall converter efficiency. In UCC24624, 155-ns turn-on delay is added, to help ignore the leading 
+edge spike.
+When the SR MOSFET body diode is conducting, VD pin becomes negative relative to the VSS pin by the 
+body diode drop. The VD and VSS pins must be connected directly to the SR MOSFET pins to avoid any 
+overlapping of sensing paths to the power path and minimize the negative voltage and ringing caused by 
+parasitic inductance. Low package inductance MOSFETs, such as in SON package, are preferred to minimize 
+this effect as well.
+Besides the simple comparator, UCC24624 also includes a proportional gate drive feature. For many SR 
+controllers, the SR MOSFET is turned on with the full driving voltage. In this way, the conduction loss can be 
+minimized. However, this method has a few major drawbacks. Because the turn-off threshold is a fixed value, 
+often to prevent negative current, the SR is turned off before the current reaches zero. This causes some 
+SR MOSFET body diode conduction time and increases the conduction loss. Another issue is associated with 
+the LLC converter operating above the resonant frequency. When the converter operates above the resonant 
+frequency, the SR current slope (di/dt) at turn-off could be as high as 150 A/μs. This high current slope could 
+cause negative current if the SR controller has long turn-off propagation delays. Furthermore, the time to 
+discharge the SR MOSFET gate voltage from its full driving voltage to its threshold level introduces another 
+delay. This further increases the negative current.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+14
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 15 ---
+Instead of always keeping the SR MOSFET on with the full gate-drive voltage, UCC24624 reduces its gate-drive 
+voltage when the voltage drop across the SR MOSFET drain to source becomes more than –35 mV (less 
+negative, closer to zero when current approaching zero). During this time, UCC24624 reduces its gate drive 
+voltage from 11 V to close to the SR MOSFET's threshold voltage, and tries to regulate the SR MOSFET 
+VDS voltage to –35 mV (VTHPGD_LO). This brings two major benefits to the application: a) Preventing the SR 
+premature turn off, which causes extra loss associated with body diode conduction b) Shorter turn-off delay 
+since the SR MOSFET gate voltage is already reduced close to the MOSFET threshold voltage level and the SR 
+MOSFET can be turned off with virtually no delay.
+The SR MOSFET is only driven high with its full driving capability of 1.5 A during the gate driver minimum pull-up 
+time tMGPU. After that, the SR MOSFET gate is kept high by a weak current source of approximately 200 µA. 
+Keep the resistor between the SR MOSFET gate and source larger than 100 kΩ to ensure the full driving voltage 
+and a minimized conduction loss.
+Due to the sinusoidal current shape in the secondary side SR MOSFETs in an LLC resonant converter, the 
+proportional gate drive could start to reduce the SR gate voltage even at the current rising edge. This increases 
+the conduction loss and reduces the converter efficiency. In UCC24624, the proportional gate drive is disabled 
+during the first half of the SR conduction time, based on the previous cycle's SR conduction time. Therefore, 
+the gate drive voltage is only reduced during the SR current falling edge and this helps to maintain the low 
+conduction loss. The gate drive voltage is forced to reduce if the SR voltage drop does not reach the proportional 
+gate-drive threshold VTHPGD_LO within the 90% of the previous cycle on time. And the proportional gate drive 
+now tries to regulate the VDS to –100 mV (VTHPGD_HI). This further ensures the fast turn-off speed for high di/dt 
+conditions.
+To prevent the SR MOSFET premature turn off caused by the large package inductance, an offset resistor can 
+be added between the VSS pin and the SR MOSFET source pins to further increase the turn off threshold. See 
+below section for the details of choosing the resistor value.
+8.3.3 Turn-off Threshold Adjustment
+When SR MOSFETs are implemented in LLC converters, they are often turned off too early, which creates long 
+body diode conduction times. This results in more power loss, lower efficiency, and higher thermal stress.
+The SR MOSFET early turn off is caused by the parasitic inductance in the SR voltage sensing path. As 
+illustrated in Figure 8-5, the VDS voltage sensed by the synchronous rectifier controller (VSENSE) is the 
+combination of the MOSFET on-state resistor voltage drop VSR, together with the voltage drops on parasitic 
+inductors LD and LS. A better layout approach can minimize these parasitic inductors. However, the minimum 
+value it can achieve is the package inductance of the SR MOSFET. With different packages, this parasitic 
+inductance could vary from 2 to 10 nH.
+LD
+LS
+SR
+VSR
+VSENSE
+ISR
++
+-
+Figure 8-5. SR Controller Sensed Voltage
+The overall sensed voltage can be represented by Equation 1.
+85'05' = Fd+54 × 4&5KJ + :.& + .5; × @+54
+@P h 
+(1)
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+15
+
+--- PAGE 16 ---
+Because of the sinusoidal current shape and high output current, the current slope (di/dt) creates a significant 
+voltage drop across the package inductance. This causes the SR controller to detect a smaller voltage drop and 
+turn off the SR MOSFET early.
+To overcome this issue, UCC24624 implements several techniques.
+First, the proportional gate drive feature is implemented. As discussed earlier, the proportional gate drive 
+reduces the SR MOSFET gate drive voltage when the SR current is small, and increases its voltage drop. This 
+increased voltage drop could overwhelm the offset voltage introduced by the package inductance. Thus the SR 
+MOSFET conduction time is extended.
+Second, the turn-off threshold is set at 10.5 mV, instead of typically being set as a negative threshold. Because 
+of the high di/dt and unavoidable SR package inductance, positive voltage is always expected at zero SR 
+current. The positive turn-off threshold allows the SR MOSFET to continue conduction toward the end of the 
+intended conduction period without the concern of causing negative SR current because of anticipating the 
+positive offset voltage on the package inductances.
+Last, UCC24624 also allows the user to further increase the turn-off threshold to accommodate higher parasitic 
+inductance MOSFET packages, such as TO-220 packages. As illustrated in Figure 8-6, UCC24624 has an 
+internal current source that flows out of the VSS pin. By connecting a resistor from the VSS pin to the SR 
+MOSFET source, the voltage drop across the external resistor increases the turn-off threshold. This increased 
+turn-off threshold makes it more suitable for TO-220 packages. Less than 70-mV offset is recommended. When 
+using the low inductance MOSFET packages, such as SON5x6, the external resistor is not needed because the 
+proportional gate drive alone can take care of the offset caused by the smaller package inductance.
+Note
+To ensure normal system operation, VSS pin must never be kept open.
+10.5 mV
+SR
+330 µA
+Roffset
+Turn-off 
+comparator
++
+±
+VD1, 
+VD2
+VSS
+UCC24624
+VTHOFF
+Figure 8-6. Adjustable Turn-off Threshold
+The internal current source is at 330 µA and the external offset resistor value is recommended to be less 
+than 212 Ω. The offset resistor Roffset can be calculated by using Equation 2 with the desired turn-off threshold 
+VTHOFF.
+4KBBOAP = 86*1(( F 10.5I8
+330ä#
+(2)
+This added offset voltage only changes the SR turn-off threshold, while the proportional gate drive threshold 
+remains the same.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+16
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 17 ---
+8.3.4 Noise Immunity
+To ensure reliable SR operation and to avoid false turn-on and turn-off, features such as blanking time, adaptive 
+turn-on delay, and interlock logic are implemented. As illustrated in Figure 8-7, the SR control is blanked by the 
+on-time blanking, off-time blanking and two-channel interlock logic.
+VTHVGON
+VTHREG
+VTHVGOFF
+ISD2
+VVD2
+t
+VTHVGON
+VTHREG
+VTHVGOFF
+ISD1
+VTHVGON
+VTHREG
+VTHVGOFF
+ISD1
+VTHARM
+VTHARM
+VTHARM
+S1 Gate
+S2 Gate
+S1 Gate
+S1 on-time 
+blanking
+S2 on-time 
+blanking
+S1 on-time 
+blanking
+S1 off-time 
+blanking
+S2 off-time 
+blanking
+S1 off-time 
+blanking
+S2 gate prohibited 
+by interlock
+S1 gate prohibited 
+by interlock
+S2 gate prohibited 
+by interlock
+VVD2
+VVD2
+VVD2
+VVD1
+VVD1
+t
+t
+t
+t
+t
+Figure 8-7. Blanking Time and Interlock Logic in UCC24624
+8.3.4.1 On-Time Blanking
+Right after the SR MOSFET turn on, the SR is driven fully on. For the LLC resonant converter, the SR current 
+rises from zero. It is desired to keep the SR on during this situation and allow the current to rise to a high enough 
+level to maintain the full conduction time. In UCC24624, after the SR is turned on, a minimum on time blanking 
+of 475 ns is implemented. During the on-time blanking time, the SR keeps conducting regardless of its drain to 
+source voltage. This on-time blanking limits the maximum switching frequency of the LLC converter to 625 kHz.
+8.3.4.2 Off-Time Blanking
+When the converter operates in burst mode, during the off period of the secondary side synchronous rectifiers, 
+there is large parasitic ringing (DCM ring) caused by the transformer magnetizing inductance and the switch 
+node capacitance. During the first few ringing cycles of the off period, there is a good chance that the SR 
+MOSFET drain voltage will resonate below the SR controller turn-on threshold. The SR MOSFET could be 
+falsely turned on at these instances, which could introduce extra power loss and EMI noise.
+In UCC24624, a fixed 650-ns off-time blanking period is implemented. After the SR is turned off, and after its 
+drain voltage rises above 1.5 V, the SR won't turn on again for at least the off-time blanking time, regardless of 
+its drain to source voltage. Additional adaptive turn-on delay is also implemented to further enhance the noise 
+immunity capability during burst mode operation.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+17
+
+--- PAGE 18 ---
+8.3.4.3 Two-Channel Interlock
+In LLC converters, the two SR MOSFETs are directly connected with the transformer secondary side. If for any 
+reason, both SRs turn on at the same time, the transformer secondary side is shorted. This could cause large 
+current and destructive component failures.
+To prevent this shoot-through current of the two SR MOSFETs, UCC24624 include a two-channel interlock 
+mechanism. The turn-on of one SR MOSFET, prevents the turn-on of the other SR MOSFET, as illustrated in 
+Figure 8-7.
+8.3.4.4 SR Turn-on Re-arm
+After been turned off in each switching cycle, the VG1 and VG2 outputs may only turn on again when the 
+controller has been armed for the new switching cycle. The controller is armed for each successive SR cycle 
+only at off-time blanking TOFFMIN expiring after the VD pin voltage rises 1.5 V above the VSS pin.
+8.3.4.5 Adaptive Turn-on Delay
+To further enhance noise immunity of the SR controller, UCC24624 implements an adaptive turn-on delay. 
+During most operating conditions, 155-ns of turn-on delay is applied to both channel's turn-on stage. However, 
+at a lighter load, or during burst off period, this turn-on delay is increased to further enhance the noise immunity 
+and allow the controller to reject the leading edge current spike and DCM ring. In these conditions, the turn-on 
+delay is increased to 275 ns. The turn-on delay increasing can be observed in below conditions.
+•
+Burst mode operation. During LLC normal operation, two SR MOSFETs are turned on and off alternatively, 
+in a complementary fashion. However, during burst operation, after one SR MOSFET turns off, the other 
+SR MOSFET stays off. This gives the indication of the LLC converter entering the burst-mode operation. In 
+UCC24624, after one channel SR is turned off, its turn-on delay for the next turn-on is increased to 275 ns, 
+for improved DCM ring rejection capability. If the other channel SR is turned on after this channel SR turning 
+off, the LLC is still in normal operating mode. The turn-on delay is reset to the 155-ns value. Otherwise, 
+UCC24624 detects the LLC entering burst-mode operation and the SR turn-on delay stays at 275 ns to help 
+reject the DCM ring. This adaptive turn-on delay allows long turn-on delay during burst mode operation, with 
+shorter delay during normal operation to minimize the conduction loss.
+•
+Short SR conduction time. At light load, the SR current could start with a short leading edge spike of positive 
+current, followed by the negative current, and then the full positive current, as shown in Figure 8-8. This is 
+caused by the SR parasitic capacitance and the LLC resonant behavior. When the negative current appears, 
+the SR is turned off with minimum on time (on-time blanking). This is the indication that the leading edge 
+current spike causes abnormal operation. Once the short SR conduction time is detected, the IC sets the 
+turn-on delay to 275 ns. This long turn-on delay can further help to reject the leading edge current spike. It 
+also helps to provide better DCM ring rejection during burst mode operation, since the burst mode operation 
+only happens at light load. This increased turn-on delay time is reset when the SR voltage drop is more than 
+40 mV (VDS more negative than -40 mV) at the middle of its conduction time for 8 consecutive cycles.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+18
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 19 ---
+Ton_min
+SR 
+current
+0
+SR 
+gate
+0
+Figure 8-8. SR current with leading edge spike
+To avoid the DCM ring turn on and SR leading edge current spike, an extra resistor can be added between the 
+SR MOSFET drain and UCC24624 VD pins, as shown in Figure 8-9. The extra resistor helps to further improve 
+the noise immunity. Furthermore, this resistor also limits the negative current flowing into the VD pins, during SR 
+body diode conduction time. A resistor value around 1 kΩ is recommended if this resistor is needed.
+VG1
+PGND
+REG
+VD1
+VSS
+VD2
+VDD
+VG2
+UCC24624
+1k
+1k
+Figure 8-9. UCC24624 configuration with VD resistors
+8.3.5 Gate Voltage Clamping
+With the wide VDD voltage range capability, UCC24624 clamps the gate driver voltage to a maximum level of 
+11 V to allow fast driving speed, low driving loss, and compatibility with different MOSFETs. The 11-V level is 
+chosen to minimize the conduction loss for non-logic level MOSFETs. The gate-driver voltage clamp is achieved 
+through the regulated REG pin voltage. When the VDD voltage is above 11 V, the linear regulator regulates the 
+REG pin voltage to 11 V, which is also the power supply of the gate driver stage. This way, the MOSFET gate 
+is well clamped at 11 V, regardless of how high the VDD voltage is. When the VDD voltage is getting close to 
+or below the programmed REG pin regulation voltage, UCC24624 can no longer regulate the REG pin voltage. 
+Instead, it enters a pass-through mode where the REG pin voltage follows the VDD pin voltage minus a smaller 
+linear regulator dropout voltage. During this time, the gate driver voltage is lower than its programmed value but 
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+19
+
+--- PAGE 20 ---
+still provides the SR driving capability. The UCC24624 is disabled once the REG pin voltage drops below its 
+UVLO OFF level VREGOFF.
+8.3.6 Standby Mode
+With stringent efficiency standards such as Department of Energy (DoE) level VI and Code of Conduct (CoC) 
+version 5 tier 2, external power supplies are expected to maintain a very low standby power at no load 
+conditions. It is essential for the SR controller to enter the low power standby mode to help reduce the no 
+load power consumption.
+During standby mode, the power converter loss allocation is quite different compared with heavy load. At heavier 
+load, both conduction loss and switching loss are quite high. However, at light load, the conduction loss becomes 
+insignificant and switching loss dominates the total loss. To help improve the standby power, modern power 
+supply controllers often enter burst mode to save the switching loss. Furthermore, in each burst switching cycle, 
+the energy delivered is maximized to minimize the number of switching cycles needed and further reduces the 
+switching loss.
+Traditionally, the SR controller monitors the SR conduction time to distinguish the normal operation mode or the 
+standby mode. Because of the burst mode operation, the converter is equivalently operating at a much higher 
+power level with long SR conduction time. This criterion is no longer suitable for the modern power supply 
+controller designed for delivering minimum standby power.
+Instead, in UCC24624, a frequency based standby mode detection is used. UCC24624 continuously monitors 
+the average switching frequency of SR channel 1. Once the average switching frequency of channel 1 SR 
+MOSFET drops below 9 kHz for 7.5 ms, the UCC24624 enters the standby mode, stops SR MOSFETs 
+switching, and reduces its current consumption to IVDDSTBY. During standby mode, the SR switching cycle is 
+continuously monitored through the body diode conduction. Once the average switching frequency is more than 
+15.6 kHz within 7.5 ms, the SR MOSFET operation is enabled again. UCC24624 ignores the first SR switching 
+cycle after coming out of standby mode to make sure the SR isn't turned on in the middle of the switching cycle.
+8.4 Device Functional Modes
+8.4.1 UVLO Mode
+UCC24624 uses the REG pin voltage to detect UVLO instead of the VDD pin voltage. When the REG voltage 
+has not yet reached the VREGON threshold, or has fallen below the UVLO threshold VREGOFF, the device 
+operates in the low-power UVLO mode. In this mode, most internal functions are disabled and VDD current is 
+IVDDSTART. If the REG pin is above 2 V, there is an active pull down from VG1 and VG2 to PGND to prevent the 
+SR from falsely turning on due to noise. When the REG pin voltage is less than 2 V, there is a weak pull down 
+from VG1 and VG2 to PGND and this also prevents noise from turning on SR MOSFETs. The device exits UVLO 
+mode when REG increases above the VREGON threshold.
+8.4.2 Standby Mode
+Standby mode is a low-power operating mode to help achieve low standby power for the entire power supply. 
+UCC24624 detects the average operation frequency of channel 1 SR MOSFET and enters or exits the standby 
+mode operation automatically. VDD current reduces to IVDDSTBY level. During standby mode, the majority of the 
+SR control functions are disabled, except the switching frequency monitoring and the active pull down on the 
+gate drivers.
+8.4.3 Run Mode
+Run mode is the normal operating mode of the controller, when not in UVLO mode, or standby mode. In this 
+mode, VDD current is higher because all internal control and timing functions are operating and the VG1 and 
+VG2 outputs are driving the MOSFETs for synchronous rectification. VDD current is the sum of IVDDRUN plus 
+the average current necessary to drive the load on the VG1 and VG2 outputs. The VG1 and VG2 voltages are 
+automatically adjusted based on the SR MOSFET drain-to-source voltages. Before REG pin voltage reaches 
+VREGON threshold, one of the drain-to-source voltages (VD1 or VD2) must switch above VTHARM for proper 
+switching of VG1 and VG2 outputs. This can be easily achieved by powering up the VDD from the output of the 
+LLC or switching the LLC first before REG pin voltage reaches VREGON threshold.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+20
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 21 ---
+9 Application and Implementation
+Note
+Information in the following applications sections is not part of the TI component specification, and 
+TI does not warrant its accuracy or completeness. TI’s customers are responsible for determining 
+suitability of components for their purposes. Customers should validate and test their design 
+implementation to confirm system functionality.
+9.1 Application Information
+UCC24624 is a high performance synchronous rectifier controller used to replace output diode rectifiers in an 
+LLC converter with synchronous rectifier (SR) MOSFETs. The SR-MOSFETs can achieve very low conduction 
+loss compared to that of diode rectifiers, significantly improving the efficiency and thermal performance of the 
+converter.
+9.2 Typical Application
+The UCC24624EVM-015 was used to replace rectifier diodes in a 120-W LLC converter using the UCC256302 
+LLC controller. The power converter had an input voltage (VIN) range of 340 V to 410 V with a typical input 
+of 390 V, with a regulated 12-V output. More details about this power stage can be found in UCC256301 LLC 
+Evaluation Module. More information regarding designing PFC and LLC stages can be found on these training 
+topics (LLC Design Principles and Optimization for Transient Response, A new way to PFC and an even better 
+way to LLC, and PFC for not dummies).
+The schematic of the UCC24624EVM-15 is shown in Figure 9-1.
+Figure 9-1. Schematic of UCC24624EVM-15
+The top and bottom view of UCC24624EVM-015 are shown in Figure 11-2 and Figure 11-3.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+21
+
+--- PAGE 22 ---
+9.2.1 Design Requirements
+The overall system requirements are summarized in Table 9-1.
+Table 9-1. UCC24624EVM-015 LLC Power Stage Specifications
+PARAMETER
+TEST CONDITION
+MIN
+TYP
+MAX
+UNITS
+INPUT CHARACTERISTICS
+DC voltage range
+340
+390
+410
+VDC
+OUTPUT CHARACTERISTICS
+Output Voltage
+No load to full load = 10 A
+12
+VDC
+Output Current
+340-V to 41-V VDC
+10
+A
+SYSTEM CHARACTERISTICS
+Switching frequency
+53
+160
+kHz
+Peak efficiency
+390 VDC, load = 10 A
+96.5%
+9.2.2 Detailed Design Procedure
+9.2.2.1 MOSFET Selection
+In this UCC256302-based LLC resonant converter, the transformer secondary side is a center-tap structure. The 
+SR MOSFET voltage stress, without considering the ringing voltages, must be twice of the output voltage. Given 
+the 12-V output, this determines the SR steady state voltage stress of 24 V. However, due to the switching 
+noises at MOSFET turn off, there is always extra voltage stress. To ensure enough design margin, 60-V rating 
+MOSFETs were selected.
+The selection of the MOSFET on-state resistance is the trade-off among performance at full load, light load, 
+as well as cost. The lower on-state resistance gives lower conduction loss at heavy load while increases the 
+switching loss at lighter load. It is also higher cost. Generally, the on-state resistance must be selected so that 
+the 35-mV proportional gate drive threshold doesn't get activated until last 25% of the overall conduction time. 
+The SR MOSFET on-state resistance can be selected as Equation 3. A 2.5-mΩ MOSFET was selected as the 
+synchronous rectifier.
+4&5KJ = 2¾2 × 35I8
+è × +KQP _I=T
+= 3.15I3 
+(3)
+9.2.2.2 Snubber Design
+It may be required to adjust snubbing components C3, C4, R2 and R5 to dampen noise.
+To adjust these components requires knowing the LLC transformers secondary leakage inductance (Lslk) 
+and measuring the secondary resonant ring frequency (fr) in circuit at minimal load of 10% or less. TI also 
+recommends that the SR is not engaged while doing this and capacitors C3 and C4 are removed from the 
+evaluation module. ConnectTP6 to ground to disable the gate driver.
+The secondary winding capacitance (Cs) then needs to be calculated based on Equation 4. Note that for a 
+transformer with a secondary winding leakage inductance of 3.8 µH and a ring frequency of 2 MHz, the parasitic 
+capacitance would be 1.7 nF.
+%O =
+1
+(2 × è × BN)2 × .OHG =
+1
+(2 × è × 2/*V)2 × 3.8ä* = 1.7J(
+(4)
+Based on the calculated Cs, Lslk and fr the snubber resistors R2 and R5 can be set to critically dampen the 
+ringing on the secondary, which requires setting the Q of the circuit equal to 1.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+22
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 23 ---
+42 = 45 = 1
+3 ¨.OHG
+%O = 1
+1¨3.8ä*
+1.7J( N 47 3
+(5)
+Capacitors C3 and C5 are used to limit the time the snubber resistor is applied to the aux winding during the 
+switching cycle. It is recommended to set the snubber capacitor C3 with Equation 6 based on the LLC converters 
+minimum switching frequency (fSW). For an LLC converter with a minimum switching at 85 kHz in the example 
+would require a C3 and C4 would be roughly 497 pF.
+%3 = %4 =
+0.01
+5 × BOS × 43 =
+0.01
+5 × 85G*V × 47.3× N 497L(
+(6)
+Note that the calculations for R2, R5, C3, and C4 are just starting points and must be adjusted based on 
+individual preference, performance and efficiency requirements.
+9.2.3 Application Curves
+The typical operation waveforms, as well as the efficiency performance are summarized in following sections.
+•
+CH1 = VG1(TP4), CH3 = Q1 drain (TP2), CH2 = VG2(TP5), CH4 = Q1 drain (TP3)
+Figure 9-2. VIN = 340 V, IOUT = 0 A, No Gate Drive 
+Under Light Load (VG1, VG2)
+Figure 9-3. VIN = 340 V, IOUT = 0.3 A, LLC is 
+Operating In Burst Mode
+Figure 9-4. VIN = 340 V, IOUT = 10 A Full Load
+Figure 9-5. VIN = 390 V, IOUT = 0 A, No Gate Drive 
+Under Light Load (VG1, VG2)
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+23
+
+--- PAGE 24 ---
+Figure 9-6. VIN = 390 V, IOUT = 0.3 A, LLC is 
+Operating In Burst Mode
+Figure 9-7. VIN = 390 V, IOUT = 10 A Full Load
+Figure 9-8. VIN = 410 V, IOUT = 0 A, No Gate Drive 
+Under Light Load (VG1, VG2)
+Figure 9-9. VIN = 410 V, IOUT = 0.3 A, LLC is 
+Operating In Burst Mode
+Figure 9-10. VIN = 410 V, IOUT = 10 A Full Load
+Load Current (A)
+Efficiency
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+0.91
+0.92
+0.93
+0.94
+0.95
+0.96
+0.97
+D007
+Figure 9-11. VIN = 390 V, Power Converter System 
+Efficiency Using SR FETs
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+24
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 25 ---
+10 Power Supply Recommendations
+UCC24624 internal circuits are powered from REG pin only. There is an internal linear regulator between VDD 
+pin and REG pin to provide a well-regulated REG pin voltage when VDD voltage is above 11 V. This allows the 
+device to have better bypassing and better gate driver performance.
+It is important to keep the sufficient bypass cap on REG pin. A minimum of 1-μF bypass capacitor is required. 
+When the gate charge current is higher than 5 mA, it is required to have at least 2.2-μF bypass capacitor on 
+REG pin.
+VDD pin is the main power source of the device. Keep the voltage on VDD pin between 4.25 V and 26 V 
+for normal operation. Refer to Section 7.5 for the tolerances on the REG pin UVLO ON and OFF levels. It is 
+recommended to power up the VDD from the output of LLC as shown in Figure 8-1. It will make sure one of 
+the drain-to-source voltages (VD1 or VD2) will switch above VTHARM before REG pin voltage reaches VREGON 
+threshold for the proper switching of VG1 and VG2. Other power up methods are also possible (Figure 10-1).
+For the applications where LLC output voltage is higher than 24.75 V, an external resistor between LLC 
+output voltage and UCC24624 can be used to allow internal clamp circuit keeping the VDD voltage below 
+its recommended maximum voltage rating, as shown in Figure 8-3. The series resistor can be calculated as in 
+Equation 7. In Equation 7, VOUT(max) is the maximum output voltage of LLC converter, including its transient 
+conditions, VCLAMP(min) is the minimum clamping voltage considering tolerance, and ILIM is the maximum current 
+allowed by the clamping circuit of 15 mA.
+4.+/ = 8176:max; F 8%.#/2(min)
+15I#
+ 
+(7)
+After the resistor is inserted, calculate the minimum voltage on VDD to ensure sufficient voltage on VDD for the 
+SR driving. The voltage on VDD based on RLIM can be calculated as Equation 8. The VDD voltage under this 
+condition must be higher than desired minimum SR driving voltage. In this equation, VOUT is the nominal output 
+voltage, RLIM is the current limiting resistor value. Qg is the SR gate charge for each SR MOSFET and fSW is the 
+maximum switching frequency of LLC converter.
+88&&(min) = 8176 F4.+/ ×(2 ×3C ×B59 ++8&&470) 
+(8)
+If the output voltage is higher than 36 V, or no suitable current limit resistor RLIM can be selected or incase, the 
+auxiliary winding can be used to power up the UCC24624. The circuit diagram of powering UCC24624 using 
+auxiliary winding is shown in Figure 10-1. Other option would be to use a linear regulator to create bias power 
+from the output voltage directly. But this is a less efficient solution.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+25
+
+--- PAGE 26 ---
+Q1
+Q2
+Lr
+Cr
+Vin
+VG1
+PGND
+REG
+VD1
+VSS
+VD2
+VDD
+VG2
+UCC24624
+Vout
+S1
+S2
+Figure 10-1. Powering UCC24624 Using Auxiliary Winding
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+26
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 27 ---
+11 Layout
+11.1 Layout Guidelines
+The printed circuit board (PCB) requires careful layout to minimize current loop areas and track lengths, 
+especially when using single-sided PCBs.
+•
+Place a ceramic MLCC bypass capacitor as close as possible to REG and GND.
+•
+Avoid connecting VD1 or VD2 and VSS sense points at locations where stray inductance is added to the SR 
+MOSFET package inductance, as this tends to turn off the SR prematurely.
+•
+Run a trace from the VD1 or VD2 pin directly to the MOSFET drain pad to avoid sensing voltage across the 
+stray inductance in the SR drain current path.
+•
+Run a trace from the VSS pin directly to the MOSFET source pad to avoid sensing voltage across the 
+stray inductance in the SR source current path. Because this trace shares both the gate driver path and the 
+MOSFET voltage sensing path, TI recommends making this trace as short as possible.
+•
+Run parallel traces from VG1 or VG2 and PGND to the SR MOSFET. Include a series gate resistance to 
+dampen ringing if it is needed.
+11.2 Layout Example
+UCC24624
+CVDD
+SR1
+SR2
+ 
+RG2
+CREG
+RG1
+To LLC Transformer
+1
+2
+3
+4
+5
+6
+7
+8
+Top Layer
+Bottom Layer
+Via
+Figure 11-1. UCC24624 Layout Example
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+27
+
+--- PAGE 28 ---
+Figure 11-2. UCC24624EVM-015 (Top View)
+Figure 11-3. UCC24624EVM-015 (Bottom View)
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+28
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 29 ---
+12 Device and Documentation Support
+12.1 Device Support
+12.1.1 Development Support
+12.1.1.1 Custom Design With WEBENCH® Tools
+Click here to create a custom design using the UCC24624 device with the WEBENCH® Power Designer.
+1.
+Start by entering the input voltage (VIN), output voltage (VOUT), and output current (IOUT) requirements.
+2.
+Optimize the design for key parameters such as efficiency, footprint, and cost using the optimizer dial.
+3.
+Compare the generated design with other possible solutions from Texas Instruments.
+The WEBENCH Power Designer provides a customized schematic along with a list of materials with real-time 
+pricing and component availability.
+In most cases, these actions are available:
+•
+Run electrical simulations to see important waveforms and circuit performance
+•
+Run thermal simulations to understand board thermal performance
+•
+Export customized schematic and layout into popular CAD formats
+•
+Print PDF reports for the design, and share the design with colleagues
+Get more information about WEBENCH tools at www.ti.com/WEBENCH.
+12.2 Receiving Notification of Documentation Updates
+To receive notification of documentation updates, navigate to the device product folder on ti.com. In the upper 
+right corner, click on Alert me to register and receive a weekly digest of any product information that has 
+changed. For change details, review the revision history included in any revised document.
+12.3 Community Resources
+12.4 Trademarks
+WEBENCH® is a registered trademark of Texas Instruments.
+All trademarks are the property of their respective owners.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+29
+
+--- PAGE 30 ---
+Mechanical, Packaging, and Orderable Information
+The following pages include mechanical, packaging, and orderable information. This information is the most 
+current data available for the designated devices. This data is subject to change without notice and revision of 
+this document. For browser-based versions of this data sheet, refer to the left-hand navigation.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+30
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 31 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+9-Nov-2025
+PACKAGING INFORMATION
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+UCC24624DR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-2-260C-1 YEAR
+-40 to 125
+U24624
+UCC24624DR.B
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-2-260C-1 YEAR
+-40 to 125
+U24624
+UCC24624DT
+Active
+Production
+SOIC (D) | 8
+250 | SMALL T&R
+Yes
+NIPDAU
+Level-2-260C-1 YEAR
+-40 to 125
+U24624
+UCC24624DT.B
+Active
+Production
+SOIC (D) | 8
+250 | SMALL T&R
+Yes
+NIPDAU
+Level-2-260C-1 YEAR
+-40 to 125
+U24624
+UCC24624DTG4
+Active
+Production
+SOIC (D) | 8
+250 | SMALL T&R
+Yes
+NIPDAU
+Level-2-260C-1 YEAR
+-40 to 125
+U24624
+UCC24624DTG4.B
+Active
+Production
+SOIC (D) | 8
+250 | SMALL T&R
+Yes
+NIPDAU
+Level-2-260C-1 YEAR
+-40 to 125
+U24624
+ 
+(1) Status:  For more details on status, see our product life cycle.
+ 
+(2) Material type:  When designated, preproduction parts are prototypes/experimental devices, and are not yet approved or released for full production. Testing and final process, including without limitation quality assurance,
+reliability performance testing, and/or process qualification, may not yet be complete, and this item is subject to further changes or possible discontinuation. If available for ordering, purchases will be subject to an additional
+waiver at checkout, and are intended for early internal evaluation purposes only. These items are sold without warranties of any kind.
+ 
+(3) RoHS values:  Yes, No, RoHS Exempt. See the TI RoHS Statement for additional information and value definition.
+ 
+(4) Lead finish/Ball material:  Parts may have multiple material finish options. Finish options are separated by a vertical ruled line. Lead finish/Ball material values may wrap to two lines if the finish value exceeds the maximum
+column width.
+ 
+(5) MSL rating/Peak reflow:  The moisture sensitivity level ratings and peak solder (reflow) temperatures. In the event that a part has multiple moisture sensitivity ratings, only the lowest level per JEDEC standards is shown.
+Refer to the shipping label for the actual reflow temperature that will be used to mount the part to the printed circuit board.
+ 
+(6) Part marking:  There may be an additional marking, which relates to the logo, the lot trace code information, or the environmental category of the part.
+ 
+Multiple part markings will be inside parentheses. Only one part marking contained in parentheses and separated by a "~" will appear on a part. If a line is indented then it is a continuation of the previous line and the two
+combined represent the entire part marking for that device.
+ 
+Important Information and Disclaimer:The information provided on this page represents TI's knowledge and belief as of the date that it is provided. TI bases its knowledge and belief on information provided by third parties, and
+makes no representation or warranty as to the accuracy of such information. Efforts are underway to better integrate information from third parties. TI has taken and continues to take reasonable steps to provide representative
+and accurate information but may not have conducted destructive testing or chemical analysis on incoming materials and chemicals. TI and TI suppliers consider certain information to be proprietary, and thus CAS numbers
+and other limited information may not be available for release.
+ 
+In no event shall TI's liability arising out of such information exceed the total purchase price of the TI part(s) at issue in this document sold by TI to Customer on an annual basis.
+Addendum-Page 1
+
+--- PAGE 32 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+9-Nov-2025
+ 
+Addendum-Page 2
+
+--- PAGE 33 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+25-Jul-2025
+TAPE AND REEL INFORMATION
+Reel Width (W1)
+REEL DIMENSIONS
+A0
+B0
+K0
+W
+Dimension designed to accommodate the component length
+Dimension designed to accommodate the component thickness
+Overall width of the carrier tape
+Pitch between successive cavity centers
+Dimension designed to accommodate the component width
+TAPE DIMENSIONS
+K0
+ P1
+B0 W
+A0
+Cavity
+QUADRANT ASSIGNMENTS FOR PIN 1 ORIENTATION IN TAPE
+Pocket Quadrants
+Sprocket Holes
+Q1
+Q1
+Q2
+Q2
+Q3
+Q3
+Q4
+Q4
+User Direction of Feed
+P1
+Reel
+Diameter
+ 
+*All dimensions are nominal
+Device
+Package
+Type
+Package
+Drawing
+Pins
+SPQ
+Reel
+Diameter
+(mm)
+Reel
+Width
+W1 (mm)
+A0
+(mm)
+B0
+(mm)
+K0
+(mm)
+P1
+(mm)
+W
+(mm)
+Pin1
+Quadrant
+UCC24624DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+UCC24624DT
+SOIC
+D
+8
+250
+180.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+UCC24624DTG4
+SOIC
+D
+8
+250
+180.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+Pack Materials-Page 1
+
+--- PAGE 34 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+25-Jul-2025
+TAPE AND REEL BOX DIMENSIONS
+Width (mm)
+W
+L
+H
+ 
+*All dimensions are nominal
+Device
+Package Type
+Package Drawing
+Pins
+SPQ
+Length (mm)
+Width (mm)
+Height (mm)
+UCC24624DR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+UCC24624DT
+SOIC
+D
+8
+250
+213.0
+191.0
+35.0
+UCC24624DTG4
+SOIC
+D
+8
+250
+213.0
+191.0
+35.0
+Pack Materials-Page 2
+
+--- PAGE 35 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+.228-.244 TYP
+[5.80-6.19]
+.069 MAX
+[1.75]     
+6X .050
+[1.27]
+8X .012-.020
+     [0.31-0.51]
+2X
+.150
+[3.81]
+.005-.010 TYP
+[0.13-0.25]
+0 - 8
+.004-.010
+[0.11-0.25]
+.010
+[0.25]
+.016-.050
+[0.41-1.27]
+4X (0 -15 )
+A
+.189-.197
+[4.81-5.00]
+NOTE 3
+B
+.150-.157
+[3.81-3.98]
+NOTE 4
+4X (0 -15 )
+(.041)
+[1.04]
+SOIC - 1.75 mm max height
+D0008A
+SMALL OUTLINE INTEGRATED CIRCUIT
+4214825/C   02/2019
+NOTES: 
+ 
+1. Linear dimensions are in inches [millimeters]. Dimensions in parenthesis are for reference only. Controlling dimensions are in inches.
+    Dimensioning and tolerancing per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed .006 [0.15] per side. 
+4. This dimension does not include interlead flash.
+5. Reference JEDEC registration MS-012, variation AA.
+ 
+1
+8
+.010 [0.25]
+C A B
+5
+4
+PIN 1 ID AREA
+SEATING PLANE
+.004 [0.1] C
+ SEE DETAIL A
+DETAIL A
+TYPICAL
+SCALE  2.800
+
+--- PAGE 36 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+.0028 MAX
+[0.07]
+ALL AROUND
+.0028 MIN
+[0.07]
+ALL AROUND
+ 
+(.213)
+[5.4]
+6X (.050 )
+[1.27]
+8X (.061 )
+[1.55]
+8X (.024)
+[0.6]
+(R.002 ) TYP
+[0.05]
+SOIC - 1.75 mm max height
+D0008A
+SMALL OUTLINE INTEGRATED CIRCUIT
+4214825/C   02/2019
+NOTES: (continued)
+ 
+6. Publication IPC-7351 may have alternate designs. 
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+METAL
+SOLDER MASK
+OPENING
+NON SOLDER MASK
+DEFINED
+SOLDER MASK DETAILS
+EXPOSED
+METAL
+OPENING
+SOLDER MASK
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+DEFINED
+EXPOSED
+METAL
+LAND PATTERN EXAMPLE
+EXPOSED METAL SHOWN
+SCALE:8X
+SYMM
+1
+4
+5
+8
+SEE
+DETAILS
+SYMM
+
+--- PAGE 37 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+8X (.061 )
+[1.55]
+8X (.024)
+[0.6]
+6X (.050 )
+[1.27]
+(.213)
+[5.4]
+(R.002 ) TYP
+[0.05]
+SOIC - 1.75 mm max height
+D0008A
+SMALL OUTLINE INTEGRATED CIRCUIT
+4214825/C   02/2019
+NOTES: (continued)
+ 
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+9. Board assembly site may have different recommendations for stencil design.
+ 
+SOLDER PASTE EXAMPLE
+BASED ON .005 INCH [0.125 MM] THICK STENCIL
+SCALE:8X
+SYMM
+SYMM
+1
+4
+5
+8
+
+--- PAGE 38 ---
+IMPORTANT NOTICE AND DISCLAIMER
+TI PROVIDES TECHNICAL AND RELIABILITY DATA (INCLUDING DATASHEETS), DESIGN RESOURCES (INCLUDING REFERENCE 
+DESIGNS), APPLICATION OR OTHER DESIGN ADVICE, WEB TOOLS, SAFETY INFORMATION, AND OTHER RESOURCES “AS IS” 
+AND WITH ALL FAULTS, AND DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION ANY 
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD 
+PARTY INTELLECTUAL PROPERTY RIGHTS.
+These resources are intended for skilled developers designing with TI products. You are solely responsible for (1) selecting the appropriate 
+TI products for your application, (2) designing, validating and testing your application, and (3) ensuring your application meets applicable 
+standards, and any other safety, security, regulatory or other requirements.
+These resources are subject to change without notice. TI grants you permission to use these resources only for development of an 
+application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited. No license 
+is granted to any other TI intellectual property right or to any third party intellectual property right. TI disclaims responsibility for, and you fully 
+indemnify TI and its representatives against any claims, damages, costs, losses, and liabilities arising out of your use of these resources.
+TI’s products are provided subject to TI’s Terms of Sale, TI’s General Quality Guidelines, or other applicable terms available either on 
+ti.com or provided in conjunction with such TI products. TI’s provision of these resources does not expand or otherwise alter TI’s applicable 
+warranties or warranty disclaimers for TI products. Unless TI explicitly designates a product as custom or customer-specified, TI products 
+are standard, catalog, general purpose devices.
+TI objects to and rejects any additional or different terms you may propose.
+IMPORTANT NOTICE
+Copyright © 2025, Texas Instruments Incorporated
+Last updated 10/2025

@@ -1,0 +1,621 @@
+{
+  "generated": "2026-11-01",
+  "scope": "current candidate only: round-4 decks/models/scripts/results + run metadata",
+  "supersedes": {
+    "path": "design/baseline/baseline_manifest.json",
+    "entries": 304,
+    "status": "historical; five known hash mismatches, do not reproduce from it"
+  },
+  "entries": [
+    {
+      "path": "sim/v2/sr_tank_dual_v33_ss_1ms.cir",
+      "kind": "deck",
+      "bytes": 10366,
+      "mtime": 1793440105.457431,
+      "sha256": "fa210549be7a6d164d70381d531dd66945088d93e13e275b3a5c2a2d4cd14957"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_ss_1ms_full.cir",
+      "kind": "deck",
+      "bytes": 10369,
+      "mtime": 1793446012.585351,
+      "sha256": "0c0d2cdfbf3c2db54a90950c237da1014dffb496a4ef7a0e06216efa34cf6024"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cold.cir",
+      "kind": "deck",
+      "bytes": 11039,
+      "mtime": 1793446012.585351,
+      "sha256": "cd4e6c35782a3ca441a9e188a5ce71f93e72756e44c0e28500b574990aed4545"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cold_oc.cir",
+      "kind": "deck",
+      "bytes": 12030,
+      "mtime": 1793448232.414967,
+      "sha256": "a526abf3ae0245edf44015830c7f11d034c5394a2ca8a4fb0fd21a9e596791dd"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv_5n.cir",
+      "kind": "deck",
+      "bytes": 10365,
+      "mtime": 1793446012.5822155,
+      "sha256": "9b59557a387673cdeace197f29a8c74a05c778a12e0869a293b5092cb9a864a9"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv_2n.cir",
+      "kind": "deck",
+      "bytes": 10365,
+      "mtime": 1793446012.5822155,
+      "sha256": "f5979ca4bb75c881cb2d0f4581a570639b09cdc0347d28f69bb89e29f4153266"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv_1n.cir",
+      "kind": "deck",
+      "bytes": 10365,
+      "mtime": 1793446012.5822155,
+      "sha256": "370852defaf548a40cf11725fd4ab592b6ce560236af4d727ca887acde98d283"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin_50p.cir",
+      "kind": "deck",
+      "bytes": 10358,
+      "mtime": 1793446012.5832176,
+      "sha256": "e4c151368a88006727e1462df6eab0dd65e2508b29c7ac0999e21d386105228e"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin_200p.cir",
+      "kind": "deck",
+      "bytes": 10365,
+      "mtime": 1793446012.5832176,
+      "sha256": "e9e5620cc02a6e2a33e473c3b2204af0809860251b69130abfe1da14165201bd"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv1ms_2n.cir",
+      "kind": "deck",
+      "bytes": 10326,
+      "mtime": 1793446012.5832176,
+      "sha256": "490d757b6c66ebfa9238362f8a48d641012814266b28453c801b3b14cacad04d"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv1ms_1n.cir",
+      "kind": "deck",
+      "bytes": 10326,
+      "mtime": 1793446012.5832176,
+      "sha256": "4b709a5d4243b0f034c1cdba2f243f58d2734d493f75a160bc67f42b9585df10"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin1ms_50p.cir",
+      "kind": "deck",
+      "bytes": 10319,
+      "mtime": 1793446012.5842202,
+      "sha256": "a516bf321ad2b10b313bc05113b3d5040337932cbe06f2ae0b71f9cda09f7813"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin1ms_200p.cir",
+      "kind": "deck",
+      "bytes": 10326,
+      "mtime": 1793446012.5842202,
+      "sha256": "632d17b3396f36f4a1f9c7a8f30a643a7fb8e19fa66e349e9f12cb2718b383a2"
+    },
+    {
+      "path": "models/ucc25600_legacy_behaviour.lib",
+      "kind": "model",
+      "bytes": 11675,
+      "mtime": 1793327686.281843,
+      "sha256": "b49c5dc13a44b383a97d11e90d9edc8f2f01f456a30857c729e3a8a12925ecc6"
+    },
+    {
+      "path": "models/sr_timing_v3_3.lib",
+      "kind": "model",
+      "bytes": 11920,
+      "mtime": 1793427235.48759,
+      "sha256": "f03b6e179736916d33cd99034aea7bbe45c716b155795c4db18e4e160a37a4a3"
+    },
+    {
+      "path": "models/sr_device_v3.lib",
+      "kind": "model",
+      "bytes": 7508,
+      "mtime": 1793412054.5195284,
+      "sha256": "5224e94703cc2a6ec63b1435218b243622099f06b6c1915f78dff6528a5dde59"
+    },
+    {
+      "path": "tools/tank_metrics.py",
+      "kind": "script",
+      "bytes": 15090,
+      "mtime": 1793438585.9659407,
+      "sha256": "176bdb4c3d31f599bc259ee2794b9b902570abb3a4d7f0ab1106a847083c3421"
+    },
+    {
+      "path": "tools/sr_energy_ledger.py",
+      "kind": "script",
+      "bytes": 11828,
+      "mtime": 1793444578.4328938,
+      "sha256": "cba795773aa790e615b1ab02ae8e6b23e709e083248b5dbf84199aa0a4f453d3"
+    },
+    {
+      "path": "tools/steady_state_check.py",
+      "kind": "script",
+      "bytes": 9342,
+      "mtime": 1793444789.5160642,
+      "sha256": "697984673a21f1d9fe83eee58d573647de9561618ff9708dadba6a0520113106"
+    },
+    {
+      "path": "tools/round3_summary.py",
+      "kind": "script",
+      "bytes": 9900,
+      "mtime": 1793447593.8795872,
+      "sha256": "e20b31d6a8726820e9312986ae57024ff1e0dab89023d6be3b95e952dc8ff409"
+    },
+    {
+      "path": "tools/task_package1_summary.py",
+      "kind": "script",
+      "bytes": 18228,
+      "mtime": 1793447646.3886645,
+      "sha256": "0d9f52196b86b97fb37a3b38313982966c4ad0bbbdc263afc949499a734c568e"
+    },
+    {
+      "path": "tools/fault_metrics.py",
+      "kind": "script",
+      "bytes": 6608,
+      "mtime": 1793454047.3157692,
+      "sha256": "81e613703b4b143e278b9d9be3e36577c683ab81103c3b3997bb7952e0712f71"
+    },
+    {
+      "path": "tools/ascii_raw_window.py",
+      "kind": "script",
+      "bytes": 6090,
+      "mtime": 1793453983.1520505,
+      "sha256": "81cd4fa1129af65ea2875df02e81c7ac427e151639edc7c9959668a5309d21e7"
+    },
+    {
+      "path": "tools/period_variance.py",
+      "kind": "script",
+      "bytes": 5514,
+      "mtime": 1793445914.3611102,
+      "sha256": "6262861e91e17ccc5584f4c492434640fb8514bb0a3a4463fc25be9a523a665d"
+    },
+    {
+      "path": "tools/make_round4_decks.py",
+      "kind": "script",
+      "bytes": 11601,
+      "mtime": 1793448223.0439231,
+      "sha256": "e22cf699d8e8fed4af5dabf67207074efa7574338db0130245a1f1ca208ccc95"
+    },
+    {
+      "path": "tools/current_manifest.py",
+      "kind": "script",
+      "bytes": 15729,
+      "mtime": 1793468121.7237077,
+      "sha256": "775c83240ac161e801c36702a10b105c8d37437ede0d863f855395e9fd5acfab"
+    },
+    {
+      "path": "tools/test_tank_metrics.py",
+      "kind": "script",
+      "bytes": 9371,
+      "mtime": 1793438609.0087013,
+      "sha256": "aad15546da63de6c62e963cb42c94729990f0ddeb60fe9e59e6f40f8107460da"
+    },
+    {
+      "path": "tools/test_sr_energy_ledger.py",
+      "kind": "script",
+      "bytes": 3303,
+      "mtime": 1793444613.1192017,
+      "sha256": "1d015669fd5617bceadee300422037c26b51f7b84959c4b076dabefbb3c44c15"
+    },
+    {
+      "path": "tools/test_steady_state_check.py",
+      "kind": "script",
+      "bytes": 4319,
+      "mtime": 1793444841.259168,
+      "sha256": "91d8481d123b902d16542e0aaf5f17027f8efcf0afc822eedc38410e8743e970"
+    },
+    {
+      "path": "tools/test_round3_summary.py",
+      "kind": "script",
+      "bytes": 3526,
+      "mtime": 1793447587.2421687,
+      "sha256": "1cd12cffd15c24e0274810e68df646cb6482c558128b5c87df1afbdd41601543"
+    },
+    {
+      "path": "tools/test_task_package1_summary.py",
+      "kind": "script",
+      "bytes": 2104,
+      "mtime": 1793445151.843835,
+      "sha256": "8bd90243f62aa262433298c08072289d1c42726230fc1b9ac57500e2574b82eb"
+    },
+    {
+      "path": "tools/test_make_round4_decks.py",
+      "kind": "script",
+      "bytes": 1749,
+      "mtime": 1793448209.3786104,
+      "sha256": "d8bbea40126b21005e48c688e1475e0039b3f3f6e9e99efe814832a405f348ec"
+    },
+    {
+      "path": "tools/test_fault_metrics.py",
+      "kind": "script",
+      "bytes": 1180,
+      "mtime": 1793448347.7265375,
+      "sha256": "a95fd7c0b972b6752099ac069c4f725456ad41da7ed242d269e585db5153d023"
+    },
+    {
+      "path": "tools/test_ascii_raw_window.py",
+      "kind": "script",
+      "bytes": 1682,
+      "mtime": 1793453959.2726593,
+      "sha256": "49cec1421aadaca9c147934b0f31311c5a90d8ac803f5e9bcb04af361f0962db"
+    },
+    {
+      "path": "design/v2/round4_summary.json",
+      "kind": "result",
+      "bytes": 16546,
+      "mtime": 1793448005.8922188,
+      "sha256": "0df952566199193163071e6bcd66771e90f3ad1bff6fe84c8da6e34d72f1c985"
+    },
+    {
+      "path": "design/v2/round3_summary.json",
+      "kind": "result",
+      "bytes": 3233,
+      "mtime": 1793439989.2432618,
+      "sha256": "72f02b7b6ab2a080a98f092e8a246dbd40a0b3502a31c83191083becefa58d3c"
+    },
+    {
+      "path": "design/v2/round3_energy_ledger_ss.json",
+      "kind": "result",
+      "bytes": 38335,
+      "mtime": 1793439954.0972886,
+      "sha256": "58b8d3b1cd60200b7065da8cc9b6694528d0ddc3c1961c0678a43ab0241c9297"
+    },
+    {
+      "path": "design/v2/round3_energy_ledger_284k.json",
+      "kind": "result",
+      "bytes": 18829,
+      "mtime": 1793438952.200612,
+      "sha256": "65ebdd67b5db31917884ffc42db78a5e168f0974f435860c7ff09b8696d57cdc"
+    },
+    {
+      "path": "design/v2/period_variance_cpin1ms.json",
+      "kind": "result",
+      "bytes": 7387,
+      "mtime": 1793446574.0485787,
+      "sha256": "57337dae832f373b8f9880b8f0bfdb7c03911b0c0916f6d9de08c6f3c7a6eeea"
+    },
+    {
+      "path": "design/v2/fault_metrics_sr_tank_dual_v33_cold_oc.json",
+      "kind": "result",
+      "bytes": 973,
+      "mtime": 1793454097.1716795,
+      "sha256": "bed0630dffcaef9d71dc375d3ed11254c84cff8e7946f0286072b0d104c6df98"
+    },
+    {
+      "path": "design/v2/第四轮_证据修正与数值疑点关闭_2026-10-31.md",
+      "kind": "result",
+      "bytes": 17491,
+      "mtime": 1793454193.1412494,
+      "sha256": "77b997b281e74ce34065d4e553ccf9f1fcf3913021fd03433b86cc484db5cddc"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_ss_1ms.raw",
+      "kind": "raw",
+      "bytes": 306708034,
+      "mtime": 1793439911.7731302,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_ss_1ms_full.raw",
+      "kind": "raw",
+      "bytes": 280857417,
+      "mtime": 1793445066.6003509,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cold.raw",
+      "kind": "raw",
+      "bytes": 10697092991,
+      "mtime": 1793446703.9625068,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cold_oc.raw",
+      "kind": "raw",
+      "bytes": 13059374780,
+      "mtime": 1793453830.1938004,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv_5n.raw",
+      "kind": "raw",
+      "bytes": 108860795,
+      "mtime": 1793444919.6511838,
+      "sha256": "30ce3419cc04fe179b43b7bed8cb28f17f6147cf66380784e066f40dec73c5de"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv_2n.raw",
+      "kind": "raw",
+      "bytes": 106818935,
+      "mtime": 1793444974.1620047,
+      "sha256": "ad22bb3b34a33d34159f0242a093a1468adc6366862f889ed2e0084563bd905a"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv_1n.raw",
+      "kind": "raw",
+      "bytes": 119715040,
+      "mtime": 1793445030.0208302,
+      "sha256": "6686a5a711164e98500853657f09ec97f71b0601cdbb2690460e56e1cb909f52"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin_50p.raw",
+      "kind": "raw",
+      "bytes": 111416131,
+      "mtime": 1793445087.706188,
+      "sha256": "fef2f77d3d20a1aab062f2326a881bd18237e36a4e3922e16a16d10716b9d644"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin_200p.raw",
+      "kind": "raw",
+      "bytes": 100682319,
+      "mtime": 1793445125.9147773,
+      "sha256": "4eeddd2e5f94bdee59f38baf80ab06d35450f2e19621cfec53d4180fadbf8f64"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv1ms_2n.raw",
+      "kind": "raw",
+      "bytes": 257815700,
+      "mtime": 1793445479.026717,
+      "sha256": "233d1e704eb68f33195760a645c8906ea1275b087aa4f86bf53795a5d1f1da03"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_conv1ms_1n.raw",
+      "kind": "raw",
+      "bytes": 274100920,
+      "mtime": 1793445750.498241,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin1ms_50p.raw",
+      "kind": "raw",
+      "bytes": 270218911,
+      "mtime": 1793446231.146053,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33_cpin1ms_200p.raw",
+      "kind": "raw",
+      "bytes": 246398804,
+      "mtime": 1793446409.1451461,
+      "sha256": "fafb736e73967c15b7ccf5e801c2e41ad7b4496d710962b9a6e1f1ac15e2af38"
+    }
+  ],
+  "missing": [],
+  "deck_timing": [
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_ss_1ms.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_ss_1ms_full.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_cold.cir",
+      "tran": ".tran 0 8m 0 10n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.008,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
+      "has_ic": false,
+      "uic": true,
+      "cold_start": true
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_cold_oc.cir",
+      "tran": ".tran 0 8m 0 10n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.008,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
+      "has_ic": false,
+      "uic": true,
+      "cold_start": true
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_conv_5n.cir",
+      "tran": ".tran 0 200u 150u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 4.9999999999999996e-05,
+      "display_offset_us": 150.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_conv_2n.cir",
+      "tran": ".tran 0 200u 150u 2n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 4.9999999999999996e-05,
+      "display_offset_us": 150.0,
+      "max_step_s": 2e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_conv_1n.cir",
+      "tran": ".tran 0 200u 150u 1n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 4.9999999999999996e-05,
+      "display_offset_us": 150.0,
+      "max_step_s": 1e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_cpin_50p.cir",
+      "tran": ".tran 0 200u 150u 2n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 4.9999999999999996e-05,
+      "display_offset_us": 150.0,
+      "max_step_s": 2e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_cpin_200p.cir",
+      "tran": ".tran 0 200u 150u 2n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 4.9999999999999996e-05,
+      "display_offset_us": 150.0,
+      "max_step_s": 2e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_conv1ms_2n.cir",
+      "tran": ".tran 0 1000u 880u 2n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 2e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_conv1ms_1n.cir",
+      "tran": ".tran 0 1000u 880u 1n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 1e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_cpin1ms_50p.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v2/sr_tank_dual_v33_cpin1ms_200p.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    }
+  ],
+  "raw_run_metadata": {
+    "operating_point": {
+      "raw": "sim\\v2\\sr_tank_dual_v33_ss_1ms.raw",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "window_us": [
+        7.619620230494184,
+        117.2763905363512
+      ]
+    },
+    "full_machine": {
+      "raw": "sim\\v2\\sr_tank_dual_v33_ss_1ms_full.raw",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "window_us": [
+        7.619620230494184,
+        117.2763905363512
+      ]
+    },
+    "cold_start": {
+      "raw": "sim\\v2\\sr_tank_dual_v33_cold.raw",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.008,
+      "display_offset_us": 0.0
+    },
+    "convergence": {
+      "5n": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 5e-05,
+        "display_offset_us": 150.0
+      },
+      "2n": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 5e-05,
+        "display_offset_us": 150.0
+      },
+      "1n": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 5e-05,
+        "display_offset_us": 150.0
+      }
+    },
+    "convergence_1ms": {
+      "2n": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 0.0001200000000000001,
+        "display_offset_us": 880.0
+      },
+      "1n": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 0.0001200000000000001,
+        "display_offset_us": 880.0
+      },
+      "5n": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 0.0001200000000000001,
+        "display_offset_us": 880.0
+      }
+    },
+    "cpin_sensitivity": {
+      "50p": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 0.0001200000000000001,
+        "display_offset_us": 880.0
+      },
+      "200p": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 0.0001200000000000001,
+        "display_offset_us": 880.0
+      },
+      "100p": {
+        "raw_time_start_s": 0.0,
+        "raw_time_end_s": 0.0001200000000000001,
+        "display_offset_us": 880.0
+      }
+    }
+  },
+  "reproduce": [
+    "python tools/make_round4_decks.py",
+    "python tools/task_package1_summary.py --op sim/v2/sr_tank_dual_v33_ss_1ms.raw --full sim/v2/sr_tank_dual_v33_ss_1ms_full.raw --cold sim/v2/sr_tank_dual_v33_cold.raw --conv1ms 2n=sim/v2/sr_tank_dual_v33_conv1ms_2n.raw 1n=sim/v2/sr_tank_dual_v33_conv1ms_1n.raw --cpin1ms 50p=sim/v2/sr_tank_dual_v33_cpin1ms_50p.raw 200p=sim/v2/sr_tank_dual_v33_cpin1ms_200p.raw --json design/v2/round4_summary.json",
+    "python tools/fault_metrics.py --fault-start-ms 5.5 --fault-end-ms 5.6 --gate \"V(ga1)\" --ascii-window-from-ms 5.4 sr_tank_dual_v33_cold_oc",
+    "python tools/period_variance.py 5n=sim/v2/sr_tank_dual_v33_ss_1ms.raw 2n=sim/v2/sr_tank_dual_v33_conv1ms_2n.raw 1n=sim/v2/sr_tank_dual_v33_conv1ms_1n.raw cpin50p=sim/v2/sr_tank_dual_v33_cpin1ms_50p.raw cpin200p=sim/v2/sr_tank_dual_v33_cpin1ms_200p.raw --json design/v2/period_variance_cpin1ms.json",
+    "python -m pytest tools -q"
+  ]
+}

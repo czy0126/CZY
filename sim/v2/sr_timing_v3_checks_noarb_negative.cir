@@ -1,0 +1,19 @@
+* v3 check NEG-CTRL: arbitration disabled on purpose (OQ/OA/ORQ tied low).  Both channels
+* see an identical request and must BOTH assert, proving the test bench detects a real
+* double-on.  This deck is expected to FAIL the interlock criterion and is a negative control.
+.include ../../models/sr_timing_v3.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 20u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 20u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 20u 4)
+Vok ok 0 1
+Xa d1 ga reg 0 0 0 0 ok qa aa rqa SR_CH3 SECOND=0
+Xb d2 gb reg 0 0 0 0 ok qb ab rqb SR_CH3 SECOND=1
+Bov ov 0 V=if(V(ga)>2,if(V(gb)>2,1,0),0)
+.tran 0 7u 0 1n
+.save V(ga) V(gb) V(qa) V(qb) V(ov)
+.meas tran gate_a_max MAX V(ga)
+.meas tran gate_b_max MAX V(gb)
+.meas tran overlap_max MAX V(ov)
+.meas tran qa_max MAX V(qa)
+.meas tran qb_max MAX V(qb)
+.end

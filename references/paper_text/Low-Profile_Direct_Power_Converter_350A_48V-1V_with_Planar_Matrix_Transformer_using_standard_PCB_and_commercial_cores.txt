@@ -1,0 +1,546 @@
+
+--- PAGE 1 ---
+Low-Profile Direct Power Converter: 350A/48V-1V 
+with Planar Matrix Transformer using standard PCB 
+and commercial cores  
+Alejandro Figueroa, Pablo Mazariegos, Javier Goicoechea, Alejandro Castro, and José A. Cobos 
+Differential Power S.L. 
+28042 Madrid, Spain 
+email: {alex.figueroa, pablo.mazariegos, javier.goicoechea, alejandro.castro, jcobos}@differentialpower.com 
+Abstract—The 48V-1V Low-Profile Direct Power Converter, 
+described in this paper, is a single-stage converter for high-
+current applications with height limitation. Based on the DPx 
+converter, this 5mm-height power converter takes steps 
+forwards by using standard PCB and a Planar Matrix 
+Transformer with commercial cores. This Low-Profile 
+converter becomes a so-called electric center, worsening the 
+conversion performance but improving the manufacturability. 
+A non-optimized prototype was built and tested up to 350A 
+output current, reaching a peak efficiency of 94% and a full-
+load efficiency of 85% with 412 W/in3 power density. The 5mm 
+height power converter presented in this article enables a 
+power-supply-in-package for applications where the height 
+dimension becomes highly restrictive. 
+Keywords—Low-Profile Direct Power Converter, standard 
+PCB, Planar-Matrix transformer, commercial cores, electric 
+center 
+I. INTRODUCTION  
+Nowadays the world is living in a constant technological 
+revolution in which the need to store and process information 
+is becoming even more relevant. The ongoing advancement of 
+power electronics is driven by both the continual evolution of 
+modern technologies and the evolving demands of high-
+current applications. Important enhancements have been 
+developed over the last decades for providing high-
+performance power conversions due to the need to minimize 
+losses in power distribution networks. 
+There is an emerging trend in data center power delivery 
+based on feeding server racks with higher voltage. The bus 
+voltage traditionally fixed at 12V was increased up to 48V, 
+not only for taking advantage of existing telecommunications 
+power systems but also for improving the power delivery 
+capability of data centers and reduce power losses. Due to the 
+different possibilities in power conversion shown in Fig. 1, 
+different strategies can be implemented to achieve the 48V-
+1V conversion ratio. 
+ 
+Fig.  1.   Power conversion strategies used to power data center racks. 
+The major improvement towards high-performance power 
+conversions is related with power distribution structures, to 
+reduce the distance between the power converter and the chip. 
+This distance, known as the “last inch”, comprises the final 
+millimeters that connect the power plane of the converter with 
+the chip socket. For currents of thousands of amperes this 
+resistance is considerably high, leading to higher conduction 
+losses and voltage drops. Moreover, the chips may demand 
+fast high peak currents that the power converter must be able 
+to satisfy without generating unwanted transients due to 
+intrinsic parasitic inductances on the power path. Nowadays, 
+Lateral Power Delivery (LPD) is the main power distribution 
+structure, but other power structures, such as Vertical Power 
+Delivery (VPD) lead the way in future high-current 
+applications. Compared to the LPD, [1] reports that in the 
+VPD the conduction resistance and the parasitic inductances 
+are even lower. Also, the fact that no copper tracks or pins are 
+needed reduces the conduction losses to the minimum, even 
+with extremely high current demands. 
+Therefore, apart from having power converters with very 
+high efficiency, it is also necessary to adapt the packaging 
+designs of the converters to the new power delivery structures 
+in order to reduce size and conduction losses by minimizing 
+the current path. For that reason, it will be indispensable to 
+have converters with low profiles that can be incorporated 
+close to the chip without increasing the network overall size. 
+II. LOW-PROFILE DIRECT POWER CONVERTER 
+The Low-Profile Power Converter is based on the Direct 
+Power Converter (DPx) [2], which resembles a Flyback 
+converter, with the distinction that the transformer terminals 
+are reversed, mirroring the configuration found in a Forward 
+converter [3]. For achieving a converter height of 5mm a 
+different perspective was carried out to design a new low-
+profile converter for high-current applications. 
+A. Power Topology  
+Since the topology is transformer-based, the converter is 
+not gain limited, as it is possible to change the conversion gain 
+only by modifying the turns ratio. This is essential to achieve 
+high conversion ratios without increasing the size and losses 
+of the converter.  
+For this 48V-1V power converter it is necessary to use a 
+matrix structure based on six commercial magnetic cores with 
+a 4:1 ratio in each of them. Moreover, the implementation of 
+the partial winding in the transformer structure results in 
+twelve secondaries connected in parallel (Fig. 2). The 
+converter output voltage only depends on the transformer 
+turns ratio (n), so it will need a previous or later stage in charge 
+of the regulation. 
+VOUT  =  VIN
+n 
+   (1)    
+979-8-3503-1664-3/24/$31.00 ©2024 IEEE
+2172
+2024 IEEE Applied Power Electronics Conference and Exposition (APEC) | 979-8-3503-1664-3/24/$31.00 ©2024 IEEE | DOI: 10.1109/APEC48139.2024.10509215
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:27 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 2 ---
+ 
+Fig.  2.   Low-Profile Direct Power Converter schematic. GaN FETs        
+are marked in red and Silicon MOSFETs are plotted in blue. 
+The transformer turns ratio is given by the product of the 
+number of primary windings (NP) and the number of magnetic 
+cores (NCORES). In this particular case, since partial winding is 
+implemented in the secondary-side, each of the cores are 
+actually two independent elements, so that NCORES must be 
+multiplied by two:  
+(NCORES × NP) : 1 
+   (2)    
+The duty cycle (D) does not affect the converter gain, so it 
+can be maximized to reduce conduction losses. However, as 
+the duty cycle increases, the voltage in the devices (VDS) will 
+also rise and may reach the breakdown limit (VBV). For this 
+reason, an active clamp on the primary-side is introduced to 
+stabilize and reduce by a factor of 0.63 the drain-source 
+voltage of the switches compared with the DPx converter. 
+VDS  =  VIN
+1 −D < VBV  
+   (3)    
+Hence, to optimize the power converter, it is necessary to 
+assess multiple power switches with varying voltage ratings 
+and their respective on-resistance values. This evaluation is 
+conducted to identify the switch that minimizes losses within 
+the constraints of the available physical space and specified 
+electrical requirements. 
+Due to the mode of operation, Zero Voltage Switching 
+(ZVS) and Zero Current Switching (ZCS) is possible to be 
+accomplished (Fig. 3). ZVS can be achieved in both ports of 
+the converter, while ZCS can be implemented in the 
+secondary-side by delaying its control signal with respect to 
+the primary control signal. 
+ 
+Fig.  3.   Driving signals and output current form of the power converter. 
+B. Operation fundamentals  
+The equivalent model of the power converter is made up 
+only of a transformer and three switches: two in the primary-
+side making a half bridge connection and another switch in the 
+secondary-side. The term "Direct Power Converter" is 
+assigned due to the direct transfer of power when both main 
+switches are closed, whereas the transformer undergoes 
+demagnetization when the active clamp is closed and both 
+main switches are opened.  
+Throughout the conduction period, as illustrated in Fig. 4, 
+the converter transmits power from the input to the output, 
+with the main switches conducting simultaneously. Indeed, a 
+short-circuit is created during on-time, but the parasitic 
+elements in the transformer, such as the leakage inductance, 
+serve to characterize the current waveform. Additionally, the 
+output capacitance and load characteristics influence the shape 
+of the output current waveform (Fig 5). 
+ 
+Fig.  4.   Equivalent circuit during turn-on. 
+ 
+Fig.  5.   Output current waveforms for different equivalent leakage 
+inductances in secondary-side with an output current of 300A. 
+During the turn-off period, the magnetic cores are 
+demagnetized. This feature is achieved by opening the main 
+switches on both sides of the transformer and closing the 
+active clamp switch. 
+III. TRANSFORMER STRUCTURE 
+The transformer structure, made by commercial cores, is 
+based on a matrix transformer with partial turns. Using these 
+concepts, higher gains are achieved with a lower number of 
+turns, thus reducing height and conduction losses of the 
+converter. Moreover, in order to facilitate manufacturing and 
+achieve higher power density the transformer winding is 
+implemented on PCB [4], known as planar transformer.  
+2173
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:27 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 3 ---
+For this application Ferroxcube E-cores (E14/3.5/5) and 
+PLT-cores (PLT14/5/1.5) of 3C95 material are used due to 
+their reduced size and shape. The magnetic core set (Fig. 7) 
+can be formed either by a pair of E-cores or by a combination 
+of E/PLT, depending on the desired height of the converter. 
+ 
+Fig.  6.   Core dimensions for E (left) and PLT (right) [5]. 
+Matrix transformer, patented in [6], is defined as the 
+division of the main transformer into several interdependent 
+transformers. In Fig. 7 it is shown how the primary-side 
+winding is connected in series, while the connection of the 
+secondary-side winding is in parallel. Note that the output 
+capacitor and the secondary switch are part of the secondary 
+winding, so they should be as close as possible to the core so 
+that the termination connection is the smallest possible.  
+Secondary turns are connected in parallel to reduce 
+conduction losses by spreading the current into several 
+synchronous rectifiers [7]. The highest conduction losses 
+occur on the secondary-side, where the highest currents are 
+handled. Using this transformer structure, the Low-Profile 
+Direct Power Converter becomes a so-called electrical center, 
+which worsens conversion performance but improves 
+manufacturability.  
+ 
+Fig.  7.   Planar Matrix Transformer and partial turns concept applied to   
+the Low-Profile Direct Power Converter. 
+The use of these magnetics is not only due to their 
+dimensions, but also because the partial turns concept 
+described in [8] could be implemented. This concept is based 
+on having a full turn around a fraction of the total center leg 
+flux. With an E-core shape, each outer leg has one-half of the 
+total flux if the primary turns are wounded around the central 
+leg, so a single turn around either outer leg will be equivalent 
+to half a turn. Furthermore, according to [9], another benefit 
+of this type of transformer is that the leakage inductance is 
+decreased, and the thermal performance of the converter is 
+improved by having the magnetic component distributed over 
+several cores. Which gives rise to the main drawback of this 
+type of transformer, the increased number of cores results in 
+higher core losses.  
+The resulting equivalent turns ratio, determined by the 
+product of the number of primary windings and the number of 
+cores, is not reflected by the individual core, but instead 
+reflects the transformation ratio of the whole structure. In this 
+particular case, since in the secondary-side it is implemented 
+the partial winding, each of the E/PLT cores are actually two 
+independent elements, so that “NCORES” parameter should be 
+multiplied by a factor of two. Thus, achieving a higher turn 
+ratio with a lower number of turns makes it possible to reduce 
+the size of the converter and also the windings conduction 
+losses. 
+The PCB layout of the converter (Fig. 8) is made up of 
+eight layers due to the fact that the converter is planar, so the 
+interleaved winding of primary and secondary is integrated on 
+the board. Moreover, being a converter for high-current 
+applications, it is important to parallelize the secondary power 
+layers in order to reduce conduction losses. 
+ 
+Fig.  8.   PCB stack-up in eight layers for Planar Matrix Transformer.  
+In conclusion, the transformer structure composed of a 
+Planar Matrix Transformer with partial winding in the 
+secondary-side can be advantageous for high-current 
+applications with height limitations. The fabrication process 
+can be automated, achieving higher power density solutions. 
+Also, the termination connection between the transformer and 
+the synchronous rectifiers can be reduced, leading to a 
+significant decrease in conduction losses. 
+IV. PROTOTYPE &  EXPERIMENTAL RESULTS 
+The 48V-1V/350A Low-Profile Direct Power Converter 
+(Fig. 9) is made up of seven GaN devices parallelized in the 
+primary-side, with three of them as active clamp, and twenty-
+four Si devices parallelized in secondary-side. The magnetic 
+cores used are six pairs of E14/3.5/5- PLT14/5/1.5, resulting 
+in a total converter footprint, considering driving components, 
+of 105 × 40 × 5 mm. 
+ 
+Fig.  9.   Low-Profile Direct Power Converter with Planar Matrix 
+Transformer. 
+All the main components that are part of the converter are 
+listed in Table I, together with the values of the actual 
+inductances measured from the primary-side. 
+2174
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:27 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 4 ---
+TABLE I. SPECIFICATIONS OF THE PROPOSED POWER CONVERTER 
+Specification 
+Parameter 
+Primary Switch 
+EPC2215 
+(RON=8mΩ, BV=200V) 
+Secondary Switch 
+IQE006NE2LM5CGATMA1 
+(RON=0.65mΩ, BV=25V) 
+Primary Driver 
+NCP51820 
+Secondary Driver 
+UCC27212DPRR 
+Input Capacitor 
+GRM31CZ72A475KE11L 
+(4.7 µF × 10 in parallel) 
+Output Capacitor 
+GRM31CR60J227ME11L 
+(220 µF × 42 in parallel) 
+Transformer core 
+(3C95) 
+E-14/3.5/5/R 
+PLT-14/5/1.5/S 
+Magnetizing inductance 
+(primary-side) 
+250µH 
+Leakage inductance 
+(primary-side) 
+750nH 
+Converter waveforms displayed on Fig. 10 are obtained at 
+full load. On the primary-side it can be seen how the device 
+commutations are clean, achieving ZVS. Regarding the 
+secondary-side, highlight the current shape, measured with a 
+low bandwidth proximity probe, which is dependent, among 
+other things, on the value of the leakage inductance. 
+ 
+(a) 
+ 
+(b) 
+Fig.  10.   Steady-state waveforms of primary (a) and secondary (b) at         
+d = 75%; fSW = 150kHz; IOUT = 350A; VOUT = 1V 
+Using a matrix transformer composed of six individual 
+cores will require balancing each of the magnetic cores. 
+Having unbalanced cores introduces variable high frequency 
+resonances on the secondary drain-source voltages as seen in 
+Fig. 11. These oscillations negatively affect the performance 
+of the converter, apart from the ringing which makes it 
+impossible to have a high duty cycle due to the breaking 
+voltage of the switches. 
+ 
+Fig.  11.   Drain-Source voltage waveforms of secondary switches with 
+unbalanced (right) and balanced (left) magnetic cores. 
+The origin of the problem, which causes the resonances, is 
+mainly related with the variations in the magnetizing 
+inductances between different magnetic cores, which have an 
+AL variation of ± 25% according to the manufacturer. 
+Additionally, the magnetic flux generated by the primary turns 
+around the central leg may not be distributed equally on each 
+of the two outer legs of the core, resulting in higher dispersion 
+inductance on one of the legs. 
+In order to overcome the problem of having unbalanced 
+cores, the solution implemented to decrease the resonances 
+was to connect the drain electrical point of every switch 
+between them. 
+Tests on the power converter are performed for an input 
+voltage of 48V with 1V at the output for a maximum current 
+of 350A. The switching frequency is 150kHz and the duty 
+cycle, limited by the breakdown voltage of the primary 
+devices, was set around 75%. 
+  
+Different tests have been carried out to determine the 
+performance of the power converter. The efficiency values are 
+between 94% and 85% for an output current range up to 350A. 
+Fig. 12 shows two efficiency curves; the black curve has 
+unbalanced cores in the matrix structure, while the red one has 
+all the cores balanced. This demonstrates the importance of 
+having a proper arrangement of the cores, since having them 
+unbalanced worsens the performance, especially at high load, 
+as well as compromising the waveforms in secondary 
+switches.  
+ 
+Fig.  12.   Measured efficiency and losses for balanced and unbalanced 
+power converter with air-cooling and without gate drive loss. 
+The thermal images in Fig. 13 illustrate how in low-load 
+conditions the hot spots are the magnetic cores, whose 
+temperature reaches 45ºC. Under high-load conditions the 
+scenario changes, as the 95ºC belong to the secondary 
+switches. The cooling of the converter is done with two fans 
+from Sanyo Denki of 67.8 CFM. 
+2175
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:27 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 5 ---
+ 
+Fig.  13.   Thermal image of the power converter with air-cooling at         
+IOUT =150A (left) and IOUT =350A (right).   
+From the losses distribution graph at different output 
+current points (Fig. 14a) it is shown how the principal losses 
+in the power converter are the secondary conduction losses, 
+both winding and switches, which is reasonable for power 
+converters used in high-current applications. Although one of 
+the disadvantages of using a matrix transformer were the core 
+losses due to the different magnetic elements, they are 
+practically insignificant in this converter. Driving losses have 
+not been taken into account when plotting the losses graph. 
+ 
+(a) 
+ 
+(b) 
+Fig.  14.   Loss distribution for different output currents (a) and for the    
+most relevant efficiency points (b). 
+Regarding the distribution of losses, there is a significant 
+correlation between the different current points, at low and 
+high loads, the conduction losses of the secondary are very 
+dominant due to a non-optimized design of the converter. 
+A. Low-Profile Direct Power Converter Optimized Version 
+The latest version of the Low-Profile Direct Power 
+Converter has been designed with the aim of making its 
+package more compact, making better use of the available 
+space to introduce secondary devices. In comparison with the 
+previous version, the key changes are the duplication of 
+secondary switches to forty-eight and the space for the 
+implementation of the secondary turns has been optimized. 
+Additionally, the concept of stacking is implemented in the 
+primary-side. This minor change in the topology has a great 
+advantage, the duty cycle can be significantly increased as it 
+is less constrained by the voltage of the devices. 
+ 
+Fig.  15.   3D model of the Low-Profile Direct Power Converter V2              
+(83mm × 21mm × 5mm) 
+Through theoretical simulations, the efficiency curve  
+(Fig. 16) and the loss distribution graph (Fig. 17) have been 
+obtained in order to evaluate the upgrades introduced in the 
+Low-Profile Direct Power Converter V2 compared to the 
+previous version. The latest version of the converter may 
+represent a constant efficiency improvement of 3% for 
+currents up to 200A. For higher currents, the difference 
+between the versions is more remarkable, reaching a 
+difference of 6% at 350A. 
+ 
+Fig.  16.   Performance curve comparison of measured efficiency and losses 
+against theoretical for different versions of the power converter. 
+ 
+ Fig.  17.   Comparison of loss distribution at different output currents for 
+experimental (DPx_LP) and theoretical (DPx_LP V2)  power converters. 
+2176
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:27 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 6 ---
+A performance metric, represented in Fig. 18, compares 
+several key metrics of the experimental (DPx_LP) and the 
+theoretical (DPx_LP V2) unregulated prototypes with other 
+state-of-the-art 48V-1V regulated converters. The full-load 
+power densities of each of the Low-Profile Direct Power 
+Converter versions are 
+412 
+W/in3 
+and 683W/in3, 
+respectively. Point out how the latest version of the low-
+profile converter could be placed above state-of-the-art in the 
+graph and represent a breakthrough in high-current 
+applications since it is 5mm high and is implemented on a 
+standard PCB with a transformer structure made up of 
+commercial cores. 
+ 
+Fig.  18.   Power density comparative of the Low-Profile Direct Power 
+Converters with the main 48V-1V converters from the literature [10-18]. 
+V. CONCLUSION 
+Increasing power consumption and higher losses due to 
+bigger current demands in high-current applications, has 
+forced the electronic sector to design power converters with 
+higher power densities and higher efficiencies. The 48V-1V 
+Low-Profile Direct Power Converter has been validated and 
+demonstrated for an output current of 350A, using commercial 
+cores and standard PCB. The results are good and promising, 
+showing the potential of the converter for Power-on-Package 
+applications, obtaining a peak efficiency of 94% and a full 
+load efficiency of 85% with 412 W/in3 power density. A step 
+forward is envisaged for the design of a low-profile power 
+converter with high efficiency and high output current 
+capability for high conversion gains. A 5mm-height power 
+converter for high-current applications is feasible to be 
+developed using the DPx topology, and adding modifications, 
+such as the active clamp in primary-side and the Planar Matrix 
+Transformer with the partial turns concept to reduce the height 
+of the converter. Moreover, an improved version of the 
+converter is designed, with compact packaging, in order to 
+significantly reduce secondary conduction losses, achieving 
+efficiency and power density values higher than the 48V-1V 
+state-of-the-art power converters. 
+ 
+ 
+REFERENCES 
+[1] M. Di Paolo, “48-V Power Architecture Supports Next Generation AI 
+Processors,” EETimes, 2021. Accessed: 05- Aug- 2023. [Online]. 
+Available: 
+https://www.eetimes.com/48-v-power-architecture-
+supports-next-generation-ai-processors/.  
+[2] J. A. Cobos, “Direct Electrical Power Converter,” International 
+Application PCT/EP2020/080027 
+[3] J. A. Cobos, A. Castro, Ó. García-Lorenz, J. Cruz and Á. Cobos, 
+“Direct Power Converter -DPx- for High Gain and High Current 
+Applications,” 2022 IEEE Applied Power Electronics Conference and 
+Exposition (APEC), 2022, pp. 1016-1022. 
+[4] D. Trevor Holmes and K. Kit Sum, “Flat Transformers for Low 
+Voltage, High Current, High Frequency Power Converters,” HFPC 
+Power Conversion, Power Systems World ‘96, 1996. 
+[5] Soft Ferrites and Accesories Data Handbook, Ferroxcube, 2013, pp. 
+321-322. 
+Accessed: 
+29-Jul-2023. 
+[Online]. 
+Available: 
+https://www.ferroxcube.com/en-global/download/download/11 
+[6] E. Herbert, “Flat Matrix Transformer. US Patent 4,665,357,” Patent 
+filed in 1987. 
+[7] Y. -C. Liu et al., “Design and Implementation of a Planar Transformer 
+with Fractional Turns for High Power Density LLC Resonant 
+Converters,” in IEEE Transactions on Power Electronics, vol. 36, no. 
+5, pp. 5191-5203, May 2021. 
+[8] Magnetics Design Handbook, Lloyd H. Dixon, Jr, Texas Instruments, 
+2001, pp. 112-121. Accessed: 27-Jul-2023. [Online]. Available: 
+https://www.ti.com/seclit/ ml/slup132/slup132.pdf. 
+[9] M. H. Ahmed, C. Fei, F. C. Lee and Q. Li, "48-V Voltage Regulator 
+Module With PCB Winding Matrix Transformer for Future Data 
+Centers," in IEEE Transactions on Industrial Electronics, vol. 64, no. 
+12, pp. 9302-9310, Dec. 2017. 
+[10] P. Wang, D. Giuliano, S. Allen and M. Chen, "MSC-PoL: An Ultra-
+Thin 220-A/48-to-1-V Hybrid GaN-Si CPU VRM with Multistack 
+Switched Capacitor Architecture and Coupled Magnetics," 2023 IEEE 
+Applied Power Electronics Conference and Exposition (APEC), 
+Orlando, 
+FL, 
+USA, 
+2023, 
+pp. 
+1967-1974, 
+doi: 
+10.1109/APEC43580.2023.10131617.  
+[11] M. H. Ahmed, C. Fei, F. C. Lee and Q. Li, “Single-Stage High-
+Efficiency 48/1 V Sigma Converter with Integrated Magnetics,” IEEE 
+Trans. Ind. Electron., vol. 67, no. 1, pp. 192-202, Jan. 2020. 
+[12] “PRM Regulator PRM48BH480T250A00,” Vicor, 2020 [Online]. 
+Available:http://www.vicorpower.com/documents/datasheets/PRM48
+BH480T 250A00 ds.pdf 
+[13] J. Baek, Y. Elasser, K. Radhakrishnan, H. Gan, J. P. Douglas, H. K. 
+Krishnamurthy, X. Li, S. Jiang, C. R. Sullivan and M. Chen, “Vertical 
+Stacked LEGO-PoL CPU Voltage Regulator,” IEEE Trans. Power 
+Electron., vol. 37, no. 6, pp. 6305-6322, June 2022. 
+[14] Y. Chen, P. Wang, H. Cheng, G. Szczeszynski, S. Allen, D. M. 
+Giuliano and M. Chen, “Virtual Intermediate Bus CPU Voltage 
+Regulator,” IEEE Trans. Power Electron., vol. 37, no. 6, pp. 6883-
+6898, June 2022. 
+[15] N. M. Ellis and R. C. Pilawa-Podgurski, “A Symmetric Dual-Inductor 
+Hybrid Dickson Converter for Direct 48V-to-PoL Conversion,” in 
+IEEE Appl. Power Electron. Conf. Expo., 2022, pp. 1267-1271. 
+[16] Y. Zhu, T. Ge, Z. Ye and R. C. N. Pilawa-Podgurski, “A Dickson-
+Squared Hybrid Switched-Capacitor Converter for Direct 48 V to 
+Point-of-Load Conversion,” in IEEE Appl. Power Electron. Conf. 
+Expo., pp. 1272-1278, 2022. 
+[17] Y. Elasser et al., “Mini-LEGO: A 1.5-MHz 240-A 48-V-to-1-V CPU 
+VRM with 8.4-mm Height for Vertical Power Delivery,” in IEEE Appl. 
+Power Electron. Conf. Expo., 2023. 
+[18] Y. Zhu, T. Ge, N. M. Ellis, J. Zou and R. C. N. Pilawa-Podgurski, "A 
+48-V-to-1-V Switching Bus Converter for Ultra-High-Current 
+Applications," 2023 IEEE 24th Workshop on Control and Modeling 
+for Power Electronics (COMPEL), Ann Arbor, MI, USA, 2023, pp. 1-
+8, doi: 10.1109/COMPEL52896.2023.10221149. 
+ 
+ 
+ 
+2177
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:27 UTC from IEEE Xplore
+Restrictions apply

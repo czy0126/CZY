@@ -1,0 +1,22 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\ucc27282_boot_bench_lowcb.cir
+Start Time: Sat Oct 31 12:30:11 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.086 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\ucc27282_boot_bench_lowcb.cir
+D:\workshop\design_48v-2v\models\ucc27282_behaviour.lib
+
+vboot_clamp_min: MIN(V(hb,sw) )=0.000624656677246 FROM 3.32e-05 TO 3.39e-05
+ho_clamp_max: MAX(V(ho,sw) )=3.81469726562e-06 FROM 3.35e-05 TO 3.39e-05
+ho_before_clamp: V(ho,sw) =11.3095621048 at 3.29e-05
+vboot_after_refill: V(hb,sw) =10.8077220683 at 3.68e-05
+ho_after_max: MAX(V(ho,sw) )=11.1040611267 FROM 3.76e-05 TO 3.99e-05
+vboot_normal_min: MIN(V(hb,sw) )=10.907497406 FROM 1e-05 TO 3e-05

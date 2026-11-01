@@ -1,0 +1,104 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_revcharge.cir
+Start Time: Sat Oct 31 10:14:50 2026
+
+.step pgd=0 tdelay=5.5e-09
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=1 tdelay=5.5e-09
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=0 tdelay=2.3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=1 tdelay=2.3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=0 tdelay=4e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step pgd=1 tdelay=4e-08
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.791 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_revcharge.cir
+D:\workshop\design_48v-2v\models\sr_timing_v2.lib
+
+
+Measurement: reverse_peak
+  step	MAX((-I(Sa)) )	FROM	TO
+     1	8.9441576004	1e-05	2e-05
+     2	7.50414705276	1e-05	2e-05
+     3	9.7954454422	1e-05	2e-05
+     4	8.35955619812	1e-05	2e-05
+     5	10.6481647491	1e-05	2e-05
+     6	9.16969680786	1e-05	2e-05
+
+Measurement: gate_overlap
+  step	MAX(min(V(ga),V(gb)) )	FROM	TO
+     1	0.00616425646003	1e-05	2e-05
+     2	0.0014687228424	1e-05	2e-05
+     3	0.00608913532924	1e-05	2e-05
+     4	0.00143611069652	1e-05	2e-05
+     5	0.0061840376351	1e-05	2e-05
+     6	0.00146390550653	1e-05	2e-05
+
+Measurement: qr15
+  step	V(qr) 	at
+     1	-1616.92565918	1.5e-05
+     2	-1128.77282715	1.5e-05
+     3	-1937.33886719	1.5e-05
+     4	-1396.13525391	1.5e-05
+     5	-2276.26342773	1.5e-05
+     6	-1685.69006348	1.5e-05
+
+Measurement: qr20
+  step	V(qr) 	at
+     1	-2418.53613281	2e-05
+     2	-1685.72741699	2e-05
+     3	-2900.34619141	2e-05
+     4	-2093.40649414	2e-05
+     5	-3418.63720703	2e-05
+     6	-2526.88671875	2e-05
+
+Measurement: qrev_c
+  step	QR20-QR15
+     1	-801.610473633
+     2	-556.954589844
+     3	-963.007324219
+     4	-697.271240234
+     5	-1142.3737793
+     6	-841.196655273
+
+Measurement: qf15
+  step	V(qf) 	at
+     1	179173.11458	1.5e-05
+     2	179152.619489	1.5e-05
+     3	178617.21216	1.5e-05
+     4	178601.462282	1.5e-05
+     5	178085.388965	1.5e-05
+     6	178043.969861	1.5e-05
+
+Measurement: qf20
+  step	V(qf) 	at
+     1	240413.03125	2e-05
+     2	240380.484375	2e-05
+     3	239576.046875	2e-05
+     4	239558.75	2e-05
+     5	238780.046875	2e-05
+     6	238714.75	2e-05
+
+Measurement: qfwd_c
+  step	QF20-QF15
+     1	61239.9166698
+     2	61227.8648856
+     3	60958.834715
+     4	60957.2877177
+     5	60694.6579097
+     6	60670.7801392

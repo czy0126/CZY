@@ -1,0 +1,772 @@
+{
+  "schema": "sr_device_v3_calibration_v1",
+  "generated": "2026-10-31",
+  "device": {
+    "part": "BSC010N04LS6",
+    "manufacturer": "Infineon",
+    "description": "OptiMOS 6 N-channel power MOSFET, 40 V",
+    "package": "PG-TDSON-8 FL (enlarged source interconnection); drain pins 5-8, gate pin 4, source pins 1-3",
+    "datasheet_revision": "2.3, 2022-07-21",
+    "datasheet_file": "references/datasheets/bsc010n04ls6.pdf",
+    "text_extract": "references/datasheets/bsc010n04ls6.txt"
+  },
+  "method": {
+    "desc": "Values read from datasheet tables or digitized from datasheet diagrams; nothing from memory of generic MOSFETs.",
+    "rendering": "pdftoppm -r 600 -png (pages 7, 8, 9); pages 4, 5 also read as images",
+    "axis_calibration": {
+      "diagram_8": "x=180.0 px/V, y=716.8 px/mOhm (0.4 V and 0.1 mOhm grid)",
+      "diagram_9_10": "x=6.4286 px/degC; y=1003 px/unit (D9), 835 px/unit (D10)",
+      "diagram_11_12": "y=669.0 px/decade (log); x=45.0 px/V (D11), 1200 px/V (D12)",
+      "diagram_14": "x=25.714 px/nC, y=200.75 px/V"
+    },
+    "validation": [
+      "Diagram 8 RDS(on) at VGS=10 V, 25 C: digitized 0.893 mOhm vs Table 4 typ 0.89 mOhm",
+      "Diagram 11 at VDS=20 V: Ciss 4640, Coss 1504, Crss 38.5 pF vs Table 5 typ 4600 / 1500 / 38 pF",
+      "Diagram 9 normalized RDS(on) at Tj=25 C: digitized 1.00 (definition)"
+    ]
+  },
+  "static": {
+    "V_BR_DSS": {
+      "value": null,
+      "min": 40,
+      "max": null,
+      "unit": "V",
+      "condition": "VGS=0 V, ID=1 mA, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "VGS_th_limits": {
+      "value": null,
+      "min": 1.3,
+      "max": 2.3,
+      "unit": "V",
+      "condition": "VDS=VGS, ID=250 uA, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "VGS_th_typ": {
+      "value": 1.65,
+      "min": null,
+      "max": null,
+      "unit": "V",
+      "condition": "VDS=VGS, ID=250 uA, Tj=25 C",
+      "source_page": 8,
+      "source": "Diagram 10, 250 uA curve",
+      "kind": "digitized",
+      "uncertainty": 0.05,
+      "note": "Datasheet tabulates only min/max; typ is read from the typical VGS(th)-vs-Tj diagram."
+    },
+    "RDS_on_25C_VGS10": {
+      "value": 0.89,
+      "min": null,
+      "max": 1.0,
+      "unit": "mOhm",
+      "condition": "VGS=10 V, ID=50 A, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet",
+      "note": "Key parameters table (p1) states RDS(on),max = 1 mOhm, consistent."
+    },
+    "RDS_on_25C_VGS45": {
+      "value": 1.1,
+      "min": null,
+      "max": 1.4,
+      "unit": "mOhm",
+      "condition": "VGS=4.5 V, ID=50 A, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "RDS_on_125C_VGS10": {
+      "value": 1.32,
+      "min": null,
+      "max": null,
+      "unit": "mOhm",
+      "condition": "VGS=10 V, ID=50 A, Tj=125 C",
+      "source_page": 8,
+      "source": "Diagram 8 (25 C value) x Diagram 9 (factor 1.48 at 125 C); factor diagram on p8",
+      "kind": "digitized",
+      "uncertainty": 0.05,
+      "note": "Derived: 0.893 mOhm x 1.4795. Not a tabulated value. Diagram 8 itself shows only 25 C and 175 C."
+    },
+    "RDS_on_125C_VGS45": {
+      "value": 1.7,
+      "min": null,
+      "max": null,
+      "unit": "mOhm",
+      "condition": "VGS=4.5 V, ID=50 A, Tj=125 C",
+      "source_page": 8,
+      "source": "Diagram 8 (25 C value 1.147) x Diagram 9 (1.48)",
+      "kind": "digitized",
+      "range": [
+        1.63,
+        1.7
+      ],
+      "uncertainty": 0.1,
+      "note": "Diagram-based gives 1.70; table typ 1.1 x 1.48 gives 1.63. Temperature factor is specified at VGS=10 V only, so applying it at 4.5 V is an approximation."
+    },
+    "RDS_on_125C_VGS10_max_estimate": {
+      "value": 1.48,
+      "unit": "mOhm",
+      "condition": "VGS=10 V, ID=50 A, Tj=125 C",
+      "source_page": null,
+      "kind": "estimate",
+      "method": "25 C max 1.0 mOhm x Diagram 9 factor 1.48",
+      "note": "No 125 C max is published; estimate only."
+    },
+    "RDS_on_125C_VGS45_max_estimate": {
+      "value": 2.07,
+      "unit": "mOhm",
+      "condition": "VGS=4.5 V, ID=50 A, Tj=125 C",
+      "source_page": null,
+      "kind": "estimate",
+      "method": "25 C max 1.4 mOhm x Diagram 9 factor 1.48",
+      "note": "No 125 C max is published; estimate only."
+    },
+    "gfs": {
+      "value": 250,
+      "min": null,
+      "max": null,
+      "unit": "S",
+      "condition": "|VDS| >= 2*|ID|*RDS(on)max, ID=50 A, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "RG_internal": {
+      "value": 1,
+      "min": null,
+      "max": null,
+      "unit": "Ohm",
+      "condition": "not specified",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "IDSS_25C": {
+      "value": 0.1,
+      "min": null,
+      "max": 1.0,
+      "unit": "uA",
+      "condition": "VDS=40 V, VGS=0 V, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "IDSS_125C": {
+      "value": 10,
+      "min": null,
+      "max": 100,
+      "unit": "uA",
+      "condition": "VDS=40 V, VGS=0 V, Tj=125 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    },
+    "IGSS": {
+      "value": 10,
+      "min": null,
+      "max": 100,
+      "unit": "nA",
+      "condition": "VGS=20 V, VDS=0 V, Tj=25 C",
+      "source_page": 4,
+      "source": "Table 4",
+      "kind": "datasheet"
+    }
+  },
+  "rds_on_vs_vgs": {
+    "unit": "mOhm",
+    "condition": "ID=50 A, Diagram 8",
+    "source_page": 7,
+    "source": "Diagram 8",
+    "kind": "digitized",
+    "points": [
+      {
+        "vgs": 2.5,
+        "rds_25c": null,
+        "rds_175c": null,
+        "note": "Off-chart for both temperatures: traces leave the top (>2.8 mOhm) below ~3.1 V. No value to digitize."
+      },
+      {
+        "vgs": 3.0,
+        "rds_25c": 2.65,
+        "rds_175c": null,
+        "uncertainty": 0.2,
+        "note": "25 C trace is near-vertical (2.5-2.8 mOhm across 2.96-3.04 V); 175 C off-chart (>2.8 mOhm)."
+      },
+      {
+        "vgs": 3.5,
+        "rds_25c": 1.52,
+        "rds_175c": 2.4,
+        "uncertainty": 0.04,
+        "note": ""
+      },
+      {
+        "vgs": 4.0,
+        "rds_25c": 1.27,
+        "rds_175c": 2.14,
+        "uncertainty": 0.03,
+        "note": ""
+      },
+      {
+        "vgs": 4.5,
+        "rds_25c": 1.15,
+        "rds_175c": 1.99,
+        "uncertainty": 0.03,
+        "note": "Table typ at 4.5 V, 25 C is 1.1; diagram reads 1.15."
+      },
+      {
+        "vgs": 6.0,
+        "rds_25c": 0.973,
+        "rds_175c": 1.78,
+        "uncertainty": 0.02,
+        "note": ""
+      },
+      {
+        "vgs": 8.0,
+        "rds_25c": 0.925,
+        "rds_175c": 1.67,
+        "uncertainty": 0.02,
+        "note": ""
+      },
+      {
+        "vgs": 10.0,
+        "rds_25c": 0.893,
+        "rds_175c": 1.62,
+        "uncertainty": 0.02,
+        "note": "25 C value matches Table 4 typ 0.89; 175/25 ratio 1.82 matches Diagram 9 at 175 C (1.815)."
+      }
+    ],
+    "note": "Diagram 8 gives only Tj=25 C and 175 C. RDS(on) is undefined below ~3.1 V at ID=50 A; use transfer characteristics there."
+  },
+  "rds_on_normalized_vs_tj": {
+    "unit": "ratio",
+    "condition": "ID=50 A, VGS=10 V",
+    "source_page": 8,
+    "source": "Diagram 9",
+    "kind": "digitized",
+    "uncertainty": 0.02,
+    "points": [
+      {
+        "tj_c": -40,
+        "ratio": 0.79
+      },
+      {
+        "tj_c": 0,
+        "ratio": 0.91
+      },
+      {
+        "tj_c": 25,
+        "ratio": 1.0
+      },
+      {
+        "tj_c": 50,
+        "ratio": 1.1
+      },
+      {
+        "tj_c": 75,
+        "ratio": 1.21
+      },
+      {
+        "tj_c": 100,
+        "ratio": 1.34
+      },
+      {
+        "tj_c": 125,
+        "ratio": 1.48
+      },
+      {
+        "tj_c": 150,
+        "ratio": 1.64
+      },
+      {
+        "tj_c": 175,
+        "ratio": 1.82
+      }
+    ]
+  },
+  "capacitance_20V": {
+    "unit": "pF",
+    "condition": "VGS=0 V, VDS=20 V, f=1 MHz, Tj=25 C",
+    "source_page": 4,
+    "source": "Table 5",
+    "kind": "datasheet",
+    "Ciss": {
+      "value": 4600,
+      "min": null,
+      "max": 6000,
+      "source_page": 4,
+      "source": "Table 5",
+      "kind": "datasheet"
+    },
+    "Coss": {
+      "value": 1500,
+      "min": null,
+      "max": 2000,
+      "source_page": 4,
+      "source": "Table 5",
+      "kind": "datasheet"
+    },
+    "Crss": {
+      "value": 38,
+      "min": null,
+      "max": 66,
+      "source_page": 4,
+      "source": "Table 5",
+      "kind": "datasheet"
+    }
+  },
+  "Qoss": {
+    "value": 73,
+    "min": null,
+    "max": 97,
+    "unit": "nC",
+    "condition": "VDD=20 V, VGS=0 V, Tj=25 C",
+    "source_page": 4,
+    "source": "Table 6",
+    "kind": "datasheet"
+  },
+  "capacitance_vs_vds": {
+    "unit": "pF",
+    "condition": "VGS=0 V, f=1 MHz, typical curves",
+    "source_page": 8,
+    "source": "Diagram 11",
+    "kind": "digitized",
+    "points": [
+      {
+        "vds": 0.5,
+        "ciss": 5380,
+        "coss": 6900,
+        "crss": 783,
+        "uncertainty_pct": 3,
+        "note": ""
+      },
+      {
+        "vds": 1.0,
+        "ciss": 5300,
+        "coss": 6600,
+        "crss": 700,
+        "uncertainty_pct": 3,
+        "note": ""
+      },
+      {
+        "vds": 2.0,
+        "ciss": 5200,
+        "coss": 6125,
+        "crss": 604,
+        "uncertainty_pct": 3,
+        "note": ""
+      },
+      {
+        "vds": 5.0,
+        "ciss": 4950,
+        "coss": 4950,
+        "crss": 406,
+        "uncertainty_pct": 10,
+        "note": "Ciss and Coss cross near 4.5-5 V and merge within one line width; only the sum (~4950 pF) is legible, individual split unknown."
+      },
+      {
+        "vds": 10.0,
+        "ciss": 4790,
+        "coss": 3400,
+        "crss": 192,
+        "uncertainty_pct": 3,
+        "note": ""
+      },
+      {
+        "vds": 20.0,
+        "ciss": 4640,
+        "coss": 1504,
+        "crss": 38.5,
+        "uncertainty_pct": 3,
+        "note": "Matches Table 5 typ (4600/1500/38) within ~1 %."
+      },
+      {
+        "vds": 40.0,
+        "ciss": null,
+        "coss": null,
+        "crss": 27,
+        "uncertainty_pct": 10,
+        "note": "Ciss/Coss curves stop at ~37-38 V where labels sit; extrapolated Ciss ~4600, Coss ~860 (marked estimate in note, not plotted). Crss is plotted to 40 V."
+      }
+    ]
+  },
+  "gate_charge": {
+    "condition": "VDD=20 V, ID=50 A, VGS=0 to 10 V, Tj=25 C unless stated",
+    "source_page": 4,
+    "source": "Table 6",
+    "kind": "datasheet",
+    "Qg_0_10V": {
+      "value": 67,
+      "min": null,
+      "max": 83,
+      "unit": "nC",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Qg_0_45V": {
+      "value": 32,
+      "min": null,
+      "max": null,
+      "unit": "nC",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Qgs": {
+      "value": 12,
+      "min": null,
+      "max": null,
+      "unit": "nC",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Qg_th": {
+      "value": 7.3,
+      "min": null,
+      "max": null,
+      "unit": "nC",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Qgd": {
+      "value": 8.1,
+      "min": null,
+      "max": 12,
+      "unit": "nC",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Qsw": {
+      "value": 13,
+      "min": null,
+      "max": null,
+      "unit": "nC",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Vplateau": {
+      "value": 2.7,
+      "min": null,
+      "max": null,
+      "unit": "V",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    },
+    "Qg_sync": {
+      "value": 28,
+      "min": null,
+      "max": null,
+      "unit": "nC",
+      "condition": "VDS=0.1 V, VGS=0 to 4.5 V",
+      "source_page": 4,
+      "source": "Table 6",
+      "kind": "datasheet"
+    }
+  },
+  "gate_charge_curve": {
+    "condition": "ID=50 A pulsed, Tj=25 C; parameter VDD = 8 V / 20 V / 32 V",
+    "source_page": 9,
+    "source": "Diagram 14",
+    "kind": "digitized",
+    "uncertainty_vgs": 0.1,
+    "note": "The three VDD traces are within about one line width at low charge and differ by at most ~0.35 V for Qg>=30 nC (~2 nC horizontally); individual VDD traces are not separately legible. Values are the envelope midpoint.",
+    "points": [
+      {
+        "qg": 0,
+        "vgs_low": 0.03,
+        "vgs_high": 0.05,
+        "vgs_mid": 0.04
+      },
+      {
+        "qg": 5,
+        "vgs_low": 0.99,
+        "vgs_high": 1.14,
+        "vgs_mid": 1.06
+      },
+      {
+        "qg": 8,
+        "vgs_low": 1.6,
+        "vgs_high": 1.77,
+        "vgs_mid": 1.68
+      },
+      {
+        "qg": 10,
+        "vgs_low": 2.02,
+        "vgs_high": 2.22,
+        "vgs_mid": 2.12
+      },
+      {
+        "qg": 12,
+        "vgs_low": 2.43,
+        "vgs_high": 2.65,
+        "vgs_mid": 2.55
+      },
+      {
+        "qg": 15,
+        "vgs_low": 2.62,
+        "vgs_high": 2.7,
+        "vgs_mid": 2.66
+      },
+      {
+        "qg": 18,
+        "vgs_low": 2.62,
+        "vgs_high": 2.7,
+        "vgs_mid": 2.66
+      },
+      {
+        "qg": 20,
+        "vgs_low": 2.64,
+        "vgs_high": 2.79,
+        "vgs_mid": 2.72
+      },
+      {
+        "qg": 22,
+        "vgs_low": 2.88,
+        "vgs_high": 3.11,
+        "vgs_mid": 3.0
+      },
+      {
+        "qg": 25,
+        "vgs_low": 3.33,
+        "vgs_high": 3.53,
+        "vgs_mid": 3.43
+      },
+      {
+        "qg": 30,
+        "vgs_low": 4.08,
+        "vgs_high": 4.42,
+        "vgs_mid": 4.27
+      },
+      {
+        "qg": 35,
+        "vgs_low": 4.87,
+        "vgs_high": 5.21,
+        "vgs_mid": 5.05
+      },
+      {
+        "qg": 40,
+        "vgs_low": 5.69,
+        "vgs_high": 6.0,
+        "vgs_mid": 5.86
+      },
+      {
+        "qg": 45,
+        "vgs_low": 6.47,
+        "vgs_high": 6.8,
+        "vgs_mid": 6.63
+      },
+      {
+        "qg": 50,
+        "vgs_low": 7.25,
+        "vgs_high": 7.59,
+        "vgs_mid": 7.4
+      },
+      {
+        "qg": 55,
+        "vgs_low": 8.05,
+        "vgs_high": 8.38,
+        "vgs_mid": 8.23
+      },
+      {
+        "qg": 60,
+        "vgs_low": 8.84,
+        "vgs_high": 9.18,
+        "vgs_mid": 9.02
+      },
+      {
+        "qg": 65,
+        "vgs_low": 9.68,
+        "vgs_high": 9.97,
+        "vgs_mid": 9.82
+      }
+    ],
+    "derived": {
+      "plateau_vgs": 2.66,
+      "plateau_qg_start": 12,
+      "plateau_qg_end": 21,
+      "vgs_4p5_at_qg": [
+        31,
+        33
+      ],
+      "vgs_10_at_qg": [
+        66,
+        67
+      ],
+      "slope_post_plateau_v_per_nc": 0.163,
+      "slope_pre_plateau_v_per_nc": 0.22,
+      "source_page": 9,
+      "source": "Diagram 14",
+      "kind": "digitized"
+    }
+  },
+  "body_diode": {
+    "source_page": 5,
+    "source": "Table 7",
+    "kind": "datasheet",
+    "IS": {
+      "value": null,
+      "min": null,
+      "max": 150,
+      "unit": "A",
+      "condition": "TC=25 C",
+      "source_page": 5,
+      "source": "Table 7",
+      "kind": "datasheet"
+    },
+    "IS_pulse": {
+      "value": null,
+      "min": null,
+      "max": 1140,
+      "unit": "A",
+      "condition": "TC=25 C",
+      "source_page": 5,
+      "source": "Table 7",
+      "kind": "datasheet"
+    },
+    "VSD": {
+      "value": 0.8,
+      "min": null,
+      "max": 1.0,
+      "unit": "V",
+      "condition": "VGS=0 V, IF=50 A, Tj=25 C",
+      "source_page": 5,
+      "source": "Table 7",
+      "kind": "datasheet"
+    },
+    "trr": {
+      "value": 30,
+      "min": null,
+      "max": 60,
+      "unit": "ns",
+      "condition": "VR=20 V, IF=10 A, diF/dt=400 A/us",
+      "source_page": 5,
+      "source": "Table 7",
+      "kind": "datasheet"
+    },
+    "Qrr": {
+      "value": 97,
+      "min": null,
+      "max": 194,
+      "unit": "nC",
+      "condition": "VR=20 V, IF=10 A, diF/dt=400 A/us",
+      "source_page": 5,
+      "source": "Table 7",
+      "kind": "datasheet"
+    },
+    "digitized_forward": {
+      "source_page": 8,
+      "source": "Diagram 12",
+      "kind": "digitized",
+      "points": [
+        {
+          "if": 50,
+          "vsd_25c": 0.79,
+          "vsd_25c_max": 1.0,
+          "vsd_175c": 0.61,
+          "uncertainty": 0.03,
+          "note": "25 C typ matches table 0.80 V. Dashed max curves have gaps; 175 C typ from short-dash trace; 25 C max ~1.0 V (table limit)."
+        }
+      ]
+    }
+  },
+  "thermal_package": {
+    "source_page": 3,
+    "source": "Tables 2 and 3",
+    "kind": "datasheet",
+    "RthJC_bottom": {
+      "value": null,
+      "min": null,
+      "max": 1.0,
+      "unit": "C/W",
+      "condition": "junction-case, bottom",
+      "source_page": 3,
+      "source": "Tables 2 and 3",
+      "kind": "datasheet"
+    },
+    "RthJC_top": {
+      "value": null,
+      "min": null,
+      "max": 20,
+      "unit": "C/W",
+      "condition": "junction-case, top",
+      "source_page": 3,
+      "source": "Tables 2 and 3",
+      "kind": "datasheet"
+    },
+    "RthJA": {
+      "value": null,
+      "min": null,
+      "max": 50,
+      "unit": "C/W",
+      "condition": "6 cm2 Cu, 40x40x1.5 mm FR4, still air",
+      "source_page": 3,
+      "source": "Tables 2 and 3",
+      "kind": "datasheet"
+    },
+    "Tj_max": {
+      "value": 175,
+      "min": -55,
+      "max": 175,
+      "unit": "C",
+      "condition": "operating and storage",
+      "source_page": 3,
+      "source": "Tables 2 and 3",
+      "kind": "datasheet"
+    },
+    "Ptot": {
+      "value": null,
+      "min": null,
+      "max": 150,
+      "unit": "W",
+      "condition": "TC=25 C",
+      "source_page": 3,
+      "source": "Tables 2 and 3",
+      "kind": "datasheet"
+    },
+    "package": "PG-TDSON-8 FL"
+  },
+  "package_parasitic_estimate": {
+    "kind": "estimate",
+    "source_page": null,
+    "note": "NOT in the datasheet. Engineering estimate for PG-TDSON-8 FL from package geometry and typical PQFN 5x6 values; treat as +/-factor 2. Replace with measurement or vendor data before sign-off.",
+    "L_source_package_nH": {
+      "low": 0.4,
+      "high": 1.2,
+      "basis": "parallel source bonds / enlarged source clip, 1-2 mm at ~0.8-1.2 nH/mm divided by parallel paths"
+    },
+    "L_drain_package_nH": {
+      "low": 0.15,
+      "high": 0.5,
+      "basis": "large-area clip/tab connection"
+    },
+    "L_gate_package_nH": {
+      "low": 1.5,
+      "high": 3.5,
+      "basis": "single small bond wire"
+    },
+    "L_source_effective_with_pcb_nH": {
+      "low": 0.7,
+      "high": 2.5,
+      "basis": "package plus 1-3 mm Kelvin return at ~0.3-0.5 nH/mm"
+    }
+  },
+  "uncertainty_register": [
+    "RDS(on) at VGS=2.5 V and 3.0 V is off the Diagram 8 chart at 25 C and 175 C; no value to digitize. The 25 C 3.0 V point (2.65 mOhm) lies on a near-vertical trace and is +/-0.2 mOhm meaningful only. Do not extrapolate RDS(on) below ~3.1 V; use transfer characteristics.",
+    "Ciss and Coss merge near VDS=5 V; only the sum (~4950 pF) is legible.",
+    "Ciss/Coss curves stop at ~37-38 V where the labels sit; 40 V values are extrapolations, not plotted points. Crss is plotted to 40 V (27 pF).",
+    "The three Diagram 14 VDD traces (8/20/32 V) are not individually legible; only the envelope is digitized and the 20 V trace cannot be assigned with confidence.",
+    "125 C RDS(on) is derived, not tabulated; the temperature factor is published only for VGS=10 V. No 125 C max exists (the 125 C max entries in this file are estimates).",
+    "All RDS(on), capacitance and gate-charge values except the stated maxima are typical; no distribution data is published.",
+    "Package inductances are engineering estimates only, not datasheet values.",
+    "Diagram 12 dashed/dotted max traces are partially illegible at IF=50 A; only 25 C typ (table-confirmed) and 175 C typ are usable."
+  ]
+}

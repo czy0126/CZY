@@ -1,0 +1,27 @@
+Version 4
+SymbolType BLOCK
+RECTANGLE Normal 48 105 -48 -75
+WINDOW 0 -5 -107 Bottom 2
+WINDOW 3 -6 -107 Top 2
+WINDOW 39 -186 128 Left 2
+WINDOW 40 -186 151 Left 2
+SYMATTR Value PFM-LLC-CONVERTER
+SYMATTR SpiceLine fmin={fmin} fmax={fmax} td1=100n td2=100n tr1=10n tf1=10n tr2=10n tf2=10n
+SYMATTR SpiceLine2 Vg_H={Vg_H} Vg_L={Vg_L} Rso1=0 Rsi1=0 Rso2=0 Rsi2=0 f02=5k GA=5k Vref=0.5 ts=100u Vo=0 Vout={Vout}
+SYMATTR Prefix X
+SYMATTR ModelFile SS PFM-LLC-CONVERTER.lib
+PIN 48 -48 RIGHT 5
+PINATTR PinName DH1
+PINATTR SpiceOrder 1
+PIN 48 -16 RIGHT 5
+PINATTR PinName DH0
+PINATTR SpiceOrder 2
+PIN 48 16 RIGHT 5
+PINATTR PinName DL1
+PINATTR SpiceOrder 3
+PIN 48 48 RIGHT 5
+PINATTR PinName DL0
+PINATTR SpiceOrder 4
+PIN 48 80 RIGHT 5
+PINATTR PinName FB
+PINATTR SpiceOrder 5

@@ -1,0 +1,28 @@
+* Lead verification: flat copy of the v3 channel equations, DC operating point
+Vd d 0 0.0449
+Vg g 0 10
+Ld d di 0.3n Rser=0
+Ls 0 si 0.8n Rser=0
+Lg g gn 2.5n Rser=0
+Rg gn gi 1
+Bkt kt 0 V=1+3.74740875m*(25-25)+9.04084303u*(25-25)**2+16.1532266n*(25-25)**3
+Bvgs vgs 0 V=min(max(V(gi,si),-10),20)
+Br r 0 V=V(kt)*(0.891492m+0.1*exp(-(V(vgs)-1.65)/0.303313)+1.41369m*exp(-(V(vgs)-1.65)/1.52911))
+Bis isat 0 V=1/(1/(166.528*((0.08810546*log(1+exp((V(vgs)-1.976226)/0.08810546)))**3.606594))+1/1364.404)
+Bch di si I=V(di,si)/(V(r)*(1+(abs(V(di,si))/(V(r)*V(isat)))**3)**(1.0/3))
+Dbd si di DB
+.model DB D(IS=6e-12 N=1.05 TT=27n CJO=0 RS=0)
+Cds di si Q=if(V(di,si)>=0, 6154.29p*abs(V(di,si))-297.645p*abs(V(di,si))**2/2, -(6154.29p*abs(V(di,si))-297.645p*abs(V(di,si))**2/2))
+Cgd gi di Q=if(V(gi,di)>=0, 735.774p*abs(V(gi,di))-56.7507p*abs(V(gi,di))**2/2, -(735.774p*abs(V(gi,di))-56.7507p*abs(V(gi,di))**2/2))
+Cgs gi si Q=4.60n*V(gi,si)
+.op
+.meas op vgi FIND V(gi)
+.meas op vsi FIND V(si)
+.meas op vvgs FIND V(vgs)
+.meas op vr FIND V(r)
+.meas op visat FIND V(isat)
+.meas op vdi FIND V(di)
+.meas op vdsi FIND V(di,si)
+.meas op ich FIND I(Bch)
+.meas op ivd FIND I(Vd)
+.end

@@ -1,0 +1,12 @@
+* Kelvin-source variant sanity: same die as SR_DEVICE, separate K return.
+* VGS=10 V, drain swept 0..0.1 V; Rds must match the 3-pin part (~0.9 mOhm).
+.include ../../models/sr_device_v3.lib
+Vd d 0 0
+Vg g 0 10
+X1 d g 0 k SR_DEVICE_KELVIN
+Rk k 0 1
+.dc Vd 0 0.1 0.01
+.options plotwinsize=0
+.meas dc ron FIND V(d)/-I(Vd) AT=0.1
+.meas dc id1 FIND -I(Vd) AT=0.1
+.end

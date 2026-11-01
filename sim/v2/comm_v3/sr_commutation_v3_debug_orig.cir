@@ -1,0 +1,68 @@
+* Integrated SR commutation bench -- DEBUG single configuration.
+* Real SR_DEVICE (v3) + SR_TIMING v3 (bench variant, CGATE=0 so the FET gate
+* is not double-counted).  Excitation identical to the v2 ideal bench
+* sim/v2/sr_commutation_sweep.cir: 40 A / 200 kHz forced sinusoidal
+* secondary current, 4 V clamp, REG 0->11 V over 1-2 us.
+.include ../../../models/sr_timing_v3.lib
+.include ../../../models/sr_device_v3.lib
+.param PGD=0 TDELAY=23n TMAX=2n
+Vclamp bus 0 4
+Vreg reg 0 PWL(0 0 1u 0 2u 11 30u 11)
+Rinit1 bus d1 10k
+Rinit2 bus d2 10k
+Bload1 d1 0 I=if(time>3u,40*sin(2*pi*200k*(time-3u)),0)
+Bload2 d2 0 I=if(time>3u,-40*sin(2*pi*200k*(time-3u)),0)
+Dcl1 d1 bus CLAMP
+Dcl2 d2 bus CLAMP
+.model CLAMP D(Ron=.02 Roff=1G Vfwd=.2)
+Vsa d1 da 0
+Vsb d2 db 0
+Vg1 ga gda 0
+Vg2 gb gdb 0
+Xsr1 da gda 0 SR_DEVICE
+Xsr2 db gdb 0 SR_DEVICE
+Xsr d1 d2 ga gb reg 0 pre SR_TIMING PGD={PGD} TOFF={TDELAY}
+* ---- per-cycle integrators (5 us = one 200 kHz period) --------------------
+* reverse charge: I(Vsa)>0 is the SR reverse (drain->source) current
+Bqr qr 0 I=-max(0,I(Vsa))
+Cqr qr 0 1n
+Rqr qr 0 1G
+* gate charge delivered to the device gate (positive half only)
+Bqg qg 0 I=-max(0,I(Vg1))
+Cqg qg 0 1n
+Rqg qg 0 1G
+* body-diode terminal conduction energy: gate off and Vds<0
+Bbd bd 0 I=-if(V(gda)<1,max(0,V(d1)*I(Vsa)),0)
+Cbd bd 0 1n
+Rbd bd 0 1G
+* gate-drive energy: |Vgs * Ig| (charge + discharge, both dissipated)
+Bge ge 0 I=-abs(V(gda)*I(Vg1))
+Cge ge 0 1n
+Rge ge 0 1G
+.tran 0 20u 0 {TMAX}
+.save V(d1) V(d2) V(gda) V(gdb) V(ga) V(gb) V(pre) I(Vsa) I(Vsb) I(Vg1) I(Vg2) V(qr) V(qg) V(bd) V(ge)
+.meas tran IREV_PEAK MAX I(Vsa) FROM 10u TO 20u
+.meas tran ICOND_PEAK MIN I(Vsa) FROM 10u TO 20u
+.meas tran VDS_MIN MIN V(d1) FROM 10u TO 20u
+.meas tran VDS_MAX MAX V(d1) FROM 10u TO 20u
+.meas tran VGS_MAX MAX V(gda) FROM 10u TO 20u
+.meas tran GATE_OVERLAP MAX min(V(gda),V(gdb)) FROM 10u TO 20u
+.meas tran ISR_19 FIND I(Vsa) AT=19.25u
+.meas tran VGS_19 FIND V(gda) AT=19.25u
+.meas tran VDS_19 FIND V(d1) AT=19.25u
+.meas tran ISR2_19 FIND I(Vsb) AT=19.25u
+.meas tran VGS2_19 FIND V(gdb) AT=19.25u
+.meas tran VDS2_19 FIND V(d2) AT=19.25u
+.meas tran QR15 FIND V(qr) AT=15u
+.meas tran QR20 FIND V(qr) AT=20u
+.meas tran QREV_C PARAM (QR20-QR15)*1n
+.meas tran QG15 FIND V(qg) AT=15u
+.meas tran QG20 FIND V(qg) AT=20u
+.meas tran QG_C PARAM (QG20-QG15)*1n
+.meas tran BD15 FIND V(bd) AT=15u
+.meas tran BD20 FIND V(bd) AT=20u
+.meas tran EBD_C PARAM (BD20-BD15)*1n
+.meas tran GE15 FIND V(ge) AT=15u
+.meas tran GE20 FIND V(ge) AT=20u
+.meas tran EGE_C PARAM (GE20-GE15)*1n
+.end

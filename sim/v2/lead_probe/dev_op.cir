@@ -1,0 +1,16 @@
+* Lead verification probe: DC operating point of sr_device_v3 at Vds=44.9 mV, Vgs=10 V
+.include ../../../models/sr_device_v3.lib
+Vd d 0 0.0449
+Vg g 0 10
+X1 d g 0 SR_DEVICE
+.op
+.meas op ivd FIND I(Vd)
+.meas op vgi FIND V(x1:gi)
+.meas op vsi FIND V(x1:si)
+.meas op vvgs FIND V(x1:vgs)
+.meas op vr FIND V(x1:r)
+.meas op visat FIND V(x1:isat)
+.meas op vdi FIND V(x1:di)
+.meas op vdsi FIND V(x1:di,x1:si)
+.meas op ich FIND I(x1:bch)
+.end

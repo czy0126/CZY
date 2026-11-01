@@ -1,0 +1,17 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\t_op.cir
+Start Time: Sat Oct 31 09:39:33 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.054 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\t_op.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+ivd: I(Vd)=-15.495806694 at 0.0449
+idrain: -I(Vd)=15.495806694 at 0.0449

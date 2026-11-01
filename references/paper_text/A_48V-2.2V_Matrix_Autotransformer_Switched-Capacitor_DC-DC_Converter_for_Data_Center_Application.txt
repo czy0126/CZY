@@ -1,0 +1,968 @@
+
+--- PAGE 1 ---
+ 
+A 48V-2.2V Matrix Autotransformer Switched-
+Capacitor DC-DC Converter for Data Center 
+Application 
+ 
+Haoran Meng  
+University of Dayton 
+Dayton, OH 
+mengh3@udayton.edu 
+Xiaoyan Liu 
+University of Dayton 
+Dayton, OH 
+liux46@udayton.edu 
+Zhongshu Sun 
+University of Dayton 
+Dayton, OH 
+sunz20@udayton.edu 
+Vafa Marzang 
+University of Dayton 
+Dayton, OH 
+marzangv1@udayton.edu 
+Maohang Qiu 
+University of Dayton 
+Dayton, OH 
+qium02@udayton.edu 
+Dong Cao 
+University of Dayton 
+Dayton, OH 
+dcao02@udayton.edu 
+ 
+Abstract-Datacenter usage tends to increase as artificial 
+intelligence (AI) grows and becomes more prevalent. High-
+power density and high-efficiency power converters are 
+required for datacenter applications. This paper presents a 48V-
+2.2V matrix autotransformer switched-capacitor DC-DC 
+converter (MASC) for data center applications. The high 
+voltage side of MASC takes advantage of switched tank 
+converter. The low voltage rectifier side of the MASC leveraged 
+a new magnetic integrated autotransformer. Compared with a 
+switched tank converter, MASC needs fewer switches on the 
+low-voltage rectifier side to achieve the same conversion ratio. 
+Compared to LLC converters using isolation transformers, the 
+use of matrix autotransformers reduces the power loss and the 
+size of the magnetic core. Simulation results are provided to 
+verify the feasibility. A 48V-2.2V, 96.1% peak efficiency 22X-
+MASC has been built and tested. 
+Keywords—switched-capacitor 
+converter, 
+DC-DC, 
+datacenter, autotransformer. 
+I. INTRODUCTION  
+ 
+The growth of AI is a significant driver of increased 
+datacenter usage, leading to the development of more 
+powerful and efficient datacenter infrastructure to meet the 
+rising demand. High efficiency and power density power 
+converter is required for CPU power supply [1]-[6]. Fig. 1 
+shows the power train of datacenter application. In the power 
+train of the datacenter application, the input voltage of is 
+normally 480V AC voltage. Firstly, it is converted to a 400-V 
+DC bus. Then the 400V DC is converted to 48V, which finally 
+will be converted to 1V to the CPU/GPUs. To increase 
+efficiency. The 48V DC firstly be converted to an intermediate 
+voltage such as 12V, 6V, 3.3V, etc. Then there is a buck stage 
+converter to the voltage CPU/GPU needs. The stage called 
+Intermediate Bus Converter (IBC). There are also solutions 
+that convert 48V directly to 1V [7]-[13]. Datacenter 
+applications characteristic low-voltage and high-current 
+properties. Switched-capacitor DC–DC converters have 
+gained popularity in data center applications due to their high-
+efficiency, high power density performance in such 
+application scenario [14]-[16]. A Family of Zero Current 
+Switching Multilevel Modular Switched Capacitor Converter 
+(ZCS-MMCCC) is modulable and achieves different 
+conversion ratios [17]. Switched-Tank Converter (STC) is 
+proposed through removing the non-resonant capacitors and 
+inserting resonant inductors in ZCS-MMCCC. Switch-tank 
+converter has a peak efficiency of 98.55% with 54V input and 
+9V output, 750W/in3 [18]. Through using stray inductance in 
+the circuit, it can achieve Zero Current Switching (ZCS). 
+Through implementing a phase shifting control method, the 
+RMS current and is reduced and Zero Voltage Switching 
+(ZVS) is achieved. However, it can’t achieve ZCS and ZVS at 
+the same time. Apart from that, a lower CPU voltage input is 
+needed to realize heavy computation tasks since early 2000. 
+Lower intermediate DC bus voltage is needed to lower 
+conversion ratio of second stage and improve the whole 
+system efficiency. 
+ 
+Transformer
+480V/277V
+AC
+480V/277V
+AC
+PUD
+AC
+DC
+DC-DC
+PSU
+400V
+Hot Swap
+40-60V
+54V Nominal
+IBC
+IBC
+DC-DC
+POL
+POL
+CPU Non Core 
+Rails
+UPS
+CPU Non Core 
+Rails
+Others
+Rack
+Server
+Motherboard
+22X-MASC (48V-2.2V)
+<1V
+ 
+Fig. 1 Datacenter application power train. 
+ 
+979-8-3503-7606-7/24/$31.00 ©2024 IEEE
+2701
+2024 IEEE Energy Conversion Congress and Exposition (ECCE) | 979-8-3503-7606-7/24/$31.00 ©2024 IEEE | DOI: 10.1109/ECCE55643.2024.10861004
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 2 ---
+With the conversion ratio increase, the conduction loss of it 
+will decrease the efficiency greatly. And the size will increase 
+greatly with the conversion ratio increase, which will decrease 
+the power density. It is challenging to keep the efficiency 
+relatively high with the increased conversion ratio. Since the 
+number of MOSFET used in traditional STC converter has a 
+linear relationship with the conversion ratio. The main 
+contribution to the power loss increases when the converter 
+ratio increases for STC is the conduction loss. Apart from 
+Switched-capacitor converter, LLC converter can also achieve 
+relatively high conversion ratio in datacenter application by 
+using transformer. Various kinds of autotransformers-based 
+LLC as IBCs are proposed [19]-[22]. Besides, the current 
+doubler rectifier can better leverage the low volage 
+semiconductor devices. Although LLC can realize high 
+conversion ratio, the transformer will make the whole size 
+relatively high. And in data center applications, the isolation 
+feature is not needed. With all the consideration, there are two 
+trends of IBCs for datacenter application. The first trend is to 
+merge the IBC stage and the buck stage together: The first 
+stage is switched-capacitor converter. It doesn’t have any 
+magnetic components. The second stage is regulated buck 
+converter or multiphase series buck converter. The second 
+trend is to combine the advantage of STC and LLC together. 
+It adopts autotransformer to replace the isolated transformer 
+in traditional LLC to realize high conversion ratio IBC. 
+ 
+This paper presents a 48V-2.2V (22X) Matrix 
+Autotransformer Switched Capacitor DC-DC Converter 
+(22X-MASC) topology for 48V to 2.2V application. The high 
+voltage side circuit of 22X-MASC is the same as the STC. The 
+rectifier side of the 22X-MASC is similar to LLC. MASC 
+combines the advantage of STC and LLC at the same time. An 
+autotransformer with 2:1:1:2 winding ratio is used. The use of 
+an integrated matrix autotransformer makes MASC use a 
+smaller number of low voltage side switches to achieve the 
+same conversion ratio compared to STC. Besides, 22X-
+MASC can achieve ZCS and ZVS at the same time. It uses 
+magnetic inductance and resonant capacitor to achieve ZCS. 
+Through using magnetic leakage inductance, ZVS can be 
+achieved at the same time. These features increase the 
+efficiency of 22X-MASC. Apart from that, the 2:1:1:2 
+winding auto-transformer is integrated to increase the power 
+density of 22X-MASC. In one word, 22X-MASC has higher 
+efficiency than STC and a smaller size than LLC at the same 
+conversion ratio [23]-[27]. The electical loops of the  gate 
+driver of each paralle switches on the low votlage side are 
+designed systematical and as short as it can be. This can allow 
+the switches are turned on and off at the same time and reduce 
+the EMI effect [28]. A 48V-2.2V 22X-MASC hardware 
+prototype is designed and built to verify the feasibility. The 
+prototype achieved a peak efficiency of 96.1%. There is 
+further work that needs to be performed for the hardware 
+prototype including pushing it to the maximum load and fine 
+tune the hardware parameters including switching frequency 
+and deadtime to maximum its efficiency. Besides, the 
+calculated efficiency and power loss breakdown needs to 
+further analyze for the potential power loss based on the 
+experiment results right now. Along with the detail 
+analyzation, high-voltage side device selection, winding PCB 
+structure comparation will be included in the future journal 
+paper. 
+The rest of this article is organized as follows. Section II 
+A introduces the proposed 22X-MASC topology. Section II B 
+illustrate the working principles of 22X-MASC and the detail 
+waveforms. Section II C will explain the process of the device 
+selection and the design of the phase leg MOSFET numbers. 
+At the same time, a power loss comparation of 22X-MASC 
+and 22X-STC will be shown. The simulation result will be 
+shown in Section II D. The experimental result and 
+measurement results of the hardware prototype are presented 
+in Section III. Finally, Section V concludes this paper and 
+future working expectation will be discussed. 
+II. PROPOSED CIRCUIT TOPOLOGY 
+A. Proposed topology 
+Fig. 2 shows the proposed 22X-Matrix Autotransformer 
+Switched 
+Capacitor 
+DC-DC 
+Converter. 
+A 
+2:1:1:2 
+autotransformer is used to clamp the voltage from Vin to Vout. 
+22 times conversion ratio STC (22X-STC) needs 42 
+MOSFETs on low voltage side. 22X-MASC uses 18 
+MOSFETs to realize 22x shown in Fig. 2. Approved by 
+calculation, the winding resistance is less than semiconductor 
+devices. Thus, the conduction loss will decrease than using 
+MOSFETs to clamp the voltage. 22X-MASC will have a 
+higher efficiency for the same conversion ratio. 
+SR1-R4
+Sw4
+Sw3
+Vout
+Sw1
+Sw2
+SR5-R8
+SR13-R14
+Vin
+C1
+C2
+C3
+Cout
+ic1
+ic2
+T (2:1:1:2)
+ic3
+T (2:1:1:2)
+SR9-R12
+A
+B
+O
+O
+C
+D
+T1
+T2
+T3
+T4
+T5
+T8
+T6
+T7
+ 
+Fig. 2 Proposed 22x Matrix Autotransformer Switched-Capacitor DC-DC 
+Converter. 
+All magnetic components including two transformers and 
+inductors are merged into one core. One drawback is that the 
+voltage stress on the low side MOSFETs of 22X-STC is Vout 
+while the one of 22X-MASC is two times Vout. The voltage 
+on point O is Vout. Since the autotransformer is 2:1:1:2, the 
+voltage between point A and O is Vout. Thus, according to 
+Kirchhoff's law, the voltage of point A is 2Vout. The voltage 
+on the MOSFET will only affect Coss loss. Another point 
+needs to be mentioned is that the main factor limits the 
+maximum output power is the current through the low-
+voltage side MOSFETs. The operation stages will be shown 
+later. 
+B. Working Principles and analyze of MASC 
+The Vds, Ids of each MOSFETs and gate signal are shown 
+in Fig. 3. Operation stage a and operation stage b is the period 
+of t0-t1, t2-t3, respectively. Fig. 4 shows the detial circuit of 
+operation stage a and stage b In stage an all-blue switch is 
+turned on. Operation stages in time period t1-t2 and t3-t4 is 
+deadtime period. In the deadtime stages the body diode of the 
+switches in these two stages conduct the current. During the 
+deadtime periods, the magnatic current provide a way for the 
+MOSFETs output capacitors discharge and ZVS can be 
+achieved. The duty cycle of the gate signals of the red 
+switches and blue switches gate signals are the same. The 
+deadtime is set to the minimum deadtime while the output 
+capacitors of the MOSFETs can be fully discharged to make 
+2702
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 3 ---
+sure ZVS. However, if the deadtime is too long, there will be 
+voltage spick when switching. 
+Capacitor and the autotransformer are used to transfer 
+energy in 22X-MASC topology. Since the autotransformer is 
+2:1:1:2. The voltage of the capacitors will clamp 6 times of 
+output voltage. Firstly, in stage a, the voltage on point O is 
+Vout. According to Kirchhoff's law, the voltage across C3 is 
+6 times Vout. Then in stage (a), point C is 0V since point O 
+is Vout. Since the autotransformer turns ratio is 2:1:1:2, the 
+voltage across the primary is 2Vout and the one across 
+secondary side is Vout. Thus, the voltage on point B right 
+now is -2Vout. According to Kirchhoff's law, the voltage of 
+C2 is 6Vout +4Vout+2Vout = 12Vout. C2 clamps to 12Vout. 
+Back in stage (b), According to Kirchhoff's law, the voltage 
+of C1 equals the voltage of C2 plus 6Vout. The voltage of 
+point C is the on the transformer plus the Vout on point O. 
+The voltage of C2 is 12Vout. Thus, the voltage of C1 is 
+12Vout+6Vout=18Vout. According to Kirchhoff's law, Vin 
+= Vc3+4Vout = 22Vout. The low voltage side uses two 
+switches in one phase. Loop1 is regarded as one time of 
+current. Since the transformer winding ratio is 2:1:1:2, the 
+current of loop2 is four times of current. And the current of 
+loop3 is the same as loop1. According to Kirchhoff's law, the 
+current goes away from point B total which is 6 times of one 
+time of the current. The low voltage side need use four 
+switches at one phase. However, considering the symmetrical 
+layout of gatedriver and MOSFETs, four switches are used in 
+one phase leg. Loop1 and Loop3 shown in the stage a are 
+resonent loops. the nonresonent capacitors that are C1 and 
+C3. As discussed before, C1 is charged to one 6Vout. C2 is 
+charged to 12Vout. C3 is charged to 18Vout. The voltage of 
+Sw2, Sw3, Sw4 is 12Vout. 
+𝑓𝑓𝑟𝑟𝑟𝑟𝑟𝑟=
+1
+2𝜋𝜋ඥ𝐿𝐿𝑘𝑘𝐶𝐶𝑅𝑅= =
+1
+2𝜋𝜋ට𝐿𝐿𝐾𝐾( 𝐶𝐶𝑟𝑟𝐶𝐶𝑛𝑛
+𝐶𝐶𝑟𝑟+𝐶𝐶𝑛𝑛)
+≈
+1
+2𝜋𝜋ඥ𝐿𝐿𝐾𝐾𝐶𝐶𝑅𝑅
+             (1) 
+𝐼𝐼𝐶𝐶1,2,3(𝑝𝑝𝑝𝑝𝑝𝑝𝑝𝑝) =
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖∫𝑠𝑠𝑠𝑠𝑠𝑠(𝜔𝜔𝑟𝑟𝑡𝑡)𝑑𝑑(𝜔𝜔𝑟𝑟𝑡𝑡)
+𝜋𝜋
+0
+=
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖             (2) 
+𝑖𝑖𝐶𝐶1(𝑡𝑡) = 𝑖𝑖𝐶𝐶3(𝑡𝑡) =
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝑠𝑠𝑠𝑠𝑠𝑠(𝜔𝜔𝑟𝑟(𝑡𝑡−𝑡𝑡0))            (3) 
+𝑖𝑖𝐶𝐶2(𝑡𝑡) = −
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝑠𝑠𝑠𝑠𝑠𝑠(𝜔𝜔𝑟𝑟(𝑡𝑡−𝑡𝑡0))         (4) 
+𝑣𝑣𝐶𝐶4(𝑡𝑡) = 
+−𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝜔𝜔𝑟𝑟𝑟𝑟𝑟𝑟𝐶𝐶𝑅𝑅𝑐𝑐𝑐𝑐𝑐𝑐(𝜔𝜔𝑟𝑟𝑟𝑟𝑟𝑟(𝑡𝑡−𝑡𝑡0)) + 0.78𝑉𝑉𝑉𝑉𝑉𝑉      (5) 
+𝑣𝑣𝐶𝐶2(𝑡𝑡) =
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝜔𝜔𝑟𝑟𝐶𝐶𝑅𝑅𝑐𝑐𝑐𝑐𝑐𝑐(𝜔𝜔𝑟𝑟𝑟𝑟𝑟𝑟(𝑡𝑡−𝑡𝑡0)) + 0.42𝑉𝑉𝑖𝑖𝑖𝑖       (6) 
+𝑣𝑣𝑑𝑑𝑑𝑑(𝑆𝑆𝑆𝑆7,8)(𝑡𝑡) = 𝑉𝑉𝑖𝑖𝑖𝑖−𝑣𝑣𝐶𝐶4(𝑡𝑡) 
+                     = 0.42𝑉𝑉𝑖𝑖𝑖𝑖+
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝜔𝜔𝑟𝑟𝐶𝐶𝑅𝑅𝑐𝑐𝑐𝑐𝑐𝑐൫𝜔𝜔𝑟𝑟𝑟𝑟𝑟𝑟(𝑡𝑡−𝑡𝑡0)൯          (7) 
+𝑣𝑣𝑑𝑑𝑑𝑑(𝑆𝑆𝑆𝑆1,2) = 𝑣𝑣𝑑𝑑𝑑𝑑(𝑆𝑆𝑆𝑆5,6) = 𝑉𝑉𝑑𝑑𝑑𝑑(𝑠𝑠𝑠𝑠1) 
+                      = 0.42𝑉𝑉𝑖𝑖𝑖𝑖+
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝜔𝜔𝑟𝑟𝐶𝐶𝑅𝑅𝑐𝑐𝑐𝑐𝑐𝑐൫𝜔𝜔𝑟𝑟𝑟𝑟𝑟𝑟(𝑡𝑡−𝑡𝑡1)൯       (8) 
+iSW1
+iSW3
+iSW2
+iSW4
+vds(SR1-4)
+vds(SR9-12) 
+t0
+t1 t2
+t3 t4
+a
+b
+0
+0
+0
+0
+0
+0
+0
+0
+0
+Blue Switches
+Red Switches
+vds(SR2-5)
+vds(SR13,14) 
+vds(SW2)
+vds(SW4) 
+vds(SW3)
+ 
+ 
+vds(SW1)
+12Vout
+12Vout
+ 
+Fig. 3 Detailed waveforms during one period. 
+The peak voltage of SW1 is the same as the peak voltage 
+of SR13,14, which is 0.42𝑉𝑉𝑖𝑖𝑖𝑖+
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖𝜔𝜔𝑟𝑟𝐶𝐶𝑅𝑅𝑐𝑐𝑐𝑐𝑐𝑐൫𝜔𝜔𝑟𝑟𝑟𝑟𝑟𝑟(𝑡𝑡−
+𝑡𝑡0)൯.They need to be large enough to keep the resonant 
+frequency of both loops the same. The total capactance after 
+series equals to the resonant capacitance in the resonant 
+loops. Thus, the relationship of resonant capacitance and non-
+resonent capacitance is C1=C3=0.1C2. The calculation of the 
+resonant frequency is shown in (1), where Cr refers to 
+resonant capacitors while Cn refers to non-resonant 
+capacitors. Magnetizing inductors , leakage inductors are 
+labeled as Lm, Lk. The peak current through noncapacitors C1 
+and C3 is 
+𝜋𝜋𝑃𝑃𝑖𝑖𝑖𝑖
+𝑉𝑉𝑖𝑖𝑖𝑖 shown in (2), where 𝜔𝜔𝑟𝑟 is 2πfres . The 
+expression of C1-C3 current is shown in (3)(4).  
+ 
+SR13-R14
+SR1-R4
+Sw4
+Sw3
+Sw1
+Sw2
+SR5-R8
+SR9-R12
+SR13-R14
+Vin
+C1
+C2
+C3
+Vout
+Cout
+SR1-R4
+Sw4
+Sw3
+Sw1
+Sw2
+SR5-R8
+SR9-R12
+Vin
+C1
+C2
+C3
+I
+5I
+I
+3I
+Vout
+Cout
+6Vout
+12Vout
+18Vout
+6Vout
+12Vout
+18Vout
+22Vout
+Loop1
+Loop2
+Loop3
+Loop4
+Loop5
+Loop6
+(a)
+(b)
+A
+B
+C
+D
+O
+O
+A
+B
+C
+D
+O
+O
+ 
+Fig. 4 The operation stages of 22X-MASC during one period. (a) time t0~t1 (b) time t2~t3. 
+2703
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 4 ---
+C. Device selection and phase leg design 
+Off-the-shelf MOSFETs are selected and compared. 
+Firstly, the Figure of Merit (FOM), 𝐹𝐹𝐹𝐹𝐹𝐹= 𝑄𝑄𝑔𝑔 𝑅𝑅𝑑𝑑𝑑𝑑 is 
+calculated to compare MOSFETs. As shown in Fig. 5, the low 
+Vds rating not means a lower power loss device. The 15V 
+device has the lowest FOM and 25V devices are the second 
+best. However, further detailed calculations and comparation 
+needs to be done to find the best device.  
+ 
+Fig. 5 Figure of merit comparation of selected MOSFETs. 
+ 
+Fig. 6 Total Semiconductor Loss Index comparation of selected MOSFETs 
+and between 22X-STC and 22X-MASC. 
+Total Semiconductor Loss Index (TSLI) in (9) is used to 
+further compare the power loss of selected devices and also 
+compare the efficiency of 22X-MASC and 22X-STC.  
+𝑇𝑇𝑇𝑇𝑇𝑇𝑇𝑇=
+𝑁𝑁
+𝑃𝑃𝐼𝐼𝐼𝐼ቀ𝐴𝐴𝑆𝑆𝑑𝑑𝑑𝑑𝑑𝑑𝑉𝑉𝑔𝑔 𝑓𝑓𝑠𝑠𝑠𝑠+
+1
+2 𝑉𝑉𝑑𝑑𝑑𝑑
+2 𝑓𝑓𝑠𝑠𝑠𝑠𝐵𝐵𝑆𝑆𝑑𝑑𝑑𝑑𝑑𝑑+
+𝐼𝐼𝑑𝑑𝑑𝑑𝑑𝑑𝑑𝑑𝑑𝑑
+2
+·𝐶𝐶
+𝑆𝑆𝑑𝑑𝑑𝑑𝑑𝑑ቁ(9) 
+𝐼𝐼𝑟𝑟𝑟𝑟𝑟𝑟 represents the RMS current through MOSFET, 𝑉𝑉𝑔𝑔, 
+𝑃𝑃𝐼𝐼𝐼𝐼, 𝑓𝑓𝑠𝑠𝑠𝑠,N are gate voltage, input power, frequency, and total 
+number of MOSFETs. A, B and C are intrinsic characteristics 
+of MOSFETs and vary from different devices. 
+𝑄𝑄𝑔𝑔
+𝐴𝐴𝑑𝑑𝑑𝑑𝑑𝑑=
+𝐴𝐴, .
+𝐶𝐶𝑜𝑜𝑜𝑜𝑜𝑜
+𝐴𝐴𝑑𝑑𝑑𝑑𝑑𝑑= 𝐵𝐵, 𝑅𝑅𝑑𝑑𝑑𝑑(𝑜𝑜𝑜𝑜)𝐴𝐴𝑑𝑑𝑑𝑑𝑑𝑑= 𝐶𝐶. Since 22X-MASC achieve 
+ZCS and ZVS, only conduction loss, gate driver loss and Coss 
+loss need to be considered. Fig. 6 shows the result of TISL of 
+different MOSFETs. It shows that the 15V device has the 
+lowest power loss. Besides, this figure also shows that the 
+low-voltage side power loss of 22X-MASC is higher than 
+22X-STC. Since the voltage rating of the high-voltage side 
+devices of 22X-STC and 22X-MASC is the same. And the 
+core loss is lower than the conduction loss of in the low-
+voltage side. It can be concluded that 22X-MASC efficiency 
+is higher than 22X-STC. For the number of the MOSFETs in 
+parallel in one phase leg is 4 as the PCB layout issue 
+mentioned previously. However, there is another calculation 
+for the design of the phase leg, which is Loss Index vs 
+Normalized Die Aera (LINDA). The result of the selected 
+MOSFET is shown below in Fig. 7. It doesn’t require die area 
+data. It provides an easier and quicker way to find the optimal 
+number of devices in parallel at the desired power point using 
+switching energy vs Ids figure in the datasheet. The Y axis is 
+the normalized die area. The number of it represents the 
+number of the selected devices. And the Y axis is the loss 
+index, which is power loss divide the input power. From the 
+fig it can be concluded that the best number of devices in one 
+phase leg should be 3. 
+0.80%
+0.85%
+0.90%
+0.95%
+1.00%
+1.05%
+1.10%
+1.15%
+1.20%
+2
+3
+4
+5
+Power loss/Power(%)
+Normalized die area(IQE004NE1LM7CGSC)
+LINDA of 22x MASC 
+Input power: 150W
+Input power: 250W
+Input power: 350W
+ 
+Fig. 7 Loss Index vs Normalized Die Aera of the selection MOSFETs of 
+22X-MASC. 
+However, in the PCB layout the gate driver loop cannot be 
+the same length if 3 of MOSFETs are used in one phase leg. 
+Then the options are 2 and 4. In order to have a high maximum 
+output power. 4 MOSFETs in parallel in one phase leg will be 
+used. 
+D. Simulation result  
+Simulation result shows the feasibility of the design. The 
+input voltage, input current, output voltage, output current is 
+shown in Fig. 8. The input voltage is 48V. The output voltage 
+rms value is 2.25V. The input rms current value is 8.10A. 
+And the output current rms value is 161A. Low voltage side 
+switches’ voltage and current of are shown in Fig. 9. The peak 
+voltage of the low-voltage side devices is 8V. Based on the 
+simulation results, all low voltage side MOSFETs’ voltage 
+rating is within the selected MOSFETs’ voltage rating. The 
+Vds and Ids of the high voltage side MOSFETs is shown in 
+Fig. 10. The simulation results match the calculation results. 
+Based on the results, the high voltage side MOSFETs need to 
+use at least 30V for Sw2,3,4 and 25V or 30V for Sw1. Fig. 
+11 shows the zoomed waveform of the Sw4’s gate signal and 
+its Vds and Ids. It can be concluded that from the figure that 
+when Sw4 is turned on, the Vds of Sw4 is 0V and the Ids of 
+Sw4 is 0A. Zero Voltage Switching, Zero Current Switching 
+are achieve simultaneously without need of phase shifting 
+control. The current through the resonant and non-resonant 
+capacitors is shown in Fig. 12. It shows that the switching 
+frequency matches the hardware resonant frequency. Even 
+though the Ids of SR9-14 show that the Sin wave seems 
+doesn’t start and end at zero. It is already resonant but with 
+the effect of the magnetic current. 
+2704
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 5 ---
+ 
+Fig. 8 Input voltage, current. Output voltage, current zoomed in waveform 
+ 
+Fig. 9 Drain to source voltage and current of SR1-14. 
+ 
+Fig. 10 Drain to source voltage and current of sw1-4. 
+ 
+Fig. 11 Zoomed in waveform of drain to source voltage of Sw4 and its gate 
+signals. Zero Voltage Switching, Zero Current Switching are achieved. 
+ 
+Fig. 12 Resonant and non-resonant capacitors current. 
+E. Intergrated core and winding structure 
+The size parameters of the core is shown below in Fig. 
+13. VOLp, VOLl, VOLg, and VOLtotal represent the volume of 
+two plane cylinders, center cylinder, and total transformer 
+volume, respectively. The calculations can be expressed in 
+(9). There are three freedoms of degrees: a, g, d. And 𝜂𝜂𝑙𝑙 is the 
+airgap length of the core. The winding of T1, T4, T5 and T8 
+structure in PCB is shown in Fig. 14. The two turns are 
+winding in one PCB layer and sacrifice the thickness of the 
+copper. Based on calculations, the temperature rise will stay 
+within 40C. The color of the windings is corresponding to the 
+topology wingding color shown in Fig. 2. 
+e
+η2 
+a
+d
+η1 
+h
+a
+ 
+Fig. 13 Geometry of the magnetic core. 
+T3
+T2
+T6
+T7
+T1
+T4
+T5
+T8
+ 
+Fig. 14 Core winding structure. 
+⎩
+⎪
+⎨
+⎪
+⎧
+𝑉𝑉𝑉𝑉𝑉𝑉P = 𝑏𝑏2𝑑𝑑
+𝑉𝑉𝑉𝑉𝑉𝑉𝑙𝑙= 𝑐𝑐2(𝑒𝑒−𝜂𝜂𝑙𝑙) ≈𝑐𝑐2𝑒𝑒
+𝑉𝑉𝑉𝑉𝑉𝑉𝑔𝑔= ൬3
+4 + 𝜋𝜋
+16൰𝑎𝑎2𝑒𝑒
+𝑉𝑉𝑉𝑉𝑉𝑉𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡𝑡= 𝑏𝑏2(𝑒𝑒+ 𝜂𝜂𝑔𝑔+ 2𝑑𝑑) ≈𝑏𝑏2(𝑒𝑒+ 2𝑑𝑑)
+ 
+(9) 
+III. EXPERIMENT RESULT  
+A. Hardware prototype 
+The board hardware is shown in Fig. 15. The board in red 
+square is high-voltage side board and the one in the blue squre 
+is the low-voltage side board. These two board are also shown 
+in Fig. 16 in detail. The total size of the board is 
+2705
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 6 ---
+52mm×52mm×7.8mm. The two boards are connected 
+through the resonant and nonresonant capacitors. The Vout 
+and GND are connected by two copper bars through the holes 
+on the two boards of the two boards. The electical loops of 
+the  gate driver of each paralle switches on the low votlage 
+side are designed systematical and as short as it can be. This 
+can allow the switches are turned on and off at the same time. 
+SR1-R4
+Sw4
+Sw3
+Vout
+Sw1
+Sw2
+SR5-R8
+SR13-R14
+Vin
+C1
+C2
+C3
+Cout
+T (2:1:1:2)
+T (2:1:1:2)
+SR9-R12
+A
+B
+O
+O
+C
+D
+T1
+T2
+T3
+T4
+T5
+T8
+T6
+T7
+52mm x 52mm x 7.8mm
+ 
+Fig. 15 22X-MASC hardware prototype structure. 
+ 
+Fig. 16 Low-voltage side board (left), high-voltage side board (right). 
+B. Experiment result 
+The deadtime is 30ns to make sure the ZVS can achieve. 
+The switching frequency is adjusted to 91kHz to make it 
+match with the resonant frequency of the hardware. The 
+output voltage, output current, input voltage, and input current 
+at 90W input power are shown in Fig. 17. Fig. 17 shows that 
+the input voltage rms value is 48V, input current is 1.8A, 
+output voltage is 2.18V and output current is 37.5A at 90W. 
+The efficiency at 90W is 94.6%. The Vds waveforms of SR1-
+14 and SW1-4 are shown in Fig. 18. The peak voltage of the 
+high-voltage side switches is 30V and the peak voltage of the 
+low-voltage side switches is 11V. These are matched with the 
+simulation results and the calculation result. Also, it can be 
+shown that the ZCS and ZVS are achieved at the same time. 
+Fig. 18 shows that when the switches are turned on and off, 
+the voltage and current of them are zero. The current of the 
+resonant and non-resonant capacitors at 90W input power is 
+shown in Fig. 19. There is little spick in the current waveform. 
+Due to the board shipment time issue, the fine tune time is 
+limited. Same for the experiment efficiency shown in Fig. 21. 
+Further experiment will be performed to get the full load of 
+22X-MASC. 
+Vin: 48V
+Iin: 1.8A
+Vout: 2.18V
+Iout: 37.5A
+10V/div
+1A/div
+1A/div
+15A/div
+ 
+Fig. 17 Experiment result waveforms of Vin, Vout, Iin, Iout. Input power: 
+90W 
+Vds of SR1-14
+Vds of SW1-4
+5V/div
+15V/div
+ 
+Fig. 18 Experiment result waveform of Vds of the high-voltage and low-
+voltage side MOSFETs. 
+2A/div
+C2
+C1,3
+ 
+Fig. 19 Resonant capacitor and non-resonant capacitor current, input 
+power: 90W. 
+The peak experiment efficiency is 96.1% without gate 
+driver loss. There is gap between calculated power loss and 
+experiment efficiency. Further analyzation will be addressed. 
+ 
+Fig. 20 Calculated efficiency and power loss breakdown of 22X-MASC. 
+ 
+Fig. 21 Experiment efficiency W and W/O gatedriver loss 
+2706
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 7 ---
+IV. CONCLUTION AND FUTURE WORK 
+This paper presented 22X-MASC as a solution of IBC for 
+data center application. It has several advantages. It combines 
+the benefits of traditional STC and LLC converters. It uses 
+less switches to achieve the same conversion ratio compared 
+to 22X-STC. It has a higher efficiency than 22X-STC based 
+on TISL results. A 48V-2.2V MASC hardware prototype is 
+built and tested. The size of it is 52mm×52mm×7.8mm. The 
+prototype achieved a peak efficiency of 96.1%. Due to board 
+shipment delay, there are further work need to be performed 
+for the hardware prototype including pushing it to the 
+maximum load and fine tune the hardware parameters 
+including switching frequency and deadtime to maximum its 
+efficiency. Besides, the calculated efficiency and power loss 
+breakdown needs to further analyze for the potential power 
+loss based on the experiment results right now. Along with 
+the detail analyzation, high-voltage side device selection, 
+winding PCB structure comparation will be included in the 
+future journal paper. 
+REFERNCES 
+[1] S. Saggini, S. Jiang, M. Ursino, and C. Nan, “A 99% Efficient Dual-
+Phase Resonant Switched-Capacitor-Buck Converter for 48 V Data 
+Center Bus Conversions,” in 2019 IEEE Applied Power Electronics 
+Conference and Exposition (APEC), Mar. 2019, pp. 482–487. doi: 
+10.1109/APEC.2019.8721860. 
+[2] M. Ursino, R. Rizzolatti, G. Deboy, S. Saggini and K. Zufferli, "1.2 
+kW, 12 V Regulated Sigma Converter for 48 V Data Centers with 1 
+kW/in3 Power Density," 2023 IEEE Applied Power Electronics 
+Conference and Exposition (APEC), Orlando, FL, USA, 2023, pp. 
+900-905, doi: 10.1109/APEC43580.2023.10131558. 
+[3] M. Ursino, R. Rizzolatti, G. Deboy, S. Saggini and K. Zufferli, 
+"Sigma Converter Family With Common Ground for the 48 V Data 
+Center," in IEEE Transactions on Power Electronics, vol. 38, no. 9, 
+pp. 10997-11009, Sept. 2023, doi: 10.1109/TPEL.2023.3281089. 
+[4] M. Ursino, R. Rizzolatti, G. Deboy, S. Saggini and K. Zufferli, "High 
+density Hybrid Switched Capacitor Sigma Converter for Data Center 
+Applications," 2022 IEEE Applied Power Electronics Conference and 
+Exposition 
+(APEC), 
+2022, 
+pp. 
+35-39, 
+doi: 
+10.1109/APEC43599.2022.9773659. 
+[5] R. Rizzolatti, S. Saggini, C. Rainer and M. Ursino, "Novel highly 
+efficient sTwo-stage regulated 48 V - to - 12 V converter with dual 
+phase 3-level buck converter featuring natural voltage balancing," 
+2023 IEEE Applied Power Electronics Conference and Exposition 
+(APEC), 
+Orlando, 
+FL, 
+USA, 
+2023, 
+pp. 
+948-953, 
+doi: 
+10.1109/APEC43580.2023.10131477. 
+[6] M. H. Ahmed, F. C. Lee and Q. Li, "Two-Stage 48-V VRM With 
+Intermediate Bus Voltage Optimization for Data Centers," in IEEE 
+Journal of Emerging and Selected Topics in Power Electronics, vol. 
+9, 
+no. 
+1, 
+pp. 
+702-715, 
+Feb. 
+2021, 
+doi: 
+10.1109/JESTPE.2020.2976107. 
+[7] J. Zhu and D. Maksimovic, “48 V-to-1 V Transformerless Stacked 
+Active Bridge Converters with Merged Regulation Stage,” in 2020 
+IEEE 21st Workshop on Control and Modeling for Power Electronics 
+(COMPEL), 
+Nov. 
+2020, 
+pp. 
+1–6. 
+doi: 
+10.1109/COMPEL49091.2020.9265671. 
+[8] Y. Elasser et al., “Vertical Stacked 48V-1V LEGO-PoL CPU Voltage 
+Regulator with 1A/mm2 Current Density,” in 2022 IEEE Applied 
+Power Electronics Conference and Exposition (APEC), Mar. 2022, 
+pp. 1259–1266. doi: 10.1109/APEC43599.2022.9773677. 
+[9] J. Baek, P. Wang, Y. Elasser, Y. Chen, S. Jiang, and M. Chen, 
+“LEGO-PoL: A 48V-1.5V 300A Merged-Two-Stage Hybrid 
+Converter for Ultra-High-Current Microprocessors,” in 2020 IEEE 
+Applied Power Electronics Conference and Exposition (APEC), Mar. 
+2020, pp. 490–497. doi: 10.1109/APEC39645.2020.9124564. 
+[10] Y. Elasser et al., "Mini-LEGO CPU Voltage Regulator," in IEEE 
+Transactions on Power Electronics, vol. 39, no. 3, pp. 3391-3410, 
+March 2024, doi: 10.1109/TPEL.2023.3337171. 
+[11] Y. Zhu, J. Zou and R. C. N. Pilawa-Podgurski, "A 1500-A/48-V-to-
+1-V Switching Bus Converter for Next-Generation Ultra-High-Power 
+Processors," in IEEE Transactions on Power Electronics, vol. 39, no. 
+9, pp. 11340-11355, Sept. 2024, doi: 10.1109/TPEL.2024.3403670. 
+[12] N. M. Ellis, Y. Zhu and R. C. N. Pilawa-Podgurski, "Gallium Nitride-
+based 48V-to-1V Point-of-Load (PoL) Converter for Aerospace 
+Telecommunications and Computing Applications," 2024 IEEE 
+Applied Power Electronics Conference and Exposition (APEC), Long 
+Beach, 
+CA, 
+USA, 
+2024, 
+pp. 
+1384-1388, 
+doi: 
+10.1109/APEC48139.2024.10509202. 
+[13] N. M. Ellis, R. A. Abramson, R. Mahony and R. C. N. Pilawa-
+Podgurski, "The Symmetric Dual Inductor Hybrid Converter for 
+Direct 48V-to-PoL Conversion," in IEEE Transactions on Power 
+Electronics, vol. 39, no. 6, pp. 7278-7289, June 2024, doi: 
+10.1109/TPEL.2023.3259949. 
+[14] S. Jiang, S. Saggini, C. Nan, X. Li, C. Chung and M. Yazdani, 
+"Switched Tank Converters," in IEEE Transactions on Power 
+Electronics, vol. 34, no. 6, pp. 5048-5062, June 2019, doi: 
+10.1109/TPEL.2018.2868447. 
+[15] Y. Dong-Ying, K. Shih-Hao, S. Yong-Long, C. Huang-Jen, L. Kuo-
+Chi and Y. Ta-Yung, "An Improved 48-to-12V Series-Parallel 
+Resonant 
+Switched-Capacitor 
+Converter 
+for 
+Data 
+Center 
+Applications," 2021 IEEE International Future Energy Electronics 
+Conference (IFEEC), Taipei, Taiwan, 2021, pp. 1-6, doi: 
+10.1109/IFEEC53238.2021.9661888.  
+[16] M. Balutto et al., "Switched Tank Converter: Quasi-Resonant 
+Regulation for Soft Start and Mismatch Mitigation Technique," in 
+IEEE Transactions on Power Electronics, vol. 38, no. 12, pp. 15016-
+15031, Dec. 2023, doi: 10.1109/TPEL.2023.3311231. 
+[17] D. Cao and F. Z. Peng, “Zero-Current-Switching Multilevel Modular 
+Switched-Capacitor DC-DC Converter,” Industry Applications, IEEE 
+Transactions on, vol. 46, no. 6, pp. 2536–2544, 2010. 
+[18] Y. Li, X. Lyu, D. Cao, S. Jiang, and C. Nan, “A 98.55% Efficiency 
+Switched-Tank Converter for Data Center Application,” IEEE Trans. 
+on Ind. Applicat., vol. 54, no. 6, pp. 6205–6222, Nov. 2018, doi: 
+10.1109/TIA.2018.2858741.  
+[19] D. Huang, X. Wu and F. C. Lee, "Novel non-isolated LLC resonant 
+converters," 2012 Twenty-Seventh Annual IEEE Applied Power 
+Electronics Conference and Exposition (APEC), 2012, pp. 1373-
+1380, doi: 10.1109/APEC.2012.6165999. 
+[20] R. Gadelrab, F. C. Lee and Q. Li, "Three-Phase Interleaved LLC 
+Resonant Converter with Integrated Planar Magnetics for Telecom 
+and Server Application," 2020 IEEE Applied Power Electronics 
+Conference and Exposition (APEC), New Orleans, LA, USA, 2020, 
+pp. 512-519, doi: 10.1109/APEC39645.2020.9124392. 
+[21] M. H. Ahmed, F. C. Lee, Q. Li and M. d. Rooij, "Design Optimization 
+of Unregulated LLC Converter with Integrated Magnetics for Two-
+Stage 48V VRM," 2019 IEEE Energy Conversion Congress and 
+Exposition (ECCE), Baltimore, MD, USA, 2019, pp. 521-528, doi: 
+10.1109/ECCE.2019.8912785. 
+[22] M. H. Ahmed, F. C. Lee, Q. Li and M. d. Rooij, "Design Optimization 
+of Unregulated LLC Converter with Integrated Magnetics for Two-
+Stage 48V VRM," 2019 IEEE Energy Conversion Congress and 
+Exposition (ECCE), Baltimore, MD, USA, 2019, pp. 521-528, doi: 
+10.1109/ECCE.2019.8912785. 
+[23] M. Qiu, M. Wei, X. Liu, H. Meng and D. Cao, "A Family of Novel 
+Switch Capacitor Based Integrated Matrix Autotransformer LLC 
+Converter for Data Center Application," 2023 IEEE Green 
+Technologies Conference (GreenTech), Denver, CO, USA, 2023, pp. 
+118-122, doi: 10.1109/GreenTech56823.2023.10173801. 
+[24] M. Qiu, M. Wei, X. Liu, H. Meng and D. Cao, "A Matrix 
+Autotransformer Switched-Capacitor Converter for Data Center 
+Application," in IEEE Transactions on Power Electronics, vol. 38, no. 
+12, pp. 14982-14999, Dec. 2023, doi: 10.1109/TPEL.2023.3308888. 
+[25] M. Qiu, Z. Sun, X. Liu, H. Meng, V. Marzang and D. Cao, "A 15x 
+Matrix Autotransformer Switched-Capacitor DC-DC Converter for 
+Datacenter Application," 2024 IEEE Applied Power Electronics 
+Conference and Exposition (APEC), Long Beach, CA, USA, 2024, 
+pp. 88-93, doi: 10.1109/APEC48139.2024.10509024. 
+[26] H. Meng, M. Qiu, Z. Sun, X. Liu and D. Cao, "A 9x Matrix 
+Autotransformer 
+Switched-Capacitor 
+DC-DC 
+Converter 
+for 
+Datacenter Application," 2023 IEEE Energy Conversion Congress 
+and Exposition (ECCE), Nashville, TN, USA, 2023, pp. 3305-3312, 
+doi: 10.1109/ECCE53617.2023.10362716. 
+[27] M. Qiu, M. Wei, X. Liu, H. Meng and D. Cao, "The Matrix 
+Autotransformer Switched Capacitor DC-DC Csonverter with Partial 
+Power Processing Regulator for Datacenter Application," 2023 IEEE 
+2707
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply
+
+
+--- PAGE 8 ---
+Energy Conversion Congress and Exposition (ECCE), Nashville, TN, 
+USA, 
+2023, 
+pp. 
+1305-1309, 
+doi: 
+10.1109/ECCE53617.2023.10362952. 
+[28] Y. Yang, Y. Lai, S. Wang and Z. Luo, "A Modeling Technique for 
+Low-Frequency Near-field Radiated EMI Measurement Based on the 
+Study of the Mechanism of the Monopole Antenna," 2022 IEEE 
+Energy Conversion Congress and Exposition (ECCE), Detroit, MI, 
+USA, 2022, pp. 1-8, doi: 10.1109/ECCE50734.2022.9947985.
+ 
+2708
+Authorized licensed use limited to: Zhejiang University Downloaded on October 29 2026 at 01:38:23 UTC from IEEE Xplore
+Restrictions apply

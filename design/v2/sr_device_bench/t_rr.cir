@@ -1,0 +1,21 @@
+* reverse recovery test v3: half-bridge, low-side DUT diode, 20 V, di/dt=400 A/us
+Vdd vdd 0 20
+S1 vdd sw g1 0 SW1
+.model SW1 SW(Ron=0.05 Roff=1G Vt=2.5)
+Vg1 g1 0 PWL(0 0 1n 0 2n 5 25n 5 26n 0 60n 0 61n 5 200n 5)
+L1 sw out 50n
+Cout out 0 100u IC=0
+Vs sw sd 0
+D1 0 sd DB
+.model DB D(Is=6e-12 N=1.05 tt=10n Cjo=0)
+.tran 0 200n 0 0.05n uic
+.meas tran VSW10 FIND V(sw) AT 10n
+.meas tran VSW30 FIND V(sw) AT 30n
+.meas tran VSW55 FIND V(sw) AT 55n
+.meas tran IL10 FIND I(L1) AT 10n
+.meas tran IL55 FIND I(L1) AT 55n
+.meas tran VOUT10 FIND V(out) AT 10n
+.meas tran IF55 FIND -I(Vs) AT 55n
+.meas tran IRR MIN -I(Vs) FROM 60n TO 100n
+.meas tran TZ WHEN -I(Vs)=0 FALL=1 TD=60n
+.end

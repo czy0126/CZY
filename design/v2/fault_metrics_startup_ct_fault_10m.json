@@ -1,0 +1,25 @@
+{
+  "deck": "startup_ct_fault_10m",
+  "fault_engage_ms": 3.95,
+  "oc_trip_ms": 4.233307553950931,
+  "fault_to_trip_us": 283.30755395093115,
+  "peak_primary_A": 52.3492431640625,
+  "peak_time_ms": 4.385908828075526,
+  "first_sustained_drive_stop_ms": 4.2333124526773185,
+  "max_continuous_drive_low_us": 147.54,
+  "shutdown_intervals_ms": [
+    [
+      4.2333,
+      4.3808,
+      false
+    ]
+  ],
+  "gate_restart_bursts": 1,
+  "last_gate_high_after_fault_ms": 5.0,
+  "i2t_to_trip_mA2s": 73.01362943735694,
+  "i2t_to_end_mA2s": 189.7342039607821,
+  "vout_min_V": 0.03766912221908569,
+  "vout_end_V": 1.4343057870864868,
+  "vout_tail_avg_V": 1.429092526435852,
+  "recovered": true
+}

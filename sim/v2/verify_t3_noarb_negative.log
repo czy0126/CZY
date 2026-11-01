@@ -1,0 +1,20 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_t3_noarb_negative.cir
+Start Time: Sat Oct 31 10:07:39 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.094 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_t3_noarb_negative.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3.lib
+
+gate_a_max: MAX(V(ga))=10.8884353638 FROM 0 TO 7e-06
+gate_b_max: MAX(V(gb))=10.8884353638 FROM 0 TO 7e-06
+overlap_max: MAX(V(ov))=1 FROM 0 TO 7e-06
+qa_max: MAX(V(qa))=1 FROM 0 TO 7e-06
+qb_max: MAX(V(qb))=1 FROM 0 TO 7e-06

@@ -1,0 +1,42 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\comm_v3\sr_commutation_v3_debug_orig.cir
+Start Time: Sat Oct 31 12:26:38 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Changing Tseed to 2e-13
+Changing Tseed to 2e-15
+Total elapsed time: 0.361 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\comm_v3\sr_commutation_v3_debug_orig.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+irev_peak: MAX(I(Vsa) )=2.19642853737 FROM 1e-05 TO 2e-05
+icond_peak: MIN(I(Vsa) )=-39.9995956421 FROM 1e-05 TO 2e-05
+vds_min: MIN(V(d1) )=-0.784483909607 FROM 1e-05 TO 2e-05
+vds_max: MAX(V(d1) )=4.99999809265 FROM 1e-05 TO 2e-05
+vgs_max: MAX(V(gda) )=10.8927373886 FROM 1e-05 TO 2e-05
+gate_overlap: MAX(min(V(gda),V(gdb)) )=0.00718335134443 FROM 1e-05 TO 2e-05
+isr_19: I(Vsa) =-39.9995690654 at 1.925e-05
+vgs_19: V(gda) =10.8922741945 at 1.925e-05
+vds_19: V(d1) =-0.0357991154345 at 1.925e-05
+isr2_19: I(Vsb) =1.71813351227e-06 at 1.925e-05
+vgs2_19: V(gdb) =7.70611875878e-05 at 1.925e-05
+vds2_19: V(d2) =4.99999745818 at 1.925e-05
+qr15: V(qr) =138.443145752 at 1.5e-05
+qr20: V(qr) =207.560577393 at 2e-05
+qrev_c: (QR20-QR15)*1n=6.91174316406e-08
+qg15: V(qg) =196.315536499 at 1.5e-05
+qg20: V(qg) =263.084991455 at 2e-05
+qg_c: (QG20-QG15)*1n=6.67694549561e-08
+bd15: V(bd) =13226.5554613 at 1.5e-05
+bd20: V(bd) =19078.8476562 at 2e-05
+ebd_c: (BD20-BD15)*1n=5.85229219497e-06
+ge15: V(ge) =1849.97244362 at 1.5e-05
+ge20: V(ge) =2467.1159668 at 2e-05
+ege_c: (GE20-GE15)*1n=6.1714352318e-07

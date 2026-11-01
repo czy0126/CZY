@@ -1,0 +1,12 @@
+* multiple .ic lines?
+V1 1 0 5
+R1 1 n 10k
+R2 n 0 1k
+C1 n 0 1u
+R3 1 m 10k
+R4 m 0 1k
+C2 m 0 1u
+.ic V(n)=2
+.ic V(m)=4
+.tran 0 100u 0 1u uic
+.end

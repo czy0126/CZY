@@ -1,0 +1,203 @@
+{
+  "core": {
+    "name": "TDK EILP32 N97 B66287G0000X197 + B66287K0000X197",
+    "Ae_m2": 0.00013,
+    "Amin_m2": 0.000128,
+    "le_m": 0.0351,
+    "Ve_m3": 4.56e-06,
+    "AL_ungapped_nH": 6300.0,
+    "height_nominal_m": 0.0095,
+    "height_max_m": 0.0098,
+    "window_height_m": 0.0032,
+    "window_tol_m": 0.00015,
+    "outer_length_m": 0.03175,
+    "centre_leg_width_m": 0.02035,
+    "core_depth_m": 0.0254,
+    "Bsat_T": 0.31,
+    "PV_ref_W_per_set": 2.2,
+    "B_ref_T": 0.2,
+    "f_ref_Hz": 100000.0
+  },
+  "operating_point_95a": {
+    "f_Hz": 200626.0,
+    "Ipri_rms_A": 8.5971,
+    "Ipri_pk_A": 13.1229,
+    "Isec_rms_A": 18.1182,
+    "Isec_pair_rms_A": 26.84127,
+    "Iout_A": 94.9317,
+    "Vout_V": 1.8919845,
+    "Pout_W": 178.9869,
+    "Pin_W": 189.7903,
+    "P_sr_branch_W": 6.6582,
+    "P_other_nonmag_W": 2.4949,
+    "P_model_primary_cu_W": 0.8869,
+    "P_model_secondary_cu_W": 0.3939,
+    "P_model_lr_W": 0.3696
+  },
+  "operating_point_100a": {
+    "f_Hz": 200622.2387725369,
+    "Ipri_rms_A": 9.45014,
+    "Ipri_pk_A": 13.88142,
+    "Isec_rms_A": 19.92219,
+    "Isec_pair_rms_A": 28.17835,
+    "Iout_A": 99.82464,
+    "Vout_V": 1.886686,
+    "Pout_W": 188.345331,
+    "RL_ohm": 0.0189,
+    "window_us": 7.704687,
+    "window_us_end": 117.363517,
+    "periods": 22.0,
+    "P_model_lr_W": 0.4465853690003643,
+    "P_other_nonmag_W": 3.0145720701271883,
+    "P_sr_branch_W": 7.338069712513994
+  },
+  "gap_m": 0.00012109593015837226,
+  "gap_mm": 0.12109593015837226,
+  "flux": {
+    "48v_delta_b_t": 0.03834152947428395,
+    "48v_b_pk_t": 0.019170764737141976,
+    "50v_b_pk_t": 0.01996954660118956,
+    "46v_b_pk_t": 0.018371982873094397
+  },
+  "core_loss_w_per_set_50v": 0.08828227728468117,
+  "core_loss_w_total_50v": 0.3531291091387247,
+  "copper_95a": {
+    "primary_unit_ohm": 0.002501036282638067,
+    "secondary_half_ohm": 0.00039088968508517273,
+    "primary_w": 0.7394076512313942,
+    "secondary_w": 1.0265362637533941,
+    "total_w": 1.7659439149847884
+  },
+  "copper_100a": {
+    "primary_unit_ohm": 0.0025010260598137372,
+    "secondary_half_ohm": 0.000390888949298493,
+    "primary_w": 0.8934179898819625,
+    "secondary_w": 1.2411307484010459,
+    "total_w": 2.1345487382830086
+  },
+  "winding_stack": [
+    {
+      "layer": "P1 0.1 mm Cu",
+      "thickness_mm": 0.1
+    },
+    {
+      "layer": "Kapton 0.05 mm",
+      "thickness_mm": 0.05
+    },
+    {
+      "layer": "S_A 2 x 0.1 mm Cu",
+      "thickness_mm": 0.2
+    },
+    {
+      "layer": "Kapton 0.10 mm",
+      "thickness_mm": 0.1
+    },
+    {
+      "layer": "P2 0.1 mm Cu",
+      "thickness_mm": 0.1
+    },
+    {
+      "layer": "Kapton 0.10 mm",
+      "thickness_mm": 0.1
+    },
+    {
+      "layer": "S_B 2 x 0.1 mm Cu",
+      "thickness_mm": 0.2
+    },
+    {
+      "layer": "Kapton 0.05 mm",
+      "thickness_mm": 0.05
+    },
+    {
+      "layer": "P3 0.1 mm Cu",
+      "thickness_mm": 0.1
+    },
+    {
+      "layer": "Outer tape 0.10 mm",
+      "thickness_mm": 0.1
+    }
+  ],
+  "winding_stack_mm": 1.1,
+  "window_height_mm": 3.2,
+  "window_width_mm": 5.7,
+  "copper_width_max_mm": 22.4,
+  "height": {
+    "flat_no_pocket": {
+      "nominal_m": 0.0096,
+      "worst_case_m": 0.00994,
+      "margin_m": 6.0000000000001025e-05
+    },
+    "pocket_0.5mm_no_clamp": {
+      "nominal_m": 0.009099999999999999,
+      "worst_case_m": 0.009439999999999999,
+      "margin_m": 0.0005600000000000015
+    },
+    "with_0.5mm_clamp": {
+      "nominal_m": 0.0101,
+      "worst_case_m": 0.01044,
+      "margin_m": -0.0004399999999999994
+    }
+  },
+  "loss_at_95a": {
+    "iout_a": 94.9317,
+    "pout_at_converter_w": 178.9869,
+    "pout_at_load_w": 177.63509585026648,
+    "p_magnetic_copper_w": 1.7659439149847884,
+    "p_core_w": 0.3531291091387247,
+    "p_lr_w": 0.3696,
+    "p_sr_w": 6.6582,
+    "p_other_model_w": 2.4949,
+    "p_output_path_w": 1.3518041497335,
+    "p_aux_w": 0.75,
+    "total_loss_w": 13.743577173857012,
+    "converter_loss_w": 12.391773024123513,
+    "efficiency_at_converter_pct": 93.52499793821774,
+    "efficiency_pct": 92.81864747169367
+  },
+  "loss_at_100a": {
+    "iout_a": 99.82464,
+    "pout_at_converter_w": 188.345331,
+    "pout_at_load_w": 186.85058718733055,
+    "p_magnetic_copper_w": 2.1345487382830086,
+    "p_core_w": 0.35312910913872453,
+    "p_lr_w": 0.4465853690003643,
+    "p_sr_w": 7.338069712513994,
+    "p_other_model_w": 3.0145720701271883,
+    "p_output_path_w": 1.4947438126694401,
+    "p_aux_w": 0.75,
+    "total_loss_w": 15.53164881173272,
+    "converter_loss_w": 14.03690499906328,
+    "efficiency_at_converter_pct": 93.06416152101006,
+    "efficiency_pct": 92.3255869098093
+  },
+  "output_100a": {
+    "46v": {
+      "vin_v": 46.0,
+      "v_ideal_v": 1.9166666666666667,
+      "vout_v": 1.8031536101707957,
+      "pout_w": 180.31536101707957
+    },
+    "48v": {
+      "vin_v": 48.0,
+      "v_ideal_v": 2.0,
+      "vout_v": 1.886486943504129,
+      "pout_w": 188.64869435041288
+    },
+    "50v": {
+      "vin_v": 50.0,
+      "v_ideal_v": 2.0833333333333335,
+      "vout_v": 1.9698202768374624,
+      "pout_w": 196.98202768374625
+    },
+    "vin_for_200w": 50.72431335590091
+  },
+  "r_out_equiv_ohm": 0.0011351305649587107,
+  "notes": [
+    "Design estimates, not measurements; currents come from the model bench.",
+    "100 A RMS currents are measured on the 18.9 mohm deck, not scaled by I^2.",
+    "Core loss is a B^2 f^2 bound anchored to the N97 200 mT/100 kHz/100 degC point.",
+    "Dowell F_R is a 1-D foil estimate; fringing flux at the 0.121 mm gap is not modelled.",
+    "The 18 mm copper width is a choice inside the 22.4 mm mechanical maximum.",
+    "200 W at 100 A needs ~50.7 V input with the measured 1.135 mohm output drop."
+  ]
+}

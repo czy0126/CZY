@@ -1,0 +1,161 @@
+* models/sr_timing_v3_2.lib -- sr_timing_v3_1.lib plus an off-blank soft rail.
+*
+* Only change vs sr_timing_v3_1.lib (model robustness; no timing change):
+*   the off-blank integrator ramped its state at 1 V/us until it reached the
+*   literal 10 V in `if(V(off,S)<10,-1m,0)` and then stopped dead.  With no
+*   restoring force except a 1 Gohm leak the state settles exactly ON that
+*   branch, where the driving current is discontinuous, so a transient that
+*   parks there cannot step (observed: 1e-18 s steps and no progress at
+*   t = 114.65 us in sim/v2/sr_tank_dual.cir, where REG=0 keeps every gate
+*   off for the first 130 us and nothing ever resets the timer).  The ramp
+*   current is now soft-limited:
+*     I = -1m * limit((10 - V(off,S))/0.1, 0, 1)
+*   which is continuous, still exactly 1 V/us below 9.9 V, and pins the state
+*   asymptotically near 10 V instead of onto a discontinuity.  The only
+*   consumer compares V(off,S) with BOFF*1e6 (0.65 V at BOFF=650n), so the
+*   knee at 9.9 V cannot move any decision or any published number.
+*
+* models/sr_timing_v3_1.lib -- sr_timing_v3.lib plus an explicit gate-load parameter.
+*
+* Only change vs sr_timing_v3.lib (see design/v2/gate_load_calibration.md):
+*   the lumped gate capacitor is now a parameter, and an optional pin capacitor
+*   is added to keep the gate pin from being an algebraic node when CGATE is 0:
+*     CGATE = 6.7n  lumped MOSFET-gate stand-in for IDEAL-switch benches only
+*     CGATE = 0     use with SR_DEVICE, whose Cgs/Cgd already carry the gate charge
+*     CPIN  = 0     driver-pin + trace capacitance; 100p is a numerical
+*                   regularizer with a bounded effect (<2% on the die gate edge)
+*   Defaults reproduce sr_timing_v3.lib exactly (CGATE=6.7n, CPIN=0).
+*
+* models/sr_timing_v3.lib -- corrected independent engineering surrogate of the
+* UCC24624 dual-channel SR timing/interlock state machine.  NOT TI silicon and NOT
+* a guaranteed-silicon model.  It reproduces the documented digital sequencing of
+* TI UCC24624 SLUSD48C (Rev.C) sections 7.5/7.6, 8.3.4.1-8.3.4.4, 8.4.1, 8.4.3 so
+* that timing/interlock behaviour can be exercised.  It does NOT reproduce the
+* factory-trimmed thresholds, min/max corners, proportional gate drive law, gate
+* driver edge rates, standby mode, VSS offset current or the adaptive 155/275 ns
+* turn-on delay.  PGD is the same uncalibrated smooth law as v2; do not sign off
+* hardware from it.
+*
+* Changes vs sr_timing_v2.lib (see design/v2/sr_timing_v3_results.md):
+*   1. Explicit deterministic first-come-first-served arbitration latch (A per
+*      channel).  CH1 wins an exact solver-time tie.  Loser is blocked by the
+*      other channel's A and Q, and its on-delay timer is reset rather than
+*      accumulated, so a blocked request is rejected, not queued.
+*   2. Off-blank timer: reset while Q is high; runs only while Q is low AND the
+*      channel is armed (VD>ARM).  The effective start is therefore the LATER of
+*      the Q falling edge and the VD>ARM crossing.  With a slow drain rise the
+*      ARM crossing comes after the gate has fallen and the 650 ns starts there,
+*      matching the datasheet VD-comparator anchor.  With a fast rise the ARM
+*      crossing occurs while the gate is still on (ARM before the TOFF commit),
+*      and the model starts at the gate fall instead -- i.e. 23-100 ns later than
+*      the datasheet anchor, which lengthens the block and is conservative.
+*      (An earlier "measured from the turn-off edge, hence conservative" comment
+*      was wrong: starting later is conservative, starting earlier is not.)  age>
+*      BON is kept because the audit confirmed it is the 475 ns on-blank, not an
+*      off-blank bug.
+*   3. On-blank (BON=475 ns) is anchored at the Q assertion; VD is ignored and a
+*      D crossing during the blank neither extends it nor consumes the next
+*      pulse's blank (age resets only when Q is low).
+*   4. A request must stay continuously eligible for TON (155 ns); shorter pulses
+*      reset the on-delay timer and produce no gate.  A pulse arriving while the
+*      other channel owns the cycle is blocked and its timer reset (not queued).
+*   5. Pre-arm qualification uses the guaranteed earliest REG UVLO threshold
+*      VREGON(min)=4.1 V as the upper window edge, and accepts a VD>1.5 V event
+*      anywhere below it (no undocumented 1 V floor).  A violation flag is latched
+*      if REG crosses 4.1 V with no prior VD>1.5 V; both PRE and the violation
+*      flag clear on a REG power-cycle below 50 mV.  This is a modelling choice to
+*      keep the documented condition testable; it is not a claim about silicon.
+*
+* Pins: D1 D2 G1 G2 REG S PRE.  Parameters: TON TOFF BON BOFF ARM ONTH OFFTH PGD TAU
+*   TON  = turn-on delay after a held request (155 ns typ)
+*   TOFF = turn-off propagation delay after the off comparator (23 ns typ)
+*   BON  = on-time blanking (475 ns typ)
+*   BOFF = off-time blanking (650 ns typ)
+*   ARM  = re-arm / pre-arm drain threshold (1.5 V typ)
+*   ONTH = turn-on threshold, VD falling (-265 mV typ)
+*   OFFTH= turn-off threshold, VD rising (+10.5 mV typ)
+*
+.subckt SR_CH3 D G REG S OQ OA ORQ OK Q A RQ params: TON=155n TOFF=23n BON=475n BOFF=650n ARM=1.5 ONTH=-.265 OFFTH=.0105 PGD=0 TAU=1n SECOND=0 CGATE=6.7n CPIN=0
+* ---------------------------------------------------------------- request
+* Raw request: drain below ONTH, channel idle, armed, own off-blank expired.
+* Deliberately independent of the other channel so there is no algebraic loop.
+BRQ RQ S V=if(V(D,S)<ONTH,if(V(Q,S)<.5,if(V(arm,S)>.5,if(V(off,S)>BOFF*1e6,if(V(OK,S)>.5,1,0),0),0),0),0)
+* Eligible request: other channel is not conducting and does not own the cycle.
+BR R S V=if(V(RQ,S)>.5,if(V(OQ,S)<.5,if(V(OA,S)<.5,1,0),0),0)
+* Arbitration set term.  SECOND=0 (CH1) wins an exact tie; SECOND=1 (CH2) is
+* blocked when CH1 has an equally valid raw request and owns nothing yet.
+BSET SET S V=if(V(R,S)>.5,if(SECOND,if(V(ORQ,S)>.5,if(V(OQ,S)>.5,1,if(V(OA,S)>.5,1,0)),1),1),0)
+* ---------------------------------------------------------------- arbitration latch A
+CA A S 1n IC=0
+BA A S I=if(V(Q,S)>.5,0,if(V(SET,S)>.5,-(1-V(A,S))*(1n/TAU),V(A,S)*(1n/TAU)))
+RA A S 1G
+* ---------------------------------------------------------------- on-delay timer (us)
+Cton ton S 1n IC=0
+Bton ton S I=if(V(R,S)>.5,if(V(ton,S)<10,-1m,0),V(ton,S))
+Rton ton S 1G
+* ---------------------------------------------------------------- gate state Q
+Cq Q S 1n IC=0
+Bq Q S I=if(V(Q,S)>.5,if(V(toff,S)>TOFF*1e6,V(Q,S)*(1n/TAU),-(1-V(Q,S))*(1n/TAU)),if(V(A,S)>.5,if(V(ton,S)>TON*1e6,-(1-V(Q,S))*(1n/TAU),V(Q,S)*(1n/TAU)),V(Q,S)*(1n/TAU)))
+Rq Q S 1G
+* ---------------------------------------------------------------- on-time / on-blank age (us)
+Cage age S 1n IC=0
+Bage age S I=if(V(Q,S)>.5,if(V(age,S)<10,-1m,0),V(age,S))
+Rage age S 1G
+* ---------------------------------------------------------------- turn-off commit (23 ns)
+* Only after on-blank.  A crossing above OFFTH latches the turn-off commit, so a
+* short excursion still turns the channel off after TOFF.
+Ctoff toff S 1n IC=0
+Btoff toff S I=if(V(Q,S)>.5,if(V(age,S)>BON*1e6,if(V(D,S)>OFFTH,if(V(toff,S)<10,-1m,0),if(V(toff,S)>1e-4,if(V(toff,S)<10,-1m,0),V(toff,S))),V(toff,S)),V(toff,S))
+Rtoff toff S 1G
+* ---------------------------------------------------------------- arm latch (VD>1.5 while off)
+Carm arm S 1n IC=0
+Barm arm S I=if(V(Q,S)>.5,V(arm,S)*(1n/TAU),if(V(D,S)>ARM,-(1-V(arm,S))*(1n/TAU),0))
+Rarm arm S 1G
+* ---------------------------------------------------------------- off-blank timer (us)
+* Held at zero while Q is high.  Runs only while Q is low and arm is set, and
+* arm itself is set by VD>1.5 V -- but only once Q is low, because arm is also
+* reset while Q is high.  The effective start is therefore max(Q falling edge,
+* VD>ARM crossing):
+*   slow drain rise -> ARM crossing after the gate fall -> starts at the
+*     datasheet anchor (sim/v2/verify_offblank_delayed_arm.cir);
+*   fast drain rise -> ARM crossing while the gate is still on -> starts at the
+*     gate fall, 23-100 ns after the anchor, which lengthens the block
+*     (sim/v2/verify_offblank_boundary.cir).
+* Starting at the gate fall is conservative; the earlier comment that claimed an
+* early start was "conservative" had the sign backwards (an early expiry removes
+* blocking).  Neither path starts earlier than the datasheet anchor.
+Coff off S 1n IC=0
+Boff off S I=if(V(Q,S)>.5,V(off,S),if(V(arm,S)>.5,-1m*limit((10-V(off,S))/0.1,0,1),V(off,S)))
+Roff off S 1G
+* ---------------------------------------------------------------- gate driver (same as v2)
+Bdrv drv S V=if(V(Q,S)>.5,if(PGD,limit(3+(-V(D,S)-.035)*80,2.6,10.9),min(10.9,V(REG,S))),0)
+Bdrive G S I=limit((V(G,S)-V(drv,S))/if(V(drv,S)>V(G,S),8.7,3.1),-1.5,4)
+Rgs G S 10k
+Cgate G S {CGATE}
+Cpin G S {CPIN}
+.ends SR_CH3
+*
+.subckt SR_TIMING D1 D2 G1 G2 REG S PRE params: TON=155n TOFF=23n BON=475n BOFF=650n ARM=1.5 ONTH=-.265 OFFTH=.0105 PGD=0 TAU=1n CGATE=6.7n CPIN=0
+* ---------------------------------------------------------------- pre-arm qualification
+* PRE latches when any VD exceeds ARM anywhere below the guaranteed earliest
+* REG UVLO turn-on (4.1 V).  No 1 V floor.  Cleared only by a REG power cycle.
+Bpl pl S V=if(V(REG,S)<0.1,0,if(V(REG,S)<4.1,if(max(V(D1,S),V(D2,S))>ARM,1,0),0))
+Cpre PRE S 1n IC=0
+Bpre PRE S I=if(V(REG,S)<0.05,V(PRE,S)*(1n/TAU),if(V(pl,S)>.5,-(1-V(PRE,S))*(1n/TAU),0))
+Rpre PRE S 1G
+* ---------------------------------------------------------------- REG UVLO (typ 4.5/4.0)
+Cuv uv S 1n IC=0
+Buv uv S I=if(V(REG,S)>4.5,-(1-V(uv,S))*(1n/TAU),if(V(REG,S)<4.0,V(uv,S)*(1n/TAU),0))
+Ruv uv S 1G
+* ---------------------------------------------------------------- violation latch
+* REG crossing 4.1 V with no prior VD>1.5 V is an unsupported power-up order.
+* Latched until REG drops below 50 mV (power cycle).  Flag only; it does not
+* assert any claim about physical silicon latching.
+Cviol viol S 1n IC=0
+Bviol viol S I=if(V(REG,S)<0.05,V(viol,S)*(1n/TAU),if(V(REG,S)>4.1,if(V(PRE,S)<.5,-(1-V(viol,S))*(1n/TAU),0),0))
+Rviol viol S 1G
+Bok ok S V=if(V(PRE,S)>.5,if(V(uv,S)>.5,if(V(viol,S)<.5,1,0),0),0)
+* ---------------------------------------------------------------- channels
+X1 D1 G1 REG S q2 a2 rq2 ok q1 a1 rq1 SR_CH3 TON={TON} TOFF={TOFF} BON={BON} BOFF={BOFF} ARM={ARM} ONTH={ONTH} OFFTH={OFFTH} PGD={PGD} TAU={TAU} CGATE={CGATE} CPIN={CPIN} SECOND=0
+X2 D2 G2 REG S q1 a1 rq1 ok q2 a2 rq2 SR_CH3 TON={TON} TOFF={TOFF} BON={BON} BOFF={BOFF} ARM={ARM} ONTH={ONTH} OFFTH={OFFTH} PGD={PGD} TAU={TAU} CGATE={CGATE} CPIN={CPIN} SECOND=1
+.ends SR_TIMING

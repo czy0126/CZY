@@ -1,0 +1,57 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\sr_device_bench_qrr.cir
+Start Time: Sat Oct 31 10:01:01 2026
+Options:plotwinsize=0 method=gear itl4=100 gmin=1e-9
+
+.step cs=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-09
+Direct Newton iteration succeeded in finding operating point.
+
+.step cs=1
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.205 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\sr_device_bench_qrr.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+
+Measurement: if90
+  step	-I(Vs) 	at
+     1	10	9e-08
+     2	10	9e-08
+
+Measurement: irr
+  step	MIN(-I(Vs) )	FROM	TO
+     1	-8.92878341675	1e-07	3e-07
+     2	-11.9254722595	1e-07	3e-07
+
+Measurement: tz
+  step	-I(Vs)=0 
+     1	1.24999999947e-07
+     2	1.24999999947e-07
+
+Measurement: tret
+  step	-I(Vs)=-0.05 
+     1	1.50382337287e-07
+     2	1.56578635935e-07
+
+Measurement: qrr
+  step	INTEG(-I(Vs) )	FROM	TO
+     1	-1.13130573428e-07	1.25e-07	4e-07
+     2	-1.79417949901e-07	1.25e-07	4e-07
+
+Measurement: trr
+  step	TRET-TZ
+     1	2.53823373406e-08
+     2	3.15786359877e-08
+
+Measurement: vamax
+  step	MAX(V(a) )	FROM	TO
+     1	20.8772602081	1e-07	3e-07
+     2	20.9801273346	1e-07	3e-07

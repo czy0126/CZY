@@ -1,0 +1,45 @@
+* Adversarial check: reverse charge per cycle for the 40 A / 200 kHz v2 commutation bench.
+* Same excitation as sim/v2/sr_commutation_sweep.cir (PGD=0, TDELAY=23n is step 3),
+* plus a charge integrator on the reverse part of the SR branch current.
+.include ../../models/sr_timing_v2.lib
+.param PGD=0 TDELAY=23n
+Vclamp bus 0 4
+Vreg reg 0 PWL(0 0 1u 0 2u 11 30u 11)
+Rinit1 bus d1 10k
+Rinit2 bus d2 10k
+Bload1 d1 0 I=if(time>3u,40*sin(2*pi*200k*(time-3u)),0)
+Bload2 d2 0 I=if(time>3u,-40*sin(2*pi*200k*(time-3u)),0)
+Dcl1 d1 bus CLAMP
+Dcl2 d2 bus CLAMP
+.model CLAMP D(Ron=.02 Roff=1G Vfwd=.2)
+Vsa d1 da 0
+Vsb d2 db 0
+Sa da 0 ga 0 MOSCHANNEL
+Sb db 0 gb 0 MOSCHANNEL
+Da 0 da BODY
+Db 0 db BODY
+.model MOSCHANNEL SW(Ron=1.5m Roff=1G Vt=2 Vh=-.2)
+.model BODY D(Ron=1.5m Roff=1G Vfwd=.65)
+Cda da 0 2n
+Cdb db 0 2n
+Xsr d1 d2 ga gb reg 0 pre SR_TIMING PGD={PGD} TOFF={TDELAY}
+* charge integrator: reverse part only, then forward part only
+Bqr qr 0 I=max(0,-I(Sa))
+Cqr qr 0 1n
+Rqr qr 0 1G
+Bqf qf 0 I=min(0,-I(Sa))
+Cqf qf 0 1n
+Rqf qf 0 1G
+.step param PGD list 0 1
+.step param TDELAY list 5.5n 23n 40n
+.tran 0 20u 0 2n
+.save V(d1) V(d2) V(ga) V(gb) I(Sa) V(qr) V(qf)
+.meas tran REVERSE_PEAK MAX (-I(Sa)) FROM 10u TO 20u
+.meas tran GATE_OVERLAP MAX min(V(ga),V(gb)) FROM 10u TO 20u
+.meas tran QR15 FIND V(qr) AT=15u
+.meas tran QR20 FIND V(qr) AT=20u
+.meas tran QREV_C PARAM QR20-QR15
+.meas tran QF15 FIND V(qf) AT=15u
+.meas tran QF20 FIND V(qf) AT=20u
+.meas tran QFWD_C PARAM QF20-QF15
+.end

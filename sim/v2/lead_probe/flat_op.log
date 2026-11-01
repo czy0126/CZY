@@ -1,0 +1,23 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\lead_probe\flat_op.cir
+Start Time: Sat Oct 31 09:41:41 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.040 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\lead_probe\flat_op.cir
+
+vgi: V(gi)=10 at 0.0449
+vsi: V(si)=0 at 0.0449
+vvgs: V(vgs)=10 at 0.0449
+vr: V(r)=0.000897501071449 at 0.0449
+visat: V(isat)=1358.31237793 at 0.0449
+vdi: V(di)=0.0449000000954 at 0.0449
+vdsi: V(di,si)=0.0449000000954 at 0.0449
+ich: I(Bch)=50.0269622803 at 0.0449
+ivd: I(Vd)=-50.0269622803 at 0.0449

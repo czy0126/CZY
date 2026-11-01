@@ -1,0 +1,125 @@
+﻿**************************************************************
+* (C) Copyright 2025 ROHM Co.,Ltd. All right reserved. 
+**************************************************************
+********** SPICE model: SCT4090KX_nsp_r4p1 *****************
+*
+*Released by       : ROHM Co., Ltd
+*Component         : SCT4090KE
+**                   Discrete
+**                   1200V 19A 90mOhm
+*Date              : 2025/3/18
+*Model Type        : Transient
+*Format            : SPICE
+*Model Revision    : NSP r4p1
+*
+****************Revision update history***********************
+*1.0  - 2025/3/18 : first version
+*
+**************************************************************
+*
+* SCT4090K_nsp_r4p1
+**************************************************************
+
+*********************D G S
+.SUBCKT SCT4090KE_L3 1 2 3
++ PARAMS:
++ Tj={TEMP}
+
+*TO-247-3L Package Parasitics
+.PARAM Lm = 0  R_shnt_pkg = 10  L_d = 2.276n  ESR_d = 82.14u  L_g = 8.824n  ESR_g = 19.44m
+.PARAM L_ps = 4.817n  ESR_ps = 553.4u
+
+
+R_RD   1 11 {ESR_d}
+LD    11 12 {L_d}
+RS_LD 11 12 {R_shnt_pkg}
+
+RS_LG  2 21 {ESR_g}
+LG    21 22 {L_g}
+R_LG  21 22 {R_shnt_pkg}
+
+R_RPS  3 31 {ESR_ps}
+LPS   31 32 {L_ps - Lm}
+R_LPS 31 32 {R_shnt_pkg}
+
+V3   32 34 0
+
+
+
+X1 12 22 34 Chip_SCT4090K_L3
++ TCNC={Tj}
+.ENDS SCT4090KE_L3
+
+********* ********* ********* ********* ********* ********* ********* ********* ********* *********
+.SUBCKT Chip_SCT4090K_L3 D G S
++ PARAMS: TJNC={temp} kvf=1.0 delta_vt=0.0
+
+* Channel current parameters
+.PARAM  K=1.786E+00 A=8.737E-02 B=1.646E-02 C=-7.340E+00 D=-1.304E+01 E=-1.540E-04 F=-1.825E+01
++  P=1.510E+00 Q=2.683E-02 R=3.963E-01 RD=3.608E-04 L=7.619E-03 L2=3.219E-07 G=3.913E+00
++  GL=9.983E-05 TK=-7.114E-01 TA=-2.048E-01 TB=-2.623E-04 TC=-1.436E+00 TD=-8.103E-01 TE=-6.580E-08
++  TF=-8.939E-02 TP=-5.378E-01 TQ=-8.959E-01 TR=-5.810E-01 TRD=3.589E-07 TL=1.069E-05 TL2=1.000E-09
++  TG=-1.084E+00 TGL=1.009E-07
+
+* Body diode parameters
+.PARAM  VF={5.763284E-02*kvf} Kdi=1.336E-06 Gdi=1.696E+00 Cdi=1.640E-01 NN=1.904E-01 Rd_D=9.485E-02
++  Dibase=3.275E+00 TVF=1.198E+01 TKdi=1.581E+01 TGdi=-8.206E-01 TCdi=8.350E-01 TNN=1.376E+00
++  TRd_D=-6.219E-04 TDibase=6.107E-01
+
+* Capacitance parameters
+.PARAM  NDS=6.218E-01 CDS0=1.325E-09 CDSMIN=5.787E-17 CGS0=1.023E-09 NV=1.000E+00 CJO=1.758E+03 M=2.448E-02
++  VJ=6.999E+02 FC=1.891E-01 K6R=-3.917E-01 K7R=-2.789E+02 K8R=2.086E+00 K9R=-2.983E+00 K10R=1.015E+00
++  K11R=-6.311E-01 K12R=1.400E+03 CGSx=1.000E+01
+
+* Parasitic gate resistance
+.PARAM  RG=5.500E+00 RS=1.000E-06 RGSR=2.000E+01
+
+
+************************************Above: Model Parameters****************************************
+.PARAM K_T={K*(1+TK*TANH(0.01*(TJNC-25)))} A_T={A*(1+TA*TANH(0.01*(TJNC-25)))}
+.PARAM B_T={B*(1+TB*TANH(0.01*(TJNC-25)))} C_T={(C-delta_vt)*(1+TC*TANH(0.01*(TJNC-25)))}
+.PARAM E_T={(E-delta_vt)*(1+TE*TANH(0.01*(TJNC-25)))} F_T={(F-delta_vt)*(1+TF*TANH(0.01*(TJNC-25)))}
+.PARAM D_T={(D-delta_vt)*(1+TD*TANH(0.01*(TJNC-25)))} P_T={P*(1+TP*TANH(0.01*(TJNC-25)))}
+.PARAM Q_T={Q*(1+TQ*TANH(0.01*(TJNC-25)))} R_T={R*(1+TR*TANH(0.01*(TJNC-25)))}
+.PARAM RD_T={RD*(1+TRD*TANH(0.01*(TJNC-25)))}
+.PARAM L_T={L*(1+TL*TANH(0.01*(TJNC-25)))} L2_T={L2*(1+TL2*TANH(0.01*(TJNC-25)))}
+.PARAM G_T={G*(1+TG*TANH(0.01*(TJNC-25)))} GL_T={GL*(1+TGL*TANH(0.01*(TJNC-25)))}
+.PARAM VF_T={VF*(1+TVF*TANH(0.01*(TJNC-25)))} KDi_T={KDi*(1+TKDi*TANH(0.01*(TJNC-25)))}
+.PARAM GDi_T={GDi*(1+TGDi*TANH(0.01*(TJNC-25)))} CDi_T={CDi*(1+TCDi*TANH(0.01*(TJNC-25)))}
+.PARAM NN_T={NN*(1+TNN*TANH(0.01*(TJNC-25)))} TRd_D_T={Rd_D*(1+TRd_D*TANH(0.01*(TJNC-25)))}
+.PARAM Dibase_T={Dibase*(1+TDibase*TANH(0.01*(TJNC-25)))}
+
+*Functions
+.FUNC ICH(VGS,VDS) {(0.5+0.5*TANH(100.0*VDS))
++                  *(K_T*(1.0+TANH(A_T*(VGS+C_T)+B_T*(VGS+D_T)**2+E_T*(VGS+F_T)**4)))*P_T*VDS/(R_T+Q_T*VDS)
++                  *(1.0+L_T*GL_T*(VGS-G_T)*(0.5+0.5*TANH(100*(VGS-G_T)))*VDS+L2_T*VDS*VDS)}
+.FUNC IDI(VGS,VDS) {(0.5+0.5*TANH(100.0*(-1)*VDS))*KDi_T*(Dibase_T**((-VDS+VF_T+GDi_T*TANH(CDi_T*VGS))/NN_T)-1)}
+.FUNC CDS(VDS)     {(CDS0*(ABS(VDS+1.0))**(-NDS)+CDSMIN)
++                  *(0.5+0.5*TANH(100*VDS))+(CDS0+CDSMIN)*(0.5-0.5*TANH(100*VDS))}
+.FUNC C1(U,V,W)    {(CJO*(V-M)+VJ*(1-(-K7R)*TANH(W/(-K7R))/FC)**K6R)
++                  *(1+(TANH((U-K9R)/K10R)-1)/K8R)+K11R}
+.FUNC CGD2(U,V,W)  {(K12R*C1(U,V,W))/(K12R+C1(U,V,W))}
+
+*Node definitions
+RD     D  DI {RD_T}
+RG     G  GI {RG}
+RS     S  SI {RS}
+GC    DI  SI VALUE={MIN(MAX(ICH(V(GI,SI),V(DI,SI))-ICH(V(GI,SI),V(SI,DI)),-1000),1000)}
+RDD   DI DDI {TRd_D_T-RD_T}
+GD    SI DDI VALUE={MIN(MAX((0.5+0.5*TANH(100.0*(-1)*(V(DDI,SI)+0.0)))*KDi_T*(Dibase_T**
++               ((-V(DDI,SI)+VF_T+GDi_T*TANH(CDi_T*V(GI,SI)))/NN_T)-1),0.0),1000.0)}
+CGDR  GI GDI 1p
+VGDC GDI  DI 0
+GGD   GI  DI VALUE={I(VGDC)*CGD2(V(GI,DI),MIN(MAX(V(GI,DI),M),0.35),MIN(V(GI,DI),M))}
+CDSR SsI DSI 1p
+VDSC  DI DSI 0
+GDS   DI SsI VALUE={I(VDSC)*1e12*CDS(V(DI,SsI))}
+CGSR  GI SSI {CGS0}
+RGSR SSI  SI {RGSR}
+CGSRP SSI SI {CGS0*CGSx}
+RLRG1 DI  SI 1T
+RLRG2 GI  DI 1T
+RLRG3 GI  SI 1T
+
+.ENDS Chip_SCT4090K_L3 
+

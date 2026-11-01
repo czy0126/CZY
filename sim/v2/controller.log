@@ -1,0 +1,18 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\controller.cir
+Start Time: Sat Oct 31 09:00:43 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.858 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\controller.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+
+freq_end: AVG(V(xctl:n_f) )=200609.859374 FROM 0.006 TO 0.007
+freq_start: V(xctl:n_f) =290425.336936 at 0.0001
+ss_end: V(ss) =4.16664761234 at 0.006

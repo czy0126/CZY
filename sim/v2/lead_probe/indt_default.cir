@@ -1,0 +1,7 @@
+* inductor transient test default
+I1 0 a PWL(0 0 1n 10)
+L1 a 0 1n
+.tran 0 200n 0 1n
+.meas tran va FIND V(a) AT 150n
+.meas tran ra FIND V(a)/10 AT 150n
+.end

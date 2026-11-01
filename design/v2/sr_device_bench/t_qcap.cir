@@ -1,0 +1,7 @@
+* test nonlinear capacitor charge syntax
+V1 1 0 PWL(0 0 10u 5)
+C1 1 0 Q=1n*V(1)
+R1 1 0 1meg
+.tran 0 10u 0 10n
+.meas tran IAT5 FIND I(V1) AT 5u
+.end

@@ -1,0 +1,28 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\startup_ct_restart_drv.cir
+Start Time: Sat Oct 31 12:49:49 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 101.030 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\startup_ct_restart_drv.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v2.lib
+D:\workshop\design_48v-2v\models\ucc27282_behaviour.lib
+
+vout_4m4: V(out,sgnd) =1.88406623179 at 0.0044
+vout_5m: V(out,sgnd) =-0.0164602143754 at 0.005
+vout_6m: V(out,sgnd) =1.55877005454e-05 at 0.006
+vout_8m5: V(out,sgnd) =1.83373017813 at 0.0085
+vout_avg_tail: AVG(V(out,sgnd) )=1.84325360578 FROM 0.0085 TO 0.009
+vout_max: MAX(V(out,sgnd))=1.90414917469 FROM 0 TO 0.009
+ipri_pk_restart: MAX(abs(I(Lr)) )=14.0385751724 FROM 0.0062 TO 0.009
+oc_max_restart: MAX(V(oc) )=0.537007272243 FROM 0.0062 TO 0.009
+sr_gate_max_restart: MAX(V(ga1,sgnd) )=5.042532444 FROM 0.0062 TO 0.009
+pre_at_9m: V(pre1,sgnd) =0.99117732048 at 0.009

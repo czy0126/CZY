@@ -1,0 +1,19 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\sr_device_bench_3q.cir
+Start Time: Sat Oct 31 10:01:00 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Total elapsed time: 0.047 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\sr_device_bench_3q.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vsd50: -V(d) =0.800408268161 at -0.800408261496
+vsd10: -V(d) =0.716697312728 at -0.716697301201
+vsd100: -V(d) =0.869233306599 at -0.869233291959
+idm1v: I(Vd) =210.546310425 at -1

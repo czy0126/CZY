@@ -1,0 +1,957 @@
+
+--- PAGE 1 ---
+IEEE TRANSACTIONS ON INDUSTRIAL ELECTRONICS, VOL. 71, NO. 7, JULY 2024
+6601
+Single-Stage 48 V/1.8 V Converter With a Novel
+Integrated Magnetics and 1000 W/in3
+Power Density
+Xin Lou
+, Graduate Student Member, IEEE, and Qiang Li
+, Member, IEEE
+Abstract—High-efﬁciency, high-power-density 48-V volt-
+age regulator modules are crucial and also challenging for
+48-V data center power architecture. In this article, a novel
+single-stage 48 V/1.8 V converter for high-performance mi-
+croprocessors is proposed, offering ultrahigh power den-
+sity and high efﬁciency. The converter utilizes a novel
+magnetic structure that integrates the transformers and
+four-phase coupled inductors of two current doubler rec-
+tiﬁers. The magnetic structure design guidelines highlight
+the tradeoff between the coupling coefﬁcient and magnetic
+core size. To minimize core and winding losses while main-
+taining compactness, small core legs are employed in cor-
+ner areas, replacing the bulky leakage legs. In addition,
+the printed circuit board winding arrangement is optimized,
+with the use of buried vias further reducing winding loss.
+Finally, a 48 V/1.8 V prototype is designed with 93.1% peak
+efﬁciency and 1037 W/in3 power density, including its gate
+driver loss and size. The prototype can handle 120 A con-
+tinuous current and 300 A peak current for 2 ms × 62 Hz,
+with 500 linear feet per minute air cooling.
+Index Terms—Coupled inductor, magnetic integration,
+voltage regulator modules (VRMs).
+I. INTRODUCTION
+T
+HE power consumption of data centers has increased very
+quickly with the rising demand for data. In 2018, data
+centers used more than 200 terawatt-hours, which is around
+1% of the global electricity demand [1]. Additionally, emerging
+digital technologies, such as machine learning, blockchain, 5G,
+and virtual reality, are also poised to raise the demand for
+data services. This increasing power consumption has pushed
+researchers to pursue more efﬁcient power solutions for data
+centers [2], [3], [4]. A 48-V server data center architecture is
+proposed to replace conventional 12-V architecture [4]. With
+Manuscript received 30 March 2023; revised 5 July 2023; accepted
+14 August 2023. Date of publication 11 September 2023; date of current
+version 29 February 2024. This work was supported by the Power
+Management Consortium in the Center for Power Electronics Systems
+(CPES), Virginia Tech. An earlier version of this paper was presented
+at the IEEE Applied Power Electronics Conference and Exposition,
+2022. [DOI: 10.1109/APEC43599.2022.9773419]. (Corresponding au-
+thor: Qiang Li.)
+The authors are with the Center for Power Electronics Systems,
+Virginia Tech, Blacksburg, VA 24061 USA (e-mail: xinlou@vt.edu;
+lqvt@vt.edu).
+Color versions of one or more ﬁgures in this article are available at
+https://doi.org/10.1109/TIE.2023.3310020.
+Digital Object Identiﬁer 10.1109/TIE.2023.3310020
+the higher 48 V bus voltage, the distribution loss at the bus
+can be signiﬁcantly reduced. However, the main challenge is
+how to deal with the high step-down voltage conversion while
+maintaining high efﬁciency. In addition, high-performance
+microprocessors, including central processing units (CPUs),
+graphics processing units, application-speciﬁc integrated cir-
+cuits, and ﬁeld-programmable gate arrays, require hundreds of
+amperes of current at low voltage levels (e.g., CPUs need >220
+A at <1.85 V) [5]. What makes things worse is the space on the
+motherboard is so limited that ultrahigh power-density power
+solutions are essential in any future operations.
+To achieve high step-down voltage conversion, many topolo-
+gies have recently been proposed and demonstrated [6], [7], [8],
+[9], [10], [11], [12], [13], [14], [15], [16], [17], [18], [19], [20],
+[21], [22], [23]. According to the existence of the intermediate
+bus, these works can also be classiﬁed into two categories:
+two-stage solutions [6], [7], [8], [9], [10], [11] and single-stage
+solutions [12], [13], [14], [15], [16], [17], [18], [19], [20],
+[21], [22], [23]. Most of the state-of-the-art 48-V solutions are
+two-stage solutions. Normally, the ﬁrst stage is a ﬁxed-ratio con-
+verter, such as the inductor-inductor-capacitor (LLC) resonant
+converterortheswitchedtankconverter,andthesecondstageisa
+multiphase buck converter. The ﬁrst stage can operate efﬁciently
+with soft switching, and the second stage can achieve high
+bandwidth and fast transient response. The two-stage solution
+is straightforward and can utilize conventional 12-V solutions
+as the second stage. However, the two-stage operation limits
+power density and efﬁciency. As a result, single-stage solutions
+have recently attracted more attention. In [12], [13], [14], [15],
+[16], [17], the hybrid switched-capacitor (SC) converter is used
+and is shown to achieve high efﬁciency. However, the switching
+frequency will signiﬁcantly impact the efﬁciency of the hybrid
+converter. The switching frequency in [12], [13], [14], [15], [16]
+is below 350 kHz to ensure high efﬁciency but this limits the
+control bandwidth. In [17], the merged-two-stage operation is
+used to improve switching frequency, but the merged-two-stage
+operation means most components of the two-stage solutions
+are kept. Thus, the beneﬁts of the single-stage operation are
+lost, and this results in a low power density as compared with
+others under the same condition. The transformer-based sigma
+converter in [18] and [19] can achieve both high efﬁciency and
+highpowerdensity. However,thecontrolbandwidthofthesigma
+converter is limited due to the quasi-parallel operation of the
+0278-0046 © 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See https://www.ieee.org/publications/rights/index.html for more information.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 2 ---
+6602
+IEEE TRANSACTIONS ON INDUSTRIAL ELECTRONICS, VOL. 71, NO. 7, JULY 2024
+LLC resonant converter and the buck converter [20]. In [21],
+[22], and [23], the converter with current doubler rectiﬁers and
+zero voltage switching (ZVS) operation is adopted. However, the
+bulky transformer and inductors in [21] limit the power density.
+In [22], an integrated solution is provided that leverages the inte-
+gration method described in [24]. However, the efﬁciency data
+in [22] shows that the integrated prototype has a signiﬁcantly
+lower efﬁciency compared to the nonintegrated prototype.
+The multiphase half-bridge converter with current doubler
+rectiﬁers can be seen as a multiphase buck converter with
+transformers, owning the beneﬁts of good scalability, low device
+numbers, and fast transient response [32], [33]. However, the
+major challenge is the bulky magnetic components. Different
+magnetic integration designs are proposed in [24] and [25].
+However, these designs were developed over two decades ago,
+whereas the requirements for voltage regulators (VRs) have
+evolved signiﬁcantly. As demonstrated by the comparison in
+[22], the use of these outdated designs results in a signiﬁcant
+reduction in efﬁciency with a limited improvement of power
+density. To enhance power density while preserving high efﬁ-
+ciency, a low-loss magnetic structure is crucial.
+A range of innovations are made to meet the goal [26]. The
+key contributions are summarized as follows.
+1) A novel magnetic structure is proposed, integrating trans-
+formers and four-phase coupled inductors. The magnetic
+structure with separated magnetic core legs and optimized
+shape can reduce both the footprint and power loss.
+2) A design guideline for the coupling and integrated mag-
+netic structure has been provided to meet the current
+requirements of VRs. The tradeoff between the cou-
+pling coefﬁcient and magnetic core size has been clearly
+demonstrated to aid in the selection process.
+3) The printed circuit board (PCB) winding structure has
+been optimized by evaluating various winding arrange-
+ments, achieving the smallest total loss.
+4) The utilization of buried vias in the proposed structure
+has been analyzed quantiﬁcationally, reducing 10.8% of
+the winding loss.
+With these innovations, the peak efﬁciency of the prototype
+is 93.1% and the power density is 1037 W/in3.
+This article is organized as follows. Section II illustrates the
+motivation and beneﬁts of the proposed magnetic integration of a
+multiphase half-bridge converter with current doubler rectiﬁers.
+Section III details the design and optimization steps taken to
+develop the proposed magnetic structure, utilizing PCB wind-
+ings. Section IV presents the experimental results, comparing
+the performance of this approach with that of other methods.
+Finally, Section V concludes this article.
+II. MAGNETIC INTEGRATION OF MULTIPHASE HALF-BRIDGE
+CONVERTER WITH CURRENT DOUBLER RECTIFIERS
+A conventional current doubler rectiﬁer requires three mag-
+netic components, which include one transformer and two out-
+put inductors. However, the bulky transformer and inductors
+greatly increase the footprint, and the terminations between the
+transformer and the inductors will create additional termination
+Fig. 1.
+Multiphase half-bridge converter with current doubler rectiﬁers.
+(a) Circuit diagram. (b) Control signals and inductor current with four-
+phase coupling.
+losses. To improve the power density and reduce the termination
+loss, a method for integrating the transformer and output induc-
+tors of one current doubler rectiﬁer is proposed in [25]. The
+method utilizes the magnetizing inductance of a transformer
+to realize the functions of an output inductor. Therefore, the
+magnetic ﬂux in the magnetic core after integration is the same
+as in the output inductors, which means the cross-sectional area
+of the magnetic core after integration is the same as the two
+output inductors and the transformer is a gift. Furthermore, it
+creates a negative coupling between the two inductors of one
+current doubler rectiﬁer by adding an air gap to the leakage leg
+of the EI core.
+As the power consumption of microprocessors continues to
+increase, one half-bridge converter with a current doubler rec-
+tiﬁer cannot provide the large current (>100 A) required, and
+thus the multiphase half-bridge converter with current doubler
+rectiﬁers is required, as shown in Fig. 1. The control signals
+with phase shift are shown in Fig. 1(b) to realize multiphase
+operation. The dividing capacitors C1–C4 can be designed to
+meet a speciﬁc voltage ripple limit.
+The inductor current waveforms with negative coupling are
+shown in Fig. 1(b). The beneﬁts of negative-coupled inductors
+are the creation of two equivalent inductances [27], [28]. The
+steady-state inductance Lss determines the inductor current rip-
+ple in the steady-state operation and the leakage inductance Lk
+determines the dc ﬂux in the core. As a result, with a larger
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 3 ---
+LOU AND LI: SINGLE-STAGE 48 V/1.8 V CONVERTER WITH A NOVEL INTEGRATED MAGNETICS AND 1000 W/IN3 POWER DENSITY
+6603
+Fig. 2.
+Ratio of Lss to Lk. (a) Impact of coupling coefﬁcient α and
+phase number N with the nominal condition, i.e., Vin = 48 V, Vo = 1.8
+V, and D = 30%. (b) Impact of duty cycle D and phase number N with
+|α| = 0.85.
+ratio of Lss/Lk, smaller inductor current ripple and smaller
+dc ﬂux in the core can be realized at the same time, which
+represents smaller power loss and smaller core size, respectively.
+The equations for Lss and Lk are given in (1) and (2), where N
+is the number of the coupled phases, D is the duty cycle, and j is
+an integer index (j = 0,1,…,N-1) deﬁned as j/N<D<(j+1)/N.
+The coupling coefﬁcient αk is deﬁned in (3). Lself-k is the
+self-inductance of phase k, and Mik is the mutual inductance
+between phases i and k.
+Lss−k =
+(1−
+αk
+N−1)(1+αk)Lself−k
+1+[N−2j−2+ j(j+1)
+ND
++ ND(N−2j−1)+j(j+1)
+N(1−D)
+]
+αk
+N−1
+(1)
+Lk = (1 + αk) Lself−k
+(2)
+αk =
+
+i̸=k Mik
+Lself−k
+.
+(3)
+The impact of coupling coefﬁcient, phase number, and duty
+cycle can be analyzed, accordingly, as shown in Fig. 2. The
+beneﬁt of multiphase coupled inductors is shown in Fig. 2. For
+a given phase number, the ratio of Lss to Lk is larger with a
+stronger coupling. Because the nominal condition is D = 30%
+and the whole operating range is near 25% duty cycle, there is
+not much beneﬁt to increasing the phase number from 4 to 6.
+As a result, integrated magnetics is proposed, as illustrated
+in Fig. 3. The integrated magnetics contains transformers and
+four-phase coupled inductors, which can fully inspire the poten-
+tial of the multiphase half-bridge converter with current doubler
+rectiﬁers. For each current doubler rectiﬁer, an EI core is needed
+to integrate the transformers and inductors. Then, the core plates
+can be merged to create coupling between the inductors of
+different current doubler rectiﬁers, as shown in Fig. 3(a). Fur-
+thermore, the synchronous rectiﬁers (SRs) and output capacitors
+can be mounted on the secondary side windings. Therefore,
+the secondary side winding loops can be minimized to reduce
+the termination loss. Then, the PCB winding implementation,
+positions of SRs, and output capacitors of the proposed magnetic
+structure are shown in Fig. 3(b).
+III. DESIGN AND OPTIMIZATION OF THE NOVEL INTEGRATED
+MAGNETICS
+For high-current 48 V voltage regulator modules (VRMs),
+designing to achieve high power density and high efﬁciency
+Fig. 3.
+Magnetic integration of multiphase half-bridge converter with
+current doubler rectiﬁers. (a) Diagram with connections and current
+directions. (b) PCB winding implementation with synchronous rectiﬁers
+and output capacitors mounted on the secondary side windings. (c) Side
+view of the magnetic structure.
+Fig. 4.
+3-D FEA simulation results of integrated magnetic structure.
+(a) Flux density of the core plate. (b) Current density of the secondary
+windings.
+is essential and challenging. This section shows the design
+and optimization steps for higher power density and higher
+efﬁciency.
+A. Design of the Magnetic Structure
+The magnetic structure in Fig. 3 is a simple extension by
+merging the core plates. The bulky leakage legs reduce the power
+density. Fig. 4 shows the 3-D ﬁnite element analysis (FEA)
+simulation results of this magnetic structure. The simulation
+software is Ansys Maxwell, and the simulation mode is the
+magnetic transient mode by using accurate excitations with
+phase interleaving. From the ﬂux density of the core plate, the
+ﬂux is crowded from the winding legs to the leakage leg.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 4 ---
+6604
+IEEE TRANSACTIONS ON INDUSTRIAL ELECTRONICS, VOL. 71, NO. 7, JULY 2024
+Fig. 5.
+Improved magnetic structure of matrix transformer with sepa-
+rated leakage legs.
+Fig. 6.
+3-D FEA simulation results of the improved magnetic structure.
+(a) Flux density of the core plate. (b) Current density of the secondary
+windings.
+As seen with both the ﬂux distribution and current density,
+there are several corner areas (marked with red in Fig. 4) that
+are not well utilized. In addition, the areas marked with red
+in Fig. 4(a) and (b) can be well matched. Thus, to reduce the
+footprint, the bulky leakage legs can be separated into several
+pieces that utilize those corner areas.
+The improved magnetic structures with separated leakage legs
+are shown in Fig. 5. The footprint of the improved magnetic
+structure is 11% smaller than that of the original structure in
+Fig. 3. Additionally, Fig. 6 shows the 3-D FEA simulation results
+of optimized structures with separated leakage legs. In Fig. 6(a),
+the separated leakage legs create additional ﬂux paths, which
+make the ﬂux more uniform and reduce the core loss from 1.33
+to 0.96 W. The winding loss increases from 13.30 to 13.36
+W with separated leakage legs, which is negligible. Finally,
+the total transformer loss is reduced from 14.63 to 14.32 W,
+which represents a loss reduction of about 2%. The improved
+magnetic structure with separated leakage legs can reduce both
+the footprint and loss.
+Different shapes of the separated leakage legs are shown and
+compared in Fig. 7. Shape 2 shown in Fig. 7(b) has uniform
+winding but the core loss is larger due to the ﬂux crowding of
+the sharp edge. On the contrary, shape 1 has a larger winding loss
+butthecorelossissmaller.Thetriangularshape3canbeseenasa
+tradeoff between the winding loss and core loss. Finally, the total
+transformer loss of the three shapes is shown in Fig. 8. The total
+transformer losses of the three designs are close and shape 3 has
+a slightly lower loss than shape 1 and shape 2. After discussion
+with DMEGC, the manufacturer of the magnetic material, shape
+3 is chosen because it is easy to fabricate and has the smallest
+transformer loss.
+Fig. 7.
+Shapes of the leakage legs and corresponding ﬂux density of
+the core. (a) Shape 1. (b) Shape 2. (c) Shape 3.
+Fig. 8.
+Comparison of transformer loss with three different core
+shapes.
+Fig. 9.
+Reluctance model of the improved magnetic structure.
+B. Design of the Integrated Transformer and Coupled
+Inductors
+The reluctance model of the improved magnetic structure is
+shown in Fig. 9. Rcore is the magnetic reluctance of the magnetic
+core. Rlg and Rlgc are the magnetic reluctance of the air gap
+in winding legs and leakage legs, respectively. l is the length
+of the core, μr is the relative magnetic permeability of the
+magnetic material, and A is the cross-sectional area. lg and lgc
+are the length of the air gap in winding legs and leakage legs,
+respectively.
+Rcore =
+l
+μ0μrA
+(4)
+Rlg =
+lg
+μ0A
+(5)
+Rlgc =
+lgc
+μ0Ac
+.
+(6)
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 5 ---
+LOU AND LI: SINGLE-STAGE 48 V/1.8 V CONVERTER WITH A NOVEL INTEGRATED MAGNETICS AND 1000 W/IN3 POWER DENSITY
+6605
+Fig. 10.
+Leakage inductance and self-inductance versus coupling co-
+efﬁcient with 100 nH steady-state inductance.
+Based on the reluctance model in Fig. 9, both self-inductance
+and mutual inductance can be derived. Then the steady-state in-
+ductance and leakage inductance of each phase can be achieved
+according to (1) and (2). The resulting design guideline is
+described as follows.
+1) To make sure the steady-state inductance of the worst
+case is a certain value, the self-inductance with different
+coupling coefﬁcient values α can be achieved.
+2) Based on the self-inductance and coupling coefﬁcient, the
+magnetic ﬂux of the magnetic core can be calculated. To
+avoid saturation of the magnetic core, the minimum cross-
+sectional area of the magnetic core can be determined by
+substituting different values for α.
+3) According to the self-inductance and cross-sectional area,
+the length of the air gap can be determined by trying
+different values of α. With a stronger coupling, the air gap
+needs to be smaller. However, limited by the precision
+of the manufacture, a very small air gap is unrealistic.
+Therefore, design region 1 can be achieved, as shown in
+Fig. 13.
+4) The difference in steady-state inductance is calculated,
+andalimitissetforit.FromthereluctancemodelinFig.9,
+to reduce the difference, the air gap should be increased
+so that Rlg, Rlgc ≫Rcore. As a result, if there are areas in
+design region 1 that exceed the limit, increasing the air
+gap leads to design region 2, as shown in Fig. 13.
+Based on the design guidelines, the detailed design process
+is described as follows. First, according to Fig. 2(b), the worst
+case of four-phase coupling is D = 0.17, which corresponds
+to 60-V input and 1.3-V output. Then, 100 nH is chosen as the
+steady-stateinductanceoftheworstcase,andtheself-inductance
+with different α can be solved, as shown in Fig. 10. With a ﬁxed
+steady-state inductance, the leakage inductance will reduce as
+the coupling becomes stronger, representing a smaller core size.
+However, the self-inductance will also increase with a stronger
+coupling. Then, the maximum magnetic ﬂux of the winding legs
+i (i = 1,2,3,4) can be expressed as
+Φmaxi = Lselﬁ· Ii +
+
+j̸=i
+MijIj
+
+
+
+DC bias
++ (1 −D) Vo
+2fsw
+
+
+
+AC ripple
+(7)
+Fig. 11.
+Cross-sectional area of the magnetic core and length of air
+gap versus coupling coefﬁcient with 100 nH steady-state inductance.
+where Lselﬁrepresents the self-inductance of phase i, Mij rep-
+resents the mutual inductance between phase i and j, and Ij
+representstheaveragecurrentofphasej. Withnegativecoupling,
+Mij < 0. As a result, parts of the dc ﬂux generated by one
+inductor will be canceled out by the opposing ﬂux generated by
+the other inductors. According to [29], the phase current share
+tolerance is 4.5%. For the worst condition (Ij = (1 −4.5%) Ii),
+the maximum magnetic ﬂux can be rewritten as
+Φmaxi =
+⎛
+⎝Lki + 4.5% ·
+
+j̸=i
+|Mij|
+⎞
+⎠Ii
+
+
+
+DC bias
++ (1 −D) Vo
+2fsw
+
+
+
+AC ripple
+.
+(8)
+The ﬁrst term is the dc magnetic ﬂux and the second term is
+the ac ripple. Then, the minimum cross-sectional area is
+Amaxi =
+
+Lki + 4.5% · 
+j̸=i |Mij|
+
+Ii + (1−D)Vo
+2fsw
+Bsat
+.
+(9)
+Substituting the inductance, coupling, and cross-sectional
+area into the reluctance model, the length of the air gap can
+be calculated, as shown in Fig. 11. As |α|increases, the cross-
+sectional area will reduce ﬁrst because Lk reduces. However,
+when |α| gets close to 1, |Mij| will increase signiﬁcantly so the
+cross-sectional area will also increase. The length of the air gap
+always reduces with increases in |α|. For symmetrical coupling,
+the design region can be determined according to the precision
+of the manufacturer to achieve a small cross-sectional area and
+leakage inductance.
+In addition, the variations in steady-state inductances between
+phases should be considered. Fig. 12 shows the difference in the
+steady-state inductance ΔLss, which is deﬁned as
+Δ Lss = Lss2 −Lss1
+Lss1
+.
+(10)
+In total, 20% is set as the tolerance of ΔLss so the air gap and
+cross-sectional area need to be increased when |α| > 0.75, as
+shown in Fig. 13. To maintain the 20% tolerance of ΔLss, the air
+gap and cross-sectional area increase signiﬁcantly as compared
+with the original design. Then, to design a small cross-sectional
+area and leakage inductance, the coupling coefﬁcient |α| is
+chosen as 0.75.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 6 ---
+6606
+IEEE TRANSACTIONS ON INDUSTRIAL ELECTRONICS, VOL. 71, NO. 7, JULY 2024
+Fig. 12.
+Difference of steady-state inductance, ΔLss.
+Fig. 13.
+Cross-sectional area of the magnetic core and length of air
+gap versus coupling coefﬁcient with 20% tolerance of ΔLss.
+C. Optimization of the PCB Winding Structure
+To provide a high output current, the secondary windings
+of the proposed structure are connected in parallel. However,
+because of the integrated coupled inductors, the accumulation
+of magnetomotive force (MMF) leads to an unbalanced current
+among paralleled secondary windings [30]. As a result, the
+current sharing of the paralleled secondary windings needs to
+be analyzed. The current excitations of the proposed structure
+are shown in Fig. 14. Ip is the primary-side winding current, Is is
+the secondary-side winding current, ITRs is the secondary-side
+current of the ideal transformer, and IL is the inductor current.
+The primary-side winding current is a pure ac excitation
+without dc bias, but the secondary-side winding current has
+dc bias because the magnetizing inductor works as the output
+inductor. Using the superposition method, the secondary-side
+winding current can be seen as the sum of the transformer
+current and the inductor current. For the transformer, a sym-
+metrical PCB layer arrangement with an alternating MMF can
+achieve good current sharing between paralleled windings [7].
+For the inductor, moving the windings close to each other can
+improvethecurrentsharing[30].Finally,threesymmetricalPCB
+arrangements in Fig. 15 are compared, where both the trans-
+former and inductor are considered. “SPPS” means the windings
+are arranged as “secondary winding, primary winding, primary
+winding, secondary winding,” and the top four and bottom four
+windings are symmetrical. The “SPPS” and “PSSP” have an
+alternating MMF, so they provide good current sharing for the
+Fig. 14.
+Current excitations of transformer 1 in the proposed structure
+when the total output current is 120 A.
+Fig. 15.
+PCB winding arrangements of the proposed structure.
+(a) SPPS. (b) PSSP. (c) PPSS.
+transformer. The “PPSS” has the closest secondary windings, so
+it offers the best current sharing for the inductor.
+The transformer losses with different winding arrangements
+are given in Fig. 16. First, the “PPSS” has a larger transformer
+loss compared with the other two. In Fig. 14, the current ripple
+of the transformer part is almost four times that of the inductor
+part, which means the current sharing of the transformer is more
+important than the inductor, which explains the reason for the
+larger loss. Second, the “PSSP” has a smaller winding loss but
+larger termination and vias losses than the “SPPS.” The reason
+for this difference is that the “PSSP” requires additional layers
+for the SRs, as shown in Fig. 15(b). As a result, considering
+both the transformer loss and the cost of PCBs, the winding
+arrangement “SPPS” is chosen. Fig. 17(a) shows the current
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 7 ---
+LOU AND LI: SINGLE-STAGE 48 V/1.8 V CONVERTER WITH A NOVEL INTEGRATED MAGNETICS AND 1000 W/IN3 POWER DENSITY
+6607
+Fig. 16.
+Transformer loss with different winding arrangements.
+Fig. 17.
+3-D FEA simulation results of the current-sharing condition
+among the paralleled secondary windings. (a) Current waveforms of the
+paralleled secondary windings. (b) Frequency spectrum of the winding
+current.
+of the four paralleled secondary windings. It can be observed
+that secondary winding S4, which is layer 8 in Fig. 15(a), has
+a larger ripple than the other paralleled windings. However, as
+shown in the frequency spectrum in Fig. 17(b), the difference
+of the switching frequency (600 kHz) components is smaller
+than 20%. The unbalanced current shows at higher frequencies
+(2fsw, 4fsw,…,), but the current of the higher frequency is much
+smaller than the switching frequency.
+D. Improvements of the Via Structure
+The primary windings of the proposed structure are connected
+in series and each primary winding takes one PCB layer. As
+shown in Fig. 18, vias are necessary to connect the primary wind-
+ings on different PCB layers. However, the through vias take up
+space on every layer but the effective parts are only between
+two primary windings, as shown in Fig. 18(a). As a result, the
+through vias will reduce the winding width for both primary and
+Fig. 18.
+PCB winding transformer structure. (a) With through vias.
+(b) With buried vias.
+Fig. 19.
+Current density of the primary-side windings. (a) With through
+vias. (b) With buried vias.
+Fig. 20.
+Current density of the secondary-side windings. (a) With
+through vias. (b) With buried vias.
+secondary windings. Figs. 19(a) and 20(a) show the simulated
+current density of the primary and secondary windings. Because
+the winding arrangement is symmetrical, the results of the top
+four layers are shown as representatives. The primary winding
+Pri1representsthePCBlayer2andsuffersalargecurrentdensity
+because of the through vias. Similar phenomena are observed
+on the secondary windings in Fig. 20(a).
+To reduce the winding loss, buried vias can be used. In
+Fig. 18(b), the buried vias connect two inner layers so only the
+effective parts of the vias are kept. In this way, the winding
+width can be improved, and the winding loss will be reduced.
+In Figs. 19(b) and 20(b), the simulated current density with
+buried vias is presented. The winding width around the vias
+can be signiﬁcantly improved for both primary and secondary
+windings. In addition, some of the vias can be placed outside of
+the windings because of the buried vias. Then, the vias for the
+connection of primary layers disappear on layers 1 and 8. Also,
+the via count on the other layers is signiﬁcantly reduced.
+Fig. 21 illustrates the simulated winding loss comparison be-
+tween through vias and buried vias. The incorporation of buried
+vias results in a reduction of 15.1% in primary winding loss and
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 8 ---
+6608
+IEEE TRANSACTIONS ON INDUSTRIAL ELECTRONICS, VOL. 71, NO. 7, JULY 2024
+Fig. 21.
+Winding loss with through vias and buried vias.
+Fig. 22.
+Top and side view of the prototype next to US quarters. The
+footprint is 42.2 mm × 18.6 mm and the height is 4.35 mm.
+TABLE I
+COMPONENT LIST OF THE PROTOTYPE
+8.8% in secondary winding loss. Finally, the total winding loss
+with buried vias is 10.8% lower than that observed with through
+vias. It is important to acknowledge that the utilization of buried
+vias introduces additional costs to PCB production. However,
+the escalating demand for PCBs featuring buried vias, driven
+by the emerging trend of miniaturized electronic devices, has
+led to a gradual reduction in associated costs. Consequently, for
+designs requiring high-density transformers, the utilization of
+buried vias is a foreseeable choice, given the evident power loss
+reduction demonstrated in Fig. 21.
+IV. EXPERIMENTAL RESULTS
+The prototype of the multiphase half-bridge converter with
+current doubler rectiﬁers is shown in Fig. 22. The component
+list of the prototype is shown in Table I.
+A. Operation and Performance
+The prototype can work for a wide range of input and output
+voltages and provide high output current. Here, two maximum
+output currents are deﬁned. One is the maximum continuous
+output current and the other is the maximum peak output current.
+Fig. 23.
+Measured waveform at nominal condition, i.e., 48-V input and
+1.8-V output. (a) Full-load condition (Io = 120 A). (b) Peak-load condition
+(Io = 300 A).
+The time of maximum peak output current is deﬁned for 2 ms
+× 62 Hz, which represents the boost mode of microprocessors.
+The operation of it is deﬁned for the nominal condition, i.e.,
+48-V input and 1.8-V output. Because of the integration of
+transformers and coupled inductors, the prototype has a very
+small footprint and box volume. Finally, the power density is
+1037 W/in3 at 1.8 V output voltage and 120 A output current.
+Figs. 23 and 24 show the measured waveforms for the entire
+operating range. Vgs-SR1 on top is the gate voltage of SR1,
+Vds-SR1 in the middle is the drain–source voltage of SR1, and
+Vds-Q1 atthebottomisthedrain–sourcevoltageofQ1.InFig.23,
+the measured waveforms of the nominal condition (48-V input
+and 1.8-V output) are shown from no load to peak load. Because
+the prototype is hard switching, ringing can be observed at the
+drain–source voltage of Q1. The ringing becomes larger with
+the increase of output current. However, the peak voltage of the
+ringing is 79.8 V at 300-A peak load, which leaves more than
+20% margin for 100-V EPC2204. The results demonstrate that
+the ringing is within acceptable limits and does not impact the
+operation of the converter.
+The case with the minimum input voltage and the maximum
+output voltage is shown in Fig. 24(a), and the case with the
+maximum input voltage and the minimum output voltage is
+shown in Fig. 24(b). The peak voltage of Vds-SR1 is 12.6 V, which
+appears at 60 V input and 1.3 V-120 A output. However, the
+most suitable MOSFETs on the market have a 25 V drain–source
+breakdown voltage, which is almost twice the peak voltage,
+12.6 V.
+The measured efﬁciency under nominal and extreme condi-
+tions is shown in Fig. 25. With the proposed structure, the pro-
+totype can achieve 93.1% peak efﬁciency and 87.8% full-load
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 9 ---
+LOU AND LI: SINGLE-STAGE 48 V/1.8 V CONVERTER WITH A NOVEL INTEGRATED MAGNETICS AND 1000 W/IN3 POWER DENSITY
+6609
+Fig. 24.
+Measured waveform at extreme conditions. (a) 40-V input and
+1.8 V-120 A output. (b) 60 V input and 1.3 V-120 A output.
+Fig. 25.
+Measured efﬁciency under different operating conditions, with
+500 linear feet per minute (LFM) air cooling. Gate driving loss is
+included.
+efﬁciency at 48-V input and 1.8-V output. The peak efﬁciency
+appears at 40 A output current, which is around 30% load. The
+testing is performed with 500 linear feet per minute (LFM)
+air cooling, and gate-driving loss is included in the efﬁciency
+curves. In [2] and [7], using lower-breakdown-voltage ﬁeld
+effect transistors (FETs) can signiﬁcantly improve the efﬁciency
+of the multiphase buck converter. According to the waveforms
+in Fig. 24(b), the peak value of the SR’s drain–source voltage
+is 12.6 V. As a result, the proposed structure has the potential
+to further improve efﬁciency in the future, with the utilization
+of lower-breakdown-voltage FETs. Fig. 26 illustrates the loss
+breakdown of the prototype at full load. The winding loss and
+SR loss dominate the loss of the overall system due to the high
+output current.
+Fig. 26.
+Loss breakdown of the prototype at full load, Io = 120 A.
+Fig. 27.
+Thermal image of the prototype at nominal condition, i.e., 48-
+V input and 1.8-V output. The thermal image was measured at 24 °C
+ambient temperature with 500 LFM air cooling, under a thermal steady
+state without heatsinks. (a) Full-load operation (Io = 120 A). (b) Boost-
+mode operation (Io(avg) = 120 A, Io changes from 100 to 300 A).
+Fig. 27 shows the thermal images of the prototype under
+thermal steady state. The testing is performed with 500 LFM air
+cooling and the ambient temperature is 24 °C. Fig. 27(a) and (b)
+shows the full-load and boost-mode operations at the nominal
+condition. The output current of the boost-mode operation is
+shown in Fig. 27(b). The boost-mode operation is deﬁned as the
+output current changing from 100 to 300 A with a frequency of
+62 Hz. The duration of 300 A in each cycle is 2 ms so the average
+current is about 120 A. The highest temperature of boost-mode
+operation is 95.4 °C.
+B. Performance Comparison
+There are many single-stage solutions reported in the liter-
+ature. Table II gives a performance comparison with the best
+practices among them, and Fig. 28 illustrates the comparison
+of peak efﬁciency and power density. The efﬁciency and power
+density given in the table are under an air-cooling method, and
+gate-driver loss and size are included in the efﬁciency and power
+density, respectively. The power density is calculated by the box
+volume of the converters. Except for LEGO-PoL reported in
+[17], the other solutions are compared at an output voltage of
+1.8 V.
+The proposed converter can achieve an efﬁciency level similar
+to other best practices described in the literature. Furthermore,
+the power density is much higher than the other single-stage
+solutions in the literature under similar working conditions.
+There are four reasons to explain our ultrahigh power density.
+First,theproposedsolutiononlyrequirestwoswitchesperphase,
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 10 ---
+6610
+IEEE TRANSACTIONS ON INDUSTRIAL ELECTRONICS, VOL. 71, NO. 7, JULY 2024
+TABLE II
+COMPARISON WITH OTHER SINGLE-STAGE SOLUTIONS
+Fig. 28.
+Peak efﬁciency versus power density for the designs pre-
+sented in Table II. All the solutions are under an air-cooling method.
+The gate-driving loss and size are included.
+which reduces the footprint of the devices and gate drives.
+Second, the integrated magnetics make the transformer a gift
+supplied by the output inductors, which means the integrated
+magnetics have the functions of both transformers and inductors
+but are similar in size to inductors. Third, four-phase coupled
+inductors are built within the integrated magnetics, following
+the proposed design guideline, so the size of the magnetic core
+can be reduced. Fourth, small core legs are employed in corner
+areas, replacing the bulky leakage legs, to minimize core and
+winding losses while maintaining compactness. Furthermore,
+the winding width can be increased to reduce the winding loss
+and improve the efﬁciency, sacriﬁcing the power density.
+As a comparison, in the hybrid switched-capacitor converters
+presented in [12], [13], [14], [15], [16], [17], and [31], a lot of
+ﬂying capacitors and switches are required to realize the voltage
+step-down ratio, and output inductors must exist to regulate the
+output voltage. As a result, the power density is lower than the
+proposed solution. Furthermore, the hybrid switched-capacitor
+converters in [12], [13], [14], [15], and [16] limit the switching
+frequency below 350 kHz for a high efﬁciency, which will limit
+the control bandwidth and cannot satisfy the requirements of
+VRs. The state-of-the-art VRs require 600–800 kHz switching
+frequency. In addition, a solution that integrates the transformer
+and output inductor is presented in [22]. Despite its integration,
+thesolutionemploysnoncoupledinductors,resultinginalimited
+power density. Furthermore, the inefﬁciency of the magnetic
+structure leads to an efﬁciency reduction of over 2% as compared
+to the nonintegrated version, as demonstrated in [22]. Except for
+them, the sigma converter in [19] has high efﬁciency and power
+density. However, for wide-voltage-range applications like VRs,
+the gain of the LLC resonant converter in the sigma converter
+must be changed to meet the design constraints, as described in
+[19]. Therefore, to satisfy the gain requirements, the maximum
+output current of the sigma converter is limited. What makes
+things worse is that the quasi-parallel structure of the sigma
+converter brings an additional double pole, so it is difﬁcult to
+achieve a high control bandwidth [20]. These shortcomings limit
+the application of sigma converters, especially as VRs. On the
+contrary, the proposed solution uses a well-known topology,
+which is called the half-bridge converter with current doubler
+rectiﬁers. Some companies, like Texas Instruments and Inﬁneon,
+provide products to support this topology to work as VRs [32],
+[33]. The reference design in [33] uses constant on-time cur-
+rent mode control, which is called DCAP+ control by Texas
+Instruments. As described in [33], a half-bridge converter with
+a current doubler rectiﬁer and DCAP+ control can achieve a
+superior transient response. The limitation of the controllers is
+that they only support one half-bridge converter with a current
+doubler rectiﬁer.
+V. CONCLUSION
+In this work, a novel high-current dc–dc converter was pro-
+posed.Anovelintegratedmagneticsisproposedforamultiphase
+half-bridge converter with current doubler rectiﬁers. The peak
+efﬁciency of the prototype was 93.1%, which was similar to
+other single-stage solutions in the literature. The magnetic inte-
+gration was optimized to improve power density and reduce loss.
+With the novel magnetic structure, the power density could be
+signiﬁcantly improved to 1037 W/in3. As a result, the proposed
+converter showed great potential in high-current point-of-load
+(POL) applications.
+ACKNOWLEDGMENT
+The authors would like to thank Dr. Fred C. Lee for his
+valuable and constructive discussion in this research work. The
+authors would also like to thank DMEGC for providing the
+magnetic core samples.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- PAGE 11 ---
+LOU AND LI: SINGLE-STAGE 48 V/1.8 V CONVERTER WITH A NOVEL INTEGRATED MAGNETICS AND 1000 W/IN3 POWER DENSITY
+6611
+REFERENCES
+[1] N. Jones, “The information factories,” Nature, vol. 561, pp. 163–166,
+Sep. 2018.
+[2] Q. Ouyang, R. Samsi, and J. Zhou, “Increasing the power den-
+sity and efﬁcacy of datacenters using a two-stage solution for 48V
+power distribution,” Monolithic Power Syst., Kirkland, WA, USA, 2017.
+[Online]. Available: https://www.monolithicpower.com/increasingthe-
+power-density-and-efﬁcacy-of-datacenters
+[3] Z. Li, Y.-H. Hsieh, Q. Li, F. C. Lee, and M. H. Ahmed, “High-frequency
+transformer design with high-voltage insulation for modular power con-
+version from medium-voltage AC to 400-V DC,” in Proc. IEEE Energy
+Convers. Congr. Expo., 2020, pp. 5053–5060.
+[4] Open Compute Project, “Open Rack Standard V2.2,” 2019. [On-
+line]. Available: https://www.opencompute.org/documents/rittal-open-
+rack-standard-v2-2-proposed-cl-2-pdf
+[5] Intel Corporation, “Intel Xeon Processor E5 v2 Product Family,”
+Intel Corporation, Santa Clara, CA, USA, 2015. [Online]. Avail-
+able: https://www.intel.com/content/dam/www/public/us/en/documents/
+speciﬁcation-updates/xeon-e5-v2-spec-update.pdf
+[6] C. Fei, M. H. Ahmed, F. C. Lee, and Q. Li, “Two-stage 48 V-12 V/6
+V-1.8 V voltage regulator module with dynamic bus voltage control for
+light-load efﬁciency improvement,” IEEE Trans. Power Electron., vol. 32,
+no. 7, pp. 5628–5636, Jul. 2017.
+[7] M. H. Ahmed, F. C. Lee, Q. Li, and M. D. Rooij, “Design optimization of
+unregulated LLC converter with integrated magnetics for two-stage 48V
+VRM,” in Proc. IEEE Energy Convers. Congr. Expo., 2019, pp. 521–528.
+[8] S. Jiang, S. Saggini, C. Nan, X. Li, C. Chung, and M. Yazdani,
+“Switched tank converters,” IEEE Trans. Power Electron., vol. 34, no. 6,
+pp. 5048–5062, Jun. 2019.
+[9] Y. Chen et al., “Virtual intermediate bus CPU voltage regulator,” IEEE
+Trans. Power Electron., vol. 37, no. 6, pp. 6883–6898, Jun. 2022.
+[10] J. Ku, A. Lahham, M. Badawy, and A. Chan, “Two-staged multi-resonant
+multi-phased converter for 48V data center applications,” in Proc. IEEE
+Appl. Power Electron. Conf. Expo., 2021, pp. 1316–1320.
+[11] S. Webb and Y. Liu, “A zero inductor-voltage 48V to 12V/70A converter
+for data centers with 99.1% peak efﬁciency and 2.5kW/in3 power density,”
+in Proc. IEEE Appl. Power Electron. Conf. Expo., 2020, pp. 1858–1865.
+[12] R. Das and H.-P. Le, “A regulated 48V-to-1V/100A 90.9%-efﬁcient hy-
+brid converter for PoL applications in data centers and telecommunica-
+tion systems,” in Proc. IEEE Appl. Power Electron. Conf. Expo., 2019,
+pp. 1997–2001.
+[13] T. Ge, R. Abramson, Z. Ye, and R. C. N. Pilawa-Podgurski, “Core size
+scaling law of two-phase coupled inductors - Demonstration in a 48-to-1.8
+V hybrid switched-capacitor MLB-PoL converter,” in Proc. IEEE Appl.
+Power Electron. Conf. Expo., 2022, pp. 1500–1505.
+[14] Y. Zhu, Z. Ye, T. Ge, R. Abramson, and R. C. N. Pilawa-Podgurski, “A
+multi-phase cascaded series-parallel (CaSP) hybrid converter for direct 48
+V to point-of-load applications,” in Proc. IEEE Energy Convers. Congr.
+Expo., 2021, pp. 1973–1980.
+[15] Y. Zhu, T. Ge, Z. Ye, and R. C. N. Pilawa-Podgurski, “A Dickson-squared
+hybrid switched-capacitor converter for direct 48 V to point-of-load
+conversion,” in Proc. IEEE Appl. Power Electron. Conf. Expo., 2022,
+pp. 1272–1278.
+[16] C. Chen, J. Liu, and H. Lee, “A 92.7%-efﬁciency 30A 48V-to-1V dual-path
+hybrid Dickson converter for PoL applications,” in Proc. IEEE Energy
+Convers. Congr. Expo., 2021, pp. 1989–1994.
+[17] J. Baek et al., “Vertical stacked LEGO-PoL CPU voltage regulator,” IEEE
+Trans. Power Electron., vol. 37, no. 6, pp. 6305–6322, Jun. 2022.
+[18] M. H. Ahmed, C. Fei, F. C. Lee, and Q. Li, “Single-stage high-efﬁciency
+48/1 V sigma converter with integrated magnetics,” IEEE Trans. Ind.
+Electron., vol. 67, no. 1, pp. 192–202, Jan. 2020.
+[19] M. H. Ahmed, F. C. Lee, and Q. Li, “Wide voltage range high-efﬁciency
+sigma converter 48V VRM with integrated magnetics,” in Proc. IEEE
+Energy Convers. Congr. Expo., 2019, pp. 4701–4707.
+[20] X. Lou, Q. Li, and M. H. Ahmed, “Adaptive voltage positioning design of
+single stage 48/1V sigma converter for fast transient response,” in Proc.
+IEEE Energy Convers. Congr. Expo., 2021, pp. 3530–3536.
+[21] Y. Zheng, S. Li, and K. M. Smedley, “Nonisolated high step-down con-
+verter with ZVS and low current ripples,” IEEE Trans. Ind. Electron.,
+vol. 66, no. 2, pp. 1068–1079, Feb. 2019.
+[22] S. Saggini, O. Zambetti, R. Rizzolatti, M. Picca, and P. Mattavelli, “An
+isolated quasi-resonant multiphase single-stage topology for 48-V VRM
+applications,” IEEE Trans. Power Electron., vol. 33, no. 7, pp. 6224–6237,
+Jul. 2018.
+[23] Bel Fuse, “Main & satellite power stamp: 48V-to-PoL isolated DC-DC
+converters,” Bel Fuse, Jersey City, NJ, USA, 2020. [Online]. Avail-
+able: https://www.belfuse.com/resources/datasheets/powersolutions/ds-
+BPS-48-V-to-POL-power-stamp.pdf
+[24] W. Chen, G. Hua, D. Sable, and F. Lee, “Design of high efﬁciency, low
+proﬁle, low voltage converter with integrated magnetics,” in Proc. IEEE
+Appl. Power Electron. Conf. Expo., 1997, vol. 2, pp. 911–917.
+[25] P. Xu, Y. Mao, P. L. Wong, and F. C. Lee, “Design of 48 V voltage regulator
+modules with a novel integrated magnetics,” IEEE Trans. Power Electron.,
+vol. 17, no. 6, pp. 990–998, Nov. 2002.
+[26] X. Lou and Q. Li, “300A Single-stage 48V voltage regulator with multi-
+phase current doubler rectiﬁer and integrated transformer,” in Proc. IEEE
+Appl. Power Electron. Conf. Expo., 2022, pp. 1004–1010.
+[27] P. L. Wong, P. Xu, B. Yang, and F. C. Lee, “Performance improvements
+of interleaving VRMs with coupling inductors,” IEEE Trans. Power Elec-
+tron., vol. 16, no. 4, pp. 499–507, Jul. 2001.
+[28] F. Zhu and Q. Li, “Coupled inductors with an adaptive coupling coefﬁcient
+for multiphase voltage regulators,” IEEE Trans. Power Electron., vol. 38,
+no. 1, pp. 739–749, Jan. 2023.
+[29] Texas Instruments, “TPS536C7B1 Dual-channel D-CAP+, dual-channel
+(N+M ≤12 phases) step-down, multiphase controller with PMBus in-
+terface,” Texas Instruments, Dallas, TX, USA, 2020. [Online]. Available:
+https://www.ti.com/product/TPS536C7
+[30] J. Afsharian, N. Zhu, D. D. Xu, B. Gong, and Z. Yang, “Analytical
+modelling of current sharing and eddy current losses in PCB windings of
+stacked transformers,” in Proc. IEEE Appl. Power Electron. Conf. Expo.,
+2020, pp. 223–230.
+[31] L. Yu, L. Wang, C. Yang, and M. Wu, “Analysis and implementation of a
+single-stage transformer-less converter with high step-down voltage gain
+for voltage regulator modules,” IEEE Trans. Ind. Electron., vol. 68, no. 12,
+pp. 12239–12249, Dec. 2021.
+[32] Inﬁneon Technologies AG, “Reference design board 200 W dual out-
+put 48V-to-PoL single step converter with XDP digital power con-
+troller,” Inﬁneon Technol. AG, Neubiberg, Germany, 2020. [Online].
+Available: https://www.inﬁneon.com/cms/en/product/evaluation-boards/
+vd_ref_xdp_48v_to_pol/
+[33] Texas Instruments, “LMG5200POLEVM-10: LMG5200 GaN 48V to 1V
+point of load evaluation module,” Texas Instruments, Dallas, TX, USA,
+2017. [Online]. Available: https://www.ti.com/tool/LMG5200POLEVM-
+10
+Xin Lou (Graduate Student Member, IEEE) re-
+ceived the B.S. in electrical engineering from
+Fudan University, Shanghai, China, in 2018. He
+is currently working toward the Ph.D. degree in
+electrical engineering with the Center for Power
+Electronics Systems, Virginia Tech, Blacksburg,
+VA, USA.
+His research interests include modeling and
+control of power converters, high-efﬁciency,
+high-density power conversion, high-frequency
+magnetic designs, and voltage regulators.
+Qiang Li (Member, IEEE) received the B.S. and
+M.S. degrees in power electronics from Zhejiang
+University, Hangzhou, China, in 2003 and 2006,
+respectively, and the Ph.D. degree in electrical
+engineering from Virginia Tech, Blacksburg, VA,
+USA, in 2011.
+He is currently a Professor with the Center for
+Power Electronics Systems, Virginia Tech. He
+holds 37 U.S. patents and has authored or coau-
+thored more than 200 refereed technical arti-
+cles. His research interests include power man-
+agement for distributed power systems, applications of wide-bandgap
+power devices, high-frequency power conversion and controls, magnet-
+ics and electromagnetic interference, high-density electronics packaging
+and integration, and renewable energy.
+Dr. Li was the recipient of the First Place Prize Paper Award of IEEE
+TRANSACTIONS ON POWER ELECTRONICS in 2016 and the U.S. National
+Science Foundation Career Award in 2017.
+Authorized licensed use limited to: Zhejiang University. Downloaded on October 29,2026 at 01:40:17 UTC from IEEE Xplore.  Restrictions apply. 

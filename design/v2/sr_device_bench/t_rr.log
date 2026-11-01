@@ -1,0 +1,24 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\design\v2\sr_device_bench\t_rr.cir
+Start Time: Sat Oct 31 09:31:06 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.5499999999956874e-08 to 2.5500000000006876e-08 seconds.
+Total elapsed time: 0.033 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\design\v2\sr_device_bench\t_rr.cir
+
+vsw10: V(sw) =19.8306734248 at 1e-08
+vsw30: V(sw) =-0.735201925039 at 3e-08
+vsw55: V(sw) =-0.760454446077 at 5.5e-08
+il10: I(L1) =3.38653700322 at 1e-08
+il55: I(L1) =9.03593206406 at 5.5e-08
+vout10: V(out) =0.000144190221415 at 1e-08
+if55: -I(Vs) =9.03593206406 at 5.5e-08
+irr: MIN(-I(Vs) )=-406.198822021 FROM 6e-08 TO 1e-07
+tz: -I(Vs)=0  AT 6.04760780682e-08

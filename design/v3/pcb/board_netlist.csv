@@ -1,0 +1,194 @@
+net,ref,pin,basis,deck_element
+CR_CT,CT,PRI_A,ct_design.json,Lct1
+CR_CT,Cr,N2,cr_stress.json,Cr
+CS1,CT,SEC_A,ct_design.json,Lct2
+CS1,D_CT1,A,ct_design.json,D1
+CS1,D_CT3,K,ct_design.json,D3
+CS2,CT,SEC_B,ct_design.json,Lct2
+CS2,D_CT2,A,ct_design.json,D2
+CS2,D_CT4,K,ct_design.json,D4
+CT_LR,CT,PRI_B,ct_design.json,Lct1
+CT_LR,Lr,N1,lr_design.json,Lr
+DT,R1,N1,5.36 kohm,Rdt
+DT,U1,1,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+GA1,R20,N2,2.2 ohm gate,(behavioural in deck)
+GA1,SR1A,G,BSC010N04LS6,Xsa1
+GA2,R22,N2,2.2 ohm gate,(behavioural in deck)
+GA2,SR2A,G,BSC010N04LS6,Xsa2
+GA3,R24,N2,2.2 ohm gate,(behavioural in deck)
+GA3,SR3A,G,BSC010N04LS6,Xsa3
+GA4,R26,N2,2.2 ohm gate,(behavioural in deck)
+GA4,SR4A,G,BSC010N04LS6,Xsa4
+GB1,R21,N2,2.2 ohm gate,(behavioural in deck)
+GB1,SR1B,G,BSC010N04LS6,Xsb1
+GB2,R23,N2,2.2 ohm gate,(behavioural in deck)
+GB2,SR2B,G,BSC010N04LS6,Xsb2
+GB3,R25,N2,2.2 ohm gate,(behavioural in deck)
+GB3,SR3B,G,BSC010N04LS6,Xsb3
+GB4,R27,N2,2.2 ohm gate,(behavioural in deck)
+GB4,SR4B,G,BSC010N04LS6,Xsb4
+GD1,U1,8,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+GD1,U2,7,UCC27282DRCR,(behavioural in deck)
+GD2,U1,5,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+GD2,U2,8,UCC27282DRCR,(behavioural in deck)
+GH,QH,G,CSD19531Q5A,SH
+GH,R18,N1,10 kohm,RgsH
+GH,R4,N2,2.2 ohm external; deck's 3.2 = UCC27282 1.3 + 2.2,Rgh
+GH_DRV,R4,N1,2.2 ohm external; deck's 3.2 = UCC27282 1.3 + 2.2,Rgh
+GH_DRV,U2,4,UCC27282DRCR,(behavioural in deck)
+GL,QL,G,CSD19531Q5A,SL
+GL,R19,N1,10 kohm,RgsL
+GL,R5,N2,2.2 ohm external; deck's 3.2 = UCC27282 0.85 + 2.2,Rgl
+GL_DRV,R5,N1,2.2 ohm external; deck's 3.2 = UCC27282 0.85 + 2.2,Rgl
+GL_DRV,U2,10,UCC27282DRCR,(behavioural in deck)
+HB,C5,N1,220 nF >=25 V,Cbt
+HB,D_BT,K,"bootstrap diode, TO SELECT",Dbt
+HB,U2,3,UCC27282DRCR,(behavioural in deck)
+OC,C12,N1,10 nF,Coc
+OC,R16,N2,ct_design.json,Rd1
+OC,R17,N1,24 kohm,Rd2
+OC,U1,3,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+OC1,C11,N1,47 nF,Cf
+OC1,R15,N2,1 kohm,Rf
+OC1,R16,N1,ct_design.json,Rd1
+OCD,D_CT1,K,ct_design.json,D1
+OCD,D_CT2,K,ct_design.json,D2
+OCD,R15,N1,1 kohm,Rf
+OCD,R3,N1,ct_design.json,Rbur
+OCM,C11,N2,47 nF,Cf
+OCM,C12,N2,10 nF,Coc
+OCM,D_CT3,A,ct_design.json,D3
+OCM,D_CT4,A,ct_design.json,D4
+OCM,R17,N2,24 kohm,Rd2
+OCM,R3,N2,ct_design.json,Rbur
+PGND,C10,N2,2.2 uF,(behavioural in deck)
+PGND,C6,N2,10 nF,Css
+PGND,C7,N2,2.2 uF,(behavioural in deck)
+PGND,C8,N2,2.2 uF,(behavioural in deck)
+PGND,C9,N2,2.2 uF,(behavioural in deck)
+PGND,Cin,N,passive_requirements.json,Cin
+PGND,Cout,N,cout_bank.json,Cout
+PGND,J_IN,P2,connector_budget.json,Vbus
+PGND,J_OUT,N,connector_budget.json,Rload
+PGND,QL,S,CSD19531Q5A,SL
+PGND,R1,N2,5.36 kohm,Rdt
+PGND,R19,N2,10 kohm,RgsL
+PGND,R2,N2,976 ohm,Rrt
+PGND,SR1A,S,BSC010N04LS6,Xsa1
+PGND,SR1B,S,BSC010N04LS6,Xsb1
+PGND,SR2A,S,BSC010N04LS6,Xsa2
+PGND,SR2B,S,BSC010N04LS6,Xsb2
+PGND,SR3A,S,BSC010N04LS6,Xsa3
+PGND,SR3B,S,BSC010N04LS6,Xsb3
+PGND,SR4A,S,BSC010N04LS6,Xsa4
+PGND,SR4B,S,BSC010N04LS6,Xsb4
+PGND,T4,PRI_B,magnetics package,Lp4
+PGND,U1,6,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+PGND,U2,9,UCC27282DRCR,(behavioural in deck)
+PGND,U3,2,UCC24624DR,(behavioural in deck)
+PGND,U3,5,UCC24624DR,(behavioural in deck)
+PGND,U4,2,UCC24624DR,(behavioural in deck)
+PGND,U4,5,UCC24624DR,(behavioural in deck)
+PGND,U5,2,UCC24624DR,(behavioural in deck)
+PGND,U5,5,UCC24624DR,(behavioural in deck)
+PGND,U6,2,UCC24624DR,(behavioural in deck)
+PGND,U6,5,UCC24624DR,(behavioural in deck)
+PRI_12,T1,PRI_B,magnetics package,Lp1
+PRI_12,T2,PRI_A,magnetics package,Lp2
+PRI_23,T2,PRI_B,magnetics package,Lp2
+PRI_23,T3,PRI_A,magnetics package,Lp3
+PRI_34,T3,PRI_B,magnetics package,Lp3
+PRI_34,T4,PRI_A,magnetics package,Lp4
+PRI_T1,Lr,N2,lr_design.json,Lr
+PRI_T1,T1,PRI_A,magnetics package,Lp1
+REG1,C7,N1,2.2 uF,(behavioural in deck)
+REG1,U3,3,UCC24624DR,(behavioural in deck)
+REG2,C8,N1,2.2 uF,(behavioural in deck)
+REG2,U4,3,UCC24624DR,(behavioural in deck)
+REG3,C9,N1,2.2 uF,(behavioural in deck)
+REG3,U5,3,UCC24624DR,(behavioural in deck)
+REG4,C10,N1,2.2 uF,(behavioural in deck)
+REG4,U6,3,UCC24624DR,(behavioural in deck)
+RT,R2,N1,976 ohm,Rrt
+RT,U1,2,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+RUN,U2,6,UCC27282DRCR,(behavioural in deck)
+SEC1_A,R28,N1,0 ohm Kelvin,(behavioural in deck)
+SEC1_A,SR1A,D,BSC010N04LS6,Xsa1
+SEC1_A,T1,SEC_A,magnetics package,Lsa1
+SEC1_B,R29,N1,0 ohm Kelvin,(behavioural in deck)
+SEC1_B,SR1B,D,BSC010N04LS6,Xsb1
+SEC1_B,T1,SEC_B,magnetics package,Lsb1
+SEC2_A,R30,N1,0 ohm Kelvin,(behavioural in deck)
+SEC2_A,SR2A,D,BSC010N04LS6,Xsa2
+SEC2_A,T2,SEC_A,magnetics package,Lsa2
+SEC2_B,R31,N1,0 ohm Kelvin,(behavioural in deck)
+SEC2_B,SR2B,D,BSC010N04LS6,Xsb2
+SEC2_B,T2,SEC_B,magnetics package,Lsb2
+SEC3_A,R32,N1,0 ohm Kelvin,(behavioural in deck)
+SEC3_A,SR3A,D,BSC010N04LS6,Xsa3
+SEC3_A,T3,SEC_A,magnetics package,Lsa3
+SEC3_B,R33,N1,0 ohm Kelvin,(behavioural in deck)
+SEC3_B,SR3B,D,BSC010N04LS6,Xsb3
+SEC3_B,T3,SEC_B,magnetics package,Lsb3
+SEC4_A,R34,N1,0 ohm Kelvin,(behavioural in deck)
+SEC4_A,SR4A,D,BSC010N04LS6,Xsa4
+SEC4_A,T4,SEC_A,magnetics package,Lsa4
+SEC4_B,R35,N1,0 ohm Kelvin,(behavioural in deck)
+SEC4_B,SR4B,D,BSC010N04LS6,Xsb4
+SEC4_B,T4,SEC_B,magnetics package,Lsb4
+SS,C6,N1,10 nF,Css
+SS,U1,4,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+SW,C5,N2,220 nF >=25 V,Cbt
+SW,Cr,N1,cr_stress.json,Cr
+SW,QH,S,CSD19531Q5A,SH
+SW,QL,D,CSD19531Q5A,SL
+SW,R18,N2,10 kohm,RgsH
+SW,U2,5,UCC27282DRCR,(behavioural in deck)
+VCC12,D_BT,A,"bootstrap diode, TO SELECT",Dbt
+VCC12,U1,7,UCC25600D: DT RT OC SS GD2 GND VCC GD1,Xctl
+VCC12,U2,1,UCC27282DRCR,(behavioural in deck)
+VCC12_S,U3,7,UCC24624DR,(behavioural in deck)
+VCC12_S,U4,7,UCC24624DR,(behavioural in deck)
+VCC12_S,U5,7,UCC24624DR,(behavioural in deck)
+VCC12_S,U6,7,UCC24624DR,(behavioural in deck)
+VD1_A,R28,N2,0 ohm Kelvin,(behavioural in deck)
+VD1_A,U3,4,UCC24624DR,(behavioural in deck)
+VD1_B,R29,N2,0 ohm Kelvin,(behavioural in deck)
+VD1_B,U3,6,UCC24624DR,(behavioural in deck)
+VD2_A,R30,N2,0 ohm Kelvin,(behavioural in deck)
+VD2_A,U4,4,UCC24624DR,(behavioural in deck)
+VD2_B,R31,N2,0 ohm Kelvin,(behavioural in deck)
+VD2_B,U4,6,UCC24624DR,(behavioural in deck)
+VD3_A,R32,N2,0 ohm Kelvin,(behavioural in deck)
+VD3_A,U5,4,UCC24624DR,(behavioural in deck)
+VD3_B,R33,N2,0 ohm Kelvin,(behavioural in deck)
+VD3_B,U5,6,UCC24624DR,(behavioural in deck)
+VD4_A,R34,N2,0 ohm Kelvin,(behavioural in deck)
+VD4_A,U6,4,UCC24624DR,(behavioural in deck)
+VD4_B,R35,N2,0 ohm Kelvin,(behavioural in deck)
+VD4_B,U6,6,UCC24624DR,(behavioural in deck)
+VG1_A,R20,N1,2.2 ohm gate,(behavioural in deck)
+VG1_A,U3,1,UCC24624DR,(behavioural in deck)
+VG1_B,R21,N1,2.2 ohm gate,(behavioural in deck)
+VG1_B,U3,8,UCC24624DR,(behavioural in deck)
+VG2_A,R22,N1,2.2 ohm gate,(behavioural in deck)
+VG2_A,U4,1,UCC24624DR,(behavioural in deck)
+VG2_B,R23,N1,2.2 ohm gate,(behavioural in deck)
+VG2_B,U4,8,UCC24624DR,(behavioural in deck)
+VG3_A,R24,N1,2.2 ohm gate,(behavioural in deck)
+VG3_A,U5,1,UCC24624DR,(behavioural in deck)
+VG3_B,R25,N1,2.2 ohm gate,(behavioural in deck)
+VG3_B,U5,8,UCC24624DR,(behavioural in deck)
+VG4_A,R26,N1,2.2 ohm gate,(behavioural in deck)
+VG4_A,U6,1,UCC24624DR,(behavioural in deck)
+VG4_B,R27,N1,2.2 ohm gate,(behavioural in deck)
+VG4_B,U6,8,UCC24624DR,(behavioural in deck)
+VIN_P,Cin,P,passive_requirements.json,Cin
+VIN_P,J_IN,P1,connector_budget.json,Vbus
+VIN_P,QH,D,CSD19531Q5A,SH
+VOUT,Cout,P,cout_bank.json,Cout
+VOUT,J_OUT,P,connector_budget.json,Rload
+VOUT,T1,CTAP,magnetics package,Lsa1
+VOUT,T2,CTAP,magnetics package,Lsa2
+VOUT,T3,CTAP,magnetics package,Lsa3
+VOUT,T4,CTAP,magnetics package,Lsa4

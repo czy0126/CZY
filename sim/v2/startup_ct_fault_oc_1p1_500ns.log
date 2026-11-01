@@ -1,0 +1,21 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\startup_ct_fault_oc_1p1_500ns.cir
+Start Time: Sat Oct 31 12:41:05 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 76.246 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\startup_ct_fault_oc_1p1_500ns.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v2.lib
+D:\workshop\design_48v-2v\models\ucc27282_behaviour.lib
+
+D:\workshop\design_48v-2v\sim\v2\startup_ct_fault_oc_1p1_500ns.cir(166): Voltage not found.
+.meas tran OC_TRIP_CORNER WHEN V(ocp)=1 CROSS=1
+                               ^^^^^^

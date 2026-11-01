@@ -1,0 +1,302 @@
+8.3.3 Turn-off Threshold Adjustment
+When SR MOSFETs are implemented in LLC converters, they are often turned off too early, which creates long 
+body diode conduction times. This results in more power loss, lower efficiency, and higher thermal stress.
+The SR MOSFET early turn off is caused by the parasitic inductance in the SR voltage sensing path. As 
+illustrated in Figure 8-5, the VDS voltage sensed by the synchronous rectifier controller (VSENSE) is the 
+combination of the MOSFET on-state resistor voltage drop VSR, together with the voltage drops on parasitic 
+inductors LD and LS. A better layout approach can minimize these parasitic inductors. However, the minimum 
+value it can achieve is the package inductance of the SR MOSFET. With different packages, this parasitic 
+inductance could vary from 2 to 10 nH.
+LD
+LS
+SR
+VSR
+VSENSE
+ISR
++
+-
+Figure 8-5. SR Controller Sensed Voltage
+The overall sensed voltage can be represented by Equation 1.
+85'05' = Fd+54 × 4&5KJ + :.& + .5; × @+54
+@P h 
+(1)
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+15
+
+--- PAGE 16 ---
+Because of the sinusoidal current shape and high output current, the current slope (di/dt) creates a significant 
+voltage drop across the package inductance. This causes the SR controller to detect a smaller voltage drop and 
+turn off the SR MOSFET early.
+To overcome this issue, UCC24624 implements several techniques.
+First, the proportional gate drive feature is implemented. As discussed earlier, the proportional gate drive 
+reduces the SR MOSFET gate drive voltage when the SR current is small, and increases its voltage drop. This 
+increased voltage drop could overwhelm the offset voltage introduced by the package inductance. Thus the SR 
+MOSFET conduction time is extended.
+Second, the turn-off threshold is set at 10.5 mV, instead of typically being set as a negative threshold. Because 
+of the high di/dt and unavoidable SR package inductance, positive voltage is always expected at zero SR 
+current. The positive turn-off threshold allows the SR MOSFET to continue conduction toward the end of the 
+intended conduction period without the concern of causing negative SR current because of anticipating the 
+positive offset voltage on the package inductances.
+Last, UCC24624 also allows the user to further increase the turn-off threshold to accommodate higher parasitic 
+inductance MOSFET packages, such as TO-220 packages. As illustrated in Figure 8-6, UCC24624 has an 
+internal current source that flows out of the VSS pin. By connecting a resistor from the VSS pin to the SR 
+MOSFET source, the voltage drop across the external resistor increases the turn-off threshold. This increased 
+turn-off threshold makes it more suitable for TO-220 packages. Less than 70-mV offset is recommended. When 
+using the low inductance MOSFET packages, such as SON5x6, the external resistor is not needed because the 
+proportional gate drive alone can take care of the offset caused by the smaller package inductance.
+Note
+To ensure normal system operation, VSS pin must never be kept open.
+10.5 mV
+SR
+330 µA
+Roffset
+Turn-off 
+comparator
++
+±
+VD1, 
+VD2
+VSS
+UCC24624
+VTHOFF
+Figure 8-6. Adjustable Turn-off Threshold
+The internal current source is at 330 µA and the external offset resistor value is recommended to be less 
+than 212 Ω. The offset resistor Roffset can be calculated by using Equation 2 with the desired turn-off threshold 
+VTHOFF.
+4KBBOAP = 86*1(( F 10.5I8
+330ä#
+(2)
+This added offset voltage only changes the SR turn-off threshold, while the proportional gate drive threshold 
+remains the same.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+16
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 17 ---
+8.3.4 Noise Immunity
+To ensure reliable SR operation and to avoid false turn-on and turn-off, features such as blanking time, adaptive 
+turn-on delay, and interlock logic are implemented. As illustrated in Figure 8-7, the SR control is blanked by the 
+on-time blanking, off-time blanking and two-channel interlock logic.
+VTHVGON
+VTHREG
+VTHVGOFF
+ISD2
+VVD2
+t
+VTHVGON
+VTHREG
+VTHVGOFF
+ISD1
+VTHVGON
+VTHREG
+VTHVGOFF
+ISD1
+VTHARM
+VTHARM
+VTHARM
+S1 Gate
+S2 Gate
+S1 Gate
+S1 on-time 
+blanking
+S2 on-time 
+blanking
+S1 on-time 
+blanking
+S1 off-time 
+blanking
+S2 off-time 
+blanking
+S1 off-time 
+blanking
+S2 gate prohibited 
+by interlock
+S1 gate prohibited 
+by interlock
+S2 gate prohibited 
+by interlock
+VVD2
+VVD2
+VVD2
+VVD1
+VVD1
+t
+t
+t
+t
+t
+Figure 8-7. Blanking Time and Interlock Logic in UCC24624
+8.3.4.1 On-Time Blanking
+Right after the SR MOSFET turn on, the SR is driven fully on. For the LLC resonant converter, the SR current 
+rises from zero. It is desired to keep the SR on during this situation and allow the current to rise to a high enough 
+level to maintain the full conduction time. In UCC24624, after the SR is turned on, a minimum on time blanking 
+of 475 ns is implemented. During the on-time blanking time, the SR keeps conducting regardless of its drain to 
+source voltage. This on-time blanking limits the maximum switching frequency of the LLC converter to 625 kHz.
+8.3.4.2 Off-Time Blanking
+When the converter operates in burst mode, during the off period of the secondary side synchronous rectifiers, 
+there is large parasitic ringing (DCM ring) caused by the transformer magnetizing inductance and the switch 
+node capacitance. During the first few ringing cycles of the off period, there is a good chance that the SR 
+MOSFET drain voltage will resonate below the SR controller turn-on threshold. The SR MOSFET could be 
+falsely turned on at these instances, which could introduce extra power loss and EMI noise.
+In UCC24624, a fixed 650-ns off-time blanking period is implemented. After the SR is turned off, and after its 
+drain voltage rises above 1.5 V, the SR won't turn on again for at least the off-time blanking time, regardless of 
+its drain to source voltage. Additional adaptive turn-on delay is also implemented to further enhance the noise 
+immunity capability during burst mode operation.
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+17
+
+--- PAGE 18 ---
+8.3.4.3 Two-Channel Interlock
+In LLC converters, the two SR MOSFETs are directly connected with the transformer secondary side. If for any 
+reason, both SRs turn on at the same time, the transformer secondary side is shorted. This could cause large 
+current and destructive component failures.
+To prevent this shoot-through current of the two SR MOSFETs, UCC24624 include a two-channel interlock 
+mechanism. The turn-on of one SR MOSFET, prevents the turn-on of the other SR MOSFET, as illustrated in 
+Figure 8-7.
+8.3.4.4 SR Turn-on Re-arm
+After been turned off in each switching cycle, the VG1 and VG2 outputs may only turn on again when the 
+controller has been armed for the new switching cycle. The controller is armed for each successive SR cycle 
+only at off-time blanking TOFFMIN expiring after the VD pin voltage rises 1.5 V above the VSS pin.
+8.3.4.5 Adaptive Turn-on Delay
+To further enhance noise immunity of the SR controller, UCC24624 implements an adaptive turn-on delay. 
+During most operating conditions, 155-ns of turn-on delay is applied to both channel's turn-on stage. However, 
+at a lighter load, or during burst off period, this turn-on delay is increased to further enhance the noise immunity 
+and allow the controller to reject the leading edge current spike and DCM ring. In these conditions, the turn-on 
+delay is increased to 275 ns. The turn-on delay increasing can be observed in below conditions.
+•
+Burst mode operation. During LLC normal operation, two SR MOSFETs are turned on and off alternatively, 
+in a complementary fashion. However, during burst operation, after one SR MOSFET turns off, the other 
+SR MOSFET stays off. This gives the indication of the LLC converter entering the burst-mode operation. In 
+UCC24624, after one channel SR is turned off, its turn-on delay for the next turn-on is increased to 275 ns, 
+for improved DCM ring rejection capability. If the other channel SR is turned on after this channel SR turning 
+off, the LLC is still in normal operating mode. The turn-on delay is reset to the 155-ns value. Otherwise, 
+UCC24624 detects the LLC entering burst-mode operation and the SR turn-on delay stays at 275 ns to help 
+reject the DCM ring. This adaptive turn-on delay allows long turn-on delay during burst mode operation, with 
+shorter delay during normal operation to minimize the conduction loss.
+•
+Short SR conduction time. At light load, the SR current could start with a short leading edge spike of positive 
+current, followed by the negative current, and then the full positive current, as shown in Figure 8-8. This is 
+caused by the SR parasitic capacitance and the LLC resonant behavior. When the negative current appears, 
+the SR is turned off with minimum on time (on-time blanking). This is the indication that the leading edge 
+current spike causes abnormal operation. Once the short SR conduction time is detected, the IC sets the 
+turn-on delay to 275 ns. This long turn-on delay can further help to reject the leading edge current spike. It 
+also helps to provide better DCM ring rejection during burst mode operation, since the burst mode operation 
+only happens at light load. This increased turn-on delay time is reset when the SR voltage drop is more than 
+40 mV (VDS more negative than -40 mV) at the middle of its conduction time for 8 consecutive cycles.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+18
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 19 ---
+Ton_min
+SR 
+current
+0
+SR 
+gate
+0
+Figure 8-8. SR current with leading edge spike
+To avoid the DCM ring turn on and SR leading edge current spike, an extra resistor can be added between the 
+SR MOSFET drain and UCC24624 VD pins, as shown in Figure 8-9. The extra resistor helps to further improve 
+the noise immunity. Furthermore, this resistor also limits the negative current flowing into the VD pins, during SR 
+body diode conduction time. A resistor value around 1 kΩ is recommended if this resistor is needed.
+VG1
+PGND
+REG
+VD1
+VSS
+VD2
+VDD
+VG2
+UCC24624
+1k
+1k
+Figure 8-9. UCC24624 configuration with VD resistors
+8.3.5 Gate Voltage Clamping
+With the wide VDD voltage range capability, UCC24624 clamps the gate driver voltage to a maximum level of 
+11 V to allow fast driving speed, low driving loss, and compatibility with different MOSFETs. The 11-V level is 
+chosen to minimize the conduction loss for non-logic level MOSFETs. The gate-driver voltage clamp is achieved 
+through the regulated REG pin voltage. When the VDD voltage is above 11 V, the linear regulator regulates the 
+REG pin voltage to 11 V, which is also the power supply of the gate driver stage. This way, the MOSFET gate 
+is well clamped at 11 V, regardless of how high the VDD voltage is. When the VDD voltage is getting close to 
+or below the programmed REG pin regulation voltage, UCC24624 can no longer regulate the REG pin voltage. 
+Instead, it enters a pass-through mode where the REG pin voltage follows the VDD pin voltage minus a smaller 
+linear regulator dropout voltage. During this time, the gate driver voltage is lower than its programmed value but 
+www.ti.com
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+Copyright © 2022 Texas Instruments Incorporated
+Submit Document Feedback
+19
+
+--- PAGE 20 ---
+still provides the SR driving capability. The UCC24624 is disabled once the REG pin voltage drops below its 
+UVLO OFF level VREGOFF.
+8.3.6 Standby Mode
+With stringent efficiency standards such as Department of Energy (DoE) level VI and Code of Conduct (CoC) 
+version 5 tier 2, external power supplies are expected to maintain a very low standby power at no load 
+conditions. It is essential for the SR controller to enter the low power standby mode to help reduce the no 
+load power consumption.
+During standby mode, the power converter loss allocation is quite different compared with heavy load. At heavier 
+load, both conduction loss and switching loss are quite high. However, at light load, the conduction loss becomes 
+insignificant and switching loss dominates the total loss. To help improve the standby power, modern power 
+supply controllers often enter burst mode to save the switching loss. Furthermore, in each burst switching cycle, 
+the energy delivered is maximized to minimize the number of switching cycles needed and further reduces the 
+switching loss.
+Traditionally, the SR controller monitors the SR conduction time to distinguish the normal operation mode or the 
+standby mode. Because of the burst mode operation, the converter is equivalently operating at a much higher 
+power level with long SR conduction time. This criterion is no longer suitable for the modern power supply 
+controller designed for delivering minimum standby power.
+Instead, in UCC24624, a frequency based standby mode detection is used. UCC24624 continuously monitors 
+the average switching frequency of SR channel 1. Once the average switching frequency of channel 1 SR 
+MOSFET drops below 9 kHz for 7.5 ms, the UCC24624 enters the standby mode, stops SR MOSFETs 
+switching, and reduces its current consumption to IVDDSTBY. During standby mode, the SR switching cycle is 
+continuously monitored through the body diode conduction. Once the average switching frequency is more than 
+15.6 kHz within 7.5 ms, the SR MOSFET operation is enabled again. UCC24624 ignores the first SR switching 
+cycle after coming out of standby mode to make sure the SR isn't turned on in the middle of the switching cycle.
+8.4 Device Functional Modes
+8.4.1 UVLO Mode
+UCC24624 uses the REG pin voltage to detect UVLO instead of the VDD pin voltage. When the REG voltage 
+has not yet reached the VREGON threshold, or has fallen below the UVLO threshold VREGOFF, the device 
+operates in the low-power UVLO mode. In this mode, most internal functions are disabled and VDD current is 
+IVDDSTART. If the REG pin is above 2 V, there is an active pull down from VG1 and VG2 to PGND to prevent the 
+SR from falsely turning on due to noise. When the REG pin voltage is less than 2 V, there is a weak pull down 
+from VG1 and VG2 to PGND and this also prevents noise from turning on SR MOSFETs. The device exits UVLO 
+mode when REG increases above the VREGON threshold.
+8.4.2 Standby Mode
+Standby mode is a low-power operating mode to help achieve low standby power for the entire power supply. 
+UCC24624 detects the average operation frequency of channel 1 SR MOSFET and enters or exits the standby 
+mode operation automatically. VDD current reduces to IVDDSTBY level. During standby mode, the majority of the 
+SR control functions are disabled, except the switching frequency monitoring and the active pull down on the 
+gate drivers.
+8.4.3 Run Mode
+Run mode is the normal operating mode of the controller, when not in UVLO mode, or standby mode. In this 
+mode, VDD current is higher because all internal control and timing functions are operating and the VG1 and 
+VG2 outputs are driving the MOSFETs for synchronous rectification. VDD current is the sum of IVDDRUN plus 
+the average current necessary to drive the load on the VG1 and VG2 outputs. The VG1 and VG2 voltages are 
+automatically adjusted based on the SR MOSFET drain-to-source voltages. Before REG pin voltage reaches 
+VREGON threshold, one of the drain-to-source voltages (VD1 or VD2) must switch above VTHARM for proper 
+switching of VG1 and VG2 outputs. This can be easily achieved by powering up the VDD from the output of the 
+LLC or switching the LLC first before REG pin voltage reaches VREGON threshold.
+UCC24624
+SLUSD48C – JULY 2018 – REVISED MARCH 2022
+www.ti.com
+20
+Submit Document Feedback
+Copyright © 2022 Texas Instruments Incorporated
+
+--- PAGE 21 ---

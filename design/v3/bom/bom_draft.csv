@@ -1,0 +1,38 @@
+group,ref,qty,item,mpn,package,value_or_rating,basis,status,source
+control,U1,1,LLC controller,UCC25600D,SOIC-8,"12 V VCC; RT 976 ohm; DT 5.36 kohm","pin_connections.csv; datasheet p3",VERIFIED,references/datasheets/ucc25600.pdf
+control,U2,1,half-bridge driver,UCC27282DRCR,SON-10 3x3 mm,"12 V; 220 nF bootstrap","pin_connections.csv; datasheet p3",VERIFIED,references/datasheets/ucc27282.pdf
+control,U3-U6,4,dual SR controller,UCC24624DR,SOIC-8,"12 V; 2.2 uF REG; 2.2 ohm gate","pin_connections.csv; datasheet p6",VERIFIED,references/datasheets/ucc24624.pdf
+power,QH QL,2,primary MOSFET,CSD19531Q5A,SON 5x6 mm,"100 V; 5.3 mohm typ / 6.2 mohm max",datasheet p1,VERIFIED,references/datasheets/csd19531q5a.pdf
+power,SR1A-SR4B,8,secondary SR MOSFET,BSC010N04LS6,PG-TDSON-8,40 V; ~0.9 mohm at VGS=10 V,"datasheet; sr_device_bench_results",VERIFIED,references/datasheets/bsc010n04ls6.pdf
+magnetic,T1-T4,4,ELP32 core half,B66287G0000X197,ELP 32/6/20,N97; ungapped AL 6300 nH +/-25%,magnetics package,VERIFIED,references/datasheets/elp32.pdf
+magnetic,T1-T4,4,I plate,B66287K0000X197,I 32/3/20,N97,magnetics package,VERIFIED,references/datasheets/elp32.pdf
+magnetic,T1-T4,4,transformer winding,TO BUILD,foil 0.10 x 18 mm,"3:1:1 centre-tapped; Lm 10 uH; gap 0.121 mm",design/v3/magnetics,TO BUILD,magnetics package
+magnetic,Lr,1,resonant inductor,TO SELECT,-,"1.0 uH; 13.9 A steady, 36.1 A startup, 65-74 A fault; ELP32 N97: 2 turns 0.63 mm gap (needs <=0.985 uH) or 3 turns 1.44 mm gap",lr_design.json,TO SELECT,docs/续接任务书_真实控制与SR.md
+magnetic,CT,1,over-current CT,TO SELECT,-,"100:1; 1 V Level-1 VOC; as built 10 ohm burden + 24/35 divider reads 0.573 V at 13.86 A and trips at 24.2 A (measured); core B/Bsat 0.7 %",ct_design.json; oc_network_ct10.json,TO SELECT,design/v2/真实控制与SR验证进展.md
+resonant,Cr,1,resonant capacitor,TO SELECT,film,"0.62 uF; peak v_Cr 41.4 V (reconstructed) vs 100 V rated = 2.42x; 9.45 A RMS at 200.6 kHz; bank ESR <=11.2 mohm for 1 W",cr_stress.json,TO SELECT,computed
+input,Cin,1,48 V input capacitor bank,TO SELECT,-,"48 V bus; >=5.32 A RMS at 200 kHz (bridge ripple); 13.9 A pulses",passive_requirements.json,TO SELECT,measured model
+output,Cout,1,output capacitor bank,TO SELECT,polymer SMD,"15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=52.5 A RMS; bank ESR <=0.2 mohm; part data unverified",cout_bank.json,TO SELECT,computed
+output,J_OUT,1,output connector / busbar,TO SELECT,-,"100 A continuous; 20x2 mm copper bar = 34.5 uohm/80 mm (0.35 W); design basis 0.15 mohm (what the 92.33% efficiency assumes) leaves 57.8 uohm per joint for 2 joints - that is the four-wire acceptance number, not the 50 uohm placeholder",connector_budget.json,TO SELECT,computed
+input,J_IN,1,48 V input connector,TO SELECT,-,">=6.75 A RMS; 2-pin 5.08 mm terminal or larger; trace >=11 mm of 2 oz copper for 0.1 W/100 mm",connector_budget.json,TO SELECT,computed
+control,D_CT1-D_CT4,4,CT rectifier Schottky,TO SELECT,SOT-23,">=0.5 A; >=25 V; Vf is the CT's compliance voltage (1.14 V total at rated), not signal loss - it costs flux, not accuracy",ct_design.json,TO SELECT,sim/v2/startup_ct_fault_drv.cir
+control,D_BT,1,bootstrap diode,TO SELECT,0603,">=100 V reverse - HB is 60 V against VCC12 12 V when QH is on, so 48 V; If avg 9.6 mA (Qg 48 nC datasheet max x 200.6 kHz; the deck's 4 nF Cgh gives the same 48 nC); droop 218 mV on 220 nF; peak ~0.4 A recharge spike is derived, NOT measured - the deck's Bgh is a source to sw, so Cbt is never loaded",board_netlist.json,TO SELECT,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir
+control,R18,1,QH gate-source pull-down,TO ASSIGN,0603,10 kohm,board_netlist.json,VALUE FROZEN,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir
+control,R19,1,QL gate-source pull-down,TO ASSIGN,0603,10 kohm,board_netlist.json,VALUE FROZEN,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir
+control,R1,1,RT resistor,TO ASSIGN,0603,976 ohm; 1%,pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,R2,1,DT resistor,TO ASSIGN,0603,5.36 kohm; 1%,pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,R3,1,OC burden resistor,TO ASSIGN,0805,"10 ohm; 89 mW at rated (measured); the ideal 10.58 ohm is within the CT's own tolerance, so 10 is kept",ct_design.json,VALUE FROZEN,sim/v2/startup_ct_fault_drv.cir
+control,R4 R5,2,primary gate resistor,TO ASSIGN,0603,"2.2 ohm external; the deck's 3.2 ohm lump = UCC27282 1.3/0.85 ohm + 2.2 - same design, different quantity",ucc27282 datasheet; test_gate_drive_calibration.py,VALUE FROZEN,pin_connections.csv
+control,R20-R27,8,SR gate resistor,TO ASSIGN,0603,"2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",ucc24624 datasheet; test_gate_drive_calibration.py,VALUE FROZEN,pin_connections.csv
+control,R28-R35,8,SR drain Kelvin link,TO ASSIGN,0603,"0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,R7 R8 R9 R10,4,U2 control pull-downs and run jumper,TO ASSIGN,0603,"R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,C13,1,EN filter,TO ASSIGN,0603,1 nF to PGND at U2.6,pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,C101-C112,12,VDD decoupling,TO ASSIGN,0603/0805,"1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,C5,1,HB bootstrap,TO ASSIGN,0805,220 nF; >=25 V,pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,C6,1,SS capacitor,TO ASSIGN,0603,10 nF,pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,C7-C10,4,REG capacitors,TO ASSIGN,0603,2.2 uF each,pin_connections.csv,VALUE FROZEN,pin_connections.csv
+control,R15,1,OC filter series (Rf),TO ASSIGN,0603,1 kohm; 47 us with Cf,sim/v2/startup_ct_fault_drv.cir,VALUE FROZEN,sim/v2/startup_ct_fault_drv.cir
+control,R16,1,OC divider top (Rd1),TO ASSIGN,0603,10 kohm; 1%; as built - kept,sim/v2/startup_ct_fault_drv.cir,VALUE FROZEN,sim/v2/startup_ct_fault_drv.cir
+control,R17,1,OC divider bottom (Rd2),TO ASSIGN,0603,24 kohm,sim/v2/startup_ct_fault_drv.cir,VALUE FROZEN,sim/v2/startup_ct_fault_drv.cir
+control,C11,1,OC filter (Cf),TO ASSIGN,0603,47 nF; tau with Rf = 47 us,sim/v2/startup_ct_fault_drv.cir,VALUE FROZEN,sim/v2/startup_ct_fault_drv.cir
+control,C12,1,OC hold (Coc),TO ASSIGN,0603,"10 nF (51.3 us OC delay); 1 nF gives 13 us",docs/续接任务书_真实控制与SR.md,VALUE FROZEN,docs/续接任务书_真实控制与SR.md
+bias,PS1,1,12 V control bias,TO SELECT,-,12 V_P and 12 V_S; power included in efficiency,third audit P1,VALUE FROZEN,bus requirement

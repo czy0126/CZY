@@ -1,0 +1,200 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_offblank_boundary.cir
+Start Time: Sat Oct 31 12:14:51 2026
+
+.step td=4.7e-06
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=4.8e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=4.9e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=5e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=5.2e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=5.4e-06
+.OP point found by inspection.
+.OP point found by inspection.
+Total elapsed time: 0.868 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_offblank_boundary.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3.lib
+
+
+Measurement: arm_t
+  step	V(armin)=0.5 
+     1	4.625e-06
+     2	4.625e-06
+     3	4.625e-06
+     4	4.625e-06
+     5	4.625e-06
+     6	4.625e-06
+
+Measurement: qfall
+  step	V(xsr:q1)=0.5 
+     1	4.66345413923e-06
+     2	4.66345413923e-06
+     3	4.66345413923e-06
+     4	4.66345413923e-06
+     5	4.66345413923e-06
+     6	4.66345413923e-06
+
+Measurement: off_t01
+  step	V(xsr:x1:off)=0.1 
+     1	4.76410642239e-06
+     2	4.76410642095e-06
+     3	4.76410642095e-06
+     4	4.76410642095e-06
+     5	4.76410642095e-06
+     6	4.76410642095e-06
+
+Measurement: off_t065
+  step	V(xsr:x1:off)=0.65 
+     1	5.31410662812e-06
+     2	5.31410662812e-06
+     3	5.31410664164e-06
+     4	5.31410664164e-06
+     5	5.31410664164e-06
+     6	5.31410663577e-06
+
+Measurement: g1max
+  step	MAX(V(g1) )	FROM	TO
+     1	1.86788225174	4.7e-06	9e-06
+     2	1.86835130531	4.7e-06	9e-06
+     3	1.86835130531	4.7e-06	9e-06
+     4	10.8884420395	4.7e-06	9e-06
+     5	10.8884420395	4.7e-06	9e-06
+     6	10.8884353638	4.7e-06	9e-06
+
+Measurement: g_at_525
+  step	V(g1) 	at
+     1	5.82626286625e-12	5.25e-06
+     2	5.82598812938e-12	5.25e-06
+     3	5.82598812939e-12	5.25e-06
+     4	5.8259881294e-12	5.25e-06
+     5	5.82598812942e-12	5.25e-06
+     6	5.82550661518e-12	5.25e-06
+
+Measurement: g_at_546
+  step	V(g1) 	at
+     1	2.3558216342e-16	5.46e-06
+     2	2.3558216342e-16	5.46e-06
+     3	2.35565378854e-16	5.46e-06
+     4	2.3555575246e-16	5.46e-06
+     5	2.3555575246e-16	5.46e-06
+     6	2.35553433412e-16	5.46e-06
+
+Measurement: g_at_600
+  step	V(g1) 	at
+     1	1.18910405513e-27	6e-06
+     2	1.18910405513e-27	6e-06
+     3	1.18901924219e-27	6e-06
+     4	2.37716826276	6e-06
+     5	2.37716826277	6e-06
+     6	10.8843259811	6e-06
+
+Measurement: g_at_700
+  step	V(g1) 	at
+     1	0	7e-06
+     2	0	7e-06
+     3	0	7e-06
+     4	2.85649166378e-21	7e-06
+     5	2.85649166379e-21	7e-06
+     6	2.77494422788e-19	7e-06
+
+Measurement: g_at_480
+  step	V(g1) 	at
+     1	0.0151172126643	4.8e-06
+     2	0.0151121690869	4.8e-06
+     3	0.0151159638302	4.8e-06
+     4	0.0151159638302	4.8e-06
+     5	0.0151159638302	4.8e-06
+     6	0.0151159638302	4.8e-06
+
+Measurement: g_at_510
+  step	V(g1) 	at
+     1	8.00578003885e-09	5.1e-06
+     2	8.00578003886e-09	5.1e-06
+     3	8.00578003887e-09	5.1e-06
+     4	8.00578003889e-09	5.1e-06
+     5	8.00511820895e-09	5.1e-06
+     6	8.00511820895e-09	5.1e-06
+
+Measurement: g_at_530
+  step	V(g1) 	at
+     1	5.24057251586e-13	5.3e-06
+     2	5.24032531773e-13	5.3e-06
+     3	5.24032531774e-13	5.3e-06
+     4	5.24032531775e-13	5.3e-06
+     5	5.24032531777e-13	5.3e-06
+     6	5.23989205649e-13	5.3e-06
+
+Measurement: g_at_540
+  step	V(g1) 	at
+     1	4.2399038856e-15	5.4e-06
+     2	4.23990388561e-15	5.4e-06
+     3	4.23942856032e-15	5.4e-06
+     4	4.23942856032e-15	5.4e-06
+     5	4.23942856034e-15	5.4e-06
+     6	4.23828944081e-15	5.4e-06
+
+Measurement: g_at_560
+  step	V(g1) 	at
+     1	2.77530456319e-19	5.6e-06
+     2	2.77530456319e-19	5.6e-06
+     3	2.77510656874e-19	5.6e-06
+     4	9.72791004181	5.6e-06
+     5	9.72794447461	5.6e-06
+     6	4.93042985492	5.6e-06
+
+Measurement: g_at_580
+  step	V(g1) 	at
+     1	1.81662486458e-23	5.8e-06
+     2	1.81662486459e-23	5.8e-06
+     3	1.81649524452e-23	5.8e-06
+     4	10.8530287743	5.8e-06
+     5	10.8530287743	5.8e-06
+     6	10.6983032347	5.8e-06
+
+Measurement: g1r2
+  step	V(g1)=2 
+     1	failed
+     2	failed
+     3	failed
+     4	5.48152377064e-06
+     5	5.48152377064e-06
+     6	5.57670964138e-06
+
+Measurement: g1f2
+  step	V(g1)=2 
+     1	failed
+     2	failed
+     3	failed
+     4	6.00358320991e-06
+     5	6.00358320991e-06
+     6	6.09858319777e-06
+
+Measurement: q1max
+  step	MAX(V(xsr:q1) )	FROM	TO
+     1	5.58675676408e-18	4.7e-06	9e-06
+     2	6.0763902352e-18	4.7e-06	9e-06
+     3	6.0763902352e-18	4.7e-06	9e-06
+     4	1	4.7e-06	9e-06
+     5	1	4.7e-06	9e-06
+     6	1	4.7e-06	9e-06

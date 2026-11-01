@@ -1,0 +1,2920 @@
+{
+  "generated_at": "2026-10-31T14:26:09+08:00",
+  "tool": "LTspice 26.0.2 batch (-b), Normal solver, 27 C",
+  "scope_note": "Single authoritative baseline for the 2026-10-31 review follow-up; design/review_20261031/manifest.json is the frozen review-time snapshot and is superseded by this file.",
+  "entries": [
+    {
+      "path": "design/baseline/BASELINE.md",
+      "sha256": "75ee991a36f4d66a5e801c613e300aaeaf4846b9b02f8bbf2bdb80f068bb2f5c",
+      "bytes": 24925,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/baseline/deck_runs_comm.json",
+      "sha256": "dd9d7c0e9f35d513aa76a0d4c0077c372980b0102e7d39827f764ef685965287",
+      "bytes": 7173,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/baseline/deck_runs_extra.json",
+      "sha256": "ae959cf5ae3242040e78890d832442e6f0ed18a359d1cfe586fb147752c982ca",
+      "bytes": 1032,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/baseline/deck_runs_startup.json",
+      "sha256": "c385cb6682ee2e18d0cdb9b65ab37e1d709981174fa99371cd641195fff3a412",
+      "bytes": 2364,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/review_20261031/comm_review.cir",
+      "sha256": "fc815cb80ed40ab3873a5338ccc62cfa471f3da4bd5745b39954eea488f62ded",
+      "bytes": 5605,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "design/review_20261031/sr_timing_v3.lib",
+        "design/review_20261031/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "design/review_20261031/comm_review.log",
+      "sha256": "57b924ca68b8422a294ea10bc2920f96c39eed93ef040230800a371390c995ee",
+      "bytes": 3233,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "design/review_20261031/fault_review.json",
+      "sha256": "8861fabac3cb584803d30e3ecfeb85f9caad5d25b74b9f584595af8951e83d55",
+      "bytes": 354,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/SR反向电流验收判据_初稿.md",
+      "sha256": "9041b786e291cd0a5b2a75e9e279cac1ddd2eee56e3adcb6e30ebd8fc96bc162",
+      "bytes": 5166,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/fault_metrics_startup_ct_fault.json",
+      "sha256": "8264269b87df7c8ccefb86af5c61bae00305ddee5ebb21b176d7f35fcc978bde",
+      "bytes": 891,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/fault_metrics_startup_ct_fault_10m.json",
+      "sha256": "8d9f37f9a525cd9d4d50ee5e7dbf928dcbb15d040c24094113177ffd8c54f971",
+      "bytes": 704,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/fault_metrics_startup_ct_fault_f10.json",
+      "sha256": "a44b3f3fd291e9c81be90cb683c71e367e196ea48e6ca2c0458c7c4d5d4d1288",
+      "bytes": 955,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/fault_metrics_startup_ct_fault_f10_c1.json",
+      "sha256": "9e724be3577bb1954540f9971dfa9d9a1fb69913eed22cf825b45647adb6c954",
+      "bytes": 1137,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/gate_load_calibration.md",
+      "sha256": "563258e15c3e5c181614eec5f3bca69762feae07f51993d803ce2f384c6ac9fc",
+      "bytes": 9879,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/official_model_report.md",
+      "sha256": "aea2394f5c367ad6ee95f28fc185e3efeef2b6caeb9d635ce8ea43df0fe14f0c",
+      "bytes": 10600,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_arm_interlock_results.md",
+      "sha256": "806fc0ab6771880ff3fd3c73a858e5d3026db0fe8d20ac6dd06a9a7b62f34a5c",
+      "bytes": 10144,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_commutation_v3_g0_results.md",
+      "sha256": "adfe0d86472fca0eb396b801fed0a24e5c948406a6231dc662ca1b1a3dad3ad9",
+      "bytes": 9714,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_commutation_v3_results.md",
+      "sha256": "228c4d1d587feee99423210d4222e545120fe6243323aa42b5c559a8ec1e9554",
+      "bytes": 67405,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_device_bench_results.md",
+      "sha256": "0e4c8d06e09370e52b8069f1855df68d5cdb25834d66a411738a70e3b5d47d00",
+      "bytes": 14223,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_device_v3_calibration.json",
+      "sha256": "047e52454ecc616cacd15a4a841dba5b5f13f9b5eba2ed6bbd16bfecb7e8f384",
+      "bytes": 20635,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/sr_device_v3_calibration.md",
+      "sha256": "cc00e31acf05543a0048792b76c7cee441572888651408139edf5903b540e4ee",
+      "bytes": 12446,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_tank_dual_results.md",
+      "sha256": "29397dfc5f83229490e4b2f91d8b572db6fde2f4aaabf9ad568e50c3d365fe5d",
+      "bytes": 17589,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_timing_audit.md",
+      "sha256": "489653a742bee06ca29b5f0fc33a921fd3e63a69515827f4f4a5d5c35ef18d67",
+      "bytes": 31250,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/sr_timing_v3_results.md",
+      "sha256": "691c59d9d4d57b4df6e2b390245ed6139074034c35b5e3235891f44f52d69550",
+      "bytes": 18266,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/task1_verification.md",
+      "sha256": "cc70ecd2b8cf2697619227037253e1327ee7083050e95731330fea4bd56c4457",
+      "bytes": 29737,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/verification_results.json",
+      "sha256": "913934534fd6a1580ab16f2c60ea8f7fb4d028e748ca47e80f96cf7ac6d72ad0",
+      "bytes": 3592,
+      "class": "numeric_artifact",
+      "purpose": "machine-readable measurement output",
+      "caveat": ""
+    },
+    {
+      "path": "design/v2/启动OC矛盾_初稿.md",
+      "sha256": "edce77d31a9d35ef52a8db01a5fbd142295dddca9a9d73800771ee54056c8e56",
+      "bytes": 4031,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/启动时序证据_REG延后实验.md",
+      "sha256": "32ddd3b325db1213e9ba9adee58d0319ebfc7127f3ec46d727902ddf1f6ae69b",
+      "bytes": 4961,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/器件模型复核_电感默认电阻.md",
+      "sha256": "0021d3efff48c8805382d065ca5152892c9f84d423e2a0cfa3cd1e98726fdd07",
+      "bytes": 4548,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "design/v2/真实控制与SR验证进展.md",
+      "sha256": "59ec54068cc4f5f1f7f9c4df0207c18b0ca1c5bf6e88ce07c84b2f40e3165c99",
+      "bytes": 39171,
+      "class": "report",
+      "purpose": "project report",
+      "caveat": "read the scope banner; bench results are not hardware validation"
+    },
+    {
+      "path": "models/sr_device_v3.lib",
+      "sha256": "5224e94703cc2a6ec63b1435218b243622099f06b6c1915f78dff6528a5dde59",
+      "bytes": 7508,
+      "class": "calibrated_behavioural_model",
+      "purpose": "BSC010N04LS6 surrogate fitted to datasheet curves",
+      "caveat": "package Ld/Ls are estimates; PGD law and temperature not calibrated; not vendor-signed"
+    },
+    {
+      "path": "models/sr_timing_v2.lib",
+      "sha256": "412e07a9256576d07cb92ab2298fb99fa827fadc0e0efa376596a3a20a81843a",
+      "bytes": 2398,
+      "class": "sequencing_surrogate_model",
+      "purpose": "older v2 sequencing, still used by the cold-start decks",
+      "caveat": "superseded by v3 for SR decisions; v2 and v3 numbers must not be combined"
+    },
+    {
+      "path": "models/sr_timing_v2_pin100p.lib",
+      "sha256": "2013de373fc5d7d4fd59072921a04d1cf5ddd2badad4ae649fb82d7aad1d68fd",
+      "bytes": 3135,
+      "class": "sequencing_surrogate_model",
+      "purpose": "sr_timing_v2.lib with Cgate 6.7n -> 100p, for real-device benches only",
+      "caveat": "A/B artifact: identical to v2 except the lumped gate capacitor, so the only variable against sr_timing_v3_* is the state machine; not a model revision"
+    },
+    {
+      "path": "models/sr_timing_v3.lib",
+      "sha256": "5099df9183b0e0609bd4bd1eb99398012eb745f5172517f33c68eb3b5a437141",
+      "bytes": 8842,
+      "class": "sequencing_surrogate_model",
+      "purpose": "UCC24624 digital sequencing surrogate (SLUSD48C sections 7.5/7.6, 8.3.4, 8.4)",
+      "caveat": "typ thresholds only; uncalibrated PGD law; 128/46 ns gate edges vs 23/35 ns typ; standby, VSS offset current and adaptive 155/275 ns delay not implemented; the 6.7 nF gate surrogate is a known open driver-model defect (review P1); off-blank starts at max(Q falling edge, VD>ARM), conservative in the fast-rise case"
+    },
+    {
+      "path": "models/sr_timing_v3_1.lib",
+      "sha256": "32a5041bfac52b1efdb4868c4c30c0b205f4083ba283a25f1ef7c6feee0c0db8",
+      "bytes": 9672,
+      "class": "sequencing_surrogate_model",
+      "purpose": "sr_timing_v3.lib plus the CGATE/CPIN gate-load parameters",
+      "caveat": "defaults reproduce v3 exactly; uncalibrated PGD law, typ thresholds only"
+    },
+    {
+      "path": "models/sr_timing_v3_2.lib",
+      "sha256": "33bb9b0db38bf881d47b1662d936f6fed5c4a01f664285753313c9f2b9769fdd",
+      "bytes": 10758,
+      "class": "sequencing_surrogate_model",
+      "purpose": "sr_timing_v3_1.lib plus a soft rail on the off-blank integrator",
+      "caveat": "numerical robustness only, but its turn-off comparator latches one drain ring peak above OFFTH and cuts the SR off after the on-blank on a real tank; see sr_timing_v3_3.lib and design/v2/sr_tank_dual_results.md -- do not take SR conduction numbers from it"
+    },
+    {
+      "path": "models/sr_timing_v3_3.lib",
+      "sha256": "f03b6e179736916d33cd99034aea7bbe45c716b155795c4db18e4e160a37a4a3",
+      "bytes": 11920,
+      "class": "sequencing_surrogate_model",
+      "purpose": "sr_timing_v3_2.lib with the turn-off comparator latch removed (v2 semantics restored)",
+      "caveat": "typ thresholds only; uncalibrated PGD law; the OFFTH turn-off now needs TOFF of continuous reverse-drain bias instead of one ringing peak; still not vendor-signed"
+    },
+    {
+      "path": "models/sr_timing_v3_roff.lib",
+      "sha256": "f2c4180e44897c18f1152d0e24d65fe4b7dbdb27172bd8eea9303b83cbf13f2d",
+      "bytes": 8693,
+      "class": "sequencing_surrogate_model",
+      "purpose": "copy of sr_timing_v3.lib plus a behavioural 330 uA VSS offset equivalent",
+      "caveat": "the offset network is an equivalent, not a VSS-pin model; the gate loop still returns to S"
+    },
+    {
+      "path": "models/ucc25600_legacy_behaviour.lib",
+      "sha256": "b49c5dc13a44b383a97d11e90d9edc8f2f01f456a30857c729e3a8a12925ecc6",
+      "bytes": 11675,
+      "class": "uncalibrated_behavioural_model",
+      "purpose": "UCC25600 controller behaviour: oscillator, soft start, OC comparator, dual gate outputs",
+      "caveat": "bootstrap and bias are behavioural; no real bias/enable sequencing circuit"
+    },
+    {
+      "path": "models/ucc27282_behaviour.lib",
+      "sha256": "fff5966a5e764ac26c1a9a65eace556aba073bd3672aa72c15786aab6f53862f",
+      "bytes": 2729,
+      "class": "uncalibrated_behavioural_model",
+      "purpose": "UCC27282 gate driver from datasheet SNVSAQ5B: UVLO, EN timing, 16 ns TPD, 3 A/4 ohm drive",
+      "caveat": "no gate-charge or Qg model (the load is the timing model's lumped CGATE, review item 6.7 nF); delay matching, minimum pulse width and bootstrap reverse recovery not modelled"
+    },
+    {
+      "path": "sim/v2/comm_v3/probe_hier.cir",
+      "sha256": "c3ff9673a3664732b63056559ee9b24af2f285d2ac318648033158cf27cf7a79",
+      "bytes": 425,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [],
+      "status": "DIAGNOSTIC",
+      "status_note": "hierarchical .op probe; not a transient benchmark"
+    },
+    {
+      "path": "sim/v2/comm_v3/probe_hier.log",
+      "sha256": "465f6c9962efa584056ef03be51bd2fc6271dc06deb109f7a47f64e4206cb4c0",
+      "bytes": 521,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3.cir",
+      "sha256": "18569a3f258b380c7aedcefdae0ffc1b02d527e187eb60c733baa439cbeb4340",
+      "bytes": 5720,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3.log",
+      "sha256": "315853472ae5ab927a19296a7d19e18c4441bc40e7e532a9b04c362f38e4a724",
+      "bytes": 17774,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_debug.cir",
+      "sha256": "610121d2fb57dfebb0cd36db619420841388aaae6a0f97c13d0a02ae5eaa5367",
+      "bytes": 2642,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_bench.lib",
+        "models/sr_device_v3.lib"
+      ],
+      "status": "DIAGNOSTIC",
+      "status_note": "cannot run: includes removed models/sr_timing_v3_bench.lib; historical debug copy, not evidence"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_debug.log",
+      "sha256": "421c6bf377bd5f4cdc658a57f239287c285bea17a3ddef70d3fe8b976805eef4",
+      "bytes": 185,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_debug1n.cir",
+      "sha256": "c733811447973c4528fe2158347ad29399a92c6986e149f52bed05da72f28671",
+      "bytes": 2666,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_bench.lib",
+        "models/sr_device_v3.lib"
+      ],
+      "status": "DIAGNOSTIC",
+      "status_note": "cannot run: includes removed models/sr_timing_v3_bench.lib; historical debug copy, not evidence"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_debug1n.log",
+      "sha256": "c13a33fbac2267a3376ca39428927570a5f4e7da062d84204c0dd3283c35f52e",
+      "bytes": 187,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_debug_orig.cir",
+      "sha256": "9b594335c5b56ddddff6e2760e19806596d92159801985d8cea5ab479279e503",
+      "bytes": 2614,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib",
+        "models/sr_device_v3.lib"
+      ],
+      "status": "DIAGNOSTIC",
+      "status_note": "pre-fix debug copy kept for comparison; not evidence"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_debug_orig.log",
+      "sha256": "10f3956ce0e6ce0b5024a329d05d4bd73ce76b1b334e4ea824231cf8a6758fcc",
+      "bytes": 1668,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_g0.cir",
+      "sha256": "b69cf1ba708da20cf6c391decd9c7bea400eef55c57e1aa6601aa6b3aa55eb4e",
+      "bytes": 6036,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_g0.log",
+      "sha256": "b4df13d0d77f2e0ccb3eb76f92e0325be73035aea673860872a9562280b2d79c",
+      "bytes": 17732,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_ideal.cir",
+      "sha256": "584c47c41147c1321b05b59d7afd321625b400c866d6c26c2d211b4c9d6a7dbf",
+      "bytes": 6073,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_ideal.log",
+      "sha256": "2a64d9f89d81014b434377c7f232d1f991b5750cd047426266b898e15ad0c347",
+      "bytes": 16026,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_roff.cir",
+      "sha256": "0e6df5881044bd39de79388be28979433b193b4f207bcae4f6652e5a40098457",
+      "bytes": 6800,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_roff.log",
+      "sha256": "2ee4b2b40439552ec93111cb194cb630907974fc9a59b18943ec18e21cbef531",
+      "bytes": 21277,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_roff_load.cir",
+      "sha256": "3bc6c4a064acd12f2155fbd6f5a8e9cc59300540eb94b7ccc75f9561e03dc8c0",
+      "bytes": 6646,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_roff_load.log",
+      "sha256": "59f0e951838b01633f7a04a64795d32d2278548e10729eb07c193c30021a73e9",
+      "bytes": 680,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_commutation_v3_win15-20.log",
+      "sha256": "490b6595479ef8be9ea44759eee28671671c9484c798e76c2ad334c1fae582d0",
+      "bytes": 10566,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation",
+      "status": "ORPHAN",
+      "status_note": "no sibling .cir (deck removed); not evidence"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_10_0_18m.cir",
+      "sha256": "b0862db34b9903e332a953aea2ddcc186773080a18d10e4058978148577fcf66",
+      "bytes": 6625,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ],
+      "status": "NOT_RUN",
+      "status_note": "analytic corner; documented non-convergence (120 s, 67 MB raw); do not run"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_10_0_2m.cir",
+      "sha256": "338d03a166e2cf1ade3e1cbe9b27d62cb69e8cbc33aec1a4565b4fecd967839b",
+      "bytes": 6623,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_10_0_2m.log",
+      "sha256": "f0c29b5932e33dacc6fbb6f3162301bf99db02a35af212e62404314b9de924f8",
+      "bytes": 3190,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_0_18m.cir",
+      "sha256": "e34ed78510a4f5072f28cf53a95026d581b3ff050bf6c8f1c7c6f53867244c55",
+      "bytes": 6625,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_0_18m.log",
+      "sha256": "0ca7151298fa620391137bc086763e750c0b2ca2b7dbc43964048525d5cf0f46",
+      "bytes": 3183,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_0_2m.cir",
+      "sha256": "e0dbd3e9d8ec8e413aa9cf9db5c22e40d63e6401bbf281e91e89987b4e935af8",
+      "bytes": 6623,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_0_2m.log",
+      "sha256": "9896801f5e33a131965a0cae468944111baef20a2dba15bffc482c66e3122a74",
+      "bytes": 3182,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_18m_260u.cir",
+      "sha256": "9fdfaa7d97c03e0e3b2ecac58f2731cf38b7e8040d4615710cd4eefc6bbf0bb8",
+      "bytes": 6627,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_18m_260u.log",
+      "sha256": "01e094d2d0befa79a271f414b11e17a3efb3c03900f7f60ab3d5ac076a744320",
+      "bytes": 3197,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_18m_400u.cir",
+      "sha256": "1621774fdfa21963c8a69513a3f8aa0026ac4353e115259e8b63b77915dbf423",
+      "bytes": 6627,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_18m_400u.log",
+      "sha256": "db7a8368135de6e4a50e7d25d02b8db4accd319a19939edf094ef03884505c97",
+      "bytes": 3193,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_2m_260u.cir",
+      "sha256": "9d9566d13f2c4257c4c53a131565c9cc041baa94244ee4bfe0469b8a3e174eca",
+      "bytes": 6625,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_2m_260u.log",
+      "sha256": "f9499d8918ad827e954132ef444eb38dde858af45f42e7d579eec6b8818a3610",
+      "bytes": 3190,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_2m_400u.cir",
+      "sha256": "fad941e41af3033582b4e1c55e8be0b34801629e75dcfcab34d1aa6d676e75dc",
+      "bytes": 6625,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_25_50_2m_400u.log",
+      "sha256": "2c7668f9a79f8e2f8a88431e38f0f7e4a77039f231507a0605d7fd19cbf70fe4",
+      "bytes": 3197,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_0_18m.cir",
+      "sha256": "9a68bc5c6ed097fa25aedc756ddcda9a708830a156052800175d0242cba83ef1",
+      "bytes": 6625,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_0_18m.log",
+      "sha256": "e238362d004caf8c4dcd3e98c6a48fa2c593ef5271d38c80eca3a7c0615908d9",
+      "bytes": 3184,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_0_2m.cir",
+      "sha256": "54ed62f1ad5af5f9e9e1f991f883c785159913177b6d1e4c06246f4ddd87c7b7",
+      "bytes": 6623,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_0_2m.log",
+      "sha256": "c6095c12df40453a011c25c697aa167507b8d35b98c9ca8db1d8b623364ffa0b",
+      "bytes": 3181,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_18m_260u.cir",
+      "sha256": "3818df1f4d43336b026974bd444e817a72dc16da6b5ea91342dc7c91eab975d9",
+      "bytes": 6629,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_18m_260u.log",
+      "sha256": "9e94be4553042605285917e48696d917867ff4967c1e8acecba924beb513638e",
+      "bytes": 3176,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_18m_400u.cir",
+      "sha256": "43a3618b8a6d8d2b90050a5e780c358b52c10cda4c38ff61336d2ce548e9e487",
+      "bytes": 6629,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_18m_400u.log",
+      "sha256": "e8f151daaab8cd368c5185f29bfe75b8e09a2c8c6a7ac15edf73e0ef94289378",
+      "bytes": 3189,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_2m_260u.cir",
+      "sha256": "da6e95a1ea9c646da88453c1e602a6bfc9318b8fbadbba016ff2de4657bc8a4e",
+      "bytes": 6627,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_2m_260u.log",
+      "sha256": "0f0feedcd7d5336560c30c9db3ea885c3f77824fd27058f79214d26df48de9f1",
+      "bytes": 3201,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_2m_400u.cir",
+      "sha256": "4f7a929ce3ad94a7fca3d5b14070c4afe5d8f7c495008a5a3c01f0fbdb0a8535",
+      "bytes": 6627,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_40_120_2m_400u.log",
+      "sha256": "31f0b01d5264e8093ad5b1d4e918947dbf849e0b511830667068808ba6812d8c",
+      "bytes": 3193,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_probe_10_105m.cir",
+      "sha256": "f59ee2d03cac33ca3772c1f60be19f6a0c780f3c44b6a7a2692cfa3a1495d06e",
+      "bytes": 6611,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ],
+      "status": "DIAGNOSTIC",
+      "status_note": "threshold probe around one corner; not a reported case"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_probe_10_105m.log",
+      "sha256": "ad18f7ecfa0583b3ce2683c4a6638a6ac2044e61089e0360226e5899840afe05",
+      "bytes": 3199,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_probe_40_0_18m.cir",
+      "sha256": "c50c789e60b604904e55fa5c761ac2f805d34e30f82ee3d9daf4eae32953bbc0",
+      "bytes": 6625,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ],
+      "status": "DIAGNOSTIC",
+      "status_note": "threshold probe around one corner; not a reported case"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_corner_probe_40_0_18m.log",
+      "sha256": "42374c7b7b69565d7ec7e5c5491b0b82b1603f049a2014690b92339af560ce7e",
+      "bytes": 3196,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_gate_load_test.cir",
+      "sha256": "edb63cdb640320a34dbff3a7aaa50addd293a9311be94efd552a713913eecd18",
+      "bytes": 6145,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_gate_load_test.log",
+      "sha256": "308ac12fee0e5b7ae3112d5bf1f33aa94a884e6e9a5fd29992642b7260cc1988",
+      "bytes": 10361,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_10_100.cir",
+      "sha256": "c760e3a389e491f94b03e96bca66cda11edfde52d12b4aec63b3fae898569d33",
+      "bytes": 6593,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_10_100.log",
+      "sha256": "5386c76fd55990080ce1bac17d9875532abaaee1739360eb1e877ec61f74c5f5",
+      "bytes": 3180,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_10_120.cir",
+      "sha256": "fdf843529b7971294ec8749b0336f9416a068cf82d844bbf986a4be4c22ad055",
+      "bytes": 6593,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_10_120.log",
+      "sha256": "01d54d9fe2dbe037c3a8fb1d9591778f3d08e1f41deda9adeaddc7dda18f6d49",
+      "bytes": 3184,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_25_100.cir",
+      "sha256": "46f0a902416dc18bff82ddce6976e48cad316594c0a6c85fb292fdd0a9413f57",
+      "bytes": 6593,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_25_100.log",
+      "sha256": "f6b0e73fb78ec907dc85eec68e2482e50c5eddcbe3f7916f4989351ba0cb86ee",
+      "bytes": 3185,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_25_120.cir",
+      "sha256": "5bbc3188fe2dd983473c791ebda665742df9cdad0e4b2cc793616a40346100c1",
+      "bytes": 6593,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_25_120.log",
+      "sha256": "d30fe6ae318d45d87b0064359be71f8cfa882e957e19637bd50e9fd069b029bc",
+      "bytes": 294,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_40_100.cir",
+      "sha256": "d9d98480296d92b2caad6f11dca73311adc02e67f19ce4a2b508fdb751cfafd8",
+      "bytes": 6593,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_40_100.log",
+      "sha256": "18e6bebd6302ea616c1f11c0a3d1374d75fadd62f2935d59c436a7ffaa15704d",
+      "bytes": 3173,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_40_120.cir",
+      "sha256": "f8af25c286c5f07ea9b7ce7973a7387724760069e6abb9e0b449734debe01a70",
+      "bytes": 6593,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_load_40_120.log",
+      "sha256": "5b117f8c9d63d29d035321c341eeef6527cdbf38e2e1e7e194c3630b8ca91555",
+      "bytes": 3166,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_0.cir",
+      "sha256": "3fba90df3b8c404298cfffcac73e95496d88d2340e356e1c5308121e44f473ce",
+      "bytes": 6462,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_0.log",
+      "sha256": "d95e6ad06efe446710210725160dfd447b47e2f9126aeed59e409c67f8dc0a5f",
+      "bytes": 3173,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_15.cir",
+      "sha256": "5ba7cadd8632608184e788df7fde2e497c6568cf87be45861f64bb548ba32a5c",
+      "bytes": 6394,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_15.log",
+      "sha256": "4d00915009053081697b47fce9374471f2240f3ef0aaf7974384a38356f1964e",
+      "bytes": 3171,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_25.cir",
+      "sha256": "c90f1a44d9aea2c79a700bf61e777e4163d0bc512d7cea27b05573f0cb6aa6ff",
+      "bytes": 6464,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_25.log",
+      "sha256": "fa2ad314c366417556c7b8685f03e4a914db08033a77fd9ee296432f5aa02be8",
+      "bytes": 3192,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_50.cir",
+      "sha256": "2e9282985a9e8fb77b233768588d97716b3fddb4df34e217c00291ed2c858661",
+      "bytes": 6464,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_10_50.log",
+      "sha256": "b709ead399c5de6fc3cf0c371b8e9bb7d1881b748e7be60197b2d50ff78963b5",
+      "bytes": 3190,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_0.cir",
+      "sha256": "03f061ec8e6df805b95a825256ce7647e9a0b62e43b6c370a1307f3ee993ec4b",
+      "bytes": 6462,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_0.log",
+      "sha256": "e360259a38ae1a79a83317320dc61f4ae84a661b06a3e9f038475623eec5015b",
+      "bytes": 3169,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_25.cir",
+      "sha256": "d0b942ecb55271c00a2bfb10f111874fdc03a2629a340a34e3419f7531bb4142",
+      "bytes": 6464,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_25.log",
+      "sha256": "9f8d1a2383a28751d3d5a37465fdc164ce86a85280004c3dc52a7179a4cdb729",
+      "bytes": 3170,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_50.cir",
+      "sha256": "8291bc8df10d67f2eaa235e1363d1215b345b04f3f3238083a131861a0d94c0b",
+      "bytes": 6464,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_50.log",
+      "sha256": "e8ae364a3ad0bea41d1cd36c7aff81fc8b13a0004a1dc55370f44a0df6510ba2",
+      "bytes": 3166,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_75.cir",
+      "sha256": "a9266d3c63e922f27ec00252d19303316e448c32aef50021685d407909b7306e",
+      "bytes": 6394,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_75.log",
+      "sha256": "3026d8a06d019b48593273b6c062c1591364f288c788f2e51dd30a8f5e566fd1",
+      "bytes": 3171,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_85.cir",
+      "sha256": "ac462ee41aefc7029b30b2f819b0ecda32c89c4f96025e030fbe3c22c8f88a5c",
+      "bytes": 6394,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_25_85.log",
+      "sha256": "eb2e5ba5b17517315de3251b2921e51d29584ab77f8d9be8a322f340c5a9f66e",
+      "bytes": 3166,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_40_0.cir",
+      "sha256": "48de64c0c9783b4bdbc3a0a801e7e14b34b4fd31cec0b4e659884bffe6922910",
+      "bytes": 6462,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_40_0.log",
+      "sha256": "7c4fe2c509d26c9805fd97a5041305cc89accbef20c8892c2d91f72fc00f2374",
+      "bytes": 3168,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_40_25.cir",
+      "sha256": "1a8f11a4bbbaf6409cd8878f3825e476f6c29f30703876e256615ea02a651f5e",
+      "bytes": 6464,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_40_25.log",
+      "sha256": "f1921adc42bcbbe9dfad3d982b53135d82bcb9604fbdf5066d66b4d178a67812",
+      "bytes": 3168,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_40_50.cir",
+      "sha256": "aa1f9092daf4ef76d0f354d8e7c0a6b4148573b66e250f16ba84f497c5f45494",
+      "bytes": 6464,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_ls_40_50.log",
+      "sha256": "27296a4e7c0202082ce8484bde407413dadbc2afe2b6bb9f9d84443bfbee9146",
+      "bytes": 3165,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_10_0_0.4u.cir",
+      "sha256": "1bb6583fd03d351264ceea434fa21d49a0061b40658cf572eb17c36327280d93",
+      "bytes": 6750,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_10_0_0.4u.log",
+      "sha256": "5475c0f53ad7bb79055b30dfd39783a898eda5ec6d29a8e989a06e54d5797f6f",
+      "bytes": 3184,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_10_120_0.4u.cir",
+      "sha256": "b25a1153a1732557414573f843e864cd2906125876d403daf735ed015a407085",
+      "bytes": 6752,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_10_120_0.4u.log",
+      "sha256": "157c0971c2e322408ceb4a4df9a3fbc8f56c58166419a57e76a66d6d9b763dd1",
+      "bytes": 3182,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_10_120_1.6u.cir",
+      "sha256": "addc67347803e9b880486711760b0de3b2059dc53c9193000c0e5f7d801aea00",
+      "bytes": 6752,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_10_120_1.6u.log",
+      "sha256": "233e98b4cd98ce3976f694db0139dd8ae09c3c7ae7987f68dd31755fdc27a671",
+      "bytes": 3182,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_40_120_0.4u.cir",
+      "sha256": "aef61e2a0b357043b4f35528eb81c9c24e3d0f4f0dd115e6e5bfc1d1403c885d",
+      "bytes": 6752,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_40_120_0.4u.log",
+      "sha256": "27b7eec5132f1232c37e78fc331818a64aca6194d3dd28fc2448611ceb5662ef",
+      "bytes": 3163,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_40_120_1.6u.cir",
+      "sha256": "99991f21ab95263bb00bccc387fbec9f0c0a8a9111a6b9e65dd61060dc897f6b",
+      "bytes": 6752,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_roff.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/comm_v3/sr_tr_40_120_1.6u.log",
+      "sha256": "72bc0482e2e967f34774b0bc66fbb41e8d27d95c45ce9f6caffa9db17fa7c2bf",
+      "bytes": 3176,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual.cir",
+      "sha256": "096b8923fbc519fcd400dbcfc121708ebcbde035cfc89108e79a46353f4f2589",
+      "bytes": 6267,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v3_2.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_tank_dual.log",
+      "sha256": "b430f732b1e97e7501e3be38b5598f5c179c23c75acca64d96b6eb2608dcd463",
+      "bytes": 1341,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v2timing.cir",
+      "sha256": "e0be6b7628e9756f90a2eb43daf9778b8117d02b4bb4b607ff69f78e59aec40c",
+      "bytes": 6425,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2_pin100p.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v2timing.log",
+      "sha256": "50cc574839dc08b6c6238e2f8f0ae6b248b97ae80e9281471c32fb9a7b3de162",
+      "bytes": 1180,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v32.cir",
+      "sha256": "fa5d73ab06f1368253e0f69efcabcbd20a383b7543e7653e7a49994bb55d19c7",
+      "bytes": 7883,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v3_2.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v32.log",
+      "sha256": "b9d74a96d238c25567a5915029363bf2fa9d8cdbf8ee0492d6db4efbdd2724a7",
+      "bytes": 1164,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33.cir",
+      "sha256": "580a9aeb948b5a3af3910251e6a857739160d1b727dc0e18a914c114d852ada3",
+      "bytes": 7365,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v3_3.lib",
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_tank_dual_v33.log",
+      "sha256": "df47dee0b70efc562e161df719430e6fda14648fd9d211be0af06d5444ac6544",
+      "bytes": 1165,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_fastreg20.cir",
+      "sha256": "eb79c370a7b79af7342004f3ddbb4a75c53e1d955949b46a0ef6f19299585da5",
+      "bytes": 634,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_fastreg20.log",
+      "sha256": "bbf4b322ad33622b1e4bac8fd3986eb5ad5fb55087f56a3cca45b1038ea9d331",
+      "bytes": 665,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_fastreg5.cir",
+      "sha256": "e92c5d1f333ec740f8b54ecc88f5f723b5393079b05010403cf74a5ae013514e",
+      "bytes": 622,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_fastreg5.log",
+      "sha256": "f221c1c1895b19e9e706608301bc3a366c99aba85219982b732f6f936ade3ee4",
+      "bytes": 663,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_interlock.cir",
+      "sha256": "bad7ec966c0e3e1f8d3a4123eb9a25465af051b25829bb63a11046fbe7294f08",
+      "bytes": 1063,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_interlock.log",
+      "sha256": "beab9b4fdaaf3e451cb6b8dd4532b400e4a13d85e5f80b1dd4adbd1fe1b71531",
+      "bytes": 812,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_noarb_negative.cir",
+      "sha256": "d750bba9859df27fde6d288a9d7bff2beb1edd5f22b76a6b8d28835a017dc8fb",
+      "bytes": 851,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_noarb_negative.log",
+      "sha256": "f6cec4e7acc4caa60652101a5d9a46f2f606b2ea8cf14a7ea3438ef48c286487",
+      "bytes": 682,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_normal.cir",
+      "sha256": "846a7e9a51e3b20f6a9578e2ddda8a1e4fc06dd79627be8a770402d432af40ef",
+      "bytes": 1485,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_normal.log",
+      "sha256": "a96a7add476fbf67799f449422d18e4e3a9b41918e9f0cc900d7274c26f88bc7",
+      "bytes": 1101,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_offblank_retrigger.cir",
+      "sha256": "6ea188bb55f8f7ea60d82fe20b2408a108c5ebbdc5d34d98d3dd76a53d385f05",
+      "bytes": 1103,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_offblank_retrigger.log",
+      "sha256": "67a80a1cf920c4f327073064fad7c144412b5b91d7eb54944885ae6d5aa0f73b",
+      "bytes": 843,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_onblank.cir",
+      "sha256": "1974a63d745acc47a282ff33db0e9fb83c1657fb81562f606dee9d64253f1fed",
+      "bytes": 1053,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_onblank.log",
+      "sha256": "f6920d0f8b43cfeb9776c1a5740c563451046f3e52fc67148ff6930186746813",
+      "bytes": 985,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_reg_first_negative.cir",
+      "sha256": "ef4ba0d5e83a8ceaeb14f71a0879007a6a9a50ee449263a7c5cb09e78c7ef902",
+      "bytes": 714,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_reg_first_negative.log",
+      "sha256": "f412dc479134f9d2fc9cb967415545cfab0185c8657321709c8fa47aa18cc4e2",
+      "bytes": 711,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_shortpulse.cir",
+      "sha256": "939f37cbcd2bbc60cd9d3aee614866250e55523ff32a66f30427ed112cc3422c",
+      "bytes": 724,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_shortpulse.log",
+      "sha256": "28f9efb15b8c74b30adf59e9add8e0e64612766b120055a1fadd2e62cba4910c",
+      "bytes": 715,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_simultaneous.cir",
+      "sha256": "77f502cac86a76d73e4876539d9854f3977e561fbd05872e2de8c463b976b00e",
+      "bytes": 1569,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_simultaneous.log",
+      "sha256": "da3e856187a0ca3dd3d351661811be382cf785dadf161604716678efd2e00a5b",
+      "bytes": 1145,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_skew.cir",
+      "sha256": "c417f0bd244a4a683b3aa05de9137bf821cf9daab2792ce1c24f12d50d2e6618",
+      "bytes": 1395,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_skew.log",
+      "sha256": "836e691bdd701782818ad4b02be734ee194e542244214c4b2f4d3cc484070a71",
+      "bytes": 1036,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_v2qrace_diag.cir",
+      "sha256": "36c94e7193d4590f3f02f3a0da9e2a5519bfab80e8b1013014228190d248fc64",
+      "bytes": 862,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v2.lib"
+      ],
+      "status": "NOT_RUN",
+      "status_note": "negative control; expected convergence failure (v2 deficiency)"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_v2qrace_diag.log",
+      "sha256": "0f18c8f6b455637d8f02917886a46fbd60874e351eeffea7209acda7907fc6f9",
+      "bytes": 695,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_v2top_diag.cir",
+      "sha256": "2042d2d9ef736f04aa2451d2286cffbe09bc85781f9c23cbe33a2f545651056d",
+      "bytes": 860,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/sr_timing_v3_checks_v2top_diag.log",
+      "sha256": "dca75a1447f43b6676fcfa4d698d03b73f4da2362de7372418b4b87f1f9b8841",
+      "bytes": 763,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct.cir",
+      "sha256": "fdfc4cc0ad663b75c2879e7b746a10f17db1ca60d5f912f37a635ba7da35544a",
+      "bytes": 5168,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct.log",
+      "sha256": "4dfbe459bc8fb7cea95ecbbbfa206cfcbc1bab4a3529cb5a80a362af8917c17d",
+      "bytes": 1132,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_02.cir",
+      "sha256": "57f10c9602ab2f4c639bf627fcdde55f51ad809e40fcdb7c32382fb217c8adef",
+      "bytes": 5198,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_02.log",
+      "sha256": "b31eeee543880bdae479d2bb51bdab96377653b32c35af3f5dcc8961a21087dc",
+      "bytes": 1068,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_drv.cir",
+      "sha256": "5cbc2197706ec211b6e11d4c7500aae4d861f4c799353155f3cc63ee97f96ddd",
+      "bytes": 5506,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_drv.log",
+      "sha256": "1384a9b4458a02e94970800bacd20527e0108e530da00be67b1dd68142ad093e",
+      "bytes": 1196,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_drv_02.cir",
+      "sha256": "f7b303dc125d6f39bf6f43bfdb94fcb6b1ca860f97c1aa33e43a45bbf6e2e093",
+      "bytes": 5539,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_drv_02.log",
+      "sha256": "e062a83c4b32e69eaf5f27f50b24535add85eedf1a591b67944fc8e6cfc7dc91",
+      "bytes": 1133,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_drv_css50.cir",
+      "sha256": "e9d9121338bce4f2c7adb84c192686c8f6e84456398a63fd755ed9ae750833bc",
+      "bytes": 5589,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_drv_css50.log",
+      "sha256": "36163c8e1d858f806737c0d0019546444c95fb0ba7a17613d7599d1ccdeb6c5e",
+      "bytes": 1170,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_drv_long.cir",
+      "sha256": "72e98b18600015501778b8d5b5c2bb36a15129f06687fe70115cbeae945863ce",
+      "bytes": 5543,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_drv_long.log",
+      "sha256": "554ee2fc8c9b814e9f78164ae68bdac2fa513e8c050cbebe1638603f076dde16",
+      "bytes": 1336,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault.cir",
+      "sha256": "21633b146779f900351f0b545e3868673ebcc17dde508c3f21fc8c51c3da3c30",
+      "bytes": 6240,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault.log",
+      "sha256": "3c8bb65e52b5d824024ae515e0d4e2243ad927203c672c1eb7cc6d6494837b23",
+      "bytes": 1573,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_10m.cir",
+      "sha256": "cf0299f346bba234bfec915666f6092d1ee094305334118efe2822818b7e9cc1",
+      "bytes": 6228,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_10m.log",
+      "sha256": "e6984366317c16c59c4706843450b57bdbd7b47c837cc0a6a4cbad6a334ad7a0",
+      "bytes": 1579,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_drv.cir",
+      "sha256": "a67910646a4faa5014f4eeac5b38edb5d2b0e59b770eb65804558b994f9fc2f2",
+      "bytes": 6430,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_drv.log",
+      "sha256": "1e0fa0cb36982cbfb322a91469bb4f4339bedb7d13440ed5582d01f7275afc92",
+      "bytes": 1642,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_f10.cir",
+      "sha256": "ab20c608d87a05c0f67cce55e7e45d91094060455c868b048dabd9a2b96b4b5d",
+      "bytes": 5791,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_f10.log",
+      "sha256": "0ba94987a71a9b06e8d784b349de949d1722e299a2c7b1e4a8a9e5d558281a2c",
+      "bytes": 1458,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_f10_c1.cir",
+      "sha256": "d9847b3e5907d204eec03ee8ba717d534e2e8759418852acb7caeb5c40e0ad04",
+      "bytes": 5790,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_f10_c1.log",
+      "sha256": "06673b01728bd720bec0b2dd3683f799ad6ca73fc336c5fea8fe7fc41b2a6670",
+      "bytes": 1469,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_0p9_500ns.cir",
+      "sha256": "98c5efd0e2fb07c16adaf53b74f2f57e1b9677d74e68dc0ec480780c4d4f9278",
+      "bytes": 6822,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_0p9_500ns.log",
+      "sha256": "22ada2697aa323f2210f421a8ce9451fe522dfae9b1736382f71546ff519b56b",
+      "bytes": 783,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_0p9_60ns.cir",
+      "sha256": "53c99b03bdf0b6998d83f3213f528843d610ef268534d529db867e5adca763b7",
+      "bytes": 6819,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_0p9_60ns.log",
+      "sha256": "44c71412b5cd7c7b16bc2268dae3bcb8193c3c2660efed5432cfd71216fadb2a",
+      "bytes": 780,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_1p1_500ns.cir",
+      "sha256": "c0543da42e61207fdde56f1d584dfaf73e803bc36a198c9ca45971627377a1af",
+      "bytes": 6822,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_1p1_500ns.log",
+      "sha256": "5b0b98d251f6039d1f91c4764561670c651a24d728331f0267344ee79e582b35",
+      "bytes": 783,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_1p1_60ns.cir",
+      "sha256": "3217c53baaad4f8128758e8bec879e725bcf30579890c4295c81c133dba5a98b",
+      "bytes": 6819,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_fault_oc_1p1_60ns.log",
+      "sha256": "e8474632605175b1365cc7fb601a5774ae6242234dfd2ac3b7fe247382db0121",
+      "bytes": 780,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_long.cir",
+      "sha256": "af77ee5c46aa50003aeb7c6b699081255d29b529915d2a271d68437fd57dd9e4",
+      "bytes": 5283,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_long.log",
+      "sha256": "338f244d31bd796dd2845ad0a73f1c70c84d030265cbc5eaeb7609761940cc81",
+      "bytes": 1271,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_long_f10.cir",
+      "sha256": "9377054c5b630726faf3b3099c6b7fbdfdf34447655235bffa493b85653c7ab3",
+      "bytes": 5278,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_long_f10.log",
+      "sha256": "b17b032560b2f2d0e7108f1f362de3baf273778b8e13b8e205c5a570bd45b6fa",
+      "bytes": 1276,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_long_f10_c1.cir",
+      "sha256": "fa0615c9e491c7e5c700f1a982938fd319a9387091a89fbb20c1cce1c6f5426d",
+      "bytes": 5277,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_long_f10_c1.log",
+      "sha256": "1b65e43a72049d0378bbb4721e5c8e1ed59f95eecd650453b2b7c87faa616dd8",
+      "bytes": 1284,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_restart.cir",
+      "sha256": "820c59671ca8561885c336a91de212bec10459474c886ef81eaa4b153e4d94c2",
+      "bytes": 5311,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_restart.log",
+      "sha256": "881533d3d9f0693621108d2998c8f485d372d3c567cc8eb29a706b372be7f713",
+      "bytes": 1108,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/startup_ct_restart_drv.cir",
+      "sha256": "bbe95270b2931790e3eeee5c1f7755053b003ca74312cab2a808293a03d504d8",
+      "bytes": 5675,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/ucc25600_legacy_behaviour.lib",
+        "models/sr_timing_v2.lib",
+        "models/ucc27282_behaviour.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/startup_ct_restart_drv.log",
+      "sha256": "d86635bb3ebb9400e5e16ee73416914c4f2ec70dd1375f0f0a284baf3f6084df",
+      "bytes": 1171,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_arm_bounds.cir",
+      "sha256": "595a4ffd58e102bc821bed3e6e5c42132464b2d047855fd1d3f5a42299dc05a4",
+      "bytes": 1634,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_arm_bounds.log",
+      "sha256": "57c4647651742026c0efe9b8ab3f6c79ff0e35826653ce48663839d55c8ca323",
+      "bytes": 5651,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_3q.cir",
+      "sha256": "6ff919b2ffe7eb211a50a435c22d82fe1d1f2844917710840cbda8693b706ef3",
+      "bytes": 319,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_3q.log",
+      "sha256": "33af4737afc03a0271a500b405196e6530d5572f06ef5bc314c0a5ed71b2288b",
+      "bytes": 556,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_3q_on.cir",
+      "sha256": "8aa52e3697571a65f11dbf11ee26e4dcbe6b7fe693b8806e05ac450165211a97",
+      "bytes": 422,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_3q_on.log",
+      "sha256": "11ed5156392bd6e42ab723b57d89c4535d03bc10e5d849455fbca83148b33e60",
+      "bytes": 734,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_caps.cir",
+      "sha256": "3866ef6e04110e8a9b2f90f33da1e24f156dfbbd3118d7d88902affb6a061fc2",
+      "bytes": 563,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_caps.log",
+      "sha256": "26bc2fb1f860ade5e3e47fe068613f7cc27eb6d6c9ccc288e2a38b3eab4fa808",
+      "bytes": 810,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_ciss2.cir",
+      "sha256": "8d993e7310498d00e9db25060f38f4d60592d70734750fabda93246deb9ffa10",
+      "bytes": 326,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_ciss2.log",
+      "sha256": "9ae65834877110fb52aadbe45a2f4cb8418ac416059d0493d5ae402b9d1789cf",
+      "bytes": 673,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_dc_fwd.cir",
+      "sha256": "ad8f1d349d4c6e7b43589acc4226bae7add77c87c70d552b26084fbb210f5619",
+      "bytes": 340,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_dc_fwd.log",
+      "sha256": "c103e3eeaa63e5574b822f6e0596d359ed7e94a25c7014c8e6ccc2c8795dc223",
+      "bytes": 812,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_dc_fwd_low.cir",
+      "sha256": "7b0d5f8588a8218fac0be4169facf59c9e61ba377e3e614c21b7a562844ed49d",
+      "bytes": 307,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_dc_fwd_low.log",
+      "sha256": "39bd4d8774af9a359a986a231338ac77020e1ddc57ae5a0692ed343ce5161a2a",
+      "bytes": 543,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_kelvin.cir",
+      "sha256": "663c839282ba39bac88ef2e2d883649440aeff7b3e9cf3a0fc35d87c5394f022",
+      "bytes": 361,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_kelvin.log",
+      "sha256": "367f62181aa73d244d569481a3adc21c5e97294e1a9ed3996ce6f5c68942ce4a",
+      "bytes": 460,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_qg.cir",
+      "sha256": "8d18dff112d6ce2c83652e4326a7c1e96bca6158c45f005815ea240db5f506b5",
+      "bytes": 649,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_qg.log",
+      "sha256": "35afabb9484cb899c39ec5a5a86aab302ab7e52c46eb4742d399661f95a3d222",
+      "bytes": 861,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_qrr.cir",
+      "sha256": "6c66e680b1750c1b84500538360320ad7b0a5ef5cf1835bf1f22f5031623b7d9",
+      "bytes": 758,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_qrr.log",
+      "sha256": "afc639999b5d3ca32662d94b35a1bb2af9997654cb4d00167fd05ea3d927939e",
+      "bytes": 1284,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_sat.cir",
+      "sha256": "b6f29ed31365e2c894659d7b080b05628e95f0e26f3ee5eeddd6cd9c0ab41570",
+      "bytes": 265,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_sat.log",
+      "sha256": "530bddd8a1b4a0d0c060a7782c5538c40a58690992e176f2cbeb8bf69c6413ab",
+      "bytes": 443,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_temp.cir",
+      "sha256": "9402a3548877cae8c4435c4b29fa503c579a30e9cefe0bbb2f605219c5050d73",
+      "bytes": 290,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_temp.log",
+      "sha256": "ac83840aed6977afded30a9899992cd2a3759f9d434fd5e32c1ab91f07eb4ca0",
+      "bytes": 550,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_turnoff.cir",
+      "sha256": "2a77ad45532e75e1099000f89faeb4c809120cbc72420174039856a725655e18",
+      "bytes": 726,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_turnoff.log",
+      "sha256": "5d1524374cbf11330a41d35d28509f4fd64040337a9aec8bda244d4af7946aa2",
+      "bytes": 858,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_dev_vth.cir",
+      "sha256": "dc736e90f2db0c1a8464b62a412f2bb494b9fce0bffccec49dddef7d46e2416c",
+      "bytes": 317,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_device_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_dev_vth.log",
+      "sha256": "e25c7ce8a01f8ed2f95594dd52c79ac571ce7d2ed7980b3fce7a52529111b280",
+      "bytes": 522,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_interlock_queue.cir",
+      "sha256": "ae49b6e800128e89178b87b8e163784717a354361475e3d9082299283333f172",
+      "bytes": 969,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_interlock_queue.log",
+      "sha256": "6302c7bd0a17d4ca56adecb49c7ab2d076b62425bac92439099e7fd1fc85f87d",
+      "bytes": 680,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_interlock_queue_g0.cir",
+      "sha256": "48e733625419c1018620819550d3696e1e3f9c774986aa3552668028322c15e7",
+      "bytes": 989,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_interlock_queue_g0.log",
+      "sha256": "8113c8bb2f40320720c5e192e98693faae90690b42915086711e6e3df59a120c",
+      "bytes": 688,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_offblank_boundary.cir",
+      "sha256": "a9989b0dfa200617758f3247b5fbfe98d4b19242aca2a8d8dda9f97784c8765e",
+      "bytes": 2392,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_offblank_boundary.log",
+      "sha256": "1b3dfcdb1ef854834d016a2645e12da63dc9d68ccf5690537added0c855f1a0d",
+      "bytes": 4808,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_offblank_delayed_arm.cir",
+      "sha256": "0288ffa8f38462b64d7043c8077094b506550222a8069f231ae4bf04b3ee840d",
+      "bytes": 2589,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_offblank_delayed_arm.log",
+      "sha256": "9d43226a33c5c74b22b9cc12d1d0d92acb366a3232f1990dad3a0ad80e3c7e00",
+      "bytes": 2281,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_param_bounds.cir",
+      "sha256": "87c1cfb837e08d8ef8525153291d58a00decc97f1d495acdd7281ac65131135b",
+      "bytes": 1726,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_param_bounds.log",
+      "sha256": "9fba57da4baf84fc82685cb99c7d3abc79df5bda66c2d7bb99bd67085a61f4ba",
+      "bytes": 4509,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_revcharge.cir",
+      "sha256": "4bb697f18de8f614f1e219a935b21879f79d115d1cf972a3aa55cfbe83aac28a",
+      "bytes": 1474,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_revcharge.log",
+      "sha256": "12130274c87552eceb92db89a15fcee5538d99e331d1be6a36b26dfebdcc8360",
+      "bytes": 2646,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_fastreg20.cir",
+      "sha256": "eb79c370a7b79af7342004f3ddbb4a75c53e1d955949b46a0ef6f19299585da5",
+      "bytes": 634,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_fastreg20.log",
+      "sha256": "c0af315c681563085182681df85181746c3fffc0022f85dd17b8b064dff5a1df",
+      "bytes": 645,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_fastreg5.cir",
+      "sha256": "e92c5d1f333ec740f8b54ecc88f5f723b5393079b05010403cf74a5ae013514e",
+      "bytes": 622,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_fastreg5.log",
+      "sha256": "fe1603693cf105a6a2c60d882257ead610511c5616253f1b4886f2b9ae751749",
+      "bytes": 643,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_interlock.cir",
+      "sha256": "bad7ec966c0e3e1f8d3a4123eb9a25465af051b25829bb63a11046fbe7294f08",
+      "bytes": 1063,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_interlock.log",
+      "sha256": "ee1451ad3611bdd7682be3e4a1a61fe7cc1b2c49c9582346d54f30fea4a4f76a",
+      "bytes": 792,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_interlock_g0.cir",
+      "sha256": "39ee04cf85ecf07adb8cff9feb74f9467d647e58f9ef57e5d546f96acd0703c4",
+      "bytes": 1059,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_interlock_g0.log",
+      "sha256": "6e69d40fe656986bb3fd5a550784233fed1892215d9e70b659636900baa8817b",
+      "bytes": 800,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_interlock_g0_v32.cir",
+      "sha256": "d7d0604d31a2e07334c413fba098a0b7757397e728506aab5b70f25978b9f548",
+      "bytes": 1059,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_interlock_g0_v32.log",
+      "sha256": "1221788625eee9d79608b83f2c42f4bb39e59d256e57f318f7fa3e2b7e9e7df9",
+      "bytes": 808,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_noarb_negative.cir",
+      "sha256": "d750bba9859df27fde6d288a9d7bff2beb1edd5f22b76a6b8d28835a017dc8fb",
+      "bytes": 851,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_noarb_negative.log",
+      "sha256": "50192b67f5dcb014e2a0ddecca737d8d392d5ffdb0e6738bd015531099ca265a",
+      "bytes": 662,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_normal.cir",
+      "sha256": "846a7e9a51e3b20f6a9578e2ddda8a1e4fc06dd79627be8a770402d432af40ef",
+      "bytes": 1485,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_normal.log",
+      "sha256": "5bfb954b898f5b3277d3f4ef66a623a30d4adcf9edaa7854a370ac227906ca2a",
+      "bytes": 1081,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_offblank_retrigger.cir",
+      "sha256": "6ea188bb55f8f7ea60d82fe20b2408a108c5ebbdc5d34d98d3dd76a53d385f05",
+      "bytes": 1103,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_offblank_retrigger.log",
+      "sha256": "3bdf342bbdd83250cdf8c7274da5f2ceb7eb581cb3fd3ba3bdc02cb0acfaa5d1",
+      "bytes": 823,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_onblank.cir",
+      "sha256": "1974a63d745acc47a282ff33db0e9fb83c1657fb81562f606dee9d64253f1fed",
+      "bytes": 1053,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_onblank.log",
+      "sha256": "59f02508302dc81ed0dbcd7f2417cda0353e810dfceccd208da95d423e923d6d",
+      "bytes": 965,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_reg_first_negative.cir",
+      "sha256": "ef4ba0d5e83a8ceaeb14f71a0879007a6a9a50ee449263a7c5cb09e78c7ef902",
+      "bytes": 714,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_reg_first_negative.log",
+      "sha256": "1baf1387209136a39d2e2ee54f124f0e9bac90f729b568f20594973868a47a70",
+      "bytes": 691,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_shortpulse.cir",
+      "sha256": "939f37cbcd2bbc60cd9d3aee614866250e55523ff32a66f30427ed112cc3422c",
+      "bytes": 724,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_shortpulse.log",
+      "sha256": "4cc5c02a975746a7b7cb947a7c8c80126e958f8795a05a833d96c127e4f61ae0",
+      "bytes": 695,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_simultaneous.cir",
+      "sha256": "77f502cac86a76d73e4876539d9854f3977e561fbd05872e2de8c463b976b00e",
+      "bytes": 1569,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_simultaneous.log",
+      "sha256": "25a8759b647641ce0c4eaa05bd4f2b9374350f5404bfb1403dddb7ab22b06008",
+      "bytes": 1125,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_simultaneous_g0.cir",
+      "sha256": "3fa806510bc27e686dbaec2dde64ed2ba52fb61fdc426af01d8eea7a042325f7",
+      "bytes": 1553,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_simultaneous_g0.log",
+      "sha256": "991da137d4f91b1db53cd7dc5b2062fc275e2bec5507369cf73248a9738bd0f8",
+      "bytes": 1134,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_skew.cir",
+      "sha256": "c417f0bd244a4a683b3aa05de9137bf821cf9daab2792ce1c24f12d50d2e6618",
+      "bytes": 1395,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_skew.log",
+      "sha256": "d276e094caead597adf0743f0e7535ec305c4619be16493bcdcd7e6980500081",
+      "bytes": 1016,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_t3_skew_g0.cir",
+      "sha256": "37ff54754b1b25970d9d45e743f82dabc46c11f6319bdae732201cbd6cecb6de",
+      "bytes": 1390,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_t3_skew_g0.log",
+      "sha256": "ddeca7c2c762203cb96c6d03e86be27d834252effebdb1f358f14f18f9b39322",
+      "bytes": 1008,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_tie_exact.cir",
+      "sha256": "eeb75f0b4bbf5748982a682887d80879184b6d547df4c2d74992df3b211b2cb0",
+      "bytes": 1027,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_tie_exact.log",
+      "sha256": "e353811f01257f0b8e4de03aa638badf1f50dfd7b0795402b621eddfc6594629",
+      "bytes": 889,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_tie_exact_g0.cir",
+      "sha256": "0c04e814ca19cf26da69c49653a4a6ef99180e9d4b217395ab5b38b4ace06183",
+      "bytes": 1047,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v3_1.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_tie_exact_g0.log",
+      "sha256": "fd0ce98e0a169ad7071add39606b616331fb11172c02246df358207f59d74a2a",
+      "bytes": 897,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_v2_slowoff.cir",
+      "sha256": "42e72c8fd0720861acbd528cd0be90809f949e1c6a096d12e88f95ffda33eadb",
+      "bytes": 973,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_v2_slowoff.log",
+      "sha256": "a7a546de279194c3484344a27eed43265175cab60075b0fb356b310fed9af620",
+      "bytes": 623,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "sim/v2/verify_v2_sweep.cir",
+      "sha256": "645a6005e9f2a782de1a6cccabb9179798012221f7e0a165055c7960eb51a35e",
+      "bytes": 1036,
+      "class": "simulation_deck",
+      "purpose": "LTspice batch deck",
+      "caveat": "",
+      "includes": [
+        "models/sr_timing_v2.lib"
+      ]
+    },
+    {
+      "path": "sim/v2/verify_v2_sweep.log",
+      "sha256": "ba57e17751f949fd53ea7137737a85fb80741f5715a6fd9939724ec33e7ed12e",
+      "bytes": 1714,
+      "class": "numeric_artifact",
+      "purpose": "LTspice log from one run of the sibling deck",
+      "caveat": "not physical validation"
+    },
+    {
+      "path": "tools/bootstrap_probe.py",
+      "sha256": "0c826b6b8e68f3eaf61cb2e2f05af610f9d3dc11df6b01e9ef3b299772f20ecd",
+      "bytes": 1740,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/comm_v3_probe.py",
+      "sha256": "42afd6c31c36190ab3f29c04ce62b0a350cd085eca94cfa2e3b144a9607c02f6",
+      "bytes": 2398,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/deepseek_run.py",
+      "sha256": "e56d8268ad157a40510c99a49ce2cebc8c96468e807d681d63cb7f00d1b9f195",
+      "bytes": 3394,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/fault_metrics.py",
+      "sha256": "d1b361768bd5140bb7e7b685d991acf47a5bf3b9855ff174ae9d66ce8c55c9a2",
+      "bytes": 5151,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/fault_probe.py",
+      "sha256": "c775f17288a6619ccae5674ccf1d035b9ee6ca5580eb6e499f6b96f3e91149bf",
+      "bytes": 4728,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/make_baseline.py",
+      "sha256": "6f9d37aa75a7143b99aa64e7397ccceedb9bbec6d95579cc771ecfabce868bd9",
+      "bytes": 9944,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/meas_table.py",
+      "sha256": "ef71d7c0f7978d168127b6b38f9d0e9cd6507e3b68aeb3e0b0ef6d48e3129890",
+      "bytes": 3408,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/plot_startup_evidence.py",
+      "sha256": "171b4376bc7789064d9fa154d1d29bbea1049e646d3221debf7441a687e0d8a1",
+      "bytes": 2786,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/refresh_doc_hashes.py",
+      "sha256": "067871c0c841bb10933fe8a5f550bad7d2b4061fc143cc590d6d22b253448e19",
+      "bytes": 6310,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/run_decks.py",
+      "sha256": "2c2ee57a0ebd9f32a63ff3cb83411773e731919b490611ffc52683df8845107a",
+      "bytes": 4407,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/summarize_v2.py",
+      "sha256": "18e513119ab13eeb4afdf5c69bc7def391ad4e966681218df8095b2d7d1be91b",
+      "bytes": 3938,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/tank_metrics.py",
+      "sha256": "517144b75df5e21c72f1b4757e7847b6609a4c8ddda7af870a44eae41f68ceee",
+      "bytes": 9983,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/task2_evidence.py",
+      "sha256": "24ce01ee943d3ae32edecffffe2eea84527a55452ce01e52a56845e76a6a8317",
+      "bytes": 7999,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/test_meas_table.py",
+      "sha256": "4502b8f2c5366cbb27d36a9fc0063deaf383998784da4bbed38c70aab7cd0eb3",
+      "bytes": 2237,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    },
+    {
+      "path": "tools/test_tank_metrics.py",
+      "sha256": "b04234b4db2de0400ed0e49dc422a9068fa95a608b2d5b1c72b6fcfdbb3d7624",
+      "bytes": 6493,
+      "class": "analysis_tool",
+      "purpose": "analysis or runner script",
+      "caveat": ""
+    }
+  ]
+}

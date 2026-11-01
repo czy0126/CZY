@@ -1,0 +1,8 @@
+* does .ic apply with uic?
+R2 1 n 10k
+R1 n 0 1k
+C1 n 0 1u
+V1 1 0 5
+.ic V(n)=2
+.tran 0 200u 0 1u uic
+.end

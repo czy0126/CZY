@@ -1,0 +1,17 @@
+* Adversarial check: does a blocked pulse longer than TON leave a residual on-delay
+* timer (queued) that lets a later sub-TON pulse fire immediately?
+* CH1 winner conducts 4.17-4.91 us.  CH2: 250 ns blocked pulse at 4.30, a 60 ns pulse at
+* 6.01 (must be filtered), a 300 ns control pulse at 7.01 (must fire at ~7.165).
+.include ../../models/sr_timing_v3_1.lib
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 20u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.88u -.6 4.89u 4 20u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 4.29u 4 4.30u -.6 4.55u -.6 4.56u 4 6u 4 6.01u -.6 6.07u -.6 6.08u 4 7u 4 7.01u -.6 7.31u -.6 7.32u 4 20u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING CGATE=0 CPIN=100p
+.tran 0 10u 0 1n
+.save V(d1) V(d2) V(g1) V(g2) V(xsr:q1) V(xsr:q2) V(xsr:a1) V(xsr:a2)
+.meas tran g1_fall WHEN V(g1)=2 FALL=1
+.meas tran g1_min_win MIN V(g1) FROM=4.2u TO=4.88u
+.meas tran g2_early MAX V(g2) FROM=4.2u TO=6.5u
+.meas tran g2_ctrl WHEN V(g2)=2 RISE=1
+.meas tran q2max_early MAX V(xsr:q2) FROM=4.2u TO=6.5u
+.end

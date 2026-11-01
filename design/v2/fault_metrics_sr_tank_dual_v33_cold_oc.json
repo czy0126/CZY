@@ -1,0 +1,45 @@
+{
+  "deck": "sr_tank_dual_v33_cold_oc",
+  "fault_engage_ms": 5.549999999999999,
+  "oc_trip_ms": 5.59440716297171,
+  "fault_to_trip_us": 44.40716297171056,
+  "peak_primary_A": 97.99207355255209,
+  "peak_time_ms": 5.5780112419614865,
+  "first_sustained_drive_stop_ms": 5.5991276798159575,
+  "max_continuous_drive_low_us": 160.19,
+  "shutdown_intervals_ms": [
+    [
+      5.5991,
+      5.6161,
+      false
+    ],
+    [
+      5.9544,
+      6.1146,
+      false
+    ],
+    [
+      6.2717,
+      6.4296,
+      false
+    ],
+    [
+      6.9113,
+      7.0618,
+      false
+    ],
+    [
+      7.215,
+      7.3066,
+      true
+    ]
+  ],
+  "gate_restart_bursts": 4,
+  "last_gate_high_after_fault_ms": 7.215016670689382,
+  "i2t_to_trip_mA2s": 150.64752060926583,
+  "i2t_to_end_mA2s": 523.7087909878893,
+  "vout_min_V": -0.01316116778281655,
+  "vout_end_V": -0.008779245218642696,
+  "vout_tail_avg_V": 0.04148102333468876,
+  "recovered": false
+}

@@ -1,0 +1,30 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\sr_device_bench_ciss2.cir
+Start Time: Sat Oct 31 10:02:15 2026
+Options:plotwinsize=0
+
+.step vd=10
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+
+.step vd=20
+Total elapsed time: 0.187 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\sr_device_bench_ciss2.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+
+Measurement: ig
+  step	I(Vg) 	at
+     1	-0.00528333301842	3.999e-07
+     2	-0.00513964463031	3.999e-07
+
+Measurement: ciss
+  step	-1*ig/1e6
+     1	5.28333301842e-09
+     2	5.13964463031e-09

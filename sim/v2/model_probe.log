@@ -1,0 +1,31 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\model_probe.cir
+Start Time: Sat Oct 31 10:16:06 2026
+Options:Thev_Induc=1 plotwinsize=0
+
+.step vg=4.5
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Early termination of direct N-R iteration.
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+Changing Tseed to 1e-13
+Changing Tseed to 1e-15
+Changing Tseed to 1e-12
+Warning: Simulation tolerance relaxed to achieve convergence from 9.9999999600419720e-13 to 1.0000009960041972e-12 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.0000009960041972e-12 
+Convergence Failure:  Time step too small; time = 1e-12, timestep = 1.25e-19: trouble with node "xdc:x1:e_eds2#branch"
+
+Simulation Failed: Iteration limit reached
+
+Total elapsed time: 0.275 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\model_probe.cir
+D:\workshop\design_48v-2v\references\models\infineon_optimos_pspice_40v\OptiMOS6_40V_LTSpice.lib
+

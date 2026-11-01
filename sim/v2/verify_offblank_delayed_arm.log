@@ -1,0 +1,100 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_offblank_delayed_arm.cir
+Start Time: Sat Oct 31 12:14:12 2026
+
+.step td=5.35e-06
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=5.5e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=5.7e-06
+.OP point found by inspection.
+.OP point found by inspection.
+
+.step td=5.8e-06
+.OP point found by inspection.
+.OP point found by inspection.
+Total elapsed time: 0.565 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_offblank_delayed_arm.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3.lib
+
+
+Measurement: arm_t
+  step	V(armin)=0.5 
+     1	5.02807180942e-06
+     2	5.02807180942e-06
+     3	5.02807180942e-06
+     4	5.02807180942e-06
+
+Measurement: qfall
+  step	V(xsr:q1)=0.5 
+     1	4.88945021225e-06
+     2	4.88945021225e-06
+     3	4.88945021225e-06
+     4	4.88945021225e-06
+
+Measurement: off_t01
+  step	V(xsr:x1:off)=0.1 
+     1	5.1287908867e-06
+     2	5.1287908867e-06
+     3	5.1287908867e-06
+     4	5.1287908867e-06
+
+Measurement: off_t065
+  step	V(xsr:x1:off)=0.65 
+     1	5.67879107505e-06
+     2	5.67879107505e-06
+     3	5.67879107707e-06
+     4	5.67879107707e-06
+
+Measurement: q1rise2
+  step	V(xsr:q1)=0.5 
+     1	5.83449067802e-06
+     2	5.83449067802e-06
+     3	5.8648524825e-06
+     4	5.9648524825e-06
+
+Measurement: g1rise2
+  step	V(g1)=2 
+     1	5.84634036678e-06
+     2	5.84634036678e-06
+     3	5.87670964138e-06
+     4	5.97670964138e-06
+
+Measurement: g_at_495
+  step	V(g1) 	at
+     1	0.583426790708	4.95e-06
+     2	0.583426790708	4.95e-06
+     3	0.583426790708	4.95e-06
+     4	0.583426790708	4.95e-06
+
+Measurement: g_at_540
+  step	V(g1) 	at
+     1	2.24898974443e-10	5.4e-06
+     2	2.24888371813e-10	5.4e-06
+     3	2.24888371813e-10	5.4e-06
+     4	2.24888371813e-10	5.4e-06
+
+Measurement: g_at_580
+  step	V(g1) 	at
+     1	9.63544297707e-19	5.8e-06
+     2	9.63544297709e-19	5.8e-06
+     3	9.635276648e-19	5.8e-06
+     4	9.63278293098e-19	5.8e-06
+
+Measurement: g_at_600
+  step	V(g1) 	at
+     1	10.2551064228	6e-06
+     2	10.2551064246	6e-06
+     3	9.82016897949	6e-06
+     4	4.93042985492	6e-06

@@ -1,0 +1,74 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\comm_v3\sr_ls_25_50.cir
+Start Time: Sat Oct 31 12:17:05 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Changing Tseed to 1e-12
+Total elapsed time: 0.302 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\comm_v3\sr_ls_25_50.cir
+D:\workshop\design_48v-2v\models\sr_timing_v3_roff.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+irev_peak: MAX(I(Vsa) )=1.57121312618 FROM 1e-05 TO 2e-05
+icond_peak: MIN(I(Vsa) )=-24.9995803833 FROM 1e-05 TO 2e-05
+vds_min: MIN(V(d1) )=-0.749317407608 FROM 1e-05 TO 2e-05
+vds_max: MAX(V(d1) )=4.69999837875 FROM 1e-05 TO 2e-05
+vgs_max: MAX(V(gda) )=10.8918895721 FROM 1e-05 TO 2e-05
+vgs_min: MIN(V(gda) )=-0.220021113753 FROM 1e-05 TO 2e-05
+gate_overlap: MAX(min(V(gda),V(gdb)) )=0.00677576339804 FROM 1e-05 TO 2e-05
+isr_19: I(Vsa) =-24.9994297649 at 1.925e-05
+vgs_19: V(gda) =10.891388102 at 1.925e-05
+vds_19: V(d1) =-0.0223707392159 at 1.925e-05
+rds_19: VDS_19/ISR_19=0.000894849979629
+isr2_19: I(Vsb) =1.14773694734e-06 at 1.925e-05
+vgs2_19: V(gdb) =5.00432532427e-05 at 1.925e-05
+vds2_19: V(d2) =4.69999542018 at 1.925e-05
+qr15: V(qr) =111.879615784 at 1.5e-05
+qr20: V(qr) =167.70362854 at 2e-05
+qrev_c: (QR20-QR15)*1n=5.58240127563e-08
+qg15: V(qg) =193.572767542 at 1.5e-05
+qg20: V(qg) =258.962677002 at 2e-05
+qg_c: (QG20-QG15)*1n=6.53899094602e-08
+bd15: V(bd) =1823.07043457 at 1.5e-05
+bd20: V(bd) =2511.30004883 at 2e-05
+ebd_c: (BD20-BD15)*1n=6.88229614258e-07
+ch15: V(ch) =2952.8605957 at 1.5e-05
+ch20: V(ch) =3961.04245752 at 2e-05
+ech_c: (CH20-CH15)*1n=1.00818186181e-06
+ge15: V(ge) =1573.7740738 at 1.5e-05
+ge20: V(ge) =2191.57190245 at 2e-05
+ege_c: (GE20-GE15)*1n=6.1779782865e-07
+p_bd: (BD20-BD15)*1n*200k=0.137645922852
+p_ch: (CH20-CH15)*1n*200k=0.201636372363
+p_ge: (GE20-GE15)*1n*200k=0.12355956573
+irev_cyc: MAX(I(Vsa) )=1.57484555244 FROM 1.7e-05 TO 2.2e-05
+icond_cyc: MIN(I(Vsa) )=-24.9995803833 FROM 1.7e-05 TO 2.2e-05
+vds_min_cyc: MIN(V(d1) )=-0.749317407608 FROM 1.7e-05 TO 2.2e-05
+vds_max_cyc: MAX(V(d1) )=4.69999790192 FROM 1.7e-05 TO 2.2e-05
+vgs_max_cyc: MAX(V(gda) )=10.8918895721 FROM 1.7e-05 TO 2.2e-05
+vgs_min_cyc: MIN(V(gda) )=-0.219924002886 FROM 1.7e-05 TO 2.2e-05
+gate_overlap_cyc: MAX(min(V(gda),V(gdb)) )=0.00671103224158 FROM 1.7e-05 TO 2.2e-05
+qr17: V(qr) =167.70413208 at 1.7e-05
+qr22: V(qr) =223.629943848 at 2.2e-05
+qrev_cyc: (QR22-QR17)*1n=5.59258117676e-08
+qg17: V(qg) =195.906935602 at 1.7e-05
+qg22: V(qg) =261.334411621 at 2.2e-05
+qg_cyc: (QG22-QG17)*1n=6.54274760192e-08
+bd17: V(bd) =2066.34570348 at 1.7e-05
+bd22: V(bd) =2754.65234375 at 2.2e-05
+ebd_cyc: (BD22-BD17)*1n=6.8830664027e-07
+ch17: V(ch) =3027.17480469 at 1.7e-05
+ch22: V(ch) =4035.4855957 at 2.2e-05
+ech_cyc: (CH22-CH17)*1n=1.00831079102e-06
+ge17: V(ge) =1853.44274902 at 1.7e-05
+ge22: V(ge) =2471.24804688 at 2.2e-05
+ege_cyc: (GE22-GE17)*1n=6.17805297852e-07
+p_bd_cyc: (BD22-BD17)*1n*200k=0.137661328054
+p_ch_cyc: (CH22-CH17)*1n*200k=0.201662158203
+p_ge_cyc: (GE22-GE17)*1n*200k=0.12356105957

@@ -1,0 +1,43 @@
+* ============================================================================
+* Gate-drive calibration B: timing-model driver into the real SR_DEVICE gate.
+* Same driver as gd_drv_only.cir (byte-identical to sr_timing_v3.lib), but the
+* gate node now also feeds SR_DEVICE (Cgs 5.1 nF + Cgd, package Lg 2.5 nH,
+* Rg 1 ohm).  CG is the extra lumped "6.7 nF gate surrogate":
+*   CG=0     -> device gate load only (the physically correct pairing)
+*   CG=6.7n  -> device + surrogate, i.e. the current comm_v3 benches
+* Vds is held at 4 V (the comm bench bus) so the Cgd Miller term is realistic.
+* Vig is a 0 V sense source: its current is the total charge delivered to the
+* gate node, so the charge integrator reports the driver's charge (device plus
+* any surrogate), not the device's own Qg.  The energies are |Vg*Ig| so they
+* count charge and discharge together.
+* Numerical result, not hardware validation.
+* ============================================================================
+.include ../../../models/sr_device_v3.lib
+Vds d 0 4
+X1 d g 0 SR_DEVICE
+Bdrv drv 0 V=if(time>2u,0,if(time>1u,10.9,0))
+Bdrive gd 0 I=limit((V(gd)-V(drv))/if(V(drv)>V(gd),8.7,3.1),-1.5,4)
+Vig gd g 0
+Rgd gd 0 1G
+Rgs g 0 10k
+Cgate g 0 {CG}
+Bq q 0 I=-I(Vig)
+Cq q 0 1n
+Rq q 0 1G
+Be e 0 I=-abs(V(g)*I(Vig))
+Ce e 0 1n
+Re e 0 1G
+.tran 0 3u 0 20p
+.save V(g) V(x1:gi) V(d) I(Vig) V(q) V(e)
+.options plotwinsize=0
+.step param CG list 0 6.7n
+.meas tran vg_peak MAX V(g) FROM 0 TO 2u
+.meas tran tr_10_90_drv TRIG V(g)=1.089 RISE=1 TARG V(g)=9.801 RISE=1
+.meas tran tr_10_90_die TRIG V(x1:gi)=1.089 RISE=1 TARG V(x1:gi)=9.801 RISE=1
+.meas tran tf_90_10_drv TRIG V(g)=9.801 FALL=1 TARG V(g)=1.089 FALL=1
+.meas tran tf_90_10_die TRIG V(x1:gi)=9.801 FALL=1 TARG V(x1:gi)=1.089 FALL=1
+.meas tran ig_peak MAX abs(I(Vig))
+.meas tran q_rise FIND V(q) AT=1.95u
+.meas tran q_end FIND V(q) AT=2.95u
+.meas tran e_cycle FIND V(e) AT=2.95u
+.end

@@ -1,0 +1,22 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\_probe\ss_ic_a.cir
+Start Time: Sat Oct 31 17:31:54 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+WARNING: Node ss is floating and connected to current source xctl:B_iss.  It's .op solution is defined solely by a .ic statement.
+
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.141 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\_probe\ss_ic_a.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+
+ss_20us: V(ss) =3.98731762501 at 2e-05
+ss_end: V(ss) =4.22731781006 at 0.0005
+ss_min: MIN(V(ss) )=0 FROM 0 TO 1e-05
+t_gd1_rise: V(gd1)=5  AT 0.000498711421972
+Measurement "t_gd1_rise2" FAIL'ed

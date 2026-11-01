@@ -1,0 +1,50 @@
+* UCC27282 bootstrap bench (deck B: UVLO gate check)
+* Same switching circuit as deck A, plus an external clamp that shorts HB to HS
+* for 1 us during an active high-side pulse (33-34 us).  Purpose: prove the HB
+* UVLO is a real gate on the high-side driver, not an always-pass.
+* Expected: HO collapses while clamped even though HI is high; Cboot only
+* refills when the low side runs again (35 us), and HO returns on the next
+* high-side request at ~37.5 us.
+* The clamp is a model-validation stimulus, not a claimed fault mechanism.
+* SIMULATION ONLY -- behavioural driver and MOSFETs; not hardware validation.
+.include ../../models/ucc27282_behaviour.lib
+.param VIN=48 CB=220n
+Vdd vdd 0 PWL(0 0 0.5u 0 2u 12)
+Ven en 0 12
+Vbus vin 0 PWL(0 0 1u {VIN})
+* 200 kHz complementary drive with 150 ns dead time; HI is high 32.5-35 us,
+* so 33-34 us is an active high-side pulse.
+Vclk clk 0 PULSE(0 1 5u 1n 1n 2.5u 5u)
+Bli li 0 V=12*if(V(clk)>0.5, if(delay(V(clk),150n)>0.5,1,0), 0)
+Bhi hi 0 V=12*if(V(clk)<0.5, if(delay(V(clk),150n)<0.5,1,0), 0)
+* UVLO clamp: shorts HB to HS from 33 us to 34 us
+Vuv uv 0 PWL(0 0 33u 0 33.02u 12 34u 12 34.02u 0)
+Sclamp hb sw uv 0 SWC
+.model SWC SW(Ron=1m Roff=1G Vt=6)
+Rsw vin sw 1k
+Shs vin sw gh sw MAIN
+Dhs sw vin BODY
+Sls sw 0 gl 0 MAIN
+Dls 0 sw BODY
+Rgh ho gh 4.8
+Cgh gh sw 4n
+RgsH gh sw 10k
+Rgl lo gl 4.8
+Cgl gl 0 4n
+RgsL gl 0 10k
+Lload sw 0 1m
+Rload sw 0 1k
+.model MAIN SW(Ron=8m Roff=100Meg Vt=2 Vh=-.5)
+.model BODY D(Vfwd=0.7 Ron=8m Roff=1G)
+Xdrv vdd hb sw lo ho hi li en 0 UCC27282 PARAMS: T_EN=100p
+Cbt hb sw {CB} Rser=50m
+.options plotwinsize=0
+.tran 0 50u 0 5n uic
+.save V(sw) V(hb) V(ho) V(lo) V(gh) V(gl) V(hi) V(li) V(en) V(vdd) V(uv)
+.meas tran VBOOT_CLAMP_MIN MIN V(hb,sw) FROM 33.2u TO 33.9u
+.meas tran HO_CLAMP_MAX MAX V(ho,sw) FROM 33.5u TO 33.9u
+.meas tran HO_BEFORE_CLAMP FIND V(ho,sw) AT=32.9u
+.meas tran VBOOT_AFTER_REFILL FIND V(hb,sw) AT=36.8u
+.meas tran HO_AFTER_MAX MAX V(ho,sw) FROM 37.6u TO 39.9u
+.meas tran VBOOT_NORMAL_MIN MIN V(hb,sw) FROM 10u TO 30u
+.end

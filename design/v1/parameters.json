@@ -1,0 +1,30 @@
+{
+  "status": "ENGINEERING_DRAFT_NOT_FOR_FABRICATION",
+  "Vin_nom_V": 48,
+  "Vin_range_V": [
+    46,
+    50
+  ],
+  "ratio_nominal": 24,
+  "Iout_target_A": 100,
+  "fs_nom_Hz": 200609.85395602632,
+  "fs_start_typ_Hz": 291000.703001005,
+  "deadtime_typ_ns": 148.64,
+  "Cr_F": 6.2e-07,
+  "Lr_total_H": 1e-06,
+  "Lm_per_transformer_H": 1e-05,
+  "transformers": 4,
+  "turns_each": [
+    3,
+    1,
+    1
+  ],
+  "Ae_m2": 0.00013,
+  "AL_target_nH": 1111.111111111111,
+  "Bpk_nom_T": 0.019172307692307693,
+  "fr_Hz": 202126.979853788,
+  "Cout_sim_F": 0.004,
+  "Cout_hardware_status": "NOT_SELECTED",
+  "SR_offset_ohm": 0,
+  "fs_start_correction": "2026-10-31 V2: previous ~276k at SS1.2V was arithmetic error; ~291k correct"
+}

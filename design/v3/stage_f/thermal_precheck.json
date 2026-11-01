@@ -1,0 +1,61 @@
+{
+  "status": "design estimate, not hardware validated",
+  "devices": 8,
+  "sr_loss_w_100a": 7.338069712513994,
+  "sr_loss_per_device_w_100a": 0.9172587140642493,
+  "sr_loss_per_device_w_95a": 0.832275,
+  "tj_max_c": 125.0,
+  "max_ambient_c_100a": {
+    "rth_50_k_per_w": 79.13706429678754,
+    "rth_80_k_per_w": 51.619302874860054
+  },
+  "matrix": [
+    {
+      "ambient_c": 25.0,
+      "rth_ja_k_per_w": 50.0,
+      "rth_source": "datasheet 50 K/W",
+      "tj_c_at_100a": 70.86293570321246,
+      "passes_tj_125": true
+    },
+    {
+      "ambient_c": 25.0,
+      "rth_ja_k_per_w": 80.0,
+      "rth_source": "estimate 80 K/W",
+      "tj_c_at_100a": 98.38069712513995,
+      "passes_tj_125": true
+    },
+    {
+      "ambient_c": 40.0,
+      "rth_ja_k_per_w": 50.0,
+      "rth_source": "datasheet 50 K/W",
+      "tj_c_at_100a": 85.86293570321246,
+      "passes_tj_125": true
+    },
+    {
+      "ambient_c": 40.0,
+      "rth_ja_k_per_w": 80.0,
+      "rth_source": "estimate 80 K/W",
+      "tj_c_at_100a": 113.38069712513995,
+      "passes_tj_125": true
+    },
+    {
+      "ambient_c": 60.0,
+      "rth_ja_k_per_w": 50.0,
+      "rth_source": "datasheet 50 K/W",
+      "tj_c_at_100a": 105.86293570321246,
+      "passes_tj_125": true
+    },
+    {
+      "ambient_c": 60.0,
+      "rth_ja_k_per_w": 80.0,
+      "rth_source": "estimate 80 K/W",
+      "tj_c_at_100a": 133.38069712513993,
+      "passes_tj_125": false
+    }
+  ],
+  "notes": [
+    "SR branch loss is the model estimate from the 100 A deck; the bench must confirm it.",
+    "50 K/W is the datasheet maximum on 6 cm^2 copper; 80 K/W is an unverified estimate for a smaller pad.",
+    "Magnetic and copper temperatures are not predicted here: ELP32 thermal resistance is not in the datasheet."
+  ]
+}

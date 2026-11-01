@@ -1,0 +1,34 @@
+* Adversarial parameter-corner check (Step 2): the SAME off-blank retrigger
+* scenario at BON and BOFF corners instead of the typ values (BON=475n,
+* BOFF=650n).  Everything else is the verify_offblank_boundary / _delayed_arm
+* waveform, so any change is attributable to the parameter alone.
+*
+* Predictions to be checked (not assumed):
+*   turn-off commit = max(q_assert + BON, VD>OFFTH) + TOFF
+*     -> BON=700n with a VD rise at 4.63 us delays the commit past 4.63 us;
+*        BON=400n commits at the VD rise itself.
+*   retrigger gate      = max(request, q_fall + BOFF) + TON
+*     -> BOFF=1000n pushes the eligibility past the end of the 500 ns retrigger
+*        low pulse (5.21-5.71 us), so no second gate rise should appear.
+*
+* g1r2 is EXPECTED to fail for the BOFF=1u corner; that failure is the result.
+* Behavioural timing surrogate, not hardware validation.
+.include ../../models/sr_timing_v3.lib
+.param TD=5.2u
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 12u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.62u -.6 4.63u 4 {TD} 4 {TD+10n} -.6 {TD+510n} -.6 {TD+520n} 4 12u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 12u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING BON={BON} BOFF={BOFF}
+.step param BON list 400n 475n 700n
+.step param BOFF list 550n 650n 750n 1u
+.tran 0 12u 0 1n
+.save V(d1) V(g1) V(g2) V(xsr:q1) V(xsr:x1:age) V(xsr:x1:off) V(xsr:x1:ton) V(xsr:x1:arm) V(pre) V(xsr:ok)
+.meas tran qrise WHEN V(xsr:q1)=0.5 RISE=1
+.meas tran qfall WHEN V(xsr:q1)=0.5 FALL=1
+.meas tran vd_rise WHEN V(d1)=2 RISE=2
+.meas tran age_at_vd FIND V(xsr:x1:age) AT=4.63u
+.meas tran off_t065 WHEN V(xsr:x1:off)=0.65 RISE=2
+.meas tran g1r1 WHEN V(g1)=2 RISE=1
+.meas tran g1r2 WHEN V(g1)=2 RISE=2
+.meas tran g1_max2 MAX V(g1) FROM=5.2u TO=6.5u
+.end

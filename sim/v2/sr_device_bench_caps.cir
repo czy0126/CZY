@@ -1,0 +1,17 @@
+* Capacitance bench: stiff 0->40 V drain ramp at 1 V/us, VGS=0.
+* Gives Qoss(0..20 V), Coss/Crss at 10/20/40 V.
+.include ../../models/sr_device_v3.lib
+Vd d 0 PWL(0 0 40u 40)
+Vg g 0 0
+X1 d g 0 SR_DEVICE
+.tran 0 40u 0 2n uic
+.options plotwinsize=0
+.meas tran qoss20 INTEG -I(Vd) FROM 0 TO 20u
+.meas tran coss10 FIND -I(Vd) AT=9.9u
+.meas tran crss10 FIND -I(Vg) AT=9.9u
+.meas tran coss20 FIND -I(Vd) AT=19.9u
+.meas tran crss20 FIND -I(Vg) AT=19.9u
+.meas tran coss40 FIND -I(Vd) AT=39.9u
+.meas tran crss40 FIND -I(Vg) AT=39.9u
+.meas tran vfinal FIND V(d) AT=40u
+.end

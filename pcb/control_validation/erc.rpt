@@ -1,0 +1,21 @@
+ERC report (2026-10-31T19:18:07, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+[lib_symbol_issues]: 当前配置不包含符号库 'UCC24624'
+    ; warning
+    @(160.02 mm, 90.17 mm): Symbol U1 [UCC24624]
+[lib_symbol_issues]: 当前配置不包含符号库 'SR'
+    ; warning
+    @(250.19 mm, 69.85 mm): Symbol Q1 [BSC010N04LS6]
+[lib_symbol_issues]: 当前配置不包含符号库 'SR'
+    ; warning
+    @(250.19 mm, 129.54 mm): Symbol Q2 [BSC010N04LS6]
+
+ ** ERC messages: 3  Errors 0  Warnings 3
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

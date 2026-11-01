@@ -1,0 +1,11 @@
+* L3 5-pin, short switching transient, alt solver
+.include D:/workshop/design_48v-2v/references/models/infineon_optimos_pspice_40v/OptiMOS6_40V_LTSpice.lib
+Vd d 0 40
+Vg g 0 PULSE(0 10 1u 10n 10n 30u 60u)
+Xsw d g 0 tj tc BSC010N04LS6
+Rtj tj 0 1G
+Rtc tc 0 1G
+Rl d 0 4
+.options plotwinsize=0
+.tran 0 60u 0 5n
+.end

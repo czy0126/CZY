@@ -1,0 +1,21 @@
+* Clamped inductive turn-off, VDD=20 V, IL=50 A (freewheel diode clamp)
+.include ../../models/sr_device_v3.lib
+Vdd vdd 0 20
+Lload vdd sw 10u IC=50
+Dfw sw vdd DFW
+.model DFW D(IS=1e-9 N=1.2 RS=5m CJO=0)
+X1 sw g 0 SR_DEVICE
+Vdrv drv 0 PWL(0 10 1000n 10 1010n 0 2000n 0)
+Rdrv drv g 2
+.tran 0 2u 0 0.05n uic
+.options plotwinsize=0 method=gear itl4=100 gmin=1e-9
+.meas tran VSWON FIND V(sw) AT 950n
+.meas tran ILON FIND I(Lload) AT 950n
+.meas tran VPK MAX V(sw) FROM 1000n TO 1300n
+.meas tran T20 WHEN V(sw)=2 RISE=1 TD=1000n
+.meas tran T80 WHEN V(sw)=18 RISE=1 TD=1000n
+.meas tran DV PARAM 16/(T80-T20)
+.meas tran T10 WHEN V(sw)=1 RISE=1 TD=1000n
+.meas tran VG_OFF FIND V(g) AT 1010n
+.meas tran VSW_FINAL FIND V(sw) AT 1900n
+.end

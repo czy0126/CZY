@@ -1,0 +1,18 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\lead_probe\dev_op.cir
+Start Time: Sat Oct 31 09:40:12 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.055 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\lead_probe\dev_op.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+D:\workshop\design_48v-2v\sim\v2\lead_probe\dev_op.cir(8): Voltage not found.
+.meas op vgi FIND V(x1:gi)
+                  ^^^^^^^^

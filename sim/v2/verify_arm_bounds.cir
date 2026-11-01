@@ -1,0 +1,32 @@
+* Adversarial ARM sweep (Step 2): the verify_offblank_delayed_arm scenario with
+* the re-arm threshold moved to its datasheet tolerance corners instead of the
+* fixed 1.5 V.  Everything else (slow 9.2 V/us drain ramp, TOFF, BOFF=650 ns,
+* retrigger times) is unchanged, so the shift is attributable to ARM alone.
+*
+* The drain ramps -0.6 -> 4.0 V over 4.80-5.30 us, so the ARM crossing and the
+* off-blank anchor should both move by (ARM-1.5)/9.2 V/us:
+*   ARM=1.0 -> 4.974 us, ARM=1.5 -> 5.028 us, ARM=2.0 -> 5.083 us, ARM=2.5 -> 5.137 us
+* All four crossings are after the Q falling edge (~4.889 us), so every case must
+* take the VD-comparator anchor, and expiry must equal arm_t + BOFF.
+* Behavioural timing surrogate, not hardware validation.
+.include ../../models/sr_timing_v3.lib
+.param TD=5.35u ARM=1.5
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 12u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.8u -.6 5.3u 4
++ {TD} 4 {TD+10n} -.6 6.2u -.6 6.21u 4 12u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 12u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING ARM={ARM}
+Barm armin 0 V=if(V(d1)>{ARM},1,0)
+.step param ARM list 1.0 1.5 2.0 2.5
+.step param TD list 5.35u 5.50u 5.70u 5.80u
+.tran 0 12u 0 1n
+.save V(d1) V(g1) V(g2) V(xsr:q1) V(armin) V(xsr:x1:arm) V(xsr:x1:off) V(xsr:x1:ton) V(pre) V(xsr:ok)
+.meas tran arm_t WHEN V(armin)=0.5 RISE=2
+.meas tran qfall WHEN V(xsr:q1)=0.5 FALL=1
+.meas tran off_t065 WHEN V(xsr:x1:off)=0.65 RISE=2
+.meas tran g1r2 WHEN V(g1)=2 RISE=2
+.meas tran vd_at_g1 FIND V(d1) AT=g1r2
+.meas tran block_after_qfall PARAM (off_t065-qfall)
+.meas tran q2rise WHEN V(xsr:q1)=0.5 RISE=2
+.meas tran ok_min MIN V(xsr:ok) FROM=4u TO=6u
+.end

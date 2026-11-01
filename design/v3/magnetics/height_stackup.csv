@@ -1,0 +1,13 @@
+layer,nominal_mm,min_mm,max_mm,note
+ELP half,6.35,6.20,6.50,TDK datasheet 6.35 +/-0.15
+I plate,3.15,3.00,3.30,TDK datasheet 3.15 +/-0.15
+core stack,9.50,9.20,9.80,sum of the two datasheet maxima is 9.80
+adhesive,0.05,0.04,0.08,controlled thin bond line; 0.05 nominal is a process target
+label,0.05,0.04,0.06,printed label
+total nominal (flat),9.60,,,9.50 + 0.05 + 0.05
+total worst (flat),9.94,,,9.80 + 0.08 + 0.06
+limit,10.00,,,roadmap thinness limit
+margin (flat),0.06,,,prototype only; too small for PCB warpage and solder-mask variation
+pocket depth,0.50,,,recommended: core sunk 0.50 mm into a PCB pocket
+total worst (pocket),9.44,,,9.94 - 0.50; margin 0.56
+metal clamp option,0.50,,,rejected: worst case becomes 10.44 mm

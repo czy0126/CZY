@@ -1,0 +1,19 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\design\v2\sr_device_bench\t_qramp2.cir
+Start Time: Sat Oct 31 09:55:59 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+ERROR: Node b is floating and connected to current source I1
+
+Per .tran options, skipping operating point for transient analysis.
+Changing Tseed to 5e-12
+Total elapsed time: 0.025 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\design\v2\sr_device_bench\t_qramp2.cir
+
+tb20: V(b)=20 AT 6.76996031855e-05
+tb40: V(b)=40 AT 8.91020961406e-05

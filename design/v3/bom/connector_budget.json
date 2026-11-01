@@ -1,0 +1,96 @@
+{
+  "status": "geometry sized; contact resistance NOT verified; no MPN assigned",
+  "output": {
+    "current_a": 100.0,
+    "budget_ohm": 0.0001,
+    "budget_w": 1.0,
+    "contact": {
+      "contact_ohm_each": 5e-05,
+      "contacts": 2,
+      "contact_total_ohm": 0.0001,
+      "frac_of_budget": 1.0,
+      "leaves_ohms": 0.0,
+      "status": "UNVERIFIED placeholder - measure at first article"
+    },
+    "feasible_with_placeholder_contacts": false,
+    "joint_shortfall_ohm": 0.0,
+    "bar": {
+      "width_mm": 20.0,
+      "thickness_mm": 2.0,
+      "length_mm": 80.0,
+      "resistance_ohm": 3.448e-05,
+      "power_w": 0.3448,
+      "max_length_for_budget_mm": null,
+      "rise_range_k": {
+        "h=4": 29.226180783934787,
+        "h=8": 13.874358065992025
+      }
+    },
+    "total_ohm_placeholder": 0.00013448,
+    "total_power_w_placeholder": 1.3448
+  },
+  "output_feasibility": {
+    "bar_ohm": 3.448e-05,
+    "rows": [
+      {
+        "joint_ohm": 2e-05,
+        "path_ohm": 7.448e-05,
+        "path_w": 0.7448,
+        "efficiency_loss_frac": 0.003955390334572491
+      },
+      {
+        "joint_ohm": 5e-05,
+        "path_ohm": 0.00013448,
+        "path_w": 1.3448,
+        "efficiency_loss_frac": 0.007141795007966011
+      },
+      {
+        "joint_ohm": 0.0001,
+        "path_ohm": 0.00023448000000000002,
+        "path_w": 2.3448,
+        "efficiency_loss_frac": 0.012452469463621881
+      }
+    ],
+    "note": "0.1 mohm is only reachable with roughly 20 uohm joints or fewer of them; at 50 uohm each the two joints use the budget up on their own"
+  },
+  "joint_limit": {
+    "budget_ohm": 0.00015,
+    "bar_ohm": 3.448e-05,
+    "allowed_joint_total_ohm": 0.00011551999999999998,
+    "per_joint_ohm": 5.775999999999999e-05,
+    "placeholder_fits": true,
+    "status": "first article must measure every joint at or below per_joint_ohm"
+  },
+  "input": {
+    "i_rms_a": 6.746,
+    "i_peak_a": 13.88,
+    "target_w_per_100mm": 0.1,
+    "width_for_target_mm": 11.208097369142857,
+    "examples": [
+      {
+        "width_mm": 2.0,
+        "ohm_per_100mm": 0.012314285714285715,
+        "w_per_100mm": 0.560404868457143
+      },
+      {
+        "width_mm": 10.0,
+        "ohm_per_100mm": 0.002462857142857143,
+        "w_per_100mm": 0.1120809736914286
+      },
+      {
+        "width_mm": 11.208097369142857,
+        "ohm_per_100mm": 0.00219739092349221,
+        "w_per_100mm": 0.10000000000000002
+      }
+    ],
+    "note": "preferred part is a 2-pin 5.08 mm or larger screw terminal; the trace width, not the terminal rating, sets this side"
+  },
+  "budget_origin": "Both PATH_BUDGET_OHM (0.1 mohm, strict) and DESIGN_BASIS_OHM (0.15 mohm) are self-chosen. The project has no output-drop specification; 0.15 is the number the published 92.33 % efficiency already contains, so it is the design basis and sets the joint limit.",
+  "caveats": [
+    "h_conv is a handbook range (4-8 W/m2K), so every rise is a range, not a value",
+    "the bar is assumed isothermal; at 80 mm the axial gradient is small but not zero",
+    "no radiation term and no forced air; both would lower the rise",
+    "contact resistance is a placeholder; at 100 A a 50 uohm joint is 0.5 W on its own",
+    "solder-joint and PCB-spreading resistance are not in this model at all"
+  ]
+}

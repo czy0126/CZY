@@ -1,0 +1,44 @@
+* Adversarial check: off-blank boundary using a re-trigger pulse LONGER than TON=155 ns
+* (the project deck uses 61/71 ns dips, which are filtered by the short-pulse rule anyway).
+* FAST drain rise: VD steps to 4 V at 4.620 us, so the VD>1.5 (armin) crossing at
+* 4.625 us happens while the gate is still on.  Both the arm latch and the off counter
+* are reset while Q is high, so the model starts the 650 ns blank at the Q falling
+* edge (4.6635 us) -- about 39 ns LATER than the datasheet VD anchor, which lengthens
+* the block (conservative, never early).  Expiry is 4.6635+0.650 = 5.3135 us, so a
+* retrigger low must last until 5.3135+0.155 = 5.4685 us to gate.  The delayed-ARM
+* branch (ARM crossing after the gate fall) is covered by verify_offblank_delayed_arm.cir.
+.include ../../models/sr_timing_v3.lib
+.param TD=4.7u
+Vreg reg 0 PWL(0 0 2u 0 3.1u 11 12u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.62u -.6 4.63u 4 {TD} 4 {TD+10n} -.6 {TD+510n} -.6 {TD+520n} 4 12u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4 12u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+Barm armin 0 V=if(V(d1)>1.5,1,0)
+.step param TD list 4.7u 4.8u 4.9u 5.0u 5.2u 5.4u
+.tran 0 12u 0 1n
+* Internal nodes are saved so the off-blank start/expiry can be checked against
+* the datasheet anchor, not just inferred from the gate waveform.
+.save V(d1) V(g1) V(g2) V(xsr:q1) V(armin)
++ V(xsr:x1:arm) V(xsr:x1:off) V(xsr:x1:ton) V(xsr:a1) V(xsr:rq1) V(pre)
++ V(xsr:ok) V(xsr:uv) V(xsr:pl)
+.meas tran arm_t WHEN V(armin)=0.5 RISE=2
+.meas tran qfall WHEN V(xsr:q1)=0.5 FALL=1
+* Directly measured blank start/expiry: starts at the Q falling edge here because the
+* ARM crossing (4.625 us) happened while Q was still high.
+.meas tran off_t01 WHEN V(xsr:x1:off)=0.1 RISE=2
+.meas tran off_t065 WHEN V(xsr:x1:off)=0.65 RISE=2
+.meas tran g1max MAX V(g1) FROM=4.7u TO=9u
+.meas tran g_at_525 FIND V(g1) AT=5.25u
+.meas tran g_at_546 FIND V(g1) AT=5.46u
+.meas tran g_at_600 FIND V(g1) AT=6.00u
+.meas tran g_at_700 FIND V(g1) AT=7.00u
+.meas tran g_at_480 FIND V(g1) AT=4.80u
+.meas tran g_at_510 FIND V(g1) AT=5.10u
+.meas tran g_at_530 FIND V(g1) AT=5.30u
+.meas tran g_at_540 FIND V(g1) AT=5.40u
+.meas tran g_at_560 FIND V(g1) AT=5.60u
+.meas tran g_at_580 FIND V(g1) AT=5.80u
+.meas tran g1r2 WHEN V(g1)=2 RISE=2
+.meas tran g1f2 WHEN V(g1)=2 FALL=2
+.meas tran q1max MAX V(xsr:q1) FROM=4.7u TO=9u
+.end

@@ -1,0 +1,19 @@
+* v2-vs-v3 diagnostic (NOT a v3 check): reproduces the v2 sr_timing_v2.lib Q-race with the
+* undocumented BLOCK=req1 fixed-priority patch removed (BLOCK tied to 0 on both channels).
+* Two independent, exactly simultaneous, valid requests.  Expected v2 result: both Q stop at
+* 0.5, neither gate asserts, solver fails ("Time step too small").  This file does not modify
+* sr_timing_v2.lib; it only instantiates its SR_CH.
+.include ../../models/sr_timing_v2.lib
+Vreg reg 0 11
+Vok ok 0 1
+Vd1 d1 0 PWL(0 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 20u 4)
+Vd2 d2 0 PWL(0 4 4u 4 4.01u -.6 4.5u -.6 4.51u 4 20u 4)
+Xa d1 ga reg 0 qb ok qa reqa 0 SR_CH
+Xb d2 gb reg 0 qa ok qb reqb 0 SR_CH
+.tran 0 6u 0 1n
+.save V(d1) V(d2) V(ga) V(gb) V(qa) V(qb) V(reqa) V(reqb)
+.meas tran ga_max MAX V(ga)
+.meas tran gb_max MAX V(gb)
+.meas tran qa_max MAX V(qa)
+.meas tran qb_max MAX V(qb)
+.end

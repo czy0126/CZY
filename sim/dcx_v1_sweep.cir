@@ -1,0 +1,61 @@
+* DCX V1 - corrected power-only baseline, NOT a hardware control model
+* Ideal unidirectional SR equivalents cannot validate reverse current or SR timing.
+.param VIN=48 RL=20m LP=10u LR_TOTAL=1u CR_TOTAL=620n
+.param FS=1/(2*(6n/(2.5/976)+150n)) TS=1/FS DT=149n
+Vbus vin0 0 PWL(0 0 0.5m {VIN} 3m {VIN})
+Rin vin0 vin 1m
+Cin vin 0 20u Rser=5m
+VPH ph 0 PULSE(0 5 5u 10n 10n {TS/2-DT-10n} {TS})
+VPL pl 0 PULSE(0 5 {5u+TS/2} 10n 10n {TS/2-DT-10n} {TS})
+SH vin sw ph 0 SWPRI
+SL sw 0 pl 0 SWPRI
+DH sw vin DBODY
+DL 0 sw DBODY
+.model SWPRI SW(Ron=8m Roff=1G Vt=2.5 Vh=0)
+.model DBODY D(Ron=8m Roff=1G Vfwd=0.7)
+Cr sw nr {CR_TOTAL} Rser=3m
+Lr nr p1 {LR_TOTAL} Rser=5m
+Lp1 p1 p2 {LP} Rser=3m
+Lp2 p2 p3 {LP} Rser=3m
+Lp3 p3 p4 {LP} Rser=3m
+Lp4 p4 0 {LP} Rser=3m
+Lsa1 out a1 {LP/9} Rser=0.15m
+Lsb1 b1 out {LP/9} Rser=0.15m
+Lsa2 out a2 {LP/9} Rser=0.15m
+Lsb2 b2 out {LP/9} Rser=0.15m
+Lsa3 out a3 {LP/9} Rser=0.15m
+Lsb3 b3 out {LP/9} Rser=0.15m
+Lsa4 out a4 {LP/9} Rser=0.15m
+Lsb4 b4 out {LP/9} Rser=0.15m
+K1 Lp1 Lsa1 Lsb1 1
+K2 Lp2 Lsa2 Lsb2 1
+K3 Lp3 Lsa3 Lsb3 1
+K4 Lp4 Lsa4 Lsb4 1
+Da1 sgnd a1 DSR
+Db1 sgnd b1 DSR
+Da2 sgnd a2 DSR
+Db2 sgnd b2 DSR
+Da3 sgnd a3 DSR
+Db3 sgnd b3 DSR
+Da4 sgnd a4 DSR
+Db4 sgnd b4 DSR
+.model DSR D(Ron=1.5m Roff=1G Vfwd=0.02)
+Cout out sgnd 4m Rser=0.2m
+Rload out sgnd {RL}
+Rref sgnd 0 1G
+.options plotwinsize=0
+.step param VIN list 46 48 50
+.step param RL list 0.2 0.04 0.019
+.tran 0 3m 0 30n
+.save V(out) V(sgnd) V(sw) V(ph) V(pl) V(p1) V(p2) V(p3) V(p4)
++ I(Lr) I(Lsa1) I(Lsb1) I(Lsa2) I(Lsb2) I(Lsa3) I(Lsb3) I(Lsa4) I(Lsb4) I(Vbus) I(Rload) V(vin0)
+.meas tran VOUT_AVG AVG V(out,sgnd) FROM 2.5m TO 3m
+.meas tran VOUT_PP PP V(out,sgnd) FROM 2.5m TO 3m
+.meas tran IOUT_AVG AVG I(Rload) FROM 2.5m TO 3m
+.meas tran IPRI_RMS RMS I(Lr) FROM 2.5m TO 3m
+.meas tran IPRI_PK MAX abs(I(Lr)) FROM 2.5m TO 3m
+.meas tran ISA1_RMS RMS I(Lsa1) FROM 2.5m TO 3m
+.meas tran ISB1_RMS RMS I(Lsb1) FROM 2.5m TO 3m
+.meas tran PIN AVG (-V(vin0)*I(Vbus)) FROM 2.5m TO 3m
+.meas tran POUT AVG (V(out,sgnd)*I(Rload)) FROM 2.5m TO 3m
+.end

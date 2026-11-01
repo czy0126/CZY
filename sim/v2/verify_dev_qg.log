@@ -1,0 +1,27 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\verify_dev_qg.cir
+Start Time: Sat Oct 31 10:06:50 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.100 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\verify_dev_qg.cir
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+t10: V(g)=10 AT 1.10749394904e-05
+t45: V(g)=4.5 AT 5.82810237246e-06
+tp1: V(sd)=19.0  AT 2.79524962571e-06
+tp2: V(sd)=0.5  AT 4.13105828556e-06
+qg: 5m*t10=5.53746974519e-08
+qg45: 5m*t45=2.91405118623e-08
+qgs: 5m*tp1=1.39762481285e-08
+qgd: 5m*(tp2-tp1)=6.67904329929e-09
+vplateau: V(g) =2.71871766102 at 3.05810361907e-06
+vds_final: V(sd) =0.0446586311657 at 1.3e-05
+vgmax: MAX(V(g))=12.9472932816 FROM 0 TO 1.4e-05

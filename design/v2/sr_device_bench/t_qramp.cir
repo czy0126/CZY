@@ -1,0 +1,9 @@
+* cap charge tests: linear vs Q-defined
+I1 0 a 1m
+C1 a 0 3n
+I2 0 b 1m
+C2 b 0 Q=6154.29p*V(b)-297.645p*V(b)*V(b)/2
+.tran 0 80u 0 50n uic
+.meas tran ta20 WHEN V(a)=20
+.meas tran tb20 WHEN V(b)=20
+.end

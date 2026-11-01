@@ -1,0 +1,22 @@
+* Gate charge, VDD=20 V, ID=50 A, Ig=1 mA  (datasheet Qg test topology)
+.include ../../models/sr_device_v3.lib
+Vdd vdd 0 20
+Dcl vdd sd DCL
+.model DCL D(IS=1e-6 N=0.1 CJO=0 RS=0)
+Iload sd 0 50
+X1 sd g 0 SR_DEVICE
+Ig 0 g 5m
+.tran 0 14u 0 20n uic
+.ic V(sd)=19.9 V(g)=0
+.options plotwinsize=0
+.meas tran t10 WHEN V(g)=10
+.meas tran t45 WHEN V(g)=4.5
+.meas tran tp1 WHEN V(sd)=19.0 FALL=1
+.meas tran tp2 WHEN V(sd)=0.5 FALL=1
+.meas tran qg PARAM 5m*t10
+.meas tran qg45 PARAM 5m*t45
+.meas tran qgs PARAM 5m*tp1
+.meas tran qgd PARAM 5m*(tp2-tp1)
+.meas tran vplateau FIND V(g) WHEN V(sd)=10
+.meas tran vds_final FIND V(sd) AT 13u
+.end

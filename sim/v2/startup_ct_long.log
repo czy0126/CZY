@@ -1,0 +1,31 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v2\startup_ct_long.cir
+Start Time: Sat Oct 31 12:21:12 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 73.343 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v2\startup_ct_long.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v2.lib
+
+oc_max: MAX(V(oc) )=0.556017756462 FROM 0 TO 0.007
+oc_1m: V(oc) =0.511505246162 at 0.001
+ocd_max: MAX(V(ocd) )=3.57188892365 FROM 0 TO 0.007
+ict_pk: MAX(abs(I(Lct2)) )=0.360634893179 FROM 0 TO 0.007
+vout_1m: V(out,sgnd) =1.7388497591 at 0.001
+vout_3m: V(out,sgnd) =1.86940090296 at 0.003
+vout_5m: V(out,sgnd) =1.90780159359 at 0.005
+pre_at_7m: V(pre1,sgnd) =0.993161678314 at 0.007
+vout_avg: AVG(V(out,sgnd) )=1.91113883461 FROM 0.0065 TO 0.007
+vout_max: MAX(V(out,sgnd) )=1.92622435093 FROM 0 TO 0.007
+ipri_pk: MAX(abs(I(Lr)))=36.0671844482 FROM 0 TO 0.007
+sr_reverse: MAX((-I(Sa1)) )=12.3310022354 FROM 0.0065 TO 0.007
+sr_gate_max: MAX(V(ga1,sgnd))=8.35616874695 FROM 0 TO 0.007
+sr_gate_at_1m: V(ga1,sgnd) =2.81060145781e-25 at 0.001

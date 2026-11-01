@@ -1,0 +1,12 @@
+* SR state-machine timing bench, imposed drain voltages (not a power converter)
+.include ../../models/sr_timing_v2.lib
+.param EARLY=1
+Vreg reg 0 PWL(0 0 {if(EARLY,0.1u,3u)} 0 {if(EARLY,0.2u,3.1u)} 11 20u 11)
+Vd1 d1 0 PWL(0 0 1u 0 1.01u 4 4u 4 4.01u -.6 4.8u -.6 4.81u .1 5.5u .1 5.51u 4 8u 4 8.01u -.6 8.1u -.6 8.11u .1 9u .1 9.01u 4 20u 4)
+Vd2 d2 0 PWL(0 0 1u 0 1.01u 4)
+Xsr d1 d2 g1 g2 reg 0 pre SR_TIMING
+.tran 0 12u 0 2n
+.save V(d1) V(d2) V(g1) V(g2) V(reg) V(pre) V(xsr:q1) V(xsr:x1:age) V(xsr:x1:ton)
+.meas tran gate_max MAX V(g1)
+.meas tran pre_final FIND V(pre) AT=11u
+.end

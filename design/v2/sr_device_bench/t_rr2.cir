@@ -1,0 +1,15 @@
+* reverse recovery: forced di/dt current source, VR clamp 20V
+I1 a 0 PWL(0 10 100n 10 162.5n -15 300n -15)
+Dc a c DC
+Vc c 0 20
+.model DC D(Is=1e-9 N=1 Cjo=0)
+Vs a d 0
+D1 0 d DB
+.model DB D(Is=6e-12 N=1.05 tt=10n Cjo=0)
+.tran 0 300n 0 0.05n uic
+.meas tran IF FIND -I(Vs) AT 90n
+.meas tran IRR MIN -I(Vs) FROM 100n TO 200n
+.meas tran TZ WHEN -I(Vs)=0 FALL=1 TD=100n
+.meas tran VAMAX MAX V(a) FROM 100n TO 200n
+.meas tran IAT150 FIND -I(Vs) AT 150n
+.end
