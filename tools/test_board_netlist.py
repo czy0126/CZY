@@ -320,3 +320,19 @@ def test_the_generated_files_are_current(tmp_path):
 
 def test_the_deck_referenced_still_exists():
     assert (ROOT / DECK).exists()
+
+
+def test_first_article_voltage_signs_follow_spice_dot_convention():
+    """A is dotted at CTAP; B is dotted at SEC_B. Signed voltage tests must reflect that."""
+    import winding_polarity
+    rows = winding_polarity.build()["first_article"]
+    for n in ("T1", "T2", "T3", "T4"):
+        checks = {row["test"]: row for row in rows if row["transformer"] == n}
+        assert "anti-phase" in checks["S_A polarity vs CTAP"]["expected"]
+        assert checks["S_B polarity vs CTAP"]["expected"] == (
+            "V(SEC_B-CTAP) in phase with V(PRI_A-PRI_B)")
+        assert "100 kHz" in checks["S_A polarity vs CTAP"]["excitation"]
+    for i in range(1, 4):
+        row = next(x for x in rows if x["transformer"] == f"T{i}->T{i+1}")
+        assert f"V(T{i+1} PRI_A-PRI_B)" in row["expected"]
+        assert "{i" not in row["expected"]
