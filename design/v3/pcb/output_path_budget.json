@@ -95,7 +95,8 @@
   },
   "targets": {
     "design_basis_mohm": 0.15,
-    "strict_target_mohm": 0.1
+    "strict_target_mohm": 0.1,
+    "exploratory_mohm": 0.3
   },
   "feasible_on_design_basis": false,
   "feasible_on_strict_target": false,
@@ -171,5 +172,7 @@
     ],
     "note": "path_total = ΣR_group/16 + R_bar + R_joint，假设每组等分 25 A。加宽铜排有利于减小路径不均衡；接点仍按未经实测的 2×50 µΩ。这不是几何不可能性证明：均流与电阻需 PCB 提取和实测。"
   },
-  "finding": "最差组局部路径 3.67 方块；四组等分 100 A 的平面等效 0.135 mΩ，第 1, 2 组铜排不在正上方，需改善均流路径。"
+  "finding": "最差组局部路径 3.67 方块；四组等分 100 A 的平面等效 0.135 mΩ，第 1, 2 组铜排不在正上方，需改善均流路径。",
+  "within_exploratory_budget": true,
+  "exploratory_budget_is_not_rating": true
 }
