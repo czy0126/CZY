@@ -223,6 +223,58 @@ def test_the_aligned_step_check_is_quoted_from_its_own_json():
     assert "不能把" in doc and "不能一般化" in doc
 
 
+def test_the_third_step_is_quoted_as_an_oscillation_not_a_plateau():
+    """§2.6 exists because a one-step-at-a-time answer cannot tell convergence
+    from a constant offset.  The 1 ns leg settles it the uncomfortable way:
+    it moves *more* than the 2 ns leg, and in the opposite direction.
+
+    Two things this test refuses to let happen: quoting the last leg as "the
+    converged value", and condemning the whole loss list when only one item
+    is unstable.  Both are in the numbers, so both are asserted from them.
+    """
+    if not LEDGER_ALIGNED.exists():
+        pytest.skip("the aligned-window ledger has not been generated")
+    step = load(LEDGER_ALIGNED)["step_check"]
+    assert step["steps_s"] == [5e-9, 2e-9, 1e-9]
+    terms = step["terms"]
+    port = terms["port_w"]
+    loss = terms["loss_total_w"]
+    closure = terms["closure_period_averaged_w"]
+
+    # No plateau: the last leg is the larger of the two, and it reverses sign.
+    assert port["series_w"] == pytest.approx([10.8888, 11.4228, 10.1261], abs=1e-4)
+    assert loss["series_w"] == pytest.approx([10.7313, 11.3563, 9.9804], abs=1e-4)
+    for term in (port, loss):
+        first_leg = term["step_b_w"] - term["step_a_w"]
+        last_leg = term["series_w"][2] - term["step_b_w"]
+        assert abs(last_leg) > abs(first_leg) > 0.5
+        assert first_leg * last_leg < 0, "a sign flip is an oscillation, not a plateau"
+
+    # The instability is one item, and it is the largest one.
+    items = step["loss_items"]
+    sr = items["sr_channel_body_x4"]
+    assert sr["steps_w"] == pytest.approx([6.9540, 7.5753, 6.2047], abs=1e-3)
+    assert abs(sr["delta_last_leg_w"]) > 0.95 * abs(loss["series_w"][2] - loss["step_b_w"])
+    others = sum(abs(v["delta_last_leg_w"]) for k, v in items.items()
+                 if k not in ("sr_channel_body_x4", "sr_channel_body_pair1"))
+    assert others < 0.1, "only SR is unstable; a blanket -1.4 W caveat would be wrong"
+    assert items["sr_channel_body_pair1"]["steps_w"][0] == pytest.approx(sr["steps_w"][0] / 4)
+
+    # The closure this whole exercise defends did not move.
+    assert abs(closure["series_w"][2] - closure["step_b_w"]) < 0.01
+    assert all(v > 0.2 for v in closure["series_w"])
+    results = load(LEDGER_ALIGNED)["results"]
+    assert results["closure_period_averaged_within_0p2_w"] is False
+    # Single-point readings of this window do not resolve 0.2 W; only the
+    # period-averaged estimator does.  Saying "resolved" needs that qualifier.
+    assert results["window_resolves_0p2_w"] is False
+    assert results["window_resolves_0p2_w_period_averaged"] is True
+
+    doc = _ascii_minus(text())
+    for value in ("10.1261", "9.9804", "6.2047", "0.3095", "1.4 W", "±0.3", "没有平台"):
+        assert value in doc, value
+
+
 def test_ripple_quotes_the_22_period_value_not_the_2_period_one():
     """38.27 mVpp is 10 us; the 22-period figure is 49.73 mVpp and is the one
     the same deck reports for the steady state.  The short window misses the
