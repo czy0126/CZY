@@ -121,6 +121,19 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   实跑峰值/平均是 1.660 而非 π/2，所以真实门槛 **24.2 A**（`..._ct10.raw` 实测 24.18 A，代数 +0.1 %；
   `..._ct47.raw` 47 Ω 实测 0.690 V 对代数 0.700 V，−1.3 %）。**10 Ω / 10 k 保持不变**，
   与 22.9 A 对应的理想负载 10.58 Ω 只差 5.5 %。见 `tools/ct_design.py`、`tools/oc_network_check.py`。
+- **`V(ovl1)` 不是过流脚**：deck 里的 `Bovl1 ovl1 0 V=min(max(-I(VSa1),0),max(-I(VSb1),0))`
+  量的是同一组两路 SR **同时正向导通**的电流（单位 A），`.meas` 行把它印成 `ovl_cur`。
+  111 A 时它读 **1.510**，而 Level-1 `VOC` 是 **1 V** —— 直接对照就会得出"已经跳闸"的反结论，
+  而输出其实稳在 1.8786 V。真正的过流节点是 `V(oc)`：100 A 时 0.570 V、111 A 时 0.636 V，
+  分别是 1 V 门槛的 57 % / 64 %。`ovg1` 恒 0 是重叠门极信号，也不是 OC。
+- **48 V/110 A 候选跑过一次，证据不在 deck 头里**：`make_high_output_decks.py` 每次从母 deck
+  重建 deck，头注必须是 `UNRUN, NOT HARDWARE RATED`（`test_make_high_output_decks.py` 锁住），
+  所以运行记录放 `design/v3/power_priority/operating_point_48v_110a.json` 与
+  `48V110A_实测_2026-11-01.md`，数值由 `test_operating_point_110a.py` 锁住。
+  243.053 s、359 MB、248 757 点。**RL=16.9 mΩ 是为 110 A 选的目标，不是结果**：
+  实跑 1.8786 V ⇒ **111.16 A / 208.83 W**（补 0.15 mΩ 外部路径约 207 W，是换算不是模型）。
+  该 deck 只存 pair 1/4，提取要 `--pairs 1 4`。
+  **`_phys` 及其派生 deck 都不存 `I(Rin)`/`I(Cin)`** ⇒ 这条 raw 上算不出输入功率与效率。
 - **输出路径的 0.1 mΩ 预算做不到**：20×2 mm 铜排 80 mm = 0.034 mΩ（0.345 W），可精确算；
   但两处接点按手册常见的 50 µΩ/处就已经把 0.1 mΩ 全部用光，留给铜排的长度为 0。
   `connector_budget.py` 因此返回 `feasible: false` 并给出缺口，**不要**把预算截断到 0 再印一个铜排长度。
