@@ -88,6 +88,7 @@
   },
   "loss_total_w": 11.116801367648165,
   "loss_before_ct_w": 10.930732801237413,
+  "gap_before_ct_w": 0.09462950314329355,
   "stored_energy_j": {
     "magnetic_coupled_j": -1.0745473152156769e-06,
     "sr_capacitance_j": -9.957579049624666e-08,
@@ -261,6 +262,7 @@
   },
   "results": {
     "loss_residual_within_0p2_w": true,
+    "ct_terms_account_for_the_gap_before_ct": true,
     "closure_within_0p2_w": true,
     "window_resolves_0p2_w": false,
     "closure_period_averaged_within_0p2_w": false,
@@ -269,7 +271,7 @@
   },
   "checks": {
     "ok": true,
-    "ct_burden_closes_the_gap": true,
+    "ct_gap_is_reported_as_a_result": true,
     "stored_energy_reported_not_folded_in": true,
     "pout_uses_v_squared": true,
     "coupled_energy_never_negative": true,

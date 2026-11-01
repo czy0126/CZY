@@ -116,6 +116,26 @@ def test_the_residual_is_inside_the_review_target_or_the_limits_are_written_down
     assert summary["checks"]["ok"], summary["checks"]
 
 
+def test_a_physical_gap_is_reported_in_results_not_gated_in_checks():
+    """How much of the port-minus-loss gap the CT branch explains changes with
+    the window (0.094 W on 16 periods, 0.344 W on the aligned 133), so it is a
+    result, not an invariant.  Gating it would have made an honest "CT no
+    longer explains the whole gap" look like a broken report."""
+    summary = json.loads(LEDGER.read_text(encoding="utf-8"))
+    assert "ct_burden_closes_the_gap" not in summary["checks"]
+    assert "ct_terms_account_for_the_gap_before_ct" in summary["results"]
+    assert summary["gap_before_ct_w"] == pytest.approx(
+        summary["port"]["pin_minus_pout_w"] - summary["loss_before_ct_w"], abs=1e-9)
+    # everything left in `checks` describes the report, not the physics
+    assert set(summary["checks"]) == {
+        "ok", "ct_gap_is_reported_as_a_result",
+        "stored_energy_reported_not_folded_in", "pout_uses_v_squared",
+        "coupled_energy_never_negative", "closure_status_follows_from_the_results",
+        "closure_status_is_derived_from_both_readings",
+        "closure_reason_states_which_condition_failed",
+    }
+
+
 def test_the_primary_bias_is_reported_outside_the_port():
     """Vaux/Vreg are ideal sources that do not draw from Vbus; mixing them into
     Pin-Pout would make the residual look larger for no physical reason."""

@@ -70,6 +70,13 @@
       "sha256": "83d9ca8c7b88987a24725e50d2c8d89972d0f0ad0cb41550ba6d72f59ffc7db8"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
+      "kind": "deck",
+      "bytes": 11371,
+      "mtime": 1793510323.3725812,
+      "sha256": "680ba12de4eab069ac953038095002db69539bc151e530785cbbc26f485a07ad"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "kind": "deck",
       "bytes": 11040,
@@ -210,6 +217,13 @@
       "sha256": "3c137d1662d7301704c4bbd070eb58b7e12340ea92b3b2d2a8ce16ec0dd2ce2b"
     },
     {
+      "path": "tools/winding_polarity.py",
+      "kind": "script",
+      "bytes": 8002,
+      "mtime": 1793510323.2831988,
+      "sha256": "cff21483a52029f163dc53065cc2ac47d60d8cdbd0f921432d3baa3dc721ba5d"
+    },
+    {
       "path": "tools/powerup_checklist.py",
       "kind": "script",
       "bytes": 17553,
@@ -219,30 +233,30 @@
     {
       "path": "tools/energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 41408,
-      "mtime": 1793505800.8482442,
-      "sha256": "9997e5f6e5a6ab96bd5809c24d7b3764e2553f97e2156cd048afce61e00afcef"
+      "bytes": 52404,
+      "mtime": 1793510490.1080103,
+      "sha256": "e2e6ca81eb96ec2a81881054be6410ce402464162d626dc109dea4d9b5f24868"
     },
     {
       "path": "tools/make_physical_decks.py",
       "kind": "script",
-      "bytes": 4695,
-      "mtime": 1793504189.7763126,
-      "sha256": "5f279915bce4a2239e5b8b74542727363de4d4ca74354d310d2143c77b413d31"
+      "bytes": 5633,
+      "mtime": 1793510323.3770213,
+      "sha256": "9e0429d8a72581c3cc70a94c0fa53e7b9d8879d59088e52d633546113e5cb2a0"
     },
     {
       "path": "tools/ci_check.py",
       "kind": "script",
-      "bytes": 6208,
-      "mtime": 1793502476.2296162,
-      "sha256": "23df0faa4b8744f416dd796380c9d074fa00733cf80f21341e9013ead76866b0"
+      "bytes": 6363,
+      "mtime": 1793510323.2801988,
+      "sha256": "f7cda5b54cbc4ec09d4a066eed23e54f044c71fbe176450fa9be1768f5d0da18"
     },
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 19872,
-      "mtime": 1793506280.716975,
-      "sha256": "144b53d6a4d35ce396af8644e1043567ec0d833f1af3e3e4976d635d79da2519"
+      "bytes": 20970,
+      "mtime": 1793510323.375484,
+      "sha256": "2d2ad2dcc3f6789fc32e7544b117eb616f47ca31901a687c9414722022ae71b0"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -338,9 +352,9 @@
     {
       "path": "tools/test_board_netlist.py",
       "kind": "script",
-      "bytes": 13922,
-      "mtime": 1793502476.232152,
-      "sha256": "62f586b2ec1cc1f2e1b01f081a539a718c2bd7cfdc0786dcce3a431b44e2a5c3"
+      "bytes": 14260,
+      "mtime": 1793510323.2821982,
+      "sha256": "045c31ca461ed20738be870c5412a1dd8ac2ffc1fd9e309c4655caa46cb54743"
     },
     {
       "path": "tools/test_powerup_checklist.py",
@@ -352,16 +366,16 @@
     {
       "path": "tools/test_energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 10699,
-      "mtime": 1793505635.0060148,
-      "sha256": "3befed2f5684b5cd18721f0d51ac489290ae26c39acc65a85b34165ac8a9a9e8"
+      "bytes": 17653,
+      "mtime": 1793510501.2318194,
+      "sha256": "5e198b9fd718cdeb0e3d1c1dcc00bff2ead800af87b7dabd6b6f44b727faf2d1"
     },
     {
       "path": "tools/test_make_physical_decks.py",
       "kind": "script",
-      "bytes": 2629,
-      "mtime": 1793504245.3187392,
-      "sha256": "fe0d7cb0d35d892975df89fb5bb7417dbc7e37bc8601b2704c440b0fd0cdfc9c"
+      "bytes": 3330,
+      "mtime": 1793510323.3780248,
+      "sha256": "3fe3474dc679f2052acce69ec260070605702064d28478ef91443d013689ce3e"
     },
     {
       "path": "tools/test_control_validation_doc.py",
@@ -373,16 +387,16 @@
     {
       "path": "tools/test_ci_check.py",
       "kind": "script",
-      "bytes": 6207,
-      "mtime": 1793502476.232152,
-      "sha256": "71aa3a4534451dfc015730a78d9cf2b97e35bca2fe22d6d14572a614456f59e8"
+      "bytes": 6360,
+      "mtime": 1793510323.2821982,
+      "sha256": "40d31e7ef71840fb3c850fb61d0e923c8ca5133dd427c085abdc6fa4a7a36a8d"
     },
     {
       "path": "tools/test_baseline_doc.py",
       "kind": "script",
-      "bytes": 9151,
-      "mtime": 1793506166.177811,
-      "sha256": "63a644f3042c8bfaddbc4d68f1ff01b112941137ae2abd206e9669516d202ebb"
+      "bytes": 10279,
+      "mtime": 1793510323.3770213,
+      "sha256": "82679f1cfa5368d63072f3d31048394176754ed826e0d9e3bb9c0478afa7cefb"
     },
     {
       "path": "tools/test_bom_draft.py",
@@ -446,6 +460,27 @@
       "bytes": 2959,
       "mtime": 1793502476.224109,
       "sha256": "fe5f641ae63527e1d74701c6b07b2e79c8b3262e32e01ef4a009a22f8afab109"
+    },
+    {
+      "path": "design/v3/magnetics/winding_polarity.json",
+      "kind": "result",
+      "bytes": 24790,
+      "mtime": 1793510323.2781987,
+      "sha256": "b26c2c8d3bc78083dc99c3c2f2b3e777867b2f033f49baf965782bba281b498f"
+    },
+    {
+      "path": "design/v3/magnetics/winding_polarity.csv",
+      "kind": "result",
+      "bytes": 1992,
+      "mtime": 1793502476.2251115,
+      "sha256": "5241fb8936bed62042f3518551a89c0531a8fa795e08b4b3e0f34acc429518f3"
+    },
+    {
+      "path": "design/v3/magnetics/first_article_polarity_record.csv",
+      "kind": "result",
+      "bytes": 2704,
+      "mtime": 1793510323.2781987,
+      "sha256": "c36ae252079d54e696c1cfec97583837f967241631965cea3c75f6bf47c26840"
     },
     {
       "path": "design/v3/stage_f/thermal_precheck.json",
@@ -548,9 +583,16 @@
     {
       "path": "design/v3/stage_f/energy_ledger_100a.json",
       "kind": "result",
-      "bytes": 11496,
-      "mtime": 1793505586.7691987,
-      "sha256": "f67cdb7dca4ba69c6e4ab6b0349574a56f280053324875535382362b4fb9e429"
+      "bytes": 12513,
+      "mtime": 1793510618.5445597,
+      "sha256": "701402e84a086701557331f5fdd5ec559f2534da5b38e4467e36a48d7116c7af"
+    },
+    {
+      "path": "design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
+      "kind": "result",
+      "bytes": 17016,
+      "mtime": 1793511790.967811,
+      "sha256": "b74432db40712f9d662c1e47772d4af2b5446cf29621c7b63547a9715048a63f"
     },
     {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -562,9 +604,9 @@
     {
       "path": "design/v3/magnetics/绕组工艺卡_2026-11-01.md",
       "kind": "doc",
-      "bytes": 7499,
-      "mtime": 1793502476.2266135,
-      "sha256": "ff88a444229b38d9cada4c8ec5cb8da27a30a60aff57d557f7eec7e4d5c560fb"
+      "bytes": 7627,
+      "mtime": 1793510323.2791991,
+      "sha256": "5e43d581313d2df80c713b0186bcfa2f394e2212b8566c1e7c51db59a876eb92"
     },
     {
       "path": "design/v3/magnetics/winding_cross_section.svg",
@@ -572,6 +614,13 @@
       "bytes": 21490,
       "mtime": 1793502476.2251115,
       "sha256": "9df31b85aaf5da9b6b37116f4dfa5785cfe5dbea372bffba52744822b7c699a6"
+    },
+    {
+      "path": "design/v3/magnetics/winding_connections.svg",
+      "kind": "doc",
+      "bytes": 47043,
+      "mtime": 1793502476.2251115,
+      "sha256": "e25535cbe1019943d412482f2e755765a3923f998a2a13f600502a8ac265b28a"
     },
     {
       "path": "design/v3/magnetics/height_stackup.svg",
@@ -583,9 +632,9 @@
     {
       "path": "design/v3/当前候选基线_2026-11-01.md",
       "kind": "doc",
-      "bytes": 15997,
-      "mtime": 1793506175.7426271,
-      "sha256": "7744139c65fce68a0f08dfada59cbd1c78b9b3b8d6bb05890bed05842070c86e"
+      "bytes": 20708,
+      "mtime": 1793510697.031935,
+      "sha256": "3f93b2984c5409d13cb021112db6f7f7ec084b101d7635ce58000db42a5f9b07"
     },
     {
       "path": "design/v3/stage_f/首样验证与额定值判定_2026-10-31.md",
@@ -625,9 +674,9 @@
     {
       "path": ".github/workflows/ci.yml",
       "kind": "config",
-      "bytes": 513,
-      "mtime": 1793502476.2231042,
-      "sha256": "c71183b036e8013093157643d9e6d42416c4e1aad1d6af6d1349553d5369d2ac"
+      "bytes": 532,
+      "mtime": 1793510323.2771955,
+      "sha256": "7adbc19622dd6ed078a795ff5522ff08b26b772f14f8d2b8ed60a43f939c48d9"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
@@ -672,34 +721,11 @@
       "sha256": "skipped-large-raw"
     },
     {
-      "path": "tools/winding_polarity.py",
-      "kind": "script",
-      "bytes": 7826,
-      "sha256": "68479345fc7aa49e410b117d8a5e3e47ebdeb7f38ae4194f006222d945c79709"
-    },
-    {
-      "path": "design/v3/magnetics/first_article_polarity_record.csv",
-      "kind": "result",
-      "bytes": 2684,
-      "sha256": "5a4c8a784b36f75d7a132bcedd5de57da777e068bc6ba474f81d658105cab013"
-    },
-    {
-      "path": "design/v3/magnetics/winding_polarity.json",
-      "kind": "result",
-      "bytes": 23776,
-      "sha256": "63ff49593661f7bf0501deaaef086cb6bd97c5a4fafd6545571c85769fb9c704"
-    },
-    {
-      "path": "design/v3/magnetics/winding_polarity.csv",
-      "kind": "result",
-      "bytes": 1955,
-      "sha256": "de6e2faf743657cdbda10864b509345ad86d921e43f620826f5f69bb4fa40baf"
-    },
-    {
-      "path": "design/v3/magnetics/winding_connections.svg",
-      "kind": "doc",
-      "bytes": 46337,
-      "sha256": "6d0a5c3cfceddd32857faed86eab63ed5338e81f1fec3ce9610e5e10fbd02a73"
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
+      "kind": "raw",
+      "bytes": 2440722591,
+      "mtime": 1793507709.565322,
+      "sha256": "skipped-large-raw"
     }
   ],
   "missing": [],
@@ -707,10 +733,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -718,10 +744,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -729,10 +755,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -740,10 +766,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -751,10 +777,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -762,10 +788,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -773,10 +799,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -784,10 +810,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -795,10 +821,21 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
       "tran": ".tran 0 1000u 880u 2n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 2e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 2e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
+      "tran": ".tran 0 1550u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00067,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -806,10 +843,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0,
-      "max_step_s": 1e-8,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -817,10 +854,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0,
-      "max_step_s": 1e-8,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -828,10 +865,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0,
-      "max_step_s": 1e-8,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -860,6 +897,8 @@
     "python tools/board_netlist.py --json design/v3/pcb/board_netlist.json --csv design/v3/pcb/board_netlist.csv",
     "python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md --json design/v3/stage_f/powerup_checklist.json",
     "python tools/make_physical_decks.py",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw --periods 133 --no-step-check --json design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
     "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw --rl 0.0189 --periods 22 --json design/v3/magnetics/operating_point_100a_cout7m.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir",

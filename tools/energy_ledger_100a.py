@@ -67,6 +67,18 @@ error, the period count needed for the target, and the phase-aligned length;
 ``closure_status`` stays NOT_CLOSED whenever the window cannot resolve it,
 whatever the mean happens to be.  Do not loosen ``target_w`` to fix this --
 lengthen the window (see ``phase_alignment``).
+
+The aligned window has now been run (`ledger_aligned`, 133 periods).  It does
+resolve 0.2 W -- the period-averaged standard error is 0.157 W -- and it says
+the closure residual is +0.33 W, i.e. outside the target.  The short windows
+say whatever their stopping phase says: on the same raw, 8 periods read
++0.999 W and 12 periods +0.368 W.  The status is still NOT_CLOSED, now because
+the residual is measured and too large rather than because it is unresolvable.
+
+``checks`` holds invariants of the report itself and only ``ok`` gates;
+``results`` holds what the physics did.  A physical comparison lives in
+``results`` even when it fails, or the next reader will read "not closed" as
+"broken tool" and go looking for a target to loosen.
 """
 
 from __future__ import annotations
@@ -841,6 +853,13 @@ def build(raw: Path = RAW, periods: int = 16,
     # tempt the next person to loosen the target until the gate went green.
     results = {
         "loss_residual_within_0p2_w": abs(loss_residual) <= 0.2,
+        # How much of the port-minus-listed-loss gap the CT branch accounts for
+        # is a physical finding, so it is reported and not gated.  On the
+        # 16-period window the gap before CT is 0.094 W (inside the target) and
+        # on the 133-period aligned window it is 0.344 W (outside).  Gating it
+        # would have shown an honest "CT no longer explains the whole gap" as
+        # a broken report -- the same trap as folding NOT_CLOSED into ok.
+        "ct_terms_account_for_the_gap_before_ct": abs(port_w - loss_before_ct) <= 0.2,
         "closure_within_0p2_w": within,
         "window_resolves_0p2_w": resolved,
         "closure_period_averaged_within_0p2_w": within_avg,
@@ -848,7 +867,8 @@ def build(raw: Path = RAW, periods: int = 16,
         "closure_including_storage_within_0p2_w": closure_ok,
     }
     checks = {
-        "ct_burden_closes_the_gap": abs(port_w - loss_before_ct) <= 0.2,
+        "ct_gap_is_reported_as_a_result":
+            "ct_terms_account_for_the_gap_before_ct" in results,
         "stored_energy_reported_not_folded_in": True,
         "pout_uses_v_squared": abs(p_out - _mean(t, d["vout"], i0, i1) ** 2 / RL) > 0.0,
         "coupled_energy_never_negative": min(e_mag[(i0):(i1 + 1)]) >= 0.0,
@@ -907,6 +927,7 @@ def build(raw: Path = RAW, periods: int = 16,
         "losses": losses,
         "loss_total_w": loss_main,
         "loss_before_ct_w": loss_before_ct,
+        "gap_before_ct_w": port_w - loss_before_ct,
         "stored_energy_j": stored,
         "stored_energy_w": d_stored_w,
         "magnetic_energy": {
