@@ -127,12 +127,14 @@ def parts() -> tuple[Part, ...]:
     out.append(Part("Lr", "1.0 uH", mag_w, mag_d, mag_h, 20.0, 52.0,
                     "generated-json", elp32,
                     note="same ELP32 core as T1-T4, so it shares the pocket"))
-    out.append(Part("QH", "CSD19531Q5A", 5.0, 6.0, 1.0, 48.0, 50.0, "datasheet",
-                    "dcx:Placeholder_SON_5x6",
-                    note="SON 5x6 body from the BOM; land pattern provisional"))
-    out.append(Part("QL", "CSD19531Q5A", 5.0, 6.0, 1.0, 57.0, 50.0, "datasheet",
-                    "dcx:Placeholder_SON_5x6",
-                    note="SON 5x6 body from the BOM; land pattern provisional"))
+    # Q5A package table (datasheet p9): D1 max 5.00, E max 6.10, A max 1.10.
+    # Using the maximums, not the 5x6x1 nominal the BOM calls it -- that is the
+    # same nominal/maximum trap the magnetics height stack already avoids.
+    for ref, x in (("QH", 48.0), ("QL", 57.0)):
+        out.append(Part(ref, "CSD19531Q5A", 5.00, 6.10, 1.10, x, 50.0, "datasheet",
+                        "dcx:Placeholder_SON_5x6",
+                        note="Q5A dims D1/E/A max from datasheet p9; land pattern still "
+                             "provisional (the recommended-pad figure is not in the text)"))
     out.append(Part("Cr", "0.62 uF", 18.0, 6.0, 6.0, 72.0, 52.0, "PROVISIONAL",
                     "dcx:Placeholder_18x6", note="no part selected; 18x6x6 film assumed"))
     out.append(Part("CT", "100:1", 20.0, 15.0, 8.0, 92.0, 52.0, "PROVISIONAL",
@@ -338,8 +340,10 @@ def footprint_library() -> dict[str, str]:
             "Placeholder_12x12", 12, 12, "PROVISIONAL - control area, no layout done",
             []),
         "Placeholder_SON_5x6.kicad_mod": _outline_footprint(
-            "Placeholder_SON_5x6", 5.0, 6.0,
-            "PROVISIONAL land pattern - CSD19531Q5A is SON 5x6; no stock footprint exists",
+            "Placeholder_SON_5x6", 5.00, 6.10,
+            "PROVISIONAL land pattern - CSD19531Q5A (VSONP DQJ): body 5.00x6.10 from "
+            "datasheet p9, but the recommended board pads are a figure, not text, and "
+            "are not reproduced here",
             [(-1.5, -2.5), (-1.5, 2.5)]),
         "Placeholder_Cout.kicad_mod": _outline_footprint(
             "Placeholder_Cout", 7.3, 4.3,
