@@ -35,7 +35,7 @@ def refs(text: str) -> list[str]:
                 raise ValueError(f"unsupported BOM ref range: {token}")
             result.extend(f"{p}{i}" for i in range(int(first), int(last)+1))
         else:
-            if not re.fullmatch(r"[A-Za-z_]+\d+|QH|QL|CT|Cin|Cout|Cr|Lr|J_IN|J_OUT", token):
+            if not re.fullmatch(r"[A-Za-z_]+\d+|QH|QL|CT|D_BT|Cin|Cout|Cr|Lr|J_IN|J_OUT", token):
                 raise ValueError(f"unknown BOM reference syntax: {token}")
             result.append(token)
     if len(set(result)) != len(result):
