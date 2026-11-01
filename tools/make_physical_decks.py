@@ -98,6 +98,12 @@ VARIANTS: dict[str, tuple[str, str, str | None, str | None, str | None, str | No
     # same test before its +0.33 W can be quoted.
     "ledger_aligned2n": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
                          None, None, "2n", "1550u"),
+    # Issue #6, task item 3 asks for 5 / 2 / 1 ns.  The 2 ns run took ~6 min, so
+    # the third step is cheap; it is the one that shows whether the 0.625 W the
+    # loss list moved between 5 ns and 2 ns is a step-size artifact or the start
+    # of a plateau.
+    "ledger_aligned1n": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
+                         None, None, "1n", "1550u"),
 }
 
 
