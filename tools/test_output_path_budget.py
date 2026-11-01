@@ -97,7 +97,7 @@ def test_a_wider_busbar_equalises_the_groups():
 def test_no_option_closes_the_design_basis():
     """The honest negative, locked the same way connector_budget.py locks its.
 
-    Best case is 4 oz plus a busbar covering all four groups: 0.297 mohm, and
+    Best case under the equal-25A-per-group assumption is about 0.183 mohm, and
     that already assumes the 50 uohm placeholder joint is real.  If a future
     layout does close it, this test should be *updated with the evidence*, not
     relaxed -- but it must not go green by dropping the joint or busbar terms.
@@ -105,7 +105,7 @@ def test_no_option_closes_the_design_basis():
     data = opb.budget(2 * opb.OZ_M)
     best = min(data["remedy"]["options"], key=lambda o: o["path_total_mohm"])
     assert best["copper_oz"] == 4 and "加宽" in best["busbar"]
-    assert best["path_total_mohm"] == pytest.approx(0.297, abs=0.01)
+    assert best["path_total_mohm"] == pytest.approx(0.183, abs=0.01)
     assert not any(o["feasible_on_design_basis"] for o in data["remedy"]["options"])
 
 
@@ -120,7 +120,8 @@ def test_the_report_names_what_the_model_does_not_cover():
     not_modelled = opb.budget(2 * opb.OZ_M)["model"]["not_modelled"]
     assert any("finite-element" in x for x in not_modelled)
     assert any("via" in x for x in not_modelled)
-    assert "upper bound" in opb.budget(2 * opb.OZ_M)["model"]["direction"]
+    assert "not a rigorous" in opb.budget(2 * opb.OZ_M)["model"]["direction"]
+    assert any("current sharing" in x for x in not_modelled)
 
 
 def test_the_a6_document_quotes_these_numbers():
@@ -154,3 +155,14 @@ def test_the_committed_json_is_what_the_tool_produces():
                 "remedy", "model"):
         assert committed[key] == fresh[key], f"{key} is stale -- rerun the tool"
     assert committed["feasible_on_design_basis"] == fresh["feasible_on_design_basis"]
+
+
+def test_four_branches_not_one_hundred_amps_through_worst_lane():
+    """At four exactly 25 A currents, sum(Ibranch² * Rbranch), not 100² * max(R)."""
+    data = opb.budget(2 * opb.OZ_M)
+    r_eq = sum(g["r_mohm"] for g in data["groups"]) / 16.0
+    assert data["resistance"]["plane_mohm"] == pytest.approx(r_eq, abs=0.001)
+    assert data["loss_w_at_100a"]["plane"] == pytest.approx(
+        sum(g["p_w"] for g in data["groups"]), abs=0.004)
+    assert data["resistance"]["plane_mohm"] < data["worst_group"]["r_mohm"] / 4.0
+    assert data["loss_w_at_100a"]["total"] < 4.0  # previous 13.33 W was a math error
