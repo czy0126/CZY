@@ -40,6 +40,7 @@ T_C = 100.0                   # design basis; the heat path is not modelled here
 GROUP_CURRENT_A = 25.0        # 100 A / 4 groups, symmetric by construction
 DESIGN_BASIS_OHM = 0.15e-3    # same basis the published 92.33 % efficiency uses
 STRICT_TARGET_OHM = 0.10e-3   # self-chosen, stricter; `connector_budget.json`
+EXPLORATORY_BUDGET_OHM = 0.30e-3  # loss-for-power study only, NOT a released rating
 
 # How far the plane has to reach sideways when a group has no busbar above it.
 # The channel is bounded by the J_OUT row on top and the board edge below.
@@ -179,9 +180,12 @@ def budget(thickness_m: float = 2 * OZ_M, temp_c: float = T_C) -> dict:
         "targets": {
             "design_basis_mohm": round(DESIGN_BASIS_OHM * 1e3, 3),
             "strict_target_mohm": round(STRICT_TARGET_OHM * 1e3, 3),
+            "exploratory_mohm": round(EXPLORATORY_BUDGET_OHM * 1e3, 3),
         },
         "feasible_on_design_basis": total_r <= DESIGN_BASIS_OHM,
         "feasible_on_strict_target": total_r <= STRICT_TARGET_OHM,
+        "within_exploratory_budget": total_r <= EXPLORATORY_BUDGET_OHM,
+        "exploratory_budget_is_not_rating": True,
         "dominant_term": max(
             (("plane", plane_r), ("busbar", bar), ("joints", joints)),
             key=lambda kv: kv[1])[0],
