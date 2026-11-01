@@ -22,6 +22,7 @@ python tools/ct_design.py --json design/v3/bom/ct_design.json  # CT 传递链/�
 python tools/oc_network_check.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.raw \
     --burden 10 --rd1 10k --json design/v3/bom/oc_network_ct10.json   # 实测 OC 网络，需带 V(oc*) 的变体 raw
 python tools/connector_budget.py --json design/v3/bom/connector_budget.json  # 输出铜排/接点预算
+python tools/output_path_budget.py --json design/v3/pcb/output_path_budget.json  # 板上 100 A 平面方块数（读摆放）
 python tools/board_netlist.py --json design/v3/pcb/board_netlist.json \
     --csv design/v3/pcb/board_netlist.csv   # 主功率板逐脚网表，由 v3 deck 派生
 python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md \
@@ -323,6 +324,14 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 - **剖面表自己加一遍、再与 `magnetics_design.json` 的 `height` 比对**，不一致直接
   `SystemExit`。改 `GLUE_MAX_MM`/`LABEL_MAX_MM` 会立刻触发，这是有意的：两个独立的和
   必须相等，否则文档与 JSON 会悄悄分叉。
+- **100 A 输出路径要用"方块数"看，不是微欧**：`output_path_budget.py` 读摆放坐标算
+  `R = ρ/T × 方块数`（2 oz、100 °C 时 **0.324 mΩ/方块**），于是 0.15 mΩ 的预算
+  **只有 0.46 个方块**。J_OUT 占 x = 60–140 mm 而 SR 行是 19–133 mm，**第 1 组头顶没有铜排**，
+  要横向走 41 mm（2.73 个方块）⇒ 单组 1.188 mΩ。这不是损耗问题：它比整台变换器的
+  `r_out_equiv_ohm`（1.135 mΩ）还大，四组之间差 3.91 倍，均流假设先崩。
+  加宽铜排到 134 mm 是唯一不改叠层的杠杆（最坏组 1.188 → 0.304 mΩ，散布比 1.00），
+  但 **4 oz + 加宽也只有 0.297 mΩ，仍然过不了 0.15**——瓶颈这时转到接点占位值。
+  工具是**上界**（均匀电流密度、忽略转角扩散），但方向的正确性足够回答"要不要改摆放"。
 
 ## 数据与结论纪律
 

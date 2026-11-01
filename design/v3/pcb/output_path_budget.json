@@ -1,0 +1,174 @@
+{
+  "copper_weight_oz": 2.0,
+  "copper_thickness_um": 70.0,
+  "temperature_c": 100.0,
+  "sheet_mohm_per_square": 0.3237,
+  "budget_in_squares": 0.463,
+  "group_current_a": 25.0,
+  "groups": [
+    {
+      "group": 1,
+      "refs": [
+        "SR1A",
+        "SR1B"
+      ],
+      "x_mm": 19.0,
+      "vertical_run_mm": 34.0,
+      "lane_width_mm": 36.25,
+      "horizontal_neck_mm": 41.0,
+      "vertical_squares": 0.938,
+      "neck_squares": 2.733,
+      "squares": 3.671,
+      "r_mohm": 1.188,
+      "drop_mv": 29.71,
+      "p_w": 0.743
+    },
+    {
+      "group": 2,
+      "refs": [
+        "SR2A",
+        "SR2B"
+      ],
+      "x_mm": 57.0,
+      "vertical_run_mm": 34.0,
+      "lane_width_mm": 36.25,
+      "horizontal_neck_mm": 3.0,
+      "vertical_squares": 0.938,
+      "neck_squares": 0.2,
+      "squares": 1.138,
+      "r_mohm": 0.368,
+      "drop_mv": 9.21,
+      "p_w": 0.23
+    },
+    {
+      "group": 3,
+      "refs": [
+        "SR3A",
+        "SR3B"
+      ],
+      "x_mm": 95.0,
+      "vertical_run_mm": 34.0,
+      "lane_width_mm": 36.25,
+      "horizontal_neck_mm": 0.0,
+      "vertical_squares": 0.938,
+      "neck_squares": 0.0,
+      "squares": 0.938,
+      "r_mohm": 0.304,
+      "drop_mv": 7.59,
+      "p_w": 0.19
+    },
+    {
+      "group": 4,
+      "refs": [
+        "SR4A",
+        "SR4B"
+      ],
+      "x_mm": 133.0,
+      "vertical_run_mm": 34.0,
+      "lane_width_mm": 36.25,
+      "horizontal_neck_mm": 0.0,
+      "vertical_squares": 0.938,
+      "neck_squares": 0.0,
+      "squares": 0.938,
+      "r_mohm": 0.304,
+      "drop_mv": 7.59,
+      "p_w": 0.19
+    }
+  ],
+  "worst_group": {
+    "group": 1,
+    "squares": 3.671,
+    "r_mohm": 1.188
+  },
+  "resistance": {
+    "plane_mohm": 1.188,
+    "busbar_mohm": 0.045,
+    "joints_mohm": 0.1,
+    "joints_are": "UNVERIFIED placeholder from connector_budget.py",
+    "total_mohm": 1.333
+  },
+  "loss_w_at_100a": {
+    "plane": 11.88,
+    "busbar": 0.453,
+    "joints": 1.0,
+    "total": 13.333
+  },
+  "targets": {
+    "design_basis_mohm": 0.15,
+    "strict_target_mohm": 0.1
+  },
+  "feasible_on_design_basis": false,
+  "feasible_on_strict_target": false,
+  "dominant_term": "plane",
+  "versus_the_model": {
+    "r_out_equiv_mohm": 1.135,
+    "worst_group_path_mohm": 1.188,
+    "worst_group_over_model": 1.05,
+    "extra_loss_vs_0p15_mohm_w": 11.83,
+    "pout_at_48v_w": 188.6,
+    "efficiency_points_lost": 6.27,
+    "vout_at_48v_v": 1.886,
+    "note": "r_out_equiv 是在理想输出节点上测的，不含 PCB 铜；单组 PCB 路径若已超过它，说明模型与版图不是同一台机器。"
+  },
+  "model": {
+    "method": "R = R_sheet * squares; uniform current in each segment",
+    "direction": "upper bound -- real current fans out at corners and necks",
+    "not_modelled": [
+      "finite-element spreading at the neck (would lower R)",
+      "local hot spots and the strip's own self-heating",
+      "via resistance between layers (no via field is placed yet)",
+      "the Cout bank's parallel path (modelled only as the lane width)"
+    ]
+  },
+  "remedy": {
+    "groups_outside_the_busbar": [
+      1,
+      2
+    ],
+    "busbar_span_mm": [
+      60.0,
+      140.0
+    ],
+    "sr_row_span_mm": [
+      19.0,
+      133.0
+    ],
+    "busbar_widening_needed_mm": 54.0,
+    "options": [
+      {
+        "copper_oz": 2,
+        "busbar": "现状（80 mm，居中于板）",
+        "worst_group_mohm": 1.188,
+        "spread_ratio": 3.91,
+        "path_total_mohm": 1.333,
+        "feasible_on_design_basis": false
+      },
+      {
+        "copper_oz": 2,
+        "busbar": "加宽到 134 mm 覆盖四组",
+        "worst_group_mohm": 0.304,
+        "spread_ratio": 1.0,
+        "path_total_mohm": 0.449,
+        "feasible_on_design_basis": false
+      },
+      {
+        "copper_oz": 4,
+        "busbar": "现状（80 mm，居中于板）",
+        "worst_group_mohm": 0.594,
+        "spread_ratio": 3.91,
+        "path_total_mohm": 0.739,
+        "feasible_on_design_basis": false
+      },
+      {
+        "copper_oz": 4,
+        "busbar": "加宽到 134 mm 覆盖四组",
+        "worst_group_mohm": 0.152,
+        "spread_ratio": 1.0,
+        "path_total_mohm": 0.297,
+        "feasible_on_design_basis": false
+      }
+    ],
+    "note": "加宽铜排不改铜厚、不改板框，是唯一不动叠层的杠杆；铜厚每翻一倍方块预算翻一倍，但两者都要制造商确认叠层与压合能力。注意：即使 4 oz + 加宽，path_total 仍高于 0.15 mΩ —— 瓶颈这时已经转到接点（占位 2×50 µΩ = 0.1 mΩ），那是首件四线法才能关闭的量。"
+  },
+  "finding": "第 1 组要 3.67 个方块，而 0.15 mΩ 预算只有 0.46 个方块（2 oz 铜、100 °C）；第 1, 2 组的铜排不在头顶，是主因。"
+}
