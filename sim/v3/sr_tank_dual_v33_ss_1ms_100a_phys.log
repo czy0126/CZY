@@ -1,0 +1,29 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_1ms_100a_phys.cir
+Start Time: Sun Nov  1 11:16:06 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 208.103 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_1ms_100a_phys.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vout_avg: AVG(V(out) )=1.88432711097 FROM 0 TO 0.00012
+vout_rip: PP(V(out) )=0.0349496447033 FROM 0.00011 TO 0.00012
+vds_a1_min: MIN(V(a1) )=-1.29035635118 FROM 0 TO 0.00012
+vds_a1_max: MAX(V(a1) )=5.28918431479 FROM 0 TO 0.00012
+irev_a1: MAX(I(VSa1) )=5.22054800774 FROM 0 TO 0.00012
+ifwd_a1: MAX(-I(VSa1) )=38.8259235131 FROM 0 TO 0.00012
+ovl_cur: MAX(V(ovl1) )=1.24536058163 FROM 0 TO 0.00012
+ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
+ipri_pk: MAX(abs(I(Lr)) )=12.9785885909 FROM 0 TO 0.00012
+out_last: V(out) =1.87308044906 at 0.00012

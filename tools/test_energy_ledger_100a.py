@@ -9,12 +9,16 @@ raw it came from, byte for byte).
 from __future__ import annotations
 
 import json
+import math
 
 import pytest
 
 from energy_ledger_100a import (
-    ROOT, build, gate_window, read_raw_header, stream_points, trapezoid_mean,
+    ROOT, build, cds_charge_c, cgd_charge_c, charge_energy_j, gate_window,
+    phase_alignment, read_raw_header, stream_points, transformer_energy_j,
+    trapezoid_mean,
 )
+from lr_design import LR_TOTAL_H, resonant_khz
 
 LEDGER = ROOT / "design/v3/stage_f/energy_ledger_100a.json"
 RAW = ROOT / "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw"
@@ -132,3 +136,109 @@ def test_every_loss_term_carries_a_confidence_class():
 def test_build_is_reproducible_on_the_small_fixture_only():
     """build() reads the 424 MB raw; the suite must not re-parse it per run."""
     assert callable(build)
+
+
+# --- issue #6: coupled storage, charge functions, resolution ---------------
+
+def test_coupled_energy_collapses_to_the_magnetising_form_at_perfect_coupling():
+    """With k=1 the three-winding quadratic must reduce to 1/2 Lp (Ip + S/3)^2.
+
+    The first version of this ledger stored 4 * 1/2 Lp Ipri^2, which treats the
+    secondaries as if they carried nothing; this identity is what shows the
+    coupled form is the same quantity done properly, not a different one.
+    """
+    lp, ip, isa, isb = 10e-6, 7.0, -12.0, -9.0
+    expected = 0.5 * lp * (ip + (isa + isb) / 3.0) ** 2
+    assert transformer_energy_j(lp, 1.0, ip, isa, isb) == pytest.approx(expected, rel=1e-12)
+
+
+def test_coupled_energy_vanishes_under_ampere_turn_balance():
+    """A 3:1:1 transformer carrying -3x the primary in its halves stores ~nothing."""
+    lp, ip = 10e-6, 7.0
+    e = transformer_energy_j(lp, 1.0, ip, -1.5 * ip, -1.5 * ip)
+    assert e == pytest.approx(0.0, abs=1e-18)
+    # ...and it is positive once the balance is broken, which is the storage
+    # the old magnetising-only term was attributing to the whole transformer.
+    assert transformer_energy_j(lp, 1.0, ip, -4.0, -2.0) > 0.0
+
+
+def test_coupled_energy_is_quadratic_and_symmetric_in_the_two_halves():
+    lp = 10e-6
+    a = transformer_energy_j(lp, 0.999, 5.0, -9.0, -6.0)
+    b = transformer_energy_j(lp, 0.999, 5.0, -6.0, -9.0)
+    assert a == pytest.approx(b, rel=1e-12)
+    assert abs(a - transformer_energy_j(lp, 0.999, 5.0, -6.0, -9.0)) < 1e-18
+
+
+def test_the_charge_fits_reproduce_the_documented_device_targets():
+    """Qds(20 V) = 67.631 nC and Qgd(20 V) = 5.360 nC are the numbers the SR
+    model was fitted to; if these drift the stored energy drifts with them."""
+    assert cds_charge_c(20.0) * 1e9 == pytest.approx(67.631, abs=1e-3)
+    assert cgd_charge_c(20.0) * 1e9 == pytest.approx(5.360, abs=1e-3)
+
+
+def test_capacitor_energy_is_zero_at_zero_volts_and_positive_elsewhere():
+    for charge in (cds_charge_c, cgd_charge_c):
+        assert charge_energy_j(0.0, charge) == pytest.approx(0.0, abs=1e-18)
+        assert charge_energy_j(20.0, charge) > 0.0
+        # monotone: more volts, more energy
+        assert charge_energy_j(40.0, charge) > charge_energy_j(20.0, charge)
+
+
+def test_the_phase_aligned_window_is_computed_from_the_tank_not_guessed():
+    """The clock and the tank are not commensurate, so 'use a phase-aligned
+    window' has an answer: the first gate-period count whose tank phase returns."""
+    a = phase_alignment()
+    assert a["aligned_periods"] == 133
+    assert a["phase_error_deg"] < 1.0
+    assert a["aligned_span_s"] == pytest.approx(662.94e-6, rel=1e-4)
+    assert a["tank_khz"] > a["gate_khz"]
+    # two independent constants (this tool builds the tank from LR_TOTAL + the
+    # model leakage, lr_design from its own target) must describe one tank
+    assert a["tank_khz"] == pytest.approx(resonant_khz(LR_TOTAL_H), abs=0.05)
+
+
+def test_the_resolution_block_is_internally_consistent():
+    summary = json.loads(LEDGER.read_text(encoding="utf-8"))
+    r = summary["balance"]["resolution"]
+    values = r["per_period_w"]
+    assert r["periods"] == len(values)
+    mean = sum(values) / len(values)
+    assert r["mean_w"] == pytest.approx(mean, rel=1e-9)
+    sd = math.sqrt(sum((x - mean) ** 2 for x in values) / (len(values) - 1))
+    assert r["sd_w"] == pytest.approx(sd, rel=1e-9)
+    assert r["sem_w"] == pytest.approx(sd / len(values) ** 0.5, rel=1e-9)
+    assert r["periods_for_target"] == math.ceil((sd / r["target_w"]) ** 2)
+
+
+def test_a_window_that_cannot_resolve_the_target_is_not_reported_as_closed():
+    """Issue #6: the mean landing inside 0.2 W is not enough.  The window has to
+    be long enough to resolve 0.2 W, and this one is 18 % of the phase-aligned
+    length, so the status stays NOT_CLOSED with the reason written down."""
+    summary = json.loads(LEDGER.read_text(encoding="utf-8"))
+    balance = summary["balance"]
+    results = summary["results"]
+    resolves = balance["resolution"]["sem_w"] <= 0.2
+    assert results["window_resolves_0p2_w"] is resolves
+    assert results["closure_including_storage_within_0p2_w"] is (
+        results["closure_within_0p2_w"] and resolves)
+    assert balance["closure_status"] == (
+        "CLOSED" if results["closure_including_storage_within_0p2_w"] else "NOT_CLOSED")
+    if not resolves:
+        assert any("resolve" in text for text in balance["limits"]), balance["limits"]
+        assert "resolves only" in balance["closure_reason"]
+    # the report invariants are the gate, not the physics outcome
+    assert summary["checks"]["ok"], summary["checks"]
+
+
+def test_the_step_check_compares_two_timesteps_and_the_endpoint_moves():
+    """The closure is not reproducible between 5 ns and 2 ns even though the
+    loss integrals agree; the endpoint sample of V(out) is what moves."""
+    summary = json.loads(LEDGER.read_text(encoding="utf-8"))
+    step = summary["step_check"]
+    assert step["step_a_s"] != step["step_b_s"]
+    assert {"port_w", "loss_total_w", "stored_w", "closure_residual_w"} <= set(step["terms"])
+    loss = step["terms"]["loss_total_w"]
+    assert abs(loss["delta_w"]) < 0.05           # quadrature has converged
+    assert abs(step["terms"]["vout_end_v"]["delta"]) > 1e-3   # the endpoint has not
+    assert "vout_end_v" in summary["window"]

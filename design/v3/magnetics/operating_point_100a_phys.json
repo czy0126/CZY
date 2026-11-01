@@ -1,0 +1,37 @@
+{
+  "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_100a_phys.raw",
+  "rl_ohm": 0.0189,
+  "window_us": [
+    7.63710000434108,
+    117.3019254706881
+  ],
+  "periods": 22,
+  "freq_khz": 200.61127081035812,
+  "vout_avg_v": 1.8843989471460008,
+  "vout_rms_v": 1.8844240036670272,
+  "vout_pp_mv": 36.07140752414395,
+  "pout_w": 187.88644579875492,
+  "iout_from_v_a": 99.7036479971429,
+  "ipri_rms_a": 9.254317491897032,
+  "ipri_pk_a": 12.97858859092889,
+  "pair1": {
+    "iout_a": 24.928743493077285,
+    "irms_pair_a": 27.591537490490516,
+    "irms_a_a": 19.496827559475634,
+    "irms_b_a": 19.51819520093665,
+    "ifwd_pk_a": 38.82592351310534,
+    "irev_pk_a": 5.220548007743397
+  },
+  "pair4": {
+    "iout_a": 24.928743492875178,
+    "irms_pair_a": 27.591537490550646,
+    "irms_a_a": 19.496827554520607,
+    "irms_b_a": 19.518195205895008,
+    "ifwd_pk_a": 38.82592353423838,
+    "irev_pk_a": 5.220548005988729
+  },
+  "iout_sum_a": 49.85748698595246,
+  "iout_note": "iout_sum_a covers the instrumented pairs only; use iout_from_v_a (average(Vout)/RL) as the total load current.",
+  "iout_spread_pct": 8.107379171218447e-10,
+  "pair_symmetry_note": "model symmetry only, not a hardware sharing result"
+}

@@ -38,6 +38,15 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
+        # physical-configuration variants (tools/make_physical_decks.py).  They
+        # are what the baseline's Lr turn decision and ripple rows quote.
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
+        "sim/v3/sr_tank_dual_v33_cold_phys.cir",
+        "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
+        "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
     ],
     "model": [
         "models/ucc25600_legacy_behaviour.lib",
@@ -61,6 +70,7 @@ V3_SOURCES = {
         "tools/board_netlist.py",
         "tools/powerup_checklist.py",
         "tools/energy_ledger_100a.py",
+        "tools/make_physical_decks.py",
         "tools/ci_check.py",
         "tools/current_manifest.py",
         "tools/test_ascii_raw_window.py",
@@ -79,6 +89,7 @@ V3_SOURCES = {
         "tools/test_board_netlist.py",
         "tools/test_powerup_checklist.py",
         "tools/test_energy_ledger_100a.py",
+        "tools/test_make_physical_decks.py",
         "tools/test_control_validation_doc.py",
         "tools/test_ci_check.py",
         "tools/test_baseline_doc.py",
@@ -88,6 +99,8 @@ V3_SOURCES = {
     "result": [
         "design/v3/magnetics/magnetics_design.json",
         "design/v3/magnetics/operating_point_100a.json",
+        "design/v3/magnetics/operating_point_100a_cout7m.json",
+        "design/v3/magnetics/operating_point_100a_phys.json",
         "design/v3/magnetics/manifest.json",
         "design/v3/magnetics/height_stackup.csv",
         "design/v3/magnetics/inspection_spec.csv",
@@ -126,6 +139,11 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw",
+        # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
+        # the hash list; their .log files are the committed measurements.
     ],
 }
 
@@ -362,6 +380,17 @@ REPRODUCE = {
         "--csv design/v3/pcb/board_netlist.csv",
         "python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md "
         "--json design/v3/stage_f/powerup_checklist.json",
+        "python tools/make_physical_decks.py",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
+        "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw "
+        "--rl 0.0189 --periods 22 --json design/v3/magnetics/operating_point_100a_cout7m.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir",
+        "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw "
+        "--rl 0.0189 --periods 22 --json design/v3/magnetics/operating_point_100a_phys.json",
+        "# 11-12 GB cold runs (~37 min each); the .log carries the .meas results used by lr_design.py",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_phys.cir",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
         "python -m pytest tools -q",
         "python tools/ci_check.py",
     ],

@@ -93,6 +93,19 @@ def test_lr_selection_and_fault_peaks_match_lr_design_json():
         assert f"{data['peaks_a'][value]:.{digits}f}" in doc, value
 
 
+def test_the_physical_peaks_and_the_turn_conclusion_are_both_quoted():
+    """The measured fault peaks are what eliminated 2 turns; a baseline that
+    only keeps the frozen-deck 65/73.7 A table would still read as a choice."""
+    data = load(LR)["physical_peaks"]
+    doc = text()
+    assert data["min_turns_all"] == 3
+    for name, case in data["cases"].items():
+        assert f"{case['current_a']:.2f} A" in doc, name
+    worst = max(data["cases"].values(), key=lambda c: c["flux_t_at_3"])
+    assert f"{worst['flux_t_at_3']:.3f} T" in doc
+    assert f"{data['cases']['fault_phys_ride_through']['flux_t_at_2']:.3f} T" in doc
+
+
 def test_height_worst_cases_use_the_maximum_not_the_nominal():
     height = load(MAGNETICS)["height"]
     doc = text()
@@ -144,6 +157,22 @@ def test_ripple_quotes_the_22_period_value_not_the_2_period_one():
     # the short number appears only with its limitation written next to it
     assert "漏掉慢包络" in doc
     assert abs(pp_mv - 50.0) < 1.0, "the 50 mVpp target has no real margin; say so"
+
+
+def test_the_physical_bank_ripple_is_quoted_with_its_configuration():
+    """The frozen 100 A deck runs `Cout=4 mF`, but the frozen *design* is the
+    15 x 470 uF = 7.05 mF bank.  The design-conforming ripple is therefore the
+    `cout7m` run, and it must appear next to the 4 mF number rather than
+    replacing it silently."""
+    bank = load(ROOT / "design/v3/magnetics/operating_point_100a_cout7m.json")
+    untrimmed = load(ROOT / "design/v3/magnetics/operating_point_100a_phys.json")
+    doc = text()
+    assert f"{bank['vout_pp_mv']:.1f} mVpp" in doc
+    assert f"{untrimmed['vout_pp_mv']:.1f} mVpp" in doc
+    assert f"{bank['iout_from_v_a']:.1f} A" in doc
+    assert bank["periods"] == 22 and untrimmed["periods"] == 22
+    assert bank["vout_pp_mv"] < load(OP)["vout_pp_mv"], (
+        "the physical bank is larger than the 4 mF deck, so its ripple must be smaller")
 
 
 def short_window_ripple_mv() -> float:

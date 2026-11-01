@@ -9,6 +9,53 @@
     "fault_fast_oc_13us": 65.0,
     "fault_slow_oc_51us": 73.68
   },
+  "physical_peaks": {
+    "cases": {
+      "startup_phys": {
+        "current_a": 22.53,
+        "external_lr_h": 1e-06,
+        "deck": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
+        "source": "MAX(abs(I(Lr))) on the cold-start physical deck",
+        "flux_t_at_2": 0.08665384615384616,
+        "flux_t_at_3": 0.057769230769230774,
+        "frac_bsat_at_3": 0.18635235732009928,
+        "exceeds_bsat_at_2": false,
+        "min_turns": 1
+      },
+      "fault_phys_ride_through": {
+        "current_a": 84.02,
+        "external_lr_h": 1e-06,
+        "deck": "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
+        "source": "MAX(abs(I(Lr))) from 0 to 8 ms; the OC trips at 5.5998 ms and the run rides through to the trip instead of stopping at 13/51 us",
+        "flux_t_at_2": 0.3231538461538462,
+        "flux_t_at_3": 0.21543589743589747,
+        "frac_bsat_at_3": 0.6949545078577338,
+        "exceeds_bsat_at_2": true,
+        "min_turns": 3
+      },
+      "fault_lrmin_ride_through": {
+        "current_a": 104.17,
+        "external_lr_h": 8.75e-07,
+        "deck": "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
+        "source": "MAX(abs(I(Lr))) from 0 to 8 ms at the 0.125 uH-leakage trim end; the OC trips at 5.5963 ms.  Scaling the 84.02 A peak by 1/L would give 96.0 A, so 8.5 % of the peak is not volt-second scaling",
+        "flux_t_at_2": 0.3505721153846154,
+        "flux_t_at_3": 0.23371474358974362,
+        "frac_bsat_at_3": 0.7539185277088504,
+        "exceeds_bsat_at_2": true,
+        "min_turns": 3
+      }
+    },
+    "min_turns_all": 3,
+    "rule": "B = L*I/(N*Ae) at the measured current, L paired with the deck it ran on"
+  },
+  "tank": {
+    "total_target_h": 1e-06,
+    "leakage_model_h": 8e-08,
+    "external_target_h": 9.2e-07,
+    "resonant_khz": 202.12697985378801,
+    "clock_khz": 200.622,
+    "note": "the deck's LR_TOTAL is the external part; add the leakage to get the tank total.  Trim the external part to LR_TOTAL_H - measured leakage on the first article; the 1.0 uH sizing value above is the conservative top of that window, not the value to wind."
+  },
   "candidates": [
     {
       "turns": 1,
