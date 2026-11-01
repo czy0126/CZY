@@ -9,37 +9,37 @@
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "kind": "deck",
-      "bytes": 10583,
+      "bytes": 10371,
       "mtime": 1793460672.9532592,
-      "sha256": "84b3ee25c1ea05ec489ee66bf6f68874f4d9899f98996739a1dc8e640f27089a"
+      "sha256": "92021247a38ef10ae68ee8a806c32e8f9147e97187ea201266d1077ddfecc100"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.cir",
       "kind": "deck",
-      "bytes": 10597,
+      "bytes": 10385,
       "mtime": 1793466595.3535042,
-      "sha256": "51b5f247e28e14d35ad39d9d5bfa827233c7a39b3e1f19656d218bbf71713ead"
+      "sha256": "4860c2890534a960820fd88306afe8d9d14e3b4bc7c6027a507f2b24defdc5c1"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
       "kind": "deck",
-      "bytes": 10769,
+      "bytes": 10554,
       "mtime": 1793468506.3611605,
-      "sha256": "516e577785e54c0be5e5d373d1e4898f9143988ef16f2d18d2585d48beb2bb65"
+      "sha256": "aeee2228ba0b73d8c8144c576684cdc8705df4375a697a223614a8cb7931ee23"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
       "kind": "deck",
-      "bytes": 10771,
+      "bytes": 10556,
       "mtime": 1793468506.3611605,
-      "sha256": "0c910c81dd7a3e2aab93a30dc60d0efbc8b97b91218024d86597ab4410f49b48"
+      "sha256": "b1f1d1b084f63e93d85bad293380e77830787c930411f295f4eb22f27a1ae808"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
       "kind": "deck",
-      "bytes": 11371,
+      "bytes": 11147,
       "mtime": 1793499909.2742877,
-      "sha256": "2059e26b39a55bc0bfd12b0fba9a16ee80e136260f179b31b7a7c2bb51da79d7"
+      "sha256": "c7127b6ef7182712c7aca0dce743d83fc2ff1a5b04d19aec5e33778e197e12fd"
     },
     {
       "path": "models/ucc25600_legacy_behaviour.lib",
@@ -51,9 +51,9 @@
     {
       "path": "models/sr_timing_v3_3.lib",
       "kind": "model",
-      "bytes": 11920,
+      "bytes": 11741,
       "mtime": 1793427235.48759,
-      "sha256": "f03b6e179736916d33cd99034aea7bbe45c716b155795c4db18e4e160a37a4a3"
+      "sha256": "bdffed62c3a003c51d4fec4be6195d18d5c016729150e6cc5f71e7ad89b00292"
     },
     {
       "path": "models/sr_device_v3.lib",
@@ -79,9 +79,9 @@
     {
       "path": "tools/draw_magnetics.py",
       "kind": "script",
-      "bytes": 10903,
+      "bytes": 10653,
       "mtime": 1793499688.352612,
-      "sha256": "c85aa2a8e631a1f19f4328bab35191e07df56fd529e466835857435b934eb4c7"
+      "sha256": "41f8dee00b6daaa13eb18c452fa8433a507285eaa4ac4b853dd3cd3cd7b387df"
     },
     {
       "path": "tools/make_magnetics_manifest.py",
@@ -205,9 +205,9 @@
     {
       "path": "tools/test_draw_magnetics.py",
       "kind": "script",
-      "bytes": 964,
+      "bytes": 937,
       "mtime": 1793461186.3035893,
-      "sha256": "35379cf7d65ceb7508f8f29ead73cee3cd32a6d1639aa636b58e86587a2b4748"
+      "sha256": "d033b7c2930222e2a6fa7c53ca93fdc54a69a2a195e1b74301ef129b502c3e03"
     },
     {
       "path": "tools/test_extract_op_point.py",
@@ -373,9 +373,9 @@
     {
       "path": "design/v3/stage_f/thermal_precheck.json",
       "kind": "result",
-      "bytes": 1812,
+      "bytes": 1751,
       "mtime": 1793461518.3785512,
-      "sha256": "fa56e9d19266e63b8a7da452f09fcfd68d9747e7b490177e21cdbf45b7d6d8f1"
+      "sha256": "0e63b998c8c00580dfbe38a4af86cb44e5bedbab4f08f311eb00f894c8e053ff"
     },
     {
       "path": "design/v3/bom/passive_requirements.json",
@@ -443,37 +443,37 @@
     {
       "path": "design/v3/pcb/board_netlist.csv",
       "kind": "result",
-      "bytes": 7657,
+      "bytes": 7463,
       "mtime": 1793469147.9607897,
-      "sha256": "418be5b373987d574ebd91c65e9763e84ba26662ba5de4f48d1c7e0552f6bf09"
+      "sha256": "b453a72428f6aa8405ee45bcde512ab95f1505ec1531775a950a49536baea9bd"
     },
     {
       "path": "design/v3/pcb/board_netlist.json",
       "kind": "result",
-      "bytes": 1662,
+      "bytes": 1609,
       "mtime": 1793469147.9607897,
-      "sha256": "7d75dca01e3d31f13332c43bcc1599ad8c758d05d6d00261322381d3d807cd01"
+      "sha256": "db3ce45e80e83d2e98973f4402d34903b636e4766787941d9915a46004a93816"
     },
     {
       "path": "design/v3/stage_f/powerup_checklist.json",
       "kind": "result",
-      "bytes": 14961,
+      "bytes": 14575,
       "mtime": 1793501218.5310538,
-      "sha256": "46592bcbfae7767f34880eab3a4555c3ef6790bc0aeab854214fdd62a537ebb0"
+      "sha256": "d369ee6a460eb29739fe2262df9e0a6fa73270f7a3a1431ad229ba7dda3cd566"
     },
     {
       "path": "design/v3/stage_f/上电检查表.md",
       "kind": "result",
-      "bytes": 9341,
+      "bytes": 9239,
       "mtime": 1793501218.5310538,
-      "sha256": "a8406f7d6ac399bd0d833c246669f5ddfd9d2307cc7d8b2110595edf1510c8bd"
+      "sha256": "998fbca8cb8b2e26f92b7ef00f6b68172c79f1ac6588de3e890d4f01de4593ec"
     },
     {
       "path": "design/v3/stage_f/energy_ledger_100a.json",
       "kind": "result",
-      "bytes": 3697,
+      "bytes": 3574,
       "mtime": 1793500510.8391232,
-      "sha256": "d36948b0090563c87c1f0a158d93aeadac899f1a3ca719347668ce84b6ea4f9e"
+      "sha256": "f613960eb2c640febe87fe5f0e4182f3e0f7f4da158a6cd0cfd6e99788224a47"
     },
     {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
