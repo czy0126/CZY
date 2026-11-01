@@ -97,3 +97,23 @@ def test_skip_tests_does_not_claim_the_suite_passed(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "suite passed" not in out
     assert "manifest is current" in out
+
+
+def test_checkout_changes_mtime_without_changing_content():
+    old = manifest([{"path":"tools/x.py","bytes":3,"sha256":"same","mtime":1}])
+    fresh = manifest([{"path":"tools/x.py","bytes":3,"sha256":"same","mtime":2}])
+    assert compare_manifests(old, fresh) == []
+
+
+def test_present_raw_mtime_drift_is_still_reported():
+    old = manifest([{"path":"sim/v3/run.raw","bytes":200,"sha256":"skipped-large-raw","mtime":1}])
+    fresh = manifest([{"path":"sim/v3/run.raw","bytes":200,"sha256":"skipped-large-raw","mtime":2}])
+    assert "mtime" in " ".join(compare_manifests(old, fresh))
+
+
+def test_missing_raw_status_row_in_clean_checkout_is_not_a_mismatch():
+    old = manifest([{"path":"sim/v3/run.raw","kind":"raw","bytes":400,
+                     "sha256":"skipped-large-raw","mtime":123}])
+    fresh = manifest([{"path":"sim/v3/run.raw","kind":"raw","status":"missing"}],
+                     missing=["sim/v3/run.raw"])
+    assert compare_manifests(old, fresh) == []
