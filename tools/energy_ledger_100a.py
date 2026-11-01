@@ -69,11 +69,29 @@ whatever the mean happens to be.  Do not loosen ``target_w`` to fix this --
 lengthen the window (see ``phase_alignment``).
 
 The aligned window has now been run (`ledger_aligned`, 133 periods).  It does
-resolve 0.2 W -- the period-averaged standard error is 0.157 W -- and it says
-the closure residual is +0.33 W, i.e. outside the target.  The short windows
-say whatever their stopping phase says: on the same raw, 8 periods read
-+0.999 W and 12 periods +0.368 W.  The status is still NOT_CLOSED, now because
-the residual is measured and too large rather than because it is unresolvable.
+resolve 0.2 W against the period-to-period scatter -- the period-averaged
+standard error is 0.157 W -- and it says the closure residual is +0.33 W, i.e.
+outside the target.  The short windows say whatever their stopping phase says:
+on the same raw, 8 periods read +0.999 W and 12 periods +0.368 W.  The status
+is still NOT_CLOSED, now because the residual is measured and too large rather
+than because it is unresolvable.
+
+That standard error is *random only*.  On the 16-period window the step check
+(5 ns vs 2 ns) moves the period-averaged closure by 0.38 W, with the port term
+moving 0.39 W and the period-averaged storage rate 0.79 W while the loss
+inventory moves only 0.02 W.  Period averaging removes "which phase the window
+happened to stop on"; it does not remove the timestep.
+
+The aligned window has been re-run at 2 ns (`ledger_aligned2n`) and the answer
+splits in two.  The closure survives: +0.326 W at 5 ns against +0.314 W at
+2 ns, a move of 0.012 W, so the aligned window's "outside 0.2 W" is not a
+timestep artifact.  The two terms it is made of do not survive: the port term
+moves 0.534 W and the loss inventory 0.625 W (5.8 %), in the same direction,
+and mostly cancel.  The 0.02 W the inventory moved on 16 periods was a
+property of that window.  So "resolves 0.2 W" means "against period-to-period
+noise": the closure number reproduces, the loss breakdown does not, and no
+individual loss term should be quoted to better than the 0.6 W the inventory
+itself moves between steps.
 
 ``checks`` holds invariants of the report itself and only ``ok`` gates;
 ``results`` holds what the physics did.  A physical comparison lives in
@@ -1005,9 +1023,18 @@ def max_step_of(raw: Path) -> float | None:
     return None if scale is None else float(match.group(1)) * scale
 
 
-def step_check(raw_a: Path, raw_b: Path, periods: int = 16) -> dict[str, object]:
-    """Compare port, branch losses and closure between two timesteps (issue #6)."""
-    a, b = build(raw_a, periods, alt_periods=()), build(raw_b, periods, alt_periods=())
+def step_check(raw_a: Path, raw_b: Path, periods: int = 16,
+               a: dict[str, object] | None = None) -> dict[str, object]:
+    """Compare port, branch losses and closure between two timesteps (issue #6).
+
+    ``a`` lets a caller hand in a summary of ``raw_a`` it has already built; the
+    aligned window's raw is 2.4 GB and re-reading it only to compare is a minute
+    of I/O for nothing.  ``alt_periods`` only appends entries to ``windows``, so
+    the fields read here are identical either way.
+    """
+    if a is None:
+        a = build(raw_a, periods, alt_periods=())
+    b = build(raw_b, periods, alt_periods=())
     rows: dict[str, object] = {}
     for name, x, y in (("port_w", a["port"]["pin_minus_pout_w"], b["port"]["pin_minus_pout_w"]),
                        ("loss_total_w", a["loss_total_w"], b["loss_total_w"]),
@@ -1017,7 +1044,16 @@ def step_check(raw_a: Path, raw_b: Path, periods: int = 16) -> dict[str, object]
                        ("residual_w", a["balance"]["loss_residual_w"],
                         b["balance"]["loss_residual_w"]),
                        ("closure_residual_w", a["balance"]["closure_residual_w"],
-                        b["balance"]["closure_residual_w"])):
+                        b["balance"]["closure_residual_w"]),
+                       # The period-averaged reading is the one the report quotes,
+                       # so the step check has to compare *it*, not only the
+                       # single-sample number that period averaging replaced.
+                       ("stored_period_averaged_w",
+                        a["balance"]["period_averaged"]["stored_energy_w"],
+                        b["balance"]["period_averaged"]["stored_energy_w"]),
+                       ("closure_period_averaged_w",
+                        a["balance"]["period_averaged"]["closure_residual_w"],
+                        b["balance"]["period_averaged"]["closure_residual_w"])):
         rows[name] = {"step_a_w": x, "step_b_w": y, "delta_w": y - x}
     # The endpoint itself is not shared between two runs: a smaller max step
     # lands on a different point of the output ripple, and 4 mF turns a few
@@ -1026,13 +1062,29 @@ def step_check(raw_a: Path, raw_b: Path, periods: int = 16) -> dict[str, object]
                                ("vout_start_v", a["window"], b["window"])):
         rows[name] = {"step_a": a_win[name], "step_b": b_win[name],
                       "delta": b_win[name] - a_win[name]}
-    short = ("the port and loss integrals are trapezoid quadratures and converge; "
-             "the storage terms are differences of two *instantaneous* samples, "
-             "which do not.  vout_end_v differs between the runs because a "
-             "smaller step lands elsewhere on the output ripple, and 4 mF times "
-             "a few millivolts, over this span, is the same size as the closure "
-             "residual itself -- so the closure is not resolved by the step "
-             "check, it is limited by it")
+    # Report what the two runs do; do not assume which integral converges.  An
+    # earlier version of this note asserted that "the port and loss integrals
+    # are trapezoid quadratures and converge" -- measured, the port term moves
+    # 0.39 W between 5 ns and 2 ns on the 16-period window while the loss
+    # inventory moves 0.02 W, so the assumption was half wrong and the larger
+    # of the two movers was the one it called converged.
+    def _delta(name: str) -> float:
+        return float(rows[name]["delta_w"])
+
+    short = (
+        "measured, not assumed: between the two steps the port term moves "
+        f"{_delta('port_w'):+.3f} W and the loss inventory {_delta('loss_total_w'):+.3f} W; "
+        "the storage rate moves "
+        f"{_delta('stored_w'):+.3f} W as a single sample and "
+        f"{_delta('stored_period_averaged_w'):+.3f} W period-averaged.  The closure "
+        f"therefore moves {_delta('closure_residual_w'):+.3f} W (single sample) and "
+        f"{_delta('closure_period_averaged_w'):+.3f} W (period-averaged).  The port and "
+        "storage errors are both larger than that and partly cancel, so the closure "
+        "is not resolved by this check -- it is limited by it.  vout_end_v differs "
+        "because a smaller step lands elsewhere on the output ripple; this deck's 4 mF "
+        "times a few millivolts is tens of microjoules, which over this span is most "
+        "of a watt."
+    )
     return {
         "step_a_s": a["raw"]["max_step_s"], "step_b_s": b["raw"]["max_step_s"],
         "raw_a": a["raw"]["path"], "raw_b": b["raw"]["path"],
@@ -1045,7 +1097,7 @@ def step_check(raw_a: Path, raw_b: Path, periods: int = 16) -> dict[str, object]
 def write(path: Path = OUT, step_raw: Path | None = None) -> dict[str, object]:
     summary = build()
     if step_raw is not None and step_raw.exists():
-        summary["step_check"] = step_check(RAW, step_raw)
+        summary["step_check"] = step_check(RAW, step_raw, a=summary)
     path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
                     encoding="utf-8")
     return summary
@@ -1059,13 +1111,15 @@ def main() -> None:
     parser.add_argument("--compare-raw", type=Path, default=STEP_RAW,
                         help="second raw at a different max timestep (issue #6)")
     parser.add_argument("--no-step-check", action="store_true",
-                        help="skip the timestep comparison (it only makes sense "
-                             "for the 16-period window both raws share)")
+                        help="skip the timestep comparison; it needs two raws "
+                             "that share the window (ledger/ledger2n for 16 "
+                             "periods, aligned/aligned2n for 133)")
     args = parser.parse_args()
     summary = build(args.raw, args.periods)
     if (not args.no_step_check and args.compare_raw is not None
             and args.compare_raw.exists()):
-        summary["step_check"] = step_check(args.raw, args.compare_raw, args.periods)
+        summary["step_check"] = step_check(args.raw, args.compare_raw, args.periods,
+                                           a=summary)
     args.json.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
                          encoding="utf-8")
     balance = summary["balance"]

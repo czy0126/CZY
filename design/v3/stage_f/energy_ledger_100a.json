@@ -316,6 +316,16 @@
         "step_b_w": 0.4039974287295204,
         "delta_w": 0.5222705773866644
       },
+      "stored_period_averaged_w": {
+        "step_a_w": 0.3361548777844547,
+        "step_b_w": -0.4579831449655972,
+        "delta_w": -0.7941380227500519
+      },
+      "closure_period_averaged_w": {
+        "step_a_w": -0.2222960450562656,
+        "step_b_w": 0.15802237836602362,
+        "delta_w": 0.3803184234222892
+      },
       "vout_end_v": {
         "step_a": 1.870383672007268,
         "step_b": 1.862778016330638,
@@ -327,6 +337,6 @@
         "delta": 0.0021011235971950537
       }
     },
-    "note": "the port and loss integrals are trapezoid quadratures and converge; the storage terms are differences of two *instantaneous* samples, which do not.  vout_end_v differs between the runs because a smaller step lands elsewhere on the output ripple, and 4 mF times a few millivolts, over this span, is the same size as the closure residual itself -- so the closure is not resolved by the step check, it is limited by it"
+    "note": "measured, not assumed: between the two steps the port term moves -0.390 W and the loss inventory +0.024 W; the storage rate moves -0.936 W as a single sample and -0.794 W period-averaged.  The closure therefore moves +0.522 W (single sample) and +0.380 W (period-averaged).  The port and storage errors are both larger than that and partly cancel, so the closure is not resolved by this check -- it is limited by it.  vout_end_v differs because a smaller step lands elsewhere on the output ripple; this deck's 4 mF times a few millivolts is tens of microjoules, which over this span is most of a watt."
   }
 }

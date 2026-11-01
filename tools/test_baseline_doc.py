@@ -168,6 +168,61 @@ def test_the_phase_aligned_window_is_quoted_from_its_own_json():
     assert f"`{balance['closure_status']}`" in doc
 
 
+def _ascii_minus(s: str) -> str:
+    return s.replace("−", "-")
+
+
+def test_the_step_size_table_is_quoted_from_the_step_check():
+    """§2.4 says the *period-averaged* closure moves between 5 ns and 2 ns.  Every
+    cell of that table comes from ``step_check``, and the caveat next to it is
+    the point: ``sem_w`` is the period-to-period random spread only, so the
+    document may not quote "resolves 0.2 W" without this table beside it."""
+    step = load(LEDGER)["step_check"]
+    doc = _ascii_minus(text())
+    for name in ("port_w", "loss_total_w", "stored_w", "stored_period_averaged_w",
+                 "closure_residual_w", "closure_period_averaged_w"):
+        term = step["terms"][name]
+        for key in ("step_a_w", "step_b_w", "delta_w"):
+            assert f"{term[key]:+.4f} W" in doc, (name, key)
+    assert "只描述周期间的随机散布" in doc
+    # the two movers are orders apart; if that ever stops being true the table's
+    # argument ("the port term is the one the note called converged") is void
+    port = abs(step["terms"]["port_w"]["delta_w"])
+    loss = abs(step["terms"]["loss_total_w"]["delta_w"])
+    assert port > 10.0 * loss
+
+
+def test_the_aligned_step_check_is_quoted_from_its_own_json():
+    """§2.5 asks a different question from §2.4.
+
+    §2.4: on a 16-period window, does the closure move between 5 ns and 2 ns?
+    §2.5: on the phase-aligned window, does the +0.33 W survive the step change?
+
+    The two answers are not interchangeable, which is the whole finding: the
+    closure moves 0.38 W on the short window and 0.012 W on the aligned one,
+    while the loss inventory moves 0.02 W on the short window and 0.63 W here.
+    So this test pins both numbers *and* the direction of the argument -- if a
+    later edit reuses the 16-period "loss inventory has converged" claim for
+    the aligned window, or drops the "closure stable but losses are not"
+    caveat, it goes red.
+    """
+    if not LEDGER_ALIGNED.exists():
+        pytest.skip("the aligned-window ledger has not been generated")
+    step = load(LEDGER_ALIGNED)["step_check"]
+    assert step["periods"] == 133
+    doc = _ascii_minus(text())
+    for name in ("port_w", "loss_total_w", "stored_w", "stored_period_averaged_w",
+                 "closure_residual_w", "closure_period_averaged_w"):
+        term = step["terms"][name]
+        for key in ("step_a_w", "step_b_w", "delta_w"):
+            assert f"{term[key]:+.4f} W" in doc, (name, key)
+    # the number this section exists to defend
+    assert abs(step["terms"]["closure_period_averaged_w"]["delta_w"]) < 0.05
+    # ... and the one it exists to stop anyone generalising
+    assert abs(step["terms"]["loss_total_w"]["delta_w"]) > 0.5
+    assert "不能把" in doc and "不能一般化" in doc
+
+
 def test_ripple_quotes_the_22_period_value_not_the_2_period_one():
     """38.27 mVpp is 10 us; the 22-period figure is 49.73 mVpp and is the one
     the same deck reports for the steady state.  The short window misses the

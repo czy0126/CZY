@@ -45,8 +45,10 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
         # issue #6: the same instrumented deck saved over the first phase-
-        # aligned window (133 gate periods = 662.9 us).
+        # aligned window (133 gate periods = 662.9 us), and the same window at
+        # half the max timestep so the step check covers the quoted number.
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
         "sim/v3/sr_tank_dual_v33_cold_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
@@ -152,6 +154,7 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
         # the hash list; their .log files are the committed measurements.
     ],

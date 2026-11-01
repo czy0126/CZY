@@ -270,10 +270,26 @@ def test_the_step_check_compares_two_timesteps_and_the_endpoint_moves():
     step = summary["step_check"]
     assert step["step_a_s"] != step["step_b_s"]
     assert {"port_w", "loss_total_w", "stored_w", "closure_residual_w"} <= set(step["terms"])
+    # The report quotes the period-averaged reading, so the step check must
+    # compare that reading too -- otherwise it can pass while the number that
+    # is actually published moves by twice the target.
+    assert {"stored_period_averaged_w", "closure_period_averaged_w"} <= set(step["terms"])
     loss = step["terms"]["loss_total_w"]
     assert abs(loss["delta_w"]) < 0.05           # quadrature has converged
     assert abs(step["terms"]["vout_end_v"]["delta"]) > 1e-3   # the endpoint has not
     assert "vout_end_v" in summary["window"]
+    # Measured: the period-averaged closure moves 0.38 W between 5 ns and 2 ns,
+    # i.e. the closure is not reproducible at the 0.2 W target even after the
+    # endpoint is averaged over a whole gate period.
+    assert abs(step["terms"]["closure_period_averaged_w"]["delta_w"]) > 0.2
+    # ... and the port term, which the note used to call converged, is one of
+    # the two movers: it is larger than the loss inventory's movement.
+    assert (abs(step["terms"]["port_w"]["delta_w"])
+            > 10.0 * abs(loss["delta_w"]))
+    # The note must carry the measured deltas, so a future edit cannot quietly
+    # re-assert convergence without the numbers contradicting it.
+    for name in ("port_w", "closure_period_averaged_w"):
+        assert f"{step['terms'][name]['delta_w']:+.3f} W" in step["note"]
 
 
 def _ripple_plus_drift(n: int = 21, per_period: int = 10,

@@ -92,6 +92,12 @@ VARIANTS: dict[str, tuple[str, str, str | None, str | None, str | None, str | No
     # the stop time changes, so the 880 us settle is untouched.
     "ledger_aligned": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
                        None, None, None, "1550u"),
+    # Issue #6: the phase-aligned window at half the timestep.  On the 16-period
+    # window the same 5 ns / 2 ns pair moves the *period-averaged* closure by
+    # 0.38 W, so the aligned window -- which was only run at 5 ns -- needs the
+    # same test before its +0.33 W can be quoted.
+    "ledger_aligned2n": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
+                         None, None, "2n", "1550u"),
 }
 
 

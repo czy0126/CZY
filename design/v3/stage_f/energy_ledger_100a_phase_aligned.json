@@ -510,5 +510,65 @@
     "closure_status_follows_from_the_results": true,
     "closure_status_is_derived_from_both_readings": true,
     "closure_reason_states_which_condition_failed": true
+  },
+  "step_check": {
+    "step_a_s": 5e-09,
+    "step_b_s": 2e-09,
+    "raw_a": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
+    "raw_b": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
+    "periods": 133,
+    "terms": {
+      "port_w": {
+        "step_a_w": 10.88875343234227,
+        "step_b_w": 11.422769475917988,
+        "delta_w": 0.5340160435757184
+      },
+      "loss_total_w": {
+        "step_a_w": 10.731281574995519,
+        "step_b_w": 11.356305776894814,
+        "delta_w": 0.6250242018992953
+      },
+      "stored_w": {
+        "step_a_w": -0.021261289285431622,
+        "step_b_w": -0.046475400566766856,
+        "delta_w": -0.025214111281335234
+      },
+      "driver_w": {
+        "step_a_w": 0.20565274922781804,
+        "step_b_w": 0.20566608220052382,
+        "delta_w": 1.333297270578182e-05
+      },
+      "residual_w": {
+        "step_a_w": 0.15747185734675107,
+        "step_b_w": 0.06646369902317417,
+        "delta_w": -0.0910081583235769
+      },
+      "closure_residual_w": {
+        "step_a_w": 0.3843858958600009,
+        "step_b_w": 0.31860518179046554,
+        "delta_w": -0.06578071406953534
+      },
+      "stored_period_averaged_w": {
+        "step_a_w": 0.03727715737374153,
+        "step_b_w": -0.041793421711435845,
+        "delta_w": -0.07907057908517737
+      },
+      "closure_period_averaged_w": {
+        "step_a_w": 0.3258474492008277,
+        "step_b_w": 0.31392320293513454,
+        "delta_w": -0.011924246265693161
+      },
+      "vout_end_v": {
+        "step_a": 1.872238043618813,
+        "step_b": 1.868846142956453,
+        "delta": -0.00339190066236017
+      },
+      "vout_start_v": {
+        "step_a": 1.873840975039993,
+        "step_b": 1.872639967217412,
+        "delta": -0.001201007822580813
+      }
+    },
+    "note": "measured, not assumed: between the two steps the port term moves +0.534 W and the loss inventory +0.625 W; the storage rate moves -0.025 W as a single sample and -0.079 W period-averaged.  The closure therefore moves -0.066 W (single sample) and -0.012 W (period-averaged).  The port and storage errors are both larger than that and partly cancel, so the closure is not resolved by this check -- it is limited by it.  vout_end_v differs because a smaller step lands elsewhere on the output ripple; this deck's 4 mF times a few millivolts is tens of microjoules, which over this span is most of a watt."
   }
 }
