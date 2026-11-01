@@ -84,6 +84,7 @@ def criteria(data: dict[str, dict]) -> dict[str, str]:
         "trace_width": f"{conn['input']['width_for_target_mm']:.1f} mm",
         "freq": f"{op['freq_khz']:.1f} kHz",
         "vout_nl": f"{VIN_V / TURNS_RATIO:.2f} V",
+        "vout_pp": f"{op['vout_pp_mv']:.1f} mVpp",
         "oc_pin": f"{ct['as_built']['oc_pin_v_at_ipk']:.3f} V",
         "oc_at": f"{ct['measured']['i_pk_a']:.2f} A",
         "trip": f"{ct['as_built']['trip_peak_a']:.1f} A",
@@ -217,8 +218,10 @@ def _stage_s4(c: dict[str, str]) -> dict[str, object]:
         r(f"SR 单管损耗 {c['sr_loss']} @ 100 A → Tj", f"Tj ≤ {c['tj_limit']}；"
           "50 K/W 是模型假设，不是判据；须用实测壳温与声明 Rth 换算",
           "thermal_precheck", "实测超标则改散热/降额", "SR 壳温（热电偶/红外）", "model"),
-        r("100 A 输出纹波与负载瞬态", "按 Issue #4 冻结的输出包络", "design/v3 规范",
-          "超包络则加 Cout/改布局", "VOUT 交流耦合，20 MHz 带宽", "design"),
+        r("100 A 输出纹波与负载瞬态", f"纹波 22 周期 {c['vout_pp']}（项目目标 ≤50 mVpp，"
+          "不是产品规格）；瞬态无判据，只记录 ±ΔV 与恢复波形",
+          "当前候选基线_2026-11-01", "纹波超 50 mV 则加 Cout/改开关策略；瞬态不得宣称合格",
+          "VOUT 交流耦合，20 MHz 带宽", "design"),
         f(f"OC 13 µs 故障：Lr 峰值 ≤ {c['fault_peak']}", f"≤ {c['fault_peak']}；驱动关断",
           "lr_design", "不关断则查 CT/OC 网络", "电流探头 I(Lr)、SW、OC", "model"),
         f("OC 2 V 闩锁", "闩锁并保持，断电复位", "UCC25600 datasheet",

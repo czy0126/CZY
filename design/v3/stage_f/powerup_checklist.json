@@ -9,6 +9,7 @@
     "trace_width": "11.2 mm",
     "freq": "200.6 kHz",
     "vout_nl": "2.00 V",
+    "vout_pp": "49.7 mVpp",
     "oc_pin": "0.573 V",
     "oc_at": "13.88 A",
     "trip": "24.2 A",
@@ -345,9 +346,9 @@
         },
         {
           "check": "100 A 输出纹波与负载瞬态",
-          "criterion": "按 Issue #4 冻结的输出包络",
-          "source": "design/v3 规范",
-          "action": "超包络则加 Cout/改布局",
+          "criterion": "纹波 22 周期 49.7 mVpp（项目目标 ≤50 mVpp，不是产品规格）；瞬态无判据，只记录 ±ΔV 与恢复波形",
+          "source": "当前候选基线_2026-11-01",
+          "action": "纹波超 50 mV 则加 Cout/改开关策略；瞬态不得宣称合格",
           "test_state": "rated",
           "measurement_location": "VOUT 交流耦合，20 MHz 带宽",
           "source_type": "design"
