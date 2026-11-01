@@ -498,8 +498,8 @@ def mechanical_section() -> dict:
     below it, with the class of evidence behind its thickness.
 
     Below the datum the pocket is *not* free: 0.5 mm out of a 1.6 mm board
-    leaves 1.1 mm of dielectric under five cores, which is the layer that has
-    to carry the SR return current as well as the cores' weight.
+    leaves 1.1 mm of FR-4 under the five cores for insulation and support;
+    the SR return current requires a separate continuous copper/via/busbar path.
 
     Above the stack there is nothing in this repository at all -- no TIM, no
     cold plate, no fastener heads.  That is reported as UNKNOWN rather than
@@ -525,7 +525,7 @@ def mechanical_section() -> dict:
          "evidence": "DESIGN", "note": "尚未与 PCB 厂确认 0.5 mm 沉槽工艺"},
         {"item": "沉槽下剩余介质", "nominal_mm": BOARD_T - POCKET_MM,
          "worst_mm": BOARD_T - POCKET_MM, "evidence": "DESIGN",
-         "note": f"{BOARD_T} mm 板厚减沉槽；SR 回流电流与磁芯重量都走这层"},
+         "note": f"{BOARD_T} mm 板厚减沉槽；FR-4 仅提供结构与绝缘；SR 回流必须走连续铜层、过孔或铜排"},
     ]
     glue = next(x for x in up if x["item"] == "胶层")
     label = next(x for x in up if x["item"] == "标签")

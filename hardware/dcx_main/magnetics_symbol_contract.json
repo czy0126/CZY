@@ -1,0 +1,195 @@
+{
+  "status": "LOGICAL_CONTRACT_ONLY_NOT_NATIVE_CAD_OR_FAB",
+  "physical_terminal_mapping_required": true,
+  "sources": [
+    "design/v3/pcb/board_netlist.csv",
+    "design/v3/magnetics/winding_polarity.json"
+  ],
+  "symbols": [
+    {
+      "ref": "CT",
+      "winding_type": "CURRENT_TRANSFORMER_4PIN",
+      "pins": [
+        {
+          "logical_pin": "PRI_A",
+          "golden_net": "CR_CT",
+          "polarity": "UNVERIFIED_FROM_CT_VENDOR",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "PRI_B",
+          "golden_net": "CT_LR",
+          "polarity": "UNVERIFIED_FROM_CT_VENDOR",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_A",
+          "golden_net": "CS1",
+          "polarity": "UNVERIFIED_FROM_CT_VENDOR",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_B",
+          "golden_net": "CS2",
+          "polarity": "UNVERIFIED_FROM_CT_VENDOR",
+          "physical_pad": null
+        }
+      ],
+      "native_symbol_present": false,
+      "physical_pad_map_verified": false
+    },
+    {
+      "ref": "T1",
+      "winding_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "pins": [
+        {
+          "logical_pin": "PRI_A",
+          "golden_net": "PRI_T1",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "PRI_B",
+          "golden_net": "PRI_12",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_A",
+          "golden_net": "SEC1_A",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_B",
+          "golden_net": "SEC1_B",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "CTAP",
+          "golden_net": "VOUT",
+          "polarity": "S_A_DOT_AND_S_B_NON_DOT",
+          "physical_pad": null
+        }
+      ],
+      "native_symbol_present": false,
+      "physical_pad_map_verified": false
+    },
+    {
+      "ref": "T2",
+      "winding_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "pins": [
+        {
+          "logical_pin": "PRI_A",
+          "golden_net": "PRI_12",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "PRI_B",
+          "golden_net": "PRI_23",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_A",
+          "golden_net": "SEC2_A",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_B",
+          "golden_net": "SEC2_B",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "CTAP",
+          "golden_net": "VOUT",
+          "polarity": "S_A_DOT_AND_S_B_NON_DOT",
+          "physical_pad": null
+        }
+      ],
+      "native_symbol_present": false,
+      "physical_pad_map_verified": false
+    },
+    {
+      "ref": "T3",
+      "winding_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "pins": [
+        {
+          "logical_pin": "PRI_A",
+          "golden_net": "PRI_23",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "PRI_B",
+          "golden_net": "PRI_34",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_A",
+          "golden_net": "SEC3_A",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_B",
+          "golden_net": "SEC3_B",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "CTAP",
+          "golden_net": "VOUT",
+          "polarity": "S_A_DOT_AND_S_B_NON_DOT",
+          "physical_pad": null
+        }
+      ],
+      "native_symbol_present": false,
+      "physical_pad_map_verified": false
+    },
+    {
+      "ref": "T4",
+      "winding_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "pins": [
+        {
+          "logical_pin": "PRI_A",
+          "golden_net": "PRI_34",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "PRI_B",
+          "golden_net": "PGND",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_A",
+          "golden_net": "SEC4_A",
+          "polarity": "NON_DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "SEC_B",
+          "golden_net": "SEC4_B",
+          "polarity": "DOT",
+          "physical_pad": null
+        },
+        {
+          "logical_pin": "CTAP",
+          "golden_net": "VOUT",
+          "polarity": "S_A_DOT_AND_S_B_NON_DOT",
+          "physical_pad": null
+        }
+      ],
+      "native_symbol_present": false,
+      "physical_pad_map_verified": false
+    }
+  ],
+  "next_gate": "Create native EasyEDA symbols and real numbered pads; export and check all five magnetics and DOT before COMPLETE_PASS"
+}

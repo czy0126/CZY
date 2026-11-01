@@ -1,0 +1,30 @@
+{
+ "pads_checked": 221,
+ "pads_bonded_by_design": [
+  {
+   "ref": "U2",
+   "pad": "11",
+   "net": "PGND"
+  }
+ ],
+ "missing_or_wrong": [],
+ "unexpected_nets": [],
+ "not_placed": [
+  "CT",
+  "T1",
+  "T2",
+  "T3",
+  "T4"
+ ],
+ "ok": true,
+ "unchecked_magnetics": [],
+ "unexpected_refs": [],
+ "subset_ok": true,
+ "readiness": "PARTIAL_PASS",
+ "manufacturing_ready": false,
+ "manufacturing_blockers": [
+  "not all golden references are placed",
+  "engineering value/MPN/footprint placeholders remain in the native schematic",
+  "native editor ERC report and routed PCB not yet supplied"
+ ]
+}
