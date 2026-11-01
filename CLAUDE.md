@@ -259,9 +259,23 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
-路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
+本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
 **不在 PATH 里**：`where kicad-cli` 返回空，容易误判"没装"；`/c/Program Files/KiCad` 也不存在，
 装在 `%LOCALAPPDATA%\Programs\KiCad`。
+
+**这个路径不许写进工具**（Issue #11）：写死用户名会让 GitHub Actions 的 Runner 复现失败，
+而失败的是"A5 工件能否重建"这条回归测试。`main_board_mechanical.find_kicad_cli()` 按
+`KICAD_CLI` 环境变量 → PATH → `%LOCALAPPDATA%`/`%PROGRAMFILES%` 通配的顺序找；
+找不到是**正常状态**（板文件不需要 KiCad，只有 DRC 和出图需要），
+`--check` 会明说"DRC 未复现"而不是静默通过。
+官方封装用 `hardware/stock_footprints/` 里的 vendored 副本（来源、版本、sha256、许可见同目录
+`PROVENANCE.md`），生成器因此**完全不需要 KiCad 安装**；`report()` 的 `toolchain` 里记着
+每个 vendored 封装的 sha256，KiCad 版本记在 `drc.json:kicad_version`，
+`placement_report.json` 本身**不放本机版本号**——否则它会在开发机与 CI 之间逐字节不同，
+正是这条 Issue 要修的病。
+`missing_courtyard` 在 KiCad 里默认是**忽略**：`kicad-cli` 会把 `ignored_checks` 写成 5 项，
+板子一个 courtyard 都没有也报"0 条违规"。`project_file()` 把它提到 **error**，
+`test_the_courtyard_check_can_fail` 用"删掉一个 courtyard 必须报错"锁住（已验证）。
 
 - 有 `sch erc`、`sch export netlist/pdf/bom`、`pcb drc`、`pcb export gerbers/drill/position`、
   `pcb render`（3D PNG）。**PCB 这一层 LCEDA headless 做不了、KiCad 能做**，

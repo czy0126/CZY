@@ -468,5 +468,16 @@
   "land_pattern_provisional": [
     "QH",
     "QL"
-  ]
+  ],
+  "toolchain": {
+    "generator": "tools/main_board_mechanical.py",
+    "kicad_needed_for": "DRC and drawings only; the board file needs no KiCad",
+    "kicad_version_source": "hardware/dcx_mech/drc.json:kicad_version",
+    "stock_footprints": [
+      {
+        "lib_id": "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm",
+        "sha256": "7ca4fe5be0d2737af7dd600a5a6fb16ca5ef3c6f460981b98ba0a4093075bcbb"
+      }
+    ]
+  }
 }
