@@ -165,3 +165,15 @@ S1 仅偏置 → S2 限能首次上电（限流 ≥ 冷启动 36.1 A）→ S3 �
 `test_the_checklist_matches_a_fresh_render` 逐字节比对，改分析不改表就红；
 另有一条测试证明这个锁**能失败**（改一个判据值渲染就不同），避免锁形同虚设。
 **这仍是流程文档，不是额定值证据；100 A 连续 / ≤10 mm 只能由 S4 的实测矩阵关闭。**
+
+第十三轮（2026-11-01）：加速计划的 **A5——主功率级 1:1 机械摆放**，产物
+`hardware/dcx_mech/power_stage_placement.kicad_pcb`（35 件 / 155.0 × 131.0 mm，
+`kicad-cli pcb drc --severity-all` 0 违规），由 `tools/main_board_mechanical.py` 从**一张表**生成。
+**没有网络、没有走线**——这是摆放研究，回答的是布线之前那个问题：放不放得下、高度落在哪。
+X/Y 放得下（最小间隙 0.9 mm）；**Z 放不下**：五只 ELP32（T1–T4 与 Lr 同芯）平铺 9.94 mm，
+对 10 mm 只有 60 µm，比胶/标签/磁芯平面度每一项都小；加 0.5 mm 压块是 10.44 mm，**超**。
+⇒ 磁件必须进沉槽，且只给变压器开槽的图纸会在首件翻车。CT/Cr/J_IN/控制区四个外形是
+**PROVISIONAL**（未选型），在板文件、JSON、文档三处都写明。
+见 [A5 机械布置](design/v3/A5_机械布置_2026-11-01.md) 与 1:1 图
+`hardware/dcx_mech/placement_1to1.svg`（`width` 属性即真实毫米尺寸，可直接按 1:1 打印）。
+**这不是可投板的板子**：land pattern、端子位置、铜排接点都还没定。
