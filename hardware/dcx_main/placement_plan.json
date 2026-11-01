@@ -6,7 +6,8 @@
    "pads": {
     "2": "CR_CT",
     "1": "SW"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "D_CT1": {
    "part": "BAT54",
@@ -14,7 +15,8 @@
    "pads": {
     "1": "CS1",
     "3": "OCD"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "D_CT3": {
    "part": "BAT54",
@@ -22,7 +24,8 @@
    "pads": {
     "3": "CS1",
     "1": "OCM"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "D_CT2": {
    "part": "BAT54",
@@ -30,7 +33,8 @@
    "pads": {
     "1": "CS2",
     "3": "OCD"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "D_CT4": {
    "part": "BAT54",
@@ -38,7 +42,8 @@
    "pads": {
     "3": "CS2",
     "1": "OCM"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "Lr": {
    "part": "IND_10UH",
@@ -46,7 +51,8 @@
    "pads": {
     "1": "CT_LR",
     "2": "PRI_T1"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "R1": {
    "part": "R0603_10k",
@@ -54,7 +60,8 @@
    "pads": {
     "1": "DT",
     "2": "PGND"
-   }
+   },
+   "section": "4. Control: UCC25600 / UCC27282"
   },
   "U1": {
    "part": "UCC25600D",
@@ -68,7 +75,8 @@
     "2": "RT",
     "4": "SS",
     "7": "VCC12"
-   }
+   },
+   "section": "4. Control: UCC25600 / UCC27282"
   },
   "R20": {
    "part": "R0603_10k",
@@ -76,7 +84,8 @@
    "pads": {
     "2": "GA1",
     "1": "VG1_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR1A": {
    "part": "BSC010N04LS6",
@@ -90,7 +99,8 @@
     "6": "SEC1_A",
     "7": "SEC1_A",
     "8": "SEC1_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R22": {
    "part": "R0603_10k",
@@ -98,7 +108,8 @@
    "pads": {
     "2": "GA2",
     "1": "VG2_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR2A": {
    "part": "BSC010N04LS6",
@@ -112,7 +123,8 @@
     "6": "SEC2_A",
     "7": "SEC2_A",
     "8": "SEC2_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R24": {
    "part": "R0603_10k",
@@ -120,7 +132,8 @@
    "pads": {
     "2": "GA3",
     "1": "VG3_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR3A": {
    "part": "BSC010N04LS6",
@@ -134,7 +147,8 @@
     "6": "SEC3_A",
     "7": "SEC3_A",
     "8": "SEC3_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R26": {
    "part": "R0603_10k",
@@ -142,7 +156,8 @@
    "pads": {
     "2": "GA4",
     "1": "VG4_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR4A": {
    "part": "BSC010N04LS6",
@@ -156,7 +171,8 @@
     "6": "SEC4_A",
     "7": "SEC4_A",
     "8": "SEC4_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R21": {
    "part": "R0603_10k",
@@ -164,7 +180,8 @@
    "pads": {
     "2": "GB1",
     "1": "VG1_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR1B": {
    "part": "BSC010N04LS6",
@@ -178,7 +195,8 @@
     "6": "SEC1_B",
     "7": "SEC1_B",
     "8": "SEC1_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R23": {
    "part": "R0603_10k",
@@ -186,7 +204,8 @@
    "pads": {
     "2": "GB2",
     "1": "VG2_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR2B": {
    "part": "BSC010N04LS6",
@@ -200,7 +219,8 @@
     "6": "SEC2_B",
     "7": "SEC2_B",
     "8": "SEC2_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R25": {
    "part": "R0603_10k",
@@ -208,7 +228,8 @@
    "pads": {
     "2": "GB3",
     "1": "VG3_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR3B": {
    "part": "BSC010N04LS6",
@@ -222,7 +243,8 @@
     "6": "SEC3_B",
     "7": "SEC3_B",
     "8": "SEC3_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R27": {
    "part": "R0603_10k",
@@ -230,7 +252,8 @@
    "pads": {
     "2": "GB4",
     "1": "VG4_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "SR4B": {
    "part": "BSC010N04LS6",
@@ -244,7 +267,8 @@
     "6": "SEC4_B",
     "7": "SEC4_B",
     "8": "SEC4_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "U2": {
    "part": "UCC27282DRCR",
@@ -260,7 +284,8 @@
     "5": "SW",
     "1": "VCC12",
     "11": "PGND"
-   }
+   },
+   "section": "4. Control: UCC25600 / UCC27282"
   },
   "QH": {
    "part": "CSD19531Q5A",
@@ -275,7 +300,8 @@
     "7": "VIN_P",
     "8": "VIN_P",
     "9": "VIN_P"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "R18": {
    "part": "R0603_10k",
@@ -283,7 +309,8 @@
    "pads": {
     "1": "GH",
     "2": "SW"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "R4": {
    "part": "R0603_10k",
@@ -291,7 +318,8 @@
    "pads": {
     "2": "GH",
     "1": "GH_DRV"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "QL": {
    "part": "CSD19531Q5A",
@@ -306,7 +334,8 @@
     "7": "SW",
     "8": "SW",
     "9": "SW"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "R19": {
    "part": "R0603_10k",
@@ -314,7 +343,8 @@
    "pads": {
     "1": "GL",
     "2": "PGND"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "R5": {
    "part": "R0603_10k",
@@ -322,7 +352,8 @@
    "pads": {
     "2": "GL",
     "1": "GL_DRV"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "C5": {
    "part": "C0603_100n",
@@ -330,7 +361,8 @@
    "pads": {
     "1": "HB",
     "2": "SW"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "D_BT": {
    "part": "BAT54WS",
@@ -338,7 +370,8 @@
    "pads": {
     "1": "HB",
     "2": "VCC12"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "C12": {
    "part": "C0603_100n",
@@ -346,7 +379,8 @@
    "pads": {
     "1": "OC",
     "2": "OCM"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "R16": {
    "part": "R0603_10k",
@@ -354,7 +388,8 @@
    "pads": {
     "2": "OC",
     "1": "OC1"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "R17": {
    "part": "R0603_10k",
@@ -362,7 +397,8 @@
    "pads": {
     "1": "OC",
     "2": "OCM"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "C11": {
    "part": "C0603_100n",
@@ -370,7 +406,8 @@
    "pads": {
     "1": "OC1",
     "2": "OCM"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "R15": {
    "part": "R0603_10k",
@@ -378,7 +415,8 @@
    "pads": {
     "2": "OC1",
     "1": "OCD"
-   }
+   },
+   "section": "5. Bias, overcurrent and start-up"
   },
   "R3": {
    "part": "R0603_10k",
@@ -386,7 +424,8 @@
    "pads": {
     "1": "OCD",
     "2": "OCM"
-   }
+   },
+   "section": "2. Resonant tank and T1-T4"
   },
   "C10": {
    "part": "C0603_100n",
@@ -394,7 +433,8 @@
    "pads": {
     "2": "PGND",
     "1": "REG4"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "C6": {
    "part": "C0603_100n",
@@ -402,7 +442,8 @@
    "pads": {
     "2": "PGND",
     "1": "SS"
-   }
+   },
+   "section": "4. Control: UCC25600 / UCC27282"
   },
   "C7": {
    "part": "C0603_100n",
@@ -410,7 +451,8 @@
    "pads": {
     "2": "PGND",
     "1": "REG1"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "C8": {
    "part": "C0603_100n",
@@ -418,7 +460,8 @@
    "pads": {
     "2": "PGND",
     "1": "REG2"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "C9": {
    "part": "C0603_100n",
@@ -426,7 +469,8 @@
    "pads": {
     "2": "PGND",
     "1": "REG3"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "Cin": {
    "part": "C0603_100n",
@@ -434,7 +478,8 @@
    "pads": {
     "2": "PGND",
     "1": "VIN_P"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "Cout": {
    "part": "C0603_100n",
@@ -442,7 +487,8 @@
    "pads": {
     "2": "PGND",
     "1": "VOUT"
-   }
+   },
+   "section": "6. Output interface"
   },
   "J_IN": {
    "part": "KF128_2P",
@@ -450,7 +496,8 @@
    "pads": {
     "2": "PGND",
     "1": "VIN_P"
-   }
+   },
+   "section": "1. Input and half bridge"
   },
   "J_OUT": {
    "part": "MX126_2P",
@@ -458,7 +505,8 @@
    "pads": {
     "2": "PGND",
     "1": "VOUT"
-   }
+   },
+   "section": "6. Output interface"
   },
   "R2": {
    "part": "R0603_10k",
@@ -466,7 +514,8 @@
    "pads": {
     "2": "PGND",
     "1": "RT"
-   }
+   },
+   "section": "4. Control: UCC25600 / UCC27282"
   },
   "U3": {
    "part": "UCC24624DR",
@@ -480,7 +529,8 @@
     "6": "VD1_B",
     "1": "VG1_A",
     "8": "VG1_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "U4": {
    "part": "UCC24624DR",
@@ -494,7 +544,8 @@
     "6": "VD2_B",
     "1": "VG2_A",
     "8": "VG2_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "U5": {
    "part": "UCC24624DR",
@@ -508,7 +559,8 @@
     "6": "VD3_B",
     "1": "VG3_A",
     "8": "VG3_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "U6": {
    "part": "UCC24624DR",
@@ -522,7 +574,8 @@
     "6": "VD4_B",
     "1": "VG4_A",
     "8": "VG4_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R28": {
    "part": "R0603_10k",
@@ -530,7 +583,8 @@
    "pads": {
     "1": "SEC1_A",
     "2": "VD1_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R29": {
    "part": "R0603_10k",
@@ -538,7 +592,8 @@
    "pads": {
     "1": "SEC1_B",
     "2": "VD1_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R30": {
    "part": "R0603_10k",
@@ -546,7 +601,8 @@
    "pads": {
     "1": "SEC2_A",
     "2": "VD2_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R31": {
    "part": "R0603_10k",
@@ -554,7 +610,8 @@
    "pads": {
     "1": "SEC2_B",
     "2": "VD2_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R32": {
    "part": "R0603_10k",
@@ -562,7 +619,8 @@
    "pads": {
     "1": "SEC3_A",
     "2": "VD3_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R33": {
    "part": "R0603_10k",
@@ -570,7 +628,8 @@
    "pads": {
     "1": "SEC3_B",
     "2": "VD3_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R34": {
    "part": "R0603_10k",
@@ -578,7 +637,8 @@
    "pads": {
     "1": "SEC4_A",
     "2": "VD4_A"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   },
   "R35": {
    "part": "R0603_10k",
@@ -586,7 +646,8 @@
    "pads": {
     "1": "SEC4_B",
     "2": "VD4_B"
-   }
+   },
+   "section": "3. Four synchronous rectifier groups"
   }
  },
  "gaps": {

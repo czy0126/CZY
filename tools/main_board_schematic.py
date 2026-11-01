@@ -59,6 +59,27 @@ GROUPS: tuple[tuple[tuple[str, ...], str], ...] = (
       "R28", "R29", "R30", "R31", "R32", "R33", "R34", "R35"), "R0603_10k"),
 )
 
+# The six functional blocks the A1 task card asks the sheet to be drawn in.
+# They are also the layout order, so the drawing reads as a signal chain
+# (input -> tank -> rectifier -> output) with the housekeeping beside it,
+# instead of as one alphabetical grid.  Every ref in GROUPS must appear once;
+# the test enforces that, so a new part cannot silently land in no block.
+SECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("1. Input and half bridge", ("J_IN", "Cin", "QH", "QL", "R4", "R5", "R18", "R19")),
+    ("2. Resonant tank and T1-T4", ("Lr", "Cr", "CT", "D_CT1", "D_CT2", "D_CT3",
+                                    "D_CT4", "R3", "T1", "T2", "T3", "T4")),
+    ("3. Four synchronous rectifier groups", ("U3", "U4", "U5", "U6",
+                                              "SR1A", "SR1B", "SR2A", "SR2B",
+                                              "SR3A", "SR3B", "SR4A", "SR4B",
+                                              "R20", "R21", "R22", "R23", "R24", "R25",
+                                              "R26", "R27", "R28", "R29", "R30", "R31",
+                                              "R32", "R33", "R34", "R35",
+                                              "C7", "C8", "C9", "C10")),
+    ("4. Control: UCC25600 / UCC27282", ("U1", "U2", "R1", "R2", "C6")),
+    ("5. Bias, overcurrent and start-up", ("C5", "D_BT", "R15", "R16", "R17", "C11", "C12")),
+    ("6. Output interface", ("J_OUT", "Cout")),
+)
+
 # Custom magnetics: no library symbol carries the required pin topology, so
 # they cannot be placed as real devices yet.  Recording the gap is the point --
 # a schematic that silently drops T1-T4 would still export a plausible netlist.
@@ -146,6 +167,24 @@ def device_of(ref: str) -> str | None:
     return None
 
 
+def section_of(ref: str) -> str | None:
+    for title, refs in SECTIONS:
+        if ref in refs:
+            return title
+    return None
+
+
+def basis_for(part: str, pin: str, symbol_pins: set[str]) -> str:
+    """What the pin->pad claim rests on, for the review sheet's basis column."""
+    if part in FET_EXPANSION and pin in FET_EXPANSION[part]:
+        return "measured pin dump: pin name -> pad group"
+    if part in DIODE_PINS and pin in DIODE_PINS[part]:
+        return "measured pin dump: diode A/K -> pad"
+    if pin in symbol_pins:
+        return "symbol pin name equals golden pin"
+    return "two-terminal legend N1/N2, A/K, P/N -> 1/2"
+
+
 def pads_for(part: str, pin: str, symbol_pins: set[str]) -> tuple[str, ...]:
     """Which library pads a golden pin connects to."""
     if part in FET_EXPANSION and pin in FET_EXPANSION[part]:
@@ -179,6 +218,10 @@ def build_plan(golden: dict[str, dict[str, str]],
             continue
 
         symbol_pins = {p["num"] for p in dev["pins"]}
+        common = {
+            "ref": ref, "section": section_of(ref) or "", "mpn": dev["mpn"],
+            "lcsc": str(dev.get("lcsc") or ""), "footprint": str(dev.get("footprint") or ""),
+        }
         pad_nets: dict[str, str] = {}
         for pin, net in pins.items():
             for pad in pads_for(part, pin, symbol_pins):
@@ -186,9 +229,9 @@ def build_plan(golden: dict[str, dict[str, str]],
                     raise MappingError(f"{ref}: pad {pad} claimed by {pad_nets[pad]} and {net}")
                 pad_nets[pad] = net
                 rows.append({
-                    "ref": ref, "mpn": dev["mpn"], "lcsc": str(dev.get("lcsc") or ""),
-                    "footprint": str(dev.get("footprint") or ""),
-                    "golden_pin": pin, "pad": pad, "net": net,
+                    **common, "golden_pin": pin, "pad": pad, "net": net,
+                    "basis": basis_for(part, pin, symbol_pins),
+                    "review_status": "MAPPED",
                     "note": PLACEHOLDER.get(ref, ""),
                 })
 
@@ -197,24 +240,27 @@ def build_plan(golden: dict[str, dict[str, str]],
                 raise MappingError(f"{ref}: bonded pad {pad} already carries {pad_nets[pad]}")
             pad_nets[pad] = net
             rows.append({
-                "ref": ref, "mpn": dev["mpn"], "lcsc": str(dev.get("lcsc") or ""),
-                "footprint": str(dev.get("footprint") or ""),
-                "golden_pin": "", "pad": pad, "net": net,
+                **common, "golden_pin": "", "pad": pad, "net": net,
+                "basis": "package pin absent from the deck-derived netlist",
+                "review_status": "BONDED BY DESIGN",
                 "note": "BONDED BY DESIGN - package pad the deck cannot express",
             })
 
         for pad in sorted(symbol_pins - set(pad_nets)):
-            note = UNCONNECTED.get(part, {}).get(pad, "NOT WIRED - unassigned pad, investigate")
+            reason = UNCONNECTED.get(part, {}).get(pad)
+            note = reason or "NOT WIRED - unassigned pad, investigate"
             if ref in PLACEHOLDER:
                 note = f"{note}; {PLACEHOLDER[ref]}"
             rows.append({
-                "ref": ref, "mpn": dev["mpn"], "lcsc": str(dev.get("lcsc") or ""),
-                "footprint": str(dev.get("footprint") or ""),
-                "golden_pin": "", "pad": pad, "net": "", "note": note,
+                **common, "golden_pin": "", "pad": pad, "net": "",
+                "basis": "no net by design" if reason else "none - not yet decided",
+                "review_status": "OPEN - REASON GIVEN" if reason else "OPEN - NEEDS DECISION",
+                "note": note,
             })
 
         plan["refs"][ref] = {
             "part": part, "uuid": dev["uuid"], "pads": pad_nets,
+            "section": section_of(ref),
         }
 
     plan["review_rows"] = rows
@@ -222,7 +268,10 @@ def build_plan(golden: dict[str, dict[str, str]],
 
 
 def write_review(rows: list[dict[str, str]], path: Path = REVIEW) -> None:
-    cols = ["ref", "mpn", "lcsc", "footprint", "golden_pin", "pad", "net", "note"]
+    # The column set is the A1 task card's: ref, MPN, symbol pin, footprint pad,
+    # net, the basis for the mapping, and a review status.
+    cols = ["ref", "section", "mpn", "lcsc", "footprint", "golden_pin", "pad", "net",
+            "basis", "review_status", "note"]
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=cols)

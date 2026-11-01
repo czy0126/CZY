@@ -13,6 +13,7 @@
 | 结论 | 证据 |
 |------|------|
 | 61 个位号已放置，227 个焊盘全部有归属 | `pin_footprint_review.csv` |
+| 按 A1 任务卡的**六个功能块**绘制，每块有标题文字，块内按功能排列 | `gen/slice_00.js` 的 `labels` |
 | 金网表的 193 个引脚展开成 **221 个焊盘**，逐焊盘比对**无一错接、无一漏接** | `netlist_compare.json` |
 | U2（UCC27282）裸露焊盘按设计接 PGND，单独计数，**不算进**金网表的 221 | `pads_bonded_by_design` |
 | T1–T4、CT 未放置，原因是**库里没有可用的符号**，已在 `placement_plan.json` 里逐条写明 | `gaps` / `unresolved` |
@@ -21,6 +22,20 @@
 比对是按**焊盘**做的，不是按位号数量做的。这一步是必要的：金网表把 MOS 的引脚叫 `S`，
 而 DFN/TDSON 封装的源极是 1、2、3 三个焊盘——只连其中一个，导出的网表仍然"和金网表一致"，
 错误要到出铜箔才暴露。
+
+## 图纸怎么分区
+
+A1 任务卡要求按六部分绘图，`tools/main_board_schematic.py` 的 `SECTIONS` 就是这六块，
+放置顺序按信号链：输入/半桥 → 谐振腔与 T1–T4 → 四组 SR → 控制（UCC25600/UCC27282）
+→ 偏置/OC/启动 → 输出接口。每块画一个标题文字。
+
+`test_every_placed_ref_sits_in_exactly_one_section` 要求**每个位号恰好落在一块里**：
+少一块会被发现（否则器件留在原地），多一块也会被发现（否则被放两次）。
+测试还把 `SECTIONS` 的全部位号与金网表的 66 个位号做了集合相等——新增/删除位号不会静默掉队。
+
+审表的 `review_status` 只有四种取值：`MAPPED`、`BONDED BY DESIGN`、`OPEN - REASON GIVEN`、
+`OPEN - NEEDS DECISION`。最后一个必须是空的——留一格空白和"已审过"看起来一模一样，
+所以测试 `test_every_review_row_carries_a_status_and_a_basis` 直接把它当失败条件。
 
 ## 引脚映射从哪来
 

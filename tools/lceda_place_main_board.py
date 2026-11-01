@@ -20,6 +20,8 @@ import json
 import subprocess
 from pathlib import Path
 
+import main_board_schematic as mbs
+
 ROOT = Path(__file__).resolve().parent.parent
 HW = ROOT / "hardware/dcx_main"
 PLAN = HW / "placement_plan.json"
@@ -29,18 +31,37 @@ PROJECT = "14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46"
 
 COLS = 6
 DX, DY = 380, 300          # grid pitch: wide enough for a SON-10 plus its stubs
-X0, Y0 = 220, 200
+X0, Y0 = 220, 300
+SECTION_GAP = 240          # vertical room for the next block's label
 SLICE = 22                 # refs per invocation
 
 
-def positions(refs: list[str]) -> dict[str, tuple[int, int]]:
-    return {ref: (X0 + (i % COLS) * DX, Y0 + (i // COLS) * DY) for i, ref in enumerate(refs)}
+def layout(plan: dict) -> tuple[dict[str, tuple[int, int]], list[tuple[str, int, int]]]:
+    """Return ref positions and the section labels, in drawing order.
+
+    Parts are laid out block by block rather than as one alphabetical grid, so
+    the sheet reads as a signal chain.  A block whose parts are all unplaceable
+    (the tank, today) gets no label -- an empty title over empty space would be
+    worse than its absence, which the plan already records as a gap.
+    """
+    pos: dict[str, tuple[int, int]] = {}
+    labels: list[tuple[str, int, int]] = []
+    y = Y0
+    for title, refs in mbs.SECTIONS:
+        present = [r for r in refs if r in plan["refs"]]
+        if not present:
+            continue
+        labels.append((title, X0, y - 130))
+        for i, ref in enumerate(present):
+            pos[ref] = (X0 + (i % COLS) * DX, y + (i // COLS) * DY)
+        y += ((len(present) + COLS - 1) // COLS) * DY + SECTION_GAP
+    return pos, labels
 
 
 def emit(plan: dict, out: Path) -> list[Path]:
     """One JS file per slice: place the refs, then stub every pad to its net."""
-    refs = list(plan["refs"])
-    pos = positions(refs)
+    pos, labels = layout(plan)
+    refs = [r for r in pos]           # layout order, i.e. section order
     files: list[Path] = []
     out.mkdir(parents=True, exist_ok=True)
 
@@ -49,6 +70,8 @@ def emit(plan: dict, out: Path) -> list[Path]:
         payload = {
             "project": PROJECT,
             "clear": start == 0,
+            # labels belong with the clear, so a re-run never stacks duplicates
+            "labels": [{"text": t, "x": x, "y": y} for t, x, y in labels] if start == 0 else [],
             "parts": [
                 {"ref": r, "uuid": plan["refs"][r]["uuid"],
                  "x": pos[r][0], "y": pos[r][1],
@@ -74,6 +97,8 @@ const sch = info.data[0].schematic;
 await eda.dmt_EditorControl.openDocument(sch.page[0].uuid);
 await new Promise((r) => setTimeout(r, 2000));
 
+const report = { placed: [], unwired: [], failed: [], labels: 0 };
+
 if (D.clear) {
   const stale = (await eda.sch_PrimitiveComponent.getAll())
     .filter((c) => c.getState_Designator() || c.getState_ComponentType())
@@ -81,9 +106,14 @@ if (D.clear) {
   const wires = (await eda.sch_PrimitiveWire.getAll()).map((w) => w.getState_PrimitiveId());
   if (wires.length) await eda.sch_PrimitiveWire.delete(wires);
   if (stale.length) await eda.sch_PrimitiveComponent.delete(stale);
+  // section labels are primitives too; without this a re-run stacks copies
+  const texts = (await eda.sch_PrimitiveText.getAll()).map((t) => t.getState_PrimitiveId());
+  if (texts.length) await eda.sch_PrimitiveText.delete(texts);
+  for (const l of D.labels) {
+    if (await eda.sch_PrimitiveText.create(l.x, l.y, l.text, 0)) report.labels++;
+  }
 }
 
-const report = { placed: [], unwired: [], failed: [] };
 for (const p of D.parts) {
   const c = await eda.sch_PrimitiveComponent.create(
     { libraryType: '3', libraryUuid: LIB, uuid: p.uuid }, p.x, p.y,
@@ -151,7 +181,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         value = res["value"]
         print(f"{path.name}: placed {len(value['placed'])}, "
-              f"unwired {len(value['unwired'])}, failed {len(value['failed'])}")
+              f"unwired {len(value['unwired'])}, failed {len(value['failed'])}, "
+              f"labels {value.get('labels', 0)}")
         for bad in value["failed"] + value["unwired"]:
             print("   ", bad)
     return 0

@@ -123,5 +123,39 @@ def test_the_written_review_sheet_matches_a_fresh_build(tmp_path):
     mbs.write_review(p["review_rows"], out)
     rows = list(csv.DictReader(out.open(encoding="utf-8")))
     assert len(rows) == len(p["review_rows"])
-    assert set(rows[0]) == {"ref", "mpn", "lcsc", "footprint", "golden_pin", "pad", "net", "note"}
+    assert set(rows[0]) == {"ref", "section", "mpn", "lcsc", "footprint", "golden_pin",
+                            "pad", "net", "basis", "review_status", "note"}
     assert all(r["net"] for r in rows if r["golden_pin"]), "a wired pad has no net"
+
+
+def test_every_placed_ref_sits_in_exactly_one_section():
+    """The six blocks are the drawing order.  A part in no section would be
+    placed at an arbitrary spot; a part in two would be placed twice."""
+    seen: dict[str, str] = {}
+    for title, refs in mbs.SECTIONS:
+        for ref in refs:
+            assert ref not in seen, f"{ref} is in {seen[ref]!r} and {title!r}"
+            seen[ref] = title
+    assert set(seen) == set(GOLDEN), (
+        f"not sectioned: {sorted(set(GOLDEN) - set(seen))}; "
+        f"sectioned but unknown: {sorted(set(seen) - set(GOLDEN))}")
+
+
+def test_every_review_row_carries_a_status_and_a_basis():
+    """An empty status cell is indistinguishable from a reviewed one."""
+    rows = plan()["review_rows"]
+    assert all(r["review_status"] for r in rows)
+    assert all(r["basis"] for r in rows)
+    statuses = {r["review_status"] for r in rows}
+    assert statuses <= {"MAPPED", "BONDED BY DESIGN",
+                        "OPEN - REASON GIVEN", "OPEN - NEEDS DECISION"}, statuses
+    # nothing may be left in the "needs decision" bucket on a finished sheet
+    assert "OPEN - NEEDS DECISION" not in statuses, [
+        (r["ref"], r["pad"]) for r in rows if r["review_status"] == "OPEN - NEEDS DECISION"]
+
+
+def test_magnetics_are_named_in_a_section_even_though_they_cannot_be_placed():
+    """Their block must still exist on the sheet, otherwise the tank section
+    reads as complete when it is missing its transformers."""
+    for ref in mbs.MAGNETIC_GAPS:
+        assert mbs.section_of(ref) is not None, f"{ref} belongs to no section"
