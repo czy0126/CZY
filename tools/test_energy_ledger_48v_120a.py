@@ -104,7 +104,7 @@ def test_the_closure_is_reported_as_not_closed():
     assert balance["closure_status"] == "NOT_CLOSED"
     assert balance["closure_residual_w"] == pytest.approx(0.6673, abs=5e-3)
     assert abs(balance["closure_residual_w"]) > balance["target_w"]
-    assert d["results"]["window_resolves_0p2_w_period_averaged"] is True
+    assert d["diagnostic_integrity"]["status"] == "QUARANTINED_PRE_FIX_CANDIDATE_RL"
     averaged = balance["period_averaged"]
     assert averaged["periods"] < d["window"]["periods"]     # one whole period per end
     assert abs(averaged["closure_residual_w"]) > balance["target_w"]

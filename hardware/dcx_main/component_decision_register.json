@@ -1,0 +1,1173 @@
+{
+  "status": "SELECTION_REGISTER_NOT_PURCHASE_ORDER",
+  "design_review_baseline": "native schematic A1 review, NOT fabrication-ready",
+  "total_placeholder_refs": 61,
+  "items": [
+    {
+      "ref": "C10",
+      "priority": "P1",
+      "part_role": "REG capacitors",
+      "existing_value_or_rating": "2.2 uF each",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C101",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 1 uF at U1; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C102",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 100 nF at U1; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C103",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 1 uF at U2; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C104",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 100 nF at U2; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C105",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 1 uF at U3; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C106",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 100 nF at U3; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C107",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 1 uF at U4; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C108",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 100 nF at U4; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C109",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 1 uF at U5; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C11",
+      "priority": "P1",
+      "part_role": "OC filter (Cf)",
+      "existing_value_or_rating": "47 nF; tau with Rf = 47 us",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "sim/v2/startup_ct_fault_drv.cir",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C110",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 100 nF at U5; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C111",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 1 uF at U6; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C112",
+      "priority": "P1",
+      "part_role": "VDD decoupling",
+      "existing_value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603/0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for 100 nF at U6; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C12",
+      "priority": "P1",
+      "part_role": "OC hold (Coc)",
+      "existing_value_or_rating": "10 nF (51.3 us OC delay); 1 nF gives 13 us",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "docs/续接任务书_真实控制与SR.md",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C13",
+      "priority": "P1",
+      "part_role": "EN filter",
+      "existing_value_or_rating": "1 nF to PGND at U2.6",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF symbol for a 1 nF EN filter; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C5",
+      "priority": "P1",
+      "part_role": "HB bootstrap",
+      "existing_value_or_rating": "220 nF; >=25 V",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0805",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C6",
+      "priority": "P1",
+      "part_role": "SS capacitor",
+      "existing_value_or_rating": "10 nF",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C7",
+      "priority": "P1",
+      "part_role": "REG capacitors",
+      "existing_value_or_rating": "2.2 uF each",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C8",
+      "priority": "P1",
+      "part_role": "REG capacitors",
+      "existing_value_or_rating": "2.2 uF each",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "C9",
+      "priority": "P1",
+      "part_role": "REG capacitors",
+      "existing_value_or_rating": "2.2 uF each",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "CT",
+      "priority": "P0",
+      "part_role": "over-current CT",
+      "existing_value_or_rating": "100:1; 1 V Level-1 VOC; as built 10 ohm burden + 24/35 divider reads 0.573 V at 13.86 A and trips at 24.2 A (measured); core B/Bsat 0.7 %",
+      "current_mpn": "TO SELECT",
+      "current_package": "-",
+      "source_path": "design/v2/真实控制与SR验证进展.md",
+      "issues": [
+        "PLACEHOLDER footprint XFMR-TH_ZHT104A (2 pads for 4 logical terminals); pinout NOT verified"
+      ],
+      "requested_decision": "manufacturer terminal/pad and DOT signoff",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "Cin",
+      "priority": "P0",
+      "part_role": "48 V input capacitor bank",
+      "existing_value_or_rating": "48 V bus; >=5.32 A RMS at 200 kHz (bridge ripple); 13.9 A pulses",
+      "current_mpn": "TO SELECT",
+      "current_package": "-",
+      "source_path": "measured model",
+      "issues": [
+        "PLACEHOLDER 100 nF 0603; the design is a 20 uF input bank (TO SELECT)"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "Cout",
+      "priority": "P0",
+      "part_role": "output capacitor bank",
+      "existing_value_or_rating": "15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=52.5 A RMS; bank ESR <=0.2 mohm; part data unverified",
+      "current_mpn": "TO SELECT",
+      "current_package": "polymer SMD",
+      "source_path": "computed",
+      "issues": [
+        "PLACEHOLDER 100 nF 0603; the design is 15 x 470 uF (TO SELECT)"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "Cr",
+      "priority": "P0",
+      "part_role": "resonant capacitor",
+      "existing_value_or_rating": "0.62 uF; peak v_Cr 41.4 V (reconstructed) vs 100 V rated = 2.42x; 9.45 A RMS at 200.6 kHz; bank ESR <=11.2 mohm for 1 W",
+      "current_mpn": "TO SELECT",
+      "current_package": "film",
+      "source_path": "computed",
+      "issues": [
+        "PLACEHOLDER 100 nF 0603; the design value is 620 nF film (TO SELECT)"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "D_BT",
+      "priority": "P0",
+      "part_role": "bootstrap diode",
+      "existing_value_or_rating": ">=100 V reverse - HB is 60 V against VCC12 12 V when QH is on, so 48 V; If avg 9.6 mA (Qg 48 nC datasheet max x 200.6 kHz; the deck's 4 nF Cgh gives the same 48 nC); droop 218 mV on 220 nF; peak ~0.4 A recharge spike is derived, NOT measured - the deck's Bgh is a source to sw, so Cbt is never loaded",
+      "current_mpn": "TO SELECT",
+      "current_package": "0603",
+      "source_path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
+      "issues": [
+        "PLACEHOLDER SOD-323 BAT54WS; the BOM calls for a 0603 >=100 V part"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "Lr",
+      "priority": "P0",
+      "part_role": "resonant inductor",
+      "existing_value_or_rating": "1.0 uH external (trim to 1.00 uH tank total minus measured leakage); 13.9 A steady, 22.5 A startup (physical deck), 84.0 A @1.0 uH and 104.2 A @0.875 uH fault-to-trip; ELP32 N97 3 turns 1.44 mm gap (2 turns gives 0.351 T > Bsat 0.310 T, eliminated)",
+      "current_mpn": "TO SELECT",
+      "current_package": "-",
+      "source_path": "docs/续接任务书_真实控制与SR.md",
+      "issues": [
+        "PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP32 3-turn / 1.444 mm gap part"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R1",
+      "priority": "P1",
+      "part_role": "RT resistor",
+      "existing_value_or_rating": "976 ohm; 1%",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R10",
+      "priority": "P1",
+      "part_role": "U2 control pull-downs and run jumper",
+      "existing_value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; BOM value frozen (LI pull-down), MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R15",
+      "priority": "P1",
+      "part_role": "OC filter series (Rf)",
+      "existing_value_or_rating": "1 kohm; 47 us with Cf",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "sim/v2/startup_ct_fault_drv.cir",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R16",
+      "priority": "P1",
+      "part_role": "OC divider top (Rd1)",
+      "existing_value_or_rating": "10 kohm; 1%; as built - kept",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "sim/v2/startup_ct_fault_drv.cir",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R17",
+      "priority": "P1",
+      "part_role": "OC divider bottom (Rd2)",
+      "existing_value_or_rating": "24 kohm",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "sim/v2/startup_ct_fault_drv.cir",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R18",
+      "priority": "P1",
+      "part_role": "QH gate-source pull-down",
+      "existing_value_or_rating": "10 kohm",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R19",
+      "priority": "P1",
+      "part_role": "QL gate-source pull-down",
+      "existing_value_or_rating": "10 kohm",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R2",
+      "priority": "P1",
+      "part_role": "DT resistor",
+      "existing_value_or_rating": "5.36 kohm; 1%",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R20",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R21",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R22",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R23",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R24",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R25",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R26",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R27",
+      "priority": "P1",
+      "part_role": "SR gate resistor",
+      "existing_value_or_rating": "2.2 ohm; UCC24624 6.5/0.9 ohm + 2.2 = the model's 8.7/3.1",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R28",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R29",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R3",
+      "priority": "P1",
+      "part_role": "OC burden resistor",
+      "existing_value_or_rating": "10 ohm; 89 mW at rated (measured); the ideal 10.58 ohm is within the CT's own tolerance, so 10 is kept",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0805",
+      "source_path": "sim/v2/startup_ct_fault_drv.cir",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R30",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R31",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R32",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R33",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R34",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R35",
+      "priority": "P1",
+      "part_role": "SR drain Kelvin link",
+      "existing_value_or_rating": "0 ohm; VD1/VD2 must sense at the SR drain, not at the pad",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R4",
+      "priority": "P1",
+      "part_role": "primary gate resistor",
+      "existing_value_or_rating": "2.2 ohm external; the deck's 3.2 ohm lump = UCC27282 1.3/0.85 ohm + 2.2 - same design, different quantity",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R5",
+      "priority": "P1",
+      "part_role": "primary gate resistor",
+      "existing_value_or_rating": "2.2 ohm external; the deck's 3.2 ohm lump = UCC27282 1.3/0.85 ohm + 2.2 - same design, different quantity",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R7",
+      "priority": "P1",
+      "part_role": "U2 control pull-downs and run jumper",
+      "existing_value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; BOM value frozen (EN pull-down), MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R8",
+      "priority": "P1",
+      "part_role": "U2 control pull-downs and run jumper",
+      "existing_value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k symbol for a 1k RUN jumper; MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "R9",
+      "priority": "P1",
+      "part_role": "U2 control pull-downs and run jumper",
+      "existing_value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "current_mpn": "TO ASSIGN",
+      "current_package": "0603",
+      "source_path": "pin_connections.csv",
+      "issues": [
+        "PLACEHOLDER 0603 10k; BOM value frozen (HI pull-down), MPN TO ASSIGN"
+      ],
+      "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "T1",
+      "priority": "P0",
+      "part_role": "transformer winding",
+      "existing_value_or_rating": "3:1:1 centre-tapped; Lm 10 uH; gap 0.121 mm",
+      "current_mpn": "TO BUILD",
+      "current_package": "foil 0.10 x 18 mm",
+      "source_path": "magnetics package",
+      "issues": [
+        "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified"
+      ],
+      "requested_decision": "manufacturer terminal/pad and DOT signoff",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "T2",
+      "priority": "P0",
+      "part_role": "transformer winding",
+      "existing_value_or_rating": "3:1:1 centre-tapped; Lm 10 uH; gap 0.121 mm",
+      "current_mpn": "TO BUILD",
+      "current_package": "foil 0.10 x 18 mm",
+      "source_path": "magnetics package",
+      "issues": [
+        "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified"
+      ],
+      "requested_decision": "manufacturer terminal/pad and DOT signoff",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "T3",
+      "priority": "P0",
+      "part_role": "transformer winding",
+      "existing_value_or_rating": "3:1:1 centre-tapped; Lm 10 uH; gap 0.121 mm",
+      "current_mpn": "TO BUILD",
+      "current_package": "foil 0.10 x 18 mm",
+      "source_path": "magnetics package",
+      "issues": [
+        "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified"
+      ],
+      "requested_decision": "manufacturer terminal/pad and DOT signoff",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    },
+    {
+      "ref": "T4",
+      "priority": "P0",
+      "part_role": "transformer winding",
+      "existing_value_or_rating": "3:1:1 centre-tapped; Lm 10 uH; gap 0.121 mm",
+      "current_mpn": "TO BUILD",
+      "current_package": "foil 0.10 x 18 mm",
+      "source_path": "magnetics package",
+      "issues": [
+        "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified"
+      ],
+      "requested_decision": "manufacturer terminal/pad and DOT signoff",
+      "verified_mpn": null,
+      "manufacturer_datasheet": null,
+      "eda_footprint_verified": false,
+      "decision_owner": null,
+      "reviewer": null,
+      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+    }
+  ],
+  "requirements": [
+    "Replace placeholder package and MPN only with manufacturer evidence",
+    "Confirm voltage/RMS/capacitance and actual body/footprint for Cr/Cout/Cin",
+    "Confirm MOS driver bootstrap capacitance and diode ratings under actual 50V high output",
+    "Output connector/busbar and via resistance require signed four-wire and DFM data",
+    "No 100/120A continuous or thermal signoff is claimed"
+  ]
+}

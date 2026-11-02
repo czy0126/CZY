@@ -86,9 +86,8 @@ def test_the_closure_is_reported_as_not_closed():
     balance = d["balance"]
     assert balance["closure_status"] == "NOT_CLOSED"
     assert abs(balance["closure_residual_w"]) > balance["target_w"]
-    # The window has to resolve the target for NOT_CLOSED to mean anything:
-    # a window too noisy to see 0.2 W could not report a 0.56 W miss either.
-    assert d["results"]["window_resolves_0p2_w_period_averaged"] is True
+    # The old SEM is invalid: per-period port used RL=18.9m instead of candidate RL.
+    assert d["diagnostic_integrity"]["status"] == "QUARANTINED_PRE_FIX_CANDIDATE_RL"
     averaged = balance["period_averaged"]
     assert averaged["periods"] < d["window"]["periods"]     # one whole period per end
     assert abs(averaged["closure_residual_w"]) > balance["target_w"]

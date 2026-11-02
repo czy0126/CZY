@@ -3,7 +3,7 @@
 > **最新状态：NOT_FOR_FAB / A1-WIP。** 本目录已移入当前开发分支，保留嘉立创原生 `.eprj2` 和真实焊盘比对。**`netlist_compare.json:readiness=PARTIAL_PASS` 不是完整原理图或投板验收。**
 > 17 个 BOM 真实外围（R7–R10、C13、C101–C112）与**五只磁件（T1–T4、CT）**都已画进原生原理图并逐焊盘核对；
 > 但外围仍是**值/MPN 占位件**，磁件的引脚号是**逻辑端子名**而不是厂商端子图，物理端子号/极性、
-> GUI ERC 与带网 PCB 全部未完成。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[直接整改路线](../../docs/D1_电气优先_增输出与设计整改_2026-11-01.md)。
+> GUI ERC 与带网 PCB 全部未完成。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[61 件真实选型登记表](component_decision_register.json)、[厂家 24 个端子回填表](vendor_terminal_request.json) 和 [外部阻塞解除与执行协议](../../docs/D1_外部阻塞解除与测试交付_2026-11-02.md)。
 
 
 这是 `design/v3/pcb/board_netlist.csv`（由 v3 deck 派生的**金网表**）在嘉立创 EDA Pro 里的

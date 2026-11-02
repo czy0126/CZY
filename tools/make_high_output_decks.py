@@ -33,6 +33,8 @@ CASES = {
 PROBE_CASES = {
     "vin48_i110_cin": ("48", "16.9m"),
     "vin48_i120_cin": ("48", "15.4m"),
+    "vin50_i110_cin": ("50", "17.8m"),
+    "vin50_i120_cin": ("50", "16.3m"),
 }
 # The deck whose `.save` block defines what "measured" means for the ledger.
 LEDGER_DECK = ROOT / "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir"
