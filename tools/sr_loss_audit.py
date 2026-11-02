@@ -55,6 +55,9 @@ RG_OHM = 1.0                   # SR_DEVICE ``Rg gn gi {RG}`` default RG=1
 LEDGER_100A = ROOT / "design/v3/stage_f/energy_ledger_100a.json"
 LEDGER_ALIGNED = ROOT / "design/v3/stage_f/energy_ledger_100a_phase_aligned.json"
 LEDGER_110A = ROOT / "design/v3/power_priority/energy_ledger_48v_110a.json"
+LEDGER_120A = ROOT / "design/v3/power_priority/energy_ledger_48v_120a.json"
+LEDGER_50V_110A = ROOT / "design/v3/power_priority/energy_ledger_50v_110a.json"
+LEDGER_50V_120A = ROOT / "design/v3/power_priority/energy_ledger_50v_120a.json"
 
 CASES = (
     {"name": "aligned_5ns", "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
@@ -81,6 +84,21 @@ CASES = (
     {"name": "candidate_111a",
      "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
      "periods": 22, "vin": 48.0, "rl": 16.9e-3, "ledger": LEDGER_110A,
+     "family": "candidate"},
+    # The 50 V runs and the 48 V/120 A candidate use the same 1 uH tank and
+    # 7.05 mF Cout as the 111 A deck, so the ledger tool's mother-deck storage
+    # constants debit their closure just the same.
+    {"name": "candidate_50v_110a",
+     "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw",
+     "periods": 22, "vin": 50.0, "rl": 17.8e-3, "ledger": LEDGER_50V_110A,
+     "family": "candidate"},
+    {"name": "candidate_50v_120a",
+     "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
+     "periods": 22, "vin": 50.0, "rl": 16.3e-3, "ledger": LEDGER_50V_120A,
+     "family": "candidate"},
+    {"name": "candidate_48v_120a",
+     "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+     "periods": 22, "vin": 48.0, "rl": 15.4e-3, "ledger": LEDGER_120A,
      "family": "candidate"},
 )
 
@@ -661,6 +679,15 @@ def assemble(cases: list[dict[str, object]]) -> dict[str, object]:
     }
 
 
+def select_cases(names: list[str]) -> list[dict[str, object]]:
+    """The named cases, in ``CASES`` order; an unknown name is an error."""
+    unknown = [n for n in names if n not in {spec["name"] for spec in CASES}]
+    if unknown:
+        raise ValueError(f"unknown case(s): {', '.join(unknown)}")
+    wanted = set(names)
+    return [spec for spec in CASES if spec["name"] in wanted]
+
+
 def write(path: Path = OUT,
           cases: list[dict[str, object]] | None = None) -> dict[str, object]:
     """Scan (unless ``cases`` are given) and write the report."""
@@ -673,11 +700,24 @@ def write(path: Path = OUT,
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", type=Path, default=OUT)
+    parser.add_argument("--case", nargs="+", default=None,
+                        help="build only these CASES entries (candidate evidence)")
     return parser.parse_args(argv)
 
 
 def main() -> None:
     args = parse_args()
+    if args.case:
+        try:
+            specs = select_cases(args.case)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+        doc = {"cases": [build_case(spec) for spec in specs]}
+        args.json.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n",
+                             encoding="utf-8")
+        print(json.dumps({"cases": [case["name"] for case in doc["cases"]]},
+                         indent=2, ensure_ascii=False))
+        return
     summary = write(args.json)
     print(json.dumps({
         "checks": summary["checks"],

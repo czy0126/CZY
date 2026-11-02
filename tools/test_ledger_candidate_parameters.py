@@ -58,7 +58,7 @@ def test_both_per_period_stats_use_the_candidates_load_and_input(monkeypatch):
     assert two["mean_w"] == pytest.approx(one["mean_w"])
 
 
-def test_saved_candidate_diagnostics_have_explicit_invalidity_notice():
+def test_saved_candidate_diagnostics_were_recomputed_with_the_candidate_load():
     import json
     from pathlib import Path
 
@@ -66,8 +66,15 @@ def test_saved_candidate_diagnostics_have_explicit_invalidity_notice():
     for target, rl in [("110a", 0.0169), ("120a", 0.0154)]:
         d = json.loads((root / f"design/v3/power_priority/energy_ledger_48v_{target}.json").read_text(encoding="utf-8"))
         assert d["port"]["rl_ohm"] == pytest.approx(rl)
-        assert d["diagnostic_integrity"]["status"] == "QUARANTINED_PRE_FIX_CANDIDATE_RL"
+        diag = d["diagnostic_integrity"]
+        assert diag["status"] == "RECOMPUTED_WITH_REQUESTED_VIN_RL"
+        assert diag["recomputed_from_raw"] is True
+        assert diag["rl_ohm"] == pytest.approx(rl)
+        # The regression that motivated this test: the main window's port power
+        # and the primary windows[] row are now the same quantity.  Before the
+        # fix they differed by tens of watts (34 W vs 56 W for the 120 A case).
+        assert d["windows"][0]["periods"] == d["window"]["periods"]
+        assert d["windows"][0]["port_w"] == pytest.approx(
+            d["port"]["pin_source_w"] - d["port"]["pout_w"], rel=1e-12)
+        assert abs(d["windows"][0]["port_w"]) < 100.0
         assert d["balance"]["closure_status"] == "NOT_CLOSED"
-        assert "windows" in d["diagnostic_integrity"]["invalid_fields"]
-        # These fields were *not* rebuilt without the ignored large raw files.
-        assert not d["diagnostic_integrity"]["recomputed_from_raw"]

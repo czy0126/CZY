@@ -9,12 +9,26 @@ def test_only_load_changes_in_true_cold_models():
         original = source.read_text(encoding="utf-8")
         generated = tr.dest(name).read_text(encoding="utf-8")
         assert generated == tr.build(original, name)
-        assert generated.splitlines()[4:] == original.replace(tr.PARAM, tr.NEW).splitlines()
+        assert generated.splitlines()[len(tr.note(name).splitlines()):] == \
+            original.replace(tr.PARAM, tr.NEW).splitlines()
         assert "UNRUN" in generated.splitlines()[0]
         assert ".tran 0 8m 0 10n uic" in generated
         assert ".ic V(out)" not in "\n".join(
             x for x in generated.splitlines() if not x.startswith("*")
         )
+
+
+def test_the_fault_note_restates_severity_for_the_15p4m_load():
+    """The inherited block says 1.818 mOhm / 11x -- true for its 20 mOhm parent.
+
+    This candidate's RL is 15.4 mOhm, so the same 2 mOhm branch (Ron 1m +
+    Rflt 1m) is 1.770 mOhm, i.e. 8.7x.  Reading the parent's number next to
+    RL=15.4m would overstate the fault by 25 %.
+    """
+    cold_oc = tr.build(tr.SOURCES["cold_oc"].read_text(encoding="utf-8"), "cold_oc")
+    assert "1.770 mOhm = 8.7x" in cold_oc
+    cold = tr.build(tr.SOURCES["cold"].read_text(encoding="utf-8"), "cold")
+    assert "1.770 mOhm" not in cold
 
 
 def test_severe_overload_only_in_oc_variant():

@@ -86,6 +86,15 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   与 `48V120A_实测_2026-11-02.md`。该账本**没有 `step_check`**：仓库里唯一的 2 ns raw
   属于 100 A deck，`step_check` 会把它当对照列；`deck_difference()` 现在拒绝这种比较，
   候选必须用 `--no-step-check`，`mark_no_step_check()` 负责改掉 sensitivity 注里的指针。
+- **48 V/120 A 目标的真冷启动与故障 deck 已跑**：`..._cold_vin48_i120_target.cir`
+  跑完 8 ms（2294.151 s、13.09 GB、37 变量），首个采样点 0 V，末端 **1.873786 V /
+  121.674 A / 228.000 W**，与稳态 120 A 候选只差 0.094 mV。
+  故障 deck `..._cold_oc_vin48_i120_target.cir` 在 **7.5714 ms 塌缩**（8 ms 未达）：
+  8.70× 过载、trip 5.591809 ms（投入后 41.81 µs）、trip 前峰值 84.83 A
+  （2 匝磁通 0.326 T，已过 Bsat 0.310 T）、SR 峰值 255.22 A。
+  **按 PID 终止的 run 日志没有 `Total elapsed time` 也没有 `.meas`**；`analyze_v3_transient.py`
+  记 `solver_prefix_only`，引用必须写 5.55–7.5714 ms 前缀。见
+  `design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md` 与 `{cold_start,fault}_48v_120a_target.json`。
 
 ## 测量口径（工具不变式）
 

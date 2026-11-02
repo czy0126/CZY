@@ -34,13 +34,23 @@ def build(source: str, kind: str) -> str:
         raise ValueError("the source fault switch must remain present")
     if kind == "cold" and "Sflt out flt ctl 0 SFLT" in source:
         raise ValueError("cold startup variant may not include a fault")
-    note = (
+    return note(kind) + source.replace(PARAM, NEW)
+
+
+def note(kind: str) -> str:
+    """Generated header; the fault variant corrects the parent's severity figure."""
+    text = (
         "* HIGH-OUTPUT 48V/15.4mOHM TRUE-COLD START: UNRUN, NO HW RATING\n"
         f"* Variant={kind}; only load RL changes vs the parent cold model.\n"
         "* V(out) starts at zero; '120A' is only the eventual target.\n"
         "* NOT a fault-peak, short-circuit, thermal or hardware certification.\n"
     )
-    return note + source.replace(PARAM, NEW)
+    if kind == "cold_oc":
+        text += (
+            "* The parent fault block quotes 1.818 mOhm / 11x for its 20 mOhm load;\n"
+            "* with RL=15.4m the same Ron+Rflt branch is 1.770 mOhm = 8.7x.\n"
+        )
+    return text
 
 
 def main() -> int:

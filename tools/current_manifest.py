@@ -51,11 +51,12 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
         # issue #6 asks for 5 / 2 / 1 ns; the third leg is a .tran step change.
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
-        # High-output candidates (tools/make_high_output_decks.py): the two
-        # 48 V ones were run, the two 50 V ones are targets that have never
-        # run.  All four say UNRUN in their header; see the 48V110A and
-        # 48V120A records for the measured points.  The _cin decks carry the
-        # 100 A ledger's probes.
+        # High-output candidates (tools/make_high_output_decks.py): all four
+        # 48 V decks were run 2026-11-01/02; the two 50 V non-probe decks are
+        # still targets that have never run (the 50 V record used their _cin
+        # probes).  Every deck says UNRUN in its header; see the 48V110A,
+        # 48V120A and 50V110A_120A records for the measured points.  The _cin
+        # decks carry the 100 A ledger's probes.
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110.cir",
@@ -65,6 +66,14 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_cold_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
+        # 50 V probes (ELE-06) and 48 V/120 A target cold/fault decks (ELE-07).
+        # All four were run on 2026-11-02; the run records live in
+        # design/v3/power_priority/50V110A_120A_实测_2026-11-02.md and
+        # 48V120A_冷启动与故障_2026-11-02.md.
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+        "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+        "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
     ],
     "model": [
         "models/ucc25600_legacy_behaviour.lib",
@@ -92,6 +101,9 @@ V3_SOURCES = {
         "tools/sr_loss_audit.py",
         "tools/make_physical_decks.py",
         "tools/make_high_output_decks.py",
+        "tools/make_120a_transients.py",
+        "tools/analyze_v3_transient.py",
+        "tools/steady_stress.py",
         "tools/ci_check.py",
         "tools/current_manifest.py",
         "tools/test_ascii_raw_window.py",
@@ -117,6 +129,12 @@ V3_SOURCES = {
         "tools/test_energy_ledger_48v_110a.py",
         "tools/test_operating_point_120a.py",
         "tools/test_energy_ledger_48v_120a.py",
+        "tools/test_operating_point_50v.py",
+        "tools/test_steady_stress.py",
+        "tools/test_analyze_v3_transient.py",
+        "tools/test_120a_transients.py",
+        "tools/test_make_120a_transients.py",
+        "tools/test_ledger_candidate_parameters.py",
         "tools/test_control_validation_doc.py",
         "tools/test_ci_check.py",
         "tools/test_baseline_doc.py",
@@ -159,6 +177,21 @@ V3_SOURCES = {
         "design/v3/power_priority/operating_point_48v_120a.json",
         "design/v3/power_priority/energy_ledger_48v_120a.json",
         "design/v3/power_priority/cr_stress_48v_120a.json",
+        "design/v3/power_priority/sr_loss_audit_48v_120a.json",
+        # ELE-06: 50 V probes.
+        "design/v3/power_priority/operating_point_50v_110a.json",
+        "design/v3/power_priority/operating_point_50v_120a.json",
+        "design/v3/power_priority/stress_50v_110a.json",
+        "design/v3/power_priority/stress_50v_120a.json",
+        "design/v3/power_priority/energy_ledger_50v_110a.json",
+        "design/v3/power_priority/energy_ledger_50v_120a.json",
+        "design/v3/power_priority/sr_loss_audit_50v_110a.json",
+        "design/v3/power_priority/sr_loss_audit_50v_120a.json",
+        "design/v3/power_priority/cr_stress_50v_110a.json",
+        "design/v3/power_priority/cr_stress_50v_120a.json",
+        # ELE-07: true cold start and 8.7x overload on the 15.4 mOhm target.
+        "design/v3/power_priority/cold_start_48v_120a_target.json",
+        "design/v3/power_priority/fault_48v_120a_target.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -172,6 +205,8 @@ V3_SOURCES = {
         "design/v3/pcb/主功率板连接网表_2026-11-01.md",
         "design/v3/power_priority/48V110A_实测_2026-11-01.md",
         "design/v3/power_priority/48V120A_实测_2026-11-02.md",
+        "design/v3/power_priority/50V110A_120A_实测_2026-11-02.md",
+        "design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md",
         "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
     ],
     "config": [
@@ -474,6 +509,61 @@ REPRODUCE = {
         "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw "
         "--from-us 7.6445 --to-us 117.3105 "
         "--json design/v3/power_priority/cr_stress_48v_120a.json",
+        "python tools/sr_loss_audit.py --case candidate_48v_120a "
+        "--json design/v3/power_priority/sr_loss_audit_48v_120a.json",
+        # 50 V family: the same tank at VIN=50 with the loads the report's
+        # linear estimate selected (17.8 / 16.3 mOhm).  The operating-point
+        # window and the ledger/stress/Cr window differ by a few microseconds
+        # because they round to different cycle boundaries; do not mix them.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.cir",
+        "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw "
+        "--rl 0.0178 --periods 22 --pairs 1 4 "
+        "--json design/v3/power_priority/operating_point_50v_110a.json",
+        "python tools/steady_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw "
+        "--from-us 7.629195812563637 --to-us 117.2912676221502 --vin 50 --rl 0.0178 "
+        "--json design/v3/power_priority/stress_50v_110a.json",
+        "python tools/energy_ledger_100a.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw "
+        "--vin 50 --rl 0.0178 --periods 22 --no-step-check "
+        "--json design/v3/power_priority/energy_ledger_50v_110a.json",
+        "python tools/sr_loss_audit.py --case candidate_50v_110a "
+        "--json design/v3/power_priority/sr_loss_audit_50v_110a.json",
+        "python tools/cr_stress.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw "
+        "--from-us 7.629195812563637 --to-us 117.2912676221502 "
+        "--json design/v3/power_priority/cr_stress_50v_110a.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+        "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw "
+        "--rl 0.0163 --periods 22 --pairs 1 4 "
+        "--json design/v3/power_priority/operating_point_50v_120a.json",
+        "python tools/steady_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw "
+        "--from-us 7.631583516341496 --to-us 117.2982368985085 --vin 50 --rl 0.0163 "
+        "--json design/v3/power_priority/stress_50v_120a.json",
+        "python tools/energy_ledger_100a.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw "
+        "--vin 50 --rl 0.0163 --periods 22 --no-step-check "
+        "--json design/v3/power_priority/energy_ledger_50v_120a.json",
+        "python tools/sr_loss_audit.py --case candidate_50v_120a "
+        "--json design/v3/power_priority/sr_loss_audit_50v_120a.json",
+        "python tools/cr_stress.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw "
+        "--from-us 7.631583516341496 --to-us 117.2982368985085 "
+        "--json design/v3/power_priority/cr_stress_50v_120a.json",
+        # 48 V/120 A target transients: regenerate the two decks from their
+        # cold parents, run the 8 ms decks (~12 GB / ~37 min each), then stream
+        # the raws.  The fault deck may collapse; analyze_v3_transient records
+        # the reachable prefix rather than pretending the run finished.
+        "python tools/make_120a_transients.py --write",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+        "python tools/analyze_v3_transient.py --kind cold "
+        "--raw sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.raw "
+        "--deck sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir --rl 0.0154 "
+        "--json design/v3/power_priority/cold_start_48v_120a_target.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+        "python tools/analyze_v3_transient.py --kind fault "
+        "--raw sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.raw "
+        "--deck sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir --rl 0.0154 "
+        "--json design/v3/power_priority/fault_48v_120a_target.json",
         "python -m pytest tools -q",
         "python tools/ci_check.py",
     ],

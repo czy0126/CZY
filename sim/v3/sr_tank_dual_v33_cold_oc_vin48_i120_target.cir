@@ -2,6 +2,8 @@
 * Variant=cold_oc; only load RL changes vs the parent cold model.
 * V(out) starts at zero; '120A' is only the eventual target.
 * NOT a fault-peak, short-circuit, thermal or hardware certification.
+* The parent fault block quotes 1.818 mOhm / 11x for its 20 mOhm load;
+* with RL=15.4m the same Ron+Rflt branch is 1.770 mOhm = 8.7x.
 * VARIANT cold_oc: sr_tank_dual_v33_cold.cir plus a severe overload at
 * ~5.55 ms, so the over-current trip and restart are exercised on the
 * TRUE cold deck (no .ic, Cout at 0 V).

@@ -86,8 +86,15 @@ def test_the_closure_is_reported_as_not_closed():
     balance = d["balance"]
     assert balance["closure_status"] == "NOT_CLOSED"
     assert abs(balance["closure_residual_w"]) > balance["target_w"]
-    # The old SEM is invalid: per-period port used RL=18.9m instead of candidate RL.
-    assert d["diagnostic_integrity"]["status"] == "QUARANTINED_PRE_FIX_CANDIDATE_RL"
+    # Rebuilt from the candidate raw after the RL leak was fixed: the short
+    # windows and SEM now use 16.9 mOhm, not the 100 A deck's 18.9 mOhm.
+    diag = d["diagnostic_integrity"]
+    assert diag["status"] == "RECOMPUTED_WITH_REQUESTED_VIN_RL"
+    assert diag["rl_ohm"] == pytest.approx(0.0169)
+    assert diag["recomputed_from_raw"] is True
+    # Corrected short-window diagnostics: a +22 W "gap" was the old bug.
+    assert d["windows"][0]["residual_w"] == pytest.approx(0.174, abs=2e-3)
+    assert balance["period_averaged"]["closure_residual_w"] == pytest.approx(0.591, abs=2e-3)
     averaged = balance["period_averaged"]
     assert averaged["periods"] < d["window"]["periods"]     # one whole period per end
     assert abs(averaged["closure_residual_w"]) > balance["target_w"]

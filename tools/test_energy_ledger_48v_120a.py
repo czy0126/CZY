@@ -104,7 +104,11 @@ def test_the_closure_is_reported_as_not_closed():
     assert balance["closure_status"] == "NOT_CLOSED"
     assert balance["closure_residual_w"] == pytest.approx(0.6673, abs=5e-3)
     assert abs(balance["closure_residual_w"]) > balance["target_w"]
-    assert d["diagnostic_integrity"]["status"] == "QUARANTINED_PRE_FIX_CANDIDATE_RL"
+    assert d["diagnostic_integrity"]["status"] == "RECOMPUTED_WITH_REQUESTED_VIN_RL"
+    assert d["diagnostic_integrity"]["rl_ohm"] == pytest.approx(0.0154)
+    assert d["diagnostic_integrity"]["recomputed_from_raw"] is True
+    # Corrected short windows: the old +42 W "gap" was the 18.9 mOhm leak.
+    assert d["windows"][0]["residual_w"] == pytest.approx(0.483, abs=2e-3)
     averaged = balance["period_averaged"]
     assert averaged["periods"] < d["window"]["periods"]     # one whole period per end
     assert abs(averaged["closure_residual_w"]) > balance["target_w"]

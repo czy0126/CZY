@@ -195,6 +195,17 @@ def test_the_step_instability_is_the_body_diode_not_the_channel():
     assert results["body_diode_forward_share_of_sr_move"] > 0.9
 
 
+def test_a_case_filter_rejects_unknown_names():
+    with pytest.raises(ValueError):
+        audit.select_cases(["candidate_50v_110a", "not_a_case"])
+
+
+def test_a_case_filter_keeps_the_cases_table_order():
+    picked = audit.select_cases(["candidate_50v_120a", "candidate_50v_110a"])
+    assert [case["name"] for case in picked] == [
+        "candidate_50v_110a", "candidate_50v_120a"]
+
+
 def test_the_111a_candidate_storage_mismatch_is_published_not_corrected_away():
     report = load_report()
     results = report["results"]

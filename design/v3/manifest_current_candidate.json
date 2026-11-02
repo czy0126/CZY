@@ -154,6 +154,34 @@
       "sha256": "77a00123f56d66221bb54c05ccd8228facd044d6c2e0246249dcc85adb17351e"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.cir",
+      "kind": "deck",
+      "bytes": 11087,
+      "mtime": 1793596519.2473793,
+      "sha256": "d82f5dc29f770c81efa7ddb6fd70ef602d90ff977c473571ca47f0a7b61c0883"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+      "kind": "deck",
+      "bytes": 11087,
+      "mtime": 1793596519.2473793,
+      "sha256": "7e4b6fd3ae8dc526ac88d29ccc51d1001bd412319ebc40ca188ec33d819d5bf1"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+      "kind": "deck",
+      "bytes": 11076,
+      "mtime": 1793599712.889374,
+      "sha256": "9e68f829f1e1fbd3f0b599d3729f749f3a28e9b5d3d200d54ba54f110d7c60d4"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+      "kind": "deck",
+      "bytes": 12186,
+      "mtime": 1793599712.8903737,
+      "sha256": "65d76094048825eb9669ba96877e757e37caee1d2146fa34631cfcff2a0beb90"
+    },
+    {
       "path": "models/ucc25600_legacy_behaviour.lib",
       "kind": "model",
       "bytes": 11675,
@@ -289,16 +317,16 @@
     {
       "path": "tools/energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 65232,
-      "mtime": 1793593030.453375,
-      "sha256": "c0f9edab97ad93b87b638a4a08dca7fb7001947a401762970f6b5d9e698ad8b7"
+      "bytes": 66582,
+      "mtime": 1793596519.248474,
+      "sha256": "c425c521f23fe31dc0cf8d7d2ca89e077cd6dcc4acb257a8ab0d911036174b63"
     },
     {
       "path": "tools/sr_loss_audit.py",
       "kind": "script",
-      "bytes": 34386,
-      "mtime": 1793589341.2086542,
-      "sha256": "0f61a9e76312f5f9bcdfd85f74f1ff959a4c1428ac4a9154d25d091061a8db0c"
+      "bytes": 36504,
+      "mtime": 1793597556.558833,
+      "sha256": "4a79026955df1f8a88e54526ee148b8b5928212b658270221fec603e45269cec"
     },
     {
       "path": "tools/make_physical_decks.py",
@@ -310,9 +338,30 @@
     {
       "path": "tools/make_high_output_decks.py",
       "kind": "script",
-      "bytes": 5002,
-      "mtime": 1793591949.63856,
-      "sha256": "a352f51773c06be9b931c237d2db164219b53d5066387047aa4ade8f5e7d09ec"
+      "bytes": 5122,
+      "mtime": 1793596519.2494733,
+      "sha256": "f3bb04b39fe3ca91140f788d824006aabc576306ac0d03deb0af1c004488bd5a"
+    },
+    {
+      "path": "tools/make_120a_transients.py",
+      "kind": "script",
+      "bytes": 2931,
+      "mtime": 1793598581.6669655,
+      "sha256": "fdb6c111e4ccc500bbee9dfae8ffd006731869c007a320ea4d1c9ac63c342b16"
+    },
+    {
+      "path": "tools/analyze_v3_transient.py",
+      "kind": "script",
+      "bytes": 13712,
+      "mtime": 1793599172.087062,
+      "sha256": "32365bf8544f788c5824df7c6845de6770972503f8296b26ee0e04efdb793879"
+    },
+    {
+      "path": "tools/steady_stress.py",
+      "kind": "script",
+      "bytes": 6068,
+      "mtime": 1793597698.9867866,
+      "sha256": "327ce032a667b151497a1292c15e467392301d41e7b1e6ff0e9dd683e6e44b2f"
     },
     {
       "path": "tools/ci_check.py",
@@ -324,9 +373,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 25434,
-      "mtime": 1793593404.21866,
-      "sha256": "cae478f99d8cdf8948a7b2119e30f3b909099e98e64dd5a54af9edbb3351744e"
+      "bytes": 31538,
+      "mtime": 1793599817.3339312,
+      "sha256": "cc66f8aec322d05eb823ade6f18f655dfb068e7c1895bc7248f7eba725dff3a4"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -443,9 +492,9 @@
     {
       "path": "tools/test_sr_loss_audit.py",
       "kind": "script",
-      "bytes": 9681,
-      "mtime": 1793589341.2086542,
-      "sha256": "30a29c7a14e1f5d5792b22fc86df0c4fd949a1f8853cb64b636fa3f9530bbd7e"
+      "bytes": 10079,
+      "mtime": 1793597562.3391545,
+      "sha256": "180af22b60f4803c0ac278aa745ce1f947a14029a6d4b2aa0156926d0f120a65"
     },
     {
       "path": "tools/test_make_physical_decks.py",
@@ -471,9 +520,9 @@
     {
       "path": "tools/test_energy_ledger_48v_110a.py",
       "kind": "script",
-      "bytes": 4447,
-      "mtime": 1793538614.6241667,
-      "sha256": "ba375283e010104f3f7d5e88d978566bee81daa0e2a4d1c087724e91e103d850"
+      "bytes": 4970,
+      "mtime": 1793596726.8650036,
+      "sha256": "ea5e2e91c2ed8d98d9f773b9c3758a31ae8cba966d77946ae614688c7abc96fd"
     },
     {
       "path": "tools/test_operating_point_120a.py",
@@ -485,9 +534,51 @@
     {
       "path": "tools/test_energy_ledger_48v_120a.py",
       "kind": "script",
-      "bytes": 5099,
-      "mtime": 1793593068.46215,
-      "sha256": "6a7e84b1b3e43e580f3388a086bcf9458d159c82a6a908992edbe888db77c8aa"
+      "bytes": 5506,
+      "mtime": 1793596730.391972,
+      "sha256": "aceb57b5bc28e118d81df867bfc768388f2deb15018d6799cb105d57c765ff5f"
+    },
+    {
+      "path": "tools/test_operating_point_50v.py",
+      "kind": "script",
+      "bytes": 9085,
+      "mtime": 1793597926.545479,
+      "sha256": "97b83962e7e40ca4a524b36ab06c6b99850054c42e8001bc2b80e1f0678d8820"
+    },
+    {
+      "path": "tools/test_steady_stress.py",
+      "kind": "script",
+      "bytes": 3380,
+      "mtime": 1793597676.9421675,
+      "sha256": "8403a21454dbfab6872f4b1abbecce76166be13c7a08837af05820098e7dff5f"
+    },
+    {
+      "path": "tools/test_analyze_v3_transient.py",
+      "kind": "script",
+      "bytes": 3495,
+      "mtime": 1793598494.1502314,
+      "sha256": "4e81db01f0481ace5d1a635c75682a07c008fcb7558baa138b70455764057440"
+    },
+    {
+      "path": "tools/test_120a_transients.py",
+      "kind": "script",
+      "bytes": 9910,
+      "mtime": 1793602312.355249,
+      "sha256": "1b60ee795534381109c1eb5bbb76b212801d57fbc829769779e55068f5f68b37"
+    },
+    {
+      "path": "tools/test_make_120a_transients.py",
+      "kind": "script",
+      "bytes": 1832,
+      "mtime": 1793598576.9195457,
+      "sha256": "009caa793df83ac9b6463ab5e3adfa23a8c01da2f80378f90eccdcab2bd541a4"
+    },
+    {
+      "path": "tools/test_ledger_candidate_parameters.py",
+      "kind": "script",
+      "bytes": 3597,
+      "mtime": 1793596725.7322006,
+      "sha256": "34e1f2c803f288d7080c313107e4da10eccad7baa6b0a18b0085900df88a9e43"
     },
     {
       "path": "tools/test_control_validation_doc.py",
@@ -730,9 +821,9 @@
     {
       "path": "design/v3/power_priority/energy_ledger_48v_110a.json",
       "kind": "result",
-      "bytes": 11686,
-      "mtime": 1793537173.9538229,
-      "sha256": "4b1edeaea26b46bca0410b0bde80e69984dcc3dca89fae65ce56cfc89b6c0ca7"
+      "bytes": 11337,
+      "mtime": 1793596644.3687062,
+      "sha256": "7e3a731363732473fd3c566aad81793ef36ec2608467e650821e558de51c778f"
     },
     {
       "path": "design/v3/power_priority/operating_point_48v_120a.json",
@@ -744,9 +835,9 @@
     {
       "path": "design/v3/power_priority/energy_ledger_48v_120a.json",
       "kind": "result",
-      "bytes": 11899,
-      "mtime": 1793593096.778178,
-      "sha256": "7ec91ec88e20f7fed193d402d8e8811e4fe89e9e044aba0fd2c75d3211fa2476"
+      "bytes": 11413,
+      "mtime": 1793596709.8385174,
+      "sha256": "876905d0b839c8ae935142f84a1dcce37827d5fe59a5420b808c7fbe9ceab8f4"
     },
     {
       "path": "design/v3/power_priority/cr_stress_48v_120a.json",
@@ -754,6 +845,97 @@
       "bytes": 701,
       "mtime": 1793593202.4619267,
       "sha256": "5b120f345d78fe412c86fbaa55e11cf63e0c426447f08bbe5a853ff920245713"
+    },
+    {
+      "path": "design/v3/power_priority/sr_loss_audit_48v_120a.json",
+      "kind": "result",
+      "bytes": 6299,
+      "mtime": 1793597617.48592,
+      "sha256": "257d3a595938b6c970f8e670a2d0540e89c1705209caba34cf79999e983aeb88"
+    },
+    {
+      "path": "design/v3/power_priority/operating_point_50v_110a.json",
+      "kind": "result",
+      "bytes": 1242,
+      "mtime": 1793596997.6147046,
+      "sha256": "775017ef2670ab225340133c884bc425ae894bf5eeda2aa42f9f0217dedbb8c8"
+    },
+    {
+      "path": "design/v3/power_priority/operating_point_50v_120a.json",
+      "kind": "result",
+      "bytes": 1237,
+      "mtime": 1793597222.124031,
+      "sha256": "770735ae5a2eb25883c2832cadfae154f5a9c8e82eb726e5bd9b5b765491c485"
+    },
+    {
+      "path": "design/v3/power_priority/stress_50v_110a.json",
+      "kind": "result",
+      "bytes": 1906,
+      "mtime": 1793597710.010927,
+      "sha256": "52d53d43f695ea56ae0e6e9488b3ddfa9e2d0197cb6545859454d29f53b5bdd7"
+    },
+    {
+      "path": "design/v3/power_priority/stress_50v_120a.json",
+      "kind": "result",
+      "bytes": 1902,
+      "mtime": 1793599090.5072987,
+      "sha256": "edf41591e0c2ceb12abc7afda1f920b14b529f038fb070b0323d6d993c0c754a"
+    },
+    {
+      "path": "design/v3/power_priority/energy_ledger_50v_110a.json",
+      "kind": "result",
+      "bytes": 11810,
+      "mtime": 1793597094.372007,
+      "sha256": "22046e0ca6d7a45a8cd2349e038d57d1017221f4e12942a99f2e71f4a614370f"
+    },
+    {
+      "path": "design/v3/power_priority/energy_ledger_50v_120a.json",
+      "kind": "result",
+      "bytes": 11419,
+      "mtime": 1793597271.380891,
+      "sha256": "2a15f2e63656c83c859dfaf845084e01251c6f7b10a668ae31e81183305e9daf"
+    },
+    {
+      "path": "design/v3/power_priority/sr_loss_audit_50v_110a.json",
+      "kind": "result",
+      "bytes": 6306,
+      "mtime": 1793597582.581254,
+      "sha256": "42b4f1d158bb20f4171ba48bec45c6ce023b1121b6d6d4eaab41277e020f8c32"
+    },
+    {
+      "path": "design/v3/power_priority/sr_loss_audit_50v_120a.json",
+      "kind": "result",
+      "bytes": 6324,
+      "mtime": 1793597606.2217095,
+      "sha256": "d61081f64247beee71e46659f55f7779c8bc4d886bf1938a8eb50de31f6e3895"
+    },
+    {
+      "path": "design/v3/power_priority/cr_stress_50v_110a.json",
+      "kind": "result",
+      "bytes": 703,
+      "mtime": 1793597133.5463815,
+      "sha256": "9e4f12f83ad8e6b91b4949190465b6b98cf422a5c8e4b06dd34251348921a74d"
+    },
+    {
+      "path": "design/v3/power_priority/cr_stress_50v_120a.json",
+      "kind": "result",
+      "bytes": 700,
+      "mtime": 1793599099.7848923,
+      "sha256": "4600d3e4623c313a1f8af4bdd728a5f68b5f891167788987153d4f03d465a144"
+    },
+    {
+      "path": "design/v3/power_priority/cold_start_48v_120a_target.json",
+      "kind": "result",
+      "bytes": 1327,
+      "mtime": 1793599945.1228173,
+      "sha256": "58d10989d3bb38c788e60749f3f8b35defda4b1735ab02f248799d07b5e47f40"
+    },
+    {
+      "path": "design/v3/power_priority/fault_48v_120a_target.json",
+      "kind": "result",
+      "bytes": 1801,
+      "mtime": 1793602286.3174396,
+      "sha256": "b81e81e65a5db8e08980cbdb3112cc360310ca519fddcb12926f296252a08a9a"
     },
     {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -821,16 +1003,30 @@
     {
       "path": "design/v3/power_priority/48V110A_实测_2026-11-01.md",
       "kind": "doc",
-      "bytes": 13361,
-      "mtime": 1793593233.5680797,
-      "sha256": "25af11d9a141d3f3b2f0e9217504d67441f928e9f46191c499c30c663cb78749"
+      "bytes": 13568,
+      "mtime": 1793596751.0279572,
+      "sha256": "cc970042a0f971fd08cea3fb15df058514a4dfeeb5e6fc8745e1ea4b4967adc1"
     },
     {
       "path": "design/v3/power_priority/48V120A_实测_2026-11-02.md",
       "kind": "doc",
-      "bytes": 14964,
-      "mtime": 1793593229.608273,
-      "sha256": "a732d6f7561bb044b40ae894400383ebbefb5a0c65f47e9c9e1fc0ce5671019f"
+      "bytes": 15432,
+      "mtime": 1793602392.733075,
+      "sha256": "422cbc82b8371255f7fe1e969934cc6d18713a1b8eadbe16d73a293812dcc338"
+    },
+    {
+      "path": "design/v3/power_priority/50V110A_120A_实测_2026-11-02.md",
+      "kind": "doc",
+      "bytes": 13263,
+      "mtime": 1793599916.1437047,
+      "sha256": "5736feaf60dc0d4fa171cdede777e09e2227a3dd08249ba015b901fdb250720e"
+    },
+    {
+      "path": "design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md",
+      "kind": "doc",
+      "bytes": 11320,
+      "mtime": 1793602373.7862403,
+      "sha256": "adb78cd26701454c607b13c7d9286840fbff0435b7ac3e27391453afb6794c86"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -950,10 +1146,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -961,10 +1157,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -972,10 +1168,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -983,10 +1179,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct47.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -994,10 +1190,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1005,10 +1201,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1016,10 +1212,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1027,10 +1223,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_lrmin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1038,10 +1234,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.cir",
       "tran": ".tran 0 1000u 880u 2n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 2e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 2e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1049,10 +1245,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.cir",
       "tran": ".tran 0 1550u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.00067,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1060,10 +1256,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
       "tran": ".tran 0 1550u 880u 2n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.00067,
-      "display_offset_us": 880,
-      "max_step_s": 2e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 2e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1071,10 +1267,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
       "tran": ".tran 0 1550u 880u 1n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.00067,
-      "display_offset_us": 880,
-      "max_step_s": 1e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 1e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1082,10 +1278,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1093,10 +1289,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1104,10 +1300,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1115,10 +1311,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1126,10 +1322,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1137,10 +1333,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
       "tran": ".tran 0 1000u 880u 5n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.0001200000000000001,
-      "display_offset_us": 880,
-      "max_step_s": 5e-9,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1148,10 +1344,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0,
-      "max_step_s": 1e-8,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -1159,10 +1355,10 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_oc_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0,
-      "max_step_s": 1e-8,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -1170,10 +1366,54 @@
     {
       "deck": "sim/v3/sr_tank_dual_v33_cold_oc_lrmin.cir",
       "tran": ".tran 0 8m 0 10n uic",
-      "raw_time_start_s": 0,
+      "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.008,
-      "display_offset_us": 0,
-      "max_step_s": 1e-8,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
+      "has_ic": false,
+      "uic": true,
+      "cold_start": true
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+      "tran": ".tran 0 8m 0 10n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.008,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
+      "has_ic": false,
+      "uic": true,
+      "cold_start": true
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+      "tran": ".tran 0 8m 0 10n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.008,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
       "has_ic": false,
       "uic": true,
       "cold_start": true
@@ -1222,6 +1462,24 @@
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
     "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw --periods 22 --vin 48 --rl 0.0154 --no-step-check --json design/v3/power_priority/energy_ledger_48v_120a.json",
     "python tools/cr_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw --from-us 7.6445 --to-us 117.3105 --json design/v3/power_priority/cr_stress_48v_120a.json",
+    "python tools/sr_loss_audit.py --case candidate_48v_120a --json design/v3/power_priority/sr_loss_audit_48v_120a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.cir",
+    "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw --rl 0.0178 --periods 22 --pairs 1 4 --json design/v3/power_priority/operating_point_50v_110a.json",
+    "python tools/steady_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw --from-us 7.629195812563637 --to-us 117.2912676221502 --vin 50 --rl 0.0178 --json design/v3/power_priority/stress_50v_110a.json",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw --vin 50 --rl 0.0178 --periods 22 --no-step-check --json design/v3/power_priority/energy_ledger_50v_110a.json",
+    "python tools/sr_loss_audit.py --case candidate_50v_110a --json design/v3/power_priority/sr_loss_audit_50v_110a.json",
+    "python tools/cr_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw --from-us 7.629195812563637 --to-us 117.2912676221502 --json design/v3/power_priority/cr_stress_50v_110a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+    "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --rl 0.0163 --periods 22 --pairs 1 4 --json design/v3/power_priority/operating_point_50v_120a.json",
+    "python tools/steady_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --from-us 7.631583516341496 --to-us 117.2982368985085 --vin 50 --rl 0.0163 --json design/v3/power_priority/stress_50v_120a.json",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --vin 50 --rl 0.0163 --periods 22 --no-step-check --json design/v3/power_priority/energy_ledger_50v_120a.json",
+    "python tools/sr_loss_audit.py --case candidate_50v_120a --json design/v3/power_priority/sr_loss_audit_50v_120a.json",
+    "python tools/cr_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --from-us 7.631583516341496 --to-us 117.2982368985085 --json design/v3/power_priority/cr_stress_50v_120a.json",
+    "python tools/make_120a_transients.py --write",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+    "python tools/analyze_v3_transient.py --kind cold --raw sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.raw --deck sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir --rl 0.0154 --json design/v3/power_priority/cold_start_48v_120a_target.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+    "python tools/analyze_v3_transient.py --kind fault --raw sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.raw --deck sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir --rl 0.0154 --json design/v3/power_priority/fault_48v_120a_target.json",
     "python -m pytest tools -q",
     "python tools/ci_check.py"
   ]

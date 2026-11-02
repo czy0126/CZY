@@ -1,0 +1,52 @@
+{
+  "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw",
+  "window_us": [
+    7.629195812563637,
+    117.2912676221502
+  ],
+  "vin_v": 50.0,
+  "rl_ohm": 0.0178,
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "vout_avg_v": 1.9516486533429196,
+  "vout_pp_mv": 45.407410939682926,
+  "pout_w": 213.99181991273286,
+  "iout_from_v_a": 109.64318277207414,
+  "ipri_rms_a": 10.168317459821404,
+  "ipri_pk_a": 14.47895375987942,
+  "oc": {
+    "mean_v": 0.6271773126547411,
+    "max_v": 0.6279231411364786,
+    "trip_level_v": 1.0,
+    "latch_level_v": 2.0,
+    "margin_to_trip": 0.6279231411364786
+  },
+  "sr_gate": {
+    "min_v": -0.671644455464984,
+    "max_v": 10.95804674641826
+  },
+  "sr_vds": {
+    "max_v": 5.698776305349723,
+    "min_v": -1.292223685139601,
+    "reference": "drain against sgnd; the SR source in these decks is sgnd"
+  },
+  "sr_current": {
+    "forward_peak_a": 43.28815532712654,
+    "reverse_peak_a": 5.42165105245304
+  },
+  "cout_ripple": {
+    "load_mean_a": 109.42722832694311,
+    "ripple_rms_a": 52.479054021000444,
+    "ripple_pk_a": 132.9316547471109,
+    "mean_check_pct": -0.19696112395784587,
+    "reconstruction": "four SR currents, pairs 2/3 assumed symmetric (×2)"
+  },
+  "note": "sr_vds is the saved drain-node voltage because every SR source is the shared sgnd node.  Only pairs 1 and 4 are instrumented, so current peaks and the Cout ripple carry the symmetry assumption, not a sharing result.",
+  "input": {
+    "source_mean_a": 4.5430032844677015,
+    "bridge_mean_a": 4.542976859961863,
+    "bridge_ac_rms_a": 5.825766729447553,
+    "cin_mean_a": 2.642450583866464e-05,
+    "cin_ac_rms_a": 0.33590049586515947,
+    "note": "KCL bridge current = I(Rin) - I(Cin); the AC RMS has the window mean removed.  The 20 uF capacitor sees only cin_ac_rms, and that depends on the modelled source impedance."
+  }
+}
