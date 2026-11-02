@@ -95,6 +95,14 @@ def build(case: str, log: Path, raw: Path) -> dict:
         issues.append("log Circuit line does not identify the requested exact deck")
     if not raw.is_file() or raw.stat().st_size == 0:
         issues.append("non-empty raw file absent")
+    else:
+        # Scan only a small header, never read a multi-GB waveform in RAM.
+        with raw.open("rb") as stream:
+            header = stream.read(65536).decode("latin1", errors="replace")
+        if ("Plotname: Transient Analysis" not in header
+                or "Variables:" not in header
+                or not any(mark in header for mark in ("Values:", "Binary:"))):
+            issues.append("raw does not have a valid-looking LTspice transient header")
     if len(result) == len(REQUIRED):
         ss = result["hot_ss_before"]
         if not (4.8 <= ss <= 5.1):
