@@ -1,0 +1,109 @@
+{
+  "kind": "hotfault_solver_diagnostic",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "base_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+  "diagnostic_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir",
+  "window_s": [
+    0.0,
+    0.0002199999999999997
+  ],
+  "window_basis": "min(saved stop of the two decks); both raws read over it",
+  "solver_setting_changes": {
+    "trtol": "7 (default) -> 1",
+    "abstol": "1e-12 (default) -> 1e-13",
+    "tran_stop": "220.0 us saved axis"
+  },
+  "results": {
+    "base": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199996146537574,
+      "samples": 423028,
+      "trip_s": 0.0002149153406335383,
+      "delay_from_engage_us": 39.91534063353848,
+      "ipri_peak_a": 101.2626574558339,
+      "ipri_peak_ms": 0.2099490335049762,
+      "sr_forward_peak_a": 303.9300136642725,
+      "sr_reverse_peak_a": 13.75115321805808,
+      "oc_max_v": 1.091767263970779,
+      "vout_min_after_engage_v": 0.9471870188432566
+    },
+    "diagnostic": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199996720694086,
+      "samples": 695463,
+      "trip_s": 0.0002148341705291283,
+      "delay_from_engage_us": 39.834170529128485,
+      "ipri_peak_a": 101.0991824969936,
+      "ipri_peak_ms": 0.20994910731929722,
+      "sr_forward_peak_a": 303.9368158376129,
+      "sr_reverse_peak_a": 13.52153798566899,
+      "oc_max_v": 1.092162829688311,
+      "vout_min_after_engage_v": 0.9381328104065241
+    },
+    "delta": {
+      "trip_s": -8.117010440999712e-08,
+      "ipri_peak_a": -0.16347495884029684,
+      "sr_forward_peak_a": 0.006802173340417994,
+      "sr_reverse_peak_a": -0.2296152323890901,
+      "oc_max_v": 0.0003955657175320759,
+      "vout_min_after_engage_v": -0.009054208436732547
+    },
+    "relative": {
+      "trip_s": -0.000377684087933039,
+      "ipri_peak_a": -0.001614365679782792,
+      "sr_forward_peak_a": 2.2380722648707163e-05,
+      "sr_reverse_peak_a": -0.016697889169583147,
+      "oc_max_v": 0.0003623168880273475,
+      "vout_min_after_engage_v": -0.009559050384569168
+    },
+    "t_last_difference_ns": 0.05741565119936169
+  },
+  "logs": {
+    "base": {
+      "solver_completed": false,
+      "total_elapsed_s": null,
+      "measurements": {
+        "options": 0.0
+      }
+    },
+    "diagnostic": {
+      "solver_completed": true,
+      "total_elapsed_s": 1859.363,
+      "measurements": {
+        "options": 0.0,
+        "vout_avg": 1.95862352679,
+        "vout_rip": 0.0420055544799,
+        "vds_a1_min": -1.28571024305,
+        "vds_a1_max": 6.07344948792,
+        "irev_a1": 5.85327097391,
+        "ifwd_a1": 47.013599497,
+        "ovl_cur": 2.43643072099,
+        "ovl_gate": 0.0,
+        "ipri_pk": 15.7699710556,
+        "out_last": 1.97093085179,
+        "hot_ctrl_before": 0.0,
+        "hot_ctrl_after": 5.0,
+        "hot_iflt_after": 897.089407935,
+        "hot_oc_before": 0.688610211435,
+        "hot_vout_before": 1.95989048203,
+        "hot_ss_before": 5.04477012164,
+        "hot_ipri_after": 101.099182497,
+        "hot_oc_after": 1.09216809051,
+        "hot_vout_min": 0.938073691023,
+        "hot_oc_trip": 0.000214834162314
+      }
+    }
+  },
+  "checks": {
+    "the_two_decks_differ_only_on_solver_settings": true,
+    "both_runs_reach_the_fault": true,
+    "the_two_runs_cover_the_same_window": true
+  },
+  "circuit_differences": [],
+  "limits": [
+    "a solver diagnostic bounds numerical error; it is not hardware evidence",
+    "peaks are maxima over samples, so one step of sampling difference can move them",
+    "the shared window ends at 220 us; nothing after it is covered",
+    "the base log has no completion line, so the base run itself stopped early"
+  ]
+}

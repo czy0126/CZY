@@ -1,0 +1,128 @@
+{
+  "kind": "hotfault_solver_diagnostic",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "base_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+  "diagnostic_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir",
+  "window_s": [
+    0.0,
+    0.0002199999999999997
+  ],
+  "window_basis": "min(saved stop of the two decks); both raws read over it",
+  "solver_setting_changes": {
+    "trtol": "7 (default) -> 1",
+    "abstol": "1e-12 (default) -> 1e-13",
+    "tran_stop": "220.0 us saved axis"
+  },
+  "results": {
+    "base": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199997611659352,
+      "samples": 491875,
+      "trip_s": 0.0002150966648764153,
+      "delay_from_engage_us": 40.096664876415495,
+      "ipri_peak_a": 97.44266392021632,
+      "ipri_peak_ms": 0.2099545028031152,
+      "sr_forward_peak_a": 292.6075980704264,
+      "sr_reverse_peak_a": 13.56010480822495,
+      "oc_max_v": 1.084960451390591,
+      "vout_min_after_engage_v": 0.9083322801807758
+    },
+    "diagnostic": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199998173308989,
+      "samples": 715958,
+      "trip_s": 0.0002149112133112831,
+      "delay_from_engage_us": 39.9112133112833,
+      "ipri_peak_a": 97.0334651892059,
+      "ipri_peak_ms": 0.2099602680556327,
+      "sr_forward_peak_a": 291.403772676822,
+      "sr_reverse_peak_a": 13.41311067695105,
+      "oc_max_v": 1.086949733308146,
+      "vout_min_after_engage_v": 0.904280572764082
+    },
+    "delta": {
+      "trip_s": -1.8545156513219614e-07,
+      "ipri_peak_a": -0.40919873101042015,
+      "sr_forward_peak_a": -1.2038253936044043,
+      "sr_reverse_peak_a": -0.1469941312738996,
+      "oc_max_v": 0.001989281917554875,
+      "vout_min_after_engage_v": -0.004051707416693806
+    },
+    "relative": {
+      "trip_s": -0.0008621777805748465,
+      "ipri_peak_a": -0.004199379558685545,
+      "sr_forward_peak_a": -0.004114128961595354,
+      "sr_reverse_peak_a": -0.010840191381466302,
+      "oc_max_v": 0.0018335063872652047,
+      "vout_min_after_engage_v": -0.004460600492902755
+    },
+    "t_last_difference_ns": 0.05616496368465382
+  },
+  "logs": {
+    "base": {
+      "solver_completed": true,
+      "total_elapsed_s": 554.498,
+      "measurements": {
+        "options": 0.0,
+        "vout_avg": 1.87386278001,
+        "vout_rip": 0.0411944226237,
+        "vds_a1_min": -1.28784547951,
+        "vds_a1_max": 5.63033637244,
+        "irev_a1": 5.43242575198,
+        "ifwd_a1": 46.9295174153,
+        "ovl_cur": 1.70369015287,
+        "ovl_gate": 0.0,
+        "ipri_pk": 15.6313683973,
+        "out_last": 1.88579335053,
+        "hot_ctrl_before": 0.0,
+        "hot_ctrl_after": 4.99999999999,
+        "hot_iflt_after": 858.889898342,
+        "hot_oc_before": 0.696572272653,
+        "hot_vout_before": 1.87388150096,
+        "hot_ss_before": 5.04483579059,
+        "hot_ipri_after": 97.4426639202,
+        "hot_oc_after": 1.25616720518,
+        "hot_vout_min": -0.00793028426603,
+        "hot_oc_trip": 0.000215096649025
+      }
+    },
+    "diagnostic": {
+      "solver_completed": true,
+      "total_elapsed_s": 1976.682,
+      "measurements": {
+        "options": 0.0,
+        "vout_avg": 1.87984274731,
+        "vout_rip": 0.0409357593079,
+        "vds_a1_min": -1.28398450893,
+        "vds_a1_max": 5.51351849668,
+        "irev_a1": 5.21859725659,
+        "ifwd_a1": 47.0888492852,
+        "ovl_cur": 1.64165307483,
+        "ovl_gate": 0.0,
+        "ipri_pk": 15.7021165973,
+        "out_last": 1.89206671303,
+        "hot_ctrl_before": 0.0,
+        "hot_ctrl_after": 5.0,
+        "hot_iflt_after": 861.969044135,
+        "hot_oc_before": 0.699301674483,
+        "hot_vout_before": 1.88016071327,
+        "hot_ss_before": 5.04493394249,
+        "hot_ipri_after": 97.0334651892,
+        "hot_oc_after": 1.08695254651,
+        "hot_vout_min": 0.904280190957,
+        "hot_oc_trip": 0.000214911208601
+      }
+    }
+  },
+  "checks": {
+    "the_two_decks_differ_only_on_solver_settings": true,
+    "both_runs_reach_the_fault": true,
+    "the_two_runs_cover_the_same_window": true
+  },
+  "circuit_differences": [],
+  "limits": [
+    "a solver diagnostic bounds numerical error; it is not hardware evidence",
+    "peaks are maxima over samples, so one step of sampling difference can move them",
+    "the shared window ends at 220 us; nothing after it is covered"
+  ]
+}

@@ -14,6 +14,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from current_manifest import spice_seconds
+
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = {
     "48v_120a": ROOT / "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
@@ -21,6 +23,24 @@ SOURCE = {
 }
 OLD_TRAN = ".tran 0 1000u 880u 5n uic"
 NEW_TRAN = ".tran 0 2320u 2000u 5n uic"
+# SOLVER_DIAGNOSTIC: the base 50 V run stalled at 296.93 us of the 320 us
+# window.  A second solve that stops at 220 us (saved axis) stays out of the
+# stall, so the 175..220 us peaks can be re-derived with tighter tolerances at
+# a fraction of the cost.  220 us, not 215: the 48 V control trip lands at
+# 215.10 us, and a window that ends before the trip cannot be compared.
+# Only the solver settings and the stop time change; the circuit, the fault
+# switch and the probes stay byte-identical, otherwise the comparison would
+# mix a circuit change into a numerical one.
+BASE_OPTIONS = ".options plotwinsize=0 method=gear"
+DIAG_TRAN = ".tran 0 2220u 2000u 5n uic"
+DIAG_OPTIONS = BASE_OPTIONS + " trtol=1 abstol=1e-13"
+DIAG_HEADER = (
+    "* SOLVER_DIAGNOSTIC: base hot-fault deck with ONLY the solver tolerances\n"
+    "* (trtol=1, abstol=1e-13) and the stop time (220us on the saved axis)\n"
+    "* changed; the circuit, fault switch and probes are byte-identical.\n"
+    "* This deck is not a result: compare its 175..220 us peaks against the\n"
+    "* base record before either number is quoted.\n"
+)
 FAULT = """* ---- independent HOT-START post-settling fault (not the cold deck) ----
 * 1m switch + 1m resistor parallel to the existing rated-load candidate.
 * Switch changes 0..5V over 2170..2180us, threshold 2.5V at 2175us.
@@ -78,17 +98,40 @@ def build(source: str, name: str) -> str:
     return header + body
 
 
+def diagnostic_destination(name: str) -> Path:
+    return ROOT / f"sim/v3/sr_tank_dual_v33_ss_hotfault_{name}_diag.cir"
+
+
+def diagnostic(base: str, name: str) -> str:
+    """Base hot-fault deck with only the solver tolerances and stop changed."""
+    if base.count(NEW_TRAN) != 1 or base.count(BASE_OPTIONS) != 1:
+        raise ValueError("base hot-fault deck changed; diagnostic replace is ambiguous")
+    body = base.replace(NEW_TRAN, DIAG_TRAN).replace(BASE_OPTIONS, DIAG_OPTIONS)
+    return DIAG_HEADER + body
+
+
+def saved_stop_us(deck: str) -> float:
+    """Tstop on the Tstart-rebased axis, in microseconds."""
+    for line in deck.splitlines():
+        parts = line.split()
+        if parts and parts[0].lower() == ".tran":
+            return (spice_seconds(parts[2]) - spice_seconds(parts[3])) * 1e6
+    raise ValueError("deck has no .tran line")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
     args = ap.parse_args()
     for name, path in SOURCE.items():
         data = build(path.read_text(encoding="utf-8"), name)
-        out = destination(name)
-        if args.write:
-            out.write_text(data, encoding="utf-8", newline="\n")
-        elif out.read_text(encoding="utf-8") != data:
-            raise SystemExit(f"stale candidate: {out}")
+        diag = diagnostic(data, name)
+        for out, text, label in ((destination(name), data, "candidate"),
+                                 (diagnostic_destination(name), diag, "diagnostic")):
+            if args.write:
+                out.write_text(text, encoding="utf-8", newline="\n")
+            elif out.read_text(encoding="utf-8") != text:
+                raise SystemExit(f"stale {label}: {out}")
         print(f"{name}: UNRUN HOT-START FAULT; not evidence of steady-state approval")
     return 0
 

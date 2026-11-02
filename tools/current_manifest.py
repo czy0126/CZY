@@ -83,6 +83,11 @@ V3_SOURCES = {
         # 48V120A_稳态初始化故障_2026-11-02.md.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+        # SOLVER_DIAGNOSTIC variants: same circuit, trtol=1 abstol=1e-13, stop
+        # at 220 us on the saved axis.  They bound the prefix peaks; they are
+        # not a replacement for the base record.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir",
         # ELE-09: the same 50 V/120 A circuit at half the timestep, and over the
         # first phase-aligned window.  Both change only the .tran line, so the
         # 0.499 W residual can be tested against step and window length.
@@ -119,6 +124,7 @@ V3_SOURCES = {
         "tools/make_hot_fault_decks.py",
         "tools/analyze_v3_transient.py",
         "tools/hot_fault_metrics.py",
+        "tools/hotfault_diagnostic.py",
         "tools/steady_stress.py",
         "tools/ci_check.py",
         "tools/current_manifest.py",
@@ -152,6 +158,7 @@ V3_SOURCES = {
         "tools/test_make_120a_transients.py",
         "tools/test_hot_fault_metrics.py",
         "tools/test_make_hot_fault_decks.py",
+        "tools/test_hotfault_diagnostic.py",
         "tools/d1_unclosed_risks.py",
         "tools/test_d1_unclosed_risks.py",
         "tools/test_ledger_candidate_parameters.py",
@@ -216,6 +223,9 @@ V3_SOURCES = {
         # that keeps F01/M01 blocked on this evidence.
         "design/v3/power_priority/hotfault_48v_120a.json",
         "design/v3/power_priority/hotfault_50v_120a.json",
+        # SOLVER_DIAGNOSTIC: base vs tightened tolerance over one common window.
+        "design/v3/power_priority/hotfault_48v_120a_diag.json",
+        "design/v3/power_priority/hotfault_50v_120a_diag.json",
         "design/v3/power_priority/unclosed_risk_register.json",
         # ELE-09: the 22-period 5/2 ns pair, the SR decomposition with the
         # gate-drive boundary correction, and the 133-period aligned ledger.
@@ -267,6 +277,9 @@ V3_SOURCES = {
         # because it exceeds the hash limit.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw",
+        # SOLVER_DIAGNOSTIC raws: 1.4 GB each, size + mtime only.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
@@ -621,6 +634,27 @@ REPRODUCE = {
         "--deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir "
         "--log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log --rl 16.3m "
         "--json design/v3/power_priority/hotfault_50v_120a.json",
+        # SOLVER_DIAGNOSTIC: same circuit, tightened tolerances, 220 us window.
+        # The comparison reads both raws over the shorter deck's saved stop and
+        # refuses to compare decks whose bodies differ.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir",
+        "python tools/hotfault_diagnostic.py "
+        "--base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw "
+        "--base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir "
+        "--diag-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw "
+        "--diag-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir "
+        "--base-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log "
+        "--diag-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.log "
+        "--json design/v3/power_priority/hotfault_50v_120a_diag.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir",
+        "python tools/hotfault_diagnostic.py "
+        "--base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw "
+        "--base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir "
+        "--diag-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw "
+        "--diag-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir "
+        "--base-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log "
+        "--diag-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.log "
+        "--json design/v3/power_priority/hotfault_48v_120a_diag.json",
         "python tools/d1_unclosed_risks.py --write",
         # ELE-09: the 22-period 5/2 ns pair, then the phase-aligned window.
         # The step comparison accepts only decks that differ in .tran step.

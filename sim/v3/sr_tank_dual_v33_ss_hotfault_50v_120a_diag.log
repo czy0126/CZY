@@ -1,0 +1,41 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir
+Start Time: Mon Nov  2 20:21:52 2026
+Options:plotwinsize=0 method=gear trtol=1 abstol=1e-13
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+abstol = 1e-13
+trtol = 1
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 1859.363 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vout_avg: AVG(V(out) )=1.95862352679 FROM 0 TO 0.00012
+vout_rip: PP(V(out) )=0.0420055544799 FROM 0.00011 TO 0.00012
+vds_a1_min: MIN(V(a1) )=-1.28571024305 FROM 0 TO 0.00012
+vds_a1_max: MAX(V(a1) )=6.07344948792 FROM 0 TO 0.00012
+irev_a1: MAX(I(VSa1) )=5.85327097391 FROM 0 TO 0.00012
+ifwd_a1: MAX(-I(VSa1) )=47.013599497 FROM 0 TO 0.00012
+ovl_cur: MAX(V(ovl1) )=2.43643072099 FROM 0 TO 0.00012
+ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
+ipri_pk: MAX(abs(I(Lr)) )=15.7699710556 FROM 0 TO 0.00012
+out_last: V(out) =1.97093085179 at 0.00012
+hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017
+hot_ctrl_after: AVG(V(ctl_hot) )=5 FROM 0.00019 TO 0.0003
+hot_iflt_after: MAX(I(Rflt_hot) )=897.089407935 FROM 0.000175 TO 0.00032
+hot_oc_before: MAX(V(oc) )=0.688610211435 FROM 0.00012 TO 0.00017
+hot_vout_before: AVG(V(out) )=1.95989048203 FROM 0.00012 TO 0.00017
+hot_ss_before: AVG(V(ss) )=5.04477012164 FROM 0.00012 TO 0.00017
+hot_ipri_after: MAX(abs(I(Lr)) )=101.099182497 FROM 0.000175 TO 0.00032
+hot_oc_after: MAX(V(oc) )=1.09216809051 FROM 0.000175 TO 0.00032
+hot_vout_min: MIN(V(out) )=0.938073691023 FROM 0.000175 TO 0.00032
+hot_oc_trip: V(oc)=1  AT 0.000214834162314

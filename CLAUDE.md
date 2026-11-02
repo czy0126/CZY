@@ -82,8 +82,19 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   静止，50 V 在 13.7–16.2 V 漂移。**待机不是修法**：datasheet `tSTBY_DET` 是 7.5 ms
   （5.5/7.5/10），比故障后窗口（~0.1 ms）长两个数量级，锁存在窗口内反而符合器件逻辑
   （B 通道正向 1.63 A、VDS 1.5 mV、无反向偏置）。死区轨迹平滑（~3 V/µs），步长却压到
-  1e-15 s ⇒ 是 LTE 判据失控的**数值**问题；要跑满只能做只改求解器设置（`trtol`/`abstol`）
-  的 `SOLVER_DIAGNOSTIC` 运行并逐项比对 175–215 µs 峰值，或者接受前缀。
+  1e-15 s ⇒ 是 LTE 判据失控的**数值**问题。**`SOLVER_DIAGNOSTIC` 已经跑过，前缀峰值站得住**：
+  `..._hotfault_{48v,50v}_120a_diag.cir` 只改 `.options`（`trtol` 7→1、`abstol` 1e-12→1e-13）
+  与 `.tran` 终点（保存轴 220 µs，避开塌缩），电路/探针逐行相同（`circuit_differences()` 为 0）。
+  50 V 同窗口（0–220 µs）实测：`I(Lr)` 峰 101.2627→101.0992 A（**−0.161 %**）、SR 正向峰
+  **+0.002 %**、trip 早 **81.2 ns**、采样点 +64 %；3 匝磁通因此带 **±0.0004 T**，不改变判据结论。
+  会动的是"接近零、斜率大"的量（`V(out)` 最低 −0.96 %、SR 反向峰 −1.67 %），**只报百分比**。
+  **48 V 对照组**（基座跑满 320 µs、判过 `LOG_PRECHECK_PASS`）同窗口移动 **−0.420 %（`I(Lr)`）/
+  −0.411 %（SR 正向）**、trip 早 185 ns ⇒ 两组都因收紧容差而**变小**（方向保守），但精度是
+  **亚百分点**，不是 0.1 %。**它不解决塌缩**——诊断停在 220 µs，死区仍无数据；窗口必须是 220
+  而不是 215，因为 48 V 的 trip 在 215.10 µs。工具 `tools/hotfault_diagnostic.py`（拒绝对 deck
+  正文不同的两跑做比较），记录 `design/v3/power_priority/hotfault_{48v,50v}_120a_diag.json`。
+  另：诊断 deck 的 `.meas ... TO 0.00032` 行不变，所以它在**日志**里的 `hot_*` 只覆盖到 220 µs，
+  **不能拿诊断日志的 `hot_ipri_after` 与基座日志的 97.44 A 直接比**——峰值只从 raw 按窗口读。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的

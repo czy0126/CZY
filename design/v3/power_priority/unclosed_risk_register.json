@@ -61,6 +61,17 @@
     "hotfault_50v_120a_sr_forward_peak_a": 303.9300136642725,
     "hotfault_50v_120a_solver_completed": false,
     "hotfault_50v_120a_solver_prefix_only": true,
+    "hotfault_50v_120a_diag_checks_ok": true,
+    "hotfault_50v_120a_diag_window_us": 219.99999999999972,
+    "hotfault_50v_120a_diag_ipri_peak_a": 101.0991824969936,
+    "hotfault_50v_120a_diag_ipri_peak_rel": -0.001614365679782792,
+    "hotfault_50v_120a_diag_sr_forward_peak_rel": 2.2380722648707163e-05,
+    "hotfault_50v_120a_diag_trip_delta_ns": -81.17010440999712,
+    "hotfault_50v_120a_diag_solver_completed": true,
+    "hotfault_48v_120a_diag_checks_ok": true,
+    "hotfault_48v_120a_diag_ipri_peak_rel": -0.004199379558685545,
+    "hotfault_48v_120a_diag_sr_forward_peak_rel": -0.004114128961595354,
+    "hotfault_48v_120a_diag_trip_delta_ns": -185.45156513219612,
     "hotfault_50v_120a_2turn_flux_at_fault_peak_t": 0.38947175944551504,
     "hotfault_50v_120a_3turn_flux_at_fault_peak_t": 0.2596478396303434
   },
@@ -70,7 +81,7 @@
       "priority": "P0",
       "blocker": "settled-state fault evidence is simulation only and the 50V run stopped at 296.93us of 320us (solver collapse, no completion line); OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
       "blocked": true,
-      "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; confirm real Lr saturation at the 101A fault peak; the 50V 296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- standby cannot close it because tSTBY_DET is 7.5 ms; either accept the prefix or run a documented SOLVER_DIAGNOSTIC and compare 175-215us peaks",
+      "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; confirm real Lr saturation at the 101A fault peak; the 50V 296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- standby cannot close it because tSTBY_DET is 7.5 ms -- and the prefix is accepted because every stress event ends before 215us.  PR #20's documented SOLVER_DIAGNOSTIC is now run: same circuit, trtol 7->1 and abstol 1e-12->1e-13 over 0..220us moves the I(Lr) peak by -0.16 % (-0.163 A), the SR forward peak by +0.002 % and the trip by -81 ns, so the prefix peaks are not a single-solver artifact.  The 48 V control (base run passed the strict log pre-check) moves the same peaks by -0.420 % and -0.411 %: both cases move down under tightening, so the direction is conservative, but the magnitude is sub-percent, not 0.1 %.  The stall itself is still unresolved and no number here is hardware evidence",
       "file": "design/v3/power_priority/hotfault_48v_120a.json"
     },
     {

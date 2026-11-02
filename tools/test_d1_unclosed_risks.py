@@ -128,3 +128,36 @@ def test_a_pinned_current_does_not_pin_the_operating_point():
 
 def test_committed_register_is_reproducible():
     assert json.loads(r.OUT.read_text(encoding="utf-8")) == r.build()
+
+
+def test_the_solver_diagnostic_bounds_the_prefix_peaks_without_unblocking():
+    """PR #20's alternative to the prefix was run; it bounds, it does not approve.
+
+    The 50 V base run stalls at 296.93 us, so its published peaks came from a
+    single solver configuration.  The diagnostic re-solves the same circuit
+    over 0..220 us with trtol 7->1 and abstol 1e-12->1e-13, which measures the
+    numerical error of those peaks instead of assuming it.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["hotfault_50v_120a_diag_checks_ok"] is True
+    assert e["hotfault_50v_120a_diag_solver_completed"] is True
+    assert e["hotfault_50v_120a_diag_window_us"] == pytest.approx(220.0, abs=1e-6)
+    # Measured, not a tolerance: the tighter solve moves the peak by 0.16 %.
+    assert e["hotfault_50v_120a_diag_ipri_peak_rel"] == pytest.approx(-0.0016144, abs=1e-6)
+    assert abs(e["hotfault_50v_120a_diag_sr_forward_peak_rel"]) < 1e-3
+    assert abs(e["hotfault_50v_120a_diag_trip_delta_ns"]) < 200
+    # The control is the 48 V deck whose base run passed the strict log check.
+    # It moves more than the 50 V case, and in the same (safe) direction.
+    assert e["hotfault_48v_120a_diag_checks_ok"] is True
+    assert e["hotfault_48v_120a_diag_ipri_peak_rel"] == pytest.approx(-0.0041994, abs=1e-6)
+    assert e["hotfault_48v_120a_diag_sr_forward_peak_rel"] == pytest.approx(-0.0041141, abs=1e-6)
+    assert abs(e["hotfault_48v_120a_diag_trip_delta_ns"]) < 200
+    assert e["hotfault_48v_120a_diag_ipri_peak_rel"] < e["hotfault_50v_120a_diag_ipri_peak_rel"]
+    f01 = next(x for x in j["risks"] if x["id"] == "F01")
+    assert "SOLVER_DIAGNOSTIC is now run" in f01["next_evidence"]
+    assert "48 V control" in f01["next_evidence"]
+    # A numerical bound is still simulation, so nothing unblocks.
+    assert f01["blocked"] is True
+    assert all(x["blocked"] for x in j["risks"])
+    assert j["continuous_power_approved"] is False

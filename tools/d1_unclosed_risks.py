@@ -38,6 +38,14 @@ def build() -> dict:
     # the same I(out) and only V(out) can move.  The register needs it because
     # it decides whether "pin the current" is still an open prescription.
     csink = _load(ROOT / "design/v3/stage_f/sr_step_operating_point_csink.json")
+    # PR #20's alternative to accepting the 50 V prefix: a documented
+    # SOLVER_DIAGNOSTIC solve over the same window, with only trtol/abstol and
+    # the stop time changed.  It bounds the numerical error of the peaks that
+    # the prefix publishes, without pretending the stall itself was fixed.
+    diag = _load(PP / "hotfault_50v_120a_diag.json")
+    # The control: the 48 V base run passed the strict log pre-check, so the
+    # same comparison on it measures the method rather than the 50 V prefix.
+    diag48 = _load(PP / "hotfault_48v_120a_diag.json")
     lr = _load(ROOT / "design/v3/bom/lr_design.json")
     gate = _load(ROOT / "hardware/dcx_main/d1_fabrication_gate.json")
     fault_peak = float(fault["ipri_peak_before_trip_a"])
@@ -78,6 +86,8 @@ def build() -> dict:
     cin_esr_w = 5e-3 * cin_ac_rms_a ** 2
     step_r = step_op["results"]
     csink_r = csink["results"]
+    diag_r = diag["results"]
+    diag48_r = diag48["results"]
     evidence = {
         "manufacturing_gate": gate["status"],
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
@@ -170,6 +180,25 @@ def build() -> dict:
         # moved 1 ns in 62 min.  The raw prefix is readable but the .log has no
         # completion line, so this is prefix evidence, not a finished run.
         "hotfault_50v_120a_solver_prefix_only": hot50["solver_prefix_only"],
+        # The diagnostic re-solves 0..220 us with trtol 7->1 and abstol
+        # 1e-12->1e-13 (same circuit, same probes).  It is the measured
+        # numerical error of the published peaks, not a second opinion.
+        "hotfault_50v_120a_diag_checks_ok": all(diag["checks"].values()),
+        "hotfault_50v_120a_diag_window_us": diag["window_s"][1] * 1e6,
+        "hotfault_50v_120a_diag_ipri_peak_a": diag_r["diagnostic"]["ipri_peak_a"],
+        "hotfault_50v_120a_diag_ipri_peak_rel": diag_r["relative"]["ipri_peak_a"],
+        "hotfault_50v_120a_diag_sr_forward_peak_rel":
+            diag_r["relative"]["sr_forward_peak_a"],
+        "hotfault_50v_120a_diag_trip_delta_ns": diag_r["delta"]["trip_s"] * 1e9,
+        "hotfault_50v_120a_diag_solver_completed":
+            diag["logs"]["diagnostic"]["solver_completed"],
+        # The 48 V control, whose base run passed the strict log pre-check,
+        # moves the same way (and a little more) under the same tightening.
+        "hotfault_48v_120a_diag_checks_ok": all(diag48["checks"].values()),
+        "hotfault_48v_120a_diag_ipri_peak_rel": diag48_r["relative"]["ipri_peak_a"],
+        "hotfault_48v_120a_diag_sr_forward_peak_rel":
+            diag48_r["relative"]["sr_forward_peak_a"],
+        "hotfault_48v_120a_diag_trip_delta_ns": diag48_r["delta"]["trip_s"] * 1e9,
         "hotfault_50v_120a_2turn_flux_at_fault_peak_t": hot50_flux2,
         "hotfault_50v_120a_3turn_flux_at_fault_peak_t": hot50_flux3,
     }
@@ -184,8 +213,23 @@ def build() -> dict:
             "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
                              "confirm real Lr saturation at the 101A fault peak; the 50V "
                              "296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- "
-                             "standby cannot close it because tSTBY_DET is 7.5 ms; either accept the "
-                             "prefix or run a documented SOLVER_DIAGNOSTIC and compare 175-215us peaks",
+                             "standby cannot close it because tSTBY_DET is 7.5 ms -- and the prefix "
+                             "is accepted because every stress event ends before 215us.  PR #20's "
+                             "documented SOLVER_DIAGNOSTIC is now run: same circuit, trtol 7->1 and "
+                             "abstol 1e-12->1e-13 over 0..220us moves the I(Lr) peak by "
+                             f"{diag_r['relative']['ipri_peak_a'] * 100:+.2f} % "
+                             f"({diag_r['delta']['ipri_peak_a']:+.3f} A), the SR forward peak by "
+                             f"{diag_r['relative']['sr_forward_peak_a'] * 100:+.3f} % and the trip by "
+                             f"{diag_r['delta']['trip_s'] * 1e9:+.0f} ns, so the prefix peaks are not a "
+                             "single-solver artifact.  "
+                             f"The 48 V control (base run passed the strict log pre-check) moves the "
+                             f"same peaks by "
+                             f"{diag48_r['relative']['ipri_peak_a'] * 100:+.3f} % and "
+                             f"{diag48_r['relative']['sr_forward_peak_a'] * 100:+.3f} %: both cases move "
+                             "down under tightening, so the direction is conservative, but the magnitude "
+                             "is sub-percent, not 0.1 %.  "
+                             "The stall itself is still unresolved and no "
+                             "number here is hardware evidence",
             "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
         {
