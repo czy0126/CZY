@@ -17,15 +17,28 @@
     "lr_0p9_bsat_limit_t": 0.279,
     "lr_2turn_flux_at_fault_peak_t": 0.3262569269292545,
     "lr_3turn_flux_at_fault_peak_t": 0.21750461795283635,
-    "ss_rt_only_threshold_v": 3.982
+    "ss_rt_only_threshold_v": 3.982,
+    "independent_hotfault_simulation_accepted": false,
+    "independent_hotfault_evidence": [
+      {
+        "case": "48v_120a",
+        "accepted": false,
+        "reason": "independent engineering waveform review absent"
+      },
+      {
+        "case": "50v_120a",
+        "accepted": false,
+        "reason": "independent engineering waveform review absent"
+      }
+    ]
   },
   "risks": [
     {
       "id": "F01",
       "priority": "P0",
-      "blocker": "original fault injection occurs during soft-start, not at fully-settled operation",
+      "blocker": "fully settled independent 48/50V hot faults lack completed log and waveform engineering review",
       "blocked": true,
-      "next_evidence": "run separate 48V and 50V hot-start fault decks and verify measured pre-fault SS/Vout",
+      "next_evidence": "run both independent hot faults, verify their LOG precheck, gate turn-off, full RAW waveform and reviewed evidence hashes",
       "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir"
     },
     {
