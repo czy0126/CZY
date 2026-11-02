@@ -973,6 +973,20 @@ def build(raw: Path = RAW, periods: int = 16,
         limits.append(f"stored-energy rate is {d_stored_w:+.3f} W over this "
                       f"window; see windows[] for how it moves with the window")
     return {
+        "diagnostic_integrity": {
+            "status": "RECOMPUTED_WITH_REQUESTED_VIN_RL",
+            "recomputed_from_raw": True,
+            "vin_v": vin,
+            "rl_ohm": rl,
+            "covers": ["windows", "balance.resolution",
+                       "balance.period_averaged.sem_w",
+                       "balance.period_averaged.sd_w",
+                       "balance.period_averaged.mean_w",
+                       "results.window_resolves_0p2_w",
+                       "results.window_resolves_0p2_w_period_averaged"],
+            "note": "All port power calculations including sub-windows and noise "
+                    "use the candidate's actual VIN and load resistance.",
+        },
         "raw": {"path": repo_relative(raw),
                 "bytes": raw.stat().st_size, "mtime": raw.stat().st_mtime,
                 "variables": len(names),
