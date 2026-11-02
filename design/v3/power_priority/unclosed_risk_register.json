@@ -1,0 +1,81 @@
+{
+  "status": "ENGINEERING_GATES_BLOCKED_NOT_RATED",
+  "data_quality": "All facts are from committed LTspice-model JSON, never hardware",
+  "evidence": {
+    "manufacturing_gate": "NOT_FOR_FAB",
+    "48v_120a_fault_oc_trip_us": 41.808675548297806,
+    "48v_120a_fault_peak_primary_a": 84.82680100160617,
+    "48v_120a_fault_vss_at_engage_v": 3.781516585545742,
+    "48v_120a_fault_solver_prefix_only": true,
+    "48v_120a_cold_reached_full_tstop": true,
+    "50v_120a_model_loss_residual_w": 0.49861430297388587,
+    "50v_120a_model_closure_residual_w": 0.6708277004123957,
+    "50v_120a_model_closure_status": "NOT_CLOSED",
+    "target_residual_w": 0.2,
+    "lr_core_ae_m2_from_existing_design": 0.00013,
+    "lr_bsat_ref_t": 0.31,
+    "lr_0p9_bsat_limit_t": 0.279,
+    "lr_2turn_flux_at_fault_peak_t": 0.3262569269292545,
+    "lr_3turn_flux_at_fault_peak_t": 0.21750461795283635
+  },
+  "risks": [
+    {
+      "id": "F01",
+      "priority": "P0",
+      "blocker": "original fault injection occurs during soft-start, not at fully-settled operation",
+      "blocked": true,
+      "next_evidence": "run separate 48V and 50V hot-start fault decks and verify measured pre-fault SS/Vout",
+      "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir"
+    },
+    {
+      "id": "F02",
+      "priority": "P0",
+      "blocker": "original 120A overload transient did not reach 8ms",
+      "blocked": true,
+      "next_evidence": "complete one independently logged fault run; inspect nonlinear model/solver near collapse",
+      "file": "design/v3/power_priority/fault_48v_120a_target.json"
+    },
+    {
+      "id": "M01",
+      "priority": "P0",
+      "blocker": "2-turn Lr fails 0.9 Bsat margin at measured fault peak",
+      "blocked": true,
+      "next_evidence": "retain 3-turn as candidate only; verify L(I), gap and physical Bsat at worst-case fault / tolerance",
+      "file": "design/v3/bom/lr_design.json"
+    },
+    {
+      "id": "E01",
+      "priority": "P0",
+      "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
+      "blocked": true,
+      "next_evidence": "recompute same-window 50V/120A component losses, gate boundary, storage and compare timesteps",
+      "file": "design/v3/power_priority/energy_ledger_50v_120a.json"
+    },
+    {
+      "id": "E02",
+      "priority": "P0",
+      "blocker": "50V 120A full energy closure not approved",
+      "blocked": true,
+      "next_evidence": "trace residual physical source and numerical convergence, do not relax 0.2W",
+      "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json"
+    },
+    {
+      "id": "C01",
+      "priority": "P0",
+      "blocker": "D1 actual native CAD lacks verified magnetic pads, MPN, ERC and routed PCB",
+      "blocked": true,
+      "next_evidence": "signed vendor pinouts + native footprint persistence + full ERC/PCB/DRC",
+      "file": "hardware/dcx_main/d1_fabrication_gate.json"
+    }
+  ],
+  "next_priority": [
+    "F01",
+    "F02",
+    "M01",
+    "C01",
+    "E01",
+    "E02"
+  ],
+  "continuous_power_approved": false,
+  "detailed_thermal_design": "DEFERRED, no continuous current qualification"
+}
