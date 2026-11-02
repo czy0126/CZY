@@ -1,6 +1,6 @@
 LTspice 26.0.2 for Windows
 Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_48v_120a.cir
-Start Time: Mon Nov  2 15:26:13 2026
+Start Time: Mon Nov  2 17:13:16 2026
 Options:plotwinsize=0 method=gear
 solver = Normal
 Maximum thread count: 24
@@ -9,7 +9,8 @@ temp = 27
 method = Gear
 AsciiRawFile = true
 Per .tran options, skipping operating point for transient analysis.
-Total elapsed time: 315.380 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.7400573127935399e-03 to 1.7400573127935499e-03 seconds.
+Total elapsed time: 554.498 seconds.
 
 Files loaded:
 D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_48v_120a.cir
@@ -17,20 +18,23 @@ D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
 D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
 D:\workshop\design_48v-2v\models\sr_device_v3.lib
 
-vout_avg: AVG(V(out) )=1.87366001042 FROM 0 TO 0.00012
-vout_rip: PP(V(out) )=0.0411114204369 FROM 0.00011 TO 0.00012
-vds_a1_min: MIN(V(a1) )=-2.16733451129 FROM 0 TO 0.00012
-vds_a1_max: MAX(V(a1) )=5.65373012259 FROM 0 TO 0.00012
-irev_a1: MAX(I(VSa1) )=5.44037013002 FROM 0 TO 0.00012
-ifwd_a1: MAX(-I(VSa1) )=46.8057080727 FROM 0 TO 0.00012
-ovl_cur: MAX(V(ovl1) )=1.73179737346 FROM 0 TO 0.00012
+vout_avg: AVG(V(out) )=1.87386278001 FROM 0 TO 0.00012
+vout_rip: PP(V(out) )=0.0411944226237 FROM 0.00011 TO 0.00012
+vds_a1_min: MIN(V(a1) )=-1.28784547951 FROM 0 TO 0.00012
+vds_a1_max: MAX(V(a1) )=5.63033637244 FROM 0 TO 0.00012
+irev_a1: MAX(I(VSa1) )=5.43242575198 FROM 0 TO 0.00012
+ifwd_a1: MAX(-I(VSa1) )=46.9295174153 FROM 0 TO 0.00012
+ovl_cur: MAX(V(ovl1) )=1.70369015287 FROM 0 TO 0.00012
 ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
-ipri_pk: MAX(abs(I(Lr)) )=15.5926330824 FROM 0 TO 0.00012
-out_last: V(out) =1.85896224824 at 0.00012
-hot_oc_before: MAX(V(oc) )=0.696540570737 FROM 0.00012 TO 0.00017
-hot_vout_before: AVG(V(out) )=1.87376350477 FROM 0.00012 TO 0.00017
-hot_ss_before: AVG(V(ss) )=4.48536852967 FROM 0.00012 TO 0.00017
-hot_ipri_after: MAX(abs(I(Lr)) )=97.3795227047 FROM 0.000175 TO 0.00032
-hot_oc_after: MAX(V(oc) )=1.24685144887 FROM 0.000175 TO 0.00032
-hot_vout_min: MIN(V(out) )=-0.00548459460321 FROM 0.000175 TO 0.00032
-hot_oc_trip: V(oc)=1  AT 0.000215000011728
+ipri_pk: MAX(abs(I(Lr)) )=15.6313683973 FROM 0 TO 0.00012
+out_last: V(out) =1.88579335053 at 0.00012
+hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017
+hot_ctrl_after: AVG(V(ctl_hot) )=4.99999999999 FROM 0.00019 TO 0.0003
+hot_iflt_after: MAX(I(Rflt_hot) )=858.889898342 FROM 0.000175 TO 0.00032
+hot_oc_before: MAX(V(oc) )=0.696572272653 FROM 0.00012 TO 0.00017
+hot_vout_before: AVG(V(out) )=1.87388150096 FROM 0.00012 TO 0.00017
+hot_ss_before: AVG(V(ss) )=5.04483579059 FROM 0.00012 TO 0.00017
+hot_ipri_after: MAX(abs(I(Lr)) )=97.4426639202 FROM 0.000175 TO 0.00032
+hot_oc_after: MAX(V(oc) )=1.25616720518 FROM 0.000175 TO 0.00032
+hot_vout_min: MIN(V(out) )=-0.00793028426603 FROM 0.000175 TO 0.00032
+hot_oc_trip: V(oc)=1  AT 0.000215096649025

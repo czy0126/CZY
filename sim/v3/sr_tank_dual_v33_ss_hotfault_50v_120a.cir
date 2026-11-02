@@ -1,5 +1,5 @@
 * UNRUN hot-start overload stress candidate; not a cold start, not hardware rated.
-* 50v_120a: same 120A operating-point deck plus 1055us fault and longer transient.
+* 50v_120a: same 120A operating-point deck plus 2175us fault and longer transient.
 * Measured pre-fault V(ss), V(out), V(oc) MUST confirm the intended settled state.
 * Solver completion and all SR/Lr/CT stress bounds must be checked independently.
 * HIGH OUTPUT SENSITIVITY ONLY - UNRUN, NOT HARDWARE RATED
@@ -195,7 +195,7 @@ Vref sgnd 0 0
 Bovl1 ovl1 0 V=min(max(-I(VSa1),0),max(-I(VSb1),0))
 Bovg1 ovg1 0 V=if(V(ga1)>2,if(V(gb1)>2,1,0),0)
 .options plotwinsize=0 method=gear
-.tran 0 1200u 880u 5n uic
+.tran 0 2320u 2000u 5n uic
 .ic V(out)=1.89 V(ss)=4
 .save V(out) V(sw) V(reg) V(ss) I(Lr) V(a1) V(b1) V(ga1) V(gb1) I(VSa1) I(VSb1) I(Cin) I(Rin)
 + V(pre1) V(xsr1:q1) V(xsr1:q2) V(ovl1) V(ovg1) V(oc)
@@ -223,8 +223,8 @@ Bovg1 ovg1 0 V=if(V(ga1)>2,if(V(gb1)>2,1,0),0)
 .meas tran OUT_LAST FIND V(out) AT=120u
 * ---- independent HOT-START post-settling fault (not the cold deck) ----
 * 1m switch + 1m resistor parallel to the existing rated-load candidate.
-* Switch changes 0..5V over 1050..1060us, threshold 2.5V at 1055us.
-Vfltctl_hot ctl_hot 0 PWL(0 0 1050u 0 1060u 5 1200u 5)
+* Switch changes 0..5V over 2170..2180us, threshold 2.5V at 2175us.
+Vfltctl_hot ctl_hot 0 PWL(0 0 2170u 0 2180u 5 2320u 5)
 Sflt_hot out flt_hot ctl_hot 0 HOTFLT
 Rflt_hot flt_hot 0 1m
 .model HOTFLT SW(Ron=1m Roff=1G Vt=2.5)

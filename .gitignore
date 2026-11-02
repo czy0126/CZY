@@ -34,3 +34,6 @@ __pycache__/
 # ignored: without it kicad-cli never loads sym-lib-table and ERC reports every
 # custom-library symbol as an unknown library.
 *.kicad_prl
+
+# Superseded raw/log evidence, kept locally only
+sim/v3/superseded/

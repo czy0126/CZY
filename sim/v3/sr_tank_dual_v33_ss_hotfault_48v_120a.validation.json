@@ -1,0 +1,33 @@
+{
+  "status": "LOG_PRECHECK_PASS_REQUIRES_WAVEFORM_AND_DEVICE_REVIEW",
+  "case": "48v_120a",
+  "evidence_level": "LTSPICE_SIMULATION_ONLY_NOT_HARDWARE",
+  "not_rated": true,
+  "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+  "deck_sha256": "fda82a1fd306502a000238ad8cd83252393d933c93b69614d400b7f0813b94fa",
+  "log": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log",
+  "log_sha256": "54bca8048091ff9b8d5924445170a751ce08ec7a724ad8b1fc098a1b92add523",
+  "raw": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
+  "raw_bytes": 1051638412,
+  "baseline_model_vout_v": 1.8736924354492406,
+  "fault_time_in_saved_axis_s": 0.000175,
+  "probes": {
+    "hot_ctrl_before": 0.0,
+    "hot_ctrl_after": 4.99999999999,
+    "hot_iflt_after": 858.889898342,
+    "hot_oc_before": 0.696572272653,
+    "hot_vout_before": 1.87388150096,
+    "hot_ss_before": 5.04483579059,
+    "hot_ipri_after": 97.4426639202,
+    "hot_oc_after": 1.25616720518,
+    "hot_vout_min": -0.00793028426603,
+    "hot_oc_trip": 0.000215096649025
+  },
+  "blockers": [],
+  "limits": [
+    "log checks prove only syntactic .meas consistency and pre/post operating state",
+    "verify exact raw timing, peak stress, diode conduction, multi-event OC and actual SR gating",
+    "no thermal, SOA, manufacturer magnetic or hardware release approval",
+    "power/current/efficiency still model only; failure to finish run is fatal"
+  ]
+}
