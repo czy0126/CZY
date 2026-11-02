@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from validate_hotfault_log import SS_RT_ONLY_THRESHOLD_V
+import hotfault_engineering_gate as hotgate
 
 ROOT = Path(__file__).resolve().parent.parent
 PP = ROOT / "design/v3/power_priority"
@@ -72,6 +73,7 @@ def build() -> dict:
     hot50_flux2 = inductance * hot50_peak / (2 * area)
     hot50_flux3 = inductance * hot50_peak / (3 * area)
     before_fault_ss = float(fault["ss_at_engage_v"])
+    independent_hotfault = hotgate.build()
     loss_gap = float(ledger50["balance"]["loss_residual_w"])
     closure = float(ledger50["balance"]["closure_residual_w"])
     target = float(ledger50["balance"]["target_w"])
@@ -96,6 +98,8 @@ def build() -> dict:
         "48v_120a_fault_peak_primary_a": fault_peak,
         "48v_120a_fault_vss_at_engage_v": before_fault_ss,
         "ss_rt_only_threshold_v": SS_RT_ONLY_THRESHOLD_V,
+        "independent_hotfault_simulation_accepted": independent_hotfault["all_independent_hotfault_cases_accepted"],
+        "independent_hotfault_evidence": independent_hotfault["cases"],
         "48v_120a_fault_solver_prefix_only": fault["solver_prefix_only"],
         "48v_120a_cold_reached_full_tstop": cold["reached_tstop"],
         "50v_120a_model_loss_residual_w": loss_gap,
@@ -213,10 +217,11 @@ def build() -> dict:
             # after V(ss) reaches the UCC25600 RT-only level (3.982 V), not during
             # the 0.5 mV/us ramp.  The hot-start decks do that (V(ss)=5.04/5.05 V),
             # so that half is answered; what remains is the prefix and hardware.
-            "blocker": "settled-state fault evidence is simulation only and the 50V run "
-                       "stopped at 296.93us of 320us (solver collapse, no completion line); "
-                       "OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
-            "blocked": True,
+            # PR #22 adds a separate gate: the log pre-check is necessary but not
+            # sufficient, and F01 stays blocked until an engineering waveform
+            # review is signed and digest-matched to the current evidence.
+            "blocker": "fully settled independent 48/50V hot faults lack completed log and waveform engineering review",
+            "blocked": not independent_hotfault["all_independent_hotfault_cases_accepted"],
             "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
                              "confirm real Lr saturation at the 101A fault peak.  The PR #21 "
                              "soft-start question is closed: the fault is now injected after "
@@ -241,8 +246,13 @@ def build() -> dict:
                              "down under tightening, so the direction is conservative, but the magnitude "
                              "is sub-percent, not 0.1 %.  "
                              "The stall itself is still unresolved and no "
-                             "number here is hardware evidence",
-            "file": "design/v3/power_priority/hotfault_48v_120a.json",
+                             "number here is hardware evidence.  Closing F01 now "
+                             "also requires an independent engineering waveform "
+                             "review: hotfault_engineering_gate accepts a case only "
+                             "when hotfault_<case>_engineering_review.json is signed "
+                             "and digest-matched to the current deck, log and "
+                             "waveform data, not when the log pre-check passes",
+            "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
         },
         {
             "id": "F02",

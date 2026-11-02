@@ -1,0 +1,24 @@
+{
+  "purpose": "COPY-ONLY TEMPLATE; do not rename or mark approved until actual LTspice logs, raw waveforms, and engineer signatures exist",
+  "approved": false,
+  "reviewer": "",
+  "revision": "",
+  "validation_path": "",
+  "validation_sha256": "",
+  "waveform_review_path": "",
+  "waveform_review_sha256": "",
+  "pre_fault_settled": false,
+  "switch_and_oc_verified": false,
+  "gate_shutdown_verified": false,
+  "peak_stress_reviewed": false,
+  "waveform_full_duration_verified": false,
+  "required_waveform_evidence": [
+    "Original LTspice log and complete RAW; deck version plus model .lib SHA256",
+    "Before 1055 us: Vout 2 windows, Vss≥RT-only mode, actual switching frequency, OC below trip",
+    "At/after 1055 us: ctl_hot transitions, Rflt_hot actual injected current, 1V OC trip and gate shutdown timing",
+    "Trace I(Lr) and all eight SR device drain currents/voltage under first spike and after trip",
+    "Confirm simulator reaches requested Tstop (not just first reached transient data) and handles fault recovery",
+    "Check 3-turn Lr B/H/L(I) and physical device transient SOA separately from simulation"
+  ],
+  "note": "This template itself is not a simulation or hardware approval. Copy to engineering_review with actual review documents and hashes; no dummy values."
+}
