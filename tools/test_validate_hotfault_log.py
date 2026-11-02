@@ -12,6 +12,9 @@ def _log(deck: Path, ss: float = 5.0, trip: float = 0.000210,
         "LTspice 26.0.2 for Windows\n"
         f"Circuit: D:\\\\project\\\\{deck.name}\n"
         "Total elapsed time: 244.8 seconds.\n"
+        "hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017\n"
+        "hot_ctrl_after: AVG(V(ctl_hot) )=5 FROM 0.00019 TO 0.00030\n"
+        "hot_iflt_after: MAX(I(Rflt_hot) )=212 FROM 0.000175 TO 0.00032\n"
         f"hot_ss_before: AVG(V(ss) )={ss} FROM 0.00012 TO 0.00017\n"
         f"hot_vout_before: AVG(V(out) )={vout} FROM 0.00012 TO 0.00017\n"
         "hot_oc_before: MAX(V(oc) )=0.68 FROM 0.00012 TO 0.00017\n"
@@ -84,3 +87,16 @@ def test_real_existing_50v_120a_log_is_not_a_hot_fault_log():
     values, errors = v.parse_log(path.read_text(encoding="utf-8"))
     assert values == {}
     assert any("hot_oc_trip" in err for err in errors)
+
+
+def test_fault_switch_off_or_no_injected_current_fails_even_if_oc_claims_a_trip(tmp_path: Path):
+    log, raw = _input(tmp_path)
+    value = log.read_text(encoding="utf-8").replace(
+        "hot_iflt_after: MAX(I(Rflt_hot) )=212",
+        "hot_iflt_after: MAX(I(Rflt_hot) )=0")
+    log.write_text(value, encoding="utf-8")
+    assert any("injected fault" in b for b in v.build("48v_120a", log, raw)["blockers"])
+    log.write_text(_log(v.CASES["48v_120a"]["deck"]).replace(
+        "hot_ctrl_after: AVG(V(ctl_hot) )=5",
+        "hot_ctrl_after: AVG(V(ctl_hot) )=0"), encoding="utf-8")
+    assert any("did not reach" in b for b in v.build("48v_120a", log, raw)["blockers"])
