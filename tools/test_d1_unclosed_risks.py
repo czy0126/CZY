@@ -86,6 +86,12 @@ def test_the_loss_gap_is_not_a_short_window_artifact_but_stays_blocked():
     assert e["sr_step_charge_cross_raw_rel"] > 10 * e["sr_step_charge_quadrature_rel"]
     assert e["sr_step_vout_spread_mv"] > 10.0
     assert e["sr_step_on_time_spread_ns"] > 50.0
+    # The SR term is not a passive readout: across the same four runs it moves
+    # ~118 W/V against the port's ~200 W/V, so a millivolt of Vout is worth
+    # about a tenth of a watt and the 0.49 W gap sits at that resolution.
+    assert e["sr_step_loss_per_volt_w"] > 10.0
+    assert 0.2 < e["sr_step_loss_sensitivity_vs_port"] < 5.0
+    assert e["sr_step_loss_per_volt_w"] * 1e-3 > 0.05
     assert e["50v_120a_model_closure_status"] == "NOT_CLOSED"
     assert all(x["blocked"] for x in j["risks"])
 

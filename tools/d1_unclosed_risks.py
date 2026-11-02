@@ -99,6 +99,14 @@ def build() -> dict:
         "sr_step_charge_quadrature_rel": step_r["quadrature_within_raw_max_rel"],
         "sr_step_charge_cross_raw_rel": step_r["charge_cross_raw_rel"],
         "sr_step_checks_ok": all(step_op["checks"].values()),
+        # The SR body-diode loss is not a passive readout: measured across the
+        # same four runs it moves 118 W/V of V(out), versus the port's own
+        # 2V/RL of 200 W/V.  A mV of V(out) is worth ~0.1 W of SR loss, so the
+        # 50 V/120 A gap (2.1 mV) is the same order as the term meant to
+        # explain it.
+        "sr_step_loss_per_volt_w": step_r["sr_loss_per_volt_w"],
+        "sr_step_port_per_volt_w": step_r["port_w_per_volt_w"],
+        "sr_step_loss_sensitivity_vs_port": step_r["sr_loss_sensitivity_vs_port"],
         "50v_120a_loss_residual_moves_between_windows_w": aligned_loss_gap - loss_gap,
         "target_residual_w": target,
         "lr_core_ae_m2_from_existing_design": area,
@@ -185,12 +193,18 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
             "blocked": abs(loss_gap) > target,
-            "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs "
-                             "133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: "
-                             "no un-inventoried dissipative element can hold 0.49 W (Cin ESR "
-                             "0.61 mW measured, Cbt carries no charge).  Remaining candidates are "
-                             "the port reading (~2 mV of mean Vout) and the behavioral-SR "
-                             "channel/diode split; do not relax 0.2 W",            "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
+            "next_evidence": (
+                "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs "
+                "133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: "
+                "no un-inventoried dissipative element can hold 0.49 W (Cin ESR "
+                "0.61 mW measured, Cbt carries no charge).  Remaining candidates are "
+                "the port reading (~2 mV of mean Vout) and the behavioral-SR "
+                "channel/diode split; measured across the four 100 A steps the SR "
+                f"body-diode term moves {step_r['sr_loss_per_volt_w']:.0f} W/V against the "
+                f"port's {step_r['port_w_per_volt_w']:.0f} W/V, so 1 mV of Vout is worth "
+                f"{step_r['sr_loss_per_volt_w'] * 1e-3:.2f} W -- the 0.49 W gap is 2.1 mV, "
+                "the same order.  Do not relax 0.2 W"),
+            "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
         },
         {
             "id": "E02",

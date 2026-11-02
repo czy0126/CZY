@@ -74,3 +74,14 @@ def test_the_committed_record_still_carries_its_invariants() -> None:
     assert r["vout_spread_mv"] > 10.0
     assert r["on_time_spread_ns"] > 50.0
     assert r["loss_vs_vout_inverse_monotone"] is True
+    # The sensitivity is derived from the two spreads, not remembered
+    # separately, so it has to stay consistent with them.
+    assert r["diode_loss_spread_x8_w"] == pytest.approx(
+        8.0 * (max(r["diode_loss_w"]) - min(r["diode_loss_w"])), rel=1e-12)
+    assert r["sr_loss_per_volt_w"] == pytest.approx(
+        r["diode_loss_spread_x8_w"] / (r["vout_spread_mv"] * 1e-3), rel=1e-9)
+    assert r["sr_loss_sensitivity_vs_port"] == pytest.approx(
+        r["sr_loss_per_volt_w"] / r["port_w_per_volt_w"], rel=1e-9)
+    # Same order as the port's 2V/RL: that is what makes the operating point,
+    # not the integration rule, decide the size of this term.
+    assert 0.2 < r["sr_loss_sensitivity_vs_port"] < 5.0

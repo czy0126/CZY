@@ -43,6 +43,8 @@ DECKS = {
 }
 NAMES = ["V(out)", "V(ga1)", "V(xsa1:di)", "V(xsa1:si)", "I(xsa1:Dbd)"]
 T_END_S = 671e-6
+# The 100 A mother deck's load; the port sensitivity is dP/dV = 2V/RL.
+RLOAD_OHM = 18.9e-3
 
 
 def periods(t: np.ndarray, gate: np.ndarray) -> list[tuple[int, int]]:
@@ -152,6 +154,13 @@ def build() -> dict[str, object]:
     within_loss = max(quad[s]["max_rel_loss"] for s in steps)
     cross = max(loss) / min(loss) - 1.0
     charge_cross = max(charge) / min(charge) - 1.0
+    # Apparent sensitivity: does the 19 mV of Vout spread actually account for
+    # the 2.3 W of SR loss spread?  Four points only fix a slope, not a cause,
+    # so this is reported as a magnitude comparison against the port's own
+    # 2V/RL, not as a fitted law.
+    sr_spread_x8 = (max(loss) - min(loss)) * 8.0
+    per_volt = sr_spread_x8 / ((max(vout) - min(vout)) if max(vout) != min(vout) else 1.0)
+    port_per_volt = 2.0 * float(np.mean(vout)) / RLOAD_OHM
     results = {
         "steps_ns": steps,
         "vout_mean_v": vout,
@@ -163,6 +172,10 @@ def build() -> dict[str, object]:
         "charge_spread_uc": max(charge) - min(charge),
         "charge_cross_raw_rel": charge_cross,
         "diode_loss_spread_w": max(loss) - min(loss),
+        "diode_loss_spread_x8_w": sr_spread_x8,
+        "sr_loss_per_volt_w": per_volt,
+        "port_w_per_volt_w": port_per_volt,
+        "sr_loss_sensitivity_vs_port": per_volt / port_per_volt,
         "quadrature_within_raw_max_rel": within,
         "quadrature_loss_within_raw_max_rel": within_loss,
         "cross_raw_loss_rel": cross,
