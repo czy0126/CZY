@@ -134,9 +134,10 @@ def build() -> dict:
                        "OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
             "blocked": True,
             "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
-                             "confirm real Lr saturation at the 101A fault peak; close the 50V "
-                             "296.928us stall by adding the UCC24624 standby turn-off the timing "
-                             "model lacks (variant lib) and re-running both decks on one footing",
+                             "confirm real Lr saturation at the 101A fault peak; the 50V "
+                             "296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- "
+                             "standby cannot close it because tSTBY_DET is 7.5 ms; either accept the "
+                             "prefix or run a documented SOLVER_DIAGNOSTIC and compare 175-215us peaks",
             "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
         {

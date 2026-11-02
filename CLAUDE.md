@@ -79,8 +79,11 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   **锁存不解释塌缩**：两个 deck 都有锁存，48 V 照样跑满 320 µs。50 V 的塌缩在 trip 后
   **82 µs 的死区（296.928094 µs）**：295.88 µs 仍是满步长 5 ns，296.88 µs 起步长收缩，
   14.20 GB 里 13.3 GB 是最后 0.93 µs 写的。死区轨迹不同——48 V 的 `V(sw)` 落到 ~7 V 基本
-  静止，50 V 在 13.7–16.2 V 漂移。要跑满应补 UCC24624 standby 关断变体库并两 deck 同口径
-  重跑，**不是调容差**。
+  静止，50 V 在 13.7–16.2 V 漂移。**待机不是修法**：datasheet `tSTBY_DET` 是 7.5 ms
+  （5.5/7.5/10），比故障后窗口（~0.1 ms）长两个数量级，锁存在窗口内反而符合器件逻辑
+  （B 通道正向 1.63 A、VDS 1.5 mV、无反向偏置）。死区轨迹平滑（~3 V/µs），步长却压到
+  1e-15 s ⇒ 是 LTE 判据失控的**数值**问题；要跑满只能做只改求解器设置（`trtol`/`abstol`）
+  的 `SOLVER_DIAGNOSTIC` 运行并逐项比对 175–215 µs 峰值，或者接受前缀。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的
