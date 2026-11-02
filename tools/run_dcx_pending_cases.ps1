@@ -9,7 +9,7 @@
 param(
     [string]$LTspice = "",
     [switch]$Execute,
-    [string[]]$Cases = @("50V110", "50V120", "48V120Cold", "48V120Fault")
+    [string[]]$Cases = @("48V120HotFault", "50V120HotFault")
 )
 
 $ErrorActionPreference = "Stop"
@@ -19,6 +19,8 @@ $Allow = @{
     "50V120" = "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir"
     "48V120Cold" = "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir"
     "48V120Fault" = "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir"
+    "48V120HotFault" = "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir"
+    "50V120HotFault" = "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir"
 }
 
 if ($Execute -and (!(Test-Path -LiteralPath $LTspice -PathType Leaf))) {
@@ -48,7 +50,15 @@ foreach ($Case in $Cases) {
     if ($Txt -notmatch "(?i)vout_avg\s*[:=]") {
         throw "Output files exist but VOUT_AVG measurement not present for $Case; inspect solver."
     }
-    Write-Output "COMPLETE FILES ONLY $Case; verify waveforms, control and OC before publishing results."
+    if ($Txt -notmatch "(?i)Total elapsed time") {
+        throw "Solver completion line missing; possible partial fault prefix: $Case"
+    }
+    if ($Case -like "*HotFault" -and
+        ($Txt -notmatch "(?i)hot_ipri_after\s*[:=]" -or
+         $Txt -notmatch "(?i)hot_ss_before\s*[:=]")) {
+        throw "Hot-fault pre-state or peak-current .meas missing: $Case"
+    }
+    Write-Output "COMPLETE SOLVER FILES $Case; verify OC, SR/SOA, Lr L(I), stress before releasing results."
 }
 if (!$Execute) {
     Write-Output "DRY RUN ONLY. Run again with -LTspice <real path> -Execute; no performance results generated."
