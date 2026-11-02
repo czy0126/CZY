@@ -161,3 +161,16 @@ def test_the_solver_diagnostic_bounds_the_prefix_peaks_without_unblocking():
     assert f01["blocked"] is True
     assert all(x["blocked"] for x in j["risks"])
     assert j["continuous_power_approved"] is False
+
+
+
+def test_f03_is_a_hard_sr_shutdown_blocker_independent_of_the_oc_trip():
+    data = r.build()
+    metrics = data["evidence"]
+    assert metrics["hotfault_48v_full_duration_sr_gate_high"] is True
+    assert metrics["hotfault_50v_prefix_and_sr_gate_high"] is True
+    assert metrics["hotfault_48v_sr_a_gate_final_v"] > 10.0
+    assert metrics["hotfault_50v_solver_prefix"] is True
+    f03 = next(row for row in data["risks"] if row["id"] == "F03")
+    assert f03["priority"] == "P0" and f03["blocked"]
+    assert data["next_priority"][0] == "F03"
