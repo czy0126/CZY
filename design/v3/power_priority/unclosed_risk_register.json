@@ -11,21 +11,48 @@
     "50v_120a_model_loss_residual_w": 0.49861430297388587,
     "50v_120a_model_closure_residual_w": 0.6708277004123957,
     "50v_120a_model_closure_status": "NOT_CLOSED",
+    "50v_120a_aligned_window_periods": 133,
+    "50v_120a_aligned_loss_residual_w": 0.4920537492289174,
+    "50v_120a_aligned_closure_period_averaged_w": 0.6984390319237341,
+    "50v_120a_aligned_resolution_sem_w": 0.04992540152990046,
+    "50v_120a_aligned_resolves_0p2_w": true,
+    "50v_120a_loss_residual_moves_between_windows_w": -0.006560553744968445,
     "target_residual_w": 0.2,
     "lr_core_ae_m2_from_existing_design": 0.00013,
     "lr_bsat_ref_t": 0.31,
     "lr_0p9_bsat_limit_t": 0.279,
     "lr_2turn_flux_at_fault_peak_t": 0.3262569269292545,
-    "lr_3turn_flux_at_fault_peak_t": 0.21750461795283635
+    "lr_3turn_flux_at_fault_peak_t": 0.21750461795283635,
+    "hotfault_48v_120a_stable_at_design_point": true,
+    "hotfault_48v_120a_pre_fault_vss_v": 4.4853683998213585,
+    "hotfault_48v_120a_pre_fault_vout_v": 1.873763604915824,
+    "hotfault_48v_120a_pre_fault_vout_pp_v": 0.04133206402730605,
+    "hotfault_48v_120a_trip_delay_us": 40.00003004733736,
+    "hotfault_48v_120a_lr_peak_before_trip_a": 97.37952270468149,
+    "hotfault_48v_120a_sr_forward_peak_a": 292.4708027787503,
+    "hotfault_48v_120a_solver_completed": true,
+    "hotfault_48v_120a_2turn_flux_at_fault_peak_t": 0.3745366257872365,
+    "hotfault_48v_120a_3turn_flux_at_fault_peak_t": 0.2496910838581577,
+    "hotfault_50v_120a_stable_at_design_point": true,
+    "hotfault_50v_120a_pre_fault_vss_v": 4.485422987827948,
+    "hotfault_50v_120a_pre_fault_vout_v": 1.9431569997527702,
+    "hotfault_50v_120a_pre_fault_vout_pp_v": 0.04294767794737386,
+    "hotfault_50v_120a_severity_x": 9.15,
+    "hotfault_50v_120a_trip_delay_us": 39.83109546740296,
+    "hotfault_50v_120a_lr_peak_before_trip_a": 101.2283355492458,
+    "hotfault_50v_120a_sr_forward_peak_a": 303.953943784737,
+    "hotfault_50v_120a_solver_completed": true,
+    "hotfault_50v_120a_2turn_flux_at_fault_peak_t": 0.38933975211248384,
+    "hotfault_50v_120a_3turn_flux_at_fault_peak_t": 0.2595598347416559
   },
   "risks": [
     {
       "id": "F01",
       "priority": "P0",
-      "blocker": "original fault injection occurs during soft-start, not at fully-settled operation",
+      "blocker": "48V and 50V settled-state fault evidence is simulation only; OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
       "blocked": true,
-      "next_evidence": "run separate 48V and 50V hot-start fault decks and verify measured pre-fault SS/Vout",
-      "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir"
+      "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; confirm real Lr saturation at the 101A fault peak",
+      "file": "design/v3/power_priority/hotfault_48v_120a.json"
     },
     {
       "id": "F02",
@@ -40,7 +67,7 @@
       "priority": "P0",
       "blocker": "2-turn Lr fails 0.9 Bsat margin at measured fault peak",
       "blocked": true,
-      "next_evidence": "retain 3-turn as candidate only; verify L(I), gap and physical Bsat at worst-case fault / tolerance",
+      "next_evidence": "the settled-state 48V fault raises the peak to 97.38 A (2-turn 0.375 T); retain 3-turn as candidate only and verify L(I), gap and physical Bsat at this worst case / tolerance",
       "file": "design/v3/bom/lr_design.json"
     },
     {
@@ -48,15 +75,15 @@
       "priority": "P0",
       "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
       "blocked": true,
-      "next_evidence": "recompute same-window 50V/120A component losses, gate boundary, storage and compare timesteps",
-      "file": "design/v3/power_priority/energy_ledger_50v_120a.json"
+      "next_evidence": "ELE-09 ruled out a short-window artifact: 22 periods 0.4986 W vs 133 aligned periods 0.4921 W (sem 0.050 W).  Trace the physical source of the remaining ~0.49 W; do not relax 0.2 W",
+      "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json"
     },
     {
       "id": "E02",
       "priority": "P0",
       "blocker": "50V 120A full energy closure not approved",
       "blocked": true,
-      "next_evidence": "trace residual physical source and numerical convergence, do not relax 0.2W",
+      "next_evidence": "trace residual physical source; the aligned 133-period window confirms it is stable (0.698 W period-averaged, sem 0.050 W), do not relax 0.2W",
       "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json"
     },
     {

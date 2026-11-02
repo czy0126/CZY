@@ -51,6 +51,9 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.cir",
         # issue #6 asks for 5 / 2 / 1 ns; the third leg is a .tran step change.
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
+        # issue #6, E6-3's optional <=0.5 ns leg: the 5/2/1 ns loss list is not
+        # monotone, so a fourth step tests plateau vs constant error.
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.cir",
         # High-output candidates (tools/make_high_output_decks.py): all four
         # 48 V decks were run 2026-11-01/02; the two 50 V non-probe decks are
         # still targets that have never run (the 50 V record used their _cin
@@ -74,6 +77,17 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
         "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+        # ELE-08: steady-state-initialized faults.  The .ic precharge is a
+        # starting state, not proof of settling; the run records are
+        # design/v3/power_priority/hotfault_{48v,50v}_120a.json and
+        # 48V120A_稳态初始化故障_2026-11-02.md.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+        # ELE-09: the same 50 V/120 A circuit at half the timestep, and over the
+        # first phase-aligned window.  Both change only the .tran line, so the
+        # 0.499 W residual can be tested against step and window length.
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
     ],
     "model": [
         "models/ucc25600_legacy_behaviour.lib",
@@ -102,7 +116,9 @@ V3_SOURCES = {
         "tools/make_physical_decks.py",
         "tools/make_high_output_decks.py",
         "tools/make_120a_transients.py",
+        "tools/make_hot_fault_decks.py",
         "tools/analyze_v3_transient.py",
+        "tools/hot_fault_metrics.py",
         "tools/steady_stress.py",
         "tools/ci_check.py",
         "tools/current_manifest.py",
@@ -134,6 +150,10 @@ V3_SOURCES = {
         "tools/test_analyze_v3_transient.py",
         "tools/test_120a_transients.py",
         "tools/test_make_120a_transients.py",
+        "tools/test_hot_fault_metrics.py",
+        "tools/test_make_hot_fault_decks.py",
+        "tools/d1_unclosed_risks.py",
+        "tools/test_d1_unclosed_risks.py",
         "tools/test_ledger_candidate_parameters.py",
         "tools/test_control_validation_doc.py",
         "tools/test_ci_check.py",
@@ -192,6 +212,16 @@ V3_SOURCES = {
         # ELE-07: true cold start and 8.7x overload on the 15.4 mOhm target.
         "design/v3/power_priority/cold_start_48v_120a_target.json",
         "design/v3/power_priority/fault_48v_120a_target.json",
+        # ELE-08: settled-state faults at 48 V and 50 V, plus the gate register
+        # that keeps F01/M01 blocked on this evidence.
+        "design/v3/power_priority/hotfault_48v_120a.json",
+        "design/v3/power_priority/hotfault_50v_120a.json",
+        "design/v3/power_priority/unclosed_risk_register.json",
+        # ELE-09: the 22-period 5/2 ns pair, the SR decomposition with the
+        # gate-drive boundary correction, and the 133-period aligned ledger.
+        "design/v3/power_priority/energy_ledger_50v_120a_steps.json",
+        "design/v3/power_priority/sr_loss_audit_50v_120a_steps.json",
+        "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -207,6 +237,8 @@ V3_SOURCES = {
         "design/v3/power_priority/48V120A_实测_2026-11-02.md",
         "design/v3/power_priority/50V110A_120A_实测_2026-11-02.md",
         "design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md",
+        "design/v3/power_priority/48V120A_稳态初始化故障_2026-11-02.md",
+        "design/v3/power_priority/50V120A_损耗差额与步长_2026-11-02.md",
         "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
     ],
     "config": [
@@ -223,10 +255,20 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
+        # ELE-08 / ELE-09: the two settled-state fault raws, the 2 ns companion
+        # and the 133-period aligned run.  Each is identified by size + mtime
+        # because it exceeds the hash limit.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
         # the hash list; their .log files are the committed measurements.
     ],
@@ -564,6 +606,40 @@ REPRODUCE = {
         "--raw sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.raw "
         "--deck sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir --rl 0.0154 "
         "--json design/v3/power_priority/fault_48v_120a_target.json",
+        # ELE-08: steady-state-initialized faults.  The extractor checks
+        # soft-start completion and output drift first; a .ic precharge alone
+        # is not evidence of settling.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+        "python tools/hot_fault_metrics.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw "
+        "--deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir "
+        "--log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log --rl 15.4m "
+        "--json design/v3/power_priority/hotfault_48v_120a.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+        "python tools/hot_fault_metrics.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw "
+        "--deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir "
+        "--log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log --rl 16.3m "
+        "--json design/v3/power_priority/hotfault_50v_120a.json",
+        "python tools/d1_unclosed_risks.py --write",
+        # ELE-09: the 22-period 5/2 ns pair, then the phase-aligned window.
+        # The step comparison accepts only decks that differ in .tran step.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
+        "python tools/energy_ledger_100a.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --periods 22 "
+        "--vin 50 --rl 0.0163 "
+        "--compare-raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw "
+        "--json design/v3/power_priority/energy_ledger_50v_120a_steps.json",
+        "python tools/sr_loss_audit.py "
+        "--case candidate_50v_120a candidate_50v_120a_2ns "
+        "--compare candidate_50v_120a candidate_50v_120a_2ns "
+        "--json design/v3/power_priority/sr_loss_audit_50v_120a_steps.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii "
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
+        "python tools/energy_ledger_100a.py "
+        "--raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw "
+        "--periods 133 --vin 50 --rl 0.0163 --no-step-check "
+        "--json design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
         "python -m pytest tools -q",
         "python tools/ci_check.py",
     ],

@@ -1,0 +1,118 @@
+{
+  "kind": "hot_fault",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED / NOT_A_COLD_START",
+  "deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+  "raw": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
+  "deck_has_ic": true,
+  "raw_bytes": 1036944409,
+  "t_first_s": 0.0,
+  "t_last_s": 0.00032,
+  "deck_tstop_abs_s": 0.0012,
+  "deck_tstart_abs_s": 0.0008799999999999999,
+  "saved_stop_s": 0.00031999999999999997,
+  "reached_tstop": true,
+  "solver_prefix_only": false,
+  "saved_window": {
+    "tstart_s": 0.0008799999999999999,
+    "ramp_start_abs_s": 0.00105,
+    "ramp_end_abs_s": 0.00106,
+    "engage_abs_s": 0.001055,
+    "engage_rebased_s": 0.00017500000000000003
+  },
+  "pre_fault": {
+    "window_s": [
+      0.00011999999999999999,
+      0.00016999999999999999
+    ],
+    "vout": {
+      "samples": 106867,
+      "mean": 1.873763604915824,
+      "min": 1.846403570405978,
+      "max": 1.887735634433284,
+      "pp": 0.04133206402730605,
+      "rms": 1.8737990096613595
+    },
+    "ss": {
+      "samples": 106867,
+      "mean": 4.4853683998213585,
+      "min": 4.472879711411191,
+      "max": 4.497857067417461,
+      "pp": 0.024977356006269602,
+      "rms": 4.48537419521963
+    },
+    "oc": {
+      "samples": 106867,
+      "mean": 0.6965001193792189,
+      "min": 0.6964584375111406,
+      "max": 0.6965405707371227,
+      "pp": 8.213322598216166e-05,
+      "rms": 0.6965001197060635
+    },
+    "vout_first_half_mean_v": 1.873770368765966,
+    "vout_second_half_mean_v": 1.873756962375544,
+    "vout_half_window_drift_frac": 7.154792838781759e-06,
+    "criterion": {
+      "soft_start_target_v": 4.0,
+      "soft_start_floor_v": 3.9,
+      "vout_half_window_drift_limit_frac": 0.01,
+      "basis": "a precharge is not settling; both checks must hold"
+    },
+    "soft_start_finished": true,
+    "vout_flat": true,
+    "stable_at_design_point": true
+  },
+  "fault": {
+    "branch_ohm": 0.002,
+    "load_ohm_nominal": 0.0154,
+    "load_ohm_after_fault": 0.001770114942528736,
+    "severity_x": 8.7,
+    "trip_s": 0.0002150000300473374,
+    "trip_rebased_ms": 0.2150000300473374,
+    "delay_from_engage_us": 40.00003004733736,
+    "level_v": 1.0,
+    "ipri_peak_before_trip_a": 97.37952270468149,
+    "ipri_peak_before_trip_ms": 0.2108695618727775,
+    "ipri_peak_after_engage_a": 97.37952270468149,
+    "ipri_peak_after_engage_ms": 0.2108695618727775,
+    "oc_max_v": 1.246851448870975,
+    "sr_forward_peak_whole_record_a": 292.4708027787503,
+    "sr_reverse_peak_whole_record_a": 13.57944846990563,
+    "vout_min_after_engage_v": -0.005484594603207119,
+    "vout_final_v": 0.11966555924894506,
+    "pout_final_w": 30.69349935090469,
+    "pout_final_basis": "V(out)^2 / (RL || fault branch), last 100 us",
+    "first_sustained_drive_stop_ms": 0.2204906915480799,
+    "max_drive_low_us": 99.51,
+    "i2t_to_trip_a2s": 0.11607225832460322,
+    "reg_final_v": 11.000000000000002
+  },
+  "log": {
+    "solver_completed": true,
+    "total_elapsed_s": 315.38,
+    "measurements": {
+      "options": 0.0,
+      "vout_avg": 1.87366001042,
+      "vout_rip": 0.0411114204369,
+      "vds_a1_min": -2.16733451129,
+      "vds_a1_max": 5.65373012259,
+      "irev_a1": 5.44037013002,
+      "ifwd_a1": 46.8057080727,
+      "ovl_cur": 1.73179737346,
+      "ovl_gate": 0.0,
+      "ipri_pk": 15.5926330824,
+      "out_last": 1.85896224824,
+      "hot_oc_before": 0.696540570737,
+      "hot_vout_before": 1.87376350477,
+      "hot_ss_before": 4.48536852967,
+      "hot_ipri_after": 97.3795227047,
+      "hot_oc_after": 1.24685144887,
+      "hot_vout_min": -0.00548459460321,
+      "hot_oc_trip": 0.000215000011728
+    }
+  },
+  "limits": [
+    "steady-state initialization means this is NOT a cold start; it cannot prove start-up protection or a cold inrush stress",
+    "the model has no thermal, SOA or real current-sharing evidence",
+    "a precharge does not prove settling -- use pre_fault.stable_at_design_point"
+  ]
+}

@@ -63,6 +63,72 @@ def test_the_port_power_follows_the_deck_it_was_given():
     assert (VIN, RL) == (48.0, 18.9e-3)
 
 
+def test_the_window_mean_is_the_same_arithmetic_as_the_whole_record():
+    """Building only the window must not move a single bit.
+
+    ``loss_terms`` re-derives every product for every period, and the residual
+    walk calls it once per period (265 times on a 133-period aligned raw).
+    Building each product array over the *whole record* first is the same
+    arithmetic -- the integral still runs over ``[i0, i1)`` -- but it is O(n)
+    per call: measured 0.23 s per array against 0.004 s windowed, i.e. tens of
+    minutes per raw.  The published ledger numbers may not move, so the two
+    forms are compared with ``==``, not ``approx``.
+    """
+    import energy_ledger_100a as mod
+
+    n = 401
+    t = array("d", (1e-6 * k + 1e-12 * k * k for k in range(n)))
+    a = array("d", (0.3 * k - 0.0007 * k * k for k in range(n)))
+    b = array("d", (1.7 - 0.004 * k + 3e-6 * k * k for k in range(n)))
+    for i0, i1 in ((0, n - 1), (37, 120), (250, 399)):
+        product = mod._mean(t, array("d", (a[k] * b[k] for k in range(n))), i0, i1)
+        assert mod._window_mean(t, i0, i1, lambda k: a[k] * b[k]) == product
+        assert mod._mean_product(t, a, b, i0, i1) == product
+        # ``pout`` is v*v/rl; the division has to stay inside the window too.
+        divided = mod._mean(
+            t, array("d", (v * v / 0.0163 for v in a)), i0, i1)
+        assert mod._window_mean(t, i0, i1, lambda k: a[k] * a[k] / 0.0163) == divided
+
+
+def test_the_period_walk_touches_only_its_own_window():
+    """Two hundred periods of ledger must not re-read the whole record.
+
+    ``residual_noise`` walks the window period by period.  Reading a sample
+    outside ``[i0, i1]`` while computing one period is exactly the cost this
+    guards against: it makes a 133-period build scale with the raw length
+    instead of with the window, i.e. ~2 h for four aligned raws.
+    """
+    import energy_ledger_100a as mod
+
+    class Traced:
+        """An array that remembers which indices were read."""
+
+        def __init__(self, values: list[float]) -> None:
+            self.values = values
+            self.seen: set[int] = set()
+
+        def __getitem__(self, index: int) -> float:
+            self.seen.add(index)
+            return self.values[index]
+
+        def __len__(self) -> int:
+            return len(self.values)
+
+    n = 100
+    keys = ("iin", "ilr", "icout", "isa1", "isb1", "ish", "isl", "vsw", "vin",
+            "idh", "idl", "vcs1", "vocd", "id1", "vcs2", "id2", "vocm", "id3",
+            "id4", "irbur", "vout")
+    keys += tuple(f"{half}_{part}" for half in ("a", "b")
+                  for part in ("di", "si", "bch", "dbd", "rg"))
+    d: dict[str, Traced] = {key: Traced([1.0] * n) for key in keys}
+    t = array("d", (float(k) for k in range(n)))
+    i0, i1 = 20, 30
+    mod.port_terms(t, d, i0, i1)
+    mod.loss_terms(t, d, i0, i1)
+    for key, traced in d.items():
+        assert traced.seen <= set(range(i0, i1 + 1)), key
+
+
 def test_the_cli_can_be_pointed_at_a_candidate_deck():
     default = parse_args([])
     assert (default.vin, default.rl) == (VIN, RL)

@@ -91,6 +91,13 @@
       "sha256": "57ab2a4ce4cb5fcc6348b8dd9756b0fbf9d31a359d4252d9d7169870cd3631bb"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.cir",
+      "kind": "deck",
+      "bytes": 11373,
+      "mtime": 1793604050.818177,
+      "sha256": "7f5beccf90afe920a4642f968a4e990dd85565ca13dced002a18f2ceb5a0958c"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.cir",
       "kind": "deck",
       "bytes": 10569,
@@ -180,6 +187,34 @@
       "bytes": 12186,
       "mtime": 1793599712.8903737,
       "sha256": "65d76094048825eb9669ba96877e757e37caee1d2146fa34631cfcff2a0beb90"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+      "kind": "deck",
+      "bytes": 12175,
+      "mtime": 1793604301.8708463,
+      "sha256": "db220bf8ac376159fd3ac266eac2c1b89a283dd159f9bd2f5d2e25fa63ee5f7c"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+      "kind": "deck",
+      "bytes": 12175,
+      "mtime": 1793604301.8718495,
+      "sha256": "9be58093d1c17a78ec267b9cdea285b97cc7f24d827247d9898e3897dee5ba12"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
+      "kind": "deck",
+      "bytes": 11087,
+      "mtime": 1793604689.7963476,
+      "sha256": "4b822dd3ee6ef736146a5cc619e6d5e2a67609e3d962bccf7d503cf11df15b63"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
+      "kind": "deck",
+      "bytes": 11087,
+      "mtime": 1793605315.9811625,
+      "sha256": "7f6ae970f18174d18f14b0dc39884b0c71577d3cb10ba3484d4c9a24e5a9e989"
     },
     {
       "path": "models/ucc25600_legacy_behaviour.lib",
@@ -317,23 +352,23 @@
     {
       "path": "tools/energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 66582,
-      "mtime": 1793596519.248474,
-      "sha256": "c425c521f23fe31dc0cf8d7d2ca89e077cd6dcc4acb257a8ab0d911036174b63"
+      "bytes": 67177,
+      "mtime": 1793606710.7379785,
+      "sha256": "f80a428587e6f38aa723d99ab9f47c9d7dbb1726c732664741f54d8e1157940d"
     },
     {
       "path": "tools/sr_loss_audit.py",
       "kind": "script",
-      "bytes": 36504,
-      "mtime": 1793597556.558833,
-      "sha256": "4a79026955df1f8a88e54526ee148b8b5928212b658270221fec603e45269cec"
+      "bytes": 48913,
+      "mtime": 1793608106.325072,
+      "sha256": "6dbd8410470448fda103fcba12952705090b0397f1927066b1ded309b3a1b50f"
     },
     {
       "path": "tools/make_physical_decks.py",
       "kind": "script",
-      "bytes": 6489,
-      "mtime": 1793535076.0165336,
-      "sha256": "94c69f86d4d299a6f025399da9ea2c415cbb7fb68c0c3539325b7544ce21df2b"
+      "bytes": 8387,
+      "mtime": 1793605303.7299995,
+      "sha256": "174e6b66f0ea6b4e592336edaeff78b800e02c6b3b3e44fce67271ce3dcf6278"
     },
     {
       "path": "tools/make_high_output_decks.py",
@@ -350,11 +385,25 @@
       "sha256": "fdb6c111e4ccc500bbee9dfae8ffd006731869c007a320ea4d1c9ac63c342b16"
     },
     {
+      "path": "tools/make_hot_fault_decks.py",
+      "kind": "script",
+      "bytes": 3826,
+      "mtime": 1793604301.8718495,
+      "sha256": "ccf608a944d438412e7f22390fb6e67dc2e518c302ada08619df21335d43d0ee"
+    },
+    {
       "path": "tools/analyze_v3_transient.py",
       "kind": "script",
       "bytes": 13712,
       "mtime": 1793599172.087062,
       "sha256": "32365bf8544f788c5824df7c6845de6770972503f8296b26ee0e04efdb793879"
+    },
+    {
+      "path": "tools/hot_fault_metrics.py",
+      "kind": "script",
+      "bytes": 12835,
+      "mtime": 1793604789.8644056,
+      "sha256": "01da5af2b94d93c09349a5a96a5b53bc3bf4bf7a817f2fc391c82b8f77ef5fb0"
     },
     {
       "path": "tools/steady_stress.py",
@@ -373,9 +422,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 31538,
-      "mtime": 1793599817.3339312,
-      "sha256": "cc66f8aec322d05eb823ade6f18f655dfb068e7c1895bc7248f7eba725dff3a4"
+      "bytes": 36576,
+      "mtime": 1793605759.06794,
+      "sha256": "bef66615bf7e8322866ff0293e7e3760a86fd68030d763c0e48745d0ad5a454f"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -485,23 +534,23 @@
     {
       "path": "tools/test_energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 29217,
-      "mtime": 1793593022.8961866,
-      "sha256": "38a1f553a2571706562c86f8472d79f44b7d651b504a48a16c1edd4997ffa529"
+      "bytes": 32223,
+      "mtime": 1793606640.7417455,
+      "sha256": "b1deaf7d0bab184a2da0ea34ba05196b31ec6ee59b1951b0c65101fade6bb7e7"
     },
     {
       "path": "tools/test_sr_loss_audit.py",
       "kind": "script",
-      "bytes": 10079,
-      "mtime": 1793597562.3391545,
-      "sha256": "180af22b60f4803c0ac278aa745ce1f947a14029a6d4b2aa0156926d0f120a65"
+      "bytes": 18760,
+      "mtime": 1793608572.886102,
+      "sha256": "d0ac38dce1ab0c4bfb7193913fa6c15af2d67a34a28e2116e92b5341081e9c99"
     },
     {
       "path": "tools/test_make_physical_decks.py",
       "kind": "script",
-      "bytes": 3330,
-      "mtime": 1793510323.3780248,
-      "sha256": "3fe3474dc679f2052acce69ec260070605702064d28478ef91443d013689ce3e"
+      "bytes": 4882,
+      "mtime": 1793605308.2668574,
+      "sha256": "75a81efdce2014c8914cb3171095bf23a2d792ca159cc985cb956a82f95be302"
     },
     {
       "path": "tools/test_make_high_output_decks.py",
@@ -574,6 +623,34 @@
       "sha256": "009caa793df83ac9b6463ab5e3adfa23a8c01da2f80378f90eccdcab2bd541a4"
     },
     {
+      "path": "tools/test_hot_fault_metrics.py",
+      "kind": "script",
+      "bytes": 4316,
+      "mtime": 1793604794.9533315,
+      "sha256": "5c79b1ff60c689848671a711d35b330a2a9aeb254acf714ad5ccb88fea6d9810"
+    },
+    {
+      "path": "tools/test_make_hot_fault_decks.py",
+      "kind": "script",
+      "bytes": 1292,
+      "mtime": 1793604301.872877,
+      "sha256": "c21dae1ebc21a6e103134a3fe1379ae78176d6c2408b4defcd968ebce555c67e"
+    },
+    {
+      "path": "tools/d1_unclosed_risks.py",
+      "kind": "script",
+      "bytes": 10606,
+      "mtime": 1793607066.500188,
+      "sha256": "04b42ef57daec40abd07fb6e824599f09c7493029c34664b89db8361bc965548"
+    },
+    {
+      "path": "tools/test_d1_unclosed_risks.py",
+      "kind": "script",
+      "bytes": 3882,
+      "mtime": 1793607072.3306682,
+      "sha256": "f56e875fe2cf89d7d584ba566354832e2c94e2266596c6c02350b29304cdda1b"
+    },
+    {
       "path": "tools/test_ledger_candidate_parameters.py",
       "kind": "script",
       "bytes": 3597,
@@ -597,9 +674,9 @@
     {
       "path": "tools/test_baseline_doc.py",
       "kind": "script",
-      "bytes": 15926,
-      "mtime": 1793540949.637704,
-      "sha256": "07e4d6125fc41443b4c8e19dbce34261396ad627d71b57bae8619c34626a1230"
+      "bytes": 18537,
+      "mtime": 1793608215.5764327,
+      "sha256": "6751826e7c216e65ed9e964994e62277d95d97fc2c6fccc859dc3e12ad990675"
     },
     {
       "path": "tools/test_bom_draft.py",
@@ -786,23 +863,23 @@
     {
       "path": "design/v3/stage_f/energy_ledger_100a.json",
       "kind": "result",
-      "bytes": 18432,
-      "mtime": 1793535076.0145333,
-      "sha256": "b5a3351c6b996664f6ca4cf154bf0e8562ff0dc32c416f071b7df7558f9c31b6"
+      "bytes": 19009,
+      "mtime": 1793606894.1346202,
+      "sha256": "6d6860fe8c650effa532806eb19dabfa4537ecc48559121071bd5b4cbdd56951"
     },
     {
       "path": "design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
       "kind": "result",
-      "bytes": 25938,
-      "mtime": 1793539530.4796507,
-      "sha256": "97dd2c64136284d1c6596d5e8f0e96cf804012bb32bda39df586f6fa74845bb7"
+      "bytes": 27293,
+      "mtime": 1793607244.5434034,
+      "sha256": "37ef79f4f7a112d211c3d728df351457c245e075d426a7111c53f6672902fbaf"
     },
     {
       "path": "design/v3/stage_f/sr_loss_audit.json",
       "kind": "result",
-      "bytes": 76407,
-      "mtime": 1793589341.2051218,
-      "sha256": "29046d0b559f58c54f2dbed2097939fe408c800e10e37bc6960cf94b0a71dc2e"
+      "bytes": 138223,
+      "mtime": 1793608479.1193013,
+      "sha256": "80c3f815084fe8f68d4cda8ad91e8e923db689fe9aee67d9d3c5d73e07d17649"
     },
     {
       "path": "design/v3/power_priority/operating_point_48v_110a.json",
@@ -938,6 +1015,48 @@
       "sha256": "b81e81e65a5db8e08980cbdb3112cc360310ca519fddcb12926f296252a08a9a"
     },
     {
+      "path": "design/v3/power_priority/hotfault_48v_120a.json",
+      "kind": "result",
+      "bytes": 4048,
+      "mtime": 1793604811.0920916,
+      "sha256": "265d8b3e8e546bc54cc7d90ed4712254b68f98830d157b14763f6c4c3773ecf7"
+    },
+    {
+      "path": "design/v3/power_priority/hotfault_50v_120a.json",
+      "kind": "result",
+      "bytes": 4053,
+      "mtime": 1793605158.215329,
+      "sha256": "24959cb691f24f5e732a325ba143f1a1b00412f9631c03ef72546f7572fa84fd"
+    },
+    {
+      "path": "design/v3/power_priority/unclosed_risk_register.json",
+      "kind": "result",
+      "bytes": 5057,
+      "mtime": 1793607088.0873904,
+      "sha256": "64861a6b0ea247cbfc81944a0bbb790eb4a9e9a87be23fcf16b5bae0c38c939a"
+    },
+    {
+      "path": "design/v3/power_priority/energy_ledger_50v_120a_steps.json",
+      "kind": "result",
+      "bytes": 18845,
+      "mtime": 1793605172.9528644,
+      "sha256": "8f63ddb29c644208532d444b1fad93eedc827145b6d85b76ae946f7d4418cb62"
+    },
+    {
+      "path": "design/v3/power_priority/sr_loss_audit_50v_120a_steps.json",
+      "kind": "result",
+      "bytes": 18439,
+      "mtime": 1793605246.4666314,
+      "sha256": "3ac0382b88322a5f286998629f8038d7aca52347535e4765b40c8eebc032ad73"
+    },
+    {
+      "path": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
+      "kind": "result",
+      "bytes": 18101,
+      "mtime": 1793606902.276781,
+      "sha256": "325875a7821e41188b0c6983c194341de9245f26bb3e8b62372607a5226be677"
+    },
+    {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
       "kind": "doc",
       "bytes": 13544,
@@ -975,9 +1094,9 @@
     {
       "path": "design/v3/当前候选基线_2026-11-01.md",
       "kind": "doc",
-      "bytes": 33902,
-      "mtime": 1793589341.2051218,
-      "sha256": "3c81a2be961f3739b02ca44a1c47086179a657361a30af4a6289f3270b680335"
+      "bytes": 40988,
+      "mtime": 1793608498.4218009,
+      "sha256": "521ff852b60c5e2728d1357bd7b16c2239c3cd2950d198b4524696aca74eed22"
     },
     {
       "path": "design/v3/stage_f/首样验证与额定值判定_2026-10-31.md",
@@ -1017,9 +1136,9 @@
     {
       "path": "design/v3/power_priority/50V110A_120A_实测_2026-11-02.md",
       "kind": "doc",
-      "bytes": 13263,
-      "mtime": 1793599916.1437047,
-      "sha256": "5736feaf60dc0d4fa171cdede777e09e2227a3dd08249ba015b901fdb250720e"
+      "bytes": 13855,
+      "mtime": 1793605726.2447126,
+      "sha256": "7de00c22af1db68013e7b8f01a54d40f3d8459ca108633bf562ebb2dd04252cb"
     },
     {
       "path": "design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md",
@@ -1027,6 +1146,20 @@
       "bytes": 11674,
       "mtime": 1793603144.6600564,
       "sha256": "d3d6fb5fa53d7328aabfe7134a8ffac421a2590cf6ae7683064a8fbc7725243f"
+    },
+    {
+      "path": "design/v3/power_priority/48V120A_稳态初始化故障_2026-11-02.md",
+      "kind": "doc",
+      "bytes": 7516,
+      "mtime": 1793605608.0820215,
+      "sha256": "2691decf0ffd4de93f1ecbb0108912010963c391f7c5a1bb91bfc6dc98f3f4d0"
+    },
+    {
+      "path": "design/v3/power_priority/50V120A_损耗差额与步长_2026-11-02.md",
+      "kind": "doc",
+      "bytes": 10650,
+      "mtime": 1793607572.904901,
+      "sha256": "2f67646673ca2f69c6dbb64c8ca2a731ba98384bc21e4f29ec21370e527ae871"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -1113,6 +1246,13 @@
       "sha256": "skipped-large-raw"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.raw",
+      "kind": "raw",
+      "bytes": 3647496897,
+      "mtime": 1793604721.4735725,
+      "sha256": "skipped-large-raw"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw",
       "kind": "raw",
       "bytes": 359483293,
@@ -1138,6 +1278,48 @@
       "kind": "raw",
       "bytes": 505404440,
       "mtime": 1793592197.2961447,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw",
+      "kind": "raw",
+      "bytes": 404618104,
+      "mtime": 1793596975.1540136,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
+      "kind": "raw",
+      "bytes": 409962124,
+      "mtime": 1793597201.8201654,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
+      "kind": "raw",
+      "bytes": 1036944409,
+      "mtime": 1793604689.287843,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw",
+      "kind": "raw",
+      "bytes": 908084125,
+      "mtime": 1793605136.2011378,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
+      "kind": "raw",
+      "bytes": 408026706,
+      "mtime": 1793605041.7675376,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
+      "kind": "raw",
+      "bytes": 2266080981,
+      "mtime": 1793605786.1218648,
       "sha256": "skipped-large-raw"
     }
   ],
@@ -1271,6 +1453,17 @@
       "raw_time_end_s": 0.00067,
       "display_offset_us": 880.0,
       "max_step_s": 1e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.cir",
+      "tran": ".tran 0 1550u 880u 0.5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00067,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-10,
       "has_ic": true,
       "uic": true,
       "cold_start": false
@@ -1417,6 +1610,50 @@
       "has_ic": false,
       "uic": true,
       "cold_start": true
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+      "tran": ".tran 0 1200u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+      "tran": ".tran 0 1200u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
+      "tran": ".tran 0 1000u 880u 2n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 2e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
+      "tran": ".tran 0 1550u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00067,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
     }
   ],
   "raw_run_metadata": {},
@@ -1480,6 +1717,16 @@
     "python tools/analyze_v3_transient.py --kind cold --raw sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.raw --deck sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir --rl 0.0154 --json design/v3/power_priority/cold_start_48v_120a_target.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
     "python tools/analyze_v3_transient.py --kind fault --raw sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.raw --deck sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir --rl 0.0154 --json design/v3/power_priority/fault_48v_120a_target.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+    "python tools/hot_fault_metrics.py --raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw --deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir --log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log --rl 15.4m --json design/v3/power_priority/hotfault_48v_120a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+    "python tools/hot_fault_metrics.py --raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw --deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir --log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log --rl 16.3m --json design/v3/power_priority/hotfault_50v_120a.json",
+    "python tools/d1_unclosed_risks.py --write",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --periods 22 --vin 50 --rl 0.0163 --compare-raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw --json design/v3/power_priority/energy_ledger_50v_120a_steps.json",
+    "python tools/sr_loss_audit.py --case candidate_50v_120a candidate_50v_120a_2ns --compare candidate_50v_120a candidate_50v_120a_2ns --json design/v3/power_priority/sr_loss_audit_50v_120a_steps.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw --periods 133 --vin 50 --rl 0.0163 --no-step-check --json design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
     "python -m pytest tools -q",
     "python tools/ci_check.py"
   ]

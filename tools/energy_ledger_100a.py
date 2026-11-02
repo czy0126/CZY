@@ -255,6 +255,25 @@ def _mean(t: array, y: array, i0: int, i1: int) -> float:
     return _integral(t, y, i0, i1) / (t[i1] - t[i0])
 
 
+def _window_mean(t: array, i0: int, i1: int, term: Callable[[int], float]) -> float:
+    """Trapezoid mean of ``term(i)`` over ``[i0, i1]``, built only there.
+
+    ``_mean(t, array("d", (build(k) for k in range(len(t)))), i0, i1)`` gives
+    exactly these numbers -- same products, same summation order -- but it
+    builds the product for every sample of the record on every call.  The
+    residual walk calls loss terms once per period, so on a 133-period aligned
+    raw that is 265 full-record passes (measured 0.23 s per product array) and
+    the whole run took hours.  Windowed, the cost is the window.
+    """
+    total = 0.0
+    previous = term(i0)
+    for i in range(i0 + 1, i1 + 1):
+        current = term(i)
+        total += 0.5 * (current + previous) * (t[i] - t[i - 1])
+        previous = current
+    return total / (t[i1] - t[i0])
+
+
 def trapezoid_mean(t: list[float], y: list[float]) -> float:
     """Public, list-based form used by the tests; same arithmetic as the arrays."""
     total = sum(0.5 * (y[i] + y[i + 1]) * (t[i + 1] - t[i]) for i in range(len(t) - 1))
@@ -262,7 +281,7 @@ def trapezoid_mean(t: list[float], y: list[float]) -> float:
 
 
 def _mean_product(t: array, a: array, b: array, i0: int, i1: int) -> float:
-    return _mean(t, array("d", (a[i] * b[i] for i in range(len(a)))), i0, i1)
+    return _window_mean(t, i0, i1, lambda i: a[i] * b[i])
 
 
 def gate_edges(t: array, gate: array, level: float = 2.5,
@@ -536,7 +555,7 @@ def port_terms(t: array, d: dict[str, array], i0: int, i1: int,
     return {
         "pin_source_w": vin * _mean(t, d["iin"], i0, i1),
         "pin_after_rin_w": _mean_product(t, d["vin"], d["iin"], i0, i1),
-        "pout_w": _mean(t, array("d", (v * v / rl for v in d["vout"])), i0, i1),
+        "pout_w": _window_mean(t, i0, i1, lambda i: d["vout"][i] * d["vout"][i] / rl),
     }
 
 
@@ -619,9 +638,18 @@ def window_terms(t: array, d: dict[str, array], i0: int, i1: int,
 
 
 def loss_terms(t: array, d: dict[str, array], i0: int, i1: int) -> dict[str, dict[str, object]]:
-    """Element losses over [i0, i1], each tagged with how it was obtained."""
+    """Element losses over [i0, i1], each tagged with how it was obtained.
+
+    Every product is evaluated inside the window only -- see ``_window_mean``.
+    The expressions are the ones the whole-record version used, so the watts
+    are unchanged; only the cost is (window, not record).
+    """
+    def mean_of(term: Callable[[int], float]) -> float:
+        return _window_mean(t, i0, i1, term)
+
     def msq(key: str) -> float:
-        return _mean(t, array("d", (v * v for v in d[key])), i0, i1)
+        values = d[key]
+        return mean_of(lambda i: values[i] * values[i])
 
     def i2r(key: str, resistance: float, confidence: str) -> dict[str, object]:
         return {"w": msq(key) * resistance, "confidence": confidence}
@@ -638,38 +666,29 @@ def loss_terms(t: array, d: dict[str, array], i0: int, i1: int) -> dict[str, dic
         },
         "sh": i2r("ish", RON_PRI, "measured-commutation"),
         "sl": i2r("isl", RON_PRI, "measured-commutation"),
-        "dh": {"w": _mean(t, array("d", ((d["vsw"][i] - d["vin"][i]) * d["idh"][i]
-                                        for i in range(len(t)))), i0, i1),
+        "dh": {"w": mean_of(lambda i: (d["vsw"][i] - d["vin"][i]) * d["idh"][i]),
                "confidence": "measured-commutation"},
-        "dl": {"w": _mean(t, array("d", (-d["vsw"][i] * d["idl"][i]
-                                        for i in range(len(t)))), i0, i1),
+        "dl": {"w": mean_of(lambda i: -d["vsw"][i] * d["idl"][i]),
                "confidence": "measured-commutation"},
     }
 
     pair1 = 0.0
     for half in ("a", "b"):
-        vds = array("d", (d[f"{half}_di"][i] - d[f"{half}_si"][i] for i in range(len(t))))
-        ch = _mean(t, array("d", (vds[i] * d[f"{half}_bch"][i] for i in range(len(t)))),
-                   i0, i1)
-        bd = _mean(t, array("d", (-vds[i] * d[f"{half}_dbd"][i] for i in range(len(t)))),
-                   i0, i1)
+        di, si, bch, dbd = (d[f"{half}_{part}"] for part in ("di", "si", "bch", "dbd"))
+        ch = mean_of(lambda i: (di[i] - si[i]) * bch[i])
+        bd = mean_of(lambda i: -(di[i] - si[i]) * dbd[i])
         pair1 += ch + bd
     losses["sr_channel_body_pair1"] = {"w": pair1, "confidence": "measured-commutation"}
     losses["sr_channel_body_x4"] = {"w": 4 * pair1, "confidence": "symmetry-assumption"}
 
-    rg_w = sum(_mean(t, array("d", (d[f"{h}_rg"][i] ** 2 for i in range(len(t)))),
-                     i0, i1) * 1.0 for h in ("a", "b"))
+    rg_w = sum(mean_of(lambda i, v=d[f"{h}_rg"]: v[i] ** 2) * 1.0 for h in ("a", "b"))
     losses["sr_gate_resistor_x8"] = {"w": 4 * rg_w, "confidence": "symmetry-assumption"}
 
     ct_diodes = (
-        _mean(t, array("d", ((d["vcs1"][i] - d["vocd"][i]) * d["id1"][i]
-                             for i in range(len(t)))), i0, i1)
-        + _mean(t, array("d", ((d["vcs2"][i] - d["vocd"][i]) * d["id2"][i]
-                               for i in range(len(t)))), i0, i1)
-        + _mean(t, array("d", ((d["vocm"][i] - d["vcs1"][i]) * d["id3"][i]
-                               for i in range(len(t)))), i0, i1)
-        + _mean(t, array("d", ((d["vocm"][i] - d["vcs2"][i]) * d["id4"][i]
-                               for i in range(len(t)))), i0, i1)
+        mean_of(lambda i: (d["vcs1"][i] - d["vocd"][i]) * d["id1"][i])
+        + mean_of(lambda i: (d["vcs2"][i] - d["vocd"][i]) * d["id2"][i])
+        + mean_of(lambda i: (d["vocm"][i] - d["vcs1"][i]) * d["id3"][i])
+        + mean_of(lambda i: (d["vocm"][i] - d["vcs2"][i]) * d["id4"][i])
     )
     losses["ct_bridge_diodes"] = {"w": ct_diodes, "confidence": "measured-commutation"}
     losses["ct_burden_resistor"] = i2r("irbur", 10.0, "measured-i2r")

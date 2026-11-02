@@ -22,6 +22,7 @@ LR = ROOT / "design/v3/bom/lr_design.json"
 CONNECTOR = ROOT / "design/v3/bom/connector_budget.json"
 LEDGER = ROOT / "design/v3/stage_f/energy_ledger_100a.json"
 LEDGER_ALIGNED = ROOT / "design/v3/stage_f/energy_ledger_100a_phase_aligned.json"
+SR_AUDIT = ROOT / "design/v3/stage_f/sr_loss_audit.json"
 MAGNETICS = ROOT / "design/v3/magnetics/magnetics_design.json"
 OP = ROOT / "design/v3/magnetics/operating_point_100a.json"
 CT = ROOT / "design/v3/bom/ct_design.json"
@@ -235,34 +236,36 @@ def test_the_third_step_is_quoted_as_an_oscillation_not_a_plateau():
     if not LEDGER_ALIGNED.exists():
         pytest.skip("the aligned-window ledger has not been generated")
     step = load(LEDGER_ALIGNED)["step_check"]
-    assert step["steps_s"] == [5e-9, 2e-9, 1e-9]
+    assert step["steps_s"] == [5e-9, 2e-9, 1e-9, 5e-10]
     terms = step["terms"]
     port = terms["port_w"]
     loss = terms["loss_total_w"]
     closure = terms["closure_period_averaged_w"]
 
-    # No plateau: the last leg is the larger of the two, and it reverses sign.
-    assert port["series_w"] == pytest.approx([10.8888, 11.4228, 10.1261], abs=1e-4)
-    assert loss["series_w"] == pytest.approx([10.7313, 11.3563, 9.9804], abs=1e-4)
+    # No plateau between the first two legs: the second is the larger of the
+    # two, and it reverses sign.
+    assert port["series_w"] == pytest.approx([10.8888, 11.4228, 10.1261, 9.4109], abs=1e-4)
+    assert loss["series_w"] == pytest.approx([10.7313, 11.3563, 9.9804, 9.0525], abs=1e-4)
     for term in (port, loss):
-        first_leg = term["step_b_w"] - term["step_a_w"]
-        last_leg = term["series_w"][2] - term["step_b_w"]
-        assert abs(last_leg) > abs(first_leg) > 0.5
-        assert first_leg * last_leg < 0, "a sign flip is an oscillation, not a plateau"
+        first_leg = term["series_w"][1] - term["series_w"][0]
+        second_leg = term["series_w"][2] - term["series_w"][1]
+        assert abs(second_leg) > abs(first_leg) > 0.5
+        assert first_leg * second_leg < 0, "a sign flip is an oscillation, not a plateau"
 
     # The instability is one item, and it is the largest one.
     items = step["loss_items"]
     sr = items["sr_channel_body_x4"]
-    assert sr["steps_w"] == pytest.approx([6.9540, 7.5753, 6.2047], abs=1e-3)
-    assert abs(sr["delta_last_leg_w"]) > 0.95 * abs(loss["series_w"][2] - loss["step_b_w"])
+    assert sr["steps_w"] == pytest.approx([6.9540, 7.5753, 6.2047, 5.2722], abs=1e-3)
+    assert abs(sr["delta_last_leg_w"]) > 0.95 * abs(loss["series_w"][3] - loss["series_w"][2])
     others = sum(abs(v["delta_last_leg_w"]) for k, v in items.items()
                  if k not in ("sr_channel_body_x4", "sr_channel_body_pair1"))
     assert others < 0.1, "only SR is unstable; a blanket -1.4 W caveat would be wrong"
     assert items["sr_channel_body_pair1"]["steps_w"][0] == pytest.approx(sr["steps_w"][0] / 4)
 
-    # The closure this whole exercise defends did not move.
-    assert abs(closure["series_w"][2] - closure["step_b_w"]) < 0.01
-    assert all(v > 0.2 for v in closure["series_w"])
+    # The third step of the closure looked flat -- for that one pair.  §2.8
+    # retracts the generalisation; this test only pins the pair it describes.
+    assert abs(closure["series_w"][2] - closure["series_w"][1]) < 0.01
+
     results = load(LEDGER_ALIGNED)["results"]
     assert results["closure_period_averaged_within_0p2_w"] is False
     # Single-point readings of this window do not resolve 0.2 W; only the
@@ -273,6 +276,54 @@ def test_the_third_step_is_quoted_as_an_oscillation_not_a_plateau():
     doc = _ascii_minus(text())
     for value in ("10.1261", "9.9804", "6.2047", "0.3095", "1.4 W", "±0.3", "没有平台"):
         assert value in doc, value
+
+
+def test_the_half_nanosecond_leg_is_not_a_plateau_and_breaks_the_closure():
+    """§2.8, E6-3: the fourth leg exists to test whether the series flattens.
+
+    It does not.  Both big terms still move by more than the first leg, the
+    closure jumps 0.21 W, and the loss residual leaves the 0.2 W budget for
+    the first time.  If a later edit turns the 5/2/1 reading back into
+    "stable +0.33 W", this goes red.
+    """
+    if not LEDGER_ALIGNED.exists():
+        pytest.skip("the aligned-window ledger has not been generated")
+    step = load(LEDGER_ALIGNED)["step_check"]
+    terms = step["terms"]
+    for name in ("port_w", "loss_total_w"):
+        series = terms[name]["series_w"]
+        first_leg = series[1] - series[0]
+        last_leg = series[3] - series[2]
+        assert first_leg * last_leg < 0, f"{name}: a sign flip is not a plateau"
+        assert abs(last_leg) > abs(first_leg), f"{name}: the last leg is not smaller"
+    closure = terms["closure_period_averaged_w"]["series_w"]
+    assert closure[3] - closure[2] > 0.2
+    assert all(abs(v) > 0.2 for v in closure)
+    assert terms["residual_w"]["series_w"][3] > 0.2
+    doc = _ascii_minus(text())
+    assert "§2.8" in text()
+    for quoted in ("+10.8888", "+9.4109", "+9.0525", "+0.5233", "0.3584"):
+        assert quoted in doc, quoted
+
+
+def test_the_group_symmetry_section_quotes_the_measured_split():
+    """§2.9, E6-4: only pairs 1 and 4 have current probes.  Three runs give
+    exactly 1.000000 and the 1 ns run gives a +/-2 % split in opposite
+    directions.  The doc must quote that, give the I2R bound it puts on the
+    x4 scaling, and keep pairs 2/3 UNKNOWN."""
+    if not SR_AUDIT.exists():
+        pytest.skip("the SR audit report has not been generated")
+    results = load(SR_AUDIT)["results"]
+    ratios = results["pair4_over_pair1_rms_current"]
+    for name in ("aligned_5ns", "aligned_2ns", "aligned_0p5ns"):
+        for half in ("a", "b"):
+            assert ratios[name][half] == pytest.approx(1.0, abs=1e-9), (name, half)
+    assert ratios["aligned_1ns"]["a"] == pytest.approx(0.979267, abs=1e-6)
+    assert ratios["aligned_1ns"]["b"] == pytest.approx(1.019734, abs=1e-6)
+    doc = _ascii_minus(text())
+    for quoted in ("0.979267", "1.019734", "4.10 %", "UNKNOWN", "2.08 mΩ"):
+        assert quoted in doc, quoted
+    assert results["sr_group_symmetry_unmeasured"] == [2, 3]
 
 
 def test_ripple_quotes_the_22_period_value_not_the_2_period_one():

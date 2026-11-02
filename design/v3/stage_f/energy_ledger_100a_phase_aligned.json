@@ -1,4 +1,20 @@
 {
+  "diagnostic_integrity": {
+    "status": "RECOMPUTED_WITH_REQUESTED_VIN_RL",
+    "recomputed_from_raw": true,
+    "vin_v": 48.0,
+    "rl_ohm": 0.0189,
+    "covers": [
+      "windows",
+      "balance.resolution",
+      "balance.period_averaged.sem_w",
+      "balance.period_averaged.sd_w",
+      "balance.period_averaged.mean_w",
+      "results.window_resolves_0p2_w",
+      "results.window_resolves_0p2_w_period_averaged"
+    ],
+    "note": "All port power calculations including sub-windows and noise use the candidate's actual VIN and load resistance."
+  },
   "raw": {
     "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
     "bytes": 2440722591,
@@ -523,7 +539,8 @@
     "steps_s": [
       5e-09,
       2e-09,
-      1e-09
+      1e-09,
+      5e-10
     ],
     "raw_a": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
     "raw_b": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
@@ -536,9 +553,10 @@
         "series_w": [
           10.88875343234227,
           11.422769475917988,
-          10.126072295787878
+          10.126072295787878,
+          9.410944595756263
         ],
-        "delta_first_last_w": -0.7626811365543915
+        "delta_first_last_w": -1.4778088365860071
       },
       "loss_total_w": {
         "step_a_w": 10.731281574995519,
@@ -547,9 +565,10 @@
         "series_w": [
           10.731281574995519,
           11.356305776894814,
-          9.980380916282874
+          9.980380916282874,
+          9.052542188664853
         ],
-        "delta_first_last_w": -0.750900658712645
+        "delta_first_last_w": -1.6787393863306654
       },
       "stored_w": {
         "step_a_w": -0.021261289285431622,
@@ -558,9 +577,10 @@
         "series_w": [
           -0.021261289285431622,
           -0.046475400566766856,
-          0.05872361273164271
+          0.05872361273164271,
+          0.029851118026597543
         ],
-        "delta_first_last_w": 0.07998490201707434
+        "delta_first_last_w": 0.051112407312029165
       },
       "driver_w": {
         "step_a_w": 0.20565274922781804,
@@ -569,9 +589,10 @@
         "series_w": [
           0.20565274922781804,
           0.20566608220052382,
-          0.20769932702564117
+          0.20769932702564117,
+          0.20788986829168288
         ],
-        "delta_first_last_w": 0.0020465777978231348
+        "delta_first_last_w": 0.0022371190638648397
       },
       "regularisation_edge_w": {
         "step_a_w": -7.01362502756133e-07,
@@ -580,9 +601,10 @@
         "series_w": [
           -7.01362502756133e-07,
           -8.241603660595164e-07,
-          -1.7352392127282216e-07
+          -1.7352392127282216e-07,
+          9.643726134828519e-07
         ],
-        "delta_first_last_w": 5.278385814833108e-07
+        "delta_first_last_w": 1.6657351162389847e-06
       },
       "residual_w": {
         "step_a_w": 0.15747185734675107,
@@ -591,9 +613,10 @@
         "series_w": [
           0.15747185734675107,
           0.06646369902317417,
-          0.14569137950500455
+          0.14569137950500455,
+          0.35840240709140936
         ],
-        "delta_first_last_w": -0.011780477841746517
+        "delta_first_last_w": 0.2009305497446583
       },
       "closure_residual_w": {
         "step_a_w": 0.3843858958600009,
@@ -602,9 +625,10 @@
         "series_w": [
           0.3843858958600009,
           0.31860518179046554,
-          0.2946670937990038
+          0.2946670937990038,
+          0.5364411573564954
         ],
-        "delta_first_last_w": -0.08971880206099708
+        "delta_first_last_w": 0.15205526149649456
       },
       "stored_period_averaged_w": {
         "step_a_w": 0.03727715737374153,
@@ -613,9 +637,10 @@
         "series_w": [
           0.03727715737374153,
           -0.041793421711435845,
-          0.04390317468044794
+          0.04390317468044794,
+          0.043015113822282874
         ],
-        "delta_first_last_w": 0.006626017306706408
+        "delta_first_last_w": 0.005737956448541345
       },
       "closure_period_averaged_w": {
         "step_a_w": 0.3258474492008277,
@@ -624,9 +649,10 @@
         "series_w": [
           0.3258474492008277,
           0.31392320293513454,
-          0.3094875318501986
+          0.3094875318501986,
+          0.5232771615608102
         ],
-        "delta_first_last_w": -0.016359917350629083
+        "delta_first_last_w": 0.19742971235998247
       },
       "vout_end_v": {
         "step_a": 1.872238043618813,
@@ -644,138 +670,153 @@
         "steps_w": [
           0.5328002226019306,
           0.5484140983752146,
-          0.5144573756746355
+          0.5144573756746355,
+          0.5001681287579326
         ],
-        "delta_first_last_w": -0.018342846927295153,
-        "delta_last_leg_w": -0.033956722700579145
+        "delta_first_last_w": -0.03263209384399801,
+        "delta_last_leg_w": -0.014289246916702858
       },
       "cr_esr": {
         "steps_w": [
           0.2681476051047944,
           0.26856220579495615,
-          0.2684239348956423
+          0.2684239348956423,
+          0.2682743043845187
         ],
-        "delta_first_last_w": 0.00027632979084790676,
-        "delta_last_leg_w": -0.0001382708993138415
+        "delta_first_last_w": 0.00012669927972430717,
+        "delta_last_leg_w": -0.0001496305111235996
       },
       "ct_bridge_diodes": {
         "steps_w": [
           0.09745143328116998,
           0.09727829224067766,
-          0.09783801082344244
+          0.09783801082344244,
+          0.0980939004771548
         ],
-        "delta_first_last_w": 0.0003865775422724621,
-        "delta_last_leg_w": 0.0005597185827647816
+        "delta_first_last_w": 0.0006424671959848194,
+        "delta_last_leg_w": 0.0002558896537123573
       },
       "ct_burden_resistor": {
         "steps_w": [
           0.08893846283265677,
           0.0890703858907445,
-          0.08903936727222556
+          0.08903936727222556,
+          0.08899747263782626
         ],
-        "delta_first_last_w": 0.00010090443956878303,
-        "delta_last_leg_w": -3.101861851893817e-05
+        "delta_first_last_w": 5.9009805169485396e-05,
+        "delta_last_leg_w": -4.189463439929764e-05
       },
       "dh": {
         "steps_w": [
           0.0004522604869867545,
           0.0006708399947609917,
-          0.0012465603738338392
+          0.0012465603738338392,
+          0.0022472643395265775
         ],
-        "delta_first_last_w": 0.0007942998868470847,
-        "delta_last_leg_w": 0.0005757203790728475
+        "delta_first_last_w": 0.0017950038525398231,
+        "delta_last_leg_w": 0.0010007039656927384
       },
       "dl": {
         "steps_w": [
           0.0025491933680160147,
           0.0005002768488197228,
-          0.0010283122601986367
+          0.0010283122601986367,
+          0.002076012351414722
         ],
-        "delta_first_last_w": -0.001520881107817378,
-        "delta_last_leg_w": 0.000528035411378914
+        "delta_first_last_w": -0.00047318101660129286,
+        "delta_last_leg_w": 0.0010477000912160852
       },
       "lp_series": {
         "steps_w": [
           1.0725904204191776,
           1.0742488231798246,
-          1.0736957395825693
+          1.0736957395825693,
+          1.0730972175380749
         ],
-        "delta_first_last_w": 0.001105319163391627,
-        "delta_last_leg_w": -0.000553083597255366
+        "delta_first_last_w": 0.0005067971188972287,
+        "delta_last_leg_w": -0.0005985220444943984
       },
       "lr": {
         "steps_w": [
           0.4469126751746573,
           0.44760367632492687,
-          0.44737322482607056
+          0.44737322482607056,
+          0.4471238406408645
         ],
-        "delta_first_last_w": 0.00046054965141323345,
-        "delta_last_leg_w": -0.00023045149885631
+        "delta_first_last_w": 0.00021116546620719712,
+        "delta_last_leg_w": -0.00024938418520603634
       },
       "rin": {
         "steps_w": [
           0.045102377111086285,
           0.04475888737229999,
-          0.04535520852616354
+          0.04535520852616354,
+          0.04574370362803367
         ],
-        "delta_first_last_w": 0.0002528314150772523,
-        "delta_last_leg_w": 0.0005963211538635507
+        "delta_first_last_w": 0.0006413265169473853,
+        "delta_last_leg_w": 0.000388495101870133
       },
       "secondary_copper": {
         "steps_w": [
           0.47659729741641615,
           0.4777402688671638,
-          0.47711876192334507
+          0.47711876192334507,
+          0.4763290134908766
         ],
-        "delta_first_last_w": 0.0005214645069289148,
-        "delta_last_leg_w": -0.0006215069438187393
+        "delta_first_last_w": -0.0002682839255395697,
+        "delta_last_leg_w": -0.0007897484324684845
       },
       "sh": {
         "steps_w": [
           0.3706966095795295,
           0.3658401734423533,
-          0.37922666663716376
+          0.37922666663716376,
+          0.3902092073366439
         ],
-        "delta_first_last_w": 0.008530057057634266,
-        "delta_last_leg_w": 0.013386493194810445
+        "delta_first_last_w": 0.01951259775711439,
+        "delta_last_leg_w": 0.010982540699480126
       },
       "sl": {
         "steps_w": [
           0.37505308288231304,
           0.366275643726675,
-          0.38089510043316166
+          0.38089510043316166,
+          0.3879323537667171
         ],
-        "delta_first_last_w": 0.005842017550848622,
-        "delta_last_leg_w": 0.014619456706486678
+        "delta_first_last_w": 0.012879270884404048,
+        "delta_last_leg_w": 0.007037253333555427
       },
       "sr_channel_body_pair1": {
         "steps_w": [
           1.7384974836841962,
           1.8938355512090994,
-          1.5511706632636053
+          1.5511706632636053,
+          1.3180624423288172
         ],
-        "delta_first_last_w": -0.1873268204205909,
-        "delta_last_leg_w": -0.3426648879454941
+        "delta_first_last_w": -0.420435041355379,
+        "delta_last_leg_w": -0.2331082209347881
       },
       "sr_channel_body_x4": {
         "steps_w": [
           6.953989934736785,
           7.575342204836398,
-          6.204682653054421
+          6.204682653054421,
+          5.272249769315269
         ],
-        "delta_first_last_w": -0.7493072816823636,
-        "delta_last_leg_w": -1.3706595517819764
+        "delta_first_last_w": -1.681740165421516,
+        "delta_last_leg_w": -0.9324328837391525
       },
       "sr_gate_resistor_x8": {
         "steps_w": [
           0.1814506790277154,
           0.1815189960857896,
-          0.18118894487122753
+          0.18118894487122753,
+          0.18129143551758475
         ],
-        "delta_first_last_w": -0.0002617341564878639,
-        "delta_last_leg_w": -0.0003300512145620882
+        "delta_first_last_w": -0.00015924351013063553,
+        "delta_last_leg_w": 0.00010249064635722838
       }
     },
-    "note": "measured, not assumed: between the two steps the port term moves +0.534 W and the loss inventory +0.625 W; the storage rate moves -0.025 W as a single sample and -0.079 W period-averaged.  The closure therefore moves -0.066 W (single sample) and -0.012 W (period-averaged).  The port and storage errors are both larger than that and partly cancel, so the closure is not resolved by this check -- it is limited by it.  vout_end_v differs because a smaller step lands elsewhere on the output ripple; this deck's 4 mF times a few millivolts is tens of microjoules, which over this span is most of a watt.  With 3 steps (5 / 2 / 1 ns) the last leg moves port -1.297 W, loss -1.376 W, period-averaged closure -0.004 W, against a first-to-last move of -0.763 / -0.751 / -0.016 W.  A last leg much smaller than the first is a plateau; a last leg of the same size is not convergence, only a constant error."
+    "note": "measured, not assumed: between the two steps the port term moves +0.534 W and the loss inventory +0.625 W; the storage rate moves -0.025 W as a single sample and -0.079 W period-averaged.  The closure therefore moves -0.066 W (single sample) and -0.012 W (period-averaged).  The port and storage errors are both larger than that and partly cancel, so the closure is not resolved by this check -- it is limited by it.  vout_end_v differs because a smaller step lands elsewhere on the output ripple; this deck's 4 mF times a few millivolts is tens of microjoules, which over this span is most of a watt.  With 4 steps (5 / 2 / 1 / 0 ns) the last leg moves port -0.715 W, loss -0.928 W, period-averaged closure +0.214 W, against a first-to-last move of -1.478 / -1.679 / +0.197 W.  A last leg much smaller than the first is a plateau; a last leg of the same size is not convergence, only a constant error."
   }
 }

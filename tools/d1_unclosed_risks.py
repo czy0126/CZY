@@ -21,7 +21,14 @@ def _load(path: Path) -> dict:
 def build() -> dict:
     fault = _load(PP / "fault_48v_120a_target.json")
     cold = _load(PP / "cold_start_48v_120a_target.json")
+    hot48 = _load(PP / "hotfault_48v_120a.json")
+    hot50 = _load(PP / "hotfault_50v_120a.json")
     ledger50 = _load(PP / "energy_ledger_50v_120a.json")
+    # ELE-09's decisive leg: the same 50 V/120 A circuit over one phase-aligned
+    # window (133 gate periods).  It separates a short-window artifact from a
+    # real gap, so the register must carry both readings rather than the short
+    # one alone.
+    aligned50 = _load(PP / "energy_ledger_50v_120a_aligned.json")
     lr = _load(ROOT / "design/v3/bom/lr_design.json")
     gate = _load(ROOT / "hardware/dcx_main/d1_fabrication_gate.json")
     fault_peak = float(fault["ipri_peak_before_trip_a"])
@@ -36,10 +43,23 @@ def build() -> dict:
     soft_limit = 0.9 * bsat
     flux2 = inductance * fault_peak / (2 * area)
     flux3 = inductance * fault_peak / (3 * area)
+    # ELE-08: the settled-state fault reaches a higher primary peak than the
+    # cold-start fault did (97.38 A vs 84.83 A).  Same deck inductance and the
+    # same recovered Ae, so the flux is directly comparable.
+    hot_peak = float(hot48["fault"]["ipri_peak_before_trip_a"])
+    hot50_peak = float(hot50["fault"]["ipri_peak_before_trip_a"])
+    hot_flux2 = inductance * hot_peak / (2 * area)
+    hot_flux3 = inductance * hot_peak / (3 * area)
+    hot50_flux2 = inductance * hot50_peak / (2 * area)
+    hot50_flux3 = inductance * hot50_peak / (3 * area)
     before_fault_ss = float(fault["ss_at_engage_v"])
     loss_gap = float(ledger50["balance"]["loss_residual_w"])
     closure = float(ledger50["balance"]["closure_residual_w"])
     target = float(ledger50["balance"]["target_w"])
+    aligned_loss_gap = float(aligned50["balance"]["loss_residual_w"])
+    aligned_closure_avg = float(
+        aligned50["balance"]["period_averaged"]["closure_residual_w"])
+    aligned_sem = float(aligned50["balance"]["resolution"]["sem_w"])
     evidence = {
         "manufacturing_gate": gate["status"],
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
@@ -50,21 +70,60 @@ def build() -> dict:
         "50v_120a_model_loss_residual_w": loss_gap,
         "50v_120a_model_closure_residual_w": closure,
         "50v_120a_model_closure_status": ledger50["balance"]["closure_status"],
+        # ELE-09: 133 periods = one phase-aligned window.  If the gap were a
+        # short-window artifact, this number would collapse toward zero.
+        "50v_120a_aligned_window_periods": aligned50["window"]["periods"],
+        "50v_120a_aligned_loss_residual_w": aligned_loss_gap,
+        "50v_120a_aligned_closure_period_averaged_w": aligned_closure_avg,
+        "50v_120a_aligned_resolution_sem_w": aligned_sem,
+        "50v_120a_aligned_resolves_0p2_w": aligned_sem <= target,
+        "50v_120a_loss_residual_moves_between_windows_w": aligned_loss_gap - loss_gap,
         "target_residual_w": target,
         "lr_core_ae_m2_from_existing_design": area,
         "lr_bsat_ref_t": bsat,
         "lr_0p9_bsat_limit_t": soft_limit,
         "lr_2turn_flux_at_fault_peak_t": flux2,
         "lr_3turn_flux_at_fault_peak_t": flux3,
+        # ELE-08, 48 V: fault lands on a settled operating point instead of the
+        # soft-start ramp.  The stability flags are measurements, not settings.
+        "hotfault_48v_120a_stable_at_design_point":
+            hot48["pre_fault"]["stable_at_design_point"],
+        "hotfault_48v_120a_pre_fault_vss_v": hot48["pre_fault"]["ss"]["mean"],
+        "hotfault_48v_120a_pre_fault_vout_v": hot48["pre_fault"]["vout"]["mean"],
+        "hotfault_48v_120a_pre_fault_vout_pp_v": hot48["pre_fault"]["vout"]["pp"],
+        "hotfault_48v_120a_trip_delay_us": hot48["fault"]["delay_from_engage_us"],
+        "hotfault_48v_120a_lr_peak_before_trip_a": hot_peak,
+        "hotfault_48v_120a_sr_forward_peak_a":
+            hot48["fault"]["sr_forward_peak_whole_record_a"],
+        "hotfault_48v_120a_solver_completed": hot48["log"]["solver_completed"],
+        "hotfault_48v_120a_2turn_flux_at_fault_peak_t": hot_flux2,
+        "hotfault_48v_120a_3turn_flux_at_fault_peak_t": hot_flux3,
+        # ELE-08, 50 V: same definition, 9.15x overload instead of 8.7x because
+        # the nominal load is 16.3 mOhm.  The peak is the worst recorded one.
+        "hotfault_50v_120a_stable_at_design_point":
+            hot50["pre_fault"]["stable_at_design_point"],
+        "hotfault_50v_120a_pre_fault_vss_v": hot50["pre_fault"]["ss"]["mean"],
+        "hotfault_50v_120a_pre_fault_vout_v": hot50["pre_fault"]["vout"]["mean"],
+        "hotfault_50v_120a_pre_fault_vout_pp_v": hot50["pre_fault"]["vout"]["pp"],
+        "hotfault_50v_120a_severity_x": hot50["fault"]["severity_x"],
+        "hotfault_50v_120a_trip_delay_us": hot50["fault"]["delay_from_engage_us"],
+        "hotfault_50v_120a_lr_peak_before_trip_a": hot50_peak,
+        "hotfault_50v_120a_sr_forward_peak_a":
+            hot50["fault"]["sr_forward_peak_whole_record_a"],
+        "hotfault_50v_120a_solver_completed": hot50["log"]["solver_completed"],
+        "hotfault_50v_120a_2turn_flux_at_fault_peak_t": hot50_flux2,
+        "hotfault_50v_120a_3turn_flux_at_fault_peak_t": hot50_flux3,
     }
     risks = [
         {
             "id": "F01",
             "priority": "P0",
-            "blocker": "original fault injection occurs during soft-start, not at fully-settled operation",
-            "blocked": before_fault_ss < 4.8,
-            "next_evidence": "run separate 48V and 50V hot-start fault decks and verify measured pre-fault SS/Vout",
-            "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+            "blocker": "48V and 50V settled-state fault evidence is simulation only; "
+                       "OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
+            "blocked": True,
+            "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
+                             "confirm real Lr saturation at the 101A fault peak",
+            "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
         {
             "id": "F02",
@@ -79,7 +138,9 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "2-turn Lr fails 0.9 Bsat margin at measured fault peak",
             "blocked": flux2 > soft_limit,
-            "next_evidence": "retain 3-turn as candidate only; verify L(I), gap and physical Bsat at worst-case fault / tolerance",
+            "next_evidence": "the settled-state 48V fault raises the peak to 97.38 A "
+                             "(2-turn 0.375 T); retain 3-turn as candidate only and verify "
+                             "L(I), gap and physical Bsat at this worst case / tolerance",
             "file": "design/v3/bom/lr_design.json",
         },
         {
@@ -87,15 +148,19 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
             "blocked": abs(loss_gap) > target,
-            "next_evidence": "recompute same-window 50V/120A component losses, gate boundary, storage and compare timesteps",
-            "file": "design/v3/power_priority/energy_ledger_50v_120a.json",
+            "next_evidence": "ELE-09 ruled out a short-window artifact: 22 periods 0.4986 W vs "
+                             "133 aligned periods 0.4921 W (sem 0.050 W).  Trace the physical "
+                             "source of the remaining ~0.49 W; do not relax 0.2 W",
+            "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
         },
         {
             "id": "E02",
             "priority": "P0",
             "blocker": "50V 120A full energy closure not approved",
             "blocked": ledger50["balance"]["closure_status"] != "CLOSED" or abs(closure) > target,
-            "next_evidence": "trace residual physical source and numerical convergence, do not relax 0.2W",
+            "next_evidence": "trace residual physical source; the aligned 133-period window "
+                             "confirms it is stable (0.698 W period-averaged, sem 0.050 W), "
+                             "do not relax 0.2W",
             "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json",
         },
         {

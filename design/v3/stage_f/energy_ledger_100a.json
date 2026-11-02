@@ -1,4 +1,20 @@
 {
+  "diagnostic_integrity": {
+    "status": "RECOMPUTED_WITH_REQUESTED_VIN_RL",
+    "recomputed_from_raw": true,
+    "vin_v": 48.0,
+    "rl_ohm": 0.0189,
+    "covers": [
+      "windows",
+      "balance.resolution",
+      "balance.period_averaged.sem_w",
+      "balance.period_averaged.sd_w",
+      "balance.period_averaged.mean_w",
+      "results.window_resolves_0p2_w",
+      "results.window_resolves_0p2_w_period_averaged"
+    ],
+    "note": "All port power calculations including sub-windows and noise use the candidate's actual VIN and load resistance."
+  },
   "raw": {
     "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
     "bytes": 424201312,

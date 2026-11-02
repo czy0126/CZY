@@ -104,6 +104,32 @@ VARIANTS: dict[str, tuple[str, str, str | None, str | None, str | None, str | No
     # of a plateau.
     "ledger_aligned1n": (SS_100A_LEDGER, "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.cir",
                          None, None, "1n", "1550u"),
+    # Issue #6, task item 3's optional <=0.5 ns leg.  5/2/1 ns is not a
+    # monotone sequence -- the loss list reads 10.73 / 11.36 / 9.98 W -- so a
+    # third point cannot tell a plateau from a constant error.  Half a
+    # nanosecond is the finest step the repository's raw budget allows; the
+    # point is to see whether the last leg shrinks or reverses again, not to
+    # declare the smallest number "the answer".
+    "ledger_aligned0p5n": (SS_100A_LEDGER,
+                           "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.cir",
+                           None, None, "0.5n", "1550u"),
+    # ELE-09: the same-window companion at half the timestep for the 50 V/120 A
+    # candidate.  Its 22-period ledger leaves 0.499 W in the loss residual
+    # after the gate-drive boundary correction; the dominant unknown is the
+    # 6.15 W SR body-diode forward term, whose 100 A counterpart moved 1.4 W
+    # across 5/2/1 ns.  Only the max timestep changes, so VIN/RL and Tstart --
+    # and therefore the window -- stay identical.
+    "vin50_i120_cin_2n": ("sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+                          "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
+                          None, None, "2n", None),
+    # ELE-09, decisive leg: the same 50 V/120 A deck over one phase-aligned
+    # window (133 gate periods = 662.9 us).  The 22-period step pair moved the
+    # port term by 0.41 W, so only this window can say whether the residual is
+    # a physical gap or an endpoint/phase artefact.  Start stays 880 us, so the
+    # settled state is the one the 22-period ledger already measured.
+    "vin50_i120_cin_aligned": ("sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
+                               "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
+                               None, None, None, "1550u"),
 }
 
 
