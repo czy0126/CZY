@@ -88,6 +88,27 @@ def test_the_baseline_doc_and_ci_files_are_hashed():
         assert rel in paths, rel
 
 
+def test_the_high_output_candidate_records_are_hashed():
+    """A measured record outside the manifest is not part of "current candidate".
+
+    Hashing only what the explicit list names makes this easy to miss: the
+    120 A run's JSON, its writeup, and the reader tests would otherwise sit in
+    the tree while `ci_check` still reported a current manifest.
+    """
+    committed = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    paths = {row["path"] for row in committed["entries"]}
+    for rel in (
+        "design/v3/power_priority/operating_point_48v_120a.json",
+        "design/v3/power_priority/energy_ledger_48v_120a.json",
+        "design/v3/power_priority/cr_stress_48v_120a.json",
+        "design/v3/power_priority/48V120A_实测_2026-11-02.md",
+        "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
+        "tools/test_operating_point_120a.py",
+        "tools/test_energy_ledger_48v_120a.py",
+    ):
+        assert rel in paths, rel
+
+
 def test_skip_tests_does_not_claim_the_suite_passed(monkeypatch, capsys):
     """--skip-tests exists for quick local checks; it must not print a test result
     it did not produce."""

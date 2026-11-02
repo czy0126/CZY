@@ -1,0 +1,299 @@
+{
+  "raw": {
+    "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+    "bytes": 505404440,
+    "mtime": 1793592197.2961447,
+    "variables": 80,
+    "max_step_s": 5e-09
+  },
+  "window": {
+    "start_s": 7.63864755719875e-06,
+    "end_s": 0.0001173043796566229,
+    "span_s": 0.00010966573209942415,
+    "periods": 22,
+    "raw_time_start_s": 0.00088,
+    "display_offset_us": 880.0,
+    "vout_end_v": 1.855666628075018,
+    "vout_start_v": 1.855413311446395
+  },
+  "port": {
+    "vin_v": 48.0,
+    "rl_ohm": 0.0154,
+    "pin_source_w": 241.94635813690792,
+    "pin_after_rin_w": 241.881843760274,
+    "pout_w": 227.97767242299287,
+    "pin_minus_pout_w": 13.96868571391505
+  },
+  "losses": {
+    "rin": {
+      "w": 0.06451437662525249,
+      "confidence": "measured-i2r"
+    },
+    "lr": {
+      "w": 0.6296984987033896,
+      "confidence": "measured-i2r"
+    },
+    "lp_series": {
+      "w": 1.5112763968881349,
+      "confidence": "measured-i2r"
+    },
+    "cr_esr": {
+      "w": 0.3778190992220337,
+      "confidence": "measured-i2r"
+    },
+    "cout_esr": {
+      "w": 0.6178466219410754,
+      "confidence": "measured-i2r"
+    },
+    "secondary_copper": {
+      "w": 0.6737594547150296,
+      "confidence": "symmetry-assumption"
+    },
+    "sh": {
+      "w": 0.5502209621512025,
+      "confidence": "measured-commutation"
+    },
+    "sl": {
+      "w": 0.5489435690489888,
+      "confidence": "measured-commutation"
+    },
+    "dh": {
+      "w": 0.01056891684235958,
+      "confidence": "measured-commutation"
+    },
+    "dl": {
+      "w": 0.010503756796231308,
+      "confidence": "measured-commutation"
+    },
+    "sr_channel_body_pair1": {
+      "w": 2.0611079901801146,
+      "confidence": "measured-commutation"
+    },
+    "sr_channel_body_x4": {
+      "w": 8.244431960720458,
+      "confidence": "symmetry-assumption"
+    },
+    "sr_gate_resistor_x8": {
+      "w": 0.18147775720751003,
+      "confidence": "symmetry-assumption"
+    },
+    "ct_bridge_diodes": {
+      "w": 0.12034458070632077,
+      "confidence": "measured-commutation"
+    },
+    "ct_burden_resistor": {
+      "w": 0.12539755221623716,
+      "confidence": "measured-i2r"
+    }
+  },
+  "loss_total_w": 13.485325746576715,
+  "loss_before_ct_w": 13.239583613654156,
+  "gap_before_ct_w": 0.729102100260894,
+  "stored_energy_j": {
+    "magnetic_coupled_j": -4.463257756627146e-09,
+    "sr_capacitance_j": -8.928310378286633e-09,
+    "sr_package_inductance_j": 7.819756245615429e-09,
+    "lr_j": 1.0695144935290839e-07,
+    "cr_j": -2.9709208797491107e-08,
+    "cout_j": 1.8801565176600546e-06,
+    "ct_primary_j": 2.3250315076719214e-07,
+    "ct_secondary_j": 2.44542515372756e-07,
+    "cin_j": -6.396628711782815e-08,
+    "primary_dvdt_snubber_j": 4.16634713449172e-15
+  },
+  "stored_energy_w": 0.02156467917772701,
+  "magnetic_energy": {
+    "per_period_j": [
+      -2.410840212034739e-08,
+      2.5246857003263855e-08,
+      1.2580737542519942e-08,
+      1.449999730059539e-08,
+      3.953645457137507e-09,
+      -1.7463825095549344e-08,
+      -2.917913590953539e-08,
+      2.7334364679842483e-08,
+      3.153608646025766e-08,
+      2.0461571899445328e-08,
+      -1.4644978396985002e-08,
+      -1.3922571205802554e-08,
+      -1.619115809839162e-08,
+      -7.461179699621504e-09,
+      -2.1495018038091132e-08,
+      -1.4424315452433783e-08,
+      -1.2798636473491243e-08,
+      1.2398492240621852e-08,
+      3.111539841176364e-08,
+      1.1184813941203384e-08,
+      -4.773177941110295e-09,
+      -1.831282426191893e-08
+    ],
+    "mean_period_j": -2.028753525739612e-10,
+    "std_period_j": 1.9168886107244384e-08,
+    "note": "coupled 3-winding energy, all four transformers; pairs 1/4 measured, 2/3 taken as their mean"
+  },
+  "cap_integral_diag": {
+    "cgs": {
+      "total_j": -1.2819180498661061e-08,
+      "mean_period_j": -5.826900226664322e-10,
+      "rate_w_x4": -0.0004675728781727022,
+      "periods": 22
+    },
+    "cds": {
+      "total_j": 6.081044228342178e-08,
+      "mean_period_j": 2.7641110128828473e-09,
+      "rate_w_x4": 0.0022180289546889767,
+      "periods": 22
+    },
+    "cgd": {
+      "total_j": 6.064857292767575e-09,
+      "mean_period_j": 2.756753314894382e-10,
+      "rate_w_x4": 0.00022121248549251865,
+      "periods": 22
+    },
+    "note": "each term should be 0 over a whole period; rate_w_x4 is the quadrature noise of v*i at this timestep, not a physical loss"
+  },
+  "outside_port": {
+    "vreg_w": -0.0,
+    "vaux_w": 9.63143566434706e-05,
+    "driver_output_w": 0.20546576303860475,
+    "regularisation": {
+      "cpin_f": 1e-10,
+      "edge_power_w": -6.953162729753535e-06,
+      "full_swing_energy_per_device_j": 5.9405e-09,
+      "note": "exact 1/2*C*dV^2 at the two window ends; zero over a whole number of cycles at the same phase"
+    }
+  },
+  "efficiency": {
+    "port_pct": 94.22653607126803,
+    "closure_including_storage_pct": 94.40672717691922,
+    "engineering_budget_note": "the published 92.33 % budget (magnetising/core estimate, 0.15 mOhm output path, 0.75 W bias) lives in magnetics_design.json.  It is a different quantity from port_pct and is not recomputed here."
+  },
+  "balance": {
+    "residual_w": 0.48335996733833575,
+    "loss_residual_w": 0.48335996733833575,
+    "target_w": 0.2,
+    "closure_residual_w": 0.6672610511992138,
+    "closure_status": "NOT_CLOSED",
+    "closure_reason": "residual +0.667 W is outside the target (period-averaged +0.668 W, window resolves 0.04 W)",
+    "resolution": {
+      "target_w": 0.2,
+      "periods": 22,
+      "per_period_w": [
+        42.526863821034716,
+        42.776240937734194,
+        43.04903674500334,
+        42.93351471608349,
+        42.97047915663771,
+        43.45549521926225,
+        42.42212444116669,
+        42.883533813679485,
+        42.813421479167914,
+        42.79657055152945,
+        42.943723015830074,
+        42.92283667572127,
+        43.164322080382995,
+        42.552575532004425,
+        43.109620648578954,
+        42.87903454743629,
+        42.683181929284736,
+        42.830853762810854,
+        42.87401626735921,
+        42.79584892631572,
+        42.968886617940846,
+        43.125758311314954
+      ],
+      "mean_w": 42.88536087255816,
+      "sd_w": 0.22782082594269426,
+      "sem_w": 0.04857156329170925,
+      "periods_for_target": 2,
+      "note": "sd_w is the period-to-period spread of the closure residual and sem_w its standard error over this window.  The window mean is resolved only to about 2*sem_w, so periods_for_target larger than periods means the 0.2 W target is not demonstrated here, even when the mean falls inside it.",
+      "phase_alignment": {
+        "tank_khz": 202.13102251466543,
+        "gate_khz": 200.622,
+        "beat_hz": 1509.0225146654411,
+        "aligned_periods": 133,
+        "aligned_span_s": 0.0006629382620051639,
+        "tank_cycles": 134.00038876319897,
+        "phase_error_deg": 0.13995475162914772
+      }
+    },
+    "stored_energy_endpoint_w": 0.02156467917772701,
+    "stored_energy_phase_limit_w": 0.02156467917772701,
+    "period_averaged": {
+      "stored_energy_w": 0.02071710813796365,
+      "closure_residual_w": 0.668108622238977,
+      "periods": 21,
+      "sd_w": 0.08496507683425951,
+      "sem_w": 0.018540899810511102,
+      "periods_for_target": 1,
+      "definition": "each storage term is averaged over one whole gate period at each end of the window; one gate period is within 0.75 % of one tank period, so the tank-frequency part of the endpoint error is attenuated by about 130x"
+    },
+    "note": "residual_w is Pin - Pout - summed element losses (the issue #3 number).  closure_residual_w additionally adds the measured SR gate-supply energy and subtracts the stored-energy rate, i.e. it is the full conservation check; only that one may be called a complete energy-conservation check.",
+    "limits": [
+      "loss residual exceeds 0.2 W; do not quote an efficiency from this run",
+      "closure including storage: residual +0.667 W is outside the target (period-averaged +0.668 W, window resolves 0.04 W); the status is NOT_CLOSED and the 0.2 W target is unchanged"
+    ]
+  },
+  "windows": [
+    {
+      "periods": 22,
+      "start_s": 7.63864755719875e-06,
+      "end_s": 0.0001173043796566229,
+      "span_s": 0.00010966573209942415,
+      "port_w": 56.186773199657665,
+      "loss_total_w": 13.485325746576715,
+      "stored_w": 0.02156467917772701,
+      "driver_w": 0.20546576303860475,
+      "residual_w": 42.70144745308095,
+      "residual_including_storage_w": 42.88534853694183
+    },
+    {
+      "periods": 8,
+      "start_s": 7.742668242526377e-05,
+      "end_s": 0.0001173043796566229,
+      "span_s": 3.9877697231359126e-05,
+      "port_w": 56.17604277922376,
+      "loss_total_w": 13.483638228956824,
+      "stored_w": -0.010511213922306663,
+      "driver_w": 0.20547760608824295,
+      "residual_w": 42.69240455026694,
+      "residual_including_storage_w": 42.90839337027749
+    },
+    {
+      "periods": 12,
+      "start_s": 5.748705066061963e-05,
+      "end_s": 0.0001173043796566229,
+      "span_s": 5.981732899600327e-05,
+      "port_w": 56.17566724481557,
+      "loss_total_w": 13.483660332620282,
+      "stored_w": -0.006728435934567243,
+      "driver_w": 0.2054784264783983,
+      "residual_w": 42.69200691219529,
+      "residual_including_storage_w": 42.90421377460826
+    }
+  ],
+  "sensitivity": {
+    "max_step_s": 5e-09,
+    "note": "No step check was run: this raw's circuit has no second-timestep companion in the repository, and comparing another deck's raw would report a circuit change as a timestep sensitivity.  the storage terms come from the charge function at the endpoints, so they do not carry the v*i quadrature error sized by cap_integral_diag",
+    "device_parameters": "Rds/Isat fitted; package parasitics are ESTIMATE per models/sr_device_v3.lib"
+  },
+  "results": {
+    "loss_residual_within_0p2_w": false,
+    "ct_terms_account_for_the_gap_before_ct": false,
+    "closure_within_0p2_w": false,
+    "window_resolves_0p2_w": true,
+    "closure_period_averaged_within_0p2_w": false,
+    "window_resolves_0p2_w_period_averaged": true,
+    "closure_including_storage_within_0p2_w": false
+  },
+  "checks": {
+    "ok": true,
+    "ct_gap_is_reported_as_a_result": true,
+    "stored_energy_reported_not_folded_in": true,
+    "pout_uses_v_squared": true,
+    "coupled_energy_never_negative": true,
+    "closure_status_follows_from_the_results": true,
+    "closure_status_is_derived_from_both_readings": true,
+    "closure_reason_states_which_condition_failed": true
+  }
+}

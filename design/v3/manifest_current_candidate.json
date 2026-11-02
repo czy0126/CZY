@@ -1,6 +1,6 @@
 {
   "generated": "2026-11-02",
-  "scope": "100 A design delivery: two v3 decks/raws, magnetics package, stage-F protocol, BOM package + deck-derived run metadata",
+  "scope": "100 A design delivery: v3 decks/raws, magnetics package, stage-F protocol, BOM package, 48 V/110 A and 120 A candidate records + deck-derived run metadata",
   "supersedes": {
     "path": "design/v2/manifest_current_candidate.json",
     "status": "historical; the v2 round-4 package, superseded by this v3 delivery"
@@ -126,6 +126,13 @@
       "sha256": "53913db0a63c863f40e299f4f49a36ec6576ac2de4ee715919d4004899afc81f"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
+      "kind": "deck",
+      "bytes": 10867,
+      "mtime": 1793591956.632002,
+      "sha256": "9d2c462f4d166b6b022e2ad0245817e1a664dbb6b393473d738b68abaea69f26"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "kind": "deck",
       "bytes": 11040,
@@ -170,9 +177,9 @@
     {
       "path": "tools/ascii_raw_window.py",
       "kind": "script",
-      "bytes": 6090,
-      "mtime": 1793453983.1520505,
-      "sha256": "81cd4fa1129af65ea2875df02e81c7ac427e151639edc7c9959668a5309d21e7"
+      "bytes": 7404,
+      "mtime": 1793592332.5790513,
+      "sha256": "1de2d6048a3d539f8826adacaab3f9dd8cbf91cc7bea661e7c39b5639c4dbc7e"
     },
     {
       "path": "tools/magnetics_design.py",
@@ -282,9 +289,9 @@
     {
       "path": "tools/energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 62383,
-      "mtime": 1793589341.2076535,
-      "sha256": "ab8cbc31e1aaae7df979d9ba8e42f388f29dcae5136bd2f12ef37939812021f7"
+      "bytes": 65416,
+      "mtime": 1793593030.453375,
+      "sha256": "773aa3d947961aa2bcb07c4a425b1c34939e053e6e2bf93497732d41b6483b21"
     },
     {
       "path": "tools/sr_loss_audit.py",
@@ -303,9 +310,9 @@
     {
       "path": "tools/make_high_output_decks.py",
       "kind": "script",
-      "bytes": 5002,
-      "mtime": 1793536808.8744051,
-      "sha256": "7c376b0518a3128a7996b566be15169209b1d49c4b72b360fbf5d0f3d5a6be5c"
+      "bytes": 5042,
+      "mtime": 1793591949.63856,
+      "sha256": "6eed4154a63efb680f43476d0c1d1ad32c99ed6960173d282c24c274a45e9dc7"
     },
     {
       "path": "tools/ci_check.py",
@@ -317,16 +324,16 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 23705,
-      "mtime": 1793589341.2076535,
-      "sha256": "bd0493e6d2dfeb2759693437cc981f4fd63f42e98e276eec17cd85fef80a95ab"
+      "bytes": 25434,
+      "mtime": 1793593404.21866,
+      "sha256": "cae478f99d8cdf8948a7b2119e30f3b909099e98e64dd5a54af9edbb3351744e"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
       "kind": "script",
-      "bytes": 1682,
-      "mtime": 1793453959.2726593,
-      "sha256": "49cec1421aadaca9c147934b0f31311c5a90d8ac803f5e9bcb04af361f0962db"
+      "bytes": 2828,
+      "mtime": 1793592313.9460776,
+      "sha256": "3d18fb0ecd9c9a45e07a3ec85456647f94c66198510ceaa98c4893f83bc25939"
     },
     {
       "path": "tools/test_magnetics_design.py",
@@ -429,9 +436,9 @@
     {
       "path": "tools/test_energy_ledger_100a.py",
       "kind": "script",
-      "bytes": 26194,
-      "mtime": 1793536623.0707252,
-      "sha256": "bfba575862c6a7228cdbec3c226fc254b008914afb5cf615a1df33aa9ea723bc"
+      "bytes": 29217,
+      "mtime": 1793593022.8961866,
+      "sha256": "38a1f553a2571706562c86f8472d79f44b7d651b504a48a16c1edd4997ffa529"
     },
     {
       "path": "tools/test_sr_loss_audit.py",
@@ -469,6 +476,20 @@
       "sha256": "c847ab351d22adbbd505ffe3cbd799737e33168cfe21c000057e5fe2c13a5b2d"
     },
     {
+      "path": "tools/test_operating_point_120a.py",
+      "kind": "script",
+      "bytes": 3577,
+      "mtime": 1793593052.8312125,
+      "sha256": "c6fd074f7b6b3844ca8a23a37a53ee14a7a6702c219f778b67f72c93cda6f699"
+    },
+    {
+      "path": "tools/test_energy_ledger_48v_120a.py",
+      "kind": "script",
+      "bytes": 5087,
+      "mtime": 1793593068.46215,
+      "sha256": "916771dc2ed1c634c67a78fe4148cabf95ac27dbe36816fdbb1ec91faf9a08ef"
+    },
+    {
       "path": "tools/test_control_validation_doc.py",
       "kind": "script",
       "bytes": 3435,
@@ -478,9 +499,9 @@
     {
       "path": "tools/test_ci_check.py",
       "kind": "script",
-      "bytes": 6360,
-      "mtime": 1793510323.2821982,
-      "sha256": "40d31e7ef71840fb3c850fb61d0e923c8ca5133dd427c085abdc6fa4a7a36a8d"
+      "bytes": 7340,
+      "mtime": 1793593425.6192305,
+      "sha256": "42826149e26e7df956ff26b63e183551d7ab9590f41b0c559525a808efae2767"
     },
     {
       "path": "tools/test_baseline_doc.py",
@@ -714,6 +735,27 @@
       "sha256": "c76e33a6e598025dbdbced53f98420d0e696627ac96117e0a062c2e9fc1d9357"
     },
     {
+      "path": "design/v3/power_priority/operating_point_48v_120a.json",
+      "kind": "result",
+      "bytes": 1242,
+      "mtime": 1793592349.3548923,
+      "sha256": "402d32004d8d95cda395642047d68f8f09b15e54775d129ea1e04d0f571b7389"
+    },
+    {
+      "path": "design/v3/power_priority/energy_ledger_48v_120a.json",
+      "kind": "result",
+      "bytes": 10817,
+      "mtime": 1793593096.778178,
+      "sha256": "a3a8b239a4c9c684e2efff84f86239e62a7b7dbaa0a972c15a56303f2049cb8c"
+    },
+    {
+      "path": "design/v3/power_priority/cr_stress_48v_120a.json",
+      "kind": "result",
+      "bytes": 701,
+      "mtime": 1793593202.4619267,
+      "sha256": "5b120f345d78fe412c86fbaa55e11cf63e0c426447f08bbe5a853ff920245713"
+    },
+    {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
       "kind": "doc",
       "bytes": 13544,
@@ -779,9 +821,16 @@
     {
       "path": "design/v3/power_priority/48V110A_实测_2026-11-01.md",
       "kind": "doc",
-      "bytes": 12519,
-      "mtime": 1793578997.8406246,
-      "sha256": "1dcfa245171c7eff7cd654f6178e04676a60e83f61783a7693e846f66185b623"
+      "bytes": 12730,
+      "mtime": 1793593233.5680797,
+      "sha256": "07709905af6d56303d0cec80ca3678866ad54dbd42a3780e66443f1ae9c12adf"
+    },
+    {
+      "path": "design/v3/power_priority/48V120A_实测_2026-11-02.md",
+      "kind": "doc",
+      "bytes": 14147,
+      "mtime": 1793593229.608273,
+      "sha256": "4efef21802f607c3d81c96bd481a614b4ac2edeaba1efc0ab75abd92a5c88330"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -879,6 +928,20 @@
       "kind": "raw",
       "bytes": 486828020,
       "mtime": 1793537107.4558449,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.raw",
+      "kind": "raw",
+      "bytes": 373202868,
+      "mtime": 1793592942.7806866,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+      "kind": "raw",
+      "bytes": 505404440,
+      "mtime": 1793592197.2961447,
       "sha256": "skipped-large-raw"
     }
   ],
@@ -1072,6 +1135,17 @@
       "cold_start": false
     },
     {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
+      "tran": ".tran 0 1000u 880u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0001200000000000001,
+      "display_offset_us": 880.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
       "deck": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
       "tran": ".tran 0 8m 0 10n uic",
       "raw_time_start_s": 0.0,
@@ -1143,6 +1217,11 @@
     "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw --rl 0.0169 --periods 22 --pairs 1 4 --json design/v3/power_priority/operating_point_48v_110a.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.cir",
     "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw --periods 22 --vin 48 --rl 0.0169 --no-step-check --json design/v3/power_priority/energy_ledger_48v_110a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.cir",
+    "python tools/extract_op_point.py sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw --rl 0.0154 --periods 22 --pairs 1 4 --json design/v3/power_priority/operating_point_48v_120a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.cir",
+    "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw --periods 22 --vin 48 --rl 0.0154 --no-step-check --json design/v3/power_priority/energy_ledger_48v_120a.json",
+    "python tools/cr_stress.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw --from-us 7.6445 --to-us 117.3105 --json design/v3/power_priority/cr_stress_48v_120a.json",
     "python -m pytest tools -q",
     "python tools/ci_check.py"
   ]

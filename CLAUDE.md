@@ -78,6 +78,14 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   `iout_from_v_a = avg(Vout)/RL` 才是总输出电流（约 99.8 A）。
 - 高度最坏值必须用胶/标签的**最大**厚度，不是标称：`height_stack()` 的
   `glue_max_m`/`label_max_m` 默认等于标称值，做公差分析时必须显式传入。
+- **48 V/120 A 候选已跑**：`..._vin48_i120.cir`（219.8 s、373 MB、59 变量）与探针
+  `..._vin48_i120_cin.cir`（228.8 s、505 MB、80 变量）都是 258 235 点，`.meas` 行逐字相同。
+  负载端 **1.8737 V / 121.67 A / 227.978 W**，端口效率 **94.227 %**，
+  含储能闭合残差 **+0.667 W（周期平均 +0.668 W）⇒ `NOT_CLOSED`**。
+  记录在 `design/v3/power_priority/{operating_point,energy_ledger,cr_stress}_48v_120a.json`
+  与 `48V120A_实测_2026-11-02.md`。该账本**没有 `step_check`**：仓库里唯一的 2 ns raw
+  属于 100 A deck，`step_check` 会把它当对照列；`deck_difference()` 现在拒绝这种比较，
+  候选必须用 `--no-step-check`，`mark_no_step_check()` 负责改掉 sensitivity 注里的指针。
 
 ## 测量口径（工具不变式）
 
@@ -301,6 +309,12 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   回归测试 `test_primary_freq_respects_window_bounds`。
   **教训**：任何"每窗口"指标都必须把边沿限制在窗口内。
 - `conv_row()` 的 `n_periods` 必须与该族参考行一致（1 ms 族 22，200 µs 族 8）。
+- **`ascii_raw_window.find_offset` 曾按固定 64 行找记录起点，而 80 变量的 raw 每条记录 81 行**：
+  随机偏移下约 20 % 找不到起点、返回 `None`，二分法把它当“时间 < t0”，会收敛到文件中部。
+  120 A 首次提取把 0–120 µs 读成 **65.7–120 µs**（byte 276 393 424 / 505 404 440），
+  22 周期因此报“只有 10 个完整周期”。现在按 `n_variables + 2` 扫描并向前对齐；
+  `t0 = 0` 直接从头部 `Values:` 偏移读。`tools/test_ascii_raw_window.py` 用结构精确的
+  合成 raw 锁住 8/40/80/200 变量（修复前 4 条红）。**换变量数更多的 deck 时先想这条。**
 
 ## 嘉立创 EDA（LCEDA Pro）
 
@@ -315,8 +329,11 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   PRIMITIVE(仅显示)/SILK_OPTS/D3_ATTRIBUTE/PREFERENCE/PANELIZE。
 - 中文厂商名经 CLI 文本通道会变 U+FFFD；必须走 xlsx 二进制 + base64。
 - **原生工程保存**：`eda.sch_Document.save()` 会把 `.eprj2` 写回
-  `C:\Users\27792\Documents\LCEDA-Pro\projects\DCX Main Board.eprj2`，
-  再 `cp` 进 `hardware/dcx_main/`。`dmt_Project` 没有任何 save 方法，`saveFileToFileSystem` 不可用。
+  `%APP_PROJECT_DIR%` 工程目录。本项目已把 `Documents\LCEDA-Pro\config.json` 的
+  `APP_PROJECT_DIR` 改到 **`D:\workshop\LCEDA-Pro\projects`**（C: 盘空间不足），
+  保存路径随之变为 `D:\workshop\LCEDA-Pro\projects\DCX Main Board.eprj2`，再 `cp` 进
+  `hardware/dcx_main/`。**改客户端配置后先确认实际落盘路径**，不要照旧找 C: 的副本。
+  `dmt_Project` 没有任何 save 方法，`saveFileToFileSystem` 不可用。
   改图后必须同时重导 `gen/netlist_export_raw.json`（制造门槛读它），
   并重跑 `tools/d1_bom_coverage.py --write`、`tools/d1_fabrication_gate.py --write`。
   `main_board.svg` 现在导不出来，见下面 `getSvgFile` 那条。
