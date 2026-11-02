@@ -1,5 +1,6 @@
 {
   "tool": "sr_step_operating_point.py",
+  "family": "resistive",
   "scope": "pair 1 channel A, whole phase-aligned window of each 100 A run",
   "results": {
     "steps_ns": [
@@ -38,13 +39,15 @@
     "charge_cross_raw_rel": 0.8600085841515048,
     "diode_loss_spread_w": 0.28448497099830544,
     "diode_loss_spread_x8_w": 2.2758797679864435,
-    "sr_loss_per_volt_w": 118.26032778350908,
-    "port_w_per_volt_w": 200.4287252539223,
-    "sr_loss_sensitivity_vs_port": 0.5900368204891069,
     "quadrature_within_raw_max_rel": 0.007976208831200315,
     "quadrature_loss_within_raw_max_rel": 0.1316284537461785,
     "cross_raw_loss_rel": 0.9644221804570208,
-    "loss_vs_vout_inverse_monotone": true,
+    "endpoint_pair": {
+      "vout_delta_mv": 14.572305423453225,
+      "on_time_delta_ns": 119.80670586956103,
+      "charge_rel": -0.37665934817865654,
+      "diode_loss_rel": -0.3982202830656828
+    },
     "quadrature_by_step": {
       "5": {
         "max_rel_charge": 0.0062012322279767496,
@@ -62,10 +65,21 @@
         "max_rel_charge": 0.007911778674499659,
         "max_rel_loss": 0.1316284537461785
       }
-    }
+    },
+    "loss_vs_vout_inverse_monotone": true,
+    "sr_loss_per_volt_w": 118.26032778350908,
+    "port_w_per_volt_w": 200.4287252539223,
+    "sr_loss_sensitivity_vs_port": 0.5900368204891069,
+    "vout_drift_mv": [
+      2.469798625569064,
+      0.7431909838686579,
+      0.2988996806283506,
+      0.5092230437402367
+    ],
+    "vout_drift_worst_mv": 2.469798625569064
   },
   "checks": {
-    "all_four_steps_measured": true,
+    "all_steps_measured": true,
     "periods_match_across_steps": true,
     "quadrature_is_not_the_explanation": true,
     "cross_step_spread_exceeds_quadrature": true

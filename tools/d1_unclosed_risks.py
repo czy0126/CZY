@@ -33,6 +33,11 @@ def build() -> dict:
     # quadrature rules and fixed operating point, which decides what the next
     # experiment has to change.  Raw-only, so it is a local diagnostic record.
     step_op = _load(ROOT / "design/v3/stage_f/sr_step_operating_point.json")
+    # ELE-09 follow-up, second leg: the same two step lengths with the
+    # resistive load replaced by a ramped constant-current sink, so both draw
+    # the same I(out) and only V(out) can move.  The register needs it because
+    # it decides whether "pin the current" is still an open prescription.
+    csink = _load(ROOT / "design/v3/stage_f/sr_step_operating_point_csink.json")
     lr = _load(ROOT / "design/v3/bom/lr_design.json")
     gate = _load(ROOT / "hardware/dcx_main/d1_fabrication_gate.json")
     fault_peak = float(fault["ipri_peak_before_trip_a"])
@@ -72,6 +77,7 @@ def build() -> dict:
     cin_ac_rms_a = 0.3493
     cin_esr_w = 5e-3 * cin_ac_rms_a ** 2
     step_r = step_op["results"]
+    csink_r = csink["results"]
     evidence = {
         "manufacturing_gate": gate["status"],
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
@@ -107,6 +113,18 @@ def build() -> dict:
         "sr_step_loss_per_volt_w": step_r["sr_loss_per_volt_w"],
         "sr_step_port_per_volt_w": step_r["port_w_per_volt_w"],
         "sr_step_loss_sensitivity_vs_port": step_r["sr_loss_sensitivity_vs_port"],
+        # Pinning I(out) at 100 A does not remove the spread: the 0.5 ns leg
+        # still settles higher with ~99 % of the resistive loss difference.
+        # The sink itself is faithful -- its 5 ns leg reproduces the resistive
+        # 5 ns leg to a fraction of a percent -- so the cause is the model's
+        # operating point moving with the step, not the 1 A of load.
+        "sr_csink_vout_delta_mv": csink_r["endpoint_pair"]["vout_delta_mv"],
+        "sr_csink_diode_loss_spread_x8_w": csink_r["diode_loss_spread_x8_w"],
+        "sr_csink_spread_ratio_vs_resistive":
+            csink_r["endpoint_spread_ratio_vs_resistive"]["diode_loss_rel"],
+        "sr_csink_loss_per_volt_w": csink_r["sr_loss_per_volt_w"],
+        "sr_csink_vout_drift_worst_mv": csink_r["vout_drift_worst_mv"],
+        "sr_csink_checks_ok": all(csink["checks"].values()),
         "50v_120a_loss_residual_moves_between_windows_w": aligned_loss_gap - loss_gap,
         "target_residual_w": target,
         "lr_core_ae_m2_from_existing_design": area,
@@ -203,7 +221,9 @@ def build() -> dict:
                 f"body-diode term moves {step_r['sr_loss_per_volt_w']:.0f} W/V against the "
                 f"port's {step_r['port_w_per_volt_w']:.0f} W/V, so 1 mV of Vout is worth "
                 f"{step_r['sr_loss_per_volt_w'] * 1e-3:.2f} W -- the 0.49 W gap is 2.1 mV, "
-                "the same order.  Do not relax 0.2 W"),
+                "the same order.  The fixed-current legs give "
+                f"{csink_r['sr_loss_per_volt_w']:.0f} W/V as well, so the coupling is to Vout "
+                "and not to the load current.  Do not relax 0.2 W"),
             "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
         },
         {
@@ -211,14 +231,20 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "50V 120A full energy closure not approved",
             "blocked": ledger50["balance"]["closure_status"] != "CLOSED" or abs(closure) > target,
-            "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is "
-                             "stable (sem 0.050 W); ELE-09's inventory audit leaves only port "
-                             "and numerical candidates.  More step reduction is falsified and "
-                             "re-integrating the same samples is falsified too (same raw 0.80 % "
-                             "against 86 % across steps), because the four runs sit at different "
-                             "operating points (Vout 19.2 mV, SR on-time 141.7 ns): pin Iout "
-                             "with a current-source load or a closed Vout loop before the next "
-                             "comparison; do not relax 0.2 W",
+            "next_evidence": (
+                "the aligned 133-period window confirms the 0.698 W closure is stable "
+                "(sem 0.050 W); ELE-09's inventory audit leaves only port and numerical "
+                "candidates, and re-integrating the same samples is falsified (0.80 % within "
+                "a raw against 86 % across steps).  More step reduction is falsified as well: "
+                "with the load replaced by a constant-current sink the 0.5 ns leg still "
+                f"settles {csink_r['endpoint_pair']['vout_delta_mv']:.1f} mV above 5 ns and keeps "
+                f"{100 * csink_r['endpoint_spread_ratio_vs_resistive']['diode_loss_rel']:.1f} % of "
+                "the resistive 5->0.5 ns endpoint difference, so the four runs sit at different "
+                "operating points and the model's own V(out) moves with the step.  The sink is "
+                "faithful (its 5 ns leg matches the resistive one to 0.3 %) but pins the "
+                "current, not V(out) -- its own window drift is "
+                f"{csink_r['vout_drift_worst_mv']:.1f} mV.  Only a closed V(out) loop can pin "
+                "the operating point, and that is a different deck; do not relax 0.2 W"),
             "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json",
         },
         {

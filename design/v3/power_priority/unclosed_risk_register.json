@@ -26,6 +26,12 @@
     "sr_step_loss_per_volt_w": 118.26032778350908,
     "sr_step_port_per_volt_w": 200.4287252539223,
     "sr_step_loss_sensitivity_vs_port": 0.5900368204891069,
+    "sr_csink_vout_delta_mv": 15.132181970687553,
+    "sr_csink_diode_loss_spread_x8_w": 1.5393946454428757,
+    "sr_csink_spread_ratio_vs_resistive": 0.9886408581657495,
+    "sr_csink_loss_per_volt_w": 101.72985286753931,
+    "sr_csink_vout_drift_worst_mv": 4.704059055081089,
+    "sr_csink_checks_ok": true,
     "50v_120a_loss_residual_moves_between_windows_w": -0.006560553744968445,
     "target_residual_w": 0.2,
     "lr_core_ae_m2_from_existing_design": 0.00013,
@@ -88,7 +94,7 @@
       "priority": "P0",
       "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
       "blocked": true,
-      "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs 133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: no un-inventoried dissipative element can hold 0.49 W (Cin ESR 0.61 mW measured, Cbt carries no charge).  Remaining candidates are the port reading (~2 mV of mean Vout) and the behavioral-SR channel/diode split; measured across the four 100 A steps the SR body-diode term moves 118 W/V against the port's 200 W/V, so 1 mV of Vout is worth 0.12 W -- the 0.49 W gap is 2.1 mV, the same order.  Do not relax 0.2 W",
+      "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs 133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: no un-inventoried dissipative element can hold 0.49 W (Cin ESR 0.61 mW measured, Cbt carries no charge).  Remaining candidates are the port reading (~2 mV of mean Vout) and the behavioral-SR channel/diode split; measured across the four 100 A steps the SR body-diode term moves 118 W/V against the port's 200 W/V, so 1 mV of Vout is worth 0.12 W -- the 0.49 W gap is 2.1 mV, the same order.  The fixed-current legs give 102 W/V as well, so the coupling is to Vout and not to the load current.  Do not relax 0.2 W",
       "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json"
     },
     {
@@ -96,7 +102,7 @@
       "priority": "P0",
       "blocker": "50V 120A full energy closure not approved",
       "blocked": true,
-      "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is stable (sem 0.050 W); ELE-09's inventory audit leaves only port and numerical candidates.  More step reduction is falsified and re-integrating the same samples is falsified too (same raw 0.80 % against 86 % across steps), because the four runs sit at different operating points (Vout 19.2 mV, SR on-time 141.7 ns): pin Iout with a current-source load or a closed Vout loop before the next comparison; do not relax 0.2 W",
+      "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is stable (sem 0.050 W); ELE-09's inventory audit leaves only port and numerical candidates, and re-integrating the same samples is falsified (0.80 % within a raw against 86 % across steps).  More step reduction is falsified as well: with the load replaced by a constant-current sink the 0.5 ns leg still settles 15.1 mV above 5 ns and keeps 98.9 % of the resistive 5->0.5 ns endpoint difference, so the four runs sit at different operating points and the model's own V(out) moves with the step.  The sink is faithful (its 5 ns leg matches the resistive one to 0.3 %) but pins the current, not V(out) -- its own window drift is 4.7 mV.  Only a closed V(out) loop can pin the operating point, and that is a different deck; do not relax 0.2 W",
       "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json"
     },
     {

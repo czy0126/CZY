@@ -60,6 +60,37 @@ def test_rank_inversion_is_the_inverse_ordering() -> None:
     assert s.rank(loss) == [len(vout) - 1 - r for r in s.rank(vout)]
 
 
+def test_half_drift_is_the_second_half_minus_the_first() -> None:
+    assert s.half_drift([1.0, 1.0, 1.0, 1.0]) == pytest.approx(0.0)
+    assert s.half_drift([0.0, 1.0, 2.0, 3.0]) == pytest.approx(2.0)
+    assert s.half_drift([3.0, 2.0, 1.0, 0.0]) == pytest.approx(2.0)
+
+
+def test_the_committed_csink_record_carries_its_invariants() -> None:
+    """The current-sink legs must be settled and must not borrow the resistive
+    load's port sensitivity: with a fixed current there is no 2V/RL."""
+    out = OUT.parent / "sr_step_operating_point_csink.json"
+    if not out.exists():
+        pytest.skip("current-sink audit not generated locally")
+    j = json.loads(out.read_text(encoding="utf-8"))
+    r, c = j["results"], j["checks"]
+    assert all(c.values()), c
+    assert len(r["steps_ns"]) == 2
+    assert r["vout_drift_worst_mv"] == pytest.approx(max(r["vout_drift_mv"]))
+    # The drift is the measurement's resolution, not the effect: it has to stay
+    # below the cross-leg V(out) difference being explained.
+    assert r["vout_drift_worst_mv"] < r["vout_spread_mv"]
+    assert r["sr_loss_per_volt_w"] == pytest.approx(
+        r["diode_loss_spread_x8_w"] / (r["vout_spread_mv"] * 1e-3), rel=1e-9)
+    assert "port_w_per_volt_w" not in r
+    # The sink only counts if it did not change the operating point by itself:
+    # at the shared 5 ns it has to reproduce the resistive leg.
+    assert c["the_sink_reproduces_the_resistive_leg"] is True
+    inst = r["instrument_check_vs_resistive_5ns"]
+    assert abs(inst["vout_delta_mv"]) < 2.0
+    assert abs(inst["diode_loss_rel"]) < 0.02
+
+
 def test_the_committed_record_still_carries_its_invariants() -> None:
     if not OUT.exists():
         pytest.skip("operating-point audit not generated locally")
@@ -85,3 +116,10 @@ def test_the_committed_record_still_carries_its_invariants() -> None:
     # Same order as the port's 2V/RL: that is what makes the operating point,
     # not the integration rule, decide the size of this term.
     assert 0.2 < r["sr_loss_sensitivity_vs_port"] < 5.0
+    # Both families carry the window drift, so the sink's settledness is read
+    # against the resistive family's own drift rather than an absolute gate.
+    # The resistive drift must stay well below the spread it is used to explain,
+    # otherwise the four means are not four operating points -- they are noise.
+    assert len(r["vout_drift_mv"]) == 4
+    assert r["vout_drift_worst_mv"] == pytest.approx(max(r["vout_drift_mv"]))
+    assert r["vout_drift_worst_mv"] < r["vout_spread_mv"]

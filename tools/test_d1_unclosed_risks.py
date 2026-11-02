@@ -96,5 +96,35 @@ def test_the_loss_gap_is_not_a_short_window_artifact_but_stays_blocked():
     assert all(x["blocked"] for x in j["risks"])
 
 
+def test_a_pinned_current_does_not_pin_the_operating_point():
+    """ELE-09 follow-up: the prescribed current-source load has now been run.
+
+    Both legs draw exactly 100 A, so the resistive family's 1 A load difference
+    cannot be the cause of the surviving spread.  What survives is the model's
+    own V(out) moving with the step, which is why "pin the current" may no
+    longer be prescribed as the next experiment -- only a closed Vout loop can
+    pin the operating point.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["sr_csink_checks_ok"] is True
+    # The effect survives at a fixed current ...
+    assert e["sr_csink_vout_delta_mv"] > 10.0
+    assert e["sr_csink_diode_loss_spread_x8_w"] > 1.0
+    # ... and it is essentially the whole resistive spread, not a fraction.
+    assert e["sr_csink_spread_ratio_vs_resistive"] > 0.9
+    # The sink pins the current, not the operating point: its own drift is
+    # recorded and stays below the cross-leg difference it explains.
+    assert 0.0 < e["sr_csink_vout_drift_worst_mv"] < e["sr_csink_vout_delta_mv"]
+    # Two independent routes to V(out) -- change the step, or change the load --
+    # give the same order of sensitivity, which is what makes "the SR loss
+    # follows V(out)" usable rather than a coincidence of one run family.
+    assert 0.5 < e["sr_csink_loss_per_volt_w"] / e["sr_step_loss_per_volt_w"] < 2.0
+    e02 = next(x for x in j["risks"] if x["id"] == "E02")
+    assert "constant-current sink" in e02["next_evidence"]
+    assert "pin Iout with a current-source load" not in e02["next_evidence"]
+    assert all(x["blocked"] for x in j["risks"])
+
+
 def test_committed_register_is_reproducible():
     assert json.loads(r.OUT.read_text(encoding="utf-8")) == r.build()

@@ -1,0 +1,83 @@
+{
+  "tool": "sr_step_operating_point.py",
+  "family": "csink",
+  "scope": "pair 1 channel A, whole phase-aligned window of each 100 A run",
+  "results": {
+    "steps_ns": [
+      "5",
+      "0.5"
+    ],
+    "vout_mean_v": [
+      1.8888741644047793,
+      1.9040063463754668
+    ],
+    "on_time_ns": [
+      1943.153709450883,
+      2057.91229696221
+    ],
+    "charge_uc": [
+      3.5241375601922384,
+      2.204946565831984
+    ],
+    "diode_loss_w": [
+      0.4887626974925019,
+      0.29633836681214243
+    ],
+    "vout_spread_mv": 15.132181970687553,
+    "on_time_spread_ns": 114.75858751132682,
+    "charge_spread_uc": 1.3191909943602544,
+    "charge_cross_raw_rel": 0.5982870582002013,
+    "diode_loss_spread_w": 0.19242433068035947,
+    "diode_loss_spread_x8_w": 1.5393946454428757,
+    "quadrature_within_raw_max_rel": 0.010528516428058743,
+    "quadrature_loss_within_raw_max_rel": 0.031861678749559474,
+    "cross_raw_loss_rel": 0.649339917575853,
+    "endpoint_pair": {
+      "vout_delta_mv": 15.132181970687553,
+      "on_time_delta_ns": 114.75858751132682,
+      "charge_rel": -0.37433016499171323,
+      "diode_loss_rel": -0.3936968423890643
+    },
+    "quadrature_by_step": {
+      "5": {
+        "max_rel_charge": 0.003901746193185507,
+        "max_rel_loss": 0.014553869805728037
+      },
+      "0.5": {
+        "max_rel_charge": 0.010528516428058743,
+        "max_rel_loss": 0.031861678749559474
+      }
+    },
+    "sr_loss_per_volt_w": 101.72985286753931,
+    "resistive_reference": {
+      "vout_delta_mv": 14.572305423453225,
+      "on_time_delta_ns": 119.80670586956103,
+      "charge_rel": -0.37665934817865654,
+      "diode_loss_rel": -0.3982202830656828
+    },
+    "endpoint_spread_ratio_vs_resistive": {
+      "vout_delta_mv": 1.0384205882984885,
+      "on_time_delta_ns": 0.957864475768741,
+      "charge_rel": 0.9938162076735753,
+      "diode_loss_rel": 0.9886408581657495
+    },
+    "instrument_check_vs_resistive_5ns": {
+      "vout_delta_mv": -0.5593373396464152,
+      "on_time_delta_ns": -0.34161011096057337,
+      "charge_rel": -0.002498977041649586,
+      "diode_loss_rel": -0.0028891072037184884
+    },
+    "vout_drift_mv": [
+      4.704059055081089,
+      0.04969362921292131
+    ],
+    "vout_drift_worst_mv": 4.704059055081089
+  },
+  "checks": {
+    "all_steps_measured": true,
+    "periods_match_across_steps": true,
+    "quadrature_is_not_the_explanation": true,
+    "the_drift_is_smaller_than_the_effect": true,
+    "the_sink_reproduces_the_resistive_leg": true
+  }
+}

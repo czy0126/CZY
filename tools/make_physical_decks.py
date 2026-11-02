@@ -39,10 +39,45 @@ LR_RE = re.compile(r"LR_TOTAL=[0-9.]+u")
 COUT_RE = re.compile(r"Cout out sgnd [0-9.]+m Rser=0\.2m")
 TRAN_RE = re.compile(r"^\.tran ([0-9.]+[a-z]?) ([0-9.]+[a-z]?) ([0-9.]+[a-z]?) ([0-9.]+[a-z]?) uic$", re.M)
 LR_TOTAL_RE = re.compile(r"^Lr \S+ \S+ \{LR_TOTAL\} ", re.M)
+# ELE-09: the four aligned step lengths are four operating points because the
+# resistive load lets the output settle wherever the model's loss balance puts
+# it.  They can only be compared at one operating point, so the load is
+# replaced by a sink that fixes the *current* and lets V(out) land wherever the
+# converter's own characteristic takes it.
+#
+# Why not a voltage source: the SR controller is load triggered -- it turns on
+# when the body diode conducts -- so an ideal source clamps the centre tap from
+# t=0 and the rectifier never starts.  Measured on the 5 ns trial: V(ga1) never
+# passed 0.12 V, I(xsa1:Dbd) peaked at 3 mA, I(Lr) stayed inside +-0.77 A and
+# I(Rin) averaged -0.05 A.
+#
+# A regulated sink failed a second way: I = max(1053 x (V - 1.889), 0) draws
+# nothing until V(out) reaches 1.889 V, but an *unloaded* converter only reaches
+# 1.794 V here -- the SR needs load current to start, so the rectifier is two
+# body diodes.  The sink sat on its own knee: V(out) 1.7944 V, I(Bload) 0.0000 A,
+# I(Lr) +-0.76 A for the whole run.
+#
+# A ramped current sink sidesteps both: zero until 500 us, so the cold start is
+# the one the resistive deck had, then the same 100 A the resistor drew.
+LOAD = "Rload out sgnd {RL}"
+SINK_PWL = "PWL(0 0 500u 0 750u 100)"
+
+
+def sink_load(source: str, pwl: str = SINK_PWL) -> str:
+    """Replace the resistive load with a ramped constant-current sink.
+
+    A strict count check, like the other swaps: a spent pattern would output a
+    "sink" deck that is still the resistive one.
+    """
+    count = source.count(LOAD)
+    if count != 1:
+        raise ValueError(f"expected exactly one '{LOAD}' line, found {count}")
+    return source.replace(LOAD, f"Iload out sgnd {pwl}")
 
 
 def variant_text(source: str, lr: str | None = None, cout: str | None = None,
-                 step: str | None = None, stop: str | None = None) -> str:
+                 step: str | None = None, stop: str | None = None,
+                 sink: bool = False) -> str:
     """Return the deck text with the requested values swapped in.
 
     ``None`` leaves an element untouched.  Each pattern must occur exactly once:
@@ -60,6 +95,8 @@ def variant_text(source: str, lr: str | None = None, cout: str | None = None,
         source = pattern.sub(value, source)
     if lr is not None and not LR_TOTAL_RE.search(source):
         raise ValueError("the Lr element does not use LR_TOTAL; the param swap would not reach it")
+    if sink:
+        source = sink_load(source)
     if step is not None or stop is not None:
         match = TRAN_RE.search(source)
         if not match:
@@ -133,10 +170,34 @@ VARIANTS: dict[str, tuple[str, str, str | None, str | None, str | None, str | No
 }
 
 
+# ELE-09 follow-up: the four aligned step lengths are four operating points,
+# not four discretisations of one.  These two decks replace the resistive load
+# with the ramped current sink (see SINK_PWL) so I(out) is the same in both and
+# V(out) is free to say what the converter's characteristic does.  Only the two
+# extremes are generated: if the operating point is what moves the SR term, the
+# end pair answers it and the middle steps are only confirmation.
+# name -> (source, target, max timestep, stop time)
+CSINK: dict[str, tuple[str, str, str | None, str | None]] = {
+    "csink5n": (SS_100A_LEDGER,
+                "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned_csink5n.cir",
+                None, "1550u"),
+    "csink0p5n": (SS_100A_LEDGER,
+                  "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned_csink0p5n.cir",
+                  "0.5n", "1550u"),
+}
+
+
 def write(name: str) -> None:
-    src, dst, lr, cout, step, stop = VARIANTS[name]
+    if name in VARIANTS:
+        src, dst, lr, cout, step, stop = VARIANTS[name]
+        kwargs = {"lr": lr, "cout": cout, "step": step, "stop": stop}
+    elif name in CSINK:
+        src, dst, step, stop = CSINK[name]
+        kwargs = {"step": step, "stop": stop, "sink": True}
+    else:
+        raise KeyError(name)
     source = (ROOT / src).read_text(encoding="utf-8")
-    (ROOT / dst).write_text(variant_text(source, lr, cout, step, stop), encoding="utf-8")
+    (ROOT / dst).write_text(variant_text(source, **kwargs), encoding="utf-8")
     print(f"wrote {dst}")
 
 
@@ -144,10 +205,11 @@ def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("names", nargs="*", help="variant names to write; default all")
     args = ap.parse_args(argv)
-    unknown = [n for n in args.names if n not in VARIANTS]
+    known = [*VARIANTS, *CSINK]
+    unknown = [n for n in args.names if n not in known]
     if unknown:
-        ap.error(f"unknown variant(s) {unknown}; known: {sorted(VARIANTS)}")
-    for name in args.names or VARIANTS:
+        ap.error(f"unknown variant(s) {unknown}; known: {sorted(known)}")
+    for name in args.names or known:
         write(name)
 
 

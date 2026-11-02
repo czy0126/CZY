@@ -109,3 +109,94 @@ def test_the_aligned_variant_only_moves_the_stop_time():
     out = variant_text(SAMPLE, stop=stop)
     assert out.strip().endswith(".tran 0 1550u 880u 5n uic")
     assert "LR_TOTAL=.92u" in out and "Cout out sgnd 4m" in out
+
+
+def _pwl_current(pwl: str, t_us: float) -> float:
+    """Evaluate a ``PWL(... )`` current source at ``t_us``, holding the ends."""
+    import re
+    body = re.search(r"PWL\(([^)]*)\)", pwl).group(1)
+    pts = body.split()
+    pairs = []
+    for t, v in zip(pts[0::2], pts[1::2]):
+        scale = {"u": 1e-6, "m": 1e-3, "n": 1e-9}.get(t[-1], 1.0)
+        pairs.append((float(t.rstrip("umn")) * scale * 1e6, float(v)))
+    if t_us <= pairs[0][0]:
+        return pairs[0][1]
+    for (t0, v0), (t1, v1) in zip(pairs, pairs[1:]):
+        if t_us <= t1:
+            return v0 + (v1 - v0) * (t_us - t0) / (t1 - t0)
+    return pairs[-1][1]
+
+
+def test_the_sink_replaces_only_the_resistor():
+    """ELE-09: the four step lengths sit at four operating points because the
+    resistive load lets V(out) settle wherever the losses put it.  Fixing the
+    current must not smuggle in any other circuit change -- only the load line
+    may move, and the .save block must stay byte-identical."""
+    from make_physical_decks import CSINK, sink_load
+    for name, (src, dst, step, stop) in CSINK.items():
+        base = (ROOT / src).read_text(encoding="utf-8")
+        text = sink_load(base)
+        assert "Rload out sgnd {RL}" not in text
+        assert "Iload out sgnd PWL(" in text
+        a, b = base.splitlines(), text.splitlines()
+        assert len(a) == len(b), "the swap must not change the element count"
+        diff = [(x, y) for x, y in zip(a, b) if x != y]
+        assert len(diff) == 1, diff
+        assert diff[0][0] == "Rload out sgnd {RL}"
+        assert diff[0][1].startswith("Iload out sgnd PWL(")
+        assert stop == "1550u", "the sink runs must share the aligned window"
+
+
+def test_the_sink_holds_zero_through_startup_and_then_100_a():
+    """The ramp is what lets the load-triggered SR controller start: an ideal
+    source clamps the centre tap from t=0 and the rectifier never turns on
+    (measured: V(ga1) < 0.12 V, I(Lr) +-0.77 A).  Zero until 500 us keeps the
+    cold start the resistive deck had; 100 A from 750 us matches what the
+    18.9 mOhm load drew at 1.889 V."""
+    from make_physical_decks import SINK_PWL
+    assert _pwl_current(SINK_PWL, 0.0) == pytest.approx(0.0)
+    assert _pwl_current(SINK_PWL, 480.0) == pytest.approx(0.0)
+    assert _pwl_current(SINK_PWL, 750.0) == pytest.approx(100.0)
+    assert _pwl_current(SINK_PWL, 1550.0) == pytest.approx(100.0)
+    # The resistors' current at the 5 ns operating point, to 1 %: 1.889434 V
+    # / 18.9 mOhm = 99.97 A.
+    assert _pwl_current(SINK_PWL, 900.0) == pytest.approx(
+        1.889434 / 18.9e-3, rel=0.01)
+
+
+def test_a_missing_load_line_is_an_error_not_a_silent_no_op():
+    from make_physical_decks import sink_load
+    with pytest.raises(ValueError, match="exactly one"):
+        sink_load(SAMPLE)
+
+
+def test_the_sink_decks_are_the_committed_ones():
+    """If the generator changes, the decks on disk must be rewritten; a deck
+    that no longer matches its generator is an input nobody can reproduce."""
+    from make_physical_decks import CSINK
+    for name, (src, dst, step, stop) in CSINK.items():
+        path = ROOT / dst
+        if not path.exists():
+            pytest.skip(f"{dst} not generated locally")
+        expected = variant_text((ROOT / src).read_text(encoding="utf-8"),
+                                step=step, stop=stop, sink=True)
+        assert path.read_text(encoding="utf-8") == expected, f"{dst} is stale"
+
+
+def test_the_two_sink_decks_share_one_load_and_one_window():
+    """The comparison is only meaningful if both legs ask for the same current
+    over the same saved window; only the max timestep may differ."""
+    from make_physical_decks import CSINK
+    texts = {}
+    for name, (src, dst, step, stop) in CSINK.items():
+        path = ROOT / dst
+        if not path.exists():
+            pytest.skip(f"{dst} not generated locally")
+        texts[name] = path.read_text(encoding="utf-8").splitlines()
+    a, b = texts["csink5n"], texts["csink0p5n"]
+    assert len(a) == len(b)
+    diff = [(x, y) for x, y in zip(a, b) if x != y]
+    assert len(diff) == 1, diff
+    assert diff[0][0] == ".tran 0 1550u 880u 5n uic"
+    assert diff[0][1] == ".tran 0 1550u 880u 0.5n uic"
