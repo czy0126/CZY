@@ -1,0 +1,50 @@
+{
+  "status": "RESIDUAL_LOCUS_UNRESOLVED_NOT_CLOSED",
+  "target_w_unchanged": 0.2,
+  "basis": "design/v3/stage_f/sr_loss_audit.json",
+  "after_gate_sinks_aligned_5_2_1ns_w": [
+    0.10837456479021085,
+    0.09690407836223558,
+    0.09109247709647408
+  ],
+  "original_aligned_5_2_1ns_w": [
+    0.3258474492008277,
+    0.31392320293513454,
+    0.3094875318501986
+  ],
+  "identified_gate_sink_w_5ns": 0.21747288441061685,
+  "residual_at_finest_step_w": 0.09109247709647408,
+  "improvement_from_external_boundary_identification": true,
+  "canonical_ledger_closure_approved": false,
+  "numerical_step_convergence_approved": false,
+  "efficiency_and_continuous_power_approved": false,
+  "important_uncertainty": {
+    "body_diode_forward_loss_across_step_w": 1.3935393322178573,
+    "channel_loss_across_step_w": 0.03152007584673333,
+    "short_window_corrected_residual_spread_w": 0.38011470265616554,
+    "aligned_corrected_residual_spread_w": 0.017282087693736764
+  },
+  "next_discriminating_experiments": [
+    {
+      "id": "E6-1",
+      "method": "Inspect SR diode forward power signs at each switching edge; classify conduction and reverse recovery separately",
+      "record": "per-device VDS, Ibody and conduction phase, all 5/2/1ns"
+    },
+    {
+      "id": "E6-2",
+      "method": "Report Rg, Rgs and Cpin dissipated/delta-energy on same 133-cycle boundary and prevent double counting Bdrive output",
+      "record": "waveform-based gate-source energy and local resistor I2R per SR"
+    },
+    {
+      "id": "E6-3",
+      "method": "Use the exact same 133-cycle phase-aligned window for each timestep, then run one additional <=0.5ns variant if computationally feasible",
+      "record": "port, SR channel/diode, CT and magnetic delta-energy terms, each version-tagged"
+    },
+    {
+      "id": "E6-4",
+      "method": "Test all symmetry assumptions (SR pair1 x4, secondary copper x4) by direct probes on all eight SR devices",
+      "record": "per-group current and I2R; any unavailable probes explicitly UNKNOWN"
+    }
+  ],
+  "guard": "A post-hoc residual 0.09W below 0.2W does not close the canonical 100A ledger; the physical missing term and convergence still require identification."
+}
