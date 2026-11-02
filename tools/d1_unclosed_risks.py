@@ -44,7 +44,7 @@ def build() -> dict:
     flux2 = inductance * fault_peak / (2 * area)
     flux3 = inductance * fault_peak / (3 * area)
     # ELE-08: the settled-state fault reaches a higher primary peak than the
-    # cold-start fault did (97.38 A vs 84.83 A).  Same deck inductance and the
+    # cold-start fault did (97.44 A vs 84.83 A).  Same deck inductance and the
     # same recovered Ae, so the flux is directly comparable.
     hot_peak = float(hot48["fault"]["ipri_peak_before_trip_a"])
     hot50_peak = float(hot50["fault"]["ipri_peak_before_trip_a"])
@@ -111,6 +111,10 @@ def build() -> dict:
         "hotfault_50v_120a_sr_forward_peak_a":
             hot50["fault"]["sr_forward_peak_whole_record_a"],
         "hotfault_50v_120a_solver_completed": hot50["log"]["solver_completed"],
+        # The 50 V run stalled at 296.929 us of the 320 us window: saved time
+        # moved 1 ns in 62 min.  The raw prefix is readable but the .log has no
+        # completion line, so this is prefix evidence, not a finished run.
+        "hotfault_50v_120a_solver_prefix_only": hot50["solver_prefix_only"],
         "hotfault_50v_120a_2turn_flux_at_fault_peak_t": hot50_flux2,
         "hotfault_50v_120a_3turn_flux_at_fault_peak_t": hot50_flux3,
     }
@@ -118,11 +122,13 @@ def build() -> dict:
         {
             "id": "F01",
             "priority": "P0",
-            "blocker": "48V and 50V settled-state fault evidence is simulation only; "
+            "blocker": "settled-state fault evidence is simulation only and the 50V run "
+                       "stopped at 296.93us of 320us (solver collapse, no completion line); "
                        "OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
             "blocked": True,
             "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
-                             "confirm real Lr saturation at the 101A fault peak",
+                             "confirm real Lr saturation at the 101A fault peak; explain why the "
+                             "50V post-trip shutdown (SS discharged, one SR gate latched) stalls the solver",
             "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
         {
@@ -138,8 +144,8 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "2-turn Lr fails 0.9 Bsat margin at measured fault peak",
             "blocked": flux2 > soft_limit,
-            "next_evidence": "the settled-state 48V fault raises the peak to 97.38 A "
-                             "(2-turn 0.375 T); retain 3-turn as candidate only and verify "
+            "next_evidence": f"the settled-state 48V fault raises the peak to {hot_peak:.2f} A "
+                             f"(2-turn {hot_flux2:.3f} T); retain 3-turn as candidate only and verify "
                              "L(I), gap and physical Bsat at this worst case / tolerance",
             "file": "design/v3/bom/lr_design.json",
         },

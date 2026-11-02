@@ -30,17 +30,19 @@ def test_settled_fault_evidence_is_recorded_without_unblocking_anything():
     j = r.build()
     e = j["evidence"]
     assert e["hotfault_48v_120a_stable_at_design_point"] is True
-    assert e["hotfault_48v_120a_pre_fault_vss_v"] >= 4.0 * 0.975
+    assert e["hotfault_48v_120a_pre_fault_vss_v"] >= 4.8
     assert e["hotfault_48v_120a_solver_completed"] is True
-    assert e["hotfault_48v_120a_lr_peak_before_trip_a"] == pytest.approx(97.37952, abs=1e-4)
+    assert e["hotfault_48v_120a_lr_peak_before_trip_a"] == pytest.approx(97.442664, abs=1e-4)
     # The settled fault is worse than the cold-start fault for the 2-turn core.
     assert (e["hotfault_48v_120a_2turn_flux_at_fault_peak_t"]
             > e["lr_2turn_flux_at_fault_peak_t"])
     assert e["hotfault_48v_120a_2turn_flux_at_fault_peak_t"] > e["lr_0p9_bsat_limit_t"]
     assert e["hotfault_48v_120a_3turn_flux_at_fault_peak_t"] < e["lr_0p9_bsat_limit_t"]
     assert e["hotfault_50v_120a_stable_at_design_point"] is True
-    assert e["hotfault_50v_120a_solver_completed"] is True
-    assert e["hotfault_50v_120a_lr_peak_before_trip_a"] == pytest.approx(101.2283, abs=1e-3)
+    assert e["hotfault_50v_120a_pre_fault_vss_v"] >= 4.8
+    assert e["hotfault_50v_120a_solver_completed"] is False
+    assert e["hotfault_50v_120a_solver_prefix_only"] is True
+    assert e["hotfault_50v_120a_lr_peak_before_trip_a"] == pytest.approx(101.2627, abs=1e-3)
     assert (e["hotfault_50v_120a_lr_peak_before_trip_a"]
             > e["hotfault_48v_120a_lr_peak_before_trip_a"])
     assert e["hotfault_50v_120a_2turn_flux_at_fault_peak_t"] > e["lr_0p9_bsat_limit_t"]

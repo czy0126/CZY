@@ -6,7 +6,9 @@ questions the cold-start tool does not:
 1. was the converter actually settled before the fault landed (``.ic V(ss)=4``
    is a starting condition, not a proof), and
 2. where on the *rebased* saved axis did the fault engage?  ``Tstart`` shifts
-   every stored timestamp, so the 1055 us PWL crossing is stored at 175 us.
+   every stored timestamp, so the real deck's 2175 us PWL crossing is stored
+   at 175 us.  The fixture below keeps its own synthetic absolute times; it
+   exercises the same subtraction, not the shipped deck's numbers.
 """
 from __future__ import annotations
 
@@ -61,7 +63,7 @@ def test_pre_fault_stability_requires_both_soft_start_done_and_flat_vout():
     t = np.linspace(0.0, 50e-6, 501)
     d = {
         "V(out)": np.full_like(t, 1.89),
-        "V(ss)": np.full_like(t, 4.0),
+        "V(ss)": np.full_like(t, 5.0),
         "V(oc)": np.full_like(t, 0.68),
     }
     settled = hf.pre_fault_state(t, d, 0.0, 50e-6)
@@ -76,7 +78,7 @@ def test_pre_fault_stability_requires_both_soft_start_done_and_flat_vout():
     assert not_settled["stable_at_design_point"] is False
 
     # Settled SS but the output still ramping by more than the drift limit.
-    d["V(ss)"] = np.full_like(t, 4.0)
+    d["V(ss)"] = np.full_like(t, 5.0)
     d["V(out)"] = 1.80 + 0.10 * (t / t[-1])
     ramp = hf.pre_fault_state(t, d, 0.0, 50e-6)
     assert ramp["soft_start_finished"] is True
@@ -91,6 +93,22 @@ def test_the_trip_delay_is_measured_from_engagement_not_from_zero():
     # 0.32 V at 1e4 V/s -> 32 us after engagement.
     assert trip["trip_s"] == pytest.approx(207e-6, abs=1e-6)
     assert trip["delay_from_engage_us"] == pytest.approx(32.0, abs=1.0)
+
+
+def test_the_gate_report_distinguishes_a_latched_gate_from_a_low_one():
+    """A shutdown bridge has no drain edge to reset the SR timing model, so a
+    gate can re-assert with no switching.  The report must show that instead
+    of repeating the old "drive stayed low until the end" claim."""
+    t = np.linspace(0.0, 100e-6, 1001)
+    latched = np.where(t < 60e-6, 0.0, 10.9)
+    info = hf.gate_after_trip(t, latched, 50e-6)
+    assert info["high_at_end"] is True
+    assert info["high_fraction"] == pytest.approx(0.8, abs=5e-3)
+    low = np.zeros_like(t)
+    assert hf.gate_after_trip(t, low, 50e-6)["high_at_end"] is False
+    # The 50 V record latches the *other* channel: the caller must look at
+    # both, not assume channel A is the one that stays on.
+    assert hf.gate_after_trip(t, np.where(t < 60e-6, 10.9, 0.0), 50e-6)["high_at_end"] is False
 
 
 def test_the_log_parser_reads_elapsed_time_and_meas_results():

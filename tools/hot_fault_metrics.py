@@ -7,8 +7,10 @@ point, and it is also the trap: **a precharge is not a proof of settling**.
 The record therefore reports the pre-fault window (120..170 us on the rebased
 axis) with its ripple and drift, and the post-fault window (175..320 us).
 
-``Tstart`` rebases the stored timestamps: the 1055 us PWL crossing is saved at
-175 us.  Those offsets are derived from the deck text, never typed in.
+``Tstart`` rebases the stored timestamps: the 2175 us PWL crossing is saved at
+175 us.  The 2 ms pre-fault window is deliberate: with ``.ic V(ss)=4`` the SS
+pin only reaches ~4.485 V at 1 ms, below the strict 4.8 V settled floor.
+Those offsets are derived from the deck text, never typed in.
 
 Usage:
     python tools/hot_fault_metrics.py \
@@ -35,8 +37,8 @@ ROOT = Path(__file__).resolve().parent.parent
 VOC_TRIP = 1.0
 GATE_OFF = 1.0
 SUSTAINED_LOW_S = 10e-6
-SS_TARGET_V = 4.0
-SS_TOLERANCE = 0.025          # 4.0 V design target, 3.9 V acceptance floor
+SS_TARGET_V = 5.0
+SS_TOLERANCE = 0.04           # 5.0 V settled target, 4.8 V floor (same as the strict log validator)
 VOUT_DRIFT_LIMIT = 0.01       # half-window mean drift as a fraction of mean
 NUMBER = r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?[a-zA-Z]*"
 
@@ -67,7 +69,7 @@ def tran_window(deck_text: str) -> tuple[float, float]:
 
 def saved_stop_s(deck_text: str) -> float:
     """Tstop on the saved axis.  Tstart rebases the timestamps, so a deck that
-    stops at 1200 us and starts saving at 880 us ends at 320 us, not 1200 us."""
+    stops at 2320 us and starts saving at 2000 us ends at 320 us, not 2320 us."""
     stop, start = tran_window(deck_text)
     return stop - start
 
@@ -166,6 +168,29 @@ def pre_fault_state(t: np.ndarray, d: dict[str, np.ndarray],
     }
 
 
+def gate_after_trip(t: np.ndarray, gate: np.ndarray, t_trip: float,
+                    on_level: float = 2.0) -> dict[str, object]:
+    """What the saved SR gate does once the trip has fired.
+
+    A report may not claim "the drive stayed low" without this: the SR
+    timing model turns off on drain reverse-bias, so a bridge that stops
+    switching can leave a gate asserted with nothing to reset it.  Real
+    UCC24624 standby/light-load turn-off is not modelled.
+    """
+    after = t >= t_trip
+    if not after.any():
+        return {"samples": 0, "high_fraction": None, "final_v": None,
+                "high_at_end": None, "gate_on_level_v": on_level}
+    g = gate[after]
+    return {
+        "samples": int(after.sum()),
+        "high_fraction": float((g > on_level).mean()),
+        "final_v": float(gate[-1]),
+        "high_at_end": bool(gate[-1] > on_level),
+        "gate_on_level_v": on_level,
+    }
+
+
 def trip_delay(t: np.ndarray, voc: np.ndarray, engage_s: float,
                level: float = VOC_TRIP) -> dict[str, object]:
     trip = first_cross(t, voc, level, engage_s)
@@ -203,7 +228,7 @@ def summarize(raw: Path, deck: Path, log: Path | None, rl: float,
     deck_text = deck.read_text(encoding="utf-8")
     window = saved_fault_window(deck_text)
     engage = float(window["engage_rebased_s"])
-    names = ["V(out)", "V(ss)", "V(oc)", "I(Lr)", "V(ga1)", "V(reg)",
+    names = ["V(out)", "V(ss)", "V(oc)", "I(Lr)", "V(ga1)", "V(gb1)", "V(reg)",
              "I(VSa1)", "I(VSb1)"]
     t, d = read_window(raw, names, 0.0, None)
     stop, start = tran_window(deck_text)
@@ -262,6 +287,10 @@ def summarize(raw: Path, deck: Path, log: Path | None, rl: float,
                 d["I(Lr)"][(t >= engage) & (t <= t_trip)] ** 2,
                 t[(t >= engage) & (t <= t_trip)])),
             "reg_final_v": mean_window(t, d["V(reg)"], tail0, float(t[-1])),
+            "sr_a_gate_after_trip": gate_after_trip(t, d["V(ga1)"], t_trip),
+            "sr_b_gate_after_trip": gate_after_trip(t, d["V(gb1)"], t_trip),
+            "sr_gate_latched_at_end": bool(
+                d["V(ga1)"][-1] > 2.0 or d["V(gb1)"][-1] > 2.0),
         },
         "log": log_data,
         "limits": [

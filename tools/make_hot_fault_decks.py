@@ -3,8 +3,12 @@
 Purpose: original 48V cold fault occurs while SS=3.78V (NOT full SS).
 These are deliberately precharged operating-point / hot-start fault tests,
 NOT replacements for true cold-start tests, and no hardware qualification.
-Fault is introduced at absolute 1055us (PWL threshold midpoint).
-LTspice .tran saves 880..1200us, so saved-axis fault is at 175us.
+Fault is introduced at absolute 2175us (PWL threshold midpoint).
+LTspice .tran saves 2000..2320us, so saved-axis fault is at 175us.
+The longer pre-fault window is required: with .ic V(ss)=4 V and 5 uA into
+10 nF, SS has only reached ~4.485 V at 1 ms.  At 2 ms it reaches ~5.0 V,
+inside PR #20's 4.8..5.1 V settled-state band, without faking the .ic.
+
 """
 from __future__ import annotations
 import argparse
@@ -16,17 +20,17 @@ SOURCE = {
     "50v_120a": ROOT / "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
 }
 OLD_TRAN = ".tran 0 1000u 880u 5n uic"
-NEW_TRAN = ".tran 0 1200u 880u 5n uic"
+NEW_TRAN = ".tran 0 2320u 2000u 5n uic"
 FAULT = """* ---- independent HOT-START post-settling fault (not the cold deck) ----
 * 1m switch + 1m resistor parallel to the existing rated-load candidate.
-* Switch changes 0..5V over 1050..1060us, threshold 2.5V at 1055us.
-Vfltctl_hot ctl_hot 0 PWL(0 0 1050u 0 1060u 5 1200u 5)
+* Switch changes 0..5V over 2170..2180us, threshold 2.5V at 2175us.
+Vfltctl_hot ctl_hot 0 PWL(0 0 2170u 0 2180u 5 2320u 5)
 Sflt_hot out flt_hot ctl_hot 0 HOTFLT
 Rflt_hot flt_hot 0 1m
 .model HOTFLT SW(Ron=1m Roff=1G Vt=2.5)
 """
 FAULT_SAVE = "+ V(ctl_hot) I(Rflt_hot)\n"
-# These measurements are on the *rebased saved axis* from 880us; original
+# These measurements are on the *rebased saved axis* from 2000us; original
 # 0..120us measurements remain pre-fault baseline and are not copied into
 # the new fault decision.
 PROBES = """.meas tran HOT_CTRL_BEFORE AVG V(ctl_hot) FROM=120u TO=170u
@@ -67,7 +71,7 @@ def build(source: str, name: str) -> str:
     body = body.replace(".end", FAULT + PROBES + ".end", 1)
     header = (
         "* UNRUN hot-start overload stress candidate; not a cold start, not hardware rated.\n"
-        f"* {name}: same 120A operating-point deck plus 1055us fault and longer transient.\n"
+        f"* {name}: same 120A operating-point deck plus 2175us fault and longer transient.\n"
         "* Measured pre-fault V(ss), V(out), V(oc) MUST confirm the intended settled state.\n"
         "* Solver completion and all SR/Lr/CT stress bounds must be checked independently.\n"
     )
