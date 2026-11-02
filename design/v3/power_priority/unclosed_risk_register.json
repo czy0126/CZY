@@ -12,12 +12,12 @@
       {
         "case": "48v_120a",
         "accepted": false,
-        "reason": "independent engineering waveform review absent"
+        "reason": "SR gate still high at end of fault trace; shutdown not demonstrated"
       },
       {
         "case": "50v_120a",
         "accepted": false,
-        "reason": "independent engineering waveform review absent"
+        "reason": "RAW analysis ended before requested Tstop; solver prefix is not full fault evidence"
       }
     ],
     "48v_120a_fault_solver_prefix_only": true,
