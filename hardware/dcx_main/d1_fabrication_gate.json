@@ -5,6 +5,7 @@
   "checks": {
     "native_editable_project_present": true,
     "golden_subnet_matches": true,
+    "cached_netlist_report_matches_live_native_export": true,
     "all_golden_refs_and_magnetic_physical_pads_verified": false,
     "no_electrical_placeholders_or_unselected_bom": false,
     "all_required_real_hardware_bom_refs_in_native_design": true,
@@ -17,6 +18,7 @@
     "golden_logical_pins": 193,
     "placed_references": 83,
     "golden_pads_checked_by_subnet": 245,
+    "live_native_netlist_missing_or_wrong": [],
     "unplaced_references": [],
     "magnetics_missing_physical_pads": [
       "CT",
@@ -309,6 +311,7 @@
     "manufacturing_package_evidence"
   ],
   "limitations": [
+    "Netlist subset is recomputed from the exported native CAD nets; cache must match but native export still needs editor provenance",
     "Subset netlist check is NOT a complete schematic pin or footprint check",
     "The golden netlist was derived from a SPICE deck, not all physical components",
     "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
