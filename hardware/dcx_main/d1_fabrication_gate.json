@@ -243,9 +243,6 @@
       "R8",
       "R9"
     ],
-    "external_bias_interface_to_document": [
-      "PS1"
-    ],
     "all_required_bom_refs_missing_from_native_export": [
       "C101",
       "C102",
@@ -269,6 +266,29 @@
       "T2",
       "T3",
       "T4"
+    ],
+    "real_hardware_bom_refs_not_in_native_design": [
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
+      "C110",
+      "C111",
+      "C112",
+      "C13",
+      "R10",
+      "R7",
+      "R8",
+      "R9"
+    ],
+    "real_hardware_bom_refs_covered_by_native_design": [],
+    "external_bias_interface_to_document": [
+      "PS1"
     ]
   },
   "manual_evidence": {

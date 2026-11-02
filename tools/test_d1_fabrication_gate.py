@@ -20,6 +20,11 @@ def test_real_baseline_is_not_fabrication_approved():
     assert result["counts"]["refs_with_placeholders"]
     assert result["counts"]["bom_rows_not_selected"]
     assert len(result["counts"]["real_hardware_bom_refs_not_in_golden"]) == 17
+    # The check is keyed to the native export, so the two counts are equal now
+    # only because nothing has been added to the schematic yet.
+    assert (result["counts"]["real_hardware_bom_refs_not_in_native_design"]
+            == result["counts"]["real_hardware_bom_refs_not_in_golden"])
+    assert result["counts"]["real_hardware_bom_refs_covered_by_native_design"] == []
     assert not result["checks"]["all_required_real_hardware_bom_refs_in_native_design"]
     assert len(result["counts"]["all_required_bom_refs_missing_from_native_export"]) == 22
 

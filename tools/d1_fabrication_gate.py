@@ -133,10 +133,24 @@ def build() -> dict:
     required_missing = bom_coverage["required_bom_refs_missing_from_golden"]
     # Unlike the SPICE-derived golden, the *actual native* CAD must include
     # every soldered BOM designator. The external PS1 can remain an interface.
+    # R7-R10/C13/C101-C112 can never appear in a SPICE netlist, so keying this
+    # check to the golden list made it unpassable by definition.
     all_bom_refs = {
         ref for row in bom for ref in bomcov.refs(row["ref"])
     } - bomcov.EXTERNAL_INTERFACES
     native_bom_missing = sorted(all_bom_refs - native_refs)
+    # Independent cross-check restricted to the same domain: coverage only
+    # enumerates BOM refs absent from the golden list, while native_bom_missing
+    # also covers golden refs that are simply not placed yet. If the two
+    # disagree on the shared domain, neither the gate nor the report can be
+    # trusted, so fail loudly instead of picking one.
+    native_bom_missing_reported = sorted(
+        x["ref"] for x in bom_coverage["required_bom_refs_missing_from_native_design"])
+    native_bom_missing_not_in_golden = sorted((all_bom_refs - gold_refs) - native_refs)
+    if native_bom_missing_not_in_golden != native_bom_missing_reported:
+        raise ValueError(
+            "BOM coverage and the native export disagree on missing refs: "
+            f"coverage={native_bom_missing_reported} native={native_bom_missing_not_in_golden}")
     checks = {
         "native_editable_project_present": (HW / "dcx_main_board.eprj2").is_file(),
         "golden_subnet_matches": logical_ok,
@@ -164,6 +178,8 @@ def build() -> dict:
             "bom_rows_not_selected": undecided_bom,
             "real_hardware_bom_refs_not_in_golden": sorted(x["ref"] for x in required_missing),
             "all_required_bom_refs_missing_from_native_export": native_bom_missing,
+            "real_hardware_bom_refs_not_in_native_design": native_bom_missing_reported,
+            "real_hardware_bom_refs_covered_by_native_design": bom_coverage["covered_by_native_design"],
             "external_bias_interface_to_document": [x["ref"] for x in bom_coverage["external_interfaces_not_in_golden"]],
         },
         "manual_evidence": {

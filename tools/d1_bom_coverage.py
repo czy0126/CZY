@@ -16,6 +16,11 @@ ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "design/v3/pcb/board_netlist.csv"
 BOM = ROOT / "design/v3/bom/bom_draft.csv"
 OUT = ROOT / "hardware/dcx_main/bom_coverage.json"
+# The native editor's own export.  The golden netlist is *deck-derived*, so a
+# designator that only exists in real hardware (decoupling, EN pulls) can never
+# appear there -- counting those as "absent from the native design" made that
+# check impossible to satisfy no matter how complete the CAD became.
+NATIVE = ROOT / "hardware/dcx_main/gen/netlist_export_raw.json"
 
 # 12V external supply is a board *interface*, not necessarily a soldered
 # component. Still needs a documented connector, power-up and return path.
@@ -48,6 +53,10 @@ def build() -> dict:
         golden = {r["ref"] for r in csv.DictReader(fh)}
     with BOM.open(encoding="utf-8", newline="") as fh:
         bom = list(csv.DictReader(fh))
+    # Absent export means absent evidence: native = {} keeps every ref missing.
+    native: set[str] = set()
+    if NATIVE.is_file():
+        native = set(json.loads(NATIVE.read_text(encoding="utf-8"))["value"]["refs"])
     missing = {}
     external = {}
     rows_unmatched = []
@@ -73,6 +82,9 @@ def build() -> dict:
         "golden_ref_count": len(golden),
         "bom_unique_refs": len(ref_in_bom),
         "required_bom_refs_missing_from_golden": [missing[n] for n in sorted(missing)],
+        "required_bom_refs_missing_from_native_design": [
+            missing[n] for n in sorted(missing) if n not in native],
+        "covered_by_native_design": sorted(n for n in missing if n in native),
         "external_interfaces_not_in_golden": [external[n] for n in sorted(external)],
         "bom_rows_entirely_missing_from_golden": sorted(set(rows_unmatched)),
         "not_in_bom_golden_refs": sorted(golden - ref_in_bom),
@@ -82,6 +94,8 @@ def build() -> dict:
             "PS1 is an external control-bias/interface candidate, not automatically an on-board part",
             "Some BOM rows list non-soldered core halves and transformer windings for the same T1-T4 assembly",
             "BOM coverage does not validate any datasheet, net assignment, packaging or schematic correctness",
+            "the golden list is deck-derived: a ref can be missing from it and still be a genuine, "
+            "already-placed native part, which is what covered_by_native_design records",
         ],
         "design_action": "Add absent real peripherals to native CAD, expand its exported netlist golden basis, and make the complete PCB netlist the only fabrication acceptance netlist",
     }

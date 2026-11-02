@@ -140,6 +140,145 @@
       "required_action": "verify in native schematic and map to PCB/BOM"
     }
   ],
+  "required_bom_refs_missing_from_native_design": [
+    {
+      "ref": "C101",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C102",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C103",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C104",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C105",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C106",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C107",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C108",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C109",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C110",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C111",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C112",
+      "function": "VDD decoupling",
+      "group": "control",
+      "value_or_rating": "1 uF + 100 nF at each of the six ICs; the 10 uF bulk cap is NOT in this row",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "C13",
+      "function": "EN filter",
+      "group": "control",
+      "value_or_rating": "1 nF to PGND at U2.6",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "R10",
+      "function": "U2 control pull-downs and run jumper",
+      "group": "control",
+      "value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "R7",
+      "function": "U2 control pull-downs and run jumper",
+      "group": "control",
+      "value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "R8",
+      "function": "U2 control pull-downs and run jumper",
+      "group": "control",
+      "value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    },
+    {
+      "ref": "R9",
+      "function": "U2 control pull-downs and run jumper",
+      "group": "control",
+      "value_or_rating": "R7 10k EN->PGND; R8 1k RUN jumper->12V_P; R9 10k HI->PGND; R10 10k LI->PGND",
+      "source": "pin_connections.csv",
+      "required_action": "verify in native schematic and map to PCB/BOM"
+    }
+  ],
+  "covered_by_native_design": [],
   "external_interfaces_not_in_golden": [
     {
       "ref": "PS1",
@@ -162,7 +301,8 @@
     "C13 is U2 EN filtering; C101-C112 are controller VDD decouplers as specified by BOM",
     "PS1 is an external control-bias/interface candidate, not automatically an on-board part",
     "Some BOM rows list non-soldered core halves and transformer windings for the same T1-T4 assembly",
-    "BOM coverage does not validate any datasheet, net assignment, packaging or schematic correctness"
+    "BOM coverage does not validate any datasheet, net assignment, packaging or schematic correctness",
+    "the golden list is deck-derived: a ref can be missing from it and still be a genuine, already-placed native part, which is what covered_by_native_design records"
   ],
   "design_action": "Add absent real peripherals to native CAD, expand its exported netlist golden basis, and make the complete PCB netlist the only fabrication acceptance netlist"
 }
