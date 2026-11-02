@@ -37,7 +37,7 @@ FAULT_AT_S = 175e-6
 RECORDED_TO_S = 320e-6
 # Behavioural UCC25600: Ieff=max(0, 1.81m - Vss/2200).
 # Thus the oscillator reaches its RT-only frequency at ~3.982V, NOT 4.8V.
-SS_RT_ONLY_THRESHOLD_V = 1.81e-3 * 2200
+SS_RT_ONLY_THRESHOLD_V = round(1.81e-3 * 2200, 3)
 SS_MODEL_CLAMP_V = 6.0
 REQUIRED = ("hot_ctrl_before", "hot_ctrl_after", "hot_iflt_after",
             "hot_vout_early", "hot_vout_late",
