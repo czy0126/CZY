@@ -25,10 +25,14 @@ Sflt_hot out flt_hot ctl_hot 0 HOTFLT
 Rflt_hot flt_hot 0 1m
 .model HOTFLT SW(Ron=1m Roff=1G Vt=2.5)
 """
+FAULT_SAVE = "+ V(ctl_hot) I(Rflt_hot)\n"
 # These measurements are on the *rebased saved axis* from 880us; original
 # 0..120us measurements remain pre-fault baseline and are not copied into
 # the new fault decision.
-PROBES = """.meas tran HOT_OC_BEFORE MAX V(oc) FROM=120u TO=170u
+PROBES = """.meas tran HOT_CTRL_BEFORE AVG V(ctl_hot) FROM=120u TO=170u
+.meas tran HOT_CTRL_AFTER AVG V(ctl_hot) FROM=190u TO=300u
+.meas tran HOT_IFLT_AFTER MAX I(Rflt_hot) FROM=175u TO=320u
+.meas tran HOT_OC_BEFORE MAX V(oc) FROM=120u TO=170u
 .meas tran HOT_VOUT_BEFORE AVG V(out) FROM=120u TO=170u
 .meas tran HOT_SS_BEFORE AVG V(ss) FROM=120u TO=170u
 .meas tran HOT_IPRI_AFTER MAX abs(I(Lr)) FROM=175u TO=320u
@@ -56,6 +60,10 @@ def build(source: str, name: str) -> str:
     # Keep the exact original power circuit, controls, and original probes;
     # append independent fault circuit immediately before .end.
     body = source.replace(OLD_TRAN, NEW_TRAN)
+    save_anchor = ".meas tran VOUT_AVG"
+    if body.count(save_anchor) != 1:
+        raise ValueError("cannot uniquely find .save termination")
+    body = body.replace(save_anchor, FAULT_SAVE + save_anchor, 1)
     body = body.replace(".end", FAULT + PROBES + ".end", 1)
     header = (
         "* UNRUN hot-start overload stress candidate; not a cold start, not hardware rated.\n"

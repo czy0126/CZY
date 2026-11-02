@@ -26,6 +26,8 @@ REVIEW = HW / "pin_footprint_review.csv"
 BOM = ROOT / "design/v3/bom/bom_draft.csv"
 
 import d1_bom_coverage as bomcov
+import check_main_board_netlist as native_check
+import main_board_schematic as mbs
 
 # No such files have been delivered in the current main branch. Do not turn
 # these checks green until the native EDA evidence has been independently
@@ -102,6 +104,12 @@ def build() -> dict:
     if not native_export.get("ok") or not isinstance(native_export.get("value", {}).get("refs"), dict):
         raise ValueError("missing or invalid native EDA export")
     native_refs = set(native_export["value"]["refs"])
+    # The cached subset report is not authoritative. Recompute directly
+    # from this checkout's CAD export and the golden pad contract each run.
+    # A changed export must not retain last week's green netlist_compare.json.
+    live_net = native_check.compare(
+        mbs.load_golden(), native_export["value"]["refs"], mbs.load_library())
+    subset_snapshot_fresh = live_net == net
 
     gold_refs = {x["ref"] for x in golden}
     present = set(placement["refs"])
@@ -123,12 +131,14 @@ def build() -> dict:
                                                "stackup_path", "reviewer", "revision"))
 
     logical_ok = (
-        bool(net.get("subset_ok")) and not net.get("missing_or_wrong")
-        and not net.get("unexpected_nets")
-        and not net.get("unexpected_refs")
+        bool(live_net.get("subset_ok"))
+        and not live_net.get("missing_or_wrong")
+        and not live_net.get("unexpected_nets")
+        and not live_net.get("unexpected_refs")
+        and subset_snapshot_fresh
     )
     # "ok" in a subset report is explicitly NOT a release decision.
-    all_placed = not missing_refs and not net.get("not_placed") and not incomplete_magnets
+    all_placed = not missing_refs and not live_net.get("not_placed") and not incomplete_magnets
     all_values_frozen = not placeholders and not undecided_bom
     required_missing = bom_coverage["required_bom_refs_missing_from_golden"]
     # Unlike the SPICE-derived golden, the *actual native* CAD must include
@@ -154,6 +164,7 @@ def build() -> dict:
     checks = {
         "native_editable_project_present": (HW / "dcx_main_board.eprj2").is_file(),
         "golden_subnet_matches": logical_ok,
+        "cached_netlist_report_matches_live_native_export": subset_snapshot_fresh,
         "all_golden_refs_and_magnetic_physical_pads_verified": all_placed,
         "no_electrical_placeholders_or_unselected_bom": all_values_frozen,
         "all_required_real_hardware_bom_refs_in_native_design": not native_bom_missing_reported,
@@ -171,7 +182,8 @@ def build() -> dict:
             "golden_references": len(gold_refs),
             "golden_logical_pins": len(golden),
             "placed_references": len(present),
-            "golden_pads_checked_by_subnet": net.get("pads_checked"),
+            "golden_pads_checked_by_subnet": live_net.get("pads_checked"),
+            "live_native_netlist_missing_or_wrong": live_net.get("missing_or_wrong"),
             "unplaced_references": missing_refs,
             "magnetics_missing_physical_pads": incomplete_magnets,
             "refs_with_placeholders": placeholders,
@@ -189,6 +201,7 @@ def build() -> dict:
         },
         "blockers": blockers,
         "limitations": [
+            "Netlist subset is recomputed from the exported native CAD nets; cache must match but native export still needs editor provenance",
             "Subset netlist check is NOT a complete schematic pin or footprint check",
             "The golden netlist was derived from a SPICE deck, not all physical components",
             "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",

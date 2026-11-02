@@ -210,6 +210,7 @@ Bovg1 ovg1 0 V=if(V(ga1)>2,if(V(gb1)>2,1,0),0)
 + V(ocd) V(ocm) V(vin)
 * CT burden needs its own node voltages: V(ocd) alone cannot price D1-D4.
 + V(cs1) V(cs2) V(nr) V(nct) I(Vreg)
++ V(ctl_hot) I(Rflt_hot)
 .meas tran VOUT_AVG AVG V(out) FROM=0 TO=120u
 .meas tran VOUT_RIP PP V(out) FROM=110u TO=120u
 .meas tran VDS_A1_MIN MIN V(a1) FROM=0 TO=120u
@@ -227,6 +228,9 @@ Vfltctl_hot ctl_hot 0 PWL(0 0 1050u 0 1060u 5 1200u 5)
 Sflt_hot out flt_hot ctl_hot 0 HOTFLT
 Rflt_hot flt_hot 0 1m
 .model HOTFLT SW(Ron=1m Roff=1G Vt=2.5)
+.meas tran HOT_CTRL_BEFORE AVG V(ctl_hot) FROM=120u TO=170u
+.meas tran HOT_CTRL_AFTER AVG V(ctl_hot) FROM=190u TO=300u
+.meas tran HOT_IFLT_AFTER MAX I(Rflt_hot) FROM=175u TO=320u
 .meas tran HOT_OC_BEFORE MAX V(oc) FROM=120u TO=170u
 .meas tran HOT_VOUT_BEFORE AVG V(out) FROM=120u TO=170u
 .meas tran HOT_SS_BEFORE AVG V(ss) FROM=120u TO=170u
