@@ -35,7 +35,8 @@ CASES = {
 # All times below are on the SAVED raw/log axis: t_raw = t_absolute-880us.
 FAULT_AT_S = 175e-6
 RECORDED_TO_S = 320e-6
-REQUIRED = ("hot_oc_before", "hot_vout_before", "hot_ss_before",
+REQUIRED = ("hot_ctrl_before", "hot_ctrl_after", "hot_iflt_after",
+            "hot_oc_before", "hot_vout_before", "hot_ss_before",
             "hot_ipri_after", "hot_oc_after", "hot_vout_min", "hot_oc_trip")
 NUMBER = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 
@@ -104,6 +105,12 @@ def build(case: str, log: Path, raw: Path) -> dict:
                 or not any(mark in header for mark in ("Values:", "Binary:"))):
             issues.append("raw does not have a valid-looking LTspice transient header")
     if len(result) == len(REQUIRED):
+        if abs(result["hot_ctrl_before"]) > 0.2:
+            issues.append("fault control was not off before injection")
+        if result["hot_ctrl_after"] < 4.5:
+            issues.append("fault control did not reach switch-on voltage")
+        if result["hot_iflt_after"] <= 1:
+            issues.append("no verified injected fault-branch current")
         ss = result["hot_ss_before"]
         if not (4.8 <= ss <= 5.1):
             issues.append(f"V(ss) pre-fault not settled near 5V: {ss}")
