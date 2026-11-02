@@ -9,6 +9,8 @@ import argparse
 import json
 from pathlib import Path
 
+from validate_hotfault_log import SS_RT_ONLY_THRESHOLD_V
+
 ROOT = Path(__file__).resolve().parent.parent
 PP = ROOT / "design/v3/power_priority"
 OUT = PP / "unclosed_risk_register.json"
@@ -45,6 +47,7 @@ def build() -> dict:
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
         "48v_120a_fault_peak_primary_a": fault_peak,
         "48v_120a_fault_vss_at_engage_v": before_fault_ss,
+        "ss_rt_only_threshold_v": SS_RT_ONLY_THRESHOLD_V,
         "48v_120a_fault_solver_prefix_only": fault["solver_prefix_only"],
         "48v_120a_cold_reached_full_tstop": cold["reached_tstop"],
         "50v_120a_model_loss_residual_w": loss_gap,
@@ -62,7 +65,7 @@ def build() -> dict:
             "id": "F01",
             "priority": "P0",
             "blocker": "original fault injection occurs during soft-start, not at fully-settled operation",
-            "blocked": before_fault_ss < 4.8,
+            "blocked": before_fault_ss < SS_RT_ONLY_THRESHOLD_V,
             "next_evidence": "run separate 48V and 50V hot-start fault decks and verify measured pre-fault SS/Vout",
             "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
         },

@@ -3,15 +3,19 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 import validate_hotfault_log as v
 
 
-def _log(deck: Path, ss: float = 5.0, trip: float = 0.000210,
+def _log(deck: Path, ss: float = 4.25, trip: float = 0.000210,
          vout: float = 1.8737, oc_after: float = 1.3) -> str:
     return (
         "LTspice 26.0.2 for Windows\n"
         f"Circuit: D:\\\\project\\\\{deck.name}\n"
         "Total elapsed time: 244.8 seconds.\n"
+        f"hot_vout_early: AVG(V(out) )={vout} FROM 0.00012 TO 0.000145\n"
+        f"hot_vout_late: AVG(V(out) )={vout} FROM 0.000145 TO 0.00017\n"
         "hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017\n"
         "hot_ctrl_after: AVG(V(ctl_hot) )=5 FROM 0.00019 TO 0.00030\n"
         "hot_iflt_after: MAX(I(Rflt_hot) )=212 FROM 0.000175 TO 0.00032\n"
@@ -44,9 +48,9 @@ def test_accepts_a_complete_post_fault_trip_but_never_grants_hw_rating(tmp_path:
     assert result["probes"]["hot_oc_trip"] >= v.FAULT_AT_S
 
 
-def test_rejects_soft_start_as_settled(tmp_path: Path):
+def test_rejects_ss_below_rt_only_threshold(tmp_path: Path):
     log, raw = _input(tmp_path, ss=3.7815)
-    assert any("not settled" in b for b in v.build("48v_120a", log, raw)["blockers"])
+    assert any("outside RT-only regime" in b for b in v.build("48v_120a", log, raw)["blockers"])
 
 
 def test_rejects_pre_fault_trip_even_if_the_max_oc_exceeds_one(tmp_path: Path):
@@ -100,3 +104,20 @@ def test_fault_switch_off_or_no_injected_current_fails_even_if_oc_claims_a_trip(
         "hot_ctrl_after: AVG(V(ctl_hot) )=5",
         "hot_ctrl_after: AVG(V(ctl_hot) )=0"), encoding="utf-8")
     assert any("did not reach" in b for b in v.build("48v_120a", log, raw)["blockers"])
+
+
+def test_4p2v_ss_is_expected_rt_only_frequency_model_not_4p8v(tmp_path: Path):
+    log, raw = _input(tmp_path, ss=4.2)
+    obj = v.build("48v_120a", log, raw)
+    assert obj["blockers"] == []
+    assert obj["ss_rt_only_threshold_v"] == pytest.approx(3.982)
+
+
+def test_early_late_vout_drift_blocks_even_if_average_matches(tmp_path: Path):
+    log, raw = _input(tmp_path)
+    content = log.read_text(encoding="utf-8").replace(
+        "hot_vout_early: AVG(V(out) )=1.8737",
+        "hot_vout_early: AVG(V(out) )=1.80")
+    log.write_text(content, encoding="utf-8")
+    assert any("adjacent windows" in msg
+               for msg in v.build("48v_120a", log, raw)["blockers"])

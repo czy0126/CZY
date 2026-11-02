@@ -8,7 +8,7 @@ ELE-02,P1,高输出验证,仿真,D2,D5,ELE-01,design/v3/power_priority/48V120A_�
 ELE-05,P0,候选账本修复,仿真+数值,D1,D2,ELE-01,design/v3/power_priority/energy_ledger_48v_120a.json,使用修正后VIN/RL传递的脚本从相同候选raw重算110/120A短窗口/逐周期SEM与报告；移除QUARANTINED,done,两份JSON状态已改为RECOMPUTED_WITH_REQUESTED_VIN_RL；windows/SEM/相位统计全部用请求VIN/RL重算；候选raw未入库
 ELE-06,P1,50V实跑验证,仿真,D1,D3,ELE-01,sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.cir,独立运行50V/110与50V/120探针deck并记录输入输出及器件应力原始log/raw；不虚报模拟效率,done,实跑109.64A/213.99W与119.27A/231.87W；端口效率94.21%/93.72%；三个闭合边界均NOT_CLOSED；见50V110A_120A_实测_2026-11-02.md
 ELE-07,P0,120A冷启动过载,仿真+保护,D1,D4,ELE-01,sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir,运行无预充电120A目标冷启动及5.5ms过载故障；检查trip延迟与Lr/CT峰值和无误导性稳态标号,in_progress,真冷启动8ms完整；故障5.55ms时SS仅3.78V且7.571ms塌缩，只有前缀；尚无稳态后故障完成证据
-ELE-08,P0,稳态初始化后故障对比,仿真+保护,D1,D3,ELE-07,sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir,分别运行48V和50V稳态初始化后故障；必须检查ctl_hot真实切换、Rflt_hot真实电流、故障前Vss/Vout、故障后OC首次越限与Lr/SR应力；保留validation.json和RAW/LOG,blocked,仅提交独立未运行hot-start deck
+ELE-08,P0,稳态初始化后故障对比,仿真+保护,D1,D3,ELE-07,sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir,分别运行48V和50V稳态初始化后故障；必须核对故障前SS达到模型RT-only门槛3.982V、Vout双时间窗不漂移、ctl_hot真实切换、Rflt_hot真实电流、故障后OC首次越限与Lr/SR应力；保留validation.json和RAW/LOG,blocked,仅提交独立未运行hot-start deck
 ELE-09,P0,50V120A损耗与数值闭合,仿真+数值,D1,D4,ELE-06,design/v3/power_priority/energy_ledger_50v_120a.json,同窗同模型核对15.547W端口损耗与15.049W分项，定位0.499W差额，保留0.2W门限并做步长敏感性,blocked,现有账本NOT_CLOSED且损耗分项差0.499W
 MAG-02,P0,三匝Lr故障首件验收,磁件+供应商,D1,D5,MAG-01;ELE-07,design/v3/bom/lr_design.json,依据48V故障84.83A及50V独立故障实际峰值核对三匝L(I)/Bsat/气隙/公差；两匝候选不放行,blocked,两匝在84.83A估计B=0.326T超0.279T设计限；三匝需供应商首件
 ELE-03,P1,数值可信度,仿真+计算,D2,D8,ELE-01,design/v3/stage_f/energy_ledger_100a_phase_aligned.json,对5/2/1ns的SR积分步长敏感性和端口储能建立同窗可收敛解释，NOT_CLOSED不伪绿,blocked,SR分项步长变化大
