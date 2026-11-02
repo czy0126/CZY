@@ -12,12 +12,12 @@
       {
         "case": "48v_120a",
         "accepted": false,
-        "reason": "independent engineering waveform review absent"
+        "reason": "SR gate still high at end of fault trace; shutdown not demonstrated"
       },
       {
         "case": "50v_120a",
         "accepted": false,
-        "reason": "independent engineering waveform review absent"
+        "reason": "RAW analysis ended before requested Tstop; solver prefix is not full fault evidence"
       }
     ],
     "48v_120a_fault_solver_prefix_only": true,
@@ -79,7 +79,7 @@
     "hotfault_50v_120a_diag_window_us": 219.99999999999972,
     "hotfault_50v_120a_diag_ipri_peak_a": 101.0991824969936,
     "hotfault_50v_120a_diag_ipri_peak_rel": -0.001614365679782792,
-    "hotfault_50v_120a_diag_sr_forward_peak_rel": 2.2380722648707163e-05,
+    "hotfault_50v_120a_diag_sr_forward_peak_rel": 0.000022380722648707163,
     "hotfault_50v_120a_diag_trip_delta_ns": -81.17010440999712,
     "hotfault_50v_120a_diag_solver_completed": true,
     "hotfault_48v_120a_diag_checks_ok": true,
@@ -87,15 +87,27 @@
     "hotfault_48v_120a_diag_sr_forward_peak_rel": -0.004114128961595354,
     "hotfault_48v_120a_diag_trip_delta_ns": -185.45156513219612,
     "hotfault_50v_120a_2turn_flux_at_fault_peak_t": 0.38947175944551504,
-    "hotfault_50v_120a_3turn_flux_at_fault_peak_t": 0.2596478396303434
+    "hotfault_50v_120a_3turn_flux_at_fault_peak_t": 0.2596478396303434,
+    "hotfault_48v_full_duration_sr_gate_high": true,
+    "hotfault_50v_prefix_and_sr_gate_high": true,
+    "hotfault_48v_sr_a_gate_final_v": 10.89045501741797,
+    "hotfault_50v_solver_prefix": true
   },
   "risks": [
+    {
+      "id": "F03",
+      "priority": "P0",
+      "blocker": "SR gate remains high at 48V full-duration fault end; 50V fault is a prefix and also reports gate high",
+      "blocked": true,
+      "next_evidence": "Do NOT claim complete shutdown from OC=1V alone. For every SR gate and VDS/current, review gate-high intervals after primary drive stops and quantify local fault current and dissipation; correct model/protection or obtain reproducible verified safe behavior. Use full-duration RAW from both 48/50V, not only prefix peak.",
+      "file": "design/v3/power_priority/hotfault_48v_120a.json"
+    },
     {
       "id": "F01",
       "priority": "P0",
       "blocker": "fully settled independent 48/50V hot faults lack completed log and waveform engineering review",
       "blocked": true,
-      "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; confirm real Lr saturation at the 101A fault peak.  The PR #21 soft-start question is closed: the fault is now injected after V(ss) reaches 3.982 V (5.045 V at 48 V, 5.045 V at 50 V), not during the 0.5 mV/us ramp.  The 50V 296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- standby cannot close it because tSTBY_DET is 7.5 ms -- and the prefix is accepted because every stress event ends before 215us.  PR #20's documented SOLVER_DIAGNOSTIC is now run: same circuit, trtol 7->1 and abstol 1e-12->1e-13 over 0..220us moves the I(Lr) peak by -0.16 % (-0.163 A), the SR forward peak by +0.002 % and the trip by -81 ns, so the prefix peaks are not a single-solver artifact.  The 48 V control (base run passed the strict log pre-check) moves the same peaks by -0.420 % and -0.411 %: both cases move down under tightening, so the direction is conservative, but the magnitude is sub-percent, not 0.1 %.  The stall itself is still unresolved and no number here is hardware evidence.  Closing F01 now also requires an independent engineering waveform review: hotfault_engineering_gate accepts a case only when hotfault_<case>_engineering_review.json is signed and digest-matched to the current deck, log and waveform data, not when the log pre-check passes",
+      "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; confirm real Lr saturation at the 101A fault peak.  The PR #21 soft-start question is closed: the fault is now injected after V(ss) reaches 3.982 V (5.045 V at 48 V, 5.045 V at 50 V), not during the 0.5 mV/us ramp.  The 50V 296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- standby cannot close it because tSTBY_DET is 7.5 ms -- and the prefix can support a bounded pre-trip peak discussion but is NOT accepted as full-duration protection validation.  PR #20's documented SOLVER_DIAGNOSTIC is now run: same circuit, trtol 7->1 and abstol 1e-12->1e-13 over 0..220us moves the I(Lr) peak by -0.16 % (-0.163 A), the SR forward peak by +0.002 % and the trip by -81 ns, so the prefix peaks are not a single-solver artifact.  The 48 V control (base run passed the strict log pre-check) moves the same peaks by -0.420 % and -0.411 %: both cases move down under tightening, so the direction is conservative, but the magnitude is sub-percent, not 0.1 %.  The stall itself is still unresolved and no number here is hardware evidence.  Closing F01 now also requires an independent engineering waveform review: hotfault_engineering_gate accepts a case only when hotfault_<case>_engineering_review.json is signed and digest-matched to the current deck, log and waveform data, not when the log pre-check passes",
       "file": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir"
     },
     {
@@ -140,6 +152,7 @@
     }
   ],
   "next_priority": [
+    "F03",
     "F01",
     "F02",
     "M01",

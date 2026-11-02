@@ -61,6 +61,11 @@ def test_valid_engineering_evidence_is_possible_but_report_hash_tampering_fails(
     monkeypatch.setattr(gate, "ROOT", tmp_path)
     monkeypatch.setattr(gate, "PP", tmp_path)
     case = "48v_120a"
+    (tmp_path / f"hotfault_{case}.json").write_text(json.dumps({
+        "reached_tstop": True, "solver_prefix_only": False,
+        "raw_bytes": 125000,
+        "fault": {"sr_gate_latched_at_end": False},
+    }), encoding="utf-8")
     summary = tmp_path / "summary.json"
     wave = tmp_path / "waveform_review.md"
     summary.write_text(json.dumps({
@@ -86,3 +91,34 @@ def test_valid_engineering_evidence_is_possible_but_report_hash_tampering_fails(
     assert gate.inspect(case)["accepted"]
     wave.write_text(wave.read_text(encoding="utf-8") + " TAMPERED", encoding="utf-8")
     assert not gate.inspect(case)["accepted"]
+
+
+
+def test_actual_records_cannot_be_signed_off_when_sr_gate_high_or_solver_partial():
+    for case in gate.CASES:
+        measured = json.loads((gate.PP / f"hotfault_{case}.json").read_text(encoding="utf-8"))
+        assert measured["fault"]["sr_gate_latched_at_end"] is True
+        result = gate.inspect(case)
+        assert not result["accepted"]
+        if case == "48v_120a":
+            assert measured["reached_tstop"] and not measured["solver_prefix_only"]
+            assert "SR gate still high" in result["reason"]
+        else:
+            assert not measured["reached_tstop"] and measured["solver_prefix_only"]
+            assert "solver prefix" in result["reason"]
+
+
+def test_synthetic_approval_cannot_override_solver_prefix_or_high_sr_gate(tmp_path, monkeypatch):
+    monkeypatch.setattr(gate, "PP", tmp_path)
+    case = "48v_120a"
+    summary = tmp_path / f"hotfault_{case}.json"
+    summary.write_text(json.dumps({
+        "reached_tstop": False, "solver_prefix_only": True,
+        "raw_bytes": 125000, "fault": {"sr_gate_latched_at_end": False},
+    }), encoding="utf-8")
+    assert "solver prefix" in gate.inspect(case)["reason"]
+    obj = json.loads(summary.read_text(encoding="utf-8"))
+    obj.update(reached_tstop=True, solver_prefix_only=False)
+    obj["fault"]["sr_gate_latched_at_end"] = True
+    summary.write_text(json.dumps(obj), encoding="utf-8")
+    assert "SR gate still high" in gate.inspect(case)["reason"]

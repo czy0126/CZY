@@ -99,6 +99,13 @@ def build() -> dict:
         "48v_120a_fault_vss_at_engage_v": before_fault_ss,
         "ss_rt_only_threshold_v": SS_RT_ONLY_THRESHOLD_V,
         "independent_hotfault_simulation_accepted": independent_hotfault["all_independent_hotfault_cases_accepted"],
+        "hotfault_48v_full_duration_sr_gate_high": bool(
+            hot48["reached_tstop"] and hot48["fault"]["sr_gate_latched_at_end"]),
+        "hotfault_50v_prefix_and_sr_gate_high": bool(
+            hot50["solver_prefix_only"] and hot50["fault"]["sr_gate_latched_at_end"]),
+        "hotfault_48v_sr_a_gate_final_v": float(
+            hot48["fault"]["sr_a_gate_after_trip"]["final_v"]),
+        "hotfault_50v_solver_prefix": bool(hot50["solver_prefix_only"]),
         "independent_hotfault_evidence": independent_hotfault["cases"],
         "48v_120a_fault_solver_prefix_only": fault["solver_prefix_only"],
         "48v_120a_cold_reached_full_tstop": cold["reached_tstop"],
@@ -211,6 +218,21 @@ def build() -> dict:
     }
     risks = [
         {
+            "id": "F03",
+            "priority": "P0",
+            "blocker": "SR gate remains high at 48V full-duration fault end; 50V fault is a prefix and also reports gate high",
+            "blocked": bool(hot48["fault"]["sr_gate_latched_at_end"] or
+                            hot50["fault"]["sr_gate_latched_at_end"] or
+                            hot50["solver_prefix_only"]),
+            "next_evidence": (
+                "Do NOT claim complete shutdown from OC=1V alone. "
+                "For every SR gate and VDS/current, review gate-high intervals after "
+                "primary drive stops and quantify local fault current and dissipation; "
+                "correct model/protection or obtain reproducible verified safe behavior. "
+                "Use full-duration RAW from both 48/50V, not only prefix peak." ),
+            "file": "design/v3/power_priority/hotfault_48v_120a.json",
+        },
+        {
             "id": "F01",
             "priority": "P0",
             # PR #21 corrected the soft-start question: the fault must be injected
@@ -231,7 +253,7 @@ def build() -> dict:
                              "0.5 mV/us ramp.  The 50V "
                              "296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- "
                              "standby cannot close it because tSTBY_DET is 7.5 ms -- and the prefix "
-                             "is accepted because every stress event ends before 215us.  PR #20's "
+                             "can support a bounded pre-trip peak discussion but is NOT accepted as full-duration protection validation.  PR #20's "
                              "documented SOLVER_DIAGNOSTIC is now run: same circuit, trtol 7->1 and "
                              "abstol 1e-12->1e-13 over 0..220us moves the I(Lr) peak by "
                              f"{diag_r['relative']['ipri_peak_a'] * 100:+.2f} % "
@@ -327,7 +349,7 @@ def build() -> dict:
         "data_quality": "All facts are from committed LTspice-model JSON, never hardware",
         "evidence": evidence,
         "risks": risks,
-        "next_priority": ["F01", "F02", "M01", "C01", "E01", "E02"],
+        "next_priority": ["F03", "F01", "F02", "M01", "C01", "E01", "E02"],
         "continuous_power_approved": False,
         "detailed_thermal_design": "DEFERRED, no continuous current qualification",
     }
