@@ -56,6 +56,26 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 
 - `uic` 且无 `.ic` = 真正的零初态（冷启动）。只要有一行 `.ic`，即使 `uic` 也**不是**冷启动；
   `tools/task_package1_summary.py:cold_start()` 会检查并拒绝。
+- **`.ic V(ss)=4` 不是"5 V 稳态"**：UCC25600 软启动是 5 µA 灌 10 nF = **0.5 mV/µs**，
+  从 4 V 起跑 1 ms 只到 **4.485 V**。PR #20 的严格日志校验要求故障前 `V(ss)` 落在
+  **4.8–5.1 V**，所以 hotfault deck 的窗口改成 `.tran 0 2320u 2000u 5n`（故障绝对 2175 µs
+  = 保存轴 175 µs），2 ms 时 SS 自然到 ~5.0 V。**不要靠改 `.ic` 凑读数**：`.ic V(ss)=5`
+  在 1 ms 会到 ~5.5 V，直接冲出上界。deck 的 `.tran`/PWL 行是唯一真值，
+  `hot_fault_metrics.saved_fault_window()` 与 `tran_window()` 都从文本解析，不要手抄。
+- **hotfault 两个 deck 已运行，但只有 48 V 是完整证据**：48 V 跑满 320 µs
+  （554.498 s / 1.052 GB），严格校验通过；**50 V 在 296.929 µs 求解器塌缩**
+  ——62 min 内保存时间只前进 **1 ns**、同期写 10 GB，日志无 `Total elapsed time`，
+  校验器 fail-closed。ASCII raw 是流式追加的，按 PID 终止后前缀仍可读，故障（175 µs）、
+  trip（214.92 µs）与峰值（209.95 µs）都在前缀内，但**引用 50 V 数字必须写"前缀"**。
+  实测：trip 40.10 / 39.92 µs，I(Lr) 峰 **97.4427 / 101.2627 A**，SR 正向峰
+  **292.61 / 303.93 A**（冷启动故障 84.83 A / 255.22 A 是**低估**，不能当选型依据）。
+- **trip 之后 SR 门极可能被重新拉高并保持，不能照抄旧结论"驱动一直为低"**：
+  `sr_timing_v3_3` 用漏源反向偏置做关断判据，主桥停振后没有这个偏置，也没有实现
+  UCC24624 的 standby/轻载关断。实测 48 V 是 **A 相**在 trip 后 32 µs 回到 10.89 V
+  并保持（trip 后 54.8 % 采样为高），50 V 是 **B 相**（99.7 % 为高）；
+  `sr_gate_latched_at_end` 两者都 true。报告必须逐通道写 `sr_a/b_gate_after_trip`，
+  既不能写成"已安全关断"，也不能写成"SR 直通"——这是模型边界。同时 `V(ss)` 在 trip 后
+  约 35 µs 从 5.07 V 跌到 0.088 V，主桥停振、输出跌到几十毫伏。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的
