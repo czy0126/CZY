@@ -87,6 +87,7 @@ V3_SOURCES = {
         "tools/winding_polarity.py",
         "tools/powerup_checklist.py",
         "tools/energy_ledger_100a.py",
+        "tools/sr_loss_audit.py",
         "tools/make_physical_decks.py",
         "tools/make_high_output_decks.py",
         "tools/ci_check.py",
@@ -107,6 +108,7 @@ V3_SOURCES = {
         "tools/test_board_netlist.py",
         "tools/test_powerup_checklist.py",
         "tools/test_energy_ledger_100a.py",
+        "tools/test_sr_loss_audit.py",
         "tools/test_make_physical_decks.py",
         "tools/test_make_high_output_decks.py",
         "tools/test_operating_point_110a.py",
@@ -144,6 +146,7 @@ V3_SOURCES = {
         "design/v3/stage_f/上电检查表.md",
         "design/v3/stage_f/energy_ledger_100a.json",
         "design/v3/stage_f/energy_ledger_100a_phase_aligned.json",
+        "design/v3/stage_f/sr_loss_audit.json",
         # High-output candidate: the run record, its writeup, and the ledger
         # taken from the probe deck (input power, hence efficiency).
         "design/v3/power_priority/operating_point_48v_110a.json",

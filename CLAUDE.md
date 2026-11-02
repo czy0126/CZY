@@ -31,6 +31,8 @@ python tools/current_manifest.py --scope v3 \
     --json design/v3/manifest_current_candidate.json   # 可复现当前清单（v2 仍是不带 --scope 的默认）
 python tools/extract_op_point.py <raw> --rl <ohm> --periods 22 --json <out>
 python tools/energy_ledger_100a.py --json design/v3/stage_f/energy_ledger_100a.json
+python tools/sr_loss_audit.py --json design/v3/stage_f/sr_loss_audit.json
+    # SR 量纲/步长/驱动功率专项排查；要本地有六条 raw（含 2.44+2.25+3.78 GB），约 20 min
     # 100 A 同窗口端口能量账；默认读 ..._100a_ledger.raw（424 MB，不入 Git）
 python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐项比对
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
@@ -218,6 +220,10 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 - **账本工具收 `--vin`/`--rl`**：`port_terms()` 原先读模块常量（48 V / 18.9 mΩ）。参数化候选 deck
   跑的是同一个谐振腔换 VIN/RL，不传这两个值就会拿母 deck 的标量去乘候选的波形，凭空造出一个
   "损耗"。`step_check` 的每一列也必须用同一对值，否则步长比较里混进了参数变化。
+  **`window_terms()` 当时没有转发这两个参数**（只有 `build()` 自己直接调 `port_terms`），
+  所以在候选 raw 上用 `window_terms` 复算闭合会读出 +22.66 W 而不是 +0.56 W——凭空造出来的
+  "损耗"正是这么来的。现在 `window_terms` 接受并转发 `vin`/`rl`；`sr_loss_audit.closure()`
+  把用例自己的端口参数传进去，并用"重建值必须逐位等于已发布值"当不变量。
 - **`aligned1n`**（133 周期、只把 `.tran` 步长 5n→1n）：运行 **876.993 s**、raw **3.78 GB**、
   `..._aligned1n.cir` 头注 1550u。它存在的理由是两个步长分不出"收敛"与"常数误差"，
   必须看最后一段的移动量。**实测答案是"没有平台"**：端口 10.8888 → 11.4228 → 10.1261 W，
@@ -229,6 +235,23 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   但别把整张清单一起判死。闭合仍然稳：周期平均 0.3258 / 0.3139 / 0.3095 W（第二段 0.0044 W），
   三段都在 0.2 W 外 ⇒ +0.33 W 缺口照原样引用。
   `step_check.terms` 的 `vout_end_v` **只有 a/b 两端**，第三段的终点没有记录——别拿 2 ns 的值去代。
+- **`loss_main` 与 `drv` 不在同一个边界上**：`main_loss_names()` 排除 `sr_gate_resistor_x8`，
+  而 `SR_CH3` 的 `Rgs G S 10k` **从不在任何损耗项里**；`driver_w()` 却把外部驱动输入 `drv`
+  整个加进闭合式。于是每次闭合都多算 `Rg + Rgs + Cpin`（Rg 是器件模型里的 1 Ω 栅极电阻，
+  不是外置 2.2 Ω 门阻）。修正量跨 5/2/1 ns 只差约 0.1 %，所以它是**边界记账错误**，
+  不是步长敏感项：修正后 133 周期窗口三段都进 0.2 W，而 16 周期窗口仍不能用。
+  **`closure_status` 保持 NOT_CLOSED**——闭合站住不等于 SR 损耗清单收敛。
+  本文件不改 `energy_ledger_100a.py` 的定义：那会把已发布的损耗合计与效率一起挪动，
+  属于单独决定。见 `tools/sr_loss_audit.py`、`design/v3/stage_f/sr_loss_audit.json`。
+- **SR 的步长不稳定性在体二极管正向导通，不在沟道**：把 `sr_channel_body_x4` 拆成
+  `v(di,si)·I(Bch)` 与 `−v(di,si)·I(Dbd)` 后，沟道项跨 5/2/1 ns 几乎不动，体二极管正向项
+  动了整个 SR 移动量的全部（反向恢复是负的，返回能量）。所以"SR 整项不收敛"要写成
+  "体二极管正向导通区间的时序伪影"，不是"梯形积分误差"，也不能再笼统归给八路一起。
+- **候选 deck 的 `Cout`/`LR_TOTAL` 与工具常量不同**：`storage_arrays()` 用模块常量
+  `COUT_F=4e-3`、`LR_H=0.92e-6`，而 `..._vin48_i110_cin.cir` 跑的是 `Cout 7.05m`、
+  `LR_TOTAL=1u`。在候选 raw 上算储能（进而算闭合）必须从 deck 读实际值，
+  `sr_loss_audit.storage_parameters()` 就是这么做的；修正对 C/L 是线性的、可精确叠加。
+  直接用 `energy_ledger_100a.py` 跑候选 raw 会把储能算在母 deck 的常数上。
 
 - JSON 的 `checks` 是**报告不变量**（只有它的 `ok` 是门），`results` 是**物理结果**。
   不要把"未闭合"塞进 `checks.ok`——那会诱使下一个人为了让测试变绿去放宽目标。

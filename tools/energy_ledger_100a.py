@@ -591,9 +591,15 @@ def main_loss_names(losses: dict[str, dict[str, object]]) -> list[str]:
 
 
 def window_terms(t: array, d: dict[str, array], i0: int, i1: int,
-                 arrays: dict[str, array] | None = None) -> dict[str, float]:
-    """Port, loss, storage and closure numbers for one window."""
-    port = port_terms(t, d, i0, i1)
+                 arrays: dict[str, array] | None = None,
+                 vin: float = VIN, rl: float = RL) -> dict[str, float]:
+    """Port, loss, storage and closure numbers for one window.
+
+    ``vin``/``rl`` are forwarded to ``port_terms``; a candidate deck that only
+    changes those parameters must supply them or the port terms are computed
+    from the mother deck's scalars against the candidate's waveform.
+    """
+    port = port_terms(t, d, i0, i1, vin=vin, rl=rl)
     losses = loss_terms(t, d, i0, i1)
     loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
     stored = storage_terms(t, d, i0, i1, arrays=arrays)
