@@ -1,0 +1,298 @@
+{
+  "status": "REQUEST_FOR_VENDOR_DRAWING_AND_FIRST_ARTICLE_NOT_VERIFIED",
+  "devices": [
+    {
+      "ref": "CT",
+      "logical_type": "CURRENT_TRANSFORMER_4PIN",
+      "vendor_name": null,
+      "drawing_revision": null,
+      "vendor_terminal_count_expected": 4,
+      "pins": [
+        {
+          "logical_terminal": "PRI_A",
+          "required_circuit_net": "CR_CT",
+          "dot_convention_expected": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "PRI_B",
+          "required_circuit_net": "CT_LR",
+          "dot_convention_expected": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_A",
+          "required_circuit_net": "CS1",
+          "dot_convention_expected": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_B",
+          "required_circuit_net": "CS2",
+          "dot_convention_expected": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        }
+      ],
+      "real_mechanical_footprint": null,
+      "isolation_test_requirement": "Confirm primary-secondary insulation and test method with vendor",
+      "dot_test_requirement": "Mark real primary and each secondary dotted terminal, validate centre-tap polarity",
+      "accepted_by_engineer": false,
+      "status": "AWAIT_VENDOR_PINOUT_AND_WINDING_FIRST_ARTICLE"
+    },
+    {
+      "ref": "T1",
+      "logical_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "vendor_name": null,
+      "drawing_revision": null,
+      "vendor_terminal_count_expected": 5,
+      "pins": [
+        {
+          "logical_terminal": "PRI_A",
+          "required_circuit_net": "PRI_T1",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "PRI_B",
+          "required_circuit_net": "PRI_12",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_A",
+          "required_circuit_net": "SEC1_A",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_B",
+          "required_circuit_net": "SEC1_B",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "CTAP",
+          "required_circuit_net": "VOUT",
+          "dot_convention_expected": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        }
+      ],
+      "real_mechanical_footprint": null,
+      "isolation_test_requirement": "Confirm primary-secondary insulation and test method with vendor",
+      "dot_test_requirement": "Mark real primary and each secondary dotted terminal, validate centre-tap polarity",
+      "accepted_by_engineer": false,
+      "status": "AWAIT_VENDOR_PINOUT_AND_WINDING_FIRST_ARTICLE"
+    },
+    {
+      "ref": "T2",
+      "logical_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "vendor_name": null,
+      "drawing_revision": null,
+      "vendor_terminal_count_expected": 5,
+      "pins": [
+        {
+          "logical_terminal": "PRI_A",
+          "required_circuit_net": "PRI_12",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "PRI_B",
+          "required_circuit_net": "PRI_23",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_A",
+          "required_circuit_net": "SEC2_A",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_B",
+          "required_circuit_net": "SEC2_B",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "CTAP",
+          "required_circuit_net": "VOUT",
+          "dot_convention_expected": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        }
+      ],
+      "real_mechanical_footprint": null,
+      "isolation_test_requirement": "Confirm primary-secondary insulation and test method with vendor",
+      "dot_test_requirement": "Mark real primary and each secondary dotted terminal, validate centre-tap polarity",
+      "accepted_by_engineer": false,
+      "status": "AWAIT_VENDOR_PINOUT_AND_WINDING_FIRST_ARTICLE"
+    },
+    {
+      "ref": "T3",
+      "logical_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "vendor_name": null,
+      "drawing_revision": null,
+      "vendor_terminal_count_expected": 5,
+      "pins": [
+        {
+          "logical_terminal": "PRI_A",
+          "required_circuit_net": "PRI_23",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "PRI_B",
+          "required_circuit_net": "PRI_34",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_A",
+          "required_circuit_net": "SEC3_A",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_B",
+          "required_circuit_net": "SEC3_B",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "CTAP",
+          "required_circuit_net": "VOUT",
+          "dot_convention_expected": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        }
+      ],
+      "real_mechanical_footprint": null,
+      "isolation_test_requirement": "Confirm primary-secondary insulation and test method with vendor",
+      "dot_test_requirement": "Mark real primary and each secondary dotted terminal, validate centre-tap polarity",
+      "accepted_by_engineer": false,
+      "status": "AWAIT_VENDOR_PINOUT_AND_WINDING_FIRST_ARTICLE"
+    },
+    {
+      "ref": "T4",
+      "logical_type": "CENTER_TAPPED_3_1_1_5PIN",
+      "vendor_name": null,
+      "drawing_revision": null,
+      "vendor_terminal_count_expected": 5,
+      "pins": [
+        {
+          "logical_terminal": "PRI_A",
+          "required_circuit_net": "PRI_34",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "PRI_B",
+          "required_circuit_net": "PGND",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_A",
+          "required_circuit_net": "SEC4_A",
+          "dot_convention_expected": "NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "SEC_B",
+          "required_circuit_net": "SEC4_B",
+          "dot_convention_expected": "DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        },
+        {
+          "logical_terminal": "CTAP",
+          "required_circuit_net": "VOUT",
+          "dot_convention_expected": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_terminal_id": null,
+          "terminal_drawing_ref": null,
+          "test_polarity_result": null,
+          "test_result_status": "NOT_TESTED"
+        }
+      ],
+      "real_mechanical_footprint": null,
+      "isolation_test_requirement": "Confirm primary-secondary insulation and test method with vendor",
+      "dot_test_requirement": "Mark real primary and each secondary dotted terminal, validate centre-tap polarity",
+      "accepted_by_engineer": false,
+      "status": "AWAIT_VENDOR_PINOUT_AND_WINDING_FIRST_ARTICLE"
+    }
+  ],
+  "requirements": [
+    "Return dimensioned terminal diagram and physical pad IDs for each device",
+    "Confirm dot, secondary CTAP winding junction, turns, Lm, leakage and cold DCR",
+    "Confirm mounting outline, board pocket and electrical clearance",
+    "CT current transformer has FOUR logical terminals; present TWO-pad footprint is INVALID",
+    "Do not assign sequential 1-5 pins without signed actual hardware drawing"
+  ]
+}
