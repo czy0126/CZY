@@ -92,18 +92,55 @@
       }
     }
   },
+  "diode_split": {
+    "measured_devices": "pair 1 halves a/b, scaled x4; pairs 2 and 3 UNKNOWN",
+    "channel_w": {
+      "5": 2.8916367500930837,
+      "2": 2.864223732827903,
+      "1": 2.8957438086746365,
+      "0.5": 2.9156762045914255
+    },
+    "body_diode_forward_w": {
+      "5": 4.192342844708028,
+      "2": 4.820683792218682,
+      "1": 3.4271444600008243,
+      "0.5": 2.48660970774516
+    },
+    "body_diode_reverse_w": {
+      "5": -0.12998966005873713,
+      "2": -0.10956532020472928,
+      "1": -0.11820561561789225,
+      "0.5": -0.13003614302562402
+    },
+    "channel_step_spread_w": 0.0514524717635223,
+    "body_diode_forward_step_spread_w": 2.3340740844735217,
+    "body_diode_forward_share_of_sr_move": 1.0134521951766053
+  },
+  "gate_sink_correction": {
+    "sinks_w_5ns": 0.21747288441061685,
+    "per_step_w": {
+      "5": 0.21747288441061685,
+      "2": 0.21701912457289896,
+      "1": 0.21839505475372453,
+      "0.5": 0.21952865859361947
+    },
+    "spread_across_steps_w": 0.0025095340207205163,
+    "kcl_residual_max_w": 0.00012741705334606872
+  },
   "next_discriminating_experiments": [
     {
       "id": "E6-1",
-      "status": "open",
-      "method": "Inspect SR diode forward power signs at each switching edge; classify conduction and reverse recovery separately",
-      "record": "per-device VDS, Ibody and conduction phase, all 5/2/1ns"
+      "status": "done",
+      "result": "the channel term moves only 0.051 W across the four steps while the body-diode forward term moves 2.334 W, 101.3 % of the whole SR movement; reverse recovery is negative on every run (it returns energy); pairs 2 and 3 have no probes and stay UNKNOWN",
+      "method": "Sign-classify the pair-1 body-diode current over the same 133-cycle aligned window on every timestep; separate forward conduction from reverse recovery and compare the channel term",
+      "record": "per-half VDS and body-diode current (pair 1 a/b), forward/reverse charge and power, all four steps; pairs 2/3 UNKNOWN"
     },
     {
       "id": "E6-2",
-      "status": "open",
-      "method": "Report Rg, Rgs and Cpin dissipated/delta-energy on same 133-cycle boundary and prevent double counting Bdrive output",
-      "record": "waveform-based gate-source energy and local resistor I2R per SR"
+      "status": "done",
+      "result": "the correction is the measured gate-pin sinks Rg + Rgs = 0.2175 W (spread 0.0025 W across the four steps), gate-pin KCL residual <= 1.3e-04 W scaled to eight; the period-averaged residual becomes +0.108 / +0.097 / +0.091 / +0.304 W, so the ledger stays NOT_CLOSED",
+      "method": "Rebuild the driver boundary from waveforms: KCL at the gate pin (driver output = gate pin + Rgs + Cpin), then count only the Rg and Rgs sinks as the correction so the Bdrive output is not double counted",
+      "record": "waveform-based gate-pin KCL, per-half Rg/Rgs I2R and Cpin edge energy, all four steps"
     },
     {
       "id": "E6-3",

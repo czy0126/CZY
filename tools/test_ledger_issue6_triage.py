@@ -50,5 +50,45 @@ def test_the_group_symmetry_record_carries_the_split_bound():
     assert "1 ns" in entry["result"]
 
 
+def test_the_diode_split_says_which_term_moves():
+    """E6-1: "the SR loss does not converge" has to name a component.
+
+    The channel term is flat across the four aligned steps; the body-diode
+    forward term carries the whole movement, and reverse recovery must stay
+    negative (it returns energy) on every run.
+    """
+    d = t.build()
+    entry = next(e for e in d["next_discriminating_experiments"] if e["id"] == "E6-1")
+    assert entry["status"] == "done"
+    split = d["diode_split"]
+    assert split["channel_step_spread_w"] < 0.1
+    assert split["body_diode_forward_step_spread_w"] > 2.0
+    assert split["body_diode_forward_share_of_sr_move"] > 1.0
+    assert set(split["body_diode_reverse_w"]) == {"5", "2", "1", "0.5"}
+    assert all(value < 0.0 for value in split["body_diode_reverse_w"].values())
+    assert "body-diode forward" in entry["result"]
+    assert "reverse recovery" in entry["result"]
+    assert "pairs 2 and 3" in entry["result"]
+
+
+def test_the_gate_sink_correction_is_measured_not_asserted():
+    """E6-2: the closure correction must be the KCL-consistent Rg + Rgs sinks.
+
+    Re-adding the whole Bdrive output would double count; the correction is
+    instead the two resistors the driver output feeds, measured from the gate
+    waveform on the same 133-cycle window.
+    """
+    d = t.build()
+    entry = next(e for e in d["next_discriminating_experiments"] if e["id"] == "E6-2")
+    assert entry["status"] == "done"
+    correction = d["gate_sink_correction"]
+    assert set(correction["per_step_w"]) == {"5", "2", "1", "0.5"}
+    assert correction["sinks_w_5ns"] == pytest.approx(0.2175, abs=5e-3)
+    assert correction["spread_across_steps_w"] < 0.01
+    assert correction["kcl_residual_max_w"] < 1e-3
+    assert "Rg" in entry["result"] and "Rgs" in entry["result"]
+    assert "NOT_CLOSED" in entry["result"]
+
+
 def test_checked_in_diagnostic_is_reproducible():
     assert json.loads(t.OUT.read_text(encoding="utf-8")) == t.build()
