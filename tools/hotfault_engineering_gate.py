@@ -46,7 +46,7 @@ def inspect(case: str) -> dict:
     measured = PP / f"hotfault_{case}.json"
     if not measured.is_file():
         return {"case": case, "accepted": False,
-                "reason": "independent original RAW analysis absent"}
+                "reason": "missing independent original RAW analysis"}
     try:
         actual = json.loads(measured.read_text(encoding="utf-8"))
     except (OSError, ValueError):
