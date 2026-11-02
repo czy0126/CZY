@@ -734,8 +734,12 @@ def _noise_stats(values: list[float], target_w: float) -> dict[str, object]:
 def residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
                    i0: int, i1: int, target_w: float = 0.2,
                    e_mag: array | None = None,
-                   arrays: dict[str, array] | None = None) -> dict[str, object]:
+                   arrays: dict[str, array] | None = None,
+                   vin: float = VIN, rl: float = RL) -> dict[str, object]:
     """Per-period closure residual, and the standard error of its window mean.
+
+    The physical port computation must use this candidate's VIN/RL rather than
+    the default 100 A circuit. This routine is shared with 110/120 A runs.
 
     A window mean can land inside the target by cancellation while the
     individual periods are far outside it.  Resolving ``target_w`` needs about
@@ -750,7 +754,7 @@ def residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
     for a, b in zip(edges[:-1], edges[1:]):
         if a < i0 or b > i1:
             continue
-        port = port_terms(t, d, a, b)
+        port = port_terms(t, d, a, b, vin=vin, rl=rl)
         losses = loss_terms(t, d, a, b)
         loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
         stored = sum(storage_terms(t, d, a, b, arrays=arrays).values())
@@ -762,8 +766,11 @@ def residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
 
 def averaged_residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
                             i0: int, i1: int, arrays: dict[str, array],
-                            target_w: float = 0.2) -> dict[str, object]:
+                            target_w: float = 0.2,
+                            vin: float = VIN, rl: float = RL) -> dict[str, object]:
     """The same residual with each period's storage read from period means.
+
+    VIN/RL must be forwarded to every period's port power calculation.
 
     Period ``k`` (``edges[k]..edges[k+1]``) uses the mean stored energy over
     that period minus the mean over the period before it, so the endpoint sample
@@ -781,7 +788,7 @@ def averaged_residual_noise(t: array, d: dict[str, array], edges: Sequence[int],
     values: list[float] = []
     for k in range(1, len(spans)):
         a, b = spans[k]
-        port = port_terms(t, d, a, b)
+        port = port_terms(t, d, a, b, vin=vin, rl=rl)
         losses = loss_terms(t, d, a, b)
         loss_main = sum(float(losses[name]["w"]) for name in main_loss_names(losses))
         stored = sum(means[k][name] - means[k - 1][name] for name in arrays)
@@ -859,22 +866,22 @@ def build(raw: Path = RAW, periods: int = 16,
     mag_std = (sum((x - mag_mean) ** 2 for x in per_period) / len(per_period)) ** 0.5 \
         if per_period else 0.0
 
-    windows = [{"periods": periods, **window_terms(t, d, i0, i1, arrays)}]
+    windows = [{"periods": periods, **window_terms(t, d, i0, i1, arrays, vin=vin, rl=rl)}]
     for p in alt_periods:
         try:
             a, b = gate_window(t, d["vga"], p)
         except ValueError:
             continue
         if (a, b) != (i0, i1):
-            windows.append({"periods": p, **window_terms(t, d, a, b, arrays)})
+            windows.append({"periods": p, **window_terms(t, d, a, b, arrays, vin=vin, rl=rl)})
 
     # Issue #6: a mean inside 0.2 W is not a closure unless the window can
     # resolve 0.2 W.  Both conditions are required, and the reason is recorded
     # separately from the status so "not closed" is never read as "missing
     # energy" when it is really "too short a run".
-    noise = residual_noise(t, d, edges, i0, i1, arrays=arrays)
+    noise = residual_noise(t, d, edges, i0, i1, arrays=arrays, vin=vin, rl=rl)
     try:
-        noise_avg = averaged_residual_noise(t, d, edges, i0, i1, arrays)
+        noise_avg = averaged_residual_noise(t, d, edges, i0, i1, arrays, vin=vin, rl=rl)
     except ValueError as exc:                     # window shorter than 3 periods
         noise_avg = {"error": str(exc), "sem_w": float("inf"), "periods": 0,
                      "periods_for_target": None, "mean_w": None, "sd_w": None}
