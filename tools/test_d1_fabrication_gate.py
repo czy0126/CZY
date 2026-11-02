@@ -1,6 +1,7 @@
 """The D1 fabrication gate must fail closed on incomplete CAD evidence."""
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -13,6 +14,7 @@ def test_real_baseline_is_not_fabrication_approved():
     assert result["release_approved"] is False
     assert result["status"] == "NOT_FOR_FAB"
     assert result["checks"]["golden_subnet_matches"] is True
+    assert result["checks"]["cached_netlist_report_matches_live_native_export"] is True
     assert result["checks"]["native_editable_project_present"] is True
     assert result["counts"]["golden_references"] == 66
     assert result["counts"]["golden_logical_pins"] == 193
@@ -78,4 +80,24 @@ def test_bom_only_real_components_cannot_be_hidden_by_outdated_coverage_json(mon
     monkeypatch.setattr(gate.bomcov, "build", add_discovered_missing_part)
     report = gate.build()
     assert "NEW_CAD_REQUIREMENT" in report["counts"]["real_hardware_bom_refs_not_in_golden"]
+    assert report["release_approved"] is False
+
+
+def test_stale_cached_netlist_cannot_stay_green_when_native_export_changes(monkeypatch):
+    """Mutating a known U2 exposed pad must immediately block without --write."""
+    original_read = gate._read
+
+    def mutated(path):
+        value = original_read(path)
+        if path == gate.HW / "gen/netlist_export_raw.json":
+            value = copy.deepcopy(value)
+            assert value["value"]["refs"]["U2"]["11"] == "PGND"
+            value["value"]["refs"]["U2"]["11"] = "VIN"
+        return value
+
+    monkeypatch.setattr(gate, "_read", mutated)
+    report = gate.build()
+    assert report["checks"]["cached_netlist_report_matches_live_native_export"] is False
+    assert report["checks"]["golden_subnet_matches"] is False
+    assert any(row["ref"] == "U2" for row in report["counts"]["live_native_netlist_missing_or_wrong"])
     assert report["release_approved"] is False
