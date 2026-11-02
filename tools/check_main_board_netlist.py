@@ -12,9 +12,10 @@ Two directions are reported separately because they fail differently:
   unassigned pad this is the exposed-pad case and is expected; on an assigned
   one it is a short.
 
-Refs named in ``MAGNETIC_GAPS`` are reported as not placed rather than as
-failures -- the tool refuses to call the board complete while T1-T4 and CT
-have no symbol.
+T1-T4 and CT are diffed like any other part: their native symbols carry the
+logical terminal names as pin numbers, so a reversed winding or a swapped pair
+shows up here as a wrong net.  Being wired correctly is still not being
+verified -- see ``unchecked_magnetics`` below.
 """
 
 from __future__ import annotations
@@ -40,8 +41,6 @@ def compare(golden: dict[str, dict[str, str]],
     checked = 0
 
     for ref, pins in golden.items():
-        if ref in mbs.MAGNETIC_GAPS:
-            continue
         part = mbs.device_of(ref)
         symbol_pins = {p["num"] for p in library[part]["pins"]}
         expected: dict[str, str] = {}
@@ -99,9 +98,12 @@ def compare(golden: dict[str, dict[str, str]],
     # A custom symbol is NOT validated merely because its reference appears.
     # Without explicit physical terminal->pad evidence a magnetic device could
     # reverse its winding DOT while all ordinary pad tests remain green.
-    unchecked_magnetics = sorted(set(exported) & set(mbs.MAGNETIC_GAPS))
+    # Their pads are now diffed, but the pad numbers are logical terminal names.
+    # A magnetic whose logical nets all match can still be built with a reversed
+    # winding, so it never counts as verified.
+    unchecked_magnetics = sorted(set(exported) & set(mbs.MAGNETIC_UNVERIFIED))
     extra_refs = sorted(set(exported) - set(golden) - set(mbs.PERIPHERALS))
-    subset_ok = not missing and not extra and not extra_refs and set(unplaced) <= set(mbs.MAGNETIC_GAPS)
+    subset_ok = not missing and not extra and not extra_refs and not unplaced
     blockers = []
     if unplaced:
         blockers.append("not all golden references are placed")
@@ -139,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
     raw = json.loads(args.native.read_text(encoding="utf-8"))
     if not raw.get("ok"):
         raise SystemExit(f"netlist export failed: {raw.get('error')}")
-    library = json.loads((HW / "library_pins.json").read_text(encoding="utf-8"))
+    library = mbs.load_library()
     result = compare(mbs.load_golden(), raw["value"]["refs"], library)
 
     args.json.write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

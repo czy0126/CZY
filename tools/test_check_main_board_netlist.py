@@ -15,7 +15,7 @@ import check_main_board_netlist as cmn
 import main_board_schematic as mbs
 
 ROOT = Path(__file__).resolve().parent.parent
-LIBRARY = json.loads((ROOT / "hardware/dcx_main/library_pins.json").read_text(encoding="utf-8"))
+LIBRARY = mbs.load_library()
 GOLDEN = mbs.load_golden()
 
 
@@ -24,8 +24,6 @@ def expected_export(refs: list[str], with_peripherals: bool = True) -> dict[str,
     compare() so the test cannot agree with a bug in compare()."""
     out: dict[str, dict[str, str]] = {}
     for ref in refs:
-        if ref in mbs.MAGNETIC_GAPS:
-            continue
         part = mbs.device_of(ref)
         symbol_pins = {p["num"] for p in LIBRARY[part]["pins"]}
         pads: dict[str, str] = {}
@@ -47,7 +45,7 @@ def test_a_correct_board_passes():
     res = cmn.compare(GOLDEN, expected_export(ALL_REFS), LIBRARY)
     assert res["ok"], res["missing_or_wrong"]
     assert res["unexpected_nets"] == []
-    assert res["not_placed"] == sorted(mbs.MAGNETIC_GAPS)
+    assert res["not_placed"] == []
 
 
 def test_every_pad_of_every_golden_pin_is_counted():
@@ -102,14 +100,27 @@ def test_a_net_appearing_on_a_deliberately_open_pad_fails():
     assert {"ref": "D_CT1", "pad": "2", "net": "SOMEWHERE"} in res["unexpected_nets"]
 
 
-def test_placing_a_magnetic_never_turns_the_check_red():
-    """T1-T4 and CT are missing only because no symbol has the right pins.  If
-    someone draws one, the board got better -- the check must not fail."""
+def test_a_magnetic_is_diffed_pad_by_pad_not_exempted():
+    """The exemption is gone: a reversed winding or a swapped secondary pair
+    must show up as a wrong net, like any other wiring defect."""
     export = expected_export(ALL_REFS)
-    export["T1"] = {"1": "PRI_A", "2": "PRI_B", "3": "SEC_A", "4": "CTAP", "5": "SEC_B"}
+    export["T1"]["SEC_A"], export["T1"]["SEC_B"] = export["T1"]["SEC_B"], export["T1"]["SEC_A"]
     res = cmn.compare(GOLDEN, export, LIBRARY)
-    assert "T1" not in res["not_placed"]
-    assert res["ok"]
+    assert not res["ok"]
+    assert {"ref": "T1", "pad": "SEC_A", "want": GOLDEN["T1"]["SEC_A"],
+            "got": GOLDEN["T1"]["SEC_B"]} in res["missing_or_wrong"]
+
+
+def test_a_magnetic_with_the_wrong_pin_numbering_is_not_exempt():
+    """The old exemption accepted any pad numbering.  A '1-5' symbol leaves
+    every logical terminal unwired, which is a defect, not a pass."""
+    export = expected_export(ALL_REFS)
+    export["T1"] = {"1": GOLDEN["T1"]["PRI_A"], "2": GOLDEN["T1"]["PRI_B"],
+                    "3": GOLDEN["T1"]["SEC_A"], "4": GOLDEN["T1"]["CTAP"],
+                    "5": GOLDEN["T1"]["SEC_B"]}
+    res = cmn.compare(GOLDEN, export, LIBRARY)
+    assert not res["ok"]
+    assert {m["pad"] for m in res["missing_or_wrong"]} == {"PRI_A", "PRI_B", "SEC_A", "CTAP", "SEC_B"}
 
 
 def test_a_missing_non_magnetic_part_fails():
@@ -122,20 +133,24 @@ def test_a_missing_non_magnetic_part_fails():
 
 
 def test_partial_pass_never_means_manufacturing_ready():
+    """Every golden ref is now placed and every net matches, and the board is
+    still not manufacturable: the magnetics' physical terminals are unknown,
+    placeholders remain, and there is no ERC or PCB."""
     res = cmn.compare(GOLDEN, expected_export(ALL_REFS), LIBRARY)
     assert res["subset_ok"] is True
+    assert res["not_placed"] == []
     assert res["readiness"] == "PARTIAL_PASS"
     assert res["manufacturing_ready"] is False
-    assert "CT" in res["not_placed"]
+    assert sorted(res["unchecked_magnetics"]) == sorted(mbs.MAGNETIC_UNVERIFIED)
     assert res["manufacturing_blockers"]
 
 
-def test_placing_a_magnetic_without_pin_and_dot_evidence_is_not_a_complete_pass():
-    export = expected_export(ALL_REFS)
-    export["T1"] = {"1": "UNVERIFIED"}
-    res = cmn.compare(GOLDEN, export, LIBRARY)
-    assert res["subset_ok"]
-    assert "T1" in res["unchecked_magnetics"]
+def test_a_matching_magnetic_is_still_not_a_verified_magnetic():
+    """Correct logical nets + unknown physical terminals = unchecked.  This is
+    the whole reason the exemption was replaced rather than deleted."""
+    res = cmn.compare(GOLDEN, expected_export(ALL_REFS), LIBRARY)
+    assert res["ok"]
+    assert set(res["unchecked_magnetics"]) == set(mbs.MAGNETIC_UNVERIFIED)
     assert res["manufacturing_ready"] is False
 
 
@@ -174,7 +189,8 @@ def test_a_peripheral_is_not_an_unexpected_extra_reference():
 
 def test_saved_native_evidence_is_labelled_as_partial_only():
     native = json.loads((ROOT / "hardware/dcx_main/netlist_compare.json").read_text(encoding="utf-8"))
-    assert native["not_placed"] == sorted(mbs.MAGNETIC_GAPS)
+    assert native["not_placed"] == []
+    assert sorted(native["unchecked_magnetics"]) == sorted(mbs.MAGNETIC_UNVERIFIED)
     assert native["manufacturing_ready"] is False
     assert native["readiness"] == "PARTIAL_PASS"
 

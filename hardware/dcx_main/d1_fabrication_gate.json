@@ -15,15 +15,9 @@
   "counts": {
     "golden_references": 66,
     "golden_logical_pins": 193,
-    "placed_references": 78,
-    "golden_pads_checked_by_subnet": 221,
-    "unplaced_references": [
-      "CT",
-      "T1",
-      "T2",
-      "T3",
-      "T4"
-    ],
+    "placed_references": 83,
+    "golden_pads_checked_by_subnet": 245,
+    "unplaced_references": [],
     "magnetics_missing_physical_pads": [
       "CT",
       "T1",
@@ -53,6 +47,7 @@
       "C7",
       "C8",
       "C9",
+      "CT",
       "Cin",
       "Cout",
       "Cr",
@@ -87,7 +82,11 @@
       "R5",
       "R7",
       "R8",
-      "R9"
+      "R9",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
     ],
     "bom_rows_not_selected": [
       {

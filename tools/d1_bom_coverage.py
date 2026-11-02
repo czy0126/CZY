@@ -105,12 +105,20 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
     args = ap.parse_args()
-    text = json.dumps(build(), ensure_ascii=False, indent=2) + "\n"
+    res = build()
+    text = json.dumps(res, ensure_ascii=False, indent=2) + "\n"
     if args.write:
         OUT.write_text(text, encoding="utf-8", newline="\n")
     elif OUT.is_file() and OUT.read_text(encoding="utf-8") != text:
         raise SystemExit("stale BOM coverage: python tools/d1_bom_coverage.py --write")
-    print(f"missing CAD references: {len(build()['required_bom_refs_missing_from_golden'])}")
+    # Two different gaps, and only one of them is about the drawing.  The
+    # deck-derived golden list can never contain the peripherals, so printing
+    # that count as "missing CAD references" reads as "nothing was drawn".
+    print(f"missing from the deck-derived golden list: "
+          f"{len(res['required_bom_refs_missing_from_golden'])} "
+          f"(expected; see covered_by_native_design)")
+    print(f"missing from the native design: "
+          f"{len(res['required_bom_refs_missing_from_native_design'])}")
     return 0
 
 

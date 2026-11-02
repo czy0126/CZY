@@ -1,5 +1,5 @@
 {
- "pads_checked": 221,
+ "pads_checked": 245,
  "peripheral_pads_checked": 34,
  "pads_bonded_by_design": [
   {
@@ -10,20 +10,20 @@
  ],
  "missing_or_wrong": [],
  "unexpected_nets": [],
- "not_placed": [
+ "not_placed": [],
+ "unchecked_magnetics": [
   "CT",
   "T1",
   "T2",
   "T3",
   "T4"
  ],
- "unchecked_magnetics": [],
  "unexpected_refs": [],
  "subset_ok": true,
  "readiness": "PARTIAL_PASS",
  "manufacturing_ready": false,
  "manufacturing_blockers": [
-  "not all golden references are placed",
+  "placed magnetics have no verified terminal-to-pad and DOT mapping",
   "engineering value/MPN/footprint placeholders remain in the native schematic",
   "native editor ERC report and routed PCB not yet supplied"
  ],
