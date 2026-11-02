@@ -147,3 +147,26 @@ def test_saved_native_evidence_is_labelled_as_partial_only():
     assert native["not_placed"] == sorted(mbs.MAGNETIC_GAPS)
     assert native["manufacturing_ready"] is False
     assert native["readiness"] == "PARTIAL_PASS"
+
+
+def test_real_bom_only_additions_do_not_break_spice_subset_but_remain_unverified():
+    """Adding C101/R7 to the CAD cannot be called a rogue part or a verified pad."""
+    native = expected_export(ALL_REFS)
+    native["R7"] = {"1": "EN", "2": "PGND"}
+    native["C101"] = {"1": "VCC12", "2": "PGND"}
+    result = cmn.compare(GOLDEN, native, LIBRARY)
+    assert result["subset_ok"], result["unexpected_refs"]
+    assert result["added_bom_only_refs"] == ["C101", "R7"]
+    assert result["unverified_bom_only_refs"] == ["C101", "R7"]
+    assert "C102" in result["bom_only_refs_pending_placement"]
+    assert result["manufacturing_ready"] is False
+    assert result["pads_checked"] == 221  # no invented checks for BOM-only parts
+
+
+def test_an_unknown_hardware_extra_still_fails_even_with_bom_only_refs():
+    native = expected_export(ALL_REFS)
+    native["R7"] = {"1": "EN", "2": "PGND"}
+    native["FAKE123"] = {"1": "VIN_P"}
+    result = cmn.compare(GOLDEN, native, LIBRARY)
+    assert result["unexpected_refs"] == ["FAKE123"]
+    assert not result["subset_ok"]

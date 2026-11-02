@@ -245,6 +245,30 @@
     ],
     "external_bias_interface_to_document": [
       "PS1"
+    ],
+    "all_required_bom_refs_missing_from_native_export": [
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
+      "C110",
+      "C111",
+      "C112",
+      "C13",
+      "CT",
+      "R10",
+      "R7",
+      "R8",
+      "R9",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
     ]
   },
   "manual_evidence": {
@@ -276,7 +300,7 @@
     "Subset netlist check is NOT a complete schematic pin or footprint check",
     "The golden netlist was derived from a SPICE deck, not all physical components",
     "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
-    "A JSON approval record must refer to genuine independently reviewed native EDA/DFM evidence",
+    "Evidence records require original repository files and matching SHA256, but hashes do not replace expert approval",
     "Power and efficiency from LTspice do not constitute hardware continuous rating",
     "Thermal and cold plate design intentionally deferred; continuous rating stays unapproved"
   ]
