@@ -49,22 +49,42 @@ def read_header(handle) -> tuple[list[str], int]:
             return names, pos + len(line)
 
 
-def find_offset(handle, t0: float, size: int) -> int:
-    """Byte offset of the first record at or after t0 (bisection on record starts)."""
+def _record_time(line: bytes) -> float | None:
+    """Time column of a record-start line, or None for a value line."""
+    parts = line.split(b"\t")
+    if len(parts) < 3:
+        return None
+    try:
+        return float(parts[2])
+    except ValueError:
+        return None
+
+
+def find_offset(handle, t0: float, size: int, n_variables: int) -> int:
+    """Byte offset of the first record whose time is at or after t0.
+
+    A record is one time line plus ``n_variables - 1`` value lines, so the
+    scan for the next record start must cover a whole record.  The original
+    fixed 64-line scan was shorter than the 81-line records of the
+    80-variable decks; at random byte offsets it found no record start,
+    reported "no time", and bisected into the middle of the file.  The 120 A
+    raw was read as 65.7-120 us instead of 0-120 us (see
+    test_ascii_raw_window.py).
+    """
+    span = n_variables + 2
+
     def time_at(off: int) -> float | None:
         handle.seek(off)
-        handle.readline()  # drop the partial line
-        for _ in range(64):
+        handle.readline()  # drop the partial line the seek landed in
+        for _ in range(span):
             line = handle.readline()
             if not line:
                 return None
-            if not line.startswith(b"\t"):
-                parts = line.split(b"\t")
-                if len(parts) >= 3:
-                    try:
-                        return float(parts[2])
-                    except ValueError:
-                        return None
+            if line.startswith(b"\t"):
+                continue
+            tv = _record_time(line)
+            if tv is not None:
+                return tv
         return None
 
     lo, hi = 0, size
@@ -77,9 +97,21 @@ def find_offset(handle, t0: float, size: int) -> int:
             hi = mid
         if hi - lo <= 1:
             break
+    # ``lo`` is inside the record before the first one at or after t0 (or at
+    # EOF).  Walk forward to that record's start rather than dropping the
+    # line the seek happens to land on.
     handle.seek(lo)
-    handle.readline()  # align to a record boundary
-    return handle.tell()
+    handle.readline()
+    while True:
+        pos = handle.tell()
+        line = handle.readline()
+        if not line:
+            return pos
+        if line.startswith(b"\t"):
+            continue
+        tv = _record_time(line)
+        if tv is not None and tv >= t0:
+            return pos
 
 
 def read_window(path: str | Path, names: list[str], t0: float,
@@ -87,14 +119,17 @@ def read_window(path: str | Path, names: list[str], t0: float,
     """Return (time, {name: values}) for records with t0 <= t < t1."""
     path = Path(path)
     with path.open("rb") as handle:
-        var_names, _ = read_header(handle)
+        var_names, data_offset = read_header(handle)
         index = {name: i for i, name in enumerate(var_names)}
         missing = [n for n in names if n not in index]
         if missing:
             raise KeyError(f"{path.name} has no traces {missing}; available: {var_names}")
         columns = [index[n] for n in names]
         size = path.stat().st_size
-        handle.seek(find_offset(handle, t0, size))
+        # t0=0 must include the very first record; bisection would align past
+        # it because it seeks into the middle of a line before aligning.
+        handle.seek(data_offset if t0 <= 0.0
+                    else find_offset(handle, t0, size, len(var_names)))
 
         times = array("d")
         values = {name: array("d") for name in names}

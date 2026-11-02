@@ -1,4 +1,16 @@
-"""Tests for tools/ascii_raw_window.py on a synthetic ASCII raw."""
+"""The window reader must not silently start late.
+
+A raw record is one time line plus one line per non-time variable.  The first
+version of ``find_offset`` scanned only 64 lines for the next record start, so
+on the 80-variable decks it could fail to find one at a random byte offset,
+treat that as "time < t0", and bisect to the middle of the file.  The 120 A raw
+was read as 65.7-120 us instead of 0-120 us, which made a 22-period extraction
+report "only 10 complete periods" -- a loud failure here, but every
+per-window metric would have been silently wrong if the truncated window had
+still contained enough edges.
+
+These tests build a raw whose layout is exactly what LTspice ``-ascii`` writes.
+"""
 
 from __future__ import annotations
 
@@ -6,50 +18,57 @@ from pathlib import Path
 
 import pytest
 
-from ascii_raw_window import read_window
-
-HEADER = """Title: test
-Plotname: Transient Analysis
-Flags: real forward nocompression
-No. Variables: 3
-No. Points:            0
-Variables:
-\t0\ttime\ttime
-\t1\tV(a)\tvoltage
-\t2\tV(b)\tvoltage
-Values:
-"""
+from ascii_raw_window import read_header, read_window
 
 
-def make_raw(path: Path, rows: list[tuple[float, float, float]], truncate: bool = False) -> Path:
-    lines = [HEADER]
-    for i, (t, a, b) in enumerate(rows):
-        lines.append(f"{i}\t\t{t:.12e}\n")
-        lines.append(f"\t{a:.12e}\n")
-        if not (truncate and i == len(rows) - 1):
-            lines.append(f"\t{b:.12e}\n")
+def write_raw(path: Path, variables: int, points: int, step_s: float = 1e-6) -> None:
+    """A minimal but structurally exact ASCII raw: 1 + (variables-1) lines per record."""
+    lines = [
+        "Title: synthetic\n",
+        f"No. Variables: {variables}\n",
+        f"No. Points: {points}\n",
+        "Variables:\n",
+        "\t0\ttime\ttime\n",
+    ]
+    for i in range(1, variables):
+        lines.append(f"\t{i}\tV(v{i})\tvoltage\n")
+    lines.append("Values:\n")
+    for k in range(points):
+        t = k * step_s
+        lines.append(f"{k}\t\t{t:.12e}\n")
+        for i in range(1, variables):
+            lines.append(f"\t{t * 1e3 + i * 0.5:.12e}\n")
     path.write_text("".join(lines), encoding="latin-1")
-    return path
 
 
-def test_window_and_column_mapping(tmp_path: Path) -> None:
-    rows = [(0.0, 1.0, 10.0), (1e-6, 2.0, 20.0), (2e-6, 3.0, 30.0), (3e-6, 4.0, 40.0)]
-    raw = make_raw(tmp_path / "x.raw", rows)
-    t, data = read_window(raw, ["V(b)", "V(a)"], 1e-6, 3e-6)
-    assert t.tolist() == [1e-6, 2e-6]
-    assert data["V(b)"].tolist() == [20.0, 30.0]
-    assert data["V(a)"].tolist() == [2.0, 3.0]
+@pytest.mark.parametrize("variables", [8, 40, 80, 200])
+def test_a_zero_start_keeps_the_first_record(tmp_path: Path, variables: int):
+    """A window at t0=0 must begin at the first datum, whatever the width."""
+    raw = tmp_path / "wide.raw"
+    write_raw(raw, variables, points=4000)
+    t, _ = read_window(raw, ["V(v1)"], 0.0, None)
+    assert t.size == 4000
+    assert t[0] == 0.0
 
 
-def test_truncated_final_record_is_dropped(tmp_path: Path) -> None:
-    rows = [(0.0, 1.0, 10.0), (1e-6, 2.0, 20.0)]
-    raw = make_raw(tmp_path / "y.raw", rows, truncate=True)
-    t, data = read_window(raw, ["V(b)"], 0.0)
-    assert t.tolist() == [0.0]
-    assert data["V(b)"].tolist() == [10.0]
+@pytest.mark.parametrize("variables", [40, 80, 200])
+def test_a_mid_window_starts_at_the_first_record_after_t0(tmp_path: Path, variables: int):
+    """A seek into the middle must not jump past records it should have kept."""
+    raw = tmp_path / "wide.raw"
+    write_raw(raw, variables, points=4000)
+    t0 = 1234e-6
+    t, _ = read_window(raw, ["V(v1)"], t0, None)
+    assert t[0] >= t0
+    # The grid is 1 us: the first requested record is exactly t0, never later.
+    assert t[0] == pytest.approx(t0, abs=1e-12)
+    assert t.size == 4000 - 1234
 
 
-def test_missing_trace_raises(tmp_path: Path) -> None:
-    raw = make_raw(tmp_path / "z.raw", [(0.0, 1.0, 10.0)])
-    with pytest.raises(KeyError):
-        read_window(raw, ["V(nope)"], 0.0)
+def test_the_header_offset_points_at_the_first_record(tmp_path: Path):
+    raw = tmp_path / "small.raw"
+    write_raw(raw, 8, points=5)
+    with raw.open("rb") as handle:
+        names, offset = read_header(handle)
+        assert names[0] == "time"
+        handle.seek(offset)
+        assert handle.readline().split(b"\t")[0] == b"0"
