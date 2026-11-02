@@ -1069,6 +1069,39 @@ def max_step_of(raw: Path) -> float | None:
     return None if scale is None else float(match.group(1)) * scale
 
 
+def deck_difference(raw_a: Path, raw_b: Path) -> str | None:
+    """How the two raws' decks differ outside the ``.tran`` line, if they do.
+
+    ``step_check`` is meant to isolate one variable: the max timestep.  If the
+    decks also differ in VIN/RL, a ``.save`` probe block, or anything else, the
+    difference it reports is mostly the circuit.  The 120 A candidate's ledger
+    was once generated with the 100 A 2 ns raw as the comparison column; the
+    candidate's VIN/RL were then applied to the other deck and the check
+    published a -43 W "closure move" that was two converters subtracted from
+    each other.
+
+    Returns ``None`` when the decks are identical outside ``.tran`` -- or when
+    a deck is absent, which is the normal state of the synthetic-raw unit
+    tests and of CI, where the large raws are git-ignored.
+    """
+    deck_a, deck_b = raw_a.with_suffix(".cir"), raw_b.with_suffix(".cir")
+    if not (deck_a.exists() and deck_b.exists()):
+        return None
+
+    def body(path: Path) -> list[str]:
+        lines = (line.strip() for line in
+                 path.read_text(encoding="utf-8", errors="replace").splitlines())
+        return [line for line in lines if line and not line.lower().startswith(".tran")]
+
+    a, b = body(deck_a), body(deck_b)
+    for number, (line_a, line_b) in enumerate(zip(a, b), start=1):
+        if line_a != line_b:
+            return f"deck line {number} differs: {line_a!r} vs {line_b!r}"
+    if len(a) != len(b):
+        return f"deck line counts differ: {len(a)} vs {len(b)}"
+    return None
+
+
 def step_check(raw_a: Path, raw_b: Path, periods: int = 16,
                a: dict[str, object] | None = None,
                extra: tuple[Path, ...] = (),
@@ -1085,6 +1118,13 @@ def step_check(raw_a: Path, raw_b: Path, periods: int = 16,
     whether the loss list is settling or just moving — so every column is also
     broken down per loss item in ``loss_items``.
     """
+    difference = deck_difference(raw_a, raw_b)
+    if difference is not None:
+        raise ValueError(
+            f"{raw_a.name} and {raw_b.name} are not the same circuit at two "
+            f"timesteps: {difference}.  A candidate whose only other raw belongs "
+            "to a different deck must be built with --no-step-check; comparing "
+            "them reports the circuit change as a timestep sensitivity.")
     if a is None:
         a = build(raw_a, periods, alt_periods=(), vin=vin, rl=rl)
     b = build(raw_b, periods, alt_periods=(), vin=vin, rl=rl)
@@ -1201,6 +1241,8 @@ def write(path: Path = OUT, step_raw: Path | None = None) -> dict[str, object]:
     summary = build()
     if step_raw is not None and step_raw.exists():
         summary["step_check"] = step_check(RAW, step_raw, a=summary)
+    else:
+        mark_no_step_check(summary)
     path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
                     encoding="utf-8")
     return summary
@@ -1230,6 +1272,23 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def mark_no_step_check(summary: dict[str, object]) -> None:
+    """Remove the "see step_check" pointer when no comparison was run.
+
+    ``build`` writes the sensitivity note for the mother deck, where a 2 ns
+    companion always exists.  A candidate built with ``--no-step-check`` has no
+    such block; leaving the pointer in place sends a reader looking for a
+    comparison that is not there.
+    """
+    sensitivity = summary["sensitivity"]
+    note = str(sensitivity["note"])                       # type: ignore[index]
+    sensitivity["note"] = (                               # type: ignore[index]
+        "No step check was run: this raw's circuit has no second-timestep "
+        "companion in the repository, and comparing another deck's raw would "
+        "report a circuit change as a timestep sensitivity.  "
+        + note.replace("see step_check for the 5 ns / 2 ns comparison; ", ""))
+
+
 def main() -> None:
     args = parse_args()
     summary = build(args.raw, args.periods, vin=args.vin, rl=args.rl)
@@ -1241,6 +1300,8 @@ def main() -> None:
         summary["step_check"] = step_check(args.raw, args.compare_raw, args.periods,
                                            a=summary, extra=extra,
                                            vin=args.vin, rl=args.rl)
+    else:
+        mark_no_step_check(summary)
 
     args.json.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
                          encoding="utf-8")

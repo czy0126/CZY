@@ -442,6 +442,67 @@ def test_every_step_column_uses_the_supply_and_load_it_was_told(monkeypatch):
                     ("c.raw", 50.0, 0.0154)]
 
 
+def test_a_step_check_refuses_two_different_circuits(tmp_path: Path):
+    """The only variable may be the timestep.
+
+    The 120 A candidate's ledger was generated with the *100 A* 2 ns raw as the
+    comparison column.  Because ``step_check`` also applies the candidate's
+    VIN/RL to that raw, it reported a -43 W "closure move" -- two different
+    converters subtracted from each other, not a timestep sensitivity.  A
+    candidate with no same-circuit 2 ns run must use ``--no-step-check``.
+    """
+    import energy_ledger_100a as mod
+
+    # Same timestep, different load: the comparison would be a circuit change.
+    (tmp_path / "a.cir").write_text(
+        "\n".join(["Rload out 0 {RL}", ".param VIN=48", ".param RL=15.4m",
+                   ".tran 0 1000u 880u 5n uic"]), encoding="utf-8")
+    (tmp_path / "b.cir").write_text(
+        "\n".join(["Rload out 0 {RL}", ".param VIN=48", ".param RL=18.9m",
+                   ".tran 0 1000u 880u 5n uic"]), encoding="utf-8")
+    diff = mod.deck_difference(tmp_path / "a.raw", tmp_path / "b.raw")
+    assert diff is not None and "RL" in diff
+    with pytest.raises(ValueError, match="not the same circuit"):
+        mod.step_check(tmp_path / "a.raw", tmp_path / "b.raw")
+
+
+def test_a_step_check_accepts_decks_that_differ_only_in_the_tran_line(tmp_path: Path):
+    import energy_ledger_100a as mod
+
+    body = ["Rload out 0 {RL}", ".param VIN=48", ".options method=gear"]
+    (tmp_path / "a.cir").write_text("\n".join(body + [".tran 0 1000u 880u 5n uic"]),
+                                    encoding="utf-8")
+    (tmp_path / "b.cir").write_text("\n".join(body + [".tran 0 1000u 880u 2n uic"]),
+                                    encoding="utf-8")
+    assert mod.deck_difference(tmp_path / "a.raw", tmp_path / "b.raw") is None
+
+
+def test_skipping_the_step_check_does_not_point_at_a_missing_section():
+    """The sensitivity note used to say "see step_check" unconditionally.
+
+    A candidate generated with ``--no-step-check`` has no such block, so the
+    pointer would send a reader looking for a comparison that was never run.
+    The replacement note must say so and keep the storage caveat that follows.
+    """
+    import energy_ledger_100a as mod
+
+    summary = {"sensitivity": {"note": "see step_check for the 5 ns / 2 ns "
+                                        "comparison; the storage terms come from "
+                                        "the charge function at the endpoints"}}
+    mod.mark_no_step_check(summary)
+    note = summary["sensitivity"]["note"]
+    assert "No step check was run" in note
+    assert "see step_check" not in note
+    assert "storage terms come from the charge function" in note
+
+
+def test_two_synthetic_raws_without_decks_are_not_rejected(tmp_path: Path):
+    """The unit tests build fake raws; the guard must not demand a deck they lack."""
+    import energy_ledger_100a as mod
+
+    assert mod.deck_difference(tmp_path / "a.raw", tmp_path / "b.raw") is None
+
+
 def _ripple_plus_drift(n: int = 21, per_period: int = 10,
                        tank_samples: float = 9.925, amplitude: float = 100.0,
                        drift: float = 0.01) -> tuple[array, array, list[int]]:
