@@ -37,11 +37,14 @@ ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "design/v3/pcb/board_netlist.csv"
 HW = ROOT / "hardware/dcx_main"
 PINS = HW / "library_pins.json"
+PROJECT_SYMBOLS = HW / "project_symbols.json"
 PLAN = HW / "placement_plan.json"
 REVIEW = HW / "pin_footprint_review.csv"
 
 # ref group -> the library part it is drawn as.
-# T1-T4, Lr and CT are deliberately absent: see MAGNETIC_GAPS.
+# T1-T4 and CT map to project-library symbols; every other part is a system
+# library device.  The distinction matters at placement time: a project device
+# is addressed by the project uuid, a system device by the library hash.
 GROUPS: tuple[tuple[tuple[str, ...], str], ...] = (
     (("U1",), "UCC25600D"),
     (("U2",), "UCC27282DRCR"),
@@ -53,6 +56,8 @@ GROUPS: tuple[tuple[tuple[str, ...], str], ...] = (
     (("J_IN",), "KF128_2P"),
     (("J_OUT",), "MX126_2P"),
     (("Lr",), "IND_10UH"),
+    (("T1", "T2", "T3", "T4"), "DCX_XFMR_5P"),
+    (("CT",), "DCX_CT_4P"),
     (("Cr", "Cin", "Cout", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"), "C0603_100n"),
     (("R1", "R2", "R3", "R4", "R5", "R15", "R16", "R17", "R18", "R19",
       "R20", "R21", "R22", "R23", "R24", "R25", "R26", "R27",
@@ -84,16 +89,32 @@ SECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("6. Output interface", ("J_OUT", "Cout")),
 )
 
-# Custom magnetics: no library symbol carries the required pin topology, so
-# they cannot be placed as real devices yet.  Recording the gap is the point --
-# a schematic that silently drops T1-T4 would still export a plausible netlist.
-MAGNETIC_GAPS: dict[str, str] = {
-    "T1": "needs a 5-pin 3:1:1 symbol (PRI_A/PRI_B/SEC_A/SEC_B/CTAP); "
-          "the library's only 5-pad transformer (EE16_65KHZ) exposes 6 pins",
-    "T2": "same custom symbol as T1",
-    "T3": "same custom symbol as T1",
-    "T4": "same custom symbol as T1",
-    "CT": "needs a 4-pin current-transformer symbol; ZHT104A in the library has 2 pins",
+# Custom magnetics are drawn with the two project-library symbols recorded in
+# project_symbols.json (no system device has the required topology: the only
+# 5-pad transformer symbol exposes 6 pins, ZHT104A exposes 2).  Being placed is
+# NOT being verified: the symbol pin numbers are the logical terminal names,
+# and the physical terminal -> pad map is still unknown, so these refs stay
+# "unverified" everywhere a pass could be claimed.
+MAGNETIC_UNVERIFIED: dict[str, str] = {
+    "T1": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+    "T2": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+    "T3": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+    "T4": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+    "CT": "native symbol placed with logical terminal pins; vendor pinout and polarity UNVERIFIED",
+}
+
+# Project-library parts, i.e. the ones whose pin numbers are logical names
+# rather than measured package pads.
+MAGNETIC_PARTS: frozenset[str] = frozenset({"DCX_XFMR_5P", "DCX_CT_4P"})
+
+# Why the review sheet still marks them: the footprint is a stand-in, and the
+# phrase has to be present so the fabrication gate counts them as unresolved.
+MAGNETIC_NOTE: dict[str, str] = {
+    "T1": "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified",
+    "T2": "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified",
+    "T3": "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified",
+    "T4": "PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified",
+    "CT": "PLACEHOLDER footprint XFMR-TH_ZHT104A (2 pads for 4 logical terminals); pinout NOT verified",
 }
 
 # Golden pin name -> the pads it must land on.  Derived from the measured dumps
@@ -206,6 +227,35 @@ def load_golden(path: Path = GOLDEN) -> dict[str, dict[str, str]]:
     return out
 
 
+def project_library(spec: dict) -> dict[str, dict]:
+    """Reshape project_symbols.json into the same record shape as the pin dump.
+
+    Keeping one shape means ``pads_for``/``basis_for`` need no special case for
+    custom parts, and a project device can never be mistaken for a measured
+    system one: the ``library`` field says which it is.
+    """
+    out: dict[str, dict] = {}
+    for name, sym in spec["symbols"].items():
+        fp = sym["placeholder_footprint"]
+        out[name] = {
+            "mpn": name,
+            "lcsc": "",
+            "footprint": fp["name"],
+            "uuid": sym["device_uuid"],
+            "library": "project",
+            "footprint_uuid": fp["uuid"],
+            "pins": [{"num": p["num"], "nm": p["name"]} for p in sym["pins"]],
+        }
+    return out
+
+
+def load_library(pins: Path = PINS, symbols: Path = PROJECT_SYMBOLS) -> dict[str, dict]:
+    """Measured system-library pins, with the project-library symbols merged in."""
+    library = json.loads(pins.read_text(encoding="utf-8"))
+    library.update(project_library(json.loads(symbols.read_text(encoding="utf-8"))))
+    return library
+
+
 def device_of(ref: str) -> str | None:
     for refs, part in GROUPS:
         if ref in refs:
@@ -222,6 +272,9 @@ def section_of(ref: str) -> str | None:
 
 def basis_for(part: str, pin: str, symbol_pins: set[str]) -> str:
     """What the pin->pad claim rests on, for the review sheet's basis column."""
+    if part in MAGNETIC_PARTS:
+        return ("logical terminal name equals native symbol pin number; "
+                "physical terminal drawing NOT verified")
     if part in FET_EXPANSION and pin in FET_EXPANSION[part]:
         return "measured pin dump: pin name -> pad group"
     if part in DIODE_PINS and pin in DIODE_PINS[part]:
@@ -247,13 +300,11 @@ def pads_for(part: str, pin: str, symbol_pins: set[str]) -> tuple[str, ...]:
 def build_plan(golden: dict[str, dict[str, str]],
                library: dict[str, dict]) -> dict[str, object]:
     """Return the placement plan plus the review rows it implies."""
-    plan: dict[str, object] = {"refs": {}, "gaps": dict(MAGNETIC_GAPS), "unresolved": []}
+    plan: dict[str, object] = {"refs": {}, "unverified_magnetics": dict(MAGNETIC_UNVERIFIED),
+                               "unresolved": []}
     rows: list[dict[str, str]] = []
 
     for ref, pins in golden.items():
-        if ref in MAGNETIC_GAPS:
-            plan["unresolved"].append({"ref": ref, "reason": MAGNETIC_GAPS[ref]})
-            continue
         part = device_of(ref)
         if part is None:
             plan["unresolved"].append({"ref": ref, "reason": "no device assigned"})
@@ -268,6 +319,11 @@ def build_plan(golden: dict[str, dict[str, str]],
             "ref": ref, "section": section_of(ref) or "", "mpn": dev["mpn"],
             "lcsc": str(dev.get("lcsc") or ""), "footprint": str(dev.get("footprint") or ""),
         }
+        # A magnetic's nets are wired correctly but its pads are logical names,
+        # so calling the row MAPPED would read as a completed physical map.
+        magnetic = part in MAGNETIC_PARTS
+        status = "OPEN - REASON GIVEN" if magnetic else "MAPPED"
+        note = MAGNETIC_NOTE.get(ref, PLACEHOLDER.get(ref, ""))
         pad_nets: dict[str, str] = {}
         for pin, net in pins.items():
             for pad in pads_for(part, pin, symbol_pins):
@@ -277,8 +333,8 @@ def build_plan(golden: dict[str, dict[str, str]],
                 rows.append({
                     **common, "golden_pin": pin, "pad": pad, "net": net,
                     "basis": basis_for(part, pin, symbol_pins),
-                    "review_status": "MAPPED",
-                    "note": PLACEHOLDER.get(ref, ""),
+                    "review_status": status,
+                    "note": note,
                 })
 
         for pad, net in BONDED_PADS.get(part, {}).items():
@@ -307,6 +363,14 @@ def build_plan(golden: dict[str, dict[str, str]],
         plan["refs"][ref] = {
             "part": part, "uuid": dev["uuid"], "pads": pad_nets,
             "section": section_of(ref),
+            # placement needs to know which library holds the device, and which
+            # footprint name to stamp on the instance (a project device has no
+            # device-level footprint; without the property the netlist export
+            # returns null for the whole sheet)
+            "library": dev.get("library", "system"),
+            "footprint": {"name": str(dev.get("footprint") or ""),
+                          "uuid": dev.get("footprint_uuid")},
+            "unverified": bool(magnetic),
         }
 
     for ref, spec in PERIPHERALS.items():
@@ -340,6 +404,10 @@ def build_plan(golden: dict[str, dict[str, str]],
         plan["refs"][ref] = {
             "part": part, "uuid": dev["uuid"], "pads": pad_nets,
             "section": section_of(ref), "peripheral": True,
+            "library": dev.get("library", "system"),
+            "footprint": {"name": str(dev.get("footprint") or ""),
+                          "uuid": dev.get("footprint_uuid")},
+            "unverified": False,
         }
 
     plan["review_rows"] = rows
@@ -362,9 +430,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--write", action="store_true", help="write the plan and the review sheet")
     ap.add_argument("--pins", type=Path, default=PINS)
+    ap.add_argument("--symbols", type=Path, default=PROJECT_SYMBOLS)
     args = ap.parse_args(argv)
 
-    library = json.loads(args.pins.read_text(encoding="utf-8"))
+    library = load_library(args.pins, args.symbols)
     plan = build_plan(load_golden(), library)
 
     unresolved = plan["unresolved"]

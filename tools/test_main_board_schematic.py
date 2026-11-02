@@ -18,7 +18,9 @@ import pytest
 import main_board_schematic as mbs
 
 ROOT = Path(__file__).resolve().parent.parent
-LIBRARY = json.loads((ROOT / "hardware/dcx_main/library_pins.json").read_text(encoding="utf-8"))
+_PINS = json.loads((ROOT / "hardware/dcx_main/library_pins.json").read_text(encoding="utf-8"))
+_SYMBOLS = json.loads((ROOT / "hardware/dcx_main/project_symbols.json").read_text(encoding="utf-8"))
+LIBRARY = mbs.load_library()
 GOLDEN = mbs.load_golden()
 
 
@@ -26,21 +28,17 @@ def plan() -> dict:
     return mbs.build_plan(GOLDEN, LIBRARY)
 
 
-def test_every_golden_ref_is_either_placed_or_named_as_a_gap():
+def test_every_golden_ref_is_placed():
+    """Nothing is left unplaced now that the magnetics have native symbols.
+    Before this, the five of them were the whole 'unresolved' list."""
     p = plan()
-    unresolved = {u["ref"] for u in p["unresolved"]}
-    placed_golden = set(p["refs"]) - set(mbs.PERIPHERALS)
-    assert unresolved | placed_golden == set(GOLDEN), "a ref vanished without a reason"
-    assert unresolved == set(mbs.MAGNETIC_GAPS)
-    # and the only parts beyond the golden set are the declared peripherals
-    assert set(p["refs"]) - set(GOLDEN) == set(mbs.PERIPHERALS)
+    assert p["unresolved"] == []
+    assert set(p["refs"]) == set(GOLDEN) | set(mbs.PERIPHERALS)
 
 
 def test_every_golden_pin_lands_on_at_least_one_pad():
     p = plan()
     for ref, pins in GOLDEN.items():
-        if ref in mbs.MAGNETIC_GAPS:
-            continue
         got = p["refs"][ref]["pads"]
         for pin in pins:
             assert pin in [
@@ -205,8 +203,53 @@ def test_a_peripheral_on_a_pad_the_symbol_lacks_raises(monkeypatch):
         mbs.build_plan(GOLDEN, LIBRARY)
 
 
-def test_magnetics_are_named_in_a_section_even_though_they_cannot_be_placed():
-    """Their block must still exist on the sheet, otherwise the tank section
-    reads as complete when it is missing its transformers."""
-    for ref in mbs.MAGNETIC_GAPS:
+def test_magnetics_are_placed_in_a_section():
+    """Their block must exist on the sheet, and now they are drawn in it."""
+    p = plan()
+    for ref in mbs.MAGNETIC_UNVERIFIED:
         assert mbs.section_of(ref) is not None, f"{ref} belongs to no section"
+        assert ref in p["refs"], f"{ref} is sectioned but not placed"
+
+
+def test_a_placed_magnetic_is_never_reported_as_mapped():
+    """The pins are logical terminal names.  Marking the row MAPPED would say
+    the physical pad map is done, which is the one claim this board cannot
+    make yet."""
+    p = plan()
+    for ref in mbs.MAGNETIC_UNVERIFIED:
+        rows = [r for r in p["review_rows"] if r["ref"] == ref]
+        assert rows, ref
+        assert all(r["review_status"] == "OPEN - REASON GIVEN" for r in rows), ref
+        assert all("NOT verified" in r["basis"] for r in rows), ref
+        assert all("PLACEHOLDER" in r["note"] for r in rows), ref
+        assert p["refs"][ref]["unverified"] is True, ref
+
+
+def test_the_magnetic_symbols_use_the_logical_terminal_names_as_pin_numbers():
+    """Inventing '1-5' would look like a vendor terminal drawing.  The numbers
+    are the same names the golden netlist uses, so the diff stays meaningful."""
+    for name, sym in _SYMBOLS["symbols"].items():
+        nums = [p["num"] for p in sym["pins"]]
+        assert nums == [p["name"] for p in sym["pins"]], name
+        assert all(not n.isdigit() for n in nums), name
+        assert len(set(nums)) == len(nums), name
+
+
+def test_project_symbols_start_from_the_measured_pin_dump():
+    """load_library must not silently drop or renumber the measured devices."""
+    assert set(_PINS) <= set(LIBRARY)
+    for name in _PINS:
+        assert LIBRARY[name]["pins"] == _PINS[name]["pins"], name
+    for name in _SYMBOLS["symbols"]:
+        assert LIBRARY[name]["library"] == "project", name
+        assert LIBRARY[name]["footprint_uuid"], name
+
+
+def test_a_project_device_that_lost_its_symbol_raises(monkeypatch):
+    """Placement of a magnetic needs the recorded device uuid.  If the symbol
+    is absent from the merged library the plan must say so, not invent pads."""
+    broken = dict(LIBRARY)
+    broken.pop("DCX_CT_4P")
+    p = mbs.build_plan(GOLDEN, broken)
+    assert {"ref": "CT", "reason": "no library dump for DCX_CT_4P"} in p["unresolved"]
+    assert "CT" not in p["refs"]

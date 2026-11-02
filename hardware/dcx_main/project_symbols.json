@@ -1,0 +1,50 @@
+{
+  "status": "NATIVE_SYMBOLS_PRESENT_LOGICAL_PINS_ONLY",
+  "created_by": "hardware/dcx_main/gen/make_project_symbols.js",
+  "created_with": "EasyEDA Pro 4.1.60.198f38ab (headless CLI)",
+  "project_uuid": "14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46",
+  "pin_number_policy": "Pin numbers are the LOGICAL terminal names from design/v3/magnetics/winding_polarity.csv, not physical pad numbers. The checklist forbids inventing a '1-5' sequence: a fabricated number in a finished symbol is indistinguishable from a verified terminal drawing. Physical pad numbers stay null in magnetics_symbol_contract.json until the winding house returns a terminal drawing.",
+  "footprint_note": "lib_Device.modify() returns false for every association and property form in this build, so a device-level footprint cannot be written headlessly. The placed instance carries a Footprint property instead; without it sch_ManufactureData.getNetlistFile() returns null for the whole sheet. The footprints below are placeholders chosen for pad count and body size, not vendor parts.",
+  "symbols": {
+    "DCX_XFMR_5P": {
+      "device_uuid": "9337923a074181e8",
+      "symbol_uuid": "f32975949cf4cf97",
+      "description": "DCX 24:1 centre-tapped transformer, 5 logical terminals; physical terminal drawing UNVERIFIED",
+      "pins": [
+        {"num": "PRI_A", "name": "PRI_A"},
+        {"num": "PRI_B", "name": "PRI_B"},
+        {"num": "SEC_A", "name": "SEC_A"},
+        {"num": "CTAP", "name": "CTAP"},
+        {"num": "SEC_B", "name": "SEC_B"}
+      ],
+      "placeholder_footprint": {
+        "name": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
+        "uuid": "e4586101a24c4442b54c19b6dc68a161",
+        "library": "system",
+        "pads": 5
+      },
+      "used_by": ["T1", "T2", "T3", "T4"]
+    },
+    "DCX_CT_4P": {
+      "device_uuid": "cb2563b7e9edf7c0",
+      "symbol_uuid": "fdce72c89ac1ae47",
+      "description": "DCX current transformer, 4 logical terminals; vendor pinout and polarity UNVERIFIED",
+      "pins": [
+        {"num": "PRI_A", "name": "PRI_A"},
+        {"num": "PRI_B", "name": "PRI_B"},
+        {"num": "SEC_A", "name": "SEC_A"},
+        {"num": "SEC_B", "name": "SEC_B"}
+      ],
+      "placeholder_footprint": {
+        "name": "XFMR-TH_ZHT104A",
+        "uuid": "1d2787765d1b434a853ff63520ce31dd",
+        "library": "system",
+        "pads": 2
+      },
+      "used_by": ["CT"]
+    }
+  },
+  "known_mismatches": [
+    "CT: the symbol has 4 logical terminals but the placeholder footprint exposes 2 pads. It is placed so the schematic is complete and the netlist can be diffed; PCB import and pad mapping for CT stay blocked until a real terminal drawing exists."
+  ]
+}

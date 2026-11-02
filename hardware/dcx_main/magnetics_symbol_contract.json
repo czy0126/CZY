@@ -1,9 +1,12 @@
 {
-  "status": "LOGICAL_CONTRACT_ONLY_NOT_NATIVE_CAD_OR_FAB",
+  "status": "NATIVE_SYMBOLS_PLACED_PHYSICAL_TERMINALS_UNVERIFIED",
   "physical_terminal_mapping_required": true,
+  "native_symbol_pin_numbering": "pin number == logical terminal name (no vendor terminal drawing exists, so no '1..5' numbering was invented)",
+  "native_symbol_source": "hardware/dcx_main/project_symbols.json",
   "sources": [
     "design/v3/pcb/board_netlist.csv",
-    "design/v3/magnetics/winding_polarity.json"
+    "design/v3/magnetics/winding_polarity.json",
+    "hardware/dcx_main/project_symbols.json"
   ],
   "symbols": [
     {
@@ -35,7 +38,10 @@
           "physical_pad": null
         }
       ],
-      "native_symbol_present": false,
+      "native_symbol_present": true,
+      "native_device_uuid": "cb2563b7e9edf7c0",
+      "native_symbol_uuid": "fdce72c89ac1ae47",
+      "placeholder_footprint": "XFMR-TH_ZHT104A",
       "physical_pad_map_verified": false
     },
     {
@@ -73,7 +79,10 @@
           "physical_pad": null
         }
       ],
-      "native_symbol_present": false,
+      "native_symbol_present": true,
+      "native_device_uuid": "9337923a074181e8",
+      "native_symbol_uuid": "f32975949cf4cf97",
+      "placeholder_footprint": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
       "physical_pad_map_verified": false
     },
     {
@@ -111,7 +120,10 @@
           "physical_pad": null
         }
       ],
-      "native_symbol_present": false,
+      "native_symbol_present": true,
+      "native_device_uuid": "9337923a074181e8",
+      "native_symbol_uuid": "f32975949cf4cf97",
+      "placeholder_footprint": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
       "physical_pad_map_verified": false
     },
     {
@@ -149,7 +161,10 @@
           "physical_pad": null
         }
       ],
-      "native_symbol_present": false,
+      "native_symbol_present": true,
+      "native_device_uuid": "9337923a074181e8",
+      "native_symbol_uuid": "f32975949cf4cf97",
+      "placeholder_footprint": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
       "physical_pad_map_verified": false
     },
     {
@@ -187,9 +202,12 @@
           "physical_pad": null
         }
       ],
-      "native_symbol_present": false,
+      "native_symbol_present": true,
+      "native_device_uuid": "9337923a074181e8",
+      "native_symbol_uuid": "f32975949cf4cf97",
+      "placeholder_footprint": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
       "physical_pad_map_verified": false
     }
   ],
-  "next_gate": "Create native EasyEDA symbols and real numbered pads; export and check all five magnetics and DOT before COMPLETE_PASS"
+  "next_gate": "The symbols are drawn and placed and the native export wires every logical terminal; what is still missing is the vendor terminal drawing that turns PRI_A/SEC_A/CTAP into numbered pads with a DOT. Until then every physical_pad stays null."
 }

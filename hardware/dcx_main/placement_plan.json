@@ -1,5 +1,22 @@
 {
  "refs": {
+  "CT": {
+   "part": "DCX_CT_4P",
+   "uuid": "cb2563b7e9edf7c0",
+   "pads": {
+    "PRI_A": "CR_CT",
+    "SEC_A": "CS1",
+    "SEC_B": "CS2",
+    "PRI_B": "CT_LR"
+   },
+   "section": "2. Resonant tank and T1-T4",
+   "library": "project",
+   "footprint": {
+    "name": "XFMR-TH_ZHT104A",
+    "uuid": "1d2787765d1b434a853ff63520ce31dd"
+   },
+   "unverified": true
+  },
   "Cr": {
    "part": "C0603_100n",
    "uuid": "ac7072e4a0764739a31216c96ed3c9cc",
@@ -7,7 +24,13 @@
     "2": "CR_CT",
     "1": "SW"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "D_CT1": {
    "part": "BAT54",
@@ -16,7 +39,13 @@
     "1": "CS1",
     "3": "OCD"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
+    "uuid": null
+   },
+   "unverified": false
   },
   "D_CT3": {
    "part": "BAT54",
@@ -25,7 +54,13 @@
     "3": "CS1",
     "1": "OCM"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
+    "uuid": null
+   },
+   "unverified": false
   },
   "D_CT2": {
    "part": "BAT54",
@@ -34,7 +69,13 @@
     "1": "CS2",
     "3": "OCD"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
+    "uuid": null
+   },
+   "unverified": false
   },
   "D_CT4": {
    "part": "BAT54",
@@ -43,7 +84,13 @@
     "3": "CS2",
     "1": "OCM"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
+    "uuid": null
+   },
+   "unverified": false
   },
   "Lr": {
    "part": "IND_10UH",
@@ -52,7 +99,13 @@
     "1": "CT_LR",
     "2": "PRI_T1"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "IND-SMD_L10.2-W10.0_YPRH104R",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R1": {
    "part": "R0603_10k",
@@ -61,7 +114,13 @@
     "1": "DT",
     "2": "PGND"
    },
-   "section": "4. Control: UCC25600 / UCC27282"
+   "section": "4. Control: UCC25600 / UCC27282",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "U1": {
    "part": "UCC25600D",
@@ -76,7 +135,13 @@
     "4": "SS",
     "7": "VCC12"
    },
-   "section": "4. Control: UCC25600 / UCC27282"
+   "section": "4. Control: UCC25600 / UCC27282",
+   "library": "system",
+   "footprint": {
+    "name": "SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R20": {
    "part": "R0603_10k",
@@ -85,7 +150,13 @@
     "2": "GA1",
     "1": "VG1_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR1A": {
    "part": "BSC010N04LS6",
@@ -100,7 +171,13 @@
     "7": "SEC1_A",
     "8": "SEC1_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R22": {
    "part": "R0603_10k",
@@ -109,7 +186,13 @@
     "2": "GA2",
     "1": "VG2_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR2A": {
    "part": "BSC010N04LS6",
@@ -124,7 +207,13 @@
     "7": "SEC2_A",
     "8": "SEC2_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R24": {
    "part": "R0603_10k",
@@ -133,7 +222,13 @@
     "2": "GA3",
     "1": "VG3_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR3A": {
    "part": "BSC010N04LS6",
@@ -148,7 +243,13 @@
     "7": "SEC3_A",
     "8": "SEC3_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R26": {
    "part": "R0603_10k",
@@ -157,7 +258,13 @@
     "2": "GA4",
     "1": "VG4_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR4A": {
    "part": "BSC010N04LS6",
@@ -172,7 +279,13 @@
     "7": "SEC4_A",
     "8": "SEC4_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R21": {
    "part": "R0603_10k",
@@ -181,7 +294,13 @@
     "2": "GB1",
     "1": "VG1_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR1B": {
    "part": "BSC010N04LS6",
@@ -196,7 +315,13 @@
     "7": "SEC1_B",
     "8": "SEC1_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R23": {
    "part": "R0603_10k",
@@ -205,7 +330,13 @@
     "2": "GB2",
     "1": "VG2_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR2B": {
    "part": "BSC010N04LS6",
@@ -220,7 +351,13 @@
     "7": "SEC2_B",
     "8": "SEC2_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R25": {
    "part": "R0603_10k",
@@ -229,7 +366,13 @@
     "2": "GB3",
     "1": "VG3_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR3B": {
    "part": "BSC010N04LS6",
@@ -244,7 +387,13 @@
     "7": "SEC3_B",
     "8": "SEC3_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R27": {
    "part": "R0603_10k",
@@ -253,7 +402,13 @@
     "2": "GB4",
     "1": "VG4_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "SR4B": {
    "part": "BSC010N04LS6",
@@ -268,7 +423,13 @@
     "7": "SEC4_B",
     "8": "SEC4_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "U2": {
    "part": "UCC27282DRCR",
@@ -285,7 +446,13 @@
     "1": "VCC12",
     "11": "PGND"
    },
-   "section": "4. Control: UCC25600 / UCC27282"
+   "section": "4. Control: UCC25600 / UCC27282",
+   "library": "system",
+   "footprint": {
+    "name": "VSON-10_L3.0-W3.0-P0.50-TL-EP",
+    "uuid": null
+   },
+   "unverified": false
   },
   "QH": {
    "part": "CSD19531Q5A",
@@ -301,7 +468,13 @@
     "8": "VIN_P",
     "9": "VIN_P"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R18": {
    "part": "R0603_10k",
@@ -310,7 +483,13 @@
     "1": "GH",
     "2": "SW"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R4": {
    "part": "R0603_10k",
@@ -319,7 +498,13 @@
     "2": "GH",
     "1": "GH_DRV"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "QL": {
    "part": "CSD19531Q5A",
@@ -335,7 +520,13 @@
     "8": "SW",
     "9": "SW"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R19": {
    "part": "R0603_10k",
@@ -344,7 +535,13 @@
     "1": "GL",
     "2": "PGND"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R5": {
    "part": "R0603_10k",
@@ -353,7 +550,13 @@
     "2": "GL",
     "1": "GL_DRV"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C5": {
    "part": "C0603_100n",
@@ -362,7 +565,13 @@
     "1": "HB",
     "2": "SW"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "D_BT": {
    "part": "BAT54WS",
@@ -371,7 +580,13 @@
     "1": "HB",
     "2": "VCC12"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "SOD-323_L1.8-W1.3-LS2.5-RD",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C12": {
    "part": "C0603_100n",
@@ -380,7 +595,13 @@
     "1": "OC",
     "2": "OCM"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R16": {
    "part": "R0603_10k",
@@ -389,7 +610,13 @@
     "2": "OC",
     "1": "OC1"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R17": {
    "part": "R0603_10k",
@@ -398,7 +625,13 @@
     "1": "OC",
     "2": "OCM"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C11": {
    "part": "C0603_100n",
@@ -407,7 +640,13 @@
     "1": "OC1",
     "2": "OCM"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R15": {
    "part": "R0603_10k",
@@ -416,7 +655,13 @@
     "2": "OC1",
     "1": "OCD"
    },
-   "section": "5. Bias, overcurrent and start-up"
+   "section": "5. Bias, overcurrent and start-up",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R3": {
    "part": "R0603_10k",
@@ -425,7 +670,13 @@
     "1": "OCD",
     "2": "OCM"
    },
-   "section": "2. Resonant tank and T1-T4"
+   "section": "2. Resonant tank and T1-T4",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C10": {
    "part": "C0603_100n",
@@ -434,7 +685,13 @@
     "2": "PGND",
     "1": "REG4"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C6": {
    "part": "C0603_100n",
@@ -443,7 +700,13 @@
     "2": "PGND",
     "1": "SS"
    },
-   "section": "4. Control: UCC25600 / UCC27282"
+   "section": "4. Control: UCC25600 / UCC27282",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C7": {
    "part": "C0603_100n",
@@ -452,7 +715,13 @@
     "2": "PGND",
     "1": "REG1"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C8": {
    "part": "C0603_100n",
@@ -461,7 +730,13 @@
     "2": "PGND",
     "1": "REG2"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C9": {
    "part": "C0603_100n",
@@ -470,7 +745,13 @@
     "2": "PGND",
     "1": "REG3"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "Cin": {
    "part": "C0603_100n",
@@ -479,7 +760,13 @@
     "2": "PGND",
     "1": "VIN_P"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "Cout": {
    "part": "C0603_100n",
@@ -488,7 +775,13 @@
     "2": "PGND",
     "1": "VOUT"
    },
-   "section": "6. Output interface"
+   "section": "6. Output interface",
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "J_IN": {
    "part": "KF128_2P",
@@ -497,7 +790,13 @@
     "2": "PGND",
     "1": "VIN_P"
    },
-   "section": "1. Input and half bridge"
+   "section": "1. Input and half bridge",
+   "library": "system",
+   "footprint": {
+    "name": "CONN-TH_P5.08_KF128-5.08-2P",
+    "uuid": null
+   },
+   "unverified": false
   },
   "J_OUT": {
    "part": "MX126_2P",
@@ -506,7 +805,13 @@
     "2": "PGND",
     "1": "VOUT"
    },
-   "section": "6. Output interface"
+   "section": "6. Output interface",
+   "library": "system",
+   "footprint": {
+    "name": "CONN-TH_2P-P5.00_MX126-5.0-GN01-02P-CU-S-A",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R2": {
    "part": "R0603_10k",
@@ -515,7 +820,31 @@
     "2": "PGND",
     "1": "RT"
    },
-   "section": "4. Control: UCC25600 / UCC27282"
+   "section": "4. Control: UCC25600 / UCC27282",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
+  },
+  "T4": {
+   "part": "DCX_XFMR_5P",
+   "uuid": "9337923a074181e8",
+   "pads": {
+    "PRI_B": "PGND",
+    "PRI_A": "PRI_34",
+    "SEC_A": "SEC4_A",
+    "SEC_B": "SEC4_B",
+    "CTAP": "VOUT"
+   },
+   "section": "2. Resonant tank and T1-T4",
+   "library": "project",
+   "footprint": {
+    "name": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
+    "uuid": "e4586101a24c4442b54c19b6dc68a161"
+   },
+   "unverified": true
   },
   "U3": {
    "part": "UCC24624DR",
@@ -530,7 +859,13 @@
     "1": "VG1_A",
     "8": "VG1_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "U4": {
    "part": "UCC24624DR",
@@ -545,7 +880,13 @@
     "1": "VG2_A",
     "8": "VG2_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "U5": {
    "part": "UCC24624DR",
@@ -560,7 +901,13 @@
     "1": "VG3_A",
     "8": "VG3_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "uuid": null
+   },
+   "unverified": false
   },
   "U6": {
    "part": "UCC24624DR",
@@ -575,7 +922,67 @@
     "1": "VG4_A",
     "8": "VG4_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "uuid": null
+   },
+   "unverified": false
+  },
+  "T1": {
+   "part": "DCX_XFMR_5P",
+   "uuid": "9337923a074181e8",
+   "pads": {
+    "PRI_B": "PRI_12",
+    "PRI_A": "PRI_T1",
+    "SEC_A": "SEC1_A",
+    "SEC_B": "SEC1_B",
+    "CTAP": "VOUT"
+   },
+   "section": "2. Resonant tank and T1-T4",
+   "library": "project",
+   "footprint": {
+    "name": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
+    "uuid": "e4586101a24c4442b54c19b6dc68a161"
+   },
+   "unverified": true
+  },
+  "T2": {
+   "part": "DCX_XFMR_5P",
+   "uuid": "9337923a074181e8",
+   "pads": {
+    "PRI_A": "PRI_12",
+    "PRI_B": "PRI_23",
+    "SEC_A": "SEC2_A",
+    "SEC_B": "SEC2_B",
+    "CTAP": "VOUT"
+   },
+   "section": "2. Resonant tank and T1-T4",
+   "library": "project",
+   "footprint": {
+    "name": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
+    "uuid": "e4586101a24c4442b54c19b6dc68a161"
+   },
+   "unverified": true
+  },
+  "T3": {
+   "part": "DCX_XFMR_5P",
+   "uuid": "9337923a074181e8",
+   "pads": {
+    "PRI_A": "PRI_23",
+    "PRI_B": "PRI_34",
+    "SEC_A": "SEC3_A",
+    "SEC_B": "SEC3_B",
+    "CTAP": "VOUT"
+   },
+   "section": "2. Resonant tank and T1-T4",
+   "library": "project",
+   "footprint": {
+    "name": "XFMR-TH_5P-L20.5-W18.0-P3.25-TL",
+    "uuid": "e4586101a24c4442b54c19b6dc68a161"
+   },
+   "unverified": true
   },
   "R28": {
    "part": "R0603_10k",
@@ -584,7 +991,13 @@
     "1": "SEC1_A",
     "2": "VD1_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R29": {
    "part": "R0603_10k",
@@ -593,7 +1006,13 @@
     "1": "SEC1_B",
     "2": "VD1_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R30": {
    "part": "R0603_10k",
@@ -602,7 +1021,13 @@
     "1": "SEC2_A",
     "2": "VD2_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R31": {
    "part": "R0603_10k",
@@ -611,7 +1036,13 @@
     "1": "SEC2_B",
     "2": "VD2_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R32": {
    "part": "R0603_10k",
@@ -620,7 +1051,13 @@
     "1": "SEC3_A",
     "2": "VD3_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R33": {
    "part": "R0603_10k",
@@ -629,7 +1066,13 @@
     "1": "SEC3_B",
     "2": "VD3_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R34": {
    "part": "R0603_10k",
@@ -638,7 +1081,13 @@
     "1": "SEC4_A",
     "2": "VD4_A"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R35": {
    "part": "R0603_10k",
@@ -647,7 +1096,13 @@
     "1": "SEC4_B",
     "2": "VD4_B"
    },
-   "section": "3. Four synchronous rectifier groups"
+   "section": "3. Four synchronous rectifier groups",
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R7": {
    "part": "R0603_10k",
@@ -657,7 +1112,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R8": {
    "part": "R0603_10k",
@@ -667,7 +1128,13 @@
     "2": "RUN"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R9": {
    "part": "R0603_10k",
@@ -677,7 +1144,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "R10": {
    "part": "R0603_10k",
@@ -687,7 +1160,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "R0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C13": {
    "part": "C0603_100n",
@@ -697,7 +1176,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C101": {
    "part": "C0603_100n",
@@ -707,7 +1192,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C102": {
    "part": "C0603_100n",
@@ -717,7 +1208,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C103": {
    "part": "C0603_100n",
@@ -727,7 +1224,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C104": {
    "part": "C0603_100n",
@@ -737,7 +1240,13 @@
     "2": "PGND"
    },
    "section": "4. Control: UCC25600 / UCC27282",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C105": {
    "part": "C0603_100n",
@@ -747,7 +1256,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C106": {
    "part": "C0603_100n",
@@ -757,7 +1272,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C107": {
    "part": "C0603_100n",
@@ -767,7 +1288,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C108": {
    "part": "C0603_100n",
@@ -777,7 +1304,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C109": {
    "part": "C0603_100n",
@@ -787,7 +1320,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C110": {
    "part": "C0603_100n",
@@ -797,7 +1336,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C111": {
    "part": "C0603_100n",
@@ -807,7 +1352,13 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   },
   "C112": {
    "part": "C0603_100n",
@@ -817,36 +1368,21 @@
     "2": "PGND"
    },
    "section": "3. Four synchronous rectifier groups",
-   "peripheral": true
+   "peripheral": true,
+   "library": "system",
+   "footprint": {
+    "name": "C0603",
+    "uuid": null
+   },
+   "unverified": false
   }
  },
- "gaps": {
-  "T1": "needs a 5-pin 3:1:1 symbol (PRI_A/PRI_B/SEC_A/SEC_B/CTAP); the library's only 5-pad transformer (EE16_65KHZ) exposes 6 pins",
-  "T2": "same custom symbol as T1",
-  "T3": "same custom symbol as T1",
-  "T4": "same custom symbol as T1",
-  "CT": "needs a 4-pin current-transformer symbol; ZHT104A in the library has 2 pins"
+ "unverified_magnetics": {
+  "T1": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+  "T2": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+  "T3": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+  "T4": "native symbol placed with logical terminal pins; physical terminal->pad map and DOT UNVERIFIED",
+  "CT": "native symbol placed with logical terminal pins; vendor pinout and polarity UNVERIFIED"
  },
- "unresolved": [
-  {
-   "ref": "CT",
-   "reason": "needs a 4-pin current-transformer symbol; ZHT104A in the library has 2 pins"
-  },
-  {
-   "ref": "T4",
-   "reason": "same custom symbol as T1"
-  },
-  {
-   "ref": "T1",
-   "reason": "needs a 5-pin 3:1:1 symbol (PRI_A/PRI_B/SEC_A/SEC_B/CTAP); the library's only 5-pad transformer (EE16_65KHZ) exposes 6 pins"
-  },
-  {
-   "ref": "T2",
-   "reason": "same custom symbol as T1"
-  },
-  {
-   "ref": "T3",
-   "reason": "same custom symbol as T1"
-  }
- ]
+ "unresolved": []
 }
