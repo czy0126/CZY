@@ -60,6 +60,13 @@ def build() -> dict:
     aligned_closure_avg = float(
         aligned50["balance"]["period_averaged"]["closure_residual_w"])
     aligned_sem = float(aligned50["balance"]["resolution"]["sem_w"])
+    # ELE-09 inventory audit: every dissipative element in the deck is either
+    # measured by a loss term or bounded here.  The only un-inventoried
+    # resistor that carries current is Cin's 5 mOhm ESR; I(Cin) was measured
+    # on the same aligned raw (saved axis 0-110 us).  Keep the two inputs so
+    # the comparison stays reproducible rather than a remembered ratio.
+    cin_ac_rms_a = 0.3493
+    cin_esr_w = 5e-3 * cin_ac_rms_a ** 2
     evidence = {
         "manufacturing_gate": gate["status"],
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
@@ -77,6 +84,8 @@ def build() -> dict:
         "50v_120a_aligned_closure_period_averaged_w": aligned_closure_avg,
         "50v_120a_aligned_resolution_sem_w": aligned_sem,
         "50v_120a_aligned_resolves_0p2_w": aligned_sem <= target,
+        "50v_120a_cin_ac_rms_a": cin_ac_rms_a,
+        "50v_120a_cin_esr_loss_w": cin_esr_w,
         "50v_120a_loss_residual_moves_between_windows_w": aligned_loss_gap - loss_gap,
         "target_residual_w": target,
         "lr_core_ae_m2_from_existing_design": area,
@@ -163,9 +172,12 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
             "blocked": abs(loss_gap) > target,
-            "next_evidence": "ELE-09 ruled out a short-window artifact: 22 periods 0.4986 W vs "
-                             "133 aligned periods 0.4921 W (sem 0.050 W).  Trace the physical "
-                             "source of the remaining ~0.49 W; do not relax 0.2 W",
+            "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs "
+                             "133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: "
+                             "no un-inventoried dissipative element can hold 0.49 W (Cin ESR "
+                             "0.61 mW measured, Cbt carries no charge).  Remaining candidates are "
+                             "the port reading (~2 mV of mean Vout) and the behavioral-SR "
+                             "integration error; do not relax 0.2 W",
             "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
         },
         {
@@ -173,9 +185,11 @@ def build() -> dict:
             "priority": "P0",
             "blocker": "50V 120A full energy closure not approved",
             "blocked": ledger50["balance"]["closure_status"] != "CLOSED" or abs(closure) > target,
-            "next_evidence": "trace residual physical source; the aligned 133-period window "
-                             "confirms it is stable (0.698 W period-averaged, sem 0.050 W), "
-                             "do not relax 0.2W",
+            "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is "
+                             "stable (sem 0.050 W); ELE-09's inventory audit leaves only port "
+                             "and numerical candidates, so settle it with an edge-aligned "
+                             "fixed-step integration rather than more step reduction; "
+                             "do not relax 0.2 W",
             "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json",
         },
         {

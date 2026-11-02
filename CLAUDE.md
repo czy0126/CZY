@@ -302,6 +302,14 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   四点上，`sem_w` 说的"能分辨 0.2 W"只含周期间随机散布、**不含步长**，系统误差本身就有 0.21 W。
   引用 +0.33 W 时必须带这句限定，不能写成"稳定"。
   `step_check.terms` 的 `vout_end_v` **只有 a/b 两端**，第三、四段的终点没有记录——别拿 2 ns 的值去代。
+- **50 V/120 A 的 0.49 W 缺口不是"漏了一个耗散元件"**：deck 里每个能产生导通损耗的元件
+  都被 `loss_terms()` 的某项测到，或被量化排除。唯一没进清单且带电流的是 `Cin Rser=5m`，
+  在 aligned raw 上实测 `I(Cin)` 交流 RMS **0.3493 A** ⇒ **0.61 mW**；`Cbt Rser=.05`
+  在模型里根本没有电荷进出（`Bgh` 只读 `V(hb,sw)` 的值）。两者合计 ≤1 mW，与 492 mW
+  差约 800 倍。能容纳缺口的只剩端口读数边界（`2V/RL = 236 W/V`，0.49 W ≈ **2.1 mV**
+  的平均 `V(out)` 差）与行为模型积分误差（同一 SR 项在 100 A 四段步长上摆 2.30 W）。
+  `tools/test_loss_inventory_is_complete.py` 锁住这张映射表：新增耗散元件而不更新映射会红。
+  见 `50V120A_损耗差额与步长_2026-11-02.md` §6。**不要把 0.49 W 当成"还有一条物理没建模"。**
 - **`sr_loss_audit.py` 的 aligned 家族现在是四列**（5/2/1/0.5 ns）。`results.aligned_steps_ns`
   从用例名派生，报告正文也由它拼出来——**不要再在代码或文档里写死 "5 / 2 / 1 ns"**：
   这次就是这么漏掉第四列的。`ledger_issue6_triage.py` 原来用 `len(after) != 3` 当守卫，

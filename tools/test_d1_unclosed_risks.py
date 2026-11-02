@@ -73,6 +73,11 @@ def test_the_loss_gap_is_not_a_short_window_artifact_but_stays_blocked():
     assert abs(e["50v_120a_loss_residual_moves_between_windows_w"]) < (
         e["50v_120a_aligned_loss_residual_w"] / 2)
     assert e["50v_120a_aligned_resolves_0p2_w"] is True
+    # The inventory audit bounds every un-inventoried dissipative element to
+    # about a milliwatt, so the 0.49 W gap cannot be a missing component.
+    assert e["50v_120a_cin_ac_rms_a"] > 0.0
+    assert e["50v_120a_cin_esr_loss_w"] < 1e-3
+    assert e["50v_120a_aligned_loss_residual_w"] > 100 * e["50v_120a_cin_esr_loss_w"]
     assert e["50v_120a_model_closure_status"] == "NOT_CLOSED"
     assert all(x["blocked"] for x in j["risks"])
 

@@ -16,6 +16,8 @@
     "50v_120a_aligned_closure_period_averaged_w": 0.6984390319237341,
     "50v_120a_aligned_resolution_sem_w": 0.04992540152990046,
     "50v_120a_aligned_resolves_0p2_w": true,
+    "50v_120a_cin_ac_rms_a": 0.3493,
+    "50v_120a_cin_esr_loss_w": 0.00061005245,
     "50v_120a_loss_residual_moves_between_windows_w": -0.006560553744968445,
     "target_residual_w": 0.2,
     "lr_core_ae_m2_from_existing_design": 0.00013,
@@ -78,7 +80,7 @@
       "priority": "P0",
       "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
       "blocked": true,
-      "next_evidence": "ELE-09 ruled out a short-window artifact: 22 periods 0.4986 W vs 133 aligned periods 0.4921 W (sem 0.050 W).  Trace the physical source of the remaining ~0.49 W; do not relax 0.2 W",
+      "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs 133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: no un-inventoried dissipative element can hold 0.49 W (Cin ESR 0.61 mW measured, Cbt carries no charge).  Remaining candidates are the port reading (~2 mV of mean Vout) and the behavioral-SR integration error; do not relax 0.2 W",
       "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json"
     },
     {
@@ -86,7 +88,7 @@
       "priority": "P0",
       "blocker": "50V 120A full energy closure not approved",
       "blocked": true,
-      "next_evidence": "trace residual physical source; the aligned 133-period window confirms it is stable (0.698 W period-averaged, sem 0.050 W), do not relax 0.2W",
+      "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is stable (sem 0.050 W); ELE-09's inventory audit leaves only port and numerical candidates, so settle it with an edge-aligned fixed-step integration rather than more step reduction; do not relax 0.2 W",
       "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json"
     },
     {
