@@ -40,6 +40,12 @@ foreach ($Case in $Cases) {
     # Fail if existing output could be mistaken for the just-run result.
     if (Test-Path -LiteralPath $Log) { throw "Existing log must be archived/moved first: $Log" }
     if (Test-Path -LiteralPath $Raw) { throw "Existing raw must be archived/moved first: $Raw" }
+    if ($Case -like "*HotFault") {
+        $Validated = [IO.Path]::ChangeExtension($Deck, ".validation.json")
+        if (Test-Path -LiteralPath $Validated) {
+            throw "Existing validation report must be archived/moved before simulation: $Validated"
+        }
+    }
     & $LTspice -b $Deck
     if ($LASTEXITCODE -ne 0) { throw "LTspice failed for $Case (exit $LASTEXITCODE)" }
     if (!(Test-Path -LiteralPath $Log -PathType Leaf) -or
@@ -60,10 +66,6 @@ foreach ($Case in $Cases) {
     }
     if ($Case -like "*HotFault") {
         $CaseKey = if ($Case -eq "48V120HotFault") { "48v_120a" } else { "50v_120a" }
-        $Validated = [IO.Path]::ChangeExtension($Deck, ".validation.json")
-        if (Test-Path -LiteralPath $Validated) {
-            throw "Existing validation report must be archived/moved: $Validated"
-        }
         & python (Join-Path $Repo "tools/validate_hotfault_log.py") --case $CaseKey --log $Log --raw $Raw --json $Validated
         if ($LASTEXITCODE -ne 0) {
             throw "Fault may have run, but post-fault OC/settling evidence is invalid for $Case"
