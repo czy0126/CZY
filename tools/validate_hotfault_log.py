@@ -35,7 +35,12 @@ CASES = {
 # All times below are on the SAVED raw/log axis: t_raw = t_absolute-880us.
 FAULT_AT_S = 175e-6
 RECORDED_TO_S = 320e-6
+# Behavioural UCC25600: Ieff=max(0, 1.81m - Vss/2200).
+# Thus the oscillator reaches its RT-only frequency at ~3.982V, NOT 4.8V.
+SS_RT_ONLY_THRESHOLD_V = round(1.81e-3 * 2200, 3)
+SS_MODEL_CLAMP_V = 6.0
 REQUIRED = ("hot_ctrl_before", "hot_ctrl_after", "hot_iflt_after",
+            "hot_vout_early", "hot_vout_late",
             "hot_oc_before", "hot_vout_before", "hot_ss_before",
             "hot_ipri_after", "hot_oc_after", "hot_vout_min", "hot_oc_trip")
 NUMBER = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
@@ -112,8 +117,13 @@ def build(case: str, log: Path, raw: Path) -> dict:
         if result["hot_iflt_after"] <= 1:
             issues.append("no verified injected fault-branch current")
         ss = result["hot_ss_before"]
-        if not (4.8 <= ss <= 5.1):
-            issues.append(f"V(ss) pre-fault not settled near 5V: {ss}")
+        if not (SS_RT_ONLY_THRESHOLD_V <= ss <= SS_MODEL_CLAMP_V + 0.05):
+            issues.append(
+                f"V(ss) pre-fault outside RT-only regime ({SS_RT_ONLY_THRESHOLD_V:.3f}V.."
+                f"{SS_MODEL_CLAMP_V:.2f}V): {ss}")
+        early, late = result["hot_vout_early"], result["hot_vout_late"]
+        if abs(early - late) > max(0.01, 0.005 * baseline_vout):
+            issues.append(f"pre-fault Vout changes between adjacent windows: {early} vs {late}")
         vout = result["hot_vout_before"]
         if abs(vout - baseline_vout) > max(0.02, 0.02 * baseline_vout):
             issues.append(f"pre-fault Vout {vout} not near matched steady-state {baseline_vout}")
@@ -140,6 +150,7 @@ def build(case: str, log: Path, raw: Path) -> dict:
         "raw": raw.as_posix(),
         "raw_bytes": raw.stat().st_size if raw.is_file() else 0,
         "baseline_model_vout_v": baseline_vout,
+        "ss_rt_only_threshold_v": SS_RT_ONLY_THRESHOLD_V,
         "fault_time_in_saved_axis_s": FAULT_AT_S,
         "probes": result,
         "blockers": issues,

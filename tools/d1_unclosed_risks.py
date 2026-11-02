@@ -9,6 +9,8 @@ import argparse
 import json
 from pathlib import Path
 
+from validate_hotfault_log import SS_RT_ONLY_THRESHOLD_V
+
 ROOT = Path(__file__).resolve().parent.parent
 PP = ROOT / "design/v3/power_priority"
 OUT = PP / "unclosed_risk_register.json"
@@ -93,6 +95,7 @@ def build() -> dict:
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
         "48v_120a_fault_peak_primary_a": fault_peak,
         "48v_120a_fault_vss_at_engage_v": before_fault_ss,
+        "ss_rt_only_threshold_v": SS_RT_ONLY_THRESHOLD_V,
         "48v_120a_fault_solver_prefix_only": fault["solver_prefix_only"],
         "48v_120a_cold_reached_full_tstop": cold["reached_tstop"],
         "50v_120a_model_loss_residual_w": loss_gap,
@@ -206,12 +209,21 @@ def build() -> dict:
         {
             "id": "F01",
             "priority": "P0",
+            # PR #21 corrected the soft-start question: the fault must be injected
+            # after V(ss) reaches the UCC25600 RT-only level (3.982 V), not during
+            # the 0.5 mV/us ramp.  The hot-start decks do that (V(ss)=5.04/5.05 V),
+            # so that half is answered; what remains is the prefix and hardware.
             "blocker": "settled-state fault evidence is simulation only and the 50V run "
                        "stopped at 296.93us of 320us (solver collapse, no completion line); "
                        "OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
             "blocked": True,
             "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
-                             "confirm real Lr saturation at the 101A fault peak; the 50V "
+                             "confirm real Lr saturation at the 101A fault peak.  The PR #21 "
+                             "soft-start question is closed: the fault is now injected after "
+                             f"V(ss) reaches {SS_RT_ONLY_THRESHOLD_V:.3f} V "
+                             f"({hot48['pre_fault']['ss']['mean']:.3f} V at 48 V, "
+                             f"{hot50['pre_fault']['ss']['mean']:.3f} V at 50 V), not during the "
+                             "0.5 mV/us ramp.  The 50V "
                              "296.928us stall is numerical (smooth 3 V/us dead state, LTE-driven) -- "
                              "standby cannot close it because tSTBY_DET is 7.5 ms -- and the prefix "
                              "is accepted because every stress event ends before 215us.  PR #20's "

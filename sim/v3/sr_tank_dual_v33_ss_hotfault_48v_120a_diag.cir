@@ -233,6 +233,8 @@ Vfltctl_hot ctl_hot 0 PWL(0 0 2170u 0 2180u 5 2320u 5)
 Sflt_hot out flt_hot ctl_hot 0 HOTFLT
 Rflt_hot flt_hot 0 1m
 .model HOTFLT SW(Ron=1m Roff=1G Vt=2.5)
+.meas tran HOT_VOUT_EARLY AVG V(out) FROM=120u TO=145u
+.meas tran HOT_VOUT_LATE AVG V(out) FROM=145u TO=170u
 .meas tran HOT_CTRL_BEFORE AVG V(ctl_hot) FROM=120u TO=170u
 .meas tran HOT_CTRL_AFTER AVG V(ctl_hot) FROM=190u TO=300u
 .meas tran HOT_IFLT_AFTER MAX I(Rflt_hot) FROM=175u TO=320u

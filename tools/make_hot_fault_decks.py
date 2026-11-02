@@ -53,7 +53,9 @@ FAULT_SAVE = "+ V(ctl_hot) I(Rflt_hot)\n"
 # These measurements are on the *rebased saved axis* from 2000us; original
 # 0..120us measurements remain pre-fault baseline and are not copied into
 # the new fault decision.
-PROBES = """.meas tran HOT_CTRL_BEFORE AVG V(ctl_hot) FROM=120u TO=170u
+PROBES = """.meas tran HOT_VOUT_EARLY AVG V(out) FROM=120u TO=145u
+.meas tran HOT_VOUT_LATE AVG V(out) FROM=145u TO=170u
+.meas tran HOT_CTRL_BEFORE AVG V(ctl_hot) FROM=120u TO=170u
 .meas tran HOT_CTRL_AFTER AVG V(ctl_hot) FROM=190u TO=300u
 .meas tran HOT_IFLT_AFTER MAX I(Rflt_hot) FROM=175u TO=320u
 .meas tran HOT_OC_BEFORE MAX V(oc) FROM=120u TO=170u

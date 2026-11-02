@@ -1,6 +1,6 @@
 LTspice 26.0.2 for Windows
 Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_48v_120a.cir
-Start Time: Mon Nov  2 17:13:16 2026
+Start Time: Mon Nov  2 22:15:45 2026
 Options:plotwinsize=0 method=gear
 solver = Normal
 Maximum thread count: 24
@@ -10,7 +10,7 @@ method = Gear
 AsciiRawFile = true
 Per .tran options, skipping operating point for transient analysis.
 Warning: Simulation tolerance relaxed to achieve convergence from 1.7400573127935399e-03 to 1.7400573127935499e-03 seconds.
-Total elapsed time: 554.498 seconds.
+Total elapsed time: 544.086 seconds.
 
 Files loaded:
 D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_48v_120a.cir
@@ -28,6 +28,8 @@ ovl_cur: MAX(V(ovl1) )=1.70369015287 FROM 0 TO 0.00012
 ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
 ipri_pk: MAX(abs(I(Lr)) )=15.6313683973 FROM 0 TO 0.00012
 out_last: V(out) =1.88579335053 at 0.00012
+hot_vout_early: AVG(V(out) )=1.87393318457 FROM 0.00012 TO 0.000145
+hot_vout_late: AVG(V(out) )=1.87382981736 FROM 0.000145 TO 0.00017
 hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017
 hot_ctrl_after: AVG(V(ctl_hot) )=4.99999999999 FROM 0.00019 TO 0.0003
 hot_iflt_after: MAX(I(Rflt_hot) )=858.889898342 FROM 0.000175 TO 0.00032

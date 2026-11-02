@@ -18,6 +18,8 @@ def test_two_independent_fault_decks_are_regenerable_from_same_ss_circuits():
         # below PR #20's 4.8..5.1 V settled-state band.
         assert "0 2320u 2000u" in result
         assert "HOT_SS_BEFORE AVG V(ss)" in result
+        assert "HOT_VOUT_EARLY AVG V(out)" in result
+        assert "HOT_VOUT_LATE AVG V(out)" in result
         assert "HOT_IFLT_AFTER MAX I(Rflt_hot)" in result
         assert "HOT_CTRL_AFTER AVG V(ctl_hot)" in result
         assert "+ V(ctl_hot) I(Rflt_hot)" in result

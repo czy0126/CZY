@@ -61,7 +61,7 @@
   "logs": {
     "base": {
       "solver_completed": true,
-      "total_elapsed_s": 554.498,
+      "total_elapsed_s": 544.086,
       "measurements": {
         "options": 0.0,
         "vout_avg": 1.87386278001,
@@ -74,6 +74,8 @@
         "ovl_gate": 0.0,
         "ipri_pk": 15.6313683973,
         "out_last": 1.88579335053,
+        "hot_vout_early": 1.87393318457,
+        "hot_vout_late": 1.87382981736,
         "hot_ctrl_before": 0.0,
         "hot_ctrl_after": 4.99999999999,
         "hot_iflt_after": 858.889898342,
