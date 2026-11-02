@@ -53,3 +53,36 @@ def test_repo_risk_register_is_current():
     result = risk.build()
     assert result["evidence"]["independent_hotfault_simulation_accepted"] is False
     assert next(x for x in result["risks"] if x["id"] == "F01")["blocked"]
+
+
+def test_valid_engineering_evidence_is_possible_but_report_hash_tampering_fails(tmp_path, monkeypatch):
+    """No real qualification claimed: use synthetic evidence in isolated tmp dir."""
+    from validate_hotfault_log import CASES as CONFIG, sha as digest_deck
+    monkeypatch.setattr(gate, "ROOT", tmp_path)
+    monkeypatch.setattr(gate, "PP", tmp_path)
+    case = "48v_120a"
+    summary = tmp_path / "summary.json"
+    wave = tmp_path / "waveform_review.md"
+    summary.write_text(json.dumps({
+        "case": case,
+        "status": "LOG_PRECHECK_PASS_REQUIRES_WAVEFORM_AND_DEVICE_REVIEW",
+        "raw_bytes": 125000, "not_rated": True, "blockers": [],
+        "deck_sha256": digest_deck(CONFIG[case]["deck"]),
+    }), encoding="utf-8")
+    wave.write_text("Synthetic waveform engineering review, TEST ONLY", encoding="utf-8")
+    def sha(path):
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    data = {
+        "approved": True, "reviewer": "synthetic test reviewer",
+        "revision": "TEST-R1", "validation_path": "summary.json",
+        "validation_sha256": sha(summary), "waveform_review_path": "waveform_review.md",
+        "waveform_review_sha256": sha(wave),
+        "pre_fault_settled": True, "switch_and_oc_verified": True,
+        "gate_shutdown_verified": True, "peak_stress_reviewed": True,
+        "waveform_full_duration_verified": True,
+    }
+    approval = tmp_path / f"hotfault_{case}_engineering_review.json"
+    approval.write_text(json.dumps(data), encoding="utf-8")
+    assert gate.inspect(case)["accepted"]
+    wave.write_text(wave.read_text(encoding="utf-8") + " TAMPERED", encoding="utf-8")
+    assert not gate.inspect(case)["accepted"]
