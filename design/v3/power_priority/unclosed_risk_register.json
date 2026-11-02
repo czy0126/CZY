@@ -8,6 +8,10 @@
     "48v_120a_fault_vss_at_engage_v": 3.781516585545742,
     "ss_rt_only_threshold_v": 3.982,
     "independent_hotfault_simulation_accepted": false,
+    "hotfault_48v_full_duration_sr_gate_high": true,
+    "hotfault_50v_prefix_and_sr_gate_high": true,
+    "hotfault_48v_sr_a_gate_final_v": 10.89045501741797,
+    "hotfault_50v_solver_prefix": true,
     "independent_hotfault_evidence": [
       {
         "case": "48v_120a",
@@ -62,6 +66,26 @@
     "hotfault_48v_120a_sr_forward_peak_a": 292.6075980704264,
     "hotfault_48v_120a_solver_completed": true,
     "hotfault_48v_120a_sr_gate_latched_at_end": true,
+    "hotfault_48v_120a_first_sustained_drive_stop_us": 220.7367604378776,
+    "sr_fault_probe_48v_checks_ok": true,
+    "sr_fault_probe_48v_reached_tstop": true,
+    "sr_fault_probe_48v_solver_prefix_only": false,
+    "sr_fault_probe_48v_devices_high_at_end": [
+      "1A",
+      "2A",
+      "3A",
+      "4A"
+    ],
+    "sr_fault_probe_48v_latch_start_us": 247.0702871974827,
+    "sr_fault_probe_48v_latch_duration_us": 72.92971280251732,
+    "sr_fault_probe_48v_latch_max_current_a": 1.405252841750486,
+    "sr_fault_probe_48v_latch_max_i2t_abs_a2s": 0.00010388540224315136,
+    "sr_fault_probe_48v_latch_total_i2t_abs_a2s": 0.0004155416089168497,
+    "sr_fault_probe_48v_a_drive_release_us": 220.7367604378776,
+    "sr_fault_probe_48v_b_drive_release_us": 218.1919256021795,
+    "sr_fault_probe_48v_a_forward_peak_post_a": 285.0137824429416,
+    "sr_fault_probe_48v_a_forward_i2t_post_a2s": 0.030358521326190706,
+    "sr_fault_probe_48v_a_gate_high_i2t_a2s": 0.023162169123095544,
     "hotfault_50v_120a_sr_gate_latched_at_end": true,
     "hotfault_48v_120a_2turn_flux_at_fault_peak_t": 0.37477947661621663,
     "hotfault_48v_120a_3turn_flux_at_fault_peak_t": 0.24985298441081108,
@@ -79,7 +103,7 @@
     "hotfault_50v_120a_diag_window_us": 219.99999999999972,
     "hotfault_50v_120a_diag_ipri_peak_a": 101.0991824969936,
     "hotfault_50v_120a_diag_ipri_peak_rel": -0.001614365679782792,
-    "hotfault_50v_120a_diag_sr_forward_peak_rel": 0.000022380722648707163,
+    "hotfault_50v_120a_diag_sr_forward_peak_rel": 2.2380722648707163e-05,
     "hotfault_50v_120a_diag_trip_delta_ns": -81.17010440999712,
     "hotfault_50v_120a_diag_solver_completed": true,
     "hotfault_48v_120a_diag_checks_ok": true,
@@ -87,19 +111,15 @@
     "hotfault_48v_120a_diag_sr_forward_peak_rel": -0.004114128961595354,
     "hotfault_48v_120a_diag_trip_delta_ns": -185.45156513219612,
     "hotfault_50v_120a_2turn_flux_at_fault_peak_t": 0.38947175944551504,
-    "hotfault_50v_120a_3turn_flux_at_fault_peak_t": 0.2596478396303434,
-    "hotfault_48v_full_duration_sr_gate_high": true,
-    "hotfault_50v_prefix_and_sr_gate_high": true,
-    "hotfault_48v_sr_a_gate_final_v": 10.89045501741797,
-    "hotfault_50v_solver_prefix": true
+    "hotfault_50v_120a_3turn_flux_at_fault_peak_t": 0.2596478396303434
   },
   "risks": [
     {
       "id": "F03",
       "priority": "P0",
-      "blocker": "SR gate remains high at 48V full-duration fault end; 50V fault is a prefix and also reports gate high",
+      "blocker": "The 48 V eight-device probe localises the end-of-record high gate: all four A-side SRs (1A, 2A, 3A, 4A) stay at 10.890 V from 247.07 us to the 320 us end, while the final latch conducts only 1.41 A (1.04e-04 A2s per device). The 285.0 A forward peak lands in the release window right after trip, not in the latch. 50 V remains a prefix with no eight-device evidence, and the model implements neither UCC24624 standby turn-off nor thermal/SOA limits, so no side may be declared safely shut down.",
       "blocked": true,
-      "next_evidence": "Do NOT claim complete shutdown from OC=1V alone. For every SR gate and VDS/current, review gate-high intervals after primary drive stops and quantify local fault current and dissipation; correct model/protection or obtain reproducible verified safe behavior. Use full-duration RAW from both 48/50V, not only prefix peak.",
+      "next_evidence": "Do NOT claim complete shutdown from OC=1V alone. The 48 V eight-SR window is now measured: A-side drive is released at 220.74 us (trip + 5.64 us) and the four A gates re-assert at 247.07 us; the latch carries 1.41 A / 4.16e-04 A2s total, three orders below the 0.0304 A2s forward I2t. Remaining: (a) a genuinely complete 50 V 320 us eight-device run (the solver still stalls at 296.929 us), (b) bench verification of UCC24624 turn-off in the same ~0.1 ms dead state, because the model lacks standby and the gate is reset only by drain reverse bias, and (c) a device SOA/thermal check for the 1.4 A latch and the 285 A release-window peak -- the model has neither. Files: design/v3/power_priority/sr_fault_probe_48v_120a.json and hotfault_48v_120a.json.",
       "file": "design/v3/power_priority/hotfault_48v_120a.json"
     },
     {

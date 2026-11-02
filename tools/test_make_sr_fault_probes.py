@@ -19,6 +19,21 @@ def test_srp_decks_are_regenerable_and_have_all_eight_gate_and_current_probes():
         assert generated.count("Sflt_hot out flt_hot ctl_hot 0 HOTFLT") == 1
 
 
+def test_save_probes_continue_the_save_block_not_a_model_or_meas():
+    # LTspice treats "+" as a continuation of the previous statement. The first
+    # generated attempt put them after ".model HOTFLT ...", so the deck died with
+    # 'Undefined model "hotflt"'. Walk back over comments/continuations to the
+    # owning statement and require it to be the .save block.
+    for case in probes.CASES:
+        lines = probes.destination(case).read_text(encoding="utf-8").splitlines()
+        first = probes.SAVE.splitlines()[0]
+        i = lines.index(first)
+        j = i - 1
+        while j >= 0 and (lines[j].startswith("+ ") or lines[j].startswith("*")):
+            j -= 1
+        assert j >= 0 and lines[j].startswith(".save "), lines[j]
+
+
 def test_injection_and_power_circuit_preserved_verbatim():
     # All non-probe circuit text must be identical to the accepted parent.
     for case in probes.CASES:

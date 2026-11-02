@@ -164,6 +164,43 @@ def test_the_solver_diagnostic_bounds_the_prefix_peaks_without_unblocking():
 
 
 
+def test_the_eight_device_probe_localizes_the_high_gate_without_unblocking():
+    """ELE-10's 48 V half is measured; it must not be mistaken for safe shutdown.
+
+    All four A-side gates latch at the same instant and hold to the end, but
+    the final latch carries ~1.4 A while the hundreds of amps flow during the
+    release delay.  The 50 V eight-device window does not exist, so F03 stays.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["sr_fault_probe_48v_checks_ok"] is True
+    assert e["sr_fault_probe_48v_reached_tstop"] is True
+    assert e["sr_fault_probe_48v_solver_prefix_only"] is False
+    assert e["sr_fault_probe_48v_devices_high_at_end"] == ["1A", "2A", "3A", "4A"]
+    assert e["sr_fault_probe_48v_latch_start_us"] == pytest.approx(247.070287, abs=1e-5)
+    assert e["sr_fault_probe_48v_latch_duration_us"] == pytest.approx(72.929713, abs=1e-5)
+    # The latch is low-current; the 285 A peak is in the release window.
+    assert e["sr_fault_probe_48v_latch_max_current_a"] == pytest.approx(1.405253, abs=1e-5)
+    assert e["sr_fault_probe_48v_a_forward_peak_post_a"] == pytest.approx(285.014, abs=1e-2)
+    assert e["sr_fault_probe_48v_latch_max_i2t_abs_a2s"] < (
+        0.01 * e["sr_fault_probe_48v_a_forward_i2t_post_a2s"])
+    # A is released later than B, and its gate-high I2t covers most of its
+    # post-trip forward I2t (the channel, not the body diode, carries it).
+    assert (e["sr_fault_probe_48v_a_drive_release_us"]
+            > e["sr_fault_probe_48v_b_drive_release_us"])
+    assert e["sr_fault_probe_48v_a_gate_high_i2t_a2s"] > (
+        0.5 * e["sr_fault_probe_48v_a_forward_i2t_post_a2s"])
+    # Independent cross-check: the probe's 1A release must equal the base
+    # JSON's pair-1 figure, which was produced by a different run and tool.
+    assert e["sr_fault_probe_48v_a_drive_release_us"] == pytest.approx(
+        e["hotfault_48v_120a_first_sustained_drive_stop_us"], abs=1e-6)
+    f03 = next(row for row in j["risks"] if row["id"] == "F03")
+    assert f03["blocked"] is True
+    assert "eight-device" in f03["next_evidence"] or "eight-SR" in f03["next_evidence"]
+    assert "50 V" in f03["next_evidence"]
+    assert all(x["blocked"] for x in j["risks"])
+
+
 def test_f03_is_a_hard_sr_shutdown_blocker_independent_of_the_oc_trip():
     data = r.build()
     metrics = data["evidence"]

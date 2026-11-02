@@ -88,6 +88,12 @@ V3_SOURCES = {
         # not a replacement for the base record.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir",
+        # ELE-10: eight-device SR probes.  make_sr_fault_probes.py appends only
+        # .save and .meas lines to the hot-fault decks, so these are the same
+        # circuit with more instruments.  The 48 V deck completed 320 us; the
+        # 50 V base still stalls at 296.929 us and has no full record.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_srprobe.cir",
         # ELE-09: the same 50 V/120 A circuit at half the timestep, and over the
         # first phase-aligned window.  Both change only the .tran line, so the
         # 0.499 W residual can be tested against step and window length.
@@ -161,6 +167,10 @@ V3_SOURCES = {
         "tools/test_hotfault_diagnostic.py",
         "tools/d1_unclosed_risks.py",
         "tools/test_d1_unclosed_risks.py",
+        "tools/make_sr_fault_probes.py",
+        "tools/test_make_sr_fault_probes.py",
+        "tools/sr_fault_probe_report.py",
+        "tools/test_sr_fault_probe_report.py",
         "tools/test_ledger_candidate_parameters.py",
         "tools/test_control_validation_doc.py",
         "tools/test_ci_check.py",
@@ -226,6 +236,9 @@ V3_SOURCES = {
         # SOLVER_DIAGNOSTIC: base vs tightened tolerance over one common window.
         "design/v3/power_priority/hotfault_48v_120a_diag.json",
         "design/v3/power_priority/hotfault_50v_120a_diag.json",
+        # ELE-10: per-device gate/Vds/current over the same 320 us window.
+        # Only the 48 V case exists; the 50 V probe deck has no full raw yet.
+        "design/v3/power_priority/sr_fault_probe_48v_120a.json",
         "design/v3/power_priority/unclosed_risk_register.json",
         # ELE-09: the 22-period 5/2 ns pair, the SR decomposition with the
         # gate-drive boundary correction, and the 133-period aligned ledger.
@@ -280,6 +293,8 @@ V3_SOURCES = {
         # SOLVER_DIAGNOSTIC raws: 1.4 GB each, size + mtime only.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw",
+        # ELE-10 48 V eight-device probe raw: 1.2 GB, size + mtime only.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
@@ -656,6 +671,14 @@ REPRODUCE = {
         "--diag-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.log "
         "--json design/v3/power_priority/hotfault_48v_120a_diag.json",
         "python tools/d1_unclosed_risks.py --write",
+        # ELE-10: regenerate the eight-device probe decks, run the 48 V one, and
+        # extract the per-device latch.  The 50 V probe deck has no full raw
+        # because its base run still stalls (see ELE-08).
+        "python tools/make_sr_fault_probes.py --write",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii "
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+        "python tools/sr_fault_probe_report.py --case 48v_120a "
+        "--json design/v3/power_priority/sr_fault_probe_48v_120a.json",
         # ELE-09: the 22-period 5/2 ns pair, then the phase-aligned window.
         # The step comparison accepts only decks that differ in .tran step.
         "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",

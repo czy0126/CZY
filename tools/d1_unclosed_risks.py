@@ -46,6 +46,10 @@ def build() -> dict:
     # the stop time changed.  It bounds the numerical error of the peaks that
     # the prefix publishes, without pretending the stall itself was fixed.
     diag = _load(PP / "hotfault_50v_120a_diag.json")
+    # ELE-10's first half: the 48 V probe deck saves all eight SR gates,
+    # drain-source voltages and sense currents.  It localises the end-of-record
+    # high gate to a side and quantifies what that gate conducts.
+    probe48 = _load(PP / "sr_fault_probe_48v_120a.json")
     # The control: the 48 V base run passed the strict log pre-check, so the
     # same comparison on it measures the method rather than the 50 V prefix.
     diag48 = _load(PP / "hotfault_48v_120a_diag.json")
@@ -92,6 +96,16 @@ def build() -> dict:
     csink_r = csink["results"]
     diag_r = diag["results"]
     diag48_r = diag48["results"]
+    probe_r = probe48["results"]
+    latches = [row["final_latch"] for row in probe_r["devices"].values()
+               if row["final_latch"] is not None]
+    latch_max_i = max((row["i_abs_max_a"] for row in latches), default=0.0)
+    latch_max_i2t = max((row["i2t_abs_a2s"] for row in latches), default=0.0)
+    latch_total_i2t = sum(row["i2t_abs_a2s"] for row in latches)
+    latch_start_us = max((row["start_us"] for row in latches), default=0.0)
+    latch_duration_us = max((row["duration_us"] for row in latches), default=0.0)
+    rep_a = probe_r["devices"]["1A"]
+    rep_b = probe_r["devices"]["1B"]
     evidence = {
         "manufacturing_gate": gate["status"],
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
@@ -173,6 +187,26 @@ def build() -> dict:
         # 48 V finishes 320 us -- so the record must keep the flag per deck.
         "hotfault_48v_120a_sr_gate_latched_at_end":
             hot48["fault"]["sr_gate_latched_at_end"],
+        # The base JSON only saw pair 1/4 gates.  The probe run saves all eight
+        # and separates the final latch from the tail of the normal on-time:
+        # the latch itself carries ~1.4 A, while the 285 A forward peak lands
+        # in the release window right after trip.
+        "hotfault_48v_120a_first_sustained_drive_stop_us":
+            hot48["fault"]["first_sustained_drive_stop_ms"] * 1e3,
+        "sr_fault_probe_48v_checks_ok": all(probe48["checks"].values()),
+        "sr_fault_probe_48v_reached_tstop": probe_r["reached_tstop"],
+        "sr_fault_probe_48v_solver_prefix_only": probe_r["solver_prefix_only"],
+        "sr_fault_probe_48v_devices_high_at_end": probe_r["devices_high_at_end"],
+        "sr_fault_probe_48v_latch_start_us": latch_start_us,
+        "sr_fault_probe_48v_latch_duration_us": latch_duration_us,
+        "sr_fault_probe_48v_latch_max_current_a": latch_max_i,
+        "sr_fault_probe_48v_latch_max_i2t_abs_a2s": latch_max_i2t,
+        "sr_fault_probe_48v_latch_total_i2t_abs_a2s": latch_total_i2t,
+        "sr_fault_probe_48v_a_drive_release_us": rep_a["drive_release_us"],
+        "sr_fault_probe_48v_b_drive_release_us": rep_b["drive_release_us"],
+        "sr_fault_probe_48v_a_forward_peak_post_a": rep_a["i_forward_peak_post_a"],
+        "sr_fault_probe_48v_a_forward_i2t_post_a2s": rep_a["i2t_forward_post_a2s"],
+        "sr_fault_probe_48v_a_gate_high_i2t_a2s": rep_a["i2t_while_gate_high_a2s"],
         "hotfault_50v_120a_sr_gate_latched_at_end":
             hot50["fault"]["sr_gate_latched_at_end"],
         "hotfault_48v_120a_2turn_flux_at_fault_peak_t": hot_flux2,
@@ -220,16 +254,38 @@ def build() -> dict:
         {
             "id": "F03",
             "priority": "P0",
-            "blocker": "SR gate remains high at 48V full-duration fault end; 50V fault is a prefix and also reports gate high",
+            "blocker": (
+                "The 48 V eight-device probe localises the end-of-record high gate: "
+                f"all four A-side SRs ({', '.join(probe_r['devices_high_at_end'])}) "
+                f"stay at {rep_a['gate_end_v']:.3f} V from "
+                f"{latch_start_us:.2f} us to the 320 us end, while the final latch "
+                f"conducts only {latch_max_i:.2f} A "
+                f"({latch_max_i2t:.2e} A2s per device). The "
+                f"{rep_a['i_forward_peak_post_a']:.1f} A forward peak lands in the "
+                "release window right after trip, not in the latch. 50 V remains a "
+                "prefix with no eight-device evidence, and the model implements "
+                "neither UCC24624 standby turn-off nor thermal/SOA limits, so no "
+                "side may be declared safely shut down."),
             "blocked": bool(hot48["fault"]["sr_gate_latched_at_end"] or
                             hot50["fault"]["sr_gate_latched_at_end"] or
-                            hot50["solver_prefix_only"]),
+                            hot50["solver_prefix_only"] or
+                            probe_r["solver_prefix_only"]),
             "next_evidence": (
-                "Do NOT claim complete shutdown from OC=1V alone. "
-                "For every SR gate and VDS/current, review gate-high intervals after "
-                "primary drive stops and quantify local fault current and dissipation; "
-                "correct model/protection or obtain reproducible verified safe behavior. "
-                "Use full-duration RAW from both 48/50V, not only prefix peak." ),
+                "Do NOT claim complete shutdown from OC=1V alone. The 48 V eight-SR "
+                f"window is now measured: A-side drive is released at "
+                f"{rep_a['drive_release_us']:.2f} us (trip + "
+                f"{rep_a['drive_release_us'] - hot48['fault']['trip_s'] * 1e6:.2f} us) and the "
+                f"four A gates re-assert at {latch_start_us:.2f} us; the latch carries "
+                f"{latch_max_i:.2f} A / {latch_total_i2t:.2e} A2s total, three orders "
+                f"below the {rep_a['i2t_forward_post_a2s']:.4f} A2s forward I2t. "
+                "Remaining: (a) a genuinely complete 50 V 320 us eight-device run "
+                "(the solver still stalls at 296.929 us), (b) bench verification of "
+                "UCC24624 turn-off in the same ~0.1 ms dead state, because the model "
+                "lacks standby and the gate is reset only by drain reverse bias, and "
+                "(c) a device SOA/thermal check for the 1.4 A latch and the 285 A "
+                "release-window peak -- the model has neither. Files: "
+                "design/v3/power_priority/sr_fault_probe_48v_120a.json and "
+                "hotfault_48v_120a.json."),
             "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
         {

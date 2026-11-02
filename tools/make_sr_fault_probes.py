@@ -42,16 +42,17 @@ def destination(case: str) -> Path:
 def build(text: str, case: str) -> str:
     if case not in CASES or text.count(".end\n") != 1:
         raise ValueError("invalid source or missing final .end")
-    anchor = ".meas tran HOT_VOUT_EARLY"
-    if text.count(anchor) != 1 or "+ V(ctl_hot) I(Rflt_hot)" not in text:
+    anchor = "+ V(ctl_hot) I(Rflt_hot)\n"
+    if text.count(anchor) != 1 or ".meas tran HOT_VOUT_EARLY" not in text:
         raise ValueError("source is not the expected fault-probed deck")
     for i in range(1, 5):
         for side in "ab":
             if f"VS{side}{i} " not in text or f"g{side}{i} " not in text:
                 raise ValueError(f"SR{i}{side} device/sense node missing")
     # .save continuations must stay directly after the previous .save lines,
-    # not after .meas statements.
-    body = text.replace(anchor, SAVE + anchor, 1)
+    # not after .meas statements or (as the first version did) after
+    # ".model HOTFLT ...", which made LTspice fold them into that model.
+    body = text.replace(anchor, anchor + SAVE, 1)
     body = body.replace(".end\n", MEAS + ".end\n", 1)
     return ("* UNRUN eight-SR post-OC gate and device current diagnostic only.\n"
             "* 319us is on the rebased saved axis (nominal fault 175us).\n"

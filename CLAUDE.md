@@ -103,6 +103,16 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   正文不同的两跑做比较），记录 `design/v3/power_priority/hotfault_{48v,50v}_120a_diag.json`。
   另：诊断 deck 的 `.meas ... TO 0.00032` 行不变，所以它在**日志**里的 `hot_*` 只覆盖到 220 µs，
   **不能拿诊断日志的 `hot_ipri_after` 与基座日志的 97.44 A 直接比**——峰值只从 raw 按窗口读。
+- **八只 SR 探针 deck 只追加 `.save`/`.meas`**（`tools/make_sr_fault_probes.py --write` 从 hotfault
+  母 deck 派生，`test_make_sr_fault_probes.py` 逐行校验电路与故障网络不变）。`+` 续行必须挂在
+  **`.save` 块**上：第一版把续行落在 `.model HOTFLT` 之后，等于给模型语句加参数，探针一个也没存。
+  48 V 版**已跑满 320 µs**（500.451 s / 1.205 GB）：A 相四只在 **247.070 µs 同时**锁存 10.890 V
+  到终点，B 相四只关断；锁存段每只仅 **1.405 A / 1.04e-4 A²s**，而 trip 后 5.64 µs 的释放窗里
+  有 **285 A** 峰与 **0.0304 A²s** 正向 I²t ⇒ **末端高电平是低电流锁存，不是大电流直通**。
+  50 V 版**没有 raw**（基座仍在 296.929 µs 塌缩），`sr_fault_probe_report.py` 会拒绝对缺八只探针的
+  raw 出报告。工具只保证 `coverage_is_reported_not_assumed`（八只都有数据），**不保证安全关断**：
+  模型没有 UCC24624 standby、SOA 与热模型。记录在
+  `design/v3/power_priority/sr_fault_probe_48v_120a.json` 与同一篇稳态初始化故障文档 §3.5。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的
