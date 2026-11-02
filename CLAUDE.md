@@ -314,6 +314,17 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   类型包括 DOCHEAD/CANVAS/LAYER/LAYER_PHYS/ACTIVE_LAYER/RULE_TEMPLATE/RULE/
   PRIMITIVE(仅显示)/SILK_OPTS/D3_ATTRIBUTE/PREFERENCE/PANELIZE。
 - 中文厂商名经 CLI 文本通道会变 U+FFFD；必须走 xlsx 二进制 + base64。
+- **原生工程保存**：`eda.sch_Document.save()` 会把 `.eprj2` 写回
+  `C:\Users\27792\Documents\LCEDA-Pro\projects\DCX Main Board.eprj2`（实测保存后 mtime 与大小立即变），
+  再 `cp` 进 `hardware/dcx_main/`。`dmt_Project` 没有任何 save 方法，`saveFileToFileSystem` 不可用。
+  改图后必须同时重导 `gen/netlist_export_raw.json`（制造门槛读它）与 `main_board.svg`，
+  并重跑 `tools/d1_bom_coverage.py --write`、`tools/d1_fabrication_gate.py --write`。
+- **17 个 BOM 外围在 `tools/main_board_schematic.py:PERIPHERALS`**，故意不进金网表：EN/RUN 默认电平、
+  EN 滤波、每只 IC 的去耦在 SPICE 里不存在。网表比对把它们的 34 个焊盘记在
+  `peripheral_pads_checked`，不混进 `pads_checked`（金网表 221）。新增/移动外围必须同时改 `SECTIONS`，
+  否则 `test_every_placed_ref_sits_in_exactly_one_section` 红。外围网络名用**金网表里的名字**
+  （U2.6=EN 叫 `RUN`，HI/LI 叫 `GD1`/`GD2`，`12V_P` 叫 `VCC12`），
+  `test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses` 锁住这一点。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 

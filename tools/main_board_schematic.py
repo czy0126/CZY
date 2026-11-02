@@ -74,8 +74,12 @@ SECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
                                               "R20", "R21", "R22", "R23", "R24", "R25",
                                               "R26", "R27", "R28", "R29", "R30", "R31",
                                               "R32", "R33", "R34", "R35",
-                                              "C7", "C8", "C9", "C10")),
-    ("4. Control: UCC25600 / UCC27282", ("U1", "U2", "R1", "R2", "C6")),
+                                              "C7", "C8", "C9", "C10",
+                                              "C105", "C106", "C107", "C108",
+                                              "C109", "C110", "C111", "C112")),
+    ("4. Control: UCC25600 / UCC27282", ("U1", "U2", "R1", "R2", "C6",
+                                         "R7", "R8", "R9", "R10", "C13",
+                                         "C101", "C102", "C103", "C104")),
     ("5. Bias, overcurrent and start-up", ("C5", "D_BT", "R15", "R16", "R17", "C11", "C12")),
     ("6. Output interface", ("J_OUT", "Cout")),
 )
@@ -126,6 +130,48 @@ UNCONNECTED: dict[str, dict[str, str]] = {
 # listed here and reported separately rather than folded into the golden nets.
 BONDED_PADS: dict[str, dict[str, str]] = {
     "UCC27282DRCR": {"11": "PGND"},          # EP -> VSS/PGND, thermal + reference
+}
+
+def _decoupling() -> dict[str, dict[str, object]]:
+    """One 1 uF and one 100 nF per controller, paired by IC in ref order.
+
+    The BOM row fixes the pair ("1 uF + 100 nF at each of the six ICs") but not
+    which designator carries which value.  That assignment is a design decision,
+    so it is stated once here rather than being left implicit in the drawing.
+    """
+    ics = (("U1", "VCC12"), ("U2", "VCC12"), ("U3", "VCC12_S"),
+           ("U4", "VCC12_S"), ("U5", "VCC12_S"), ("U6", "VCC12_S"))
+    out: dict[str, dict[str, object]] = {}
+    for i, (ic, vdd) in enumerate(ics):
+        for j, value in enumerate(("1 uF", "100 nF")):
+            ref = f"C{101 + 2 * i + j}"
+            out[ref] = {
+                "part": "C0603_100n", "value": value,
+                "pads": {"1": vdd, "2": "PGND"},
+                "note": f"PLACEHOLDER 0603 100 nF symbol for {value} at {ic}; MPN TO ASSIGN",
+            }
+    return out
+
+
+# Real peripherals a SPICE deck cannot express: EN/RUN default levels, the
+# manual run jumper, the EN filter and per-IC VDD decoupling.  Their nets come
+# from design/v1/pin_connections.csv (pin *positions* and local circuits) and
+# the BOM row's frozen values, not from the deck, so they live in their own
+# table.  Folding them into the golden netlist would erase the fact that the
+# simulation never modelled them and make "deck complete" look like "board
+# complete".
+PERIPHERALS: dict[str, dict[str, object]] = {
+    "R7": {"part": "R0603_10k", "value": "10 k", "pads": {"1": "RUN", "2": "PGND"},
+           "note": "PLACEHOLDER 0603 10k; BOM value frozen (EN pull-down), MPN TO ASSIGN"},
+    "R8": {"part": "R0603_10k", "value": "1 k", "pads": {"1": "VCC12", "2": "RUN"},
+           "note": "PLACEHOLDER 0603 10k symbol for a 1k RUN jumper; MPN TO ASSIGN"},
+    "R9": {"part": "R0603_10k", "value": "10 k", "pads": {"1": "GD1", "2": "PGND"},
+           "note": "PLACEHOLDER 0603 10k; BOM value frozen (HI pull-down), MPN TO ASSIGN"},
+    "R10": {"part": "R0603_10k", "value": "10 k", "pads": {"1": "GD2", "2": "PGND"},
+            "note": "PLACEHOLDER 0603 10k; BOM value frozen (LI pull-down), MPN TO ASSIGN"},
+    "C13": {"part": "C0603_100n", "value": "1 nF", "pads": {"1": "RUN", "2": "PGND"},
+            "note": "PLACEHOLDER 0603 100 nF symbol for a 1 nF EN filter; MPN TO ASSIGN"},
+    **_decoupling(),
 }
 
 # A ref may be drawn as a library part that is topologically right but is not
@@ -261,6 +307,39 @@ def build_plan(golden: dict[str, dict[str, str]],
         plan["refs"][ref] = {
             "part": part, "uuid": dev["uuid"], "pads": pad_nets,
             "section": section_of(ref),
+        }
+
+    for ref, spec in PERIPHERALS.items():
+        part = str(spec["part"])
+        dev = library.get(part)
+        if dev is None:
+            raise MappingError(f"{ref}: no library dump for {part}")
+        symbol_pins = {p["num"] for p in dev["pins"]}
+        pad_nets = dict(spec["pads"])  # type: ignore[arg-type]
+        unknown = set(pad_nets) - symbol_pins
+        if unknown:
+            raise MappingError(f"{ref}: pads {sorted(unknown)} do not exist on {part}")
+        common = {
+            "ref": ref, "section": section_of(ref) or "", "mpn": dev["mpn"],
+            "lcsc": str(dev.get("lcsc") or ""), "footprint": str(dev.get("footprint") or ""),
+        }
+        for pad, net in pad_nets.items():
+            rows.append({
+                **common, "golden_pin": "", "pad": pad, "net": net,
+                "basis": "BOM peripheral; net from design/v1/pin_connections.csv",
+                "review_status": "MAPPED",
+                "note": str(spec["note"]),
+            })
+        for pad in sorted(symbol_pins - set(pad_nets)):
+            rows.append({
+                **common, "golden_pin": "", "pad": pad, "net": "",
+                "basis": "none - not yet decided",
+                "review_status": "OPEN - NEEDS DECISION",
+                "note": "NOT WIRED - unassigned pad, investigate",
+            })
+        plan["refs"][ref] = {
+            "part": part, "uuid": dev["uuid"], "pads": pad_nets,
+            "section": section_of(ref), "peripheral": True,
         }
 
     plan["review_rows"] = rows

@@ -19,7 +19,7 @@ LIBRARY = json.loads((ROOT / "hardware/dcx_main/library_pins.json").read_text(en
 GOLDEN = mbs.load_golden()
 
 
-def expected_export(refs: list[str]) -> dict[str, dict[str, str]]:
+def expected_export(refs: list[str], with_peripherals: bool = True) -> dict[str, dict[str, str]]:
     """The export of a board wired exactly right, derived independently of
     compare() so the test cannot agree with a bug in compare()."""
     out: dict[str, dict[str, str]] = {}
@@ -34,6 +34,9 @@ def expected_export(refs: list[str]) -> dict[str, dict[str, str]]:
                 pads[pad] = net
         pads.update(mbs.BONDED_PADS.get(part, {}))
         out[ref] = pads
+    if with_peripherals:
+        for ref, spec in mbs.PERIPHERALS.items():
+            out[ref] = dict(spec["pads"])
     return out
 
 
@@ -49,12 +52,14 @@ def test_a_correct_board_passes():
 
 def test_every_pad_of_every_golden_pin_is_counted():
     """The count is the claim 'N pads were checked'.  It has to be the number of
-    pads the golden netlist expands to, not the number of parts."""
+    pads the golden netlist expands to, not the number of parts.  Peripheral
+    pads are counted separately so the headline number keeps its meaning."""
     res = cmn.compare(GOLDEN, expected_export(ALL_REFS), LIBRARY)
-    want = sum(len(v) for v in expected_export(ALL_REFS).values())
+    want = sum(len(v) for v in expected_export(ALL_REFS, with_peripherals=False).values())
     bonded = sum(len(v) for v in mbs.BONDED_PADS.values())
     assert res["pads_checked"] + len(res["pads_bonded_by_design"]) == want
     assert len(res["pads_bonded_by_design"]) == bonded
+    assert res["peripheral_pads_checked"] == sum(len(s["pads"]) for s in mbs.PERIPHERALS.values())
 
 
 def test_a_wrong_net_on_an_assigned_pad_fails():
@@ -142,6 +147,31 @@ def test_unexpected_extra_placed_component_is_detected():
     assert res["unexpected_refs"] == ["GHOST"]
 
 
+def test_a_missing_peripheral_fails():
+    """The 17 BOM peripherals are exactly what the gate used to be unable to
+    measure.  A native export that omits one must fail the diff."""
+    export = expected_export(ALL_REFS)
+    del export["R7"]
+    res = cmn.compare(GOLDEN, export, LIBRARY)
+    assert not res["ok"]
+    assert {"ref": "R7", "pad": "*", "want": "peripheral present", "got": "absent"} \
+        in res["missing_or_wrong"]
+
+
+def test_a_miswired_peripheral_fails():
+    export = expected_export(ALL_REFS)
+    export["C101"]["1"] = "PGND"
+    res = cmn.compare(GOLDEN, export, LIBRARY)
+    assert not res["ok"]
+    assert {"ref": "C101", "pad": "1", "want": "VCC12", "got": "PGND"} \
+        in res["missing_or_wrong"]
+
+
+def test_a_peripheral_is_not_an_unexpected_extra_reference():
+    res = cmn.compare(GOLDEN, expected_export(ALL_REFS), LIBRARY)
+    assert res["unexpected_refs"] == []
+
+
 def test_saved_native_evidence_is_labelled_as_partial_only():
     native = json.loads((ROOT / "hardware/dcx_main/netlist_compare.json").read_text(encoding="utf-8"))
     assert native["not_placed"] == sorted(mbs.MAGNETIC_GAPS)
@@ -149,23 +179,9 @@ def test_saved_native_evidence_is_labelled_as_partial_only():
     assert native["readiness"] == "PARTIAL_PASS"
 
 
-def test_real_bom_only_additions_do_not_break_spice_subset_but_remain_unverified():
-    """Adding C101/R7 to the CAD cannot be called a rogue part or a verified pad."""
-    native = expected_export(ALL_REFS)
-    native["R7"] = {"1": "EN", "2": "PGND"}
-    native["C101"] = {"1": "VCC12", "2": "PGND"}
-    result = cmn.compare(GOLDEN, native, LIBRARY)
-    assert result["subset_ok"], result["unexpected_refs"]
-    assert result["added_bom_only_refs"] == ["C101", "R7"]
-    assert result["unverified_bom_only_refs"] == ["C101", "R7"]
-    assert "C102" in result["bom_only_refs_pending_placement"]
-    assert result["manufacturing_ready"] is False
-    assert result["pads_checked"] == 221  # no invented checks for BOM-only parts
-
-
 def test_an_unknown_hardware_extra_still_fails_even_with_bom_only_refs():
     native = expected_export(ALL_REFS)
-    native["R7"] = {"1": "EN", "2": "PGND"}
+    native["R7"] = {"1": "RUN", "2": "PGND"}
     native["FAKE123"] = {"1": "VIN_P"}
     result = cmn.compare(GOLDEN, native, LIBRARY)
     assert result["unexpected_refs"] == ["FAKE123"]

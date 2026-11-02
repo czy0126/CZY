@@ -29,8 +29,11 @@ def plan() -> dict:
 def test_every_golden_ref_is_either_placed_or_named_as_a_gap():
     p = plan()
     unresolved = {u["ref"] for u in p["unresolved"]}
-    assert unresolved | set(p["refs"]) == set(GOLDEN), "a ref vanished without a reason"
+    placed_golden = set(p["refs"]) - set(mbs.PERIPHERALS)
+    assert unresolved | placed_golden == set(GOLDEN), "a ref vanished without a reason"
     assert unresolved == set(mbs.MAGNETIC_GAPS)
+    # and the only parts beyond the golden set are the declared peripherals
+    assert set(p["refs"]) - set(GOLDEN) == set(mbs.PERIPHERALS)
 
 
 def test_every_golden_pin_lands_on_at_least_one_pad():
@@ -136,9 +139,10 @@ def test_every_placed_ref_sits_in_exactly_one_section():
         for ref in refs:
             assert ref not in seen, f"{ref} is in {seen[ref]!r} and {title!r}"
             seen[ref] = title
-    assert set(seen) == set(GOLDEN), (
-        f"not sectioned: {sorted(set(GOLDEN) - set(seen))}; "
-        f"sectioned but unknown: {sorted(set(seen) - set(GOLDEN))}")
+    expected = set(GOLDEN) | set(mbs.PERIPHERALS)
+    assert set(seen) == expected, (
+        f"not sectioned: {sorted(expected - set(seen))}; "
+        f"sectioned but unknown: {sorted(set(seen) - expected)}")
 
 
 def test_every_review_row_carries_a_status_and_a_basis():
@@ -152,6 +156,53 @@ def test_every_review_row_carries_a_status_and_a_basis():
     # nothing may be left in the "needs decision" bucket on a finished sheet
     assert "OPEN - NEEDS DECISION" not in statuses, [
         (r["ref"], r["pad"]) for r in rows if r["review_status"] == "OPEN - NEEDS DECISION"]
+
+
+def test_the_seventeen_real_peripherals_are_declared():
+    """The BOM gap is 17 refs: four U2 defaults, the EN filter and 12
+    decouplers.  Dropping one silently would put the fabrication gate back to
+    where it started."""
+    assert set(mbs.PERIPHERALS) == (
+        {"R7", "R8", "R9", "R10", "C13"} | {f"C{i}" for i in range(101, 113)})
+    assert len(mbs.PERIPHERALS) == 17
+
+
+def test_each_controller_gets_one_1u_and_one_100n():
+    """The BOM fixes the values per IC but not the designator; the pairing is
+    the design decision this table makes."""
+    ics = (("U1", "VCC12"), ("U2", "VCC12"), ("U3", "VCC12_S"),
+           ("U4", "VCC12_S"), ("U5", "VCC12_S"), ("U6", "VCC12_S"))
+    for i, (ic, vdd) in enumerate(ics):
+        for j, value in enumerate(("1 uF", "100 nF")):
+            spec = mbs.PERIPHERALS[f"C{101 + 2 * i + j}"]
+            assert spec["pads"] == {"1": vdd, "2": "PGND"}, ic
+            assert spec["value"] == value, ic
+
+
+def test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses():
+    """A typo such as 12V_P (the pin-connections name) or SGND would create a
+    silently floating part: the native export would show a net no golden pin
+    shares, which is exactly how a decoupler fails without anyone noticing."""
+    golden_nets = {net for pins in GOLDEN.values() for net in pins.values()}
+    for ref, spec in mbs.PERIPHERALS.items():
+        for net in spec["pads"].values():
+            assert net in golden_nets, f"{ref} claims net {net!r}, which no golden pin uses"
+
+
+def test_peripherals_reach_the_review_sheet_as_placeholders():
+    rows = [r for r in plan()["review_rows"] if r["ref"] in mbs.PERIPHERALS]
+    assert {r["ref"] for r in rows} == set(mbs.PERIPHERALS)
+    assert all(r["review_status"] == "MAPPED" for r in rows)
+    assert all("PLACEHOLDER" in r["note"] for r in rows), [
+        r["ref"] for r in rows if "PLACEHOLDER" not in r["note"]]
+
+
+def test_a_peripheral_on_a_pad_the_symbol_lacks_raises(monkeypatch):
+    monkeypatch.setitem(mbs.PERIPHERALS, "R7", {
+        "part": "R0603_10k", "value": "10 k", "pads": {"3": "RUN"},
+        "note": "deliberately broken"})
+    with pytest.raises(mbs.MappingError):
+        mbs.build_plan(GOLDEN, LIBRARY)
 
 
 def test_magnetics_are_named_in_a_section_even_though_they_cannot_be_placed():

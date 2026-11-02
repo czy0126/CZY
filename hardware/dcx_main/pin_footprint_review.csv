@@ -226,3 +226,37 @@ R34,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC4_A
 R34,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
 R35,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
 R35,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R7,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,1,RUN,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (EN pull-down), MPN TO ASSIGN"
+R7,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (EN pull-down), MPN TO ASSIGN"
+R8,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,1,VCC12,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 10k symbol for a 1k RUN jumper; MPN TO ASSIGN
+R8,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,2,RUN,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 10k symbol for a 1k RUN jumper; MPN TO ASSIGN
+R9,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,1,GD1,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (HI pull-down), MPN TO ASSIGN"
+R9,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (HI pull-down), MPN TO ASSIGN"
+R10,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,1,GD2,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (LI pull-down), MPN TO ASSIGN"
+R10,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (LI pull-down), MPN TO ASSIGN"
+C13,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,1,RUN,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for a 1 nF EN filter; MPN TO ASSIGN
+C13,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for a 1 nF EN filter; MPN TO ASSIGN
+C101,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,1,VCC12,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U1; MPN TO ASSIGN
+C101,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U1; MPN TO ASSIGN
+C102,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,1,VCC12,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U1; MPN TO ASSIGN
+C102,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U1; MPN TO ASSIGN
+C103,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,1,VCC12,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U2; MPN TO ASSIGN
+C103,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U2; MPN TO ASSIGN
+C104,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,1,VCC12,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U2; MPN TO ASSIGN
+C104,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U2; MPN TO ASSIGN
+C105,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U3; MPN TO ASSIGN
+C105,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U3; MPN TO ASSIGN
+C106,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U3; MPN TO ASSIGN
+C106,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U3; MPN TO ASSIGN
+C107,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U4; MPN TO ASSIGN
+C107,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U4; MPN TO ASSIGN
+C108,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U4; MPN TO ASSIGN
+C108,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U4; MPN TO ASSIGN
+C109,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U5; MPN TO ASSIGN
+C109,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U5; MPN TO ASSIGN
+C110,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U5; MPN TO ASSIGN
+C110,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U5; MPN TO ASSIGN
+C111,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U6; MPN TO ASSIGN
+C111,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 1 uF at U6; MPN TO ASSIGN
+C112,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,1,VCC12_S,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U6; MPN TO ASSIGN
+C112,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 100 nF symbol for 100 nF at U6; MPN TO ASSIGN

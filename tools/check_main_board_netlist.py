@@ -24,7 +24,6 @@ import json
 from pathlib import Path
 
 import main_board_schematic as mbs
-import d1_bom_coverage as bomcov
 
 ROOT = Path(__file__).resolve().parent.parent
 HW = ROOT / "hardware/dcx_main"
@@ -75,19 +74,33 @@ def compare(golden: dict[str, dict[str, str]],
                 continue
             extra.append({"ref": ref, "pad": pad, "net": actual})
 
+    # Real peripherals the deck cannot express (EN/RUN defaults, EN filter,
+    # per-IC decoupling).  Counted separately so the headline "pads the golden
+    # netlist asked for" keeps its exact meaning.
+    peripheral_checked = 0
+    for ref, spec in mbs.PERIPHERALS.items():
+        expected_pads = dict(spec["pads"])  # type: ignore[arg-type]
+        got = exported.get(ref)
+        if got is None:
+            missing.append({"ref": ref, "pad": "*", "want": "peripheral present", "got": "absent"})
+            continue
+        for pad, net in expected_pads.items():
+            peripheral_checked += 1
+            actual = got.get(pad, "")
+            if actual != net:
+                missing.append({"ref": ref, "pad": pad, "want": net,
+                                "got": actual or "<empty>"})
+        for pad, actual in got.items():
+            if pad in expected_pads or not actual:
+                continue
+            extra.append({"ref": ref, "pad": pad, "net": actual})
+
     unplaced = sorted(set(golden) - set(exported))
     # A custom symbol is NOT validated merely because its reference appears.
     # Without explicit physical terminal->pad evidence a magnetic device could
     # reverse its winding DOT while all ordinary pad tests remain green.
     unchecked_magnetics = sorted(set(exported) & set(mbs.MAGNETIC_GAPS))
-    # Real BOM-only physical peripherals do not appear in the SPICE golden
-    # basis. Allow them for the *subset* diff, but they remain unverified
-    # until their complete native pin maps / values are independently reviewed.
-    physical_additions = {
-        row["ref"] for row in bomcov.build()["required_bom_refs_missing_from_golden"]
-    }
-    added_hardware = sorted((set(exported) - set(golden)) & physical_additions)
-    extra_refs = sorted(set(exported) - set(golden) - physical_additions)
+    extra_refs = sorted(set(exported) - set(golden) - set(mbs.PERIPHERALS))
     subset_ok = not missing and not extra and not extra_refs and set(unplaced) <= set(mbs.MAGNETIC_GAPS)
     blockers = []
     if unplaced:
@@ -96,20 +109,16 @@ def compare(golden: dict[str, dict[str, str]],
         blockers.append("placed magnetics have no verified terminal-to-pad and DOT mapping")
     if mbs.PLACEHOLDER:
         blockers.append("engineering value/MPN/footprint placeholders remain in the native schematic")
-    if added_hardware:
-        blockers.append("BOM-only peripherals require native pad/net/footprint review")
     blockers.append("native editor ERC report and routed PCB not yet supplied")
     return {
         "pads_checked": checked,
+        "peripheral_pads_checked": peripheral_checked,
         "pads_bonded_by_design": bonded,
         "missing_or_wrong": missing,
         "unexpected_nets": extra,
         "not_placed": unplaced,
         "unchecked_magnetics": unchecked_magnetics,
         "unexpected_refs": extra_refs,
-        "added_bom_only_refs": added_hardware,
-        "unverified_bom_only_refs": added_hardware,
-        "bom_only_refs_pending_placement": sorted(physical_additions - set(exported)),
         "subset_ok": subset_ok,
         "readiness": "PARTIAL_PASS" if subset_ok else "FAIL",
         "manufacturing_ready": False,
@@ -145,8 +154,6 @@ def main(argv: list[str] | None = None) -> int:
     for item in result["unexpected_nets"][:20]:
         print("   ", item)
     print(f"not placed from SPICE basis: {result['not_placed']}")
-    print(f"BOM-only added refs (unverified): {result['added_bom_only_refs']}")
-    print(f"BOM-only pending refs: {result['bom_only_refs_pending_placement']}")
     print(f"subset_ok (not a manufacturing pass): {result['subset_ok']}")
     print(f"readiness: {result['readiness']}; manufacturing_ready: {result['manufacturing_ready']}")
     for item in result["manufacturing_blockers"]:

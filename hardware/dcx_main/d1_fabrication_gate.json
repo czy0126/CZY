@@ -7,7 +7,7 @@
     "golden_subnet_matches": true,
     "all_golden_refs_and_magnetic_physical_pads_verified": false,
     "no_electrical_placeholders_or_unselected_bom": false,
-    "all_required_real_hardware_bom_refs_in_native_design": false,
+    "all_required_real_hardware_bom_refs_in_native_design": true,
     "native_erc_evidence": false,
     "routed_pcb_to_schematic_evidence": false,
     "manufacturing_package_evidence": false
@@ -15,7 +15,7 @@
   "counts": {
     "golden_references": 66,
     "golden_logical_pins": 193,
-    "placed_references": 61,
+    "placed_references": 78,
     "golden_pads_checked_by_subnet": 221,
     "unplaced_references": [
       "CT",
@@ -33,8 +33,21 @@
     ],
     "refs_with_placeholders": [
       "C10",
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
       "C11",
+      "C110",
+      "C111",
+      "C112",
       "C12",
+      "C13",
       "C5",
       "C6",
       "C7",
@@ -46,6 +59,7 @@
       "D_BT",
       "Lr",
       "R1",
+      "R10",
       "R15",
       "R16",
       "R17",
@@ -70,7 +84,10 @@
       "R34",
       "R35",
       "R4",
-      "R5"
+      "R5",
+      "R7",
+      "R8",
+      "R9"
     ],
     "bom_rows_not_selected": [
       {
@@ -244,30 +261,14 @@
       "R9"
     ],
     "all_required_bom_refs_missing_from_native_export": [
-      "C101",
-      "C102",
-      "C103",
-      "C104",
-      "C105",
-      "C106",
-      "C107",
-      "C108",
-      "C109",
-      "C110",
-      "C111",
-      "C112",
-      "C13",
       "CT",
-      "R10",
-      "R7",
-      "R8",
-      "R9",
       "T1",
       "T2",
       "T3",
       "T4"
     ],
-    "real_hardware_bom_refs_not_in_native_design": [
+    "real_hardware_bom_refs_not_in_native_design": [],
+    "real_hardware_bom_refs_covered_by_native_design": [
       "C101",
       "C102",
       "C103",
@@ -286,7 +287,6 @@
       "R8",
       "R9"
     ],
-    "real_hardware_bom_refs_covered_by_native_design": [],
     "external_bias_interface_to_document": [
       "PS1"
     ]
@@ -311,7 +311,6 @@
   "blockers": [
     "all_golden_refs_and_magnetic_physical_pads_verified",
     "no_electrical_placeholders_or_unselected_bom",
-    "all_required_real_hardware_bom_refs_in_native_design",
     "native_erc_evidence",
     "routed_pcb_to_schematic_evidence",
     "manufacturing_package_evidence"

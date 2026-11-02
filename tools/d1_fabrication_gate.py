@@ -156,7 +156,7 @@ def build() -> dict:
         "golden_subnet_matches": logical_ok,
         "all_golden_refs_and_magnetic_physical_pads_verified": all_placed,
         "no_electrical_placeholders_or_unselected_bom": all_values_frozen,
-        "all_required_real_hardware_bom_refs_in_native_design": not native_bom_missing,
+        "all_required_real_hardware_bom_refs_in_native_design": not native_bom_missing_reported,
         "native_erc_evidence": native_erc["passed"],
         "routed_pcb_to_schematic_evidence": pcb_diff["passed"],
         "manufacturing_package_evidence": fab_signoff["passed"],

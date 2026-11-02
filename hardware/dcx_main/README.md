@@ -1,6 +1,8 @@
 # DCX 主功率板 —— 原生原理图（A1）
 
-> **最新状态：NOT_FOR_FAB / A1-WIP。** 本目录已移入当前开发分支，保留嘉立创原生 `.eprj2` 和真实焊盘比对。**`netlist_compare.json:readiness=PARTIAL_PASS` 不是完整原理图或投板验收。** 缺少 T1–T4/CT 原生符号、物理端子号/极性验收及约 39 个占位 MPN/值，缺有效主板 ERC。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[直接整改路线](../../docs/D1_电气优先_增输出与设计整改_2026-11-01.md)。
+> **最新状态：NOT_FOR_FAB / A1-WIP。** 本目录已移入当前开发分支，保留嘉立创原生 `.eprj2` 和真实焊盘比对。**`netlist_compare.json:readiness=PARTIAL_PASS` 不是完整原理图或投板验收。**
+> 17 个 BOM 真实外围（R7–R10、C13、C101–C112）已画进原生原理图并逐焊盘核对，但它们仍是**值/MPN 占位件**；
+> 缺少 T1–T4/CT 原生符号、物理端子号/极性验收、GUI ERC 与带网 PCB。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[直接整改路线](../../docs/D1_电气优先_增输出与设计整改_2026-11-01.md)。
 
 
 这是 `design/v3/pcb/board_netlist.csv`（由 v3 deck 派生的**金网表**）在嘉立创 EDA Pro 里的
@@ -15,12 +17,13 @@
 
 | 结论 | 证据 |
 |------|------|
-| 61 个位号已放置，227 个焊盘全部有归属 | `pin_footprint_review.csv` |
+| **78 个位号**已放置：金网表 61 只 + BOM 真实外围 17 只，**261 个焊盘**全部有归属 | `pin_footprint_review.csv` |
 | 按 A1 任务卡的**六个功能块**绘制，每块有标题文字，块内按功能排列 | `gen/slice_00.js` 的 `labels` |
-| 金网表的 193 个引脚展开成 **221 个焊盘**，逐焊盘比对**无一错接、无一漏接** | `netlist_compare.json` |
+| 金网表的 193 个引脚展开成 **221 个焊盘**，逐焊盘比对**无一错接、无一漏接** | `netlist_compare.json:pads_checked` |
+| 17 个外围的 **34 个焊盘**按 `pin_connections.csv` 连接并单独计数，不混进金网表的 221 | `peripheral_pads_checked` |
 | U2（UCC27282）裸露焊盘按设计接 PGND，单独计数，**不算进**金网表的 221 | `pads_bonded_by_design` |
 | T1–T4、CT 未放置，原因是**库里没有可用的符号**，已在 `placement_plan.json` 里逐条写明 | `gaps` / `unresolved` |
-| 39 个位号是**占位件**（值未定或封装不对），审表里逐行标注 `PLACEHOLDER` | `pin_footprint_review.csv` 的 `note` 列 |
+| 56 个位号是**占位件**（值未定或封装不对），审表里逐行标注 `PLACEHOLDER` | `pin_footprint_review.csv` 的 `note` 列 |
 
 比对是按**焊盘**做的，不是按位号数量做的。这一步是必要的：金网表把 MOS 的引脚叫 `S`，
 而 DFN/TDSON 封装的源极是 1、2、3 三个焊盘——只连其中一个，导出的网表仍然"和金网表一致"，
@@ -29,7 +32,7 @@
 ## 评审用的导出图
 
 `main_board.svg` 是客户端自己导出的（`gen/export_svg.js` 调 `sch_ManufactureData.getSvgFile`），
-2048×5273，含全部 61 个位号与 6 个分区标题。它**不能替代工程文件**——只用来评审，
+含全部 78 个位号与 6 个分区标题。它**不能替代工程文件**——只用来评审，
 改图后要重新导出：
 
 ```bash
@@ -75,6 +78,29 @@ A1 任务卡要求按六部分绘图，`tools/main_board_schematic.py` 的 `SECT
 
 `D_CT1..4` 焊盘 2（BAT54 的第二只阳极）和 `U2` 焊盘 2（datasheet 标 NC）留空，
 审表里写明了理由；工具会把"留空"和"漏画"分别报告。
+
+## 金网表之外：17 个真实外围
+
+金网表由 SPICE deck 派生，**表达不了** EN/RUN 默认电平、手动 RUN 跳线、EN 滤波和每只控制 IC 的
+VDD 去耦。它们由 `main_board_schematic.py:PERIPHERALS` 单独声明，**不塞进金网表**——
+否则"deck 完整"就会被误读成"板子完整"，而制造门槛也就失去了区分能力。
+
+| 位号 | 连接 | BOM 冻结值 |
+|---|---|---|
+| R7 | RUN–PGND | 10 kΩ |
+| R8 | VCC12–RUN（手动 RUN 跳线） | 1 kΩ |
+| R9 | GD1–PGND（U2 HI 默认关断） | 10 kΩ |
+| R10 | GD2–PGND（U2 LI 默认关断） | 10 kΩ |
+| C13 | RUN–PGND（U2 EN 滤波） | 1 nF |
+| C101/C102 … C111/C112 | 每只 IC 的 VDD–PGND | 1 µF + 100 nF |
+
+网络名取自 `design/v1/pin_connections.csv` 的**引脚位置**：U2.6=EN 在金网表里叫 `RUN`，
+U2.7/8=HI/LI 叫 `GD1`/`GD2`；`12V_P` 在金网表里叫 `VCC12`。测试
+`test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses` 锁住这一点，
+防止把 CSV 的名字直接搬进原理图、造出一个没人共享的网络（那种错误在图上看起来完全正常）。
+
+它们**不是**新设计：BOM 已有这些行、值已冻结；缺的是 MPN/封装与布局。所以审表仍标
+`PLACEHOLDER`，制造门槛也仍不会因为"17 只都画了"而变绿。
 
 ## ERC：本站这一轮**不能**用 CLI 签核
 

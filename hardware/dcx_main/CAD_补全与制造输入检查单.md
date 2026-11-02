@@ -4,7 +4,13 @@
 > 当前工况：48 V→约 2 V、固定比 24:1、100 A 基准，111.16 A 仅为 LTspice 仿真工况。**非投板、非额定放行。**  
 > 项目优先级：电气/可制造设计优先，冷板/详细热设计暂缓；安全的电应力、绝缘与保护验收不豁免。
 
-## A. 最急需补画：17 个黄金 SPICE 网表里没有的真实 BOM 位号
+## A. 已补画（仍缺 MPN/封装）：17 个黄金 SPICE 网表里没有的真实 BOM 位号
+
+**2026-11-02 状态**：17 只已画进原生原理图并逐焊盘核对——
+`netlist_compare.json` 的 `peripheral_pads_checked = 34`、`missing_or_wrong = 0`、`unexpected_nets = 0`，
+`bom_coverage.json` 的 `required_bom_refs_missing_from_native_design` 已为 `[]`。
+它们仍以 0603 通用符号 + `PLACEHOLDER` 注释存在，**值冻结、MPN 未定**，
+所以制造门槛没有因此变绿（`d1_fabrication_gate.json` 仍 `NOT_FOR_FAB`）。
 
 来源：`design/v3/bom/bom_draft.csv`，机器展开后列于 `bom_coverage.json`。这组缺口**不是**原先“五磁件尚未放置”的同一个问题：
 
@@ -57,4 +63,4 @@
     `closure_status` 一律保持 `NOT_CLOSED`，效率口径不变。详见基线 §2.7。
 - **暂缓：** 详细 CFD/冷板/连续额定温升。本阶段优先设计测试点与限能保护，连续工作能力待后续验证。
 
-**当前直接任务：先完成 17 个 BOM 外围、五只磁件真实符号、39 个占位料号，然后把原生原理图导入带网络的主 PCB；继续扩展文字审核不会让板子更接近制造。**
+**当前直接任务：五只磁件真实符号（T1–T4、CT）、56 个占位料号（39 原有 + 17 新外围）、GUI ERC，然后把原生原理图导入带网络的主 PCB；17 个 BOM 外围已画入但在正式料号选定前仍按占位件计。继续扩展文字审核不会让板子更接近制造。**

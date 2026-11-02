@@ -1,5 +1,6 @@
 {
  "pads_checked": 221,
+ "peripheral_pads_checked": 34,
  "pads_bonded_by_design": [
   {
    "ref": "U2",
@@ -16,7 +17,6 @@
   "T3",
   "T4"
  ],
- "ok": true,
  "unchecked_magnetics": [],
  "unexpected_refs": [],
  "subset_ok": true,
@@ -27,25 +27,5 @@
   "engineering value/MPN/footprint placeholders remain in the native schematic",
   "native editor ERC report and routed PCB not yet supplied"
  ],
- "added_bom_only_refs": [],
- "unverified_bom_only_refs": [],
- "bom_only_refs_pending_placement": [
-  "C101",
-  "C102",
-  "C103",
-  "C104",
-  "C105",
-  "C106",
-  "C107",
-  "C108",
-  "C109",
-  "C110",
-  "C111",
-  "C112",
-  "C13",
-  "R10",
-  "R7",
-  "R8",
-  "R9"
- ]
+ "ok": true
 }
