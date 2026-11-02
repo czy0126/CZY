@@ -26,16 +26,29 @@
 
 **注意**：上表仅引用 BOM 现有候选值，不能替代厂商典型电路校核。若主板的控制接口与原 BOM 冲突，必须先形成 ECO，不能为满足行数而盲目接线。
 
-## B. 缺少实体端子的五只磁件
+## B. 五只磁件：符号已画，**实体端子仍未核实**
 
-- T1–T4：每只五逻辑端 `PRI_A,PRI_B,SEC_A,SEC_B,CTAP`。按 `magnetics_symbol_contract.json`、`winding_polarity.json` 实施；**CTAP = 副边 A 同名端 + 副边 B 非同名端**，不能将两组同名端直接相连。
+**2026-11-02 状态**：`DCX_XFMR_5P`（用于 T1–T4）与 `DCX_CT_4P` 两个项目库符号已建、已放置，
+`.eprj2` 里共 **83 个位号**；原生导出网表已把 24 个逻辑端子全部连到正确网络
+（`netlist_compare.json` 对 `T1`/`CT` 等逐 pad 比对，`missing_or_wrong = 0`）。
+`magnetics_symbol_contract.json` 的五条 `native_symbol_present` 由 `project_symbols.json`
+派生，**不是**手填的。
+
+仍未做的是**物理**那一半：
+
+- 引脚号是逻辑端子名（`PRI_A`…），不是厂商编号。`physical_pad` 全部 `null`，
+  `physical_pad_map_verified` 全部 `false`——名字对不等于极性对。
+- T1–T4：每只五逻辑端 `PRI_A,PRI_B,SEC_A,SEC_B,CTAP`。**CTAP = 副边 A 同名端 + 副边 B 非同名端**，不能将两组同名端直接相连。
 - CT（过流互感器）：四逻辑端 `PRI_A,PRI_B,SEC_A,SEC_B`；其实际同名端与针号必须由绕组工艺/首件确认，目前不能推断。
 - **物理 pad 编号必须来自确认的端子图**，不能用“1–5”假定序号填入正式符号。
-- 完成后从原生嘉立创 EDA 导出全部网表并逐 pad 比对。任何未受检的自制磁件都不得以逻辑网名符合为由放行。
+- 封装仍是占位件：CT 的符号 4 端 vs `XFMR-TH_ZHT104A` 2 焊盘，只为让网表能导出。
+- 拿到端子图后，从原生嘉立创 EDA 导出全部网表并逐 pad 比对；在此之前任何自制磁件
+  都不得以“逻辑网名符合”为由放行。
 
-## C. 39 个占位位号与正式 BOM
+## C. 61 个占位位号与正式 BOM
 
-`pin_footprint_review.csv` 目前 39 个位号含 `PLACEHOLDER`。`bom_draft.csv` 中还有 `TO SELECT/TO BUILD/TO ASSIGN` 的器件条目，应通过 **ref→value→MPN→package→footprint pad→net→source→status** 逐行审查。
+`pin_footprint_review.csv` 目前 **61** 个位号含 `PLACEHOLDER`：39 个原有占位件 +
+17 个 BOM 外围 + 5 只磁件（磁件的符号已画，占位的是封装与物理端子，见 §B）。`bom_draft.csv` 中还有 `TO SELECT/TO BUILD/TO ASSIGN` 的器件条目，应通过 **ref→value→MPN→package→footprint pad→net→source→status** 逐行审查。
 
 其中必须优先核实：Cr（不能以 100 nF/0603 代替 620 nF 谐振电容）、Cin（真实 48 V 输入电容组）、Cout（15×470 µF 的真实封装与有效耐压）、D_BT（反压和结电容）、Lr（三匝候选及实测漏感补偿），以及门极电阻、CT 限流网络。相关电容必须在正式 BOM 中体现**数量和并联构造**，不是只画一个通用 `Cout` 占位。
 
@@ -63,4 +76,4 @@
     `closure_status` 一律保持 `NOT_CLOSED`，效率口径不变。详见基线 §2.7。
 - **暂缓：** 详细 CFD/冷板/连续额定温升。本阶段优先设计测试点与限能保护，连续工作能力待后续验证。
 
-**当前直接任务：五只磁件真实符号（T1–T4、CT）、56 个占位料号（39 原有 + 17 新外围）、GUI ERC，然后把原生原理图导入带网络的主 PCB；17 个 BOM 外围已画入但在正式料号选定前仍按占位件计。继续扩展文字审核不会让板子更接近制造。**
+**当前直接任务：五只磁件的厂商端子图（符号与逻辑端子已画入，缺的是物理脚号/DOT）、61 个占位料号、GUI ERC，然后把原生原理图导入带网络的主 PCB；17 个 BOM 外围已画入但在正式料号选定前仍按占位件计。继续扩展文字审核不会让板子更接近制造。**

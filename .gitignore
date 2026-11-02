@@ -20,9 +20,12 @@ __pycache__/
 .agents/**/bridge.stderr.log
 .agents/**/bridge.stdout.log
 
-# Session scratch: issue texts and temporary ledgers.
+# Session scratch: issue texts, temporary ledgers, probe project copies.
 .tmp_*/
 .tmp_*.png
+# EasyEDA probe copies.  The client keeps these SQLite files open, so rm can
+# still fail with "Device or resource busy" after every session reports closed.
+.tmp_*.eprj2
 
 # LTspice run metadata cache; the .log and .cir are the committed evidence.
 *.db

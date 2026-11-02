@@ -315,13 +315,39 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   PRIMITIVE(仅显示)/SILK_OPTS/D3_ATTRIBUTE/PREFERENCE/PANELIZE。
 - 中文厂商名经 CLI 文本通道会变 U+FFFD；必须走 xlsx 二进制 + base64。
 - **原生工程保存**：`eda.sch_Document.save()` 会把 `.eprj2` 写回
-  `C:\Users\27792\Documents\LCEDA-Pro\projects\DCX Main Board.eprj2`（实测保存后 mtime 与大小立即变），
+  `C:\Users\27792\Documents\LCEDA-Pro\projects\DCX Main Board.eprj2`，
   再 `cp` 进 `hardware/dcx_main/`。`dmt_Project` 没有任何 save 方法，`saveFileToFileSystem` 不可用。
-  改图后必须同时重导 `gen/netlist_export_raw.json`（制造门槛读它）与 `main_board.svg`，
+  改图后必须同时重导 `gen/netlist_export_raw.json`（制造门槛读它），
   并重跑 `tools/d1_bom_coverage.py --write`、`tools/d1_fabrication_gate.py --write`。
+  `main_board.svg` 现在导不出来，见下面 `getSvgFile` 那条。
+- **只能用 `--path` 打开工程，绝不调 `dmt_Project.openProject(uuid)`**：后者会重新解析到
+  库/云端副本，之后每次 `save()` 都返回 false、文件 mtime 不变。实测同一份编辑：
+  按路径打开 → save true、文件 1572864→1576960 字节；调过 `openProject` → save false、mtime 不动。
+- **`save()` 是防抖的**：返回 true 后约 20 s 文件才变。判断"写进去了没有"只能看 size/mtime
+  （`lceda_place_main_board.py --watch` 就是这么等的），true 本身不是证据。
+- **`getCurrentProjectInfo()` 的 shape**：`{itemType, uuid, friendlyName, … , data}`。
+  工程 uuid 在**信封**的 `info.uuid`；`data[0]` 是 `Board1`（`{itemType, name, schematic, pcb, parentProjectUuid}`），
+  不是工程。按路径打开是异步的，刚 `open` 完 `data` 可能为空，要循环等到有 schematic page。
+- **`otherProperty.Footprint` 会毒化整个文档**：`sch_PrimitiveComponent.modify()` 把这个 key
+  搬进实例的 `footprint.uuid`——写封装**名字**进去就得到一个解析不了的引用，之后该文档
+  **每次 save() 都 false**，而且 `sch_PrimitiveComponent.modify` 的 schema 里没有 `footprint` 字段，
+  清不掉。`lib_Device.modify`/`lib_Device.create` 的所有封装关联形式在这个 build 里也全部失败
+  （`footprintUuid` 抛 `[object Object]`、`{symbol, footprint}` 返回 false / null）。
+- **保存与导出互斥**：磁件器件带不上封装时 `getNetlistFile()` 什么都不返回；
+  一旦把封装注入已放置实例，文档又不能序列化。所以顺序固定：
+  先放器件 → `--all … --watch` 等写盘 → `--netlist-ready` 在**内存**里注入封装 **uuid** → 导出。
+  注入后不能再 save，也不会进 `.eprj2`（重开一个副本会看到 `footprint: {uuid:""}`）。
+  导出只在**真工程路径**上有效，工程副本上 `getNetlistFile` 返回 undefined。
+- **`getSvgFile` 在 83 个位号时超过 60 s invoke 上限**（实测两次 `REQUEST_TIMEOUT` 59750 ms），
+  所以 `main_board.svg` 是**旧的**（还停在 78 个位号）。要在 GUI 里导或等 A1 收尾；
+  不要把旧 SVG 当当前图的证据。
+- **磁件符号的引脚号是逻辑端子名**（`PRI_A`/`SEC_A`/`CTAP`），不是厂商焊盘号：
+  本仓库没有厂商端子图，编一个"1–5"就和真端子图分不出来了。`physical_pad` 因此全是 null，
+  `physical_pad_map_verified` 全是 false；`magnetics_symbol_contract.py` 从
+  `project_symbols.json` 的 `used_by` 派生 `native_symbol_present`，手改 JSON 会被 `main()` 判过期。
 - **17 个 BOM 外围在 `tools/main_board_schematic.py:PERIPHERALS`**，故意不进金网表：EN/RUN 默认电平、
   EN 滤波、每只 IC 的去耦在 SPICE 里不存在。网表比对把它们的 34 个焊盘记在
-  `peripheral_pads_checked`，不混进 `pads_checked`（金网表 221）。新增/移动外围必须同时改 `SECTIONS`，
+  `peripheral_pads_checked`，不混进 `pads_checked`（金网表 245）。新增/移动外围必须同时改 `SECTIONS`，
   否则 `test_every_placed_ref_sits_in_exactly_one_section` 红。外围网络名用**金网表里的名字**
   （U2.6=EN 叫 `RUN`，HI/LI 叫 `GD1`/`GD2`，`12V_P` 叫 `VCC12`），
   `test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses` 锁住这一点。

@@ -1,8 +1,9 @@
 # DCX 主功率板 —— 原生原理图（A1）
 
 > **最新状态：NOT_FOR_FAB / A1-WIP。** 本目录已移入当前开发分支，保留嘉立创原生 `.eprj2` 和真实焊盘比对。**`netlist_compare.json:readiness=PARTIAL_PASS` 不是完整原理图或投板验收。**
-> 17 个 BOM 真实外围（R7–R10、C13、C101–C112）已画进原生原理图并逐焊盘核对，但它们仍是**值/MPN 占位件**；
-> 缺少 T1–T4/CT 原生符号、物理端子号/极性验收、GUI ERC 与带网 PCB。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[直接整改路线](../../docs/D1_电气优先_增输出与设计整改_2026-11-01.md)。
+> 17 个 BOM 真实外围（R7–R10、C13、C101–C112）与**五只磁件（T1–T4、CT）**都已画进原生原理图并逐焊盘核对；
+> 但外围仍是**值/MPN 占位件**，磁件的引脚号是**逻辑端子名**而不是厂商端子图，物理端子号/极性、
+> GUI ERC 与带网 PCB 全部未完成。详见 [磁件符号逻辑合同](magnetics_symbol_contract.json)、[直接整改路线](../../docs/D1_电气优先_增输出与设计整改_2026-11-01.md)。
 
 
 这是 `design/v3/pcb/board_netlist.csv`（由 v3 deck 派生的**金网表**）在嘉立创 EDA Pro 里的
@@ -17,13 +18,14 @@
 
 | 结论 | 证据 |
 |------|------|
-| **78 个位号**已放置：金网表 61 只 + BOM 真实外围 17 只，**261 个焊盘**全部有归属 | `pin_footprint_review.csv` |
+| **83 个位号**已放置：金网表 66 只 + BOM 真实外围 17 只，**285 个焊盘**全部有归属（280 个接线、5 个按设计留空） | `pin_footprint_review.csv` |
 | 按 A1 任务卡的**六个功能块**绘制，每块有标题文字，块内按功能排列 | `gen/slice_00.js` 的 `labels` |
-| 金网表的 193 个引脚展开成 **221 个焊盘**，逐焊盘比对**无一错接、无一漏接** | `netlist_compare.json:pads_checked` |
-| 17 个外围的 **34 个焊盘**按 `pin_connections.csv` 连接并单独计数，不混进金网表的 221 | `peripheral_pads_checked` |
-| U2（UCC27282）裸露焊盘按设计接 PGND，单独计数，**不算进**金网表的 221 | `pads_bonded_by_design` |
-| T1–T4、CT 未放置，原因是**库里没有可用的符号**，已在 `placement_plan.json` 里逐条写明 | `gaps` / `unresolved` |
-| 56 个位号是**占位件**（值未定或封装不对），审表里逐行标注 `PLACEHOLDER` | `pin_footprint_review.csv` 的 `note` 列 |
+| 金网表的 193 个引脚展开成 **245 个焊盘**，逐焊盘比对**无一错接、无一漏接** | `netlist_compare.json:pads_checked` |
+| 17 个外围的 **34 个焊盘**按 `pin_connections.csv` 连接并单独计数，不混进金网表的 245 | `peripheral_pads_checked` |
+| U2（UCC27282）裸露焊盘按设计接 PGND，单独计数，**不算进**金网表的 245 | `pads_bonded_by_design` |
+| T1–T4、CT **已放置并逐焊盘核对**，引脚号是逻辑端子名（`PRI_A`/`SEC_A`/`CTAP`），**不是**厂商端子号 | `magnetics_symbol_contract.json` |
+| 五只磁件的**物理端子号与 DOT 仍未核实**，所有 `physical_pad` 保持 null | `physical_pad_map_verified: false` |
+| 61 个位号是**占位件**（值未定或封装不对），审表里逐行标注 `PLACEHOLDER` | `pin_footprint_review.csv` 的 `note` 列 |
 
 比对是按**焊盘**做的，不是按位号数量做的。这一步是必要的：金网表把 MOS 的引脚叫 `S`，
 而 DFN/TDSON 封装的源极是 1、2、3 三个焊盘——只连其中一个，导出的网表仍然"和金网表一致"，
@@ -31,9 +33,12 @@
 
 ## 评审用的导出图
 
-`main_board.svg` 是客户端自己导出的（`gen/export_svg.js` 调 `sch_ManufactureData.getSvgFile`），
-含全部 78 个位号与 6 个分区标题。它**不能替代工程文件**——只用来评审，
-改图后要重新导出：
+**`main_board.svg` 目前是过期的**（仍停在磁件放上去之前的 78 个位号）。加进五只磁件后
+`getSvgFile` 在 60 s 的 invoke 上限内返回不了：实测两次都在 59750 ms 超时
+（`REQUEST_TIMEOUT`），而 CLI 的单次上限写死在 60000 ms。要么在 GUI 里导出，
+要么等 A1 收尾时再试。**不要把旧 SVG 当作当前图的证据。**
+
+导出的用法（`gen/export_svg.js` 调 `sch_ManufactureData.getSvgFile`）：
 
 ```bash
 /d/lceda-pro/lceda-pro.exe invoke --session <id> --ext-uuid eda --timeout 60000 \
@@ -129,20 +134,41 @@ U2.7/8=HI/LI 叫 `GD1`/`GD2`；`12V_P` 在金网表里叫 `VCC12`。测试
 ```bash
 python tools/main_board_schematic.py --write      # -> placement_plan.json + pin_footprint_review.csv
 python tools/lceda_place_main_board.py --emit     # -> gen/slice_NN.js
-python tools/lceda_place_main_board.py --all --session <id>   # 放置并拉线（需客户端在跑）
+# 必须按路径打开，且在本会话里不要再调 dmt_Project.openProject(uuid)
+/d/lceda-pro/lceda-pro.exe open --path "$(pwd -W)/hardware/dcx_main/dcx_main_board.eprj2" --headless true
+python tools/lceda_place_main_board.py --all --session <id> --watch hardware/dcx_main/dcx_main_board.eprj2
+python tools/lceda_place_main_board.py --netlist-ready --session <id>   # 仅内存，见下
 /d/lceda-pro/lceda-pro.exe invoke --session <id> --ext-uuid eda --timeout 60000 \
     --code "$(cat hardware/dcx_main/gen/export_netlist.js)" > hardware/dcx_main/gen/netlist_export_raw.json
 python tools/check_main_board_netlist.py          # A4 验收：ok 必须为 True
 ```
 
 `--session` 是客户端 CLI 会话 id；一次 invoke 上限 **60000 ms**（`--help` 里写的 1800000 是错的）。
-放置分 3 片跑，`slice_00.js` 会先清空图页，所以**重跑 `--all` 就是完整的重建**。
+放置分 4 片跑，`slice_00.js` 会先清空图页，所以**重跑 `--all` 就是完整的重建**。
+
+三条 headless 实测规律，违反任何一条都会得到"看起来成功、其实没写盘"的结果：
+
+1. **只能用 `--path` 打开工程**。在脚本里调 `dmt_Project.openProject(uuid)` 会让编辑器重新解析到
+   云端/库里的副本，此后每次 `sch_Document.save()` 都返回 false、文件 mtime 不变。
+   `getCurrentProjectInfo().uuid` 才是工程 uuid，`data[0]` 是名为 `Board1` 的板子而不是工程。
+2. **`save()` 是防抖的**：返回 true 之后约 20 s 文件才变大。`--watch` 就是等这个变化；
+   只看到 true 不能当作已写盘。
+3. **保存与导出互斥**。项目库里的磁件器件带不上封装，而 `getNetlistFile()` 在磁件没有封装时
+   什么都不返回；可一旦把 `otherProperty.Footprint` 注入已放置的实例，该文档就**无法再序列化**
+   （save 恒 false），而且 `modify()` 会把这个字段搬进实例的 `footprint.uuid`。
+   所以顺序固定：**先写盘，再用 `--netlist-ready` 在内存里注入封装 uuid，然后导出**；
+   注入之后不能再 save，也不会写进 `.eprj2`。仓库里保存的原生工程因此没有磁件封装关联，
+   网表证据来自那一步内存注入。
 
 ## 已知缺口（本目录没有假装它们不存在）
 
-1. **T1–T4 没有符号**：需要 5 引脚 3:1:1 变压器（PRI_A/PRI_B/SEC_A/SEC_B/CTAP），
-   库里唯一的 5 焊盘变压器 `EE16_65KHZ` 露出 6 个引脚。
-2. **CT 没有符号**：需要 4 引脚电流互感器，`ZHT104A` 只有 2 个引脚。
+1. **磁件的物理端子仍未核实**（原来的"没有符号"已解决）：`DCX_XFMR_5P` / `DCX_CT_4P`
+   两个原生符号已建、已放置，引脚号是逻辑端子名。缺的是绕组厂的端子图，把
+   `PRI_A`/`SEC_A`/`CTAP` 变成带 DOT 的编号焊盘。在那之前 `physical_pad` 全部是 null，
+   `physical_pad_map_verified` 全部是 false——**名字对不等于极性对**。
+2. **磁件的封装是占位件**：CT 的符号有 4 个端子，占位封装 `XFMR-TH_ZHT104A` 只有 2 个焊盘；
+   变压器用 `XFMR-TH_5P-L20.5-W18.0-P3.25-TL`（5 焊盘）只是为了焊盘数对得上。
+   它们让网表能导出、能比对，但不代表能投板。
 3. **占位件**：Lr、Cr、Cin、Cout、D_BT 以及全部 R/C 的值仍是 `TO ASSIGN`，
    审表逐行标 `PLACEHOLDER`；它们连的是**对**的网络，但**不是**设计选定的料。
 4. **没有 PCB**：`pcb_Document.importChanges` 返回 true 但导入 0 个器件，
@@ -154,17 +180,20 @@ python tools/check_main_board_netlist.py          # A4 验收：ok 必须为 Tru
 ## 目录
 
 ```
-dcx_main_board.eprj2          原生工程（可编辑）
+dcx_main_board.eprj2          原生工程（可编辑，83 个位号）
 library_pins.json             实测的器件引脚（11 类，来源 gen/pins_probe.json）
+project_symbols.json          项目库里自建磁件符号的实测 uuid（由 gen/make_project_symbols.js 写入）
+magnetics_symbol_contract.json 五只磁件的逻辑端子合同（由 tools/magnetics_cad_contract.py 生成）
 placement_plan.json           每个位号 -> 器件 uuid + 焊盘->网络
-pin_footprint_review.csv      A3 审表：227 行，含未接线焊盘的理由
+pin_footprint_review.csv      A3 审表：285 行，含未接线焊盘的理由
 netlist_compare.json          A4 比对结果
 gen/probe_all_pins.js         按 MPN 实测引脚
+gen/make_project_symbols.js   建两个磁件符号并回填 project_symbols.json
 gen/export_netlist.js         导出客户端自己的网表
 gen/slice_NN.js               放置脚本（由 --emit 生成）
 gen/drc_ab.js                 证明 CLI ERC 直方图不随页面变化的实验
 gen/drc_empty_test.js         清空页面再测 ERC（破坏性，跑完要 --all 恢复）
 gen/api_probe.js              证明 eda.* 不是"什么都返回函数"的桩
 gen/export_svg.js             导出评审用 SVG
-main_board.svg                上述导出结果（2048×5273）
+main_board.svg                上述导出结果（2048×5273）——**已过期**，见上文
 ```
