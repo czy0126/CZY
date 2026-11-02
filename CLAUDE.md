@@ -72,10 +72,15 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 - **trip 之后 SR 门极可能被重新拉高并保持，不能照抄旧结论"驱动一直为低"**：
   `sr_timing_v3_3` 用漏源反向偏置做关断判据，主桥停振后没有这个偏置，也没有实现
   UCC24624 的 standby/轻载关断。实测 48 V 是 **A 相**在 trip 后 32 µs 回到 10.89 V
-  并保持（trip 后 54.8 % 采样为高），50 V 是 **B 相**（99.7 % 为高）；
-  `sr_gate_latched_at_end` 两者都 true。报告必须逐通道写 `sr_a/b_gate_after_trip`，
+  并保持（trip 后 54.8 % 采样为高；锁存时刻 247.07 µs），50 V 是 **B 相**（99.7 % 为高；
+  244.47 µs）；`sr_gate_latched_at_end` 两者都 true。报告必须逐通道写 `sr_a/b_gate_after_trip`，
   既不能写成"已安全关断"，也不能写成"SR 直通"——这是模型边界。同时 `V(ss)` 在 trip 后
   约 35 µs 从 5.07 V 跌到 0.088 V，主桥停振、输出跌到几十毫伏。
+  **锁存不解释塌缩**：两个 deck 都有锁存，48 V 照样跑满 320 µs。50 V 的塌缩在 trip 后
+  **82 µs 的死区（296.928094 µs）**：295.88 µs 仍是满步长 5 ns，296.88 µs 起步长收缩，
+  14.20 GB 里 13.3 GB 是最后 0.93 µs 写的。死区轨迹不同——48 V 的 `V(sw)` 落到 ~7 V 基本
+  静止，50 V 在 13.7–16.2 V 漂移。要跑满应补 UCC24624 standby 关断变体库并两 deck 同口径
+  重跑，**不是调容差**。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的

@@ -47,6 +47,10 @@ def test_settled_fault_evidence_is_recorded_without_unblocking_anything():
             > e["hotfault_48v_120a_lr_peak_before_trip_a"])
     assert e["hotfault_50v_120a_2turn_flux_at_fault_peak_t"] > e["lr_0p9_bsat_limit_t"]
     assert e["hotfault_50v_120a_3turn_flux_at_fault_peak_t"] < e["lr_0p9_bsat_limit_t"]
+    # Both decks latch one SR gate after trip; only 50 V stalls, so the register
+    # must keep the latch as a per-deck fact rather than a stall explanation.
+    assert e["hotfault_48v_120a_sr_gate_latched_at_end"] is True
+    assert e["hotfault_50v_120a_sr_gate_latched_at_end"] is True
     assert all(x["blocked"] for x in j["risks"])
 
 

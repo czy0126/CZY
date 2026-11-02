@@ -96,6 +96,13 @@ def build() -> dict:
         "hotfault_48v_120a_sr_forward_peak_a":
             hot48["fault"]["sr_forward_peak_whole_record_a"],
         "hotfault_48v_120a_solver_completed": hot48["log"]["solver_completed"],
+        # Both decks latch one SR gate ~30 us after trip (48 V: A at 247.07 us,
+        # 50 V: B at 244.47 us).  The latch alone does not stall the solver --
+        # 48 V finishes 320 us -- so the record must keep the flag per deck.
+        "hotfault_48v_120a_sr_gate_latched_at_end":
+            hot48["fault"]["sr_gate_latched_at_end"],
+        "hotfault_50v_120a_sr_gate_latched_at_end":
+            hot50["fault"]["sr_gate_latched_at_end"],
         "hotfault_48v_120a_2turn_flux_at_fault_peak_t": hot_flux2,
         "hotfault_48v_120a_3turn_flux_at_fault_peak_t": hot_flux3,
         # ELE-08, 50 V: same definition, 9.15x overload instead of 8.7x because
@@ -127,8 +134,9 @@ def build() -> dict:
                        "OC timing, SR SOA and Lr saturation at ~101A are unconfirmed on hardware",
             "blocked": True,
             "next_evidence": "bench-verify OC delay and SR/Lr peaks on a physical sample; "
-                             "confirm real Lr saturation at the 101A fault peak; explain why the "
-                             "50V post-trip shutdown (SS discharged, one SR gate latched) stalls the solver",
+                             "confirm real Lr saturation at the 101A fault peak; close the 50V "
+                             "296.928us stall by adding the UCC24624 standby turn-off the timing "
+                             "model lacks (variant lib) and re-running both decks on one footing",
             "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
         {
