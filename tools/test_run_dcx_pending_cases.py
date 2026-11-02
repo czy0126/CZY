@@ -29,3 +29,11 @@ def test_new_unrun_hotfaults_are_default_and_require_complete_logs():
     assert "Total elapsed time" in txt
     assert "hot_ipri_after" in txt.lower()
     assert "hot_ss_before" in txt.lower()
+
+
+def test_launcher_calls_strict_hotfault_log_validator():
+    txt = (ROOT / "tools/run_dcx_pending_cases.ps1").read_text(encoding="utf-8")
+    assert "tools/validate_hotfault_log.py" in txt
+    assert "--case $CaseKey --log $Log --raw $Raw --json $Validated" in txt
+    assert 'if ($LASTEXITCODE -ne 0)' in txt
+    assert "Fault may have run, but post-fault OC/settling evidence is invalid" in txt
