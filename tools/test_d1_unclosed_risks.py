@@ -78,6 +78,14 @@ def test_the_loss_gap_is_not_a_short_window_artifact_but_stays_blocked():
     assert e["50v_120a_cin_ac_rms_a"] > 0.0
     assert e["50v_120a_cin_esr_loss_w"] < 1e-3
     assert e["50v_120a_aligned_loss_residual_w"] > 100 * e["50v_120a_cin_esr_loss_w"]
+    # The four 100 A step lengths are not one operating point, and no
+    # quadrature rule reproduces their difference -- so the next experiment
+    # pins the load rather than changing the integration.
+    assert e["sr_step_checks_ok"] is True
+    assert e["sr_step_charge_quadrature_rel"] < 0.02
+    assert e["sr_step_charge_cross_raw_rel"] > 10 * e["sr_step_charge_quadrature_rel"]
+    assert e["sr_step_vout_spread_mv"] > 10.0
+    assert e["sr_step_on_time_spread_ns"] > 50.0
     assert e["50v_120a_model_closure_status"] == "NOT_CLOSED"
     assert all(x["blocked"] for x in j["risks"])
 

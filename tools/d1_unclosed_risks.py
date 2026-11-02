@@ -29,6 +29,10 @@ def build() -> dict:
     # real gap, so the register must carry both readings rather than the short
     # one alone.
     aligned50 = _load(PP / "energy_ledger_50v_120a_aligned.json")
+    # ELE-09 follow-up: the four 100 A step lengths are compared at fixed
+    # quadrature rules and fixed operating point, which decides what the next
+    # experiment has to change.  Raw-only, so it is a local diagnostic record.
+    step_op = _load(ROOT / "design/v3/stage_f/sr_step_operating_point.json")
     lr = _load(ROOT / "design/v3/bom/lr_design.json")
     gate = _load(ROOT / "hardware/dcx_main/d1_fabrication_gate.json")
     fault_peak = float(fault["ipri_peak_before_trip_a"])
@@ -67,6 +71,7 @@ def build() -> dict:
     # the comparison stays reproducible rather than a remembered ratio.
     cin_ac_rms_a = 0.3493
     cin_esr_w = 5e-3 * cin_ac_rms_a ** 2
+    step_r = step_op["results"]
     evidence = {
         "manufacturing_gate": gate["status"],
         "48v_120a_fault_oc_trip_us": fault["fault_to_trip_us"],
@@ -86,6 +91,14 @@ def build() -> dict:
         "50v_120a_aligned_resolves_0p2_w": aligned_sem <= target,
         "50v_120a_cin_ac_rms_a": cin_ac_rms_a,
         "50v_120a_cin_esr_loss_w": cin_esr_w,
+        # The four 100 A step lengths are four operating points, not four
+        # discretisations of one: V(out) and the SR on-time both move across
+        # them, and the quadrature rule cannot reproduce the difference.
+        "sr_step_vout_spread_mv": step_r["vout_spread_mv"],
+        "sr_step_on_time_spread_ns": step_r["on_time_spread_ns"],
+        "sr_step_charge_quadrature_rel": step_r["quadrature_within_raw_max_rel"],
+        "sr_step_charge_cross_raw_rel": step_r["charge_cross_raw_rel"],
+        "sr_step_checks_ok": all(step_op["checks"].values()),
         "50v_120a_loss_residual_moves_between_windows_w": aligned_loss_gap - loss_gap,
         "target_residual_w": target,
         "lr_core_ae_m2_from_existing_design": area,
@@ -177,8 +190,7 @@ def build() -> dict:
                              "no un-inventoried dissipative element can hold 0.49 W (Cin ESR "
                              "0.61 mW measured, Cbt carries no charge).  Remaining candidates are "
                              "the port reading (~2 mV of mean Vout) and the behavioral-SR "
-                             "integration error; do not relax 0.2 W",
-            "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
+                             "channel/diode split; do not relax 0.2 W",            "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
         },
         {
             "id": "E02",
@@ -187,9 +199,12 @@ def build() -> dict:
             "blocked": ledger50["balance"]["closure_status"] != "CLOSED" or abs(closure) > target,
             "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is "
                              "stable (sem 0.050 W); ELE-09's inventory audit leaves only port "
-                             "and numerical candidates, so settle it with an edge-aligned "
-                             "fixed-step integration rather than more step reduction; "
-                             "do not relax 0.2 W",
+                             "and numerical candidates.  More step reduction is falsified and "
+                             "re-integrating the same samples is falsified too (same raw 0.80 % "
+                             "against 86 % across steps), because the four runs sit at different "
+                             "operating points (Vout 19.2 mV, SR on-time 141.7 ns): pin Iout "
+                             "with a current-source load or a closed Vout loop before the next "
+                             "comparison; do not relax 0.2 W",
             "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json",
         },
         {

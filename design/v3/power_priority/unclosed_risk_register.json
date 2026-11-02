@@ -18,6 +18,11 @@
     "50v_120a_aligned_resolves_0p2_w": true,
     "50v_120a_cin_ac_rms_a": 0.3493,
     "50v_120a_cin_esr_loss_w": 0.00061005245,
+    "sr_step_vout_spread_mv": 19.244659731983305,
+    "sr_step_on_time_spread_ns": 141.69243855156128,
+    "sr_step_charge_quadrature_rel": 0.007976208831200315,
+    "sr_step_charge_cross_raw_rel": 0.8600085841515048,
+    "sr_step_checks_ok": true,
     "50v_120a_loss_residual_moves_between_windows_w": -0.006560553744968445,
     "target_residual_w": 0.2,
     "lr_core_ae_m2_from_existing_design": 0.00013,
@@ -80,7 +85,7 @@
       "priority": "P0",
       "blocker": "50V 120A model loss inventory gap exceeds 0.2W",
       "blocked": true,
-      "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs 133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: no un-inventoried dissipative element can hold 0.49 W (Cin ESR 0.61 mW measured, Cbt carries no charge).  Remaining candidates are the port reading (~2 mV of mean Vout) and the behavioral-SR integration error; do not relax 0.2 W",
+      "next_evidence": "ELE-09 ruled out a short-window artifact (22 periods 0.4986 W vs 133 aligned 0.4921 W, sem 0.050 W) and the deck is now exhausted: no un-inventoried dissipative element can hold 0.49 W (Cin ESR 0.61 mW measured, Cbt carries no charge).  Remaining candidates are the port reading (~2 mV of mean Vout) and the behavioral-SR channel/diode split; do not relax 0.2 W",
       "file": "design/v3/power_priority/energy_ledger_50v_120a_aligned.json"
     },
     {
@@ -88,7 +93,7 @@
       "priority": "P0",
       "blocker": "50V 120A full energy closure not approved",
       "blocked": true,
-      "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is stable (sem 0.050 W); ELE-09's inventory audit leaves only port and numerical candidates, so settle it with an edge-aligned fixed-step integration rather than more step reduction; do not relax 0.2 W",
+      "next_evidence": "the aligned 133-period window confirms the 0.698 W closure is stable (sem 0.050 W); ELE-09's inventory audit leaves only port and numerical candidates.  More step reduction is falsified and re-integrating the same samples is falsified too (same raw 0.80 % against 86 % across steps), because the four runs sit at different operating points (Vout 19.2 mV, SR on-time 141.7 ns): pin Iout with a current-source load or a closed Vout loop before the next comparison; do not relax 0.2 W",
       "file": "design/v3/power_priority/sr_loss_audit_50v_120a.json"
     },
     {

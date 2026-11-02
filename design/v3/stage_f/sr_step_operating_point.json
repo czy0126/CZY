@@ -1,0 +1,69 @@
+{
+  "tool": "sr_step_operating_point.py",
+  "scope": "pair 1 channel A, whole phase-aligned window of each 100 A run",
+  "results": {
+    "steps_ns": [
+      "5",
+      "2",
+      "1",
+      "0.5"
+    ],
+    "vout_mean_v": [
+      1.8894335017444257,
+      1.8847611474358956,
+      1.8980053582500624,
+      1.904005807167879
+    ],
+    "on_time_ns": [
+      1943.4953195618436,
+      1921.6095868798434,
+      2017.8756472284942,
+      2063.3020254314047
+    ],
+    "charge_uc": [
+      3.532966362019846,
+      4.096188196608814,
+      2.937661583974189,
+      2.2022415549643313
+    ],
+    "diode_loss_w": [
+      0.4901788768166234,
+      0.5794646767361946,
+      0.4047515106261467,
+      0.2949797057378892
+    ],
+    "vout_spread_mv": 19.244659731983305,
+    "on_time_spread_ns": 141.69243855156128,
+    "charge_spread_uc": 1.893946641644483,
+    "charge_cross_raw_rel": 0.8600085841515048,
+    "diode_loss_spread_w": 0.28448497099830544,
+    "quadrature_within_raw_max_rel": 0.007976208831200315,
+    "quadrature_loss_within_raw_max_rel": 0.1316284537461785,
+    "cross_raw_loss_rel": 0.9644221804570208,
+    "loss_vs_vout_inverse_monotone": true,
+    "quadrature_by_step": {
+      "5": {
+        "max_rel_charge": 0.0062012322279767496,
+        "max_rel_loss": 0.03081568026508541
+      },
+      "2": {
+        "max_rel_charge": 0.003581802468180517,
+        "max_rel_loss": 0.031728055350584095
+      },
+      "1": {
+        "max_rel_charge": 0.007976208831200315,
+        "max_rel_loss": 0.08829374716375082
+      },
+      "0.5": {
+        "max_rel_charge": 0.007911778674499659,
+        "max_rel_loss": 0.1316284537461785
+      }
+    }
+  },
+  "checks": {
+    "all_four_steps_measured": true,
+    "periods_match_across_steps": true,
+    "quadrature_is_not_the_explanation": true,
+    "cross_step_spread_exceeds_quadrature": true
+  }
+}
