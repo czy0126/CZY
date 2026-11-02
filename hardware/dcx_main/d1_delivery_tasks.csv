@@ -1,15 +1,16 @@
 id,priority,workstream,owner_role,earliest_workday,target_workday,depends_on,deliverable,acceptance,status,blocker
-CAD-01,P0,原生原理图,EDA工程,D1,D1,,hardware/dcx_main/dcx_main_board.eprj2,保存可编辑原生工程与当前完整导出网表；审表版本一致,in_progress,原生工程有61位号
-CAD-02,P0,控制外围,EDA工程+电路,D1,D3,CAD-01,hardware/dcx_main/dcx_main_board.eprj2,17个R7-R10/C13/C101-C112新增至原生EDA，脚位、值、网络与器件手册逐一核对,blocked,缺17个BOM外围
-MAG-01,P0,磁件,磁件+EDA,D1,D4,CAD-01,hardware/dcx_main/dcx_main_board.eprj2,T1-T4及CT共5符号的DOT/CTAP/实体端子图、焊盘号全部核对；不猜厂家引脚,blocked,缺已批准实体端子映射
-BOM-01,P0,器件参数,采购+电路,D1,D5,CAD-01,hardware/dcx_main/pin_footprint_review.csv,39占位位号经MPN/值/耐压/封装审查并同步原生EDA，TO SELECT明确解除或附理由,blocked,多项关键器件未选型
+CAD-01,P0,原生原理图,EDA工程,D1,D1,,hardware/dcx_main/dcx_main_board.eprj2,保存可编辑原生工程与当前完整导出网表；审表版本一致,done,原生工程已保存83位号；仅完成逻辑导出/编辑文件存在，非投板验收
+CAD-02,P0,控制外围,EDA工程+电路,D1,D3,CAD-01,hardware/dcx_main/dcx_main_board.eprj2,17个R7-R10/C13/C101-C112新增至原生EDA，脚位、值、网络与器件手册逐一核对,in_progress,17个外围已有原生逻辑连接与34焊盘核对；真实MPN值与封装仍缺
+MAG-01,P0,磁件,磁件+EDA,D1,D4,CAD-01,hardware/dcx_main/dcx_main_board.eprj2,T1-T4及CT共5符号的DOT/CTAP/实体端子图、焊盘号全部核对；不猜厂家引脚,in_progress,五只磁件原生符号已画；厂商物理端子号及CT封装2pad对4逻辑端仍不成立
+BOM-01,P0,器件参数,采购+电路,D1,D5,CAD-01,hardware/dcx_main/pin_footprint_review.csv,61占位位号经MPN/值/耐压/封装审查并同步原生EDA，TO SELECT明确解除或附理由,blocked,最新审表为61占位位号；优先Cr/Cout/Cin/D_BT/J_IN/J_OUT和五磁件真实封装
 ELE-01,P0,电路安全,电路+仿真,D1,D4,,design/v3/power_priority/48V110A_实测_2026-11-01.md,区分111.16A仿真端口208.83W与负载端/硬件；核对SR/Cr/Cout/OC应力的限制及模型边界,in_progress,未进行真实故障及热测试
-ELE-02,P1,高输出验证,仿真,D2,D5,ELE-01,design/v3/power_priority/48V120A_实测_2026-11-02.md,按真实运行输出actual Iout/Pin/Pout/SR/Cr/Cout/CT应力与测试日志；不得抄估算,done,仿真完成 121.67 A/227.98 W（非额定；账本 NOT_CLOSED +0.667 W；无热/故障）
+ELE-02,P1,高输出验证,仿真,D2,D5,ELE-01,design/v3/power_priority/48V120A_实测_2026-11-02.md,按真实运行输出actual Iout/Pin/Pout/SR/Cr/Cout/CT应力与测试日志；不得抄估算,done,已运行121.67 A/227.98 W（非硬件额定）；能量主窗NOT_CLOSED，短窗与SEM需ELE-05重算
+ELE-05,P0,候选账本修复,仿真+数值,D1,D2,ELE-01,design/v3/power_priority/energy_ledger_48v_120a.json,使用修正后VIN/RL传递的脚本从相同候选raw重算110/120A短窗口/逐周期SEM与报告；移除QUARANTINED,blocked,当前保存的110/120A统计窗沿用100A默认18.9mΩ；raw未随Git提交
 ELE-03,P1,数值可信度,仿真+计算,D2,D8,ELE-01,design/v3/stage_f/energy_ledger_100a_phase_aligned.json,对5/2/1ns的SR积分步长敏感性和端口储能建立同窗可收敛解释，NOT_CLOSED不伪绿,blocked,SR分项步长变化大
 ELE-04,P0,输出电流路径,PCB+电路,D2,D7,CAD-02;BOM-01,hardware/dcx_mech/power_stage_placement.kicad_pcb,实际网络布局四SR→Cout→接点、回流铜与Kelvin，给分组电阻/过孔/额定审查,blocked,当前仅无网摆件
 CTL-01,P1,同步整流验证,控制+PCB,D1,D7,,pcb/control_validation/control_validation.kicad_sch,生成可制造PCB和限能换流测试夹具图；真实负VDS与回流路径，保护上电顺序,blocked,现有仅原理图
 MFG-01,P1,磁件首件,磁件+供应商,D2,D8,MAG-01,design/v3/magnetics/绕组工艺卡_2026-11-01.md,首件要求DOT/Lm/漏感/DCR/L(I)/故障裕量及实际厚度，缺数据不得宣告完成,blocked,厂商首件尚未验证
-CAD-03,P0,原理图全量核对,EDA工程+复核,D4,D6,CAD-02;MAG-01;BOM-01,hardware/dcx_main/d1_fabrication_gate.json,原生导出真实包含全BOM器件/全磁件和pad审核；原生GUI ERC报告与豁免可复查,blocked,原生ERC和完整网表缺失
+CAD-03,P0,原理图全量核对,EDA工程+复核,D4,D6,CAD-02;MAG-01;BOM-01,hardware/dcx_main/d1_fabrication_gate.json,原生导出真实包含全BOM器件/全磁件和pad审核；原生GUI ERC报告与豁免可复查,blocked,83位号/285焊盘逻辑导出已有，但磁件实物pad未证且原生工程保存/内存封装不同；GUI ERC缺失
 PCB-01,P0,主功率板PCB,PCB,D5,D9,CAD-03;ELE-04,hardware/dcx_main/,建立有真实网络、叠层、铜层、回流、过孔、正确封装的PCB；完成可编辑工程DRC,blocked,尚无带网PCB
 MFG-02,P0,制造输入,PCB+供应商,D7,D10,PCB-01;BOM-01,hardware/dcx_main/,Gerber/钻孔/装配/坐标/BOM及厂商DFM，沉槽须核实铜层存续和绝缘,blocked,缺正式制造包
 QA-01,P0,D1放行,技术负责人+复核,D10,D10,MFG-02;CAD-03;ELE-04,hardware/dcx_main/d1_fabrication_gate.json,原始证据与哈希齐全并由人员签核，require-release通过才考虑首板，热额定另行签核,blocked,当前NOT_FOR_FAB
