@@ -11,7 +11,8 @@
 把 SPICE 的 `G/S/D` 引脚名落到真实封装的**具体焊盘**上，并证明落对了。
 
 项目文件：`dcx_main_board.eprj2`（嘉立创 EDA Pro 4.1.60，`.eprj2` 是 SQLite）。
-打开方式：复制到 `C:\Users\27792\Documents\LCEDA-Pro\projects\`，在客户端里打开即可编辑。
+打开方式：复制到嘉立创客户端的工程目录（本项目已改为 `D:\workshop\LCEDA-Pro\projects\`，
+见 `%USERPROFILE%\Documents\LCEDA-Pro\config.json` 的 `APP_PROJECT_DIR`），在客户端里打开即可编辑。
 **本仓库只有原理图，没有 PCB**——headless 下 PCB 相关 API 不可用，见下。
 
 ## 已验证的结论
@@ -25,7 +26,7 @@
 | U2（UCC27282）裸露焊盘按设计接 PGND，单独计数，**不算进**金网表的 245 | `pads_bonded_by_design` |
 | T1–T4、CT **已放置并逐焊盘核对**，引脚号是逻辑端子名（`PRI_A`/`SEC_A`/`CTAP`），**不是**厂商端子号 | `magnetics_symbol_contract.json` |
 | 五只磁件的**物理端子号与 DOT 仍未核实**，所有 `physical_pad` 保持 null | `physical_pad_map_verified: false` |
-| 61 个位号是**占位件**（值未定或封装不对），审表里逐行标注 `PLACEHOLDER` | `pin_footprint_review.csv` 的 `note` 列 |
+| 83 个位号里 **61 个仍是占位件**（39 原有 + 22 新增外围/磁件；值未定或封装不对），审表里逐行标注 `PLACEHOLDER` | `pin_footprint_review.csv` 的 `note` 列 |
 
 比对是按**焊盘**做的，不是按位号数量做的。这一步是必要的：金网表把 MOS 的引脚叫 `S`，
 而 DFN/TDSON 封装的源极是 1、2、3 三个焊盘——只连其中一个，导出的网表仍然"和金网表一致"，
