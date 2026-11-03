@@ -1,0 +1,38 @@
+{
+  "kind": "P0_SR_INHIBIT_ARCHITECTURE_COMPARISON",
+  "updated": "2026-11-03",
+  "hardware_verified": false,
+  "preferred_next_controlled_prototype": "NCP4306 8x native TRIG/DIS with default-high local pullups / dual-qualified local permit sinks",
+  "not_final_hardware_selection": true,
+  "options": [
+    {
+      "name": "A_TTL_BUFFER",
+      "origin": "docs/D1_EXECUTION_KIT/15_十路硬件故障关断接口及实施验收.md",
+      "controller": "4x UCC24624 + 4x UCC27524A",
+      "off_method": "8x active-low EN local pull downs",
+      "preserves_UCC24624_analog_VG": false,
+      "number_new_ics": 4,
+      "loss_of_supervisor_default_off_requires": "8 physical EN pulldowns",
+      "risk": "Destroys original analog proportional VG; TTL threshold and fixed rail drive need direct full-load & reverse conduction requalification",
+      "status": "BENCH_CANDIDATE_ONLY_NOT_MPN_REPLACEMENT"
+    },
+    {
+      "name": "B_NATIVE_DIS",
+      "origin": "docs/D1_EXECUTION_KIT/17_NCP4306原生停机SR替代及时序计算.md",
+      "controller": "8x NCP4306 (replaces 4x UCC24624)",
+      "off_method": "8x TRIG/DIS HIGH locally by VCC rail pullups; gated LOW only if two permits healthy",
+      "preserves_UCC24624_analog_VG": false,
+      "number_new_ics": 8,
+      "loss_of_supervisor_default_off_requires": "8 physical 10k TRIG pullups to local SR VCC, no independently held-low faults",
+      "risk": "Entire SR algorithm/VD CS and min-on/off timing changes, blank 80ns, latch and protection link still unimplemented",
+      "status": "PREFERRED_BENCH_DESIGN_NOT_FAB_APPROVED"
+    }
+  ],
+  "decision_notes": [
+    "Even preferred alternative does not remove need for fast independent CT comparator/latch and separate start protection",
+    "Do NOT claim NCP4306 can be placed onto previous UCC24624 physical pads; new 8x controller routing required",
+    "Vendor SOA of MOS remains third-quadrant unknown",
+    "Original primary R8 always pullup must be DNP, can never be bypassed by RUN strap"
+  ],
+  "d1_release_approved": false
+}
