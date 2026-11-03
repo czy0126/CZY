@@ -1,5 +1,7 @@
 # 48V→约2V固定变比薄型DCX
 
+
+> **2026-11-03 性能优先调整（成本不设上限）：** [本轮增量审核、真实八 SR 故障分析与五日路线](docs/D1_性能优先增量审核与高裕量实施路线_2026-11-03.md) · [自动计算的高裕量设计门槛](design/v3/power_priority/high_margin_design_gate.json) · [9组定制磁件、电容、保护与器件询样表](hardware/dcx_main/performance_first_component_rfq.csv) · [25项任务与投板依赖](hardware/dcx_main/d1_delivery_tasks.csv)。48V八只SR故障模型已经跑满：四个 A 端从247.07μs起维持高门极，但最后该段最大仅约1.405A，不能误称持续285A故障电流；50V故障仍仅为296.929μs前缀。按101.26A早期峰值、20%电流余量、+10%电感量及80% Bsat 重新审视，现有ELP32三匝/Amin128mm² **不满足性能优先裕量**，推荐询样低矮Amin≥200mm²三匝磁件；Cout优先≥4V/6.3V且**含铜箔 ESR≤0.10mΩ**。全部是新设计目标不是已签核器件；**NOT_FOR_FAB / 非连续额定**仍保持。
 > **2026-11-02 夜间最新工程入口：** [SR 故障保护 P0 与 D1 五日并行计划](docs/D1_保护与可制造性复核_2026-11-02_夜间.md) · [22 项可核查任务表](hardware/dcx_main/d1_delivery_tasks.csv) · [P0 风险登记](design/v3/power_priority/unclosed_risk_register.json) · [D1 制造闸门](hardware/dcx_main/d1_fabrication_gate.json)。主板原生 EDA 已有 83 个逻辑位号，**61 个器件/封装占位、五磁件真实脚号、GUI ERC 和带网 PCB**仍缺，`NOT_FOR_FAB`。48 V/120 A 稳态后故障 **全程完成但一路 SR 末端仍为 10.89 V 高栅压**（Lr 模型峰 97.44 A，SR 峰 292.61 A）；50 V 相同故障在 296.929µs 提前停止，仅有有限前缀（Lr 101.26 A，SR 303.93 A），**两个工况均不可签核完整保护**。现已增加不可人工绕过的保护门槛和**八只 SR 故障后探针 deck（尚未运行）**。50 V/120 A 133 周期模型损耗差约 0.492 W，0.2 W 目标仍未达。所有值来自仿真，非硬件认证；详细热设计暂缓。
 
 

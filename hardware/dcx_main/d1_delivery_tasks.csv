@@ -19,5 +19,8 @@ MFG-01,P1,磁件首件,磁件+供应商,D2,D8,MAG-01,design/v3/magnetics/绕组�
 CAD-03,P0,原理图全量核对,EDA工程+复核,D4,D6,CAD-02;MAG-01;BOM-01,hardware/dcx_main/d1_fabrication_gate.json,原生导出真实包含全BOM器件/全磁件和pad审核；原生GUI ERC报告与豁免可复查,blocked,83位号/285焊盘逻辑导出已有，但磁件实物pad未证且原生工程保存/内存封装不同；GUI ERC缺失
 PCB-01,P0,主功率板PCB,PCB,D5,D9,CAD-03;ELE-04,hardware/dcx_main/,建立有真实网络、叠层、铜层、回流、过孔、正确封装的PCB；完成可编辑工程DRC,blocked,尚无带网PCB
 MFG-02,P0,制造输入,PCB+供应商,D7,D10,PCB-01;BOM-01,hardware/dcx_main/,Gerber/钻孔/装配/坐标/BOM及厂商DFM，沉槽须核实铜层存续和绝缘,blocked,缺正式制造包
-QA-01,P0,D1放行,技术负责人+复核,D10,D10,MFG-02;CAD-03;ELE-04;ELE-10,hardware/dcx_main/d1_fabrication_gate.json,原始证据与哈希齐全并由人员签核，require-release通过才考虑首板，热额定另行签核,blocked,当前NOT_FOR_FAB
+PERF-01,P0,高裕量低矮Lr询样,磁件+采购,D1,D5,MAG-02,design/v3/power_priority/high_margin_design_gate.json,不以原ELP32三匝名义0.019T余量定版；针对20%峰流和10%电感上限设计B<=0.248T优选3匝Amin>=200mm2且总高<=10mm；原厂签图与L(I)首样审核,blocked,101.26A峰值为50V求解前缀；新121.52A仅是RFQ裕量非真实故障峰值
+PERF-02,P0,高耐压低阻Cout实物方案,功率电路+采购+EDA,D1,D5,BOM-01,hardware/dcx_main/performance_first_component_rfq.csv,电容按>=4V并优先6.3V询样；有效总容量>=7.05mF且纹波组额定>=78.72Arms；电容ESR<=0.07mOhm并预留PCB>=0.03mOhm预算；验证高度/偏置/温度/过冲,blocked,现有15只2.5V候选仅理想模型等效并未读原厂数据与PCB实际扩散电阻
+PROT-02,P0,独立故障锁存同时关断主桥八SR,硬件控制+仿真,D1,D5,ELE-10;CTL-01,design/v3/power_priority/high_margin_design_gate.json,验证失压默认关断及独立硬件故障锁存；各SR Vgs/Vds/Id与关断延迟及重启安全时序有完整48V/50V故障原始证据；不得仅凭OC达1V放行,blocked,已测48V四个A端在后72.93us高栅极但末端仅1.41A；50V未跑满；硬件独立关断尚未设计
+QA-01,P0,D1放行,技术负责人+复核,D10,D10,MFG-02;CAD-03;ELE-04;ELE-10;PERF-01;PERF-02;PROT-02,hardware/dcx_main/d1_fabrication_gate.json,原始证据与哈希齐全并由人员签核，require-release通过才考虑首板，热额定另行签核,blocked,当前NOT_FOR_FAB
 THERM-01,P2,详细热设计,热+结构,DEFER,DEFER,QA-01,design/v3/stage_f/,详细温升和冷板优化暂停；连续100/120A额定必须等热/机械实测后批准,deferred,按项目决定暂缓

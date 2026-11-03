@@ -1,0 +1,78 @@
+{
+  "status": "UNVERIFIED_RFQ_TARGETS_NOT_RATED_NOT_FOR_FAB",
+  "cost_policy": "NO_COST_CEILING_PER_USER_DIRECTION",
+  "constraints": {
+    "maximum_assembly_height_mm": 10,
+    "thermal_detail": "DEFERRED_BUT_DEVICE_SOA_AND_PROTECTION_MANDATORY",
+    "no_invented_mpn": true
+  },
+  "magnetics": {
+    "observed_50v_fault_peak_a": 101.262657,
+    "observed_peak_is_solver_prefix": true,
+    "design_multiplier": 1.2,
+    "rfq_current_a": 121.515189,
+    "l_max_envelope_uh": 1.1,
+    "bsat_reference_100c_t": 0.31,
+    "max_bsat_usage": 0.8,
+    "design_flux_limit_t": 0.248,
+    "existing_core_amin_mm2": 128,
+    "existing_three_turn_worst_b_t": 0.34809,
+    "three_turn_min_ae_mm2": 179.659554,
+    "preferred_three_turn_amin_mm2": 200,
+    "preferred_three_turn_worst_b_t": 0.222778,
+    "four_turn_min_ae_mm2": 134.744665,
+    "optional_four_turn_amin_mm2": 150,
+    "optional_four_turn_worst_b_t": 0.222778,
+    "status": "REDESIGN_OR_VENDOR_FIRST_ARTICLE_REQUIRED",
+    "limitation": "1.10x L and 1.20x peak are design scenarios; flux uses constant L, not a validated nonlinear BH curve. Prefer custom low-profile larger-Ae or distributed-gap assembly, not a blind multi-mm single gap."
+  },
+  "capacitors": {
+    "existing_nominal_bank_count": 15,
+    "existing_nominal_v_rating_v": 2.5,
+    "output_vrating_min_v": 4,
+    "output_vrating_preferred_v": 6.3,
+    "output_bank_c_min_mf": 7.05,
+    "output_model_ripple_rms_a": 52.478279,
+    "output_ripple_target_rms_a": 78.717419,
+    "output_esr_including_copper_target_mohm": 0.1,
+    "output_copper_and_joint_budget_mohm": 0.03,
+    "output_cap_bank_esr_budget_mohm": 0.07,
+    "status": "PENDING_DATASHEETS_AND_3D_LAYOUT",
+    "limitation": "Current 2.5V/15-part bank is a model equivalence, not qualified for startup overshoot, voltage derating or connection resistance. C/ESR/RMS must be met at DC bias, temperature, frequency and lifetime."
+  },
+  "sr_protection": {
+    "observed_single_device_forward_peak_50v_a": 303.930014,
+    "observed_peak_is_solver_prefix": true,
+    "sensitivity_factor": 1.25,
+    "screening_current_a": 379.912517,
+    "48v_A_gates_high_at_end": [
+      "1A",
+      "2A",
+      "3A",
+      "4A"
+    ],
+    "48v_final_high_interval_max_current_a": 1.405253,
+    "48v_final_high_interval_i2t_total_a2s": 0.000416,
+    "status": "HARD_FAULT_INTERLOCK_DESIGN_REQUIRED_NOT_TESTED",
+    "limitation": "High gate voltage at final sample does not mean hundreds of amps persist: late high-gate interval only <=1.41A in the 48V model. No real UCC24624 standby/SOA model. Evaluate a latched hardware inhibit for primary+all 8 SR; verify actual Vgs/Id/Vds after OC."
+  },
+  "cad": {
+    "fabrication_gate": "NOT_FOR_FAB",
+    "unverified_physical_magnetics": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "placeholder_count": 61
+  },
+  "hardware_continuous_rating_approved": false,
+  "next_priority": [
+    "SR all-gate fault inhibit and complete 50V simulation",
+    "larger-Ae/custom-gapped Lr supplier quote + L(I) test",
+    "high-voltage low-ESR output bank RFQ and PCB spreading model",
+    "real magnetic terminals, MPNs, GUI ERC and netted main PCB",
+    "full device SOA and electrical stress verification"
+  ]
+}
