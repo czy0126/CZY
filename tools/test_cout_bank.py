@@ -59,3 +59,12 @@ def test_report_flags_that_the_part_data_is_unverified():
     assert data["no_output_ripple_spec"] is True
     assert "not datasheet-verified" in data["status"]
     assert {bank["part"] for bank in data["banks"]} == {part["mpn"] for part in CANDIDATES}
+
+
+def test_a720_oem_max_height_must_not_use_distributor_nominal():
+    """YAGEO/KEMET OEM spec A720V477M2R5APE003 gives H MAX 2.1mm,
+    not the 1.9mm value previously copied from a reseller summary."""
+    a720 = next(p for p in CANDIDATES if p["mpn"]=="KEMET A720V477M2R5APE003")
+    assert a720["height_mm"] == 2.1
+    bank = next(b for b in report()["banks"] if b["part"]==a720["mpn"])
+    assert bank["height_mm"] == 2.1

@@ -2,7 +2,7 @@
 	(version 20260206)
 	(generator "main_board_mechanical")
 	(layer "F.Cu")
-	(descr "Bulk output capacitor: height 1.9 mm is from cout_bank.json, the 7.3x4.3 case size is PROVISIONAL")
+	(descr "Bulk output capacitor: max height 2.1 mm from YAGEO OEM; the 7.3x4.3 outline fixed by OEM; PCB land pads are PROVISIONAL")
 	(attr through_hole)
 	(property "Reference" "REF**" (at 0 -3.6 0) (layer "F.SilkS")
 		(uuid "e5e2ef56-351e-5974-8cb9-b0be0c0920f9"))
