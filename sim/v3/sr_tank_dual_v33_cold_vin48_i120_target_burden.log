@@ -1,0 +1,29 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_cold_vin48_i120_target_burden.cir
+Start Time: Tue Nov  3 18:36:05 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 2291.084 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_cold_vin48_i120_target_burden.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vout_max: MAX(V(out) )=1.88868003695 FROM 0 TO 0.008
+vout_2m: V(out) =1.58851997894 at 0.002
+vout_4m: V(out) =1.75206397859 at 0.004
+vout_6m: V(out) =1.85723350457 at 0.006
+vout_avg: AVG(V(out) )=1.87373580841 FROM 0.007 TO 0.008
+ipri_pk: MAX(abs(I(Lr)) )=24.133753946 FROM 0 TO 0.008
+vsra1_pk: MAX(-I(VSa1) )=72.6041839654 FROM 0 TO 0.008
+oc_max: MAX(V(oc) )=0.696786079533 FROM 0 TO 0.008
+iaux_pk: MAX(I(Vaux) )=1.00493302568e-08 FROM 0 TO 0.008
+ibus_pk: MAX(-I(Vbus) )=329.353097085 FROM 0 TO 0.008

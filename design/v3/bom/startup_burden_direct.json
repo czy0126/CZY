@@ -1,0 +1,110 @@
+{
+ "kind": "ct_burden_cold_start_measured",
+ "evidence_level": "SIMULATED_ONLY / BURDEN_MEASURED_NOT_RATED",
+ "source": {
+  "deck": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target_burden.cir",
+  "parent_deck": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+  "raw": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target_burden.raw"
+ },
+ "results": {
+  "burden_ohm": 10.0,
+  "measured": {
+   "window_ms": [
+    0.0,
+    8.0
+   ],
+   "samples": 14433895,
+   "peak_w": 0.572401,
+   "t_peak_ms": 1.28698,
+   "peak_voltage_v": 2.39249,
+   "peak_current_a": 0.239249,
+   "vout_at_peak_v": 1.16641,
+   "energy_mj": 0.77957,
+   "mean_mw": 97.4462,
+   "duration_us": 8000.0,
+   "voltage_min_v": -0.0013188,
+   "voltage_min_time_ms": 0.543707,
+   "negative_energy_share": 6.125065517e-11,
+   "negative_samples": 18738,
+   "time_above": {
+    "above_quarter_of_p70_us": 2.443,
+    "above_p70_us": 0.0,
+    "above_four_times_p70_us": 0.0,
+    "above_derated_at_125c_us": 0.4118,
+    "above_derated_at_140c_us": 10.88,
+    "above_derated_at_150c_us": 4080.0
+   },
+   "end": {
+    "vout_v": 1.88671,
+    "vss_v": 5.01044
+   }
+  },
+  "head_slice": {
+   "window_ms": [
+    0.0,
+    0.2
+   ],
+   "samples": 20022,
+   "peak_w": 3.87493e-13,
+   "t_peak_ms": 0.063275,
+   "peak_voltage_v": 1.96848e-06,
+   "peak_current_a": 1.96848e-07,
+   "vout_at_peak_v": 9.93736e-13,
+   "energy_mj": 4.27722e-15,
+   "mean_mw": 2.13868e-11,
+   "duration_us": 200.0,
+   "voltage_min_v": -4.27074e-07,
+   "voltage_min_time_ms": 0.066575,
+   "negative_energy_share": 0.01522187343,
+   "negative_samples": 4053,
+   "time_above": {
+    "above_quarter_of_p70_us": 0.0,
+    "above_p70_us": 0.0,
+    "above_four_times_p70_us": 0.0,
+    "above_derated_at_125c_us": 0.0,
+    "above_derated_at_140c_us": 0.0,
+    "above_derated_at_150c_us": 0.0
+   },
+   "end": {
+    "vout_v": 7.48652e-13,
+    "vss_v": 0.0875
+   }
+  },
+  "direct_vs_derived": {
+   "peak_w": 0.579361,
+   "peak_deviation_pct": -1.201,
+   "t_peak_shift_ms": 0.0,
+   "energy_mj": 0.778649,
+   "energy_deviation_pct": 0.1183,
+   "reference": "design/v3/bom/startup_burden_pulse.json"
+  },
+  "current_identity_max_deviation": 1.2134738e-15,
+  "rating": {
+   "mpn": "CRCW251210R0FKEHHP",
+   "rated_power_w": 1.5,
+   "peak_over_p70": 0.3816,
+   "peak_over_derated": {
+    "125c": 1.0812,
+    "140c": 2.1624,
+    "150c": 6.4872
+   },
+   "note": "screening ratios against a continuous/de-rated rating, not a pulse rating"
+  },
+  "limits": [
+   "the deck runs the ideal CT model (Kct = 0.9999, no saturation, no core loss); the burden voltage is measured, the transformer behind it is not",
+   "the probe deck is the parent plus three .save entries; adding probes does not change the solution, but it is a derived deck, not the frozen parent",
+   "the raw is a local artefact and is not in Git; regenerate it with tools/make_startup_burden_probe.py and an LTspice run",
+   "agreement between derived and measured does not make either record a pulse rating: the vendor single/repetitive pulse charts still apply",
+   "the burden voltage reverses by roughly a millivolt at each current zero crossing because the deck's bridge diodes carry Cjo=20 pF; the record reports the excursion and its energy share instead of pretending the bridge is a perfect rectifier"
+  ]
+ },
+ "checks": {
+  "ok": true,
+  "the_raw_reached_the_declared_saved_stop": true,
+  "the_reversed_excursion_carries_no_meaningful_energy": true,
+  "the_saved_current_is_the_saved_voltage_over_rbur": true,
+  "the_probe_deck_differs_from_its_parent_only_by_the_saved_probes": true,
+  "the_direct_peak_reproduces_the_derived_peak": true,
+  "the_direct_energy_reproduces_the_derived_energy": true
+ }
+}

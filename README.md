@@ -1,6 +1,6 @@
 # 48V→约2V固定变比薄型DCX
 
-> **2026-11-03 器件审核修复：** [R3过流CT负载电阻由0.125W/0805不合格件更正为Vishay 1.5W/2512耐脉冲候选](docs/D1_EXECUTION_KIT/13_候选器件额定与原厂证据复核.md)，同步更新[61行候选表](docs/D1_EXECUTION_KIT/templates/vendor_candidate_matrix_61.csv)与自动回归测试。型号与系列手册已验证；仍需改原生封装、复核温度/故障脉冲，不是硬件签核。NOT_FOR_FAB。
+> **2026-11-03 器件审核修复：** [R3过流CT负载电阻由0.125W/0805不合格件更正为Vishay 1.5W/2512耐脉冲候选](docs/D1_EXECUTION_KIT/13_候选器件额定与原厂证据复核.md)，同步更新[61行候选表](docs/D1_EXECUTION_KIT/templates/vendor_candidate_matrix_61.csv)与自动回归测试。型号与系列手册已验证；启动脉冲现已直接测量（0.572 W / 0.780 mJ，与推导差 −1.2 % / +0.12 %）；仍需改原生封装、复核温度与重复故障脉冲，不是硬件签核。NOT_FOR_FAB。
 
 
 > **2026-11-03 原厂器件资料更新：** [51/61 个占位位号的 15 款原厂准确料号候选及设计风险](docs/D1_EXECUTION_KIT/11_原厂实证与逐位号候选.md) · [高裕量 MOSFET/磁芯替代与官方模型入口](docs/D1_EXECUTION_KIT/12_高裕量原厂替代与模型下载.md) · [全 61 位号候选及缺口 CSV](docs/D1_EXECUTION_KIT/templates/vendor_candidate_matrix_61.csv)。仅为候选，原生 CAD/SOA/制造仍需签核，保持 NOT_FOR_FAB。

@@ -50,11 +50,20 @@ def _relative(path: Path) -> str:
 
 def waveform_stats(t: np.ndarray, data: dict[str, np.ndarray], r_ohm: float,
                    levels: dict[str, float]) -> dict:
-    """Burden statistics from the measured burden voltage."""
+    """Burden statistics from the measured burden voltage.
+
+    The burden voltage is not strictly non-negative: the deck's bridge is four
+    ``DSCH`` diodes with ``Cjo=20p``, so at each secondary-current zero crossing
+    their junction charge briefly pulls the resistor the other way.  The
+    excursion is recorded with its energy share, because what matters is that
+    it carries no meaningful energy -- a negative *voltage* on a resistor still
+    dissipates.
+    """
     volts = data["V(ocd)"] - data["V(ocm)"]
     power = volts * volts / r_ohm
     peak = int(np.argmax(power))
     energy = float(np.trapezoid(power, t))
+    negative_energy = float(np.trapezoid(np.where(volts < 0.0, power, 0.0), t))
     dt = np.diff(t, prepend=t[0] - 5e-9)
     duration = float(t[-1] - t[0])
     return {
@@ -69,6 +78,9 @@ def waveform_stats(t: np.ndarray, data: dict[str, np.ndarray], r_ohm: float,
         "mean_mw": _round(energy / duration * 1e3),
         "duration_us": _round(duration * 1e6, 4),
         "voltage_min_v": _round(float(volts.min())),
+        "voltage_min_time_ms": _round(float(t[int(np.argmin(volts))]) * 1e3),
+        "negative_energy_share": _round(negative_energy / energy if energy else 0.0, 10),
+        "negative_samples": int((volts < 0.0).sum()),
         "time_above": {f"above_{name}_us": _round(float(dt[power > watts].sum()) * 1e6, 4)
                        for name, watts in levels.items()},
         "end": {"vout_v": _round(float(data["V(out)"][-1])),
@@ -129,7 +141,14 @@ def build(raw: Path = RAW) -> dict:
     reached = float(t[-1]) >= DECLARED_STOP_S - 1e-9
     checks = {
         "the_raw_reached_the_declared_saved_stop": reached,
-        "the_burden_voltage_is_rectified": float(volts.min()) >= -1e-6,
+        # Not "the voltage never reverses": the deck's bridge has Cjo=20p per
+        # diode, so a millivolt-scale reversal at current zero is the model, not
+        # a defect.  The invariant is that the reversed intervals carry no
+        # meaningful share of the energy -- 0.1 %, the same order as the
+        # derived-vs-measured energy agreement, so a reversed interval can never
+        # be what makes the two records agree.
+        "the_reversed_excursion_carries_no_meaningful_energy":
+            direct["negative_energy_share"] < 1e-3,
         "the_saved_current_is_the_saved_voltage_over_rbur": current_dev < 5e-3,
         "the_probe_deck_differs_from_its_parent_only_by_the_saved_probes":
             deck_text == probe.build(parent_text),
@@ -166,6 +185,10 @@ def build(raw: Path = RAW) -> dict:
                 "tools/make_startup_burden_probe.py and an LTspice run",
                 "agreement between derived and measured does not make either record a "
                 "pulse rating: the vendor single/repetitive pulse charts still apply",
+                "the burden voltage reverses by roughly a millivolt at each current zero "
+                "crossing because the deck's bridge diodes carry Cjo=20 pF; the record "
+                "reports the excursion and its energy share instead of pretending the "
+                "bridge is a perfect rectifier",
             ],
         },
         "checks": {"ok": all(checks.values()), **checks},

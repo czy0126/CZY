@@ -40,6 +40,28 @@ def test_a_square_pulse_has_the_obvious_energy_and_mean():
     assert stats["time_above"]["above_p70_us"] == 0.0
 
 
+def test_a_reversed_zero_crossing_carries_little_energy():
+    t = np.linspace(0.0, 1e-3, 1001)
+    volts = np.ones_like(t)
+    volts[500:503] = -0.01  # a millivolt-scale dip, as the bridge model makes
+    data = {"V(ocd)": volts, "V(ocm)": np.zeros_like(t), "I(Rbur)": volts,
+            "V(out)": volts, "V(ss)": volts}
+    stats = direct.waveform_stats(t, data, 1.0, LEVELS)
+    assert stats["voltage_min_v"] == -0.01
+    assert stats["negative_samples"] == 3
+    assert stats["negative_energy_share"] < 1e-3
+
+
+def test_a_genuine_inversion_exceeds_the_energy_bound():
+    t = np.linspace(0.0, 1e-3, 1001)
+    volts = np.ones_like(t)
+    volts[:500] = -1.0  # half the record reversed: not a zero-crossing artifact
+    data = {"V(ocd)": volts, "V(ocm)": np.zeros_like(t), "I(Rbur)": volts,
+            "V(out)": volts, "V(ss)": volts}
+    stats = direct.waveform_stats(t, data, 1.0, LEVELS)
+    assert stats["negative_energy_share"] > 1e-3
+
+
 def test_the_comparison_is_elementwise_and_signed():
     diff = direct.comparison({"peak_w": 1.02, "t_peak_ms": 1.30, "energy_mj": 0.78},
                              {"peak_w": 1.00, "t_peak_ms": 1.29, "energy_mj": 0.80,
