@@ -144,11 +144,11 @@ def test_the_current_share_spread_is_reported_not_assumed_equal():
 
 
 # ---------------------------------------------------------------- honesty
-def test_the_report_says_the_number_is_a_lower_bound():
+def test_the_report_does_not_claim_a_bound_for_an_unrouted_plane():
     data = cp.bank_esr_with_copper(placed_bank(), 2 * opb.OZ_M)
-    assert "lower bound" in data["direction"].lower()
+    assert "not a bound" in data["direction"].lower()
     limits = " ".join(data["limits"])
-    for phrase in ("200 kHz", "via", "not additive", "no thermal model"):
+    for phrase in ("200 kHz", "via", "not additive", "no thermal model", "no monotonic ripple bound"):
         assert phrase in limits, phrase
 
 

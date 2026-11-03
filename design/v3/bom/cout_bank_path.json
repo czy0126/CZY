@@ -6,26 +6,26 @@
     "governed_by": "esr"
   },
   "results": {
-    "part_esr_mohm": 3.0,
+    "part_esr_mohm": 3,
     "n": 15,
     "parts_only_esr_mohm": 0.2,
     "bank_esr_mohm": 0.2688,
     "rise_mohm": 0.0688,
     "rise_frac": 0.34415,
     "lane_width_mm": 8.2,
-    "vertical_run_mm": 16.0,
+    "vertical_run_mm": 16,
     "sheet_mohm_per_square": 0.3237,
-    "copper_thickness_um": 70.0,
-    "temperature_c": 100.0,
-    "joint_ohm": 5e-05,
+    "copper_thickness_um": 70,
+    "temperature_c": 100,
+    "joint_ohm": 0.00005,
     "joints_are": "UNVERIFIED placeholder from connector_budget.py",
     "units": [
       {
         "ref": "C100",
-        "x_mm": 14.0,
+        "x_mm": 14,
         "group": 1,
-        "lateral_mm": 5.0,
-        "vertical_mm": 16.0,
+        "lateral_mm": 5,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.61,
         "squares": 2.561,
@@ -38,7 +38,7 @@
         "x_mm": 22.2,
         "group": 1,
         "lateral_mm": 3.2,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.39,
         "squares": 2.341,
@@ -51,7 +51,7 @@
         "x_mm": 30.4,
         "group": 1,
         "lateral_mm": 11.4,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 1.39,
         "squares": 3.341,
@@ -64,7 +64,7 @@
         "x_mm": 38.6,
         "group": 2,
         "lateral_mm": 18.4,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 2.244,
         "squares": 4.195,
@@ -77,7 +77,7 @@
         "x_mm": 46.8,
         "group": 2,
         "lateral_mm": 10.2,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 1.244,
         "squares": 3.195,
@@ -87,10 +87,10 @@
       },
       {
         "ref": "C105",
-        "x_mm": 55.0,
+        "x_mm": 55,
         "group": 2,
-        "lateral_mm": 2.0,
-        "vertical_mm": 16.0,
+        "lateral_mm": 2,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.244,
         "squares": 2.195,
@@ -103,7 +103,7 @@
         "x_mm": 63.2,
         "group": 2,
         "lateral_mm": 6.2,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.756,
         "squares": 2.707,
@@ -116,7 +116,7 @@
         "x_mm": 71.4,
         "group": 2,
         "lateral_mm": 14.4,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 1.756,
         "squares": 3.707,
@@ -129,7 +129,7 @@
         "x_mm": 79.6,
         "group": 3,
         "lateral_mm": 15.4,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 1.878,
         "squares": 3.829,
@@ -142,7 +142,7 @@
         "x_mm": 87.8,
         "group": 3,
         "lateral_mm": 7.2,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.878,
         "squares": 2.829,
@@ -152,10 +152,10 @@
       },
       {
         "ref": "C110",
-        "x_mm": 96.0,
+        "x_mm": 96,
         "group": 3,
-        "lateral_mm": 1.0,
-        "vertical_mm": 16.0,
+        "lateral_mm": 1,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.122,
         "squares": 2.073,
@@ -168,7 +168,7 @@
         "x_mm": 104.2,
         "group": 3,
         "lateral_mm": 9.2,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 1.122,
         "squares": 3.073,
@@ -181,7 +181,7 @@
         "x_mm": 112.4,
         "group": 3,
         "lateral_mm": 17.4,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 2.122,
         "squares": 4.073,
@@ -194,7 +194,7 @@
         "x_mm": 120.6,
         "group": 4,
         "lateral_mm": 12.4,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 1.512,
         "squares": 3.463,
@@ -207,7 +207,7 @@
         "x_mm": 128.8,
         "group": 4,
         "lateral_mm": 4.2,
-        "vertical_mm": 16.0,
+        "vertical_mm": 16,
         "vertical_squares": 1.951,
         "lateral_squares": 0.512,
         "squares": 2.463,
@@ -288,15 +288,15 @@
         }
       ]
     },
-    "direction": "a lower bound on the interconnect term; AC crowding and the shared return path both only raise it",
+    "direction": "illustrative independent-lane DC model; not a bound on real shared copper topology, return path or 200 kHz AC impedance",
     "limits": [
-      "the square count is a lower bound on AC resistance: at 200 kHz the current crowds into the copper beside each pad, and neither skin nor proximity effect is modelled",
+      "the independent-lane square count is not a rigorous bound on actual PCB impedance: at 200 kHz AC crowding can increase local resistance, but shared copper/vias/return may reduce the resistance of the assumed independent branches",
       "per-unit pad, via and solder-joint geometry does not exist in this repository; the 50 uohm joint is the connector placeholder, not a capacitor-joint measurement",
       "each unit is assigned to the nearest SR-group centre; a real plane splits its current between two groups",
       "the vertical run is copper shared with the SR-to-busbar path in output_path_budget.json; the two resistances are not additive",
       "part ESR is a vendor-page summary; ESR at 200 kHz, at 2 V bias and at end of life is not included",
       "no thermal model: the current share below is a resistance ratio, not a temperature",
-      "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) was computed with the ideal 0.200 mohm bank Rser; raising a branch impedance cannot lower the ripple, so that figure is a lower bound as well"
+      "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) used an ideal 0.200 mohm Rser; no monotonic ripple bound is justified without a time-domain rerun with actual distributed capacitor impedance"
     ],
     "allowance": [
       {
@@ -311,21 +311,21 @@
         "bank_esr_mohm": 0.25,
         "max_branch_mohm": 0.75,
         "squares": 2.317,
-        "lateral_mm": 19.0
+        "lateral_mm": 19
       },
       {
         "rise_frac": 0.5,
         "bank_esr_mohm": 0.3,
         "max_branch_mohm": 1.5,
         "squares": 4.634,
-        "lateral_mm": 38.0
+        "lateral_mm": 38
       }
     ],
     "candidates": [
       {
         "part": "KEMET A720V477M2R5APE003",
         "n": 15,
-        "part_esr_mohm": 3.0,
+        "part_esr_mohm": 3,
         "placed": true,
         "allowance": [
           {
@@ -340,21 +340,21 @@
             "bank_esr_mohm": 0.25,
             "max_branch_mohm": 0.75,
             "squares": 2.317,
-            "lateral_mm": 19.0
+            "lateral_mm": 19
           },
           {
             "rise_frac": 0.5,
             "bank_esr_mohm": 0.3,
             "max_branch_mohm": 1.5,
             "squares": 4.634,
-            "lateral_mm": 38.0
+            "lateral_mm": 38
           }
         ]
       },
       {
         "part": "KEMET A798D477M2R5PTE006",
         "n": 30,
-        "part_esr_mohm": 6.0,
+        "part_esr_mohm": 6,
         "placed": false,
         "allowance": [
           {
@@ -369,21 +369,21 @@
             "bank_esr_mohm": 0.25,
             "max_branch_mohm": 1.5,
             "squares": 4.634,
-            "lateral_mm": 38.0
+            "lateral_mm": 38
           },
           {
             "rise_frac": 0.5,
             "bank_esr_mohm": 0.3,
-            "max_branch_mohm": 3.0,
+            "max_branch_mohm": 3,
             "squares": 9.267,
-            "lateral_mm": 76.0
+            "lateral_mm": 76
           }
         ]
       },
       {
         "part": "Chemi-Con APSF2R5ELL471MF08S",
         "n": 25,
-        "part_esr_mohm": 5.0,
+        "part_esr_mohm": 5,
         "placed": false,
         "allowance": [
           {
@@ -414,15 +414,15 @@
   },
   "model": {
     "method": "R_branch = R_sheet * (vertical + lateral) / lane; R_bank = 1 / sum(1 / (ESR_part + R_branch))",
-    "direction": "a lower bound on the interconnect term; AC crowding and the shared return path both only raise it",
+    "direction": "illustrative independent-lane DC model; not a bound on real shared copper topology, return path or 200 kHz AC impedance",
     "not_modelled": [
-      "the square count is a lower bound on AC resistance: at 200 kHz the current crowds into the copper beside each pad, and neither skin nor proximity effect is modelled",
+      "the independent-lane square count is not a rigorous bound on actual PCB impedance: at 200 kHz AC crowding can increase local resistance, but shared copper/vias/return may reduce the resistance of the assumed independent branches",
       "per-unit pad, via and solder-joint geometry does not exist in this repository; the 50 uohm joint is the connector placeholder, not a capacitor-joint measurement",
       "each unit is assigned to the nearest SR-group centre; a real plane splits its current between two groups",
       "the vertical run is copper shared with the SR-to-busbar path in output_path_budget.json; the two resistances are not additive",
       "part ESR is a vendor-page summary; ESR at 200 kHz, at 2 V bias and at end of life is not included",
       "no thermal model: the current share below is a resistance ratio, not a temperature",
-      "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) was computed with the ideal 0.200 mohm bank Rser; raising a branch impedance cannot lower the ripple, so that figure is a lower bound as well"
+      "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) used an ideal 0.200 mohm Rser; no monotonic ripple bound is justified without a time-domain rerun with actual distributed capacitor impedance"
     ]
   },
   "checks": {
@@ -431,5 +431,5 @@
     "the_bank_row_is_a_straight_line": true,
     "every_unit_sits_in_the_placement_study": true
   },
-  "finding": "并联件 ESR 0.200 mΩ（零件 3.000 mΩ / 15 只）；按摆放的平面铜阻再加 68.8 μΩ，得 0.269 mΩ（+34.4%）。最差支路 1.408 mΩ 是 +10 % 允许量 0.300 mΩ 的 4.7 倍，该单元分到 7.22 % vs 标称 6.67 %。"
+  "finding": "并联件 ESR 0.200 mΩ（零件 3.000 mΩ / 15 只）；按独立支路近似的铜阻再加 68.8 μΩ，得 0.269 mΩ（+34.4%）。最差支路 1.408 mΩ 是 +10 % 允许量 0.300 mΩ 的 4.7 倍，该单元分到 7.22 % vs 标称 6.67 %。"
 }
