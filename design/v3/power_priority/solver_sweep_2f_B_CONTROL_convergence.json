@@ -1,0 +1,113 @@
+{
+  "kind": "hotfault_convergence_diagnostic",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "base_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir",
+  "variant_deck": "sim\\v3\\d1_prot03_shunt_2f_B_CONTROL.cir",
+  "window_s": [
+    0.0,
+    0.00021999999999999998
+  ],
+  "window_basis": "220 us: covers fault, trip and both headline peaks",
+  "solver_option_lines": {
+    "base": [
+      ".options plotwinsize=0 method=gear cshunt=1e-15"
+    ],
+    "variant": [
+      ".options plotwinsize=0 method=gear cshunt=2e-15"
+    ]
+  },
+  "results": {
+    "base": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199999900365395,
+      "samples": 1001176,
+      "trip_s": 0.0002150023930829474,
+      "delay_from_engage_us": 40.00239308294759,
+      "ipri_peak_a": 101.0106668487977,
+      "ipri_peak_ms": 0.2124503435090115,
+      "sr_forward_peak_a": 303.5588040188947,
+      "sr_reverse_peak_a": 13.36710198550344,
+      "oc_max_v": 1.089442024020847,
+      "vout_min_after_engage_v": 0.9397400963393593
+    },
+    "variant": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199998684948574,
+      "samples": 1007575,
+      "trip_s": 0.0002150358924845205,
+      "delay_from_engage_us": 40.0358924845207,
+      "ipri_peak_a": 101.0603425129496,
+      "ipri_peak_ms": 0.2099495799337764,
+      "sr_forward_peak_a": 304.2227029938985,
+      "sr_reverse_peak_a": 13.36738678527865,
+      "oc_max_v": 1.089266086844383,
+      "vout_min_after_engage_v": 0.9387362914593309
+    },
+    "delta": {
+      "trip_s": 3.349940157310548e-08,
+      "ipri_peak_a": 0.04967566415190561,
+      "sr_forward_peak_a": 0.6638989750038036,
+      "sr_reverse_peak_a": 0.0002847997752102316,
+      "oc_max_v": -0.00017593717646402496,
+      "vout_min_after_engage_v": -0.0010038048800283805
+    },
+    "relative": {
+      "trip_s": 0.0001558094358520279,
+      "ipri_peak_a": 0.0004917863202136274,
+      "sr_forward_peak_a": 0.0021870522818454585,
+      "sr_reverse_peak_a": 2.1306022466083263e-05,
+      "oc_max_v": -0.00016149292260148052,
+      "vout_min_after_engage_v": -0.0010681728745410846
+    },
+    "base_saved_stop_us": 320.0,
+    "variant_saved_stop_us": 320.0,
+    "base_saved_stop_s": 0.00031999999999999997,
+    "variant_saved_stop_s": 0.00031999999999999997,
+    "base_reached_saved_stop": false,
+    "variant_reached_saved_stop": false,
+    "base_t_last_us": 254.98049414100652,
+    "variant_t_last_us": 264.5149464796637,
+    "variant_full_window": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002645149464796637,
+      "samples": 1103278,
+      "trip_s": 0.0002150358924845205,
+      "delay_from_engage_us": 40.0358924845207,
+      "ipri_peak_a": 101.0603425129496,
+      "ipri_peak_ms": 0.2099495799337764,
+      "sr_forward_peak_a": 304.2227029938985,
+      "sr_reverse_peak_a": 13.36738678527865,
+      "oc_max_v": 1.2693257269315,
+      "vout_min_after_engage_v": 0.04255667999327836
+    }
+  },
+  "logs": {
+    "base": {
+      "solver_completed": false,
+      "total_elapsed_s": null,
+      "measurements": {
+        "options": 0.0
+      }
+    },
+    "variant": {
+      "solver_completed": false,
+      "total_elapsed_s": 1374.729,
+      "measurements": {
+        "options": 0.0
+      }
+    }
+  },
+  "checks": {
+    "the_two_decks_differ_only_on_solver_settings": true,
+    "the_comparison_window_is_covered_by_both_raws": true,
+    "the_window_stays_inside_both_decks": true
+  },
+  "circuit_differences": [],
+  "limits": [
+    "a convergence aid bounds a numerical artifact; it is not hardware evidence",
+    "peaks are maxima over samples, so one step of sampling difference can move them",
+    "the comparison window ends at 220 us; nothing after it has a base counterpart",
+    "a completed run does not make the post-trip model boundary (no UCC24624 standby, no SOA) safe",
+    "the variant stalled too; its post-stall samples are not evidence"
+  ]
+}
