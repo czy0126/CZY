@@ -162,6 +162,23 @@ def test_every_sweep_deck_name_yields_its_own_variant_and_case() -> None:
     assert cmp.solver_sweep_deck(make.destination("prot_a_oc1v_50v")) is None
 
 
+def test_a_sweep_pairing_refuses_to_mix_two_shunts_or_a_published_deck() -> None:
+    """Doc 18 says a 2 fF candidate must be paired with a 2 fF control.  The
+    trap is silent: leaving --base-deck at its default picks the published 1 fF
+    parent, and the report then attributes two different solver settings to the
+    protection.  That policy belongs in code, not only in prose."""
+    control = ROOT / "sim/v3/d1_prot03_shunt_2f_A_CONTROL.cir"
+    assert cmp.mixed_sweep_variants(control, SWEEP_CANDIDATE) is None
+    assert cmp.mixed_sweep_variants(SWEEP_CANDIDATE, control) is None
+
+    five = ROOT / "sim/v3/d1_prot03_shunt_5f_A_CANDIDATE.cir"
+    assert "shunt_2f" in cmp.mixed_sweep_variants(control, five)
+
+    published = make.parent_deck("prot_a_oc1v_50v")
+    assert "not a solver-sweep deck" in cmp.mixed_sweep_variants(published, SWEEP_CANDIDATE)
+    assert cmp.mixed_sweep_variants(published, make.destination("prot_a_oc1v_50v")) is None
+
+
 def test_the_base_probe_list_does_not_ask_for_protection_nodes() -> None:
     base = cmp.base_names()
     assert "V(prot)" not in base

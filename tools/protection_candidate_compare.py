@@ -317,11 +317,35 @@ def relative(base: float | None, candidate: float | None) -> float | None:
     return candidate / base - 1.0
 
 
+def mixed_sweep_variants(base_deck: Path, candidate_deck: Path) -> str | None:
+    """Why this pair would compare two solver settings, or None when it would not.
+
+    A PR 30 sweep deck differs from its parent only in `.options cshunt`, so
+    pairing it with a deck of another shunt value -- including the published
+    1 fF parent that `--base-deck` defaults to -- would report the solver
+    setting as a protection effect.
+    """
+    base = solver_sweep_deck(base_deck)
+    candidate = solver_sweep_deck(candidate_deck)
+    if base is None and candidate is None:
+        return None
+    if base is None:
+        return f"{candidate_deck.name} is a solver-sweep deck but {base_deck.name} is not a solver-sweep deck"
+    if candidate is None:
+        return f"{base_deck.name} is a solver-sweep deck but {candidate_deck.name} is not a solver-sweep deck"
+    if base[0] != candidate[0]:
+        return f"{base_deck.name} is {base[0]} but {candidate_deck.name} is {candidate[0]}"
+    return None
+
+
 def compare(case: str, base_raw: Path, candidate_raw: Path, *,
             base_deck: Path | None = None,
             candidate_deck: Path | None = None) -> dict[str, object]:
     base_deck = base_deck or make.parent_deck(case)
     candidate_deck = candidate_deck or make.destination(case)
+    mixing = mixed_sweep_variants(base_deck, candidate_deck)
+    if mixing:
+        raise ValueError(mixing)
     base_text = base_deck.read_text(encoding="utf-8")
     candidate_text = candidate_deck.read_text(encoding="utf-8")
     # Structural checks always run against the *declared parent*, never against
@@ -631,8 +655,11 @@ def main() -> int:
                                             ("--json", args.json)) if value is None]
         if missing:
             ap.error(f"{', '.join(missing)} required for a candidate comparison")
-        record = compare(args.case, args.base_raw, args.candidate_raw,
-                         base_deck=args.base_deck, candidate_deck=args.candidate_deck)
+        try:
+            record = compare(args.case, args.base_raw, args.candidate_raw,
+                             base_deck=args.base_deck, candidate_deck=args.candidate_deck)
+        except ValueError as exc:
+            ap.error(str(exc))
         args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(json.dumps(record, indent=1, ensure_ascii=False) + "\n",
                              encoding="utf-8")
