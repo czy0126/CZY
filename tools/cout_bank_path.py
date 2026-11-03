@@ -16,9 +16,7 @@ resistance itself uses the square count `output_path_budget.py` already uses:
 
     R_branch = R_sheet * (vertical_mm + lateral_mm) / lane_mm
 
-The result is a **lower bound**: the square count is a DC model, and at 200 kHz
-the current crowds into the copper beside each pad instead of using the whole
-lane.  Nothing here is a thermal model either -- the current share that comes
+The result is an **illustrative scenario, not a rigorous bound**: the one-dimensional DC square count assumes independent branches, while real return copper and AC spreading are unknown.  Nothing here is a thermal model either -- the current share that comes
 out is a resistance ratio, and SOURCE-04's thermal-imbalance clause stays open.
 
 Usage:
@@ -52,9 +50,9 @@ JOINT_NOTE = "UNVERIFIED placeholder from connector_budget.py"
 RISES = (0.10, 0.25, 0.50)
 
 LIMITS = [
-    "the square count is a lower bound on AC resistance: at 200 kHz the current "
-    "crowds into the copper beside each pad, and neither skin nor proximity effect "
-    "is modelled",
+    "the independent-lane square count is not a rigorous bound on actual PCB impedance: "
+    "at 200 kHz AC crowding can increase local resistance, but shared copper/vias/return "
+    "may reduce the resistance of the assumed independent branches",
     "per-unit pad, via and solder-joint geometry does not exist in this repository; "
     "the 50 uohm joint is the connector placeholder, not a capacitor-joint measurement",
     "each unit is assigned to the nearest SR-group centre; a real plane splits its "
@@ -65,12 +63,12 @@ LIMITS = [
     "life is not included",
     "no thermal model: the current share below is a resistance ratio, not a temperature",
     "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) "
-    "was computed with the ideal 0.200 mohm bank Rser; raising a branch impedance cannot "
-    "lower the ripple, so that figure is a lower bound as well",
+    "used an ideal 0.200 mohm Rser; no monotonic ripple bound is justified without "
+    "a time-domain rerun with actual distributed capacitor impedance",
 ]
 
-DIRECTION = ("a lower bound on the interconnect term; AC crowding and the shared "
-             "return path both only raise it")
+DIRECTION = ("illustrative independent-lane DC model; not a bound on real shared copper "
+             "topology, return path or 200 kHz AC impedance")
 
 
 def part_esr_ohm(bank: dict) -> float:
@@ -276,7 +274,7 @@ def report(thickness_m: float = 2 * opb.OZ_M, temp_c: float = opb.T_C) -> dict:
         },
         "finding": (
             f"并联件 ESR {core['parts_only_esr_mohm']:.3f} mΩ（零件 {core['part_esr_mohm']:.3f} mΩ / {n} 只）；"
-            f"按摆放的平面铜阻再加 {core['rise_mohm'] * 1e3:.1f} μΩ，得 {core['bank_esr_mohm']:.3f} mΩ"
+            f"按独立支路近似的铜阻再加 {core['rise_mohm'] * 1e3:.1f} μΩ，得 {core['bank_esr_mohm']:.3f} mΩ"
             f"（+{core['rise_frac']:.1%}）。最差支路 {core['worst_branch_mohm']:.3f} mΩ 是 +10 % 允许量 "
             f"{allowance(esr, n, 0.10) * 1e3:.3f} mΩ 的 {worst_versus_ten:.1f} 倍，"
             f"该单元分到 {core['current_share']['highest_pct']:.2f} % vs 标称 "

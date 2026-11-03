@@ -381,8 +381,8 @@ def footprint_library() -> dict[str, str]:
             [(-1.5, -2.5), (-1.5, 2.5)]),
         "Placeholder_Cout.kicad_mod": _outline_footprint(
             "Placeholder_Cout", 7.3, 4.3,
-            "Bulk output capacitor: height 1.9 mm is from cout_bank.json, the "
-            "7.3x4.3 case size is PROVISIONAL",
+            "Bulk output capacitor: max height 2.1 mm from YAGEO OEM; the "
+            "7.3x4.3 outline fixed by OEM; PCB land pads are PROVISIONAL",
             [(-2.0, 0.0), (2.0, 0.0)]),
     }
     return files

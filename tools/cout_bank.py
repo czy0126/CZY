@@ -30,7 +30,7 @@ REQUIREMENTS = {"capacitance_f": 4.0e-3, "esr_ohm": 0.2e-3, "irms_a": 52.4783}
 # Candidate parts (network search summary, NOT datasheet-verified).
 CANDIDATES = [
     {"mpn": "KEMET A720V477M2R5APE003", "c_f": 470e-6, "v_rated": 2.5, "esr_ohm": 3e-3,
-     "irms_a": 11.69, "case": "2917 (7.3 x 4.3 mm)", "height_mm": 1.9},
+     "irms_a": 11.69, "case": "2917 (7.3 x 4.3 mm)", "height_mm": 2.1},
     {"mpn": "KEMET A798D477M2R5PTE006", "c_f": 470e-6, "v_rated": 2.5, "esr_ohm": 6e-3,
      "irms_a": 6.46, "case": "SMD", "height_mm": 3.1},
     {"mpn": "Chemi-Con APSF2R5ELL471MF08S", "c_f": 470e-6, "v_rated": 2.5, "esr_ohm": 5e-3,

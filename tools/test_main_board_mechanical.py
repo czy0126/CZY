@@ -479,3 +479,12 @@ def test_the_committed_drc_report_checked_courtyards():
         "the committed DRC ignored missing_courtyard; regenerate with "
         "python tools/main_board_mechanical.py --check")
     assert not [v for v in data.get("violations", []) if v["type"] == "missing_courtyard"]
+
+
+def test_oem_A720_max_height_carries_into_all_15_placed_parts():
+    from cout_bank import CANDIDATES
+    part=next(p for p in CANDIDATES if p["mpn"]=="KEMET A720V477M2R5APE003")
+    assert part["height_mm"]==2.1
+    physical=[p for p in mbm.report()["parts"] if p["ref"] in {f"C{i}" for i in range(100,115)}]
+    assert len(physical)==15
+    assert all(p["h_mm_worst"]==2.1 for p in physical)
