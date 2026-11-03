@@ -156,13 +156,19 @@ def run_case(case: str, stage: Path, ltspice: Path, case_dir: Path, timeout_s: f
         if any(path.exists() for path in (stage, raw, log)):
             raise FileExistsError(f"refuse overwrite {stage}")
         shutil.copyfile(source, stage)
-        completed = subprocess.run([str(ltspice), "-b", "-ascii", str(stage)],
-                                   capture_output=True, timeout=timeout_s)
+        try:
+            completed = subprocess.run([str(ltspice), "-b", "-ascii", str(stage)],
+                                       capture_output=True, timeout=timeout_s)
+        except subprocess.TimeoutExpired:
+            completed = None
         have_files = raw.is_file() and log.is_file()
-        # Classify before looking at the return code: a hard convergence failure
-        # still leaves a readable prefix, and where it stopped is the evidence.
+        # Classify before looking at *how* the process ended.  A hard convergence
+        # failure and a kill on the timeout budget both leave a readable prefix,
+        # and where they stopped is the evidence.
         if have_files:
             record.update(classify(raw, log))
+        if completed is None:
+            raise RuntimeError(f"timed out after {timeout_s:.0f} s")
         if completed.returncode != 0:
             raise RuntimeError(f"LTspice exit {completed.returncode}"
                                + ("" if have_files else "; no raw/log"))

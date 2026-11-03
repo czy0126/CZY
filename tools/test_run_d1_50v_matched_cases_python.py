@@ -214,6 +214,39 @@ def test_a_solver_that_fails_after_writing_keeps_its_prefix(tmp_path, monkeypatc
             (runner.SIM / f"d1_{run_id}_A_CONTROL{suffix}").unlink(missing_ok=True)
 
 
+def test_a_run_killed_on_the_timeout_keeps_its_prefix(tmp_path, monkeypatch):
+    """``TimeoutExpired`` is raised *before* any classification runs, so the
+    return-code fix above did not cover this path: a control that burns the whole
+    1800 s budget and is killed mid-solve was recorded with tail_us=null while
+    6.9 GB of readable prefix sat in the archive.  Where it stopped is the
+    measurement -- the 5 fF B control reached 235.890 us that way."""
+    run_id = "d1_timeout_pyt"
+    archive = tmp_path / "runs"
+
+    def fake_run(argv, **kwargs):
+        deck = Path(argv[-1])
+        deck.with_suffix(".raw").write_text(PARTIAL_RAW, encoding="utf-8")
+        deck.with_suffix(".log").write_text("Circuit: killed mid-solve\n", encoding="utf-8")
+        raise subprocess.TimeoutExpired(argv, kwargs.get("timeout", 0))
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    try:
+        with pytest.raises(SystemExit, match="incomplete runs retained"):
+            runner.main(["--execute", "--run-id", run_id, "--cases", "A_CONTROL",
+                         "--ltspice", sys.executable, "--archive-root", str(archive)])
+        record = json.loads((archive / run_id / "run_manifest.json")
+                            .read_text(encoding="utf-8"))["cases"][0]
+        assert record["state"] == "FAILED_KEEP_EVIDENCE"
+        assert record["tail_us"] == pytest.approx(264.514946, abs=5e-6)
+        assert record["reached_320us"] is False
+        assert record["solver_finished"] is False
+        assert "timed out" in record["reason"]
+        assert record["raw_sha256"] is not None
+    finally:
+        for suffix in (".cir", ".raw", ".log"):
+            (runner.SIM / f"d1_{run_id}_A_CONTROL{suffix}").unlink(missing_ok=True)
+
+
 def test_an_existing_archive_is_refused(tmp_path):
     (tmp_path / "d1_50v_001").mkdir()
     with pytest.raises(SystemExit, match="refuse overwrite archive"):
