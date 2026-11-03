@@ -1,6 +1,8 @@
-* UNRUN 50V paired-control experiment: gate-clamp switches intentionally NEVER close.
+* UNRUN 50V paired-control #1: gate-clamp switches intentionally NEVER close.
 * MODEL/NON-FAB ONLY; protection is intentionally inoperative in this control.
-* A pass requires LTspice completion, pre-fault Vout matching <=1mV and full waveform review.
+* MEASURED LIMIT: raising Vt .5->10 V also leaves the switch transition band,
+* so this control matches the parent deck, not the candidate (pre-fault Vout
+* +13.2/+17.5 mV); it cannot satisfy the <=1 mV pairing criterion.
 * UNRUN PROT-02 candidate: independent latched gate inhibit (NOT hardware).
 * Trigger: 50 V cshunt parent: existing V(oc)>1 V OC decision; actuation only.
 * Only the protection block, its save nodes and the header are added;
