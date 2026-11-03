@@ -110,10 +110,16 @@ def trigger_waveform(d: dict[str, np.ndarray], probe: str, reference: str) -> np
     return d[probe] if reference == "0" else d[probe] - d[reference]
 
 
+# `.options` is deliberately absent: the PR 30 sweep varies `.options cshunt`
+# and nothing else, and `the_candidate_matches_its_generator` already pins the
+# whole text.  Counting the swept option here would report a legitimate
+# diagnostic as a changed fault network.
+FAULT_NETWORK_PREFIXES = ("Vflt", "Sflt", "Rflt", ".model HOTFLT", ".tran", ".ic")
+
+
 def shared_fault_network(deck_text: str) -> list[str]:
-    prefixes = ("Vflt", "Sflt", "Rflt", ".model HOTFLT", ".tran", ".ic", ".options")
     return [line.strip() for line in deck_text.splitlines()
-            if line.strip().startswith(prefixes)]
+            if line.strip().startswith(FAULT_NETWORK_PREFIXES)]
 
 
 # Anchored to the .options line on purpose: every 50 V deck header mentions

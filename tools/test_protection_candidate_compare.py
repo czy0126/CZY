@@ -64,6 +64,24 @@ def test_the_fault_network_is_unchanged_by_the_candidate() -> None:
             make.build(parent, case))
 
 
+def test_a_solver_sweep_moves_the_options_line_but_not_the_fault_network() -> None:
+    """The PR 30 sweep varies `.options cshunt` by design.  Counting that line as
+    part of the fault network would report every sweep comparison as "the queue
+    changed the fault", which is false."""
+    parent = (ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir").read_text(
+        encoding="utf-8")
+    sweep = SWEEP_CANDIDATE.read_text(encoding="utf-8")
+    assert cmp.solver_cshunt_farads(parent) != cmp.solver_cshunt_farads(sweep)
+    assert cmp.shared_fault_network(parent) == cmp.shared_fault_network(sweep)
+
+
+def test_a_moved_save_window_is_still_a_fault_network_change() -> None:
+    text = SWEEP_CANDIDATE.read_text(encoding="utf-8")
+    moved = text.replace(".tran 0 2320u 2000u 5n uic", ".tran 0 2320u 2000u 10n uic")
+    assert moved != text
+    assert cmp.shared_fault_network(text) != cmp.shared_fault_network(moved)
+
+
 def test_all_ten_clamps_must_be_present(base_text: str) -> None:
     assert cmp.gate_clamps_present(make.build(base_text, "prot_a_oc1v"))
     broken = make.build(base_text, "prot_a_oc1v").replace(
