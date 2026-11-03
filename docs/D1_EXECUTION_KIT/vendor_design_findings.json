@@ -6,7 +6,8 @@
     "finding": "TI UCC27282DRCR VSON-10 has an integrated bootstrap diode; current BOM also has D_BT. Existence/function of a separate diode must be reconciled against actual native schematic; no automatic deletion.",
     "source": "https://www.ti.com/product/UCC27282/part-details/UCC27282DRCR",
     "action": "Draw internal diode and any external D_BT on the same electrical net schematic; determine purpose/OR-ing, loop, reverse stress and errata; update actual EDA only after review",
-    "state": "OPEN_NO_CAD_REVIEW"
+    "state": "TOPOLOGY_RECONCILED_PART_RATING_OPEN",
+    "progress": "The vendored datasheet resolves the duplicate question without deleting anything: references/datasheets/ucc27282.txt Table 5-1 puts HB on DRC pin 3 (pin 2 is NC) and says 'the bootstrap diode is on-chip', adding 'when using external boot diode, connect cathode of the diode to this pin'. The native netlist has U2.3=HB and D_BT pin 1 (cathode) on HB, anode on VCC12, so the external diode is a datasheet-sanctioned parallel path, not a wiring error. What remains open is whether to populate it and with what part: when QH is on the external diode holds off HB-VCC12 = 48 V, so the 30 V BAT54WS placeholder cannot be used; the BOM's >=100 V requirement stands. Native GUI review of loop and reverse stress is still missing."
   },
   {
     "issue_id": "SOURCE-02",
@@ -15,7 +16,8 @@
     "finding": "TI CSD19531Q5A: 5.3 mOhm at 10V is typical, 6.4 mOhm is maximum. Existing BOM wording 6.2 mOhm max conflicts with current TI product page. Power-stage loss stress must use a relevant maximum and hot-temperature Rds(on).",
     "source": "https://www.ti.com/product/CSD19531Q5A",
     "action": "Reconcile manufacturer datasheet Rev.B and original BOM; quantify max-temperature conduction/switching loss; do not auto-upgrade verified_mpn",
-    "state": "OPEN_LOSS_RECALC"
+    "state": "BOM_CORRECTED_HOT_LOSS_SENSITIVITY_DONE",
+    "progress": "The vendored Rev.B text already carries the 6.4 mOhm max (RDS(on) table, VGS=10 V, ID=16 A); the 6.2 in the BOM was not traceable to it. design/v3/bom/bom_draft.csv now says 6.4 max and tools/test_bom_draft.py re-reads the vendored table so the number cannot drift. Figure 8 gives normalised on-resistance about 1.55 at 125 C (typical) and 1.78 at 150 C, so a hot-case typical is ~9.9 / ~11.4 mOhm; the datasheet publishes no max-over-temperature curve, so these are not guaranteed maxima. Scaling the 48 V/120 A ledger's measured I^2R terms (sh 0.5502 W + sl 0.5489 W at the deck's 8 mOhm lump) gives +0.261 W at 9.9 mOhm and +0.467 W at 11.4 mOhm, i.e. about -0.11 / -0.19 percentage points of the 94.23 % port efficiency at fixed waveforms. Switching loss is untouched by this datum; the junction-temperature and gate-loop parts of the action remain open."
   },
   {
     "issue_id": "SOURCE-03",
@@ -42,7 +44,8 @@
     "finding": "Panasonic 0805 10ohm ERJ6ENF10R0V nominal 0.125W; the project's simulated 89mW burden power leaves limited margin before de-rating and transient excursions.",
     "source": "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ6ENF10R0V",
     "action": "Run startup/fault pulse energy, waveform peak, temperature-dependent rating and package selection; consider larger/high-pulse resistor",
-    "state": "OPEN_POWER_RATING"
+    "state": "OPEN_POWER_RATING",
+    "progress": "P_rated is now pinned to measured burden voltage: oc_network_ct10.json gives V(ocd) mean 0.8342 V at 100 A, hence 69.6 mW in the 10 ohm burden; V(ocd) is proportional to primary current, so the 121.67 A record implies about 103 mW. An 0805 0.125 W part is already at 82 % of nominal at 70 C and its linear derating (0.125 W at 70 C to 0 at 155 C) falls below 103 mW above about 90 C local ambient. No local-ambient measurement or Panasonic derating/pulse curve is vendored, so the package decision is not closed; a 1206 0.25 W or pulse-rated 10 ohm part removes the doubt. Fault-window pulse energy is still unmeasured because no fault raw saves V(ocd), only V(oc) after the divider."
   },
   {
     "issue_id": "SOURCE-06",

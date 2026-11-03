@@ -2,7 +2,7 @@ group,ref,qty,item,mpn,package,value_or_rating,basis,status,source
 control,U1,1,LLC controller,UCC25600D,SOIC-8,"12 V VCC; RT 976 ohm; DT 5.36 kohm","pin_connections.csv; datasheet p3",VERIFIED,references/datasheets/ucc25600.pdf
 control,U2,1,half-bridge driver,UCC27282DRCR,SON-10 3x3 mm,"12 V; 220 nF bootstrap","pin_connections.csv; datasheet p3",VERIFIED,references/datasheets/ucc27282.pdf
 control,U3-U6,4,dual SR controller,UCC24624DR,SOIC-8,"12 V; 2.2 uF REG; 2.2 ohm gate","pin_connections.csv; datasheet p6",VERIFIED,references/datasheets/ucc24624.pdf
-power,QH QL,2,primary MOSFET,CSD19531Q5A,SON 5x6 mm,"100 V; 5.3 mohm typ / 6.2 mohm max",datasheet p1,VERIFIED,references/datasheets/csd19531q5a.pdf
+power,QH QL,2,primary MOSFET,CSD19531Q5A,SON 5x6 mm,"100 V; 5.3 mohm typ / 6.4 mohm max at VGS=10 V, ID=16 A, TC=25 C; Fig.8 normalised x1.55 typ at 125 C => ~9.9 mohm hot-case (typical, not a max)",datasheet p3 table and p6 Fig.8,VERIFIED,references/datasheets/csd19531q5a.pdf
 power,SR1A-SR4B,8,secondary SR MOSFET,BSC010N04LS6,PG-TDSON-8,40 V; ~0.9 mohm at VGS=10 V,"datasheet; sr_device_bench_results",VERIFIED,references/datasheets/bsc010n04ls6.pdf
 magnetic,T1-T4,4,ELP32 core half,B66287G0000X197,ELP 32/6/20,N97; ungapped AL 6300 nH +/-25%,magnetics package,VERIFIED,references/datasheets/elp32.pdf
 magnetic,T1-T4,4,I plate,B66287K0000X197,I 32/3/20,N97,magnetics package,VERIFIED,references/datasheets/elp32.pdf
