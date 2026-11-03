@@ -10,6 +10,7 @@ its evidence behind with all three safety flags false.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -145,6 +146,69 @@ def test_a_dead_solver_in_a_sweep_keeps_the_variant_in_the_manifest(tmp_path):
         archived = tmp_path / run_id / "A_CONTROL" / stage.name
         source = runner.SIM / runner.decks_for("shunt_2f")["A_CONTROL"]
         assert runner.sha256(archived) == runner.sha256(source)
+    finally:
+        for suffix in (".cir", ".raw", ".log"):
+            (runner.SIM / f"d1_{run_id}_A_CONTROL{suffix}").unlink(missing_ok=True)
+
+
+PARTIAL_RAW = (
+    "Title: fake\n"
+    "No. Variables: 2\n"
+    "No. Points: 3\n"
+    "Variables:\n"
+    "\t0\ttime\ttime\n"
+    "\t1\tV(x)\tvoltage\n"
+    "Values:\n"
+    "0\t\t0.000000000000e+00\n"
+    "\t1.000000000000e+00\n"
+    "1\t\t2.645149000000e-04\n"
+    "\t2.000000000000e+00\n"
+    "2\t\t2.645149464796e-04\n"
+    "\t3.000000000000e+00\n"
+)
+
+FAILED_LOG = (
+    "Convergence Failure:  Time step too small; time = 0.00226451, timestep = 1.25e-18\n"
+    "Simulation Failed: Iteration limit reached\n"
+    "Total elapsed time: 1374.729 seconds.\n"
+)
+
+
+def test_a_log_that_says_simulation_failed_did_not_finish():
+    """LTspice prints "Total elapsed time" even when the solver gives up, so the
+    marker alone would report a failed run as finished."""
+    assert runner.solver_reported_completion(b"Total elapsed time: 12.5 seconds.\n")
+    assert not runner.solver_reported_completion(FAILED_LOG.encode())
+
+
+def test_a_solver_that_fails_after_writing_keeps_its_prefix(tmp_path, monkeypatch):
+    """A hard convergence failure leaves a readable prefix -- here 264.515 us of
+    a 320 us window.  Reading the return code before the files threw that away
+    and wrote tail_us=null, which reads as "no evidence" when there are 2.7 GB
+    of it.  The process is faked because the OS boundary is what cannot be
+    reproduced; classification, hashing and archiving run for real."""
+    run_id = "d1_fail_pyt"
+    archive = tmp_path / "runs"
+
+    def fake_run(argv, **kwargs):
+        deck = Path(argv[-1])
+        deck.with_suffix(".raw").write_text(PARTIAL_RAW, encoding="utf-8")
+        deck.with_suffix(".log").write_text(FAILED_LOG, encoding="utf-8")
+        return subprocess.CompletedProcess(argv, 1)
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    try:
+        with pytest.raises(SystemExit, match="incomplete runs retained"):
+            runner.main(["--execute", "--run-id", run_id, "--cases", "A_CONTROL",
+                         "--ltspice", sys.executable, "--archive-root", str(archive)])
+        record = json.loads((archive / run_id / "run_manifest.json")
+                            .read_text(encoding="utf-8"))["cases"][0]
+        assert record["state"] == "FAILED_KEEP_EVIDENCE"
+        assert record["tail_us"] == pytest.approx(264.514946, abs=5e-6)
+        assert record["reached_320us"] is False
+        assert record["solver_finished"] is False
+        assert "LTspice exit 1" in record["reason"]
+        assert record["raw_sha256"] is not None
     finally:
         for suffix in (".cir", ".raw", ".log"):
             (runner.SIM / f"d1_{run_id}_A_CONTROL{suffix}").unlink(missing_ok=True)

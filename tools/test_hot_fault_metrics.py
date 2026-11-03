@@ -128,3 +128,14 @@ def test_a_killed_run_without_elapsed_time_is_not_reported_as_complete():
     log = hf.parse_log("Circuit: hot fault\n")
     assert log["solver_completed"] is False
     assert log["total_elapsed_s"] is None
+
+
+def test_a_run_that_says_simulation_failed_is_not_reported_as_complete():
+    """LTspice prints ``Total elapsed time`` before giving up as well, so the
+    elapsed marker alone reports a hard convergence failure as a finished run.
+    The 2 fF B control died this way at 264.515 us of 320 us."""
+    log = hf.parse_log("Convergence Failure:  Time step too small; time = 0.00226451, timestep = 1.25e-18\n"
+                       "Simulation Failed: Iteration limit reached\n"
+                       "Total elapsed time: 1374.729 seconds.\n")
+    assert log["solver_completed"] is False
+    assert log["total_elapsed_s"] == pytest.approx(1374.729)

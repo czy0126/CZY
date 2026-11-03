@@ -216,8 +216,10 @@ def parse_log(text: str) -> dict[str, object]:
         hit = at or eq
         if hit:
             measurements[head.group(1).lower()] = float(spice_seconds(hit.group(1)))
+    # LTspice prints the elapsed line before giving up too, so the marker alone
+    # would report "Time step too small; Simulation Failed" as a finished run.
     return {
-        "solver_completed": elapsed is not None,
+        "solver_completed": elapsed is not None and "Simulation Failed" not in text,
         "total_elapsed_s": float(elapsed.group(1)) if elapsed else None,
         "measurements": measurements,
     }

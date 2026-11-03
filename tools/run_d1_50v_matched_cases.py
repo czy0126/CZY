@@ -130,6 +130,19 @@ def manifest(run_id: str, results: list[dict], variant: str = "published") -> di
             "cases": results}
 
 
+def solver_reported_completion(log_bytes: bytes) -> bool:
+    """LTspice prints "Total elapsed time" even when the solver gives up, so the
+    marker alone would call a failed run finished."""
+    return b"Total elapsed time" in log_bytes and b"Simulation Failed" not in log_bytes
+
+
+def classify(raw: Path, log: Path) -> dict[str, object]:
+    """How far a run got, read from the files it left -- including a failed one."""
+    tail_us = round(last_time(raw) * 1e6, 6)
+    return {"solver_finished": solver_reported_completion(log.read_bytes()),
+            "tail_us": tail_us, "reached_320us": tail_us >= 319.999}
+
+
 def run_case(case: str, stage: Path, ltspice: Path, case_dir: Path, timeout_s: float,
              decks: dict[str, str] | None = None) -> dict:
     """Stage, run, classify and archive one case; never raise on solver failure."""
@@ -145,13 +158,16 @@ def run_case(case: str, stage: Path, ltspice: Path, case_dir: Path, timeout_s: f
         shutil.copyfile(source, stage)
         completed = subprocess.run([str(ltspice), "-b", "-ascii", str(stage)],
                                    capture_output=True, timeout=timeout_s)
+        have_files = raw.is_file() and log.is_file()
+        # Classify before looking at the return code: a hard convergence failure
+        # still leaves a readable prefix, and where it stopped is the evidence.
+        if have_files:
+            record.update(classify(raw, log))
         if completed.returncode != 0:
-            raise RuntimeError(f"LTspice exit {completed.returncode}")
-        if not raw.is_file() or not log.is_file():
+            raise RuntimeError(f"LTspice exit {completed.returncode}"
+                               + ("" if have_files else "; no raw/log"))
+        if not have_files:
             raise RuntimeError("no raw/log")
-        record["solver_finished"] = b"Total elapsed time" in log.read_bytes()
-        record["tail_us"] = round(last_time(raw) * 1e6, 6)
-        record["reached_320us"] = record["tail_us"] >= 319.999
         record["state"] = ("DURATION_ONLY_PASS" if record["solver_finished"] and record["reached_320us"]
                            else "INCOMPLETE_PREFIX")
     except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
