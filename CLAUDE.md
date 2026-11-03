@@ -25,6 +25,9 @@ python tools/make_startup_burden_probe.py --write   # 冷启动 burden 探针 de
 python tools/startup_burden_pulse.py --json design/v3/bom/startup_burden_pulse.json
     # 冷启动 R3 脉冲：由 I(Lr) 经理想变比推导；传递比在 hotfault srprobe raw 上标定
     # 约 90 s（冷 raw 8 ms 全读），评级阶梯读 r3_vendor_rating_screen.json（PR 28）
+python tools/startup_burden_direct.py --json design/v3/bom/startup_burden_direct.json
+    # 冷启动 burden 直接测量：读 probe deck 的 8 ms raw（约 14 GB，不入 Git），
+    # 与推导值比对峰/能量；raw 不在时 SystemExit
 python tools/connector_budget.py --json design/v3/bom/connector_budget.json  # 输出铜排/接点预算
 python tools/output_path_budget.py --json design/v3/pcb/output_path_budget.json  # 板上 100 A 平面方块数（读摆放）
 python tools/board_netlist.py --json design/v3/pcb/board_netlist.json \
