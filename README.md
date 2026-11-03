@@ -1,5 +1,8 @@
 # 48V→约2V固定变比薄型DCX
 
+> **2026-11-03 执行资料包：** [十份指南与工作模板](docs/D1_EXECUTION_KIT/README.md) · [61 个物料占位逐行需求](docs/D1_EXECUTION_KIT/templates/supplier_seed_61.csv) · [五磁件 24 逻辑端的实际脚号需求](docs/D1_EXECUTION_KIT/templates/magnetic_terminal_seed_24.csv)。已补入保护设计制造门槛，硬件尚未验收，仍 NOT_FOR_FAB。
+
+
 > **2026-11-03 最新复核与修补：** [SOA 源哈希/50 V 非配对误判纠正及五日交付](docs/D1_保护数据配对与工程修补_2026-11-03.md) · [11×8 SR器件筛选表](design/v3/power_priority/protection_soa_table.json) · [50 V 同结构对照生成器](tools/make_paired_protection_controls.py) · [26 项工程验收任务](hardware/dcx_main/d1_delivery_tasks.csv)。48 V 行为模型PROT-B将 Lr 故障峰约97.44→45.94A、SR I²t降约95.2%；50 V仅在cshunt变体上跑满，PROT-B基座故障前Vout存在约17.51mV偏差，**不能宣称严格配对**。本次修补主分支SOA表过期哈希导致的失败CI，补两套**未运行**的50 V no-clamp对照deck，保护和真实器件SOA仍未签核。成本不设上限，优先电气裕量，详细热设计暂缓，D1依旧 `NOT_FOR_FAB`。
 
 
