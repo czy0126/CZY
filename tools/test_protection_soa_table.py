@@ -77,3 +77,36 @@ def test_the_compare_runner_emits_base_and_candidate() -> None:
                                       "prot_a_oc1v", "base"))
     assert [r["role"] for r in rows] == ["compare_base", "candidate"]
     assert all(r["case"] == "prot_a_oc1v" for r in rows)
+
+
+
+def test_hashes_are_portable_between_windows_and_linux_checkout(tmp_path):
+    text = '{"x": 1,\n  "y": 2\n}\n'
+    lf = tmp_path / "lf.json"
+    crlf = tmp_path / "crlf.json"
+    lf.write_bytes(text.encode("utf-8"))
+    crlf.write_bytes(text.replace("\n", "\r\n").encode("utf-8"))
+    assert soa.sha256(lf) == soa.sha256(crlf)
+
+
+def test_50v_comparisons_are_explicitly_unpaired_not_proven_causal(table):
+    runs = [run for run in table["results"]["runs"] if run.get("case")]
+    assert len(runs) == 8
+    for run in runs:
+        if run["vin_v"] == 50.0:
+            assert not run["paired_pre_fault"]
+            assert not run["paired_change_can_be_attributed_to_protection"]
+            assert run["pre_fault_vout_delta_mv"] > 13
+        else:
+            assert run["paired_pre_fault"]
+            assert run["paired_change_can_be_attributed_to_protection"]
+            assert abs(run["pre_fault_vout_delta_mv"]) < 1
+    assert table["checks"]["unpaired_comparisons_not_claimed_as_paired"]
+
+
+def test_report_coverage_is_taken_from_evidence_not_hardcoded():
+    data = soa.compare_runs("50vcmp", (
+        "protection_candidate_50v_120a_prot_b.json", 50.0,
+        "prot_b_fast10u_1p8v", "cshunt=1e-15"))
+    assert all(x["reached_declared_window"] for x in data)
+    assert all(not x["solver_prefix_only"] for x in data)

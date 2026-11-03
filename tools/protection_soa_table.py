@@ -86,9 +86,9 @@ COMPARE_RUNS = {
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
+    # Normalize checkout line endings so a Windows-generated report stays
+    # identical on Linux CI; hashes refer to canonical LF JSON text.
+    h.update(path.read_bytes().replace(b"\r\n", b"\n"))
     return h.hexdigest()
 
 
@@ -131,6 +131,9 @@ def compare_runs(name: str, spec: tuple[str, float, str, str]) -> list[dict]:
     data = json.loads(path.read_text(encoding="utf-8"))
     res = data["results"]
     unrecorded = [k for k, v in COMPARE_FIELDS.items() if v is None]
+    paired = bool(data["checks"]["the_pre_fault_operating_points_match_within_1_mv"])
+    delta_mv = float(res["pre_fault"]["vout_mean_delta_mv"])
+    coverage = data["coverage"]
     out = []
     for role, key in (("compare_base", "base"), ("candidate", "candidate")):
         gates = res[key]["gates"]
@@ -144,8 +147,14 @@ def compare_runs(name: str, spec: tuple[str, float, str, str]) -> list[dict]:
             "solver": solver,
             "window": "saved_window",
             "trip_us": res["trigger"]["base_trip_us"],
-            "reached_declared_window": True,
-            "solver_prefix_only": False,
+            "reached_declared_window": bool(
+                coverage[f"{key}_reached_saved_stop"]),
+            "solver_prefix_only": not bool(
+                coverage[f"{key}_reached_saved_stop"]),
+            "paired_pre_fault": paired,
+            "pre_fault_vout_delta_mv": delta_mv,
+            "paired_change_can_be_attributed_to_protection": (
+                paired and bool(coverage["declared_window_fully_covered"])),
             "unrecorded_fields": unrecorded,
             "null_by_design_fields": sorted(NULL_BY_DESIGN),
             "devices": [_row(d, gates[d], COMPARE_FIELDS) for d in _sorted_devices(gates)],
@@ -204,6 +213,8 @@ def build() -> dict:
                 "50 V rows come from the cshunt=1e-15 child; the 50 V base still stalls at 296.929 us",
                 "the compare_base rows and the standalone probe rows use different windows and "
                 "must not be differenced against each other",
+                "50 V protection-candidate comparisons do not meet the 1 mV pre-fault pairing "
+                "criterion (13-18 mV offset); performance gains are exploratory, not paired effects",
                 "two candidate fields (gate peak, drain max) and reverse current are not recorded "
                 "in the comparison JSONs; they are null, not zero",
             ],
@@ -214,6 +225,9 @@ def build() -> dict:
             "no_vendor_soa_is_claimed": True,
             "the_window_definition_is_recorded_for_every_run": all(
                 run["window"] in ("post_trip", "saved_window") for run in runs),
+            "unpaired_comparisons_not_claimed_as_paired": all(
+                not run.get("paired_change_can_be_attributed_to_protection", False)
+                for run in runs if run.get("case") and run["vin_v"] == 50.0),
             "unrecorded_fields_are_null_not_zero": all(
                 name in run["unrecorded_fields"] or name in run["null_by_design_fields"]
                 for run in runs for row in run["devices"] for name, value in row.items()
