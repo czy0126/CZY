@@ -8,6 +8,10 @@
 
 [14 原生CAD操作与封装替换任务](14_原生CAD逐位号ECO执行表.md) · [61位号ECO CSV](templates/vendor_native_cad_eco_61.csv)：依据真实原生网表、临时库、候选料号生成，明确R3的0603→2512、R1/R2功能核对、C5/REG/VDD电容改值和10项特殊物料。脚本 `python tools/vendor_native_cad_eco.py --check` 检查清单与当前资料同步；**全为 NOT_APPLIED，绝非已完成EDA修改**。
 
+## 2026-11-03 磁芯厚度与磁通约束实际排查
+
+[20 TDK五套平面磁芯原厂高度与Lr磁通双约束筛查](20_低矮磁件Lr原厂尺寸磁通双约束审核.md)：ELP32+I32芯体9.5mm但Amin128mm²故障B超0.248T；面积满足的ELP38/ELP43裸芯厚度12.05/13.60mm已超10mm整机目标；标准五套无一同时满足，须定制低矮磁件并取得100℃L(I)、整机叠高及24实物端子。自动检查`python tools/lr_core_geometry_screen.py --check`。
+
 ## 2026-11-03 第二轮P0方案完善：SR原生DIS、真实延迟、成对收敛与上电硬保护
 
 [17 NCP4306八只原生DIS控制器替代](17_NCP4306原生停机SR替代及时序计算.md)：onsemi 2026 Rev9官方引脚TRIG/DIS高有效、最大16.5ns传递但最多80ns触发消隐；8路实际SR门极/漏极/回流真实网络映射以及8/10/12V×25/50/100/200pF关断边沿粗估，失压默认高必须有本地10k上拉。*替代* UCC24624，不是额外并联，未画CAD。

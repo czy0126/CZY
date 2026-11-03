@@ -52,7 +52,9 @@ def build() -> dict:
     if len(rows)!=5:raise ValueError("5 catalog candidates required")
     if any(r["three_turn_joint_pass"] or r["four_turn_joint_pass"] for r in rows):
         raise ValueError("Unexpected passing standard core: redesign conclusion needs reviewer update")
-    return {**{k:v for k,v in config.items() if k!="cores"},
+    return {"kind":"D1_LR_TDK_CATALOG_DIMENSIONS_AND_FLUX_FILTER",
+            "date":config["created"],
+            **{k:v for k,v in config.items() if k not in ("cores","kind","created")},
             "cores":rows,
             "status":"NO_UNMODIFIED_STANDARD_SET_SATISFIES_THREE_OR_FOUR_TURN_AREA_AND_FULL_HEIGHT",
             "conclusion":"No evaluated TDK standard ELP+I set meets conservative flux area and <=10mm core-only max height concurrently. A raw core set alone would also need PCB, winding, adhesive, tolerance, clearance and actual L(I); therefore no geometry can be approved for the complete converter.",
