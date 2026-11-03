@@ -1,0 +1,19 @@
+priority,case_id,stimulus,trip_origin,expected_gate_result,must_capture,test_state
+P0,SHORT_AT_STEADY,48V/50V 120A hard short after steady,independent comparator sets latch,U2 EN LOW; U7-10 ENA/ENB LOW,"10x Vgs,Vds,Id; latch; t_action; I2t",NOT_TESTED
+P0,FAULT_DURING_STARTUP_MASK,worst precharge/startup fault before SS arm,always-on hard limit still active,10 gates low before magnetic limit,"startup IMAX, detector burden, t_action",NOT_TESTED
+P0,CT_PRIMARY_OPEN,CT primary lead open,"diagnostics detect invalid sensor, any non-fail-safe state vetoed",all 10 gates forced low,failure-injection waveforms,NOT_TESTED
+P0,CT_SECONDARY_OPEN,CT secondary wire lost/open,detect missing/saturated sense; CT voltage compliance,all 10 gates low,primary+secondary sensor stress,NOT_TESTED
+P0,PRIMARY_BIAS_BROWNOUT,VCC12 primary drops while secondary alive,primary bias supervisor + UVLO,all 10 gates low; no SR re-pulse,UVLO waveforms and residual energy,NOT_TESTED
+P0,SECONDARY_BIAS_BROWNOUT,VCC12_S lost while primary alive,secondary bias supervisor + buffer UVLO,all 10 gates low; not just SR,all Vgs at hot VDD steps,NOT_TESTED
+P0,SAFETY_SUPERVISOR_LOSS,fault logic/supervisor power disappears,external EN pulldowns; independent primary R7,all 10 gates low,enable 0/float truth table and oscilloscope,NOT_TESTED
+P0,UCC24624_VG_STUCK_HIGH,one UCC24624 VG line held high during latched fault,buffer EN remains low,"affected SR gate remains low, no driver conflict","input-output trace, out stage dissipation",NOT_TESTED
+P0,UCC27524A_EN_FLOAT,one ENA or ENB pulled open,physical external PD takes control,"affected gate low, while internal 200k pulls to 12V",sweep pullups/tolerance and layout,NOT_TESTED
+P0,UCC27524A_EN_SHORT_VDD,one ENA physically shorted to VDD,single fault bypass must be explicitly mitigated,release BLOCKED until independent mitigation,"FMEA, output shutoff, no uncontrolled SR high",NOT_TESTED
+P0,PRIMARY_RUN_BYPASS,old R8 remains fitted or service jumper hard-wires RUN,system interlock shall not be bypassable,primary EN low despite maintenance failure,"R8 144mW contention, temperature, test",NOT_TESTED
+P0,UCC27282_EN_DELAY,independent fault latch goes low at worst peak,EN path real delay incl ~1.5us typical,primary gate voltage falls before device SOA violated,real Vgs discharge and Lr Ipeak,NOT_TESTED
+P0,UCC27524A_DELAY_AND_PROPORTIONAL,insert buffer on UCC24624 proportional outputs,TI buffer changes analog VG into switched full rail,"all eight timing, current polarity, reverse recovery accepted","steady high current, no-load burst, IREV, losses",NOT_TESTED
+P1,RESET_AFTER_FAULT,remove short and cycle auxiliary rail,reset requires explicit valid acknowledge and soft-start,gates disabled until fully qualified,"VOUT residual, SSR qualification, no spontaneous restart",NOT_TESTED
+P1,ONE_SR_GATE_DISCONNECTED,one of 8 MOS gate nets broken,local gate-source resistor defaults low,no unsafe redistribution current for remaining channels,"8x currents, current sharing and SOA",NOT_TESTED
+P1,MOS_DRAIN_SENSOR_KELVIN_OPEN,one SR drain sensing link open,gate logic detects or uses independent inhibit,all gates default low on invalid sense,"VD drift, noise immunity, false turn-ons",NOT_TESTED
+P1,HARD_LIMIT_AND_FAST_ARMING,separate startup and armed protection circuits,always-on hard trip + fast armed trip,startup allowed while guaranteed hard max safety,threshold/tolerance bounds and timing tests,NOT_TESTED
+P0,COLD_PLATE_AND_PAD,4 new driver ICs + 8 pulldowns physical placement,actual footprint/pin/clearance/topside insulation,<=10mm only after 3D proof,"DGN vs SOIC, thermal and mechanical stack",NOT_TESTED
