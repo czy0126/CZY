@@ -49,6 +49,10 @@ python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐�
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
 python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
+python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
+python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
+    --ltspice D:/ADI/LTspice/LTspice.exe     # 归档到 out/d1_50v/<RunId>/，只判 320 µs 完整性
+python tools/d1_protection_precheck.py --check   # 十路硬件关断接口契约（--write 重生成）
 ```
 
 LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
@@ -58,6 +62,15 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 看起来像"仿真早就退出了"。判断跑没跑看 raw 是否在长大、以及 `rm` 是否报
 `Device or resource busy`；不要信名字 grep。批量模式一次要跑十几分钟到数十分钟
 （120 µs 窗口 176 s / 224 s；670 µs 约 2.4 GB、~40 min），别按"没输出"判死。
+
+**本机 PowerShell 执行策略禁止运行 `.ps1`**：`powershell -File x.ps1` 直接报
+`UnauthorizedAccess`（`execution policy`），会话权限也拒绝经 Bash 调 `powershell.exe`。
+所以 PR 29 的 `tools/run_d1_50v_matched_cases.ps1` 在本机跑不起来；
+`tools/run_d1_50v_matched_cases.py` 是它的逐行移植——同样四份 deck、同样三道 deck 门槛、
+同样在 `sim/v3` 暂存（`../../models` 才解析得到）、同样拒绝覆盖归档与暂存文件、
+manifest 里同样三面 false 旗——由 `tools/test_run_d1_50v_matched_cases_python.py` 锁住。
+两处有意不同：搬运归档用 `shutil.move`（`os.replace` 不能跨卷，归档根可能在别的盘），
+每例带 `--timeout-s`（默认 1800 s）——死区里求解器会一边把步长压到 1e-15 s 一边每 GB 级地写盘。
 
 **不要随手重跑 `python tools/make_round4_decks.py`**：`main()` 会重写全部已冻结 deck，
 刷新 mtime，破坏"raw 与 deck 是否同一输入"的比对（见下）。只用它新增 deck 时，
@@ -164,6 +177,9 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   `docs/D1_EXECUTION_KIT/templates/simulation_run_register_PROT03_2026-11-03.csv`（新副本，
   不改空白模板），两个 thrmute 行 `full_duration` 写 `KILLED_BY_PID`，端口/账本列 `PENDING`；
   `tools/test_prot03_run_register.py` 逐行回查。见 `PROT02_独立故障锁存候选对照_2026-11-03.md` §5.6/§7。
+  **实跑入口**是 `tools/run_d1_50v_matched_cases.py`（见"运行与测试"）：它只判 320 µs 完整性，
+  `run_manifest.json` 的 `pre_fault_1mV_paired_verified`、`ten_physical_gate_shutdown_verified`、
+  `fabrication_approved` 恒为 false；配对与否要另用 `protection_candidate_compare.py` 才算得出来。
 - **B 源的正电流离开节点，所以锁存清除项是 `+V(node)*(1n/TAU)`，不是 `-V`**：
   `-V` 是正反馈。这个 bug 一直没暴露，因为五个功率级候选的 `Vddp` 恒 12 V ⇒ `V(uvlo)≡0`，
   清除分支**从未被选中**；第一次真正掉电重启的 `prot_latch_restart_check.cir` 直接发散到 **1e86**。
