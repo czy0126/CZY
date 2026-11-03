@@ -96,6 +96,20 @@ def test_a_sweep_deck_passes_only_its_own_cshunt_gate(variant):
             runner.validate_deck(case, text, "published")
 
 
+def test_the_runner_and_the_sweep_generator_agree():
+    """Two modules carry the same variant map; drift here would silently pair a
+    runner gate with a deck the generator no longer writes."""
+    import generate_prot03_solver_sweep as sweep
+
+    assert runner.VARIANTS["published"] == sweep.ANCHOR.rsplit("cshunt=", 1)[1]
+    assert set(runner.VARIANTS) == {"published"} | set(sweep.VARIANTS)
+    for label, farads in sweep.VARIANTS.items():
+        assert runner.VARIANTS[label] == farads
+        for case in sweep.SOURCE:
+            assert runner.decks_for(label)[case] == sweep.filename(label, case).name
+    assert runner.DECKS == sweep.SOURCE
+
+
 def test_the_manifest_records_which_sweep_it_belongs_to():
     report = runner.manifest("sweep_001", [], "shunt_5f")
     assert report["variant"] == "shunt_5f"
