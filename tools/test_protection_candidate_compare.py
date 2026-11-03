@@ -113,6 +113,37 @@ def test_the_limits_name_the_sweep_shunt_instead_of_assuming_one_femtofarad() ->
     assert any("250.151" in row for row in rows)
 
 
+PARENT_50V = make.parent_deck("prot_a_oc1v_50v")
+SWEEP_CANDIDATE = ROOT / "sim/v3/d1_prot03_shunt_2f_A_CANDIDATE.cir"
+
+
+def test_a_published_candidate_is_checked_against_the_candidate_generator() -> None:
+    text = PARENT_50V.read_text(encoding="utf-8")
+    assert cmp.expected_deck_text(text, "prot_a_oc1v_50v",
+                                  make.destination("prot_a_oc1v_50v")) == \
+        make.build(text, "prot_a_oc1v_50v")
+
+
+def test_a_sweep_deck_is_checked_against_the_sweep_generator() -> None:
+    """A PR 30 deck is the same circuit with one `.options cshunt` swapped and a
+    two-line diagnostic header; comparing it with build() would report a
+    legitimate diagnostic as generator drift."""
+    text = PARENT_50V.read_text(encoding="utf-8")
+    got = cmp.expected_deck_text(text, "prot_a_oc1v_50v", SWEEP_CANDIDATE)
+    assert got == SWEEP_CANDIDATE.read_text(encoding="utf-8")
+    assert got != make.build(text, "prot_a_oc1v_50v")
+
+
+def test_every_sweep_deck_name_yields_its_own_variant_and_case() -> None:
+    import generate_prot03_solver_sweep as sweep
+
+    for label in sweep.VARIANTS:
+        for case in sweep.SOURCE:
+            name = f"d1_prot03_{label}_{case}.cir"
+            assert cmp.solver_sweep_deck(ROOT / "sim/v3" / name) == (label, case)
+    assert cmp.solver_sweep_deck(make.destination("prot_a_oc1v_50v")) is None
+
+
 def test_the_base_probe_list_does_not_ask_for_protection_nodes() -> None:
     base = cmp.base_names()
     assert "V(prot)" not in base
