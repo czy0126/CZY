@@ -37,3 +37,9 @@ __pycache__/
 
 # Superseded raw/log evidence, kept locally only
 sim/v3/superseded/
+
+# Matched-case archive root (tools/run_d1_50v_matched_cases.py).  Each case
+# keeps its staged deck, log and GB-scale raw; the run manifest records the
+# deck/raw/log sha256, and a copy of that manifest is committed as the
+# evidence.  Nothing here is a source file.
+/out/
