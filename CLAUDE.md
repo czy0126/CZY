@@ -201,6 +201,13 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   都是 `null`（`V(oc)` 峰 0.7069/0.7063 V < 1 V）：候选被自己 1.8 V 的比较器在 185.278 µs 切掉，
   比控制的 215.058 µs 早 29.78 µs，原边电流没把 CT 负载推到 1 V。见
   `18_50V成对数值收敛扫参与执行.md` 末节与 `solver_sweep_5f_*`。
+- **登记表的 `deck_sha256` 是仓库规范化 LF 文本的散列，不是 LTspice 实际打开的字节**：
+  这台机器的 `.cir` 工作区是 CRLF（`git ls-files --eol` 显示 `i/lf w/crlf`），
+  LTspice 批处理读的是 CRLF 字节。两者只差换行符，但按字节算哈希就不相等——2 fF A 组与
+  5 fF B 组两次都撞上。规则是：登记表写 `canonical_deck_sha256()`（CRLF→LF 后）的值，
+  执行时的 CRLF 散列另存 `prot03_{2f_A,5f_B}_deck_hash_provenance.json`，
+  `test_prot03_run_register.py` 逐条回查两个值。**RAW/LOG 的 sha256 不做任何归一化**——
+  那是波形字节，不是文本。
 - **B 源的正电流离开节点，所以锁存清除项是 `+V(node)*(1n/TAU)`，不是 `-V`**：
   `-V` 是正反馈。这个 bug 一直没暴露，因为五个功率级候选的 `Vddp` 恒 12 V ⇒ `V(uvlo)≡0`，
   清除分支**从未被选中**；第一次真正掉电重启的 `prot_latch_restart_check.cir` 直接发散到 **1e86**。

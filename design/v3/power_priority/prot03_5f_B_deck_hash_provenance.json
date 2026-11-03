@@ -1,0 +1,30 @@
+{
+  "kind": "PROT03_5FF_B_SOURCE_LINE_ENDING_PROVENANCE",
+  "created": "2026-11-03",
+  "source_line_ending_cause": "Windows staged .cir CRLF versus Git .cir LF",
+  "git_deck_sha256_rule": "SHA256 of checked-in logical SPICE source after canonical CRLF->LF normalization only",
+  "execution_sha256_rule": "SHA256 of original exact Windows CRLF-staged deck bytes at solver invocation",
+  "evidence_basis": "both actual source hashes exactly match the originally registered hashes after LF->CRLF byte substitution; this does not independently verify uncommitted RAW file bytes",
+  "cross_platform_test": "tools/test_prot03_run_register.py::test_the_5f_pair_carries_the_same_double_hash_provenance",
+  "source_simulation_pair_320us": false,
+  "source_simulation_pair_note": "the candidate reached 320.000 us; the control was killed by PID at 235.889681 us",
+  "source_simulation_pair_prefault_vout_delta_mv": 0,
+  "simulated_only": true,
+  "hardware_protection_approved": false,
+  "records": [
+    {
+      "run_id": "P03-SWEEP-5F-B-CAND",
+      "repo_path": "sim/v3/d1_prot03_shunt_5f_B_CANDIDATE.cir",
+      "git_lf_sha256": "b1d91be7e5dd9f609fc7708b147bb7e106e4fc759d366517fb8c6308e796d794",
+      "executed_crlf_sha256": "11f245f067f1d121e5805493f49501fd15843ae70ed849d8193dba87b3a49927",
+      "electrical_netlist_or_solver_settings_changed": false
+    },
+    {
+      "run_id": "P03-SWEEP-5F-B-THRMUTE",
+      "repo_path": "sim/v3/d1_prot03_shunt_5f_B_CONTROL.cir",
+      "git_lf_sha256": "aa23fd5e442efe901fb6c04417f97654f86fefb0a0b17a88b05370bae67f165e",
+      "executed_crlf_sha256": "a2a3bee8602440be194c6041a9b23c3add9a0f1bae75c2a475a40aca9873ad4c",
+      "electrical_netlist_or_solver_settings_changed": false
+    }
+  ]
+}

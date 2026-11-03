@@ -103,6 +103,17 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def canonical_deck_sha256(path: Path) -> str:
+    """Hash Git's logical LF text, independent of Windows CRLF checkout.
+
+    This normalization applies ONLY to .cir source. Never normalize binary or
+    ASCII LTspice RAW hashes, whose exact recorded bytes remain authoritative.
+    """
+    if path.suffix.lower() != ".cir":
+        raise ValueError("canonical_deck_sha256 is restricted to SPICE .cir")
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def local_raw(row_: dict[str, str]) -> Path:
     """The row names where its raw lives; drop the trailing note."""
     return ROOT / row_["raw_external_location"].split(" (")[0]
@@ -152,7 +163,7 @@ def test_the_deck_hash_is_the_file_the_row_names(path: Path, run_id: str):
     r = row(path, run_id)
     deck = ROOT / r["deck_path"]
     assert deck.is_file(), deck
-    assert sha256(deck) == r["deck_sha256"], run_id
+    assert canonical_deck_sha256(deck) == r["deck_sha256"], run_id
 
 
 @pytest.mark.parametrize("path,run_id", CASES)
@@ -188,3 +199,51 @@ def test_no_row_claims_a_port_ledger_it_never_measured():
                           "output_power_w", "energy_closure_residual_w"):
                 assert r[field] == "PENDING", (r["run_id"], field)
             assert "not measured" in r["notes"], r["run_id"]
+
+
+
+def test_staged_windows_crlf_deck_hashes_are_not_mislabeled_as_repository_hashes():
+    """For both 2fF A cases, prove earlier recorded SHA is CRLF exact bytes.
+    The full-window analysis and RAW/LOG hashes remain unchanged by this fix.
+    """
+    record_path = KIT / "simulation_run_register_PROT03_sweep_2f_2026-11-03.csv"
+    provenance = json.loads((PP / "prot03_2f_A_deck_hash_provenance.json").read_text(encoding="utf-8"))
+    assert provenance["source_line_ending_cause"] == "Windows staged .cir CRLF versus Git .cir LF"
+    for item in provenance["records"]:
+        row_ = row(record_path, item["run_id"])
+        assert row_["deck_path"] == item["repo_path"]
+        source = ROOT / item["repo_path"]
+        logical = source.read_bytes().replace(b"\r\n", b"\n")
+        assert b"\r" not in logical
+        assert hashlib.sha256(logical).hexdigest() == item["git_lf_sha256"] == row_["deck_sha256"]
+        staged = logical.replace(b"\n", b"\r\n")
+        assert hashlib.sha256(staged).hexdigest() == item["executed_crlf_sha256"]
+        assert item["electrical_netlist_or_solver_settings_changed"] is False
+    assert len(provenance["records"]) == 2
+    assert not provenance["hardware_protection_approved"]
+
+
+def test_the_5f_pair_carries_the_same_double_hash_provenance():
+    """The 5 fF rows hit the same trap as the 2 fF A pair: the register first
+    recorded the bytes LTspice actually opened, which on a Windows checkout are
+    CRLF, while the repository copy is LF.  The register now quotes the
+    repository-canonical LF hash and the executed CRLF hash lives beside it.
+
+    Unlike the 2 fF A pair this is not a full-window pair -- the control was
+    killed at 235.890 us, so the provenance record must not claim 320 us.
+    """
+    record_path = KIT / "simulation_run_register_PROT03_sweep_5f_2026-11-03.csv"
+    provenance = json.loads((PP / "prot03_5f_B_deck_hash_provenance.json").read_text(encoding="utf-8"))
+    assert provenance["source_line_ending_cause"] == "Windows staged .cir CRLF versus Git .cir LF"
+    assert provenance["source_simulation_pair_320us"] is False
+    assert sorted(i["run_id"] for i in provenance["records"]) == [
+        "P03-SWEEP-5F-B-CAND", "P03-SWEEP-5F-B-THRMUTE"]
+    for item in provenance["records"]:
+        row_ = row(record_path, item["run_id"])
+        assert row_["deck_path"] == item["repo_path"]
+        logical = (ROOT / item["repo_path"]).read_bytes().replace(b"\r\n", b"\n")
+        assert b"\r" not in logical
+        assert hashlib.sha256(logical).hexdigest() == item["git_lf_sha256"] == row_["deck_sha256"]
+        assert hashlib.sha256(logical.replace(b"\n", b"\r\n")).hexdigest() == item["executed_crlf_sha256"]
+        assert item["electrical_netlist_or_solver_settings_changed"] is False
+    assert not provenance["hardware_protection_approved"]

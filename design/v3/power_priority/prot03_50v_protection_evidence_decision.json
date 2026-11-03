@@ -1,0 +1,35 @@
+{
+  "kind": "PROT03_50V_120A_EVIDENCE_DECISION",
+  "evidence_level": "GIT_COMMITTED_JSON_ONLY; RAW_CHECKSUMS_PROVENANCE_SEPARATE",
+  "A_2fF": {
+    "base_full_320us": true,
+    "candidate_full_320us": true,
+    "pre_fault_vout_delta_mv": 0,
+    "trip_us": 215.023151,
+    "base_ipri_peak_time_us": 209.94941,
+    "trip_after_base_ipri_peak_us": 5.073741,
+    "ipri_peak_a_control": 101.069,
+    "ipri_peak_a_candidate": 101.069,
+    "sr_peak_a_control": 303.411,
+    "sr_peak_a_candidate": 303.411,
+    "sr_total_i2t_reduction_percent": 0.676,
+    "conclusion": "NO_INITIAL_PEAK_REDUCTION_LATE_TRIP; VALID_SIM_PAIR_NOT_VALID_HARDWARE"
+  },
+  "B_previous_1fF": {
+    "base_full_320us": false,
+    "candidate_full_320us": true,
+    "base_last_saved_us": 254.980482,
+    "nominal_sr_peak_reduction_percent_prefix_only": 54.312,
+    "conclusion": "PROMISING_EARLY_BEHAVIORAL_TRIP_BUT_CONTROL_PREFIX_CENSORED"
+  },
+  "B_2fF": {
+    "status": "UNAVAILABLE_NO_COMMITTED_2FF_B_RECORD",
+    "source_file": "design/v3/power_priority/protection_candidate_50v_120a_prot_b_paired_shunt_2f.json",
+    "required_pre_fault_vout_delta_mv_max": 1,
+    "required_base_and_candidate_saved_stop_us": 320
+  },
+  "next_command": "python tools/run_d1_50v_matched_cases.py --variant shunt_2f --cases B_CONTROL B_CANDIDATE --execute --run-id solver_2f_B_001 --ltspice D:/ADI/LTspice/LTspice.exe",
+  "acceptance_rule": "Run both B decks at 2fF; check complete 320us and <=1mV pre-fault, eight SR gates, primary gates, I2t, and independent real gate-drive latency separately",
+  "hardware_gate_passed": false,
+  "manufacture_approved": false
+}

@@ -55,7 +55,7 @@
   ],
   "logic_start_state": "LATCHED_OFF until all rails and monitor valid AND manual reset/ack with all 10 gates low",
   "soft_start_rule": "hard_trip unconditionally overrides reset and early-arming; fast_trip is optional only while armed",
-  "rearm_rule": "manual reset only if all good, no active trip, start sequence ready and all ten gates confirmed off",
+  "rearm_rule": "A fresh ACK rising edge is accepted ONLY after an ACK-low condition has been sampled while all rails/CT/comparator are healthy, a fault is absent, startup ready and all 10 gates are verified off. Fault or UVLO invalidates the low-seen qualification. Held-high ACK from before/during a trip must NEVER rearm on fault recovery.",
   "physical_output_rule": "primary U2.EN LOW and all 8 SR external EN LOW (TI buffered candidate) or TRIG HIGH (onsemi native alternative), independent bias and communication fault handling required",
   "design_missing": [
     "Sensor CT open/short detection threshold and independent test",
@@ -64,8 +64,16 @@
     "Independent fail-low primary RUN and eight SR inhibits; propagation/UVLO waveforms",
     "Isolated signal transfer if any primary and secondary domain separation",
     "Actual primary gate turn-off and 8x SR gate/off time verification",
-    "No interposer testing or real logic assembled"
+    "No interposer testing or real logic assembled",
+    "Physical separate ACK-low qualification and rising-edge pulse detector with POR; stuck-high ACK / power cycling must not reset latch"
   ],
   "state_machine_only_not_board_evidence": true,
-  "status": "DESIGN_REVIEW_LOGIC_ONLY_NOT_FOR_FAB"
+  "status": "DESIGN_REVIEW_LOGIC_ONLY_NOT_FOR_FAB",
+  "physical_ack_edge_memory_built": false,
+  "fault_set_dominates_reset": true,
+  "required_state_variables": [
+    "latched_off",
+    "reset_ack_was_high",
+    "ack_low_seen_while_healthy"
+  ]
 }

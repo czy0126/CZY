@@ -1,0 +1,29 @@
+{
+  "kind": "PROT03_2FF_A_SOURCE_LINE_ENDING_PROVENANCE",
+  "created": "2026-11-03",
+  "source_line_ending_cause": "Windows staged .cir CRLF versus Git .cir LF",
+  "git_deck_sha256_rule": "SHA256 of checked-in logical SPICE source after canonical CRLF->LF normalization only",
+  "execution_sha256_rule": "SHA256 of original exact Windows CRLF-staged deck bytes at solver invocation",
+  "evidence_basis": "both actual source hashes exactly match original register hashes after LF->CRLF byte substitution; this does not independently verify uncommitted RAW file bytes",
+  "cross_platform_test": "tools/test_prot03_run_register.py::test_staged_windows_crlf_deck_hashes_are_not_mislabeled_as_repository_hashes",
+  "source_simulation_pair_320us": true,
+  "source_simulation_pair_prefault_vout_delta_mv": 0,
+  "simulated_only": true,
+  "hardware_protection_approved": false,
+  "records": [
+    {
+      "run_id": "P03-SWEEP-2F-A-CAND",
+      "repo_path": "sim/v3/d1_prot03_shunt_2f_A_CANDIDATE.cir",
+      "git_lf_sha256": "0f74083af9cda320814f20a5607d479b813f2d958f4f15fd505b472950d82fc7",
+      "executed_crlf_sha256": "885be4415dcc4cd70ddde76d968de6f4197ed385220b8ee9f12d6b60ec274f79",
+      "electrical_netlist_or_solver_settings_changed": false
+    },
+    {
+      "run_id": "P03-SWEEP-2F-A-THRMUTE",
+      "repo_path": "sim/v3/d1_prot03_shunt_2f_A_CONTROL.cir",
+      "git_lf_sha256": "caad344e3cf02c802be6da361729b4dca6ed7bed1edcbc8f1868ea6a6c47a018",
+      "executed_crlf_sha256": "ad5d5319004bbd6ab94da539fbccfc80d0b76c118d6a7ae57e7df6b0aae4da0a",
+      "electrical_netlist_or_solver_settings_changed": false
+    }
+  ]
+}
