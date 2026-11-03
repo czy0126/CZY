@@ -4,6 +4,10 @@
 
 > 本目录是工作指南与可填写模板，不是新一轮同义审核。基准 main@79eee331fa5848ebad91e9712e180345d5f57814。现有 83 逻辑位号、61 个占位位号、五磁件物理脚号/DOT 待签、原生 GUI ERC 与有网络的主 PCB 缺失；制造闸门 NOT_FOR_FAB。仿真不是硬件连续额定。
 
+## 2026-11-03 自动生成的61位号原生CAD ECO施工表
+
+[14 原生CAD操作与封装替换任务](14_原生CAD逐位号ECO执行表.md) · [61位号ECO CSV](templates/vendor_native_cad_eco_61.csv)：依据真实原生网表、临时库、候选料号生成，明确R3的0603→2512、R1/R2功能核对、C5/REG/VDD电容改值和10项特殊物料。脚本 `python tools/vendor_native_cad_eco.py --check` 检查清单与当前资料同步；**全为 NOT_APPLIED，绝非已完成EDA修改**。
+
 ## 2026-11-03 原生功能网表的定量自动复核
 
 发现 **R1/R2 在旧BOM与原生网表的RT/DT位号对应互换**；原生 `U1.1` 为DT、`U1.2` 为RT，因此已按原生连接把`R1`重新定义为5.36kΩ DT、`R2`为976Ω RT，更新61行候选、RFQ和两项测试，加入制造闸门 `controller_rt_dt_roles_match_native_netlist` 防止错误值经纯引脚检查漏过。原生可编辑工程仍未人工GUI审核，保持NOT_FOR_FAB。
