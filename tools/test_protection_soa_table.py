@@ -77,6 +77,13 @@ def test_the_compare_runner_emits_base_and_candidate() -> None:
                                       "prot_a_oc1v", "base"))
     assert [r["role"] for r in rows] == ["compare_base", "candidate"]
     assert all(r["case"] == "prot_a_oc1v" for r in rows)
+    assert all(r["comparison_basis"] == "declared_parent" for r in rows)
+
+
+def test_a_control_based_run_records_its_basis() -> None:
+    rows = soa.compare_runs("probe", ("protection_candidate_48v_120a_prot_a.json", 48.0,
+                                      "prot_a_oc1v", "base", "topology_matched_control"))
+    assert all(r["comparison_basis"] == "topology_matched_control" for r in rows)
 
 
 
@@ -89,11 +96,14 @@ def test_hashes_are_portable_between_windows_and_linux_checkout(tmp_path):
     assert soa.sha256(lf) == soa.sha256(crlf)
 
 
-def test_50v_comparisons_are_explicitly_unpaired_not_proven_causal(table):
+def test_parent_basis_50v_comparisons_are_explicitly_unpaired(table):
     runs = [run for run in table["results"]["runs"] if run.get("case")]
-    assert len(runs) == 8
-    for run in runs:
+    parent = [run for run in runs if run["comparison_basis"] == "declared_parent"]
+    assert len(parent) == 8
+    for run in parent:
         if run["vin_v"] == 50.0:
+            # The declared 50 V parent sits 13-18 mV away from the candidate
+            # before the fault, so its stress deltas are exploratory only.
             assert not run["paired_pre_fault"]
             assert not run["paired_change_can_be_attributed_to_protection"]
             assert run["pre_fault_vout_delta_mv"] > 13
@@ -101,7 +111,7 @@ def test_50v_comparisons_are_explicitly_unpaired_not_proven_causal(table):
             assert run["paired_pre_fault"]
             assert run["paired_change_can_be_attributed_to_protection"]
             assert abs(run["pre_fault_vout_delta_mv"]) < 1
-    assert table["checks"]["unpaired_comparisons_not_claimed_as_paired"]
+    assert table["checks"]["unpaired_50v_parent_comparisons_not_claimed_as_paired"]
 
 
 def test_report_coverage_is_taken_from_evidence_not_hardcoded():

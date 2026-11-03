@@ -76,11 +76,21 @@ PROBE_RUNS = {
     },
 }
 
+# (json, vin, case, solver, comparison_basis).  The basis says which deck the
+# candidate was differenced against: the declared parent, or a topology-matched
+# control that shares the candidate's pre-fault numerical path.  It matters
+# because two records can carry identical device rows and mean different
+# things; without it the table cannot say why one 50 V row is causal and the
+# other is exploratory.
 COMPARE_RUNS = {
-    "48v_prot_a": ("protection_candidate_48v_120a_prot_a.json", 48.0, "prot_a_oc1v", "base"),
-    "48v_prot_b": ("protection_candidate_48v_120a_prot_b.json", 48.0, "prot_b_fast10u_1p8v", "base"),
-    "50v_prot_a": ("protection_candidate_50v_120a_prot_a.json", 50.0, "prot_a_oc1v", "cshunt=1e-15"),
-    "50v_prot_b": ("protection_candidate_50v_120a_prot_b.json", 50.0, "prot_b_fast10u_1p8v", "cshunt=1e-15"),
+    "48v_prot_a": ("protection_candidate_48v_120a_prot_a.json", 48.0, "prot_a_oc1v",
+                   "base", "declared_parent"),
+    "48v_prot_b": ("protection_candidate_48v_120a_prot_b.json", 48.0, "prot_b_fast10u_1p8v",
+                   "base", "declared_parent"),
+    "50v_prot_a": ("protection_candidate_50v_120a_prot_a.json", 50.0, "prot_a_oc1v",
+                   "cshunt=1e-15", "declared_parent"),
+    "50v_prot_b": ("protection_candidate_50v_120a_prot_b.json", 50.0, "prot_b_fast10u_1p8v",
+                   "cshunt=1e-15", "declared_parent"),
 }
 
 
@@ -125,8 +135,9 @@ def probe_run(name: str, spec: dict) -> dict:
     }
 
 
-def compare_runs(name: str, spec: tuple[str, float, str, str]) -> list[dict]:
-    filename, vin, case, solver = spec
+def compare_runs(name: str, spec: tuple) -> list[dict]:
+    filename, vin, case, solver, *rest = spec
+    basis = rest[0] if rest else "declared_parent"
     path = ROOT / "design/v3/power_priority" / filename
     data = json.loads(path.read_text(encoding="utf-8"))
     res = data["results"]
@@ -145,6 +156,7 @@ def compare_runs(name: str, spec: tuple[str, float, str, str]) -> list[dict]:
             "case": case,
             "role": role,
             "solver": solver,
+            "comparison_basis": basis,
             "window": "saved_window",
             "trip_us": res["trigger"]["base_trip_us"],
             "reached_declared_window": bool(
@@ -213,8 +225,10 @@ def build() -> dict:
                 "50 V rows come from the cshunt=1e-15 child; the 50 V base still stalls at 296.929 us",
                 "the compare_base rows and the standalone probe rows use different windows and "
                 "must not be differenced against each other",
-                "50 V protection-candidate comparisons do not meet the 1 mV pre-fault pairing "
-                "criterion (13-18 mV offset); performance gains are exploratory, not paired effects",
+                "50 V comparisons against the declared parent do not meet the 1 mV pre-fault "
+                "pairing criterion (13-18 mV offset); their performance gains are exploratory, "
+                "not paired effects.  Each row's comparison_basis names the deck it was "
+                "differenced against",
                 "two candidate fields (gate peak, drain max) and reverse current are not recorded "
                 "in the comparison JSONs; they are null, not zero",
             ],
@@ -225,9 +239,10 @@ def build() -> dict:
             "no_vendor_soa_is_claimed": True,
             "the_window_definition_is_recorded_for_every_run": all(
                 run["window"] in ("post_trip", "saved_window") for run in runs),
-            "unpaired_comparisons_not_claimed_as_paired": all(
+            "unpaired_50v_parent_comparisons_not_claimed_as_paired": all(
                 not run.get("paired_change_can_be_attributed_to_protection", False)
-                for run in runs if run.get("case") and run["vin_v"] == 50.0),
+                for run in runs if run.get("case") and run["vin_v"] == 50.0
+                and run["comparison_basis"] == "declared_parent"),
             "unrecorded_fields_are_null_not_zero": all(
                 name in run["unrecorded_fields"] or name in run["null_by_design_fields"]
                 for run in runs for row in run["devices"] for name, value in row.items()
