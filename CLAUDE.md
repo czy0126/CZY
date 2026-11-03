@@ -21,6 +21,9 @@ python tools/cr_stress.py --json design/v3/bom/cr_stress.json   # 由 I(Lr) 积�
 python tools/ct_design.py --json design/v3/bom/ct_design.json  # CT 传递链/负载与分压（10 Ω 已冻结）
 python tools/oc_network_check.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.raw \
     --burden 10 --rd1 10k --json design/v3/bom/oc_network_ct10.json   # 实测 OC 网络，需带 V(oc*) 的变体 raw
+python tools/startup_burden_pulse.py --json design/v3/bom/startup_burden_pulse.json
+    # 冷启动 R3 脉冲：由 I(Lr) 经理想变比推导；传递比在 hotfault srprobe raw 上标定
+    # 约 90 s（冷 raw 8 ms 全读），评级阶梯读 r3_vendor_rating_screen.json（PR 28）
 python tools/connector_budget.py --json design/v3/bom/connector_budget.json  # 输出铜排/接点预算
 python tools/output_path_budget.py --json design/v3/pcb/output_path_budget.json  # 板上 100 A 平面方块数（读摆放）
 python tools/board_netlist.py --json design/v3/pcb/board_netlist.json \
@@ -288,6 +291,17 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   **100.6 %**，故障脉冲峰 9.36 W / 0.123 mJ（50 V 10.08 W / 0.131 mJ，PROT-B 降到
   2.07 W / 0.0060 mJ），等效宽度约 13 µs。所以 BOM `R3` **阻值仍冻结（10 Ω）、MPN/封装
   改 `TO SELECT`**；SOURCE-05 里另一个 **103 mW** 才是 `mean(V)²/R`，低 1.21 倍。
+- **冷启动的 R3 功率是推导量，不是测量量**：8 ms 冷启动 deck 不存 `V(ocd)`/`V(ocm)`，
+  所以 `startup_burden_pulse.py` 用 deck 自己的 `I(Lr)` 经 `V_burden = Rbur·|i_pri|/N` 推导，
+  传递比先在 hotfault srprobe raw（同时存三个量）上标定：2–97 A 中位 **0.0997355 V/A**
+  （p05–p95 0.0993–0.1023，标称 0.1）。**验证不是自证**：同一传递比把 7–8 ms 稳态推成
+  **0.1253 W**，与独立实测 0.1257 W 差 **0.319 %**。冷启动峰值 **0.579361 W @ 1.28698 ms**
+  （`|I(Lr)|` 24.1338 A，Vout 1.1664 V），8 ms 能量 **0.778649 mJ**（均值 97.33 mW），
+  是故障脉冲能量的 **6.35 倍**、峰值只有其 1/16 ⇒ 封装选型由启动能量主导，不由故障脉冲。
+  对 1.5 W 2512 候选：峰 0.386×P70、超 P70 **0 µs**；对 125/140/150 °C 降额值分别是
+  1.094/2.189/6.566 倍，超出 0.431/11.02/4071 µs。**这些是筛选比，不是合格判据**——
+  deck 是 10 ns 步长，直接确认仍要一条存 `V(ocd)` 的冷启动 raw。
+  见 `design/v3/bom/startup_burden_pulse.json`、`tools/test_startup_burden_pulse.py`。
 - **`V(ovl1)` 不是过流脚**：deck 里的 `Bovl1 ovl1 0 V=min(max(-I(VSa1),0),max(-I(VSb1),0))`
   量的是同一组两路 SR **同时正向导通**的电流（单位 A），`.meas` 行把它印成 `ovl_cur`。
   111 A 时它读 **1.510**，而 Level-1 `VOC` 是 **1 V** —— 直接对照就会得出"已经跳闸"的反结论，

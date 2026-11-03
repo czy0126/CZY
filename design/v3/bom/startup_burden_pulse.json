@@ -1,0 +1,145 @@
+{
+ "kind": "ct_burden_cold_start",
+ "evidence_level": "DERIVED_FROM_IDEAL_CT_TRANSFER / BURDEN_VOLTAGE_NOT_SAVED",
+ "source": {
+  "cold_deck": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
+  "cold_raw": "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.raw",
+  "paired_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+  "paired_raw": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw"
+ },
+ "results": {
+  "ct": {
+   "lct1_h": 2e-06,
+   "lct2_h": 0.02,
+   "kct": 0.9999,
+   "rbur_ohm": 10.0,
+   "turns_ratio": 100.0,
+   "nominal_v_per_a": 0.1,
+   "identity": "i_sec = i_pri / N and V_burden = Rbur * |i_sec|, so the rectifier is a current source and never clips"
+  },
+  "transfer": {
+   "median_v_per_a": 0.0997355,
+   "p05_v_per_a": 0.0993151,
+   "p95_v_per_a": 0.102314,
+   "samples": 75459,
+   "windows_us": [
+    [
+     150.0,
+     175.0
+    ],
+    [
+     205.0,
+     216.0
+    ]
+   ],
+   "used_v_per_a": 0.0997355
+  },
+  "startup": {
+   "window_ms": [
+    0.0,
+    8.0
+   ],
+   "samples": 14433895,
+   "peak_w": 0.579361,
+   "t_peak_ms": 1.28698,
+   "peak_current_a": 24.1338,
+   "vout_at_peak_v": 1.1664,
+   "energy_mj": 0.778649,
+   "mean_mw": 97.3312,
+   "duration_us": 8000.0,
+   "time_above": {
+    "above_quarter_of_p70_us": 2.472,
+    "above_p70_us": 0.0,
+    "above_four_times_p70_us": 0.0,
+    "above_derated_at_125c_us": 0.4311,
+    "above_derated_at_140c_us": 11.02,
+    "above_derated_at_150c_us": 4071.0
+   },
+   "end": {
+    "vout_v": 1.88671,
+    "vss_v": 5.01044
+   }
+  },
+  "peak_slice": {
+   "window_ms": [
+    0.0,
+    2.0
+   ],
+   "samples": 2429588,
+   "peak_w": 0.579361,
+   "t_peak_ms": 1.28698,
+   "peak_current_a": 24.1338,
+   "vout_at_peak_v": 1.1664,
+   "energy_mj": 0.0944709,
+   "mean_mw": 47.2355,
+   "duration_us": 2000.0,
+   "time_above": {
+    "above_quarter_of_p70_us": 2.472,
+    "above_p70_us": 0.0,
+    "above_four_times_p70_us": 0.0,
+    "above_derated_at_125c_us": 0.4311,
+    "above_derated_at_140c_us": 11.02,
+    "above_derated_at_150c_us": 404.2
+   },
+   "end": {
+    "vout_v": 1.58848,
+    "vss_v": 2.01254
+   }
+  },
+  "steady_cross_check": {
+   "derived_7_to_8ms_w": 0.1253,
+   "measured_48v_120a_w": 0.125701,
+   "deviation_pct": 0.319,
+   "reference": "design/v3/bom/oc_burden_pulse.json"
+  },
+  "rating": {
+   "mpn": "CRCW251210R0FKEHHP",
+   "rated_power_w": 1.5,
+   "rated_at_c": 70.0,
+   "eia_case": "2512",
+   "height_max_mm": 0.7,
+   "rejected_source_mpn": "Panasonic ERJ6ENF10R0V",
+   "rejected_source_power_w": 0.125,
+   "derated_w": {
+    "125c": 0.529412,
+    "140c": 0.264706,
+    "150c": 0.088235
+   },
+   "screen": "docs/D1_EXECUTION_KIT/r3_vendor_rating_screen.json",
+   "peak_over_p70": 0.38624,
+   "peak_over_derated": {
+    "125c": 1.0943,
+    "140c": 2.1887,
+    "150c": 6.5661
+   },
+   "energy_over_p70_seconds": 0.000519099,
+   "note": "the peak is a pulse; dividing it by a continuous or de-rated rating is a screening ratio, not a pass/fail"
+  },
+  "fault_contrast": {
+   "fault_peak_w": 9.35934,
+   "fault_energy_mj": 0.122643,
+   "fault_equivalent_width_us": 13.104,
+   "startup_peak_w": 0.579361,
+   "startup_energy_mj": 0.778649,
+   "energy_ratio_startup_over_fault": 6.34891
+  },
+  "limits": [
+   "the cold-start deck does not save V(ocd)/V(ocm); the burden voltage here is derived from the saved I(Lr) through the ideal-transformer identity, not measured on this deck",
+   "the transfer is measured on the hotfault srprobe raw over 2-97 A (median 0.0997 V/A against a nominal 0.1000); a cold-start raw that saved the burden nodes would confirm it",
+   "below 2 A the diode drop dominates and the identity is not used; the excluded energy sits in the first ~0.4 ms where the input has not ramped",
+   "the CT model is ideal (Kct = 0.9999, no saturation, no magnetising current), so core loss and saturation are absent from this figure",
+   "the rating ladder is the candidate's simple linear ambient de-rating (Vishay p6, 70 C to 155 C); the ambient is not measured and the curve is not a junction-temperature measurement",
+   "the peak is a microsecond-scale pulse and the time above each level is a crossing time, not an I^2t or a wave-shape convolution; the vendor single/repetitive pulse charts must be applied to the real waveform before any pass/fail",
+   "the rejected 0805 (source_mpn) is kept only as the reason the rating moved; nothing here re-qualifies it",
+   "the cold-start deck runs with 10 ns max step; it answers 'does the converter traverse start-up', not a 1 ns ledger question"
+  ]
+ },
+ "checks": {
+  "ok": true,
+  "the_ct_ladder_is_identical_in_both_decks": true,
+  "the_transfer_is_linear_over_the_measured_range": true,
+  "the_derived_steady_power_reproduces_the_measured_burden": true,
+  "the_rating_is_the_recorded_candidate_not_the_rejected_0805": true,
+  "the_peak_is_reported_as_a_selection_input_not_a_rating": true
+ }
+}
