@@ -185,6 +185,15 @@ manifest 里同样三面 false 旗——由 `tools/test_run_d1_50v_matched_cases
   **实跑入口**是 `tools/run_d1_50v_matched_cases.py`（见"运行与测试"）：它只判 320 µs 完整性，
   `run_manifest.json` 的 `pre_fault_1mV_paired_verified`、`ten_physical_gate_shutdown_verified`、
   `fabrication_approved` 恒为 false；配对与否要另用 `protection_candidate_compare.py` 才算得出来。
+- **cshunt 阶梯非单调，别按"再加一点更好"往上扫**：50 V 的 B 控制三档停点分别是
+  **1 fF 254.980 µs（超时被杀）/ 2 fF 264.515 µs（求解器自己放弃）/ 5 fF 235.890 µs（超时被杀）**，
+  5 fF 比 1 fF 还少 19.1 µs。三条尾部步长都到亚飞秒（0.02–0.32 fs），**cshunt 只挪动塌缩发生的
+  时刻与退出方式，不移除塌缩**；`cshunt` 对失败实例 `xsr3:x2:Bage`（行为源）没有直接作用，
+  "再多一点"没有机制依据。**≤1 mV 配对那条从来不是瓶颈**：1/2/5 fF 三档故障前差都是
+  0.000000 mV，卡住的始终是"控制跑满 320 µs"。10 fF 因此没跑。5 fF 的 B 候选两侧 `trip_s`
+  都是 `null`（`V(oc)` 峰 0.7069/0.7063 V < 1 V）：候选被自己 1.8 V 的比较器在 185.278 µs 切掉，
+  比控制的 215.058 µs 早 29.78 µs，原边电流没把 CT 负载推到 1 V。见
+  `18_50V成对数值收敛扫参与执行.md` 末节与 `solver_sweep_5f_*`。
 - **B 源的正电流离开节点，所以锁存清除项是 `+V(node)*(1n/TAU)`，不是 `-V`**：
   `-V` 是正反馈。这个 bug 一直没暴露，因为五个功率级候选的 `Vddp` 恒 12 V ⇒ `V(uvlo)≡0`，
   清除分支**从未被选中**；第一次真正掉电重启的 `prot_latch_restart_check.cir` 直接发散到 **1e86**。
@@ -585,6 +594,12 @@ manifest 里同样三面 false 旗——由 `tools/test_run_d1_50v_matched_cases
   回归测试 `test_primary_freq_respects_window_bounds`。
   **教训**：任何"每窗口"指标都必须把边沿限制在窗口内。
 - `conv_row()` 的 `n_periods` 必须与该族参考行一致（1 ms 族 22，200 µs 族 8）。
+- **`hotfault_convergence.py` 的窗口覆盖判据曾按固定 1 ps 卡**：采样点不可能落在窗口终点上，
+  `window_peaks` 返回的是边界**之前**的最后一个点，所以容差必须是一个积分步长。5 fF B 候选的
+  220 µs 切片止于 219.9966 / 219.9990 µs（两条 raw 都覆盖整窗），旧判据报 false。
+  现在 `max_step_s()` 从 deck 的 `.tran` 取 Tmaxstep（这里 5 ns）当容差，并写进
+  `results.coverage_tolerance_s`。`reached_stop()`（整条 raw 是否跑到终点）**不受影响**，
+  仍是 1 ns——两者是不同的问题。
 - **`ascii_raw_window.find_offset` 曾按固定 64 行找记录起点，而 80 变量的 raw 每条记录 81 行**：
   随机偏移下约 20 % 找不到起点、返回 `None`，二分法把它当“时间 < t0”，会收敛到文件中部。
   120 A 首次提取把 0–120 µs 读成 **65.7–120 µs**（byte 276 393 424 / 505 404 440），
