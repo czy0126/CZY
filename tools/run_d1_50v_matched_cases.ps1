@@ -3,7 +3,8 @@ PROT-03 50V/120A matched controls. Dry-run unless explicitly -Execute.
 Retain all RAW/LOG and SHA256, including failed and truncated runs.
 #>
 param([switch]$Execute,[string]$RunId="",[string]$LTspice="",
-  [string[]]$Cases=@("A_CONTROL","A_CANDIDATE","B_CONTROL","B_CANDIDATE"))
+  [string[]]$Cases=@("A_CONTROL","A_CANDIDATE","B_CONTROL","B_CANDIDATE"),
+  [ValidateSet("published","shunt_2f","shunt_5f","shunt_10f")][string]$Variant="published")
 $ErrorActionPreference="Stop"
 $Root=(Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $SimDir=Join-Path $Root "sim/v3"
@@ -13,10 +14,14 @@ $Decks=@{
  "B_CONTROL"="sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir"
  "B_CANDIDATE"="sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir"
 }
+if($Variant -ne "published") {
+ foreach($Role in @($Decks.Keys)) { $Decks[$Role]="d1_prot03_"+$Variant+"_"+$Role+".cir" }
+}
+$RequiredShunt = switch($Variant) { "shunt_2f" { "2e-15" } "shunt_5f" { "5e-15" } "shunt_10f" { "1e-14" } default { "1e-15" } }
 foreach($Case in $Cases){
  if(!$Decks.ContainsKey($Case)){throw "Unknown case $Case"}
  $Txt=Get-Content -LiteralPath (Join-Path $SimDir $Decks[$Case]) -Raw -Encoding utf8
- if($Txt -notmatch '\.options\s+plotwinsize=0\s+method=gear\s+cshunt=1e-15'){throw "Solver options changed $Case"}
+ if(!$Txt.Contains(".options plotwinsize=0 method=gear cshunt="+$RequiredShunt)){throw "Solver options changed $Case"}
  if($Txt -notmatch '\.tran\s+0\s+2320u\s+2000u\s+5n\s+uic'){throw "320us save window changed $Case"}
  if($Txt -notmatch '\.include\s+\.\./\.\./models/'){throw "Model includes changed $Case"}
 }
