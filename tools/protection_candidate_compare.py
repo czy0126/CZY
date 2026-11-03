@@ -3,7 +3,10 @@
 Both raws share the same saved axis and the same fault branch, so the only
 difference is the appended protection block.  The base deck defaults to the
 candidate's declared parent: the 48 V eight-SR probe deck, or the 50 V
-``cshunt=1 fF`` child, because the 50 V base itself still stalls at 296.929 us.  Every physical number is taken
+``cshunt=1 fF`` child, because the 50 V base itself still stalls at 296.929 us.
+A PR 30 solver-sweep deck may be passed instead; the report then names the
+sweep's own cshunt value and the rail comes from the case, not the file name.
+Every physical number is taken
 over the same window (fault engage to the shorter record's end); a candidate
 that stops early is reported as a prefix, never silently compared over a
 shorter span.
@@ -112,14 +115,60 @@ def shared_fault_network(deck_text: str) -> list[str]:
             if line.strip().startswith(prefixes)]
 
 
-def solver_is_cshunt(deck_text: str) -> bool:
-    """True when the deck carries the 1 fF convergence option.
+CSHUNT = re.compile(r"cshunt=\s*([0-9.eE+-]+)")
 
-    The 50 V candidates inherit it from their parent; the flag has to be read
-    from the whole ``.options`` line, not from a fixed prefix, because LTspice
-    accepts the options in any order.
+
+def solver_cshunt_farads(deck_text: str) -> str | None:
+    """The literal cshunt value, whatever it is: the PR 30 sweep runs 2/5/10 fF.
+
+    The flag has to be read from the whole ``.options`` line, not from a fixed
+    prefix, because LTspice accepts the options in any order.
     """
-    return "cshunt=1e-15" in deck_text
+    match = CSHUNT.search(deck_text)
+    return match.group(1) if match else None
+
+
+def solver_is_cshunt(deck_text: str) -> bool:
+    """True when the deck carries *any* cshunt convergence option."""
+    return solver_cshunt_farads(deck_text) is not None
+
+
+def rail(case: str) -> str:
+    """Name the rail by the case, never by the deck file.
+
+    A generated sweep deck is called ``d1_prot03_shunt_2f_A_CANDIDATE.cir``,
+    which carries no rail; looking for "50v" in the file name would label that
+    50 V record as 48 V.
+    """
+    return "50 V" if case.endswith("_50v") else "48 V"
+
+
+def limitation_rows(case: str, shunt: str | None, *, covered: bool, end_s: float,
+           declared_stop_s: float, candidate_done: bool) -> list[str]:
+    """Everything that makes this comparison weaker than a hardware sign-off."""
+    rows = [
+        "a behavioural latch and ideal 0.05 ohm clamps are not a hardware protection design",
+        "no SOA, thermal, comparator noise, gate-loop inductance or restart sequencing is modelled",
+        "the trigger level is a chosen threshold, not a qualified comparator specification",
+        "a candidate that stops early is a prefix; it does not cover the declared window",
+        f"the {rail(case)} record is a hot start from .ic V(out)=1.89 V, not a cold start",
+        "the arming latch closes inside the unsaved 2 ms pre-history; the saved axis can only "
+        "show that it is already high",
+        "the base's SR gates re-assert after trip (the phase and count differ between runs); "
+        "the candidate clamps are the comparison, not a safety claim",
+    ]
+    if shunt:
+        rows.append(f"the parent carries '.options cshunt={shunt}'; a nonzero cshunt is solver "
+                    "regularisation, not a component, so this record is a convergence child")
+        if rail(case) == "50 V":
+            rows.append("the 50 V base without cshunt still stalls at 296.929 us")
+    if not covered:
+        rows.append(
+            f"the common slice ends at {end_s * 1e6:.3f} us, not {declared_stop_s * 1e6:.0f} us: "
+            "the shorter record stops there")
+    if not candidate_done:
+        rows.append("the candidate did not reach its saved stop; post-stall samples are not evidence")
+    return rows
 
 
 def gate_clamps_present(deck_text: str) -> bool:
@@ -297,27 +346,9 @@ def compare(case: str, base_raw: Path, candidate_raw: Path, *,
     covered = end_s >= declared_stop_s - 1e-9
     base_done = base_tail >= base_stop_s - 1e-9
     candidate_done = candidate_tail >= declared_stop_s - 1e-9
-    rail = "50 V (cshunt=1 fF convergence child)" if "50v" in candidate_deck.name else "48 V"
-    limits = [
-        "a behavioural latch and ideal 0.05 ohm clamps are not a hardware protection design",
-        "no SOA, thermal, comparator noise, gate-loop inductance or restart sequencing is modelled",
-        "the trigger level is a chosen threshold, not a qualified comparator specification",
-        "a candidate that stops early is a prefix; it does not cover the declared window",
-        f"the {rail} record is a hot start from .ic V(out)=1.89 V, not a cold start",
-        "the arming latch closes inside the unsaved 2 ms pre-history; the saved axis can only show that it is already high",
-        "the base's SR gates re-assert after trip (the phase and count differ between runs); "
-        "the candidate clamps are the comparison, not a safety claim",
-    ]
-    if "cshunt" in candidate_deck.name:
-        limits.append(
-            "the parent carries '.options cshunt=1e-15'; the 50 V base without it still "
-            "stalls at 296.929 us, so this 50 V record is a convergence-child record")
-    if not covered:
-        limits.append(
-            f"the common slice ends at {end_s * 1e6:.3f} us, not {declared_stop_s * 1e6:.0f} us: "
-            "the shorter record stops there")
-    if not candidate_done:
-        limits.append("the candidate did not reach its saved stop; post-stall samples are not evidence")
+    limits = limitation_rows(case, solver_cshunt_farads(candidate_text), covered=covered,
+                             end_s=end_s, declared_stop_s=declared_stop_s,
+                             candidate_done=candidate_done)
     return {
         "kind": "protection_candidate_comparison",
         "evidence_level": "SIMULATED_ONLY / NOT_HARDWARE / NOT_A_SAFETY_PROOF",

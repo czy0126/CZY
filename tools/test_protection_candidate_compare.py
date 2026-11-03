@@ -80,6 +80,28 @@ def test_the_cshunt_flag_is_read_from_the_whole_options_line() -> None:
     assert not cmp.solver_is_cshunt(plain)
 
 
+def test_the_solver_shunt_is_reported_for_any_value() -> None:
+    assert cmp.solver_cshunt_farads(".options cshunt=1e-15") == "1e-15"
+    assert cmp.solver_cshunt_farads(".options method=gear cshunt=5e-15") == "5e-15"
+    assert cmp.solver_cshunt_farads(".options plotwinsize=0") is None
+    assert cmp.solver_is_cshunt(".options cshunt=2e-15")
+
+
+def test_the_rail_is_named_by_the_case_not_the_deck_file() -> None:
+    """A sweep deck is called d1_prot03_shunt_2f_A_CANDIDATE.cir and carries no
+    rail in its name; reading the rail from the file would label 50 V as 48 V."""
+    assert cmp.rail("prot_a_oc1v_50v") == "50 V"
+    assert cmp.rail("prot_b_fast10u_1p8v") == "48 V"
+
+
+def test_the_limits_name_the_sweep_shunt_instead_of_assuming_one_femtofarad() -> None:
+    rows = cmp.limitation_rows("prot_a_oc1v_50v", "5e-15", covered=False, end_s=250.150953e-6,
+                      declared_stop_s=320e-6, candidate_done=True)
+    assert any("cshunt=5e-15" in row for row in rows)
+    assert any("50 V" in row for row in rows)
+    assert any("250.151" in row for row in rows)
+
+
 def test_the_base_probe_list_does_not_ask_for_protection_nodes() -> None:
     base = cmp.base_names()
     assert "V(prot)" not in base
