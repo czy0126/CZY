@@ -11,8 +11,9 @@ Two things are deliberately not claimed:
 * the vendor pulse-derating curve is not vendored.  A 13 us pulse is not a
   continuous dissipation, so the peak is reported next to the nominal rating
   as an input to part selection, never as a pass/fail;
-* the startup pulse is still unmeasured.  The 8 ms cold-start deck does not
-  save the burden nodes and re-running it (2294 s, 13 GB) is a separate call.
+* the startup pulse is not part of this record.  The parent 8 ms cold-start
+  deck does not save the burden nodes; a probe variant measures it separately
+  (``tools/startup_burden_direct.py``, 14.13 GB, ~39 min).
 
 The 50 V bases are the ideal-switch (``Vt=10``) controls, not the declared
 parent and not the threshold-muted controls.  Three candidates were available
@@ -210,8 +211,8 @@ def build() -> dict:
                 "an input to part selection, not a pass/fail",
                 "a 13 us pulse is not continuous dissipation; comparing it with the nominal "
                 "power is a screening ratio only",
-                "the startup pulse is not measured: the 8 ms cold-start deck does not save "
-                "V(ocd)/V(ocm)",
+                "the startup pulse is not part of this record: it is measured separately "
+                "by tools/startup_burden_direct.py (0.5724 W / 0.7796 mJ over 8 ms)",
                 "the CT model is ideal (Lct2 = 20 mH, Kct = 1), so core saturation and "
                 "magnetising current are absent from this burden voltage",
                 "50 V benefits use the complete Vt=10 controls, not the declared parent; the "

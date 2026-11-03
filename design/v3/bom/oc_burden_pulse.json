@@ -352,7 +352,7 @@
   "limits": [
    "the 0.125 W figure is a continuous rating from a search summary; the datasheet text and pulse-derating curve are not vendored, so the peak is an input to part selection, not a pass/fail",
    "a 13 us pulse is not continuous dissipation; comparing it with the nominal power is a screening ratio only",
-   "the startup pulse is not measured: the 8 ms cold-start deck does not save V(ocd)/V(ocm)",
+   "the startup pulse is not part of this record: it is measured separately by tools/startup_burden_direct.py (0.5724 W / 0.7796 mJ over 8 ms)",
    "the CT model is ideal (Lct2 = 20 mH, Kct = 1), so core saturation and magnetising current are absent from this burden voltage",
    "50 V benefits use the complete Vt=10 controls, not the declared parent; the control clamps leak 1 nA (measured on a probe deck) but the run still sits 13.2/17.5 mV from the candidate before the fault, so the 50 V percentages are screening numbers, not paired effects.  The exactly-paired threshold-muted control stalls at 250.151/254.980 us and cannot price a full pulse",
    "the parent rows are reference only and are not paired",

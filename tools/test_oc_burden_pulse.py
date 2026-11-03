@@ -122,4 +122,5 @@ def test_the_record_does_not_turn_the_peak_into_a_pass_fail(record: dict) -> Non
     assert record["checks"]["the_peak_is_not_reported_as_a_continuous_rating"]
     text = " ".join(record["results"]["limits"])
     assert "not a pass/fail" in text
-    assert "startup pulse is not measured" in text
+    assert "startup pulse is not part of this record" in text
+    assert "startup_burden_direct.py" in text
