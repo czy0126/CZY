@@ -1,0 +1,56 @@
+[
+  {
+    "issue_id": "SOURCE-01",
+    "importance": "P0",
+    "ref": "U2 / D_BT",
+    "finding": "TI UCC27282DRCR VSON-10 has an integrated bootstrap diode; current BOM also has D_BT. Existence/function of a separate diode must be reconciled against actual native schematic; no automatic deletion.",
+    "source": "https://www.ti.com/product/UCC27282/part-details/UCC27282DRCR",
+    "action": "Draw internal diode and any external D_BT on the same electrical net schematic; determine purpose/OR-ing, loop, reverse stress and errata; update actual EDA only after review",
+    "state": "OPEN_NO_CAD_REVIEW"
+  },
+  {
+    "issue_id": "SOURCE-02",
+    "importance": "P0",
+    "ref": "QH QL",
+    "finding": "TI CSD19531Q5A: 5.3 mOhm at 10V is typical, 6.4 mOhm is maximum. Existing BOM wording 6.2 mOhm max conflicts with current TI product page. Power-stage loss stress must use a relevant maximum and hot-temperature Rds(on).",
+    "source": "https://www.ti.com/product/CSD19531Q5A",
+    "action": "Reconcile manufacturer datasheet Rev.B and original BOM; quantify max-temperature conduction/switching loss; do not auto-upgrade verified_mpn",
+    "state": "OPEN_LOSS_RECALC"
+  },
+  {
+    "issue_id": "SOURCE-03",
+    "importance": "P0",
+    "ref": "SR1A-SR4B",
+    "finding": "Infineon BSC010N04LS6 max Rds(on) 1.0 mOhm @10V; 285A case-limited continuous and 1140A pulse figures do NOT establish fault SOA at measured Vds, pulse shape, width or Tj.",
+    "source": "https://www.infineon.com/part/BSC010N04LS6",
+    "action": "Use complete 2022 Rev.2.3 original SOA and transient Zth with explicit current and Vds waveforms; verify 8 SRs and gate shutdown",
+    "state": "OPEN_SOA"
+  },
+  {
+    "issue_id": "SOURCE-04",
+    "importance": "P0",
+    "ref": "Cout",
+    "finding": "2.5V KEMET A720 470uF 3mOhm 1.9mm part is distributor-backed, but only nominal headroom at ~2V. 6.3V T530 470uF 5mOhm alternative is 4.3mm high and requires at least 30 units for ideal 0.2mOhm; copper ESR and ripple loading remain unaccounted.",
+    "source": "https://www.digikey.com/en/products/detail/kemet/T530X477M006ATE005/5452673",
+    "action": "Seek 4/6.3V ≤10mm assembly with >=7.05mF if current target retained; derate ripple + ESR at ~200kHz; include spreading copper/joints and thermal imbalance",
+    "state": "OPEN_BANK_DESIGN"
+  },
+  {
+    "issue_id": "SOURCE-05",
+    "importance": "P1",
+    "ref": "R3",
+    "finding": "Panasonic 0805 10ohm ERJ6ENF10R0V nominal 0.125W; the project's simulated 89mW burden power leaves limited margin before de-rating and transient excursions.",
+    "source": "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ6ENF10R0V",
+    "action": "Run startup/fault pulse energy, waveform peak, temperature-dependent rating and package selection; consider larger/high-pulse resistor",
+    "state": "OPEN_POWER_RATING"
+  },
+  {
+    "issue_id": "SOURCE-06",
+    "importance": "P0",
+    "ref": "T1-T4 Lr CT",
+    "finding": "Core magnetic data cannot verify the completed winding pad numbers, winding polarity, gap and saturation. Magnetics 24 logical pins remain unapproved.",
+    "source": "https://product.tdk.com/en/search/ferrite/ferrite/ferrite-core/info?part_no=B66287G0000X197",
+    "action": "Keep physical terminal approval closed pending manufacturer-specific drawing and L(I) measurements",
+    "state": "OPEN_CUSTOM_MAGNETICS"
+  }
+]

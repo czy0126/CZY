@@ -4,6 +4,15 @@
 
 > 本目录是工作指南与可填写模板，不是新一轮同义审核。基准 main@79eee331fa5848ebad91e9712e180345d5f57814。现有 83 逻辑位号、61 个占位位号、五磁件物理脚号/DOT 待签、原生 GUI ERC 与有网络的主 PCB 缺失；制造闸门 NOT_FOR_FAB。仿真不是硬件连续额定。
 
+## 2026-11-03 增补：逐器件可核验原厂资源
+
+已提交 [11 原厂标准阻容 51/61 候选](11_原厂实证与逐位号候选.md)（含 15 个准确 MPN、[全 61 位号逐项表](templates/vendor_candidate_matrix_61.csv)、可复现检查脚本）和 [12 高裕量 SR/磁芯替代与官方模型索引](12_高裕量原厂替代与模型下载.md)。**51 个已有原厂料号，只代表候选资料齐全，不代表实测、电路/封装、采购或投板签核。**
+
+```bash
+python tools/verify_vendor_candidate_matrix.py --check
+python -m pytest tools/test_verify_vendor_candidate_matrix.py -q
+```
+
 ## 最短启动路线
 
 1. **先跑检查**（Windows，仓库根目录）：

@@ -1,0 +1,86 @@
+[
+  {
+    "ref": "SR1A-SR4B",
+    "category": "power-MOSFET alternative",
+    "original": "BSC010N04LS6",
+    "candidate": "BSC007N04LS6",
+    "manufacturer": "Infineon",
+    "datasheet_url": "https://www.infineon.com/dgdl/Infineon-BSC007N04LS6-DataSheet-v02_03-EN.pdf?fileId=5546d462689a790c0168bcd9a63a4815",
+    "product_url": "https://www.infineon.com/part/BSC007N04LS6",
+    "vds_v": 40,
+    "rdson_max_mohm_vgs10": 0.7,
+    "qg_typ_nc_10v": 94,
+    "package": "PG-TDSON-8 FL / SuperSO8 5x6",
+    "reason": "Best-cost-not-relevant conduction-loss candidate; trade 30% lower rated max Rds versus baseline 1.0mOhm for ~40% higher gate charge (94 vs 67nC).",
+    "approval": "HOLD_SOA_GATE_DRIVE_AND_PAD_MATCH",
+    "verification": [
+      "Check exact pad1-8/gate/source and package outline against installed EDA footprint",
+      "Evaluate VDS spike and 40V headroom including fault waveforms",
+      "Run 8-SR commutation switching with actual 94nC 10V gate drive",
+      "Verify fault SOA pulse waveform and Zth before any selection",
+      "Check thermal Rth and cost-insensitive mounting heat extraction"
+    ]
+  },
+  {
+    "ref": "SR1A-SR4B",
+    "category": "dual-side-cooled SR alternative",
+    "original": "BSC010N04LS6",
+    "candidate": "BSC007N04LS6SC",
+    "manufacturer": "Infineon",
+    "datasheet_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc007n04ls6sc-datasheet-en.pdf",
+    "product_url": "https://www.infineon.com/part/BSC007N04LS6SC",
+    "vds_v": 40,
+    "rdson_max_mohm_vgs10": 0.7,
+    "qg_typ_nc_10v": 94,
+    "package": "PG-VSON-8/PG-WSON-8 dual-side cooled",
+    "reason": "Top-side cooling candidate for cold-plate compatibility; not mechanically or electrically footprint interchangeable by assumption.",
+    "approval": "HOLD_NEW_FOOTPRINT_MECHANICS_AND_SOA",
+    "verification": [
+      "CAD physical pinout must be newly mapped",
+      "Top-side exposed metal + creepage + thermal interface + mounting compression stack-up",
+      "Verify soldering process, layout and manufacturability",
+      "Gate-drive/SOA and dynamic analysis; no current approval"
+    ]
+  },
+  {
+    "ref": "Lr / T1-T4",
+    "category": "higher cross-section core",
+    "original": "TDK ELP32 N97",
+    "candidate": "TDK B66461G0000X197 ELP43/10/28",
+    "manufacturer": "TDK",
+    "datasheet_url": "https://product.tdk.com/system/files/dam/doc/product/ferrite/ferrite/ferrite-core/data_sheet/80/db/fer/elp_43_10_28.pdf",
+    "product_url": "https://product.tdk.com/en/search/ferrite/ferrite/ferrite-core/info?part_no=B66461G0000X197",
+    "ae_mm2": 225,
+    "amin_mm2": 217,
+    "material": "N97",
+    "gap_mm": 0,
+    "physical_core_size": "ELP43/10/28 and I43/4/28 core set",
+    "reason": "Meets cross section target (Amin >=200 mm2) as a raw magnetic core but the ELP/plate height nominal 10+4 mm class cannot be considered compatible with <=10mm complete converter. Use as cross-section comparator, NOT low profile selection.",
+    "approval": "REJECT_UNLESS_NEW_MECHANICAL_STACKUP_PROVES_HEIGHT",
+    "verification": [
+      "Obtain complete mechanical dimension drawing and worst-case assembly stack",
+      "Need distributed gap design, foil winding drawing, leakage and real 100C L(I)",
+      "Resolve TDK product page AL 7500 +/-25% vs catalog PDF table 8700 +/-25% revision/conditions before use",
+      "Manufacturer pin/DOT for actual finished 5 magnetics"
+    ]
+  },
+  {
+    "ref": "D_BT",
+    "category": "external bootstrap diode candidate only if actually required",
+    "original": "D_BT placeholder SOD323 BAT54WS",
+    "candidate": "PMEG100T10ELXD",
+    "manufacturer": "Nexperia",
+    "datasheet_url": "https://assets.nexperia.com/documents/data-sheet/PMEG100T10ELXD.pdf",
+    "product_url": "https://www.nexperia.com/product/PMEG100T10ELXD",
+    "vrrm_v": 100,
+    "if_a": 1,
+    "package": "SOD323HP, NOT 0603 chip resistor footprint",
+    "reason": "Suitable reverse-voltage class for a discrete external bootstrap path if real schematic mandates one, but UCC27282 includes a bootstrap diode. Candidate NOT picked.",
+    "approval": "BLOCKED_BY_DUPLICATION_AND_PCB_FOOTPRINT",
+    "verification": [
+      "Native schematic must justify why external diode required",
+      "Power-up/HS undershoot/reverse recovery and charging pulse verification",
+      "Correct symbol/pin and SOD323HP footprint before any placement"
+    ]
+  }
+]

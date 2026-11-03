@@ -1,5 +1,8 @@
 # 48V→约2V固定变比薄型DCX
 
+> **2026-11-03 原厂器件资料更新：** [51/61 个占位位号的 15 款原厂准确料号候选及设计风险](docs/D1_EXECUTION_KIT/11_原厂实证与逐位号候选.md) · [高裕量 MOSFET/磁芯替代与官方模型入口](docs/D1_EXECUTION_KIT/12_高裕量原厂替代与模型下载.md) · [全 61 位号候选及缺口 CSV](docs/D1_EXECUTION_KIT/templates/vendor_candidate_matrix_61.csv)。仅为候选，原生 CAD/SOA/制造仍需签核，保持 NOT_FOR_FAB。
+
+
 > **2026-11-03 执行资料包：** [十份指南与工作模板](docs/D1_EXECUTION_KIT/README.md) · [61 个物料占位逐行需求](docs/D1_EXECUTION_KIT/templates/supplier_seed_61.csv) · [五磁件 24 逻辑端的实际脚号需求](docs/D1_EXECUTION_KIT/templates/magnetic_terminal_seed_24.csv)。已补入保护设计制造门槛，硬件尚未验收，仍 NOT_FOR_FAB。
 
 
