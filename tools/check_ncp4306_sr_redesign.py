@@ -41,7 +41,7 @@ def calculate()->dict:
         "trigger_pd_ns_max":16.5,
         "rise_is_simple_first_order_RC_only":True,
         "unknowns_not_included":[
-            "TRIG pin physical capacitance including PCB and transistor parasitics",
+            "TRIG pin physical capacitance including PCB and transistor parasitic",
             "driver gate discharging time (R_G*Q_G) and Miller dv/dt",
             "comparator and hardware latch propagation min/max",
             "interconnect and isolation latency",
