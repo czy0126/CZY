@@ -30,6 +30,7 @@ python tools/startup_burden_direct.py --json design/v3/bom/startup_burden_direct
     # 与推导值比对峰/能量；raw 不在时 SystemExit
 python tools/connector_budget.py --json design/v3/bom/connector_budget.json  # 输出铜排/接点预算
 python tools/output_path_budget.py --json design/v3/pcb/output_path_budget.json  # 板上 100 A 平面方块数（读摆放）
+python tools/cout_bank_path.py --json design/v3/bom/cout_bank_path.json  # Cout 整组铜箔/接点项（读摆放；SOURCE-04）
 python tools/board_netlist.py --json design/v3/pcb/board_netlist.json \
     --csv design/v3/pcb/board_netlist.csv   # 主功率板逐脚网表，由 v3 deck 派生
 python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md \
