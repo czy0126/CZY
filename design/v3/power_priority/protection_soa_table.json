@@ -12,8 +12,8 @@
    {
     "run": "48v_probe_base",
     "source_json": "sr_fault_probe_48v_120a.json",
-    "source_sha256": "7f2cee1902c1344194193beef1410d017245a170a0c2ec2b5f04fe03e48cbced",
-    "vin_v": 48.0,
+    "source_sha256": "ac1dba7e03401af5e9070c66ed647bfd7b6ea85e5fe8d901244b36eb782971eb",
+    "vin_v": 48,
     "role": "base",
     "solver": "base",
     "window": "post_trip",
@@ -41,7 +41,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": 1.222969903832194e-05,
+      "gate_end_v": 0.00001222969903832194,
       "gate_peak_v": 11.03862141867047,
       "gate_last_rise_us": 216.6035781534068,
       "gate_high_at_end": false,
@@ -73,7 +73,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": 1.222969901191081e-05,
+      "gate_end_v": 0.00001222969901191081,
       "gate_peak_v": 11.03862141863336,
       "gate_last_rise_us": 216.6035781534068,
       "gate_high_at_end": false,
@@ -105,7 +105,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": 1.2229699002511e-05,
+      "gate_end_v": 0.000012229699002511,
       "gate_peak_v": 11.03862141868249,
       "gate_last_rise_us": 216.6035781534068,
       "gate_high_at_end": false,
@@ -137,7 +137,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": 1.222969903502495e-05,
+      "gate_end_v": 0.00001222969903502495,
       "gate_peak_v": 11.03862141870281,
       "gate_last_rise_us": 216.6035781534068,
       "gate_high_at_end": false,
@@ -156,8 +156,8 @@
    {
     "run": "48v_probe_cshunt",
     "source_json": "sr_fault_probe_48v_120a_cshunt.json",
-    "source_sha256": "7da039d48fe8bef15ca2c79298acc3a6ef1e23371c588ab5614347559aa88d96",
-    "vin_v": 48.0,
+    "source_sha256": "dd153a3718fce0e887971697ffcd3e579a05831eb98922b5748ac89c59221d31",
+    "vin_v": 48,
     "role": "base",
     "solver": "cshunt=1e-15",
     "window": "post_trip",
@@ -169,7 +169,7 @@
     "devices": [
      {
       "device": "1a",
-      "gate_end_v": -2.204637181527834e-05,
+      "gate_end_v": -0.00002204637181527834,
       "gate_peak_v": 11.05669761068393,
       "gate_last_rise_us": 218.951541514978,
       "gate_high_at_end": false,
@@ -201,7 +201,7 @@
      },
      {
       "device": "2a",
-      "gate_end_v": -2.20463733970458e-05,
+      "gate_end_v": -0.0000220463733970458,
       "gate_peak_v": 11.05669854980985,
       "gate_last_rise_us": 218.951541514978,
       "gate_high_at_end": false,
@@ -233,7 +233,7 @@
      },
      {
       "device": "3a",
-      "gate_end_v": -2.204637447151277e-05,
+      "gate_end_v": -0.00002204637447151277,
       "gate_peak_v": 11.05669917697081,
       "gate_last_rise_us": 218.951541514978,
       "gate_high_at_end": false,
@@ -265,7 +265,7 @@
      },
      {
       "device": "4a",
-      "gate_end_v": -2.20463749962e-05,
+      "gate_end_v": -0.0000220463749962,
       "gate_peak_v": 11.05669949075423,
       "gate_last_rise_us": 218.951541514978,
       "gate_high_at_end": false,
@@ -300,8 +300,8 @@
    {
     "run": "50v_probe_cshunt",
     "source_json": "sr_fault_probe_50v_120a_cshunt.json",
-    "source_sha256": "4261e91bfe890b91223993adb7ec4aca5f3d576d9d953bc72e4882502cd86815",
-    "vin_v": 50.0,
+    "source_sha256": "f08699f5cd57c100a1048df3525622e8994add7db5a4ab55f756deb87aaf88c5",
+    "vin_v": 50,
     "role": "base",
     "solver": "cshunt=1e-15",
     "window": "post_trip",
@@ -444,8 +444,8 @@
    {
     "run": "48v_prot_a_compare_base",
     "source_json": "protection_candidate_48v_120a_prot_a.json",
-    "source_sha256": "ef44861e41726b493e90522c86003be18a1858798ac4112638b94c3b38a3e783",
-    "vin_v": 48.0,
+    "source_sha256": "9f11c1727b138e9d25e7af482f612455dcf81f28ba0bf00787b7cc9c78be512c",
+    "vin_v": 48,
     "case": "prot_a_oc1v",
     "role": "compare_base",
     "solver": "base",
@@ -483,7 +483,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": 1.230775622079296e-05,
+      "gate_end_v": 0.00001230775622079296,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -515,7 +515,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": 1.230775622075365e-05,
+      "gate_end_v": 0.00001230775622075365,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -547,7 +547,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": 1.230775622230083e-05,
+      "gate_end_v": 0.00001230775622230083,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -579,7 +579,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": 1.230775623122107e-05,
+      "gate_end_v": 0.00001230775623122107,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -593,13 +593,16 @@
       "i2t_while_gate_high_a2s": 0.4940169086808059,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": true,
+    "pre_fault_vout_delta_mv": -0.02677139116435967,
+    "paired_change_can_be_attributed_to_protection": true
    },
    {
     "run": "48v_prot_a_candidate",
     "source_json": "protection_candidate_48v_120a_prot_a.json",
-    "source_sha256": "ef44861e41726b493e90522c86003be18a1858798ac4112638b94c3b38a3e783",
-    "vin_v": 48.0,
+    "source_sha256": "9f11c1727b138e9d25e7af482f612455dcf81f28ba0bf00787b7cc9c78be512c",
+    "vin_v": 48,
     "case": "prot_a_oc1v",
     "role": "candidate",
     "solver": "base",
@@ -621,7 +624,7 @@
     "devices": [
      {
       "device": "1a",
-      "gate_end_v": 3.530825000167771e-05,
+      "gate_end_v": 0.00003530825000167771,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.1637066581018,
       "gate_high_at_end": false,
@@ -637,7 +640,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": -3.568102318012108e-05,
+      "gate_end_v": -0.00003568102318012108,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -653,7 +656,7 @@
      },
      {
       "device": "2a",
-      "gate_end_v": 3.530825000165778e-05,
+      "gate_end_v": 0.00003530825000165778,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.1637066581018,
       "gate_high_at_end": false,
@@ -669,7 +672,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": -3.568102318013593e-05,
+      "gate_end_v": -0.00003568102318013593,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -685,7 +688,7 @@
      },
      {
       "device": "3a",
-      "gate_end_v": 3.53082500016334e-05,
+      "gate_end_v": 0.0000353082500016334,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.1637066581018,
       "gate_high_at_end": false,
@@ -701,7 +704,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": -3.568102318015803e-05,
+      "gate_end_v": -0.00003568102318015803,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -717,7 +720,7 @@
      },
      {
       "device": "4a",
-      "gate_end_v": 3.530825000164493e-05,
+      "gate_end_v": 0.00003530825000164493,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.1637066581018,
       "gate_high_at_end": false,
@@ -733,7 +736,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": -3.568102318014753e-05,
+      "gate_end_v": -0.00003568102318014753,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -747,13 +750,16 @@
       "i2t_while_gate_high_a2s": 0.4737774495205301,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": true,
+    "pre_fault_vout_delta_mv": -0.02677139116435967,
+    "paired_change_can_be_attributed_to_protection": true
    },
    {
     "run": "48v_prot_b_compare_base",
     "source_json": "protection_candidate_48v_120a_prot_b.json",
-    "source_sha256": "a6c7861cff8183844c9bbf33efc882a8a2dfaed08bbfa5062089f17f99b01061",
-    "vin_v": 48.0,
+    "source_sha256": "097fd6bcd9013b37c5c6c24e59f3c1ac9b0135a97392a1557c92e4c74ca704e5",
+    "vin_v": 48,
     "case": "prot_b_fast10u_1p8v",
     "role": "compare_base",
     "solver": "base",
@@ -791,7 +797,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": 1.230775622079296e-05,
+      "gate_end_v": 0.00001230775622079296,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -823,7 +829,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": 1.230775622075365e-05,
+      "gate_end_v": 0.00001230775622075365,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -855,7 +861,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": 1.230775622230083e-05,
+      "gate_end_v": 0.00001230775622230083,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -887,7 +893,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": 1.230775623122107e-05,
+      "gate_end_v": 0.00001230775623122107,
       "gate_peak_v": null,
       "gate_last_rise_us": 218.1917665245972,
       "gate_high_at_end": false,
@@ -901,13 +907,16 @@
       "i2t_while_gate_high_a2s": 0.4940169086808059,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": true,
+    "pre_fault_vout_delta_mv": -0.05067407875425367,
+    "paired_change_can_be_attributed_to_protection": true
    },
    {
     "run": "48v_prot_b_candidate",
     "source_json": "protection_candidate_48v_120a_prot_b.json",
-    "source_sha256": "a6c7861cff8183844c9bbf33efc882a8a2dfaed08bbfa5062089f17f99b01061",
-    "vin_v": 48.0,
+    "source_sha256": "097fd6bcd9013b37c5c6c24e59f3c1ac9b0135a97392a1557c92e4c74ca704e5",
+    "vin_v": 48,
     "case": "prot_b_fast10u_1p8v",
     "role": "candidate",
     "solver": "base",
@@ -929,7 +938,7 @@
     "devices": [
      {
       "device": "1a",
-      "gate_end_v": -2.19642733951812e-05,
+      "gate_end_v": -0.0000219642733951812,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.4202786782965,
       "gate_high_at_end": false,
@@ -945,7 +954,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": 2.173861827150259e-05,
+      "gate_end_v": 0.00002173861827150259,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -961,7 +970,7 @@
      },
      {
       "device": "2a",
-      "gate_end_v": -2.196427339521092e-05,
+      "gate_end_v": -0.00002196427339521092,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.4202786782965,
       "gate_high_at_end": false,
@@ -977,7 +986,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": 2.17386182714753e-05,
+      "gate_end_v": 0.0000217386182714753,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -993,7 +1002,7 @@
      },
      {
       "device": "3a",
-      "gate_end_v": -2.196427339517928e-05,
+      "gate_end_v": -0.00002196427339517928,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.4202786782965,
       "gate_high_at_end": false,
@@ -1009,7 +1018,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": 2.173861827148726e-05,
+      "gate_end_v": 0.00002173861827148726,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1025,7 +1034,7 @@
      },
      {
       "device": "4a",
-      "gate_end_v": -2.196427339519729e-05,
+      "gate_end_v": -0.00002196427339519729,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.4202786782965,
       "gate_high_at_end": false,
@@ -1041,7 +1050,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": 2.17386182714773e-05,
+      "gate_end_v": 0.0000217386182714773,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1055,13 +1064,16 @@
       "i2t_while_gate_high_a2s": 0.01903372790238194,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": true,
+    "pre_fault_vout_delta_mv": -0.05067407875425367,
+    "paired_change_can_be_attributed_to_protection": true
    },
    {
     "run": "50v_prot_a_compare_base",
     "source_json": "protection_candidate_50v_120a_prot_a.json",
-    "source_sha256": "7090926f7d206ce25e735240bb7a91fe24f7e3fcb591a938f29b59f4000ade00",
-    "vin_v": 50.0,
+    "source_sha256": "7f94d61d64c7fc11d4aebae07db8ec0c7adab6ff253d5e6f33f2ff3007a2fe08",
+    "vin_v": 50,
     "case": "prot_a_oc1v",
     "role": "compare_base",
     "solver": "cshunt=1e-15",
@@ -1209,13 +1221,16 @@
       "i2t_while_gate_high_a2s": 0.5264213893688916,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": false,
+    "pre_fault_vout_delta_mv": 13.237964668014746,
+    "paired_change_can_be_attributed_to_protection": false
    },
    {
     "run": "50v_prot_a_candidate",
     "source_json": "protection_candidate_50v_120a_prot_a.json",
-    "source_sha256": "7090926f7d206ce25e735240bb7a91fe24f7e3fcb591a938f29b59f4000ade00",
-    "vin_v": 50.0,
+    "source_sha256": "7f94d61d64c7fc11d4aebae07db8ec0c7adab6ff253d5e6f33f2ff3007a2fe08",
+    "vin_v": 50,
     "case": "prot_a_oc1v",
     "role": "candidate",
     "solver": "cshunt=1e-15",
@@ -1237,7 +1252,7 @@
     "devices": [
      {
       "device": "1a",
-      "gate_end_v": -7.085230145633677e-07,
+      "gate_end_v": -7.085230145633677e-7,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.2397268575107,
       "gate_high_at_end": false,
@@ -1253,7 +1268,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": 6.951611730387712e-07,
+      "gate_end_v": 6.951611730387712e-7,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1269,7 +1284,7 @@
      },
      {
       "device": "2a",
-      "gate_end_v": -7.879092541385494e-06,
+      "gate_end_v": -0.000007879092541385494,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.2397268575107,
       "gate_high_at_end": false,
@@ -1285,7 +1300,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": 7.791792923929248e-06,
+      "gate_end_v": 0.000007791792923929248,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1301,7 +1316,7 @@
      },
      {
       "device": "3a",
-      "gate_end_v": -6.489824930384989e-05,
+      "gate_end_v": -0.00006489824930384989,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.2397268575107,
       "gate_high_at_end": false,
@@ -1317,7 +1332,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": 6.42397085261635e-05,
+      "gate_end_v": 0.0000642397085261635,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1333,7 +1348,7 @@
      },
      {
       "device": "4a",
-      "gate_end_v": 7.817686321435333e-05,
+      "gate_end_v": 0.00007817686321435333,
       "gate_peak_v": null,
       "gate_last_rise_us": 215.2397268575107,
       "gate_high_at_end": false,
@@ -1349,7 +1364,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": -7.89772415497012e-05,
+      "gate_end_v": -0.0000789772415497012,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1363,13 +1378,16 @@
       "i2t_while_gate_high_a2s": 0.5038395553703866,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": false,
+    "pre_fault_vout_delta_mv": 13.237964668014746,
+    "paired_change_can_be_attributed_to_protection": false
    },
    {
     "run": "50v_prot_b_compare_base",
     "source_json": "protection_candidate_50v_120a_prot_b.json",
-    "source_sha256": "5ad23cba849795a94280b906c8354ac37b94998bd92f9bf1be892df82209811a",
-    "vin_v": 50.0,
+    "source_sha256": "dd6f0393231514f247c394b3dc147992ddaa5787742f1095d9b0d8eafe4d7d36",
+    "vin_v": 50,
     "case": "prot_b_fast10u_1p8v",
     "role": "compare_base",
     "solver": "cshunt=1e-15",
@@ -1517,13 +1535,16 @@
       "i2t_while_gate_high_a2s": 0.5264213893688916,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": false,
+    "pre_fault_vout_delta_mv": 17.51392114652606,
+    "paired_change_can_be_attributed_to_protection": false
    },
    {
     "run": "50v_prot_b_candidate",
     "source_json": "protection_candidate_50v_120a_prot_b.json",
-    "source_sha256": "5ad23cba849795a94280b906c8354ac37b94998bd92f9bf1be892df82209811a",
-    "vin_v": 50.0,
+    "source_sha256": "dd6f0393231514f247c394b3dc147992ddaa5787742f1095d9b0d8eafe4d7d36",
+    "vin_v": 50,
     "case": "prot_b_fast10u_1p8v",
     "role": "candidate",
     "solver": "cshunt=1e-15",
@@ -1545,7 +1566,7 @@
     "devices": [
      {
       "device": "1a",
-      "gate_end_v": 1.274446508867772e-05,
+      "gate_end_v": 0.00001274446508867772,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.33958078594333,
       "gate_high_at_end": false,
@@ -1561,7 +1582,7 @@
      },
      {
       "device": "1b",
-      "gate_end_v": -1.287585169295855e-05,
+      "gate_end_v": -0.00001287585169295855,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1577,7 +1598,7 @@
      },
      {
       "device": "2a",
-      "gate_end_v": 1.274467974466279e-05,
+      "gate_end_v": 0.00001274467974466279,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.33958078594333,
       "gate_high_at_end": false,
@@ -1593,7 +1614,7 @@
      },
      {
       "device": "2b",
-      "gate_end_v": -1.28760685731444e-05,
+      "gate_end_v": -0.0000128760685731444,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1609,7 +1630,7 @@
      },
      {
       "device": "3a",
-      "gate_end_v": 1.274504775841655e-05,
+      "gate_end_v": 0.00001274504775841655,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.33958078594333,
       "gate_high_at_end": false,
@@ -1625,7 +1646,7 @@
      },
      {
       "device": "3b",
-      "gate_end_v": -1.287644039886275e-05,
+      "gate_end_v": -0.00001287644039886275,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1641,7 +1662,7 @@
      },
      {
       "device": "4a",
-      "gate_end_v": 1.274443387400045e-05,
+      "gate_end_v": 0.00001274443387400045,
       "gate_peak_v": null,
       "gate_last_rise_us": 185.33958078594333,
       "gate_high_at_end": false,
@@ -1657,7 +1678,7 @@
      },
      {
       "device": "4b",
-      "gate_end_v": -1.287582015747733e-05,
+      "gate_end_v": -0.00001287582015747733,
       "gate_peak_v": null,
       "gate_last_rise_us": null,
       "gate_high_at_end": false,
@@ -1671,7 +1692,10 @@
       "i2t_while_gate_high_a2s": 0.01789560221638678,
       "conduction_while_gate_high_a": null
      }
-    ]
+    ],
+    "paired_pre_fault": false,
+    "pre_fault_vout_delta_mv": 17.51392114652606,
+    "paired_change_can_be_attributed_to_protection": false
    }
   ],
   "summary": [
@@ -1738,7 +1762,7 @@
     "worst_reverse_device": null,
     "min_drain_v": -4.89920050432498,
     "devices_high_at_end": [],
-    "max_gate_v": 3.530825000167771e-05
+    "max_gate_v": 0.00003530825000167771
    },
    {
     "run": "48v_prot_b_compare_base",
@@ -1763,7 +1787,7 @@
     "worst_reverse_device": null,
     "min_drain_v": -1.90028076329308,
     "devices_high_at_end": [],
-    "max_gate_v": 2.173861827150259e-05
+    "max_gate_v": 0.00002173861827150259
    },
    {
     "run": "50v_prot_a_compare_base",
@@ -1783,7 +1807,7 @@
     "worst_reverse_device": null,
     "min_drain_v": -5.126971586231972,
     "devices_high_at_end": [],
-    "max_gate_v": 7.817686321435333e-05
+    "max_gate_v": 0.00007817686321435333
    },
    {
     "run": "50v_prot_b_compare_base",
@@ -1803,7 +1827,7 @@
     "worst_reverse_device": null,
     "min_drain_v": -2.466457841312425,
     "devices_high_at_end": [],
-    "max_gate_v": 1.274504775841655e-05
+    "max_gate_v": 0.00001274504775841655
    }
   ],
   "global_worst_forward_peak_a": 304.9595636906579,
@@ -1815,6 +1839,7 @@
    "reverse current is a port measurement and is not split into body-diode and channel components; that decomposition from Vgs was withdrawn",
    "50 V rows come from the cshunt=1e-15 child; the 50 V base still stalls at 296.929 us",
    "the compare_base rows and the standalone probe rows use different windows and must not be differenced against each other",
+   "50 V protection-candidate comparisons do not meet the 1 mV pre-fault pairing criterion (13-18 mV offset); performance gains are exploratory, not paired effects",
    "two candidate fields (gate peak, drain max) and reverse current are not recorded in the comparison JSONs; they are null, not zero"
   ]
  },
@@ -1823,6 +1848,7 @@
   "every_source_is_hashed": true,
   "no_vendor_soa_is_claimed": true,
   "the_window_definition_is_recorded_for_every_run": true,
-  "unrecorded_fields_are_null_not_zero": true
+  "unrecorded_fields_are_null_not_zero": true,
+  "unpaired_comparisons_not_claimed_as_paired": true
  }
 }
