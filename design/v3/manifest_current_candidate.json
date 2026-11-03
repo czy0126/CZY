@@ -280,6 +280,34 @@
       "sha256": "7f6ae970f18174d18f14b0dc39884b0c71577d3cb10ba3484d4c9a24e5a9e989"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.cir",
+      "kind": "deck",
+      "bytes": 15421,
+      "mtime": 1793678456.211354,
+      "sha256": "dc516b9a6669902d18c1004fc11439c438fb29db4cdd8f7bf50674430525baed"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
+      "kind": "deck",
+      "bytes": 15650,
+      "mtime": 1793678456.211354,
+      "sha256": "5473881700ae3d894fc1cdc07fe811ee82a585acfcdf1771d704442a8b2d075a"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir",
+      "kind": "deck",
+      "bytes": 15427,
+      "mtime": 1793678456.211354,
+      "sha256": "1c92891105e66ac49a67df92a55455b7cc91a3227ba1e898231d2e98c7336ddd"
+    },
+    {
+      "path": "sim/v3/prot_latch_uvlo_check.cir",
+      "kind": "deck",
+      "bytes": 922,
+      "mtime": 1793678456.2123573,
+      "sha256": "6de7e37391e16a850dd7bad603487611aef6e3a9cb7cc497bafe48f1dfb3ec68"
+    },
+    {
       "path": "models/ucc25600_legacy_behaviour.lib",
       "kind": "model",
       "bytes": 11675,
@@ -492,9 +520,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 46303,
-      "mtime": 1793674735.8807993,
-      "sha256": "20acc39461b3f76542f51080a6eb4d54b61fa178647f89195d3996a7323d4c82"
+      "bytes": 48190,
+      "mtime": 1793678681.1925044,
+      "sha256": "a21b22a2339e04b9e2ccc8f4bcbd1b1ef8a44703613941731b12eb4aa502f539"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -824,6 +852,34 @@
       "bytes": 2678,
       "mtime": 1793467495.3965702,
       "sha256": "bcdc7fad2990b848bcf617003893f49562b8cf3298dbad34f0f856acd6cfe6ac"
+    },
+    {
+      "path": "tools/make_protection_candidates.py",
+      "kind": "script",
+      "bytes": 9947,
+      "mtime": 1793678425.0745409,
+      "sha256": "8e672d7f7689d0f82565734333c6bfd73a783558900a7a42abbd85d326ac203d"
+    },
+    {
+      "path": "tools/protection_candidate_compare.py",
+      "kind": "script",
+      "bytes": 21729,
+      "mtime": 1793678439.5893574,
+      "sha256": "4eb4bfca2084d7fe9a0c0f5c0c7b82fe968912668233f926883ab0090c07bb2d"
+    },
+    {
+      "path": "tools/test_make_protection_candidates.py",
+      "kind": "script",
+      "bytes": 6664,
+      "mtime": 1793678445.393688,
+      "sha256": "ec2db2e6db6d8606a5588fe2e2e71b9d88ca8601268fe9bc11acf6bf6d817c76"
+    },
+    {
+      "path": "tools/test_protection_candidate_compare.py",
+      "kind": "script",
+      "bytes": 3680,
+      "mtime": 1793677485.5045154,
+      "sha256": "270815d37ff0782ddff7af095a6b8721361bfc8439be653cabde77fabd8d52ec"
     },
     {
       "path": "design/v3/magnetics/magnetics_design.json",
@@ -1246,6 +1302,34 @@
       "sha256": "325875a7821e41188b0c6983c194341de9245f26bb3e8b62372607a5226be677"
     },
     {
+      "path": "design/v3/power_priority/protection_candidate_48v_120a_prot_a.json",
+      "kind": "result",
+      "bytes": 17437,
+      "mtime": 1793678589.9420526,
+      "sha256": "a2037a959c2071690c33961c6b25095d7474a77ecfd5f9c0add17044a7266525"
+    },
+    {
+      "path": "design/v3/power_priority/protection_candidate_48v_120a_prot_b.json",
+      "kind": "result",
+      "bytes": 17581,
+      "mtime": 1793678604.3007586,
+      "sha256": "fb91ba1cf1ec1c2f3b4c49a189faa64fe88f9eae4ff226245b45a8f335f06560"
+    },
+    {
+      "path": "design/v3/power_priority/protection_candidate_48v_120a_prot_b_unarmed.json",
+      "kind": "result",
+      "bytes": 16856,
+      "mtime": 1793678546.746544,
+      "sha256": "22bcf859da0b6033d667fd125d1edd75c9a7d968b7924f78e12cc30b65de596f"
+    },
+    {
+      "path": "design/v3/power_priority/protection_uvlo_check.json",
+      "kind": "result",
+      "bytes": 1045,
+      "mtime": 1793678590.014715,
+      "sha256": "af0d469a176a9e3bf062809d5119108a020e19b0d99792cae190d5b0674c4bea"
+    },
+    {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
       "kind": "doc",
       "bytes": 13544,
@@ -1349,6 +1433,13 @@
       "bytes": 14907,
       "mtime": 1793628677.4076362,
       "sha256": "a8669cbab3a30ff0bb155b6d010f185624df15052dccfd7beaf891e7f6f4e7a4"
+    },
+    {
+      "path": "design/v3/power_priority/PROT02_独立故障锁存候选对照_2026-11-03.md",
+      "kind": "doc",
+      "bytes": 10001,
+      "mtime": 1793678634.69706,
+      "sha256": "38d6e11322956d8d8b9e5394fa5390b85aa6b87ec07bd36cf73ce155b3f6e0a2"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -1559,6 +1650,34 @@
       "bytes": 2266080981,
       "mtime": 1793605786.1218648,
       "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.raw",
+      "kind": "raw",
+      "bytes": 1256482999,
+      "mtime": 1793678298.0711854,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.raw",
+      "kind": "raw",
+      "bytes": 1074269155,
+      "mtime": 1793678308.9924915,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.raw",
+      "kind": "raw",
+      "bytes": 176950736,
+      "mtime": 1793678528.1323295,
+      "sha256": "8471b8b9afeb910017917deb62e9e8f7f0be528b629166ff1b682493e0e6704b"
+    },
+    {
+      "path": "sim/v3/prot_latch_uvlo_check.raw",
+      "kind": "raw",
+      "bytes": 3958643,
+      "mtime": 1793677733.8170106,
+      "sha256": "034e7e99f8d9e16e883a0e3992727601dd60c02e7741d54877b4da2abc1eecc3"
     }
   ],
   "missing": [],
@@ -1990,6 +2109,50 @@
       "max_step_s": 5e-09,
       "has_ic": true,
       "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/prot_latch_uvlo_check.cir",
+      "tran": ".tran 0 200u 0 10n",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00019999999999999998,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
+      "has_ic": false,
+      "uic": false,
       "cold_start": false
     }
   ],

@@ -1,0 +1,25 @@
+* UVLO default-off sub-circuit check for the PROT-02 latch (NOT hardware).
+* The dummy gate is driven through 3.2 ohm and clamped by the same switch;
+* Vddp falls at 100 us, so the gate must fall without any fault trigger.
+Vddp vddp 0 PWL(0 12 100u 12 100.1u 0 200u 0)
+Vss ss 0 5
+Vdrv drv 0 10
+Rdrv drv g 3.2
+Cg g 0 10n
+Buvlo uvlo 0 V=if(V(vddp)<8,1,0)
+Carm arm 0 1n IC=0
+Rarm arm 0 1G
+Barm arm 0 I=if(V(ss)>4.8,-(1-V(arm))*(1n/100n),0)
+Cprot prot 0 1n IC=0
+Rprot prot 0 1G
+Bprot prot 0 I=if(V(uvlo)>.5,-V(prot)*(1n/100n),0)
+Binhib inhib 0 V=if(V(uvlo)>.5,1,if(V(prot)>.5,1,0))
+Sg g 0 inhib 0 PROT_KILL
+.model PROT_KILL SW(Ron=.05 Roff=1G Vt=.5)
+.tran 0 200u 0 10n
+.save V(vddp) V(ss) V(uvlo) V(arm) V(prot) V(inhib) V(g)
+.meas tran ARM_AFTER AVG V(arm) FROM=150u TO=199u
+.meas tran G_BEFORE AVG V(g) FROM=90u TO=99u
+.meas tran G_AFTER AVG V(g) FROM=150u TO=199u
+.meas tran INHIB_AFTER AVG V(inhib) FROM=150u TO=199u
+.end

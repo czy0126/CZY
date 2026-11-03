@@ -1,0 +1,65 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir
+Start Time: Tue Nov  3 12:01:10 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 58.082 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vout_avg: AVG(V(out) )=4.5844827975e-08 FROM 0 TO 0.00012
+vout_rip: PP(V(out) )=2.40752383851e-09 FROM 0.00011 TO 0.00012
+vds_a1_min: MIN(V(a1) )=-0.0337120523876 FROM 0 TO 0.00012
+vds_a1_max: MAX(V(a1) )=0.033509889207 FROM 0 TO 0.00012
+irev_a1: MAX(I(VSa1) )=0.00109778114724 FROM 0 TO 0.00012
+ifwd_a1: MAX(-I(VSa1) )=0.0011017508171 FROM 0 TO 0.00012
+ovl_cur: MAX(V(ovl1) )=0 FROM 0 TO 0.00012
+ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
+ipri_pk: MAX(abs(I(Lr)) )=0.00195137482906 FROM 0 TO 0.00012
+out_last: V(out) =2.52957558702e-08 at 0.00012
+hot_vout_early: AVG(V(out) )=2.2626879512e-08 FROM 0.00012 TO 0.000145
+hot_vout_late: AVG(V(out) )=1.80266531174e-08 FROM 0.000145 TO 0.00017
+hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017
+hot_ctrl_after: AVG(V(ctl_hot) )=4.99999999998 FROM 0.00019 TO 0.0003
+hot_iflt_after: MAX(I(Rflt_hot) )=6.9814258049e-06 FROM 0.000175 TO 0.00032
+hot_oc_before: MAX(V(oc) )=3.73157223746e-07 FROM 0.00012 TO 0.00017
+hot_vout_before: AVG(V(out) )=2.03267663147e-08 FROM 0.00012 TO 0.00017
+hot_ss_before: AVG(V(ss) )=5.04487886673 FROM 0.00012 TO 0.00017
+hot_ipri_after: MAX(abs(I(Lr)) )=0.00180566509277 FROM 0.000175 TO 0.00032
+hot_oc_after: MAX(V(oc) )=3.42448929666e-07 FROM 0.000175 TO 0.00032
+hot_vout_min: MIN(V(out) )=3.17955792725e-13 FROM 0.000175 TO 0.00032
+Measurement "hot_oc_trip" FAIL'ed
+sr_1a_end: V(ga1) =-3.53649266822e-06 at 0.000319
+sr_1a_post_pk: MAX(V(ga1) )=5.33102955095e-06 FROM 0.00023 TO 0.000319
+sr_1a_post_i_pk: MAX(abs(I(VSa1)) )=0.00104466531099 FROM 0.00023 TO 0.000319
+sr_1b_end: V(gb1) =3.50035293217e-06 at 0.000319
+sr_1b_post_pk: MAX(V(gb1) )=5.206733212e-06 FROM 0.00023 TO 0.000319
+sr_1b_post_i_pk: MAX(abs(I(VSb1)) )=0.00104466505255 FROM 0.00023 TO 0.000319
+sr_2a_end: V(ga2) =-3.53649278814e-06 at 0.000319
+sr_2a_post_pk: MAX(V(ga2) )=5.33102950538e-06 FROM 0.00023 TO 0.000319
+sr_2a_post_i_pk: MAX(abs(I(VSa2)) )=0.0010446653055 FROM 0.00023 TO 0.000319
+sr_2b_end: V(gb2) =3.50035305085e-06 at 0.000319
+sr_2b_post_pk: MAX(V(gb2) )=5.20673331063e-06 FROM 0.00023 TO 0.000319
+sr_2b_post_i_pk: MAX(abs(I(VSb2)) )=0.00104466504705 FROM 0.00023 TO 0.000319
+sr_3a_end: V(ga3) =-3.53649255073e-06 at 0.000319
+sr_3a_post_pk: MAX(V(ga3) )=5.33102959561e-06 FROM 0.00023 TO 0.000319
+sr_3a_post_i_pk: MAX(abs(I(VSa3)) )=0.00104466531638 FROM 0.00023 TO 0.000319
+sr_3b_end: V(gb3) =3.50035281589e-06 at 0.000319
+sr_3b_post_pk: MAX(V(gb3) )=5.20673311536e-06 FROM 0.00023 TO 0.000319
+sr_3b_post_i_pk: MAX(abs(I(VSb3)) )=0.00104466505793 FROM 0.00023 TO 0.000319
+sr_4a_end: V(ga4) =-3.53649266256e-06 at 0.000319
+sr_4a_post_pk: MAX(V(ga4) )=5.33102955301e-06 FROM 0.00023 TO 0.000319
+sr_4a_post_i_pk: MAX(abs(I(VSa4)) )=0.00104466531124 FROM 0.00023 TO 0.000319
+sr_4b_end: V(gb4) =3.50035292657e-06 at 0.000319
+sr_4b_post_pk: MAX(V(gb4) )=5.20673320746e-06 FROM 0.00023 TO 0.000319
+sr_4b_post_i_pk: MAX(abs(I(VSb4)) )=0.00104466505279 FROM 0.00023 TO 0.000319

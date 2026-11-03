@@ -119,6 +119,14 @@ V3_SOURCES = {
         # 0.499 W residual can be tested against step and window length.
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.cir",
+        # PROT-02: independent latched gate inhibit derived additively from the
+        # 48 V eight-SR probe deck.  A isolates the actuation path, B adds the
+        # 10 us fast CT path, and the unarmed deck is a negative control for
+        # the soft-start blanking.  See PROT02_独立故障锁存候选对照_2026-11-03.md.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir",
+        "sim/v3/prot_latch_uvlo_check.cir",
     ],
     "model": [
         "models/ucc25600_legacy_behaviour.lib",
@@ -201,6 +209,10 @@ V3_SOURCES = {
         "tools/test_baseline_doc.py",
         "tools/test_bom_draft.py",
         "tools/test_current_manifest.py",
+        "tools/make_protection_candidates.py",
+        "tools/protection_candidate_compare.py",
+        "tools/test_make_protection_candidates.py",
+        "tools/test_protection_candidate_compare.py",
     ],
     "result": [
         "design/v3/magnetics/magnetics_design.json",
@@ -282,6 +294,12 @@ V3_SOURCES = {
         "design/v3/power_priority/energy_ledger_50v_120a_steps.json",
         "design/v3/power_priority/sr_loss_audit_50v_120a_steps.json",
         "design/v3/power_priority/energy_ledger_50v_120a_aligned.json",
+        # PROT-02: two candidates plus the unarmed negative control, and the
+        # UVLO sub-circuit that shows a missing bias forces the gate low.
+        "design/v3/power_priority/protection_candidate_48v_120a_prot_a.json",
+        "design/v3/power_priority/protection_candidate_48v_120a_prot_b.json",
+        "design/v3/power_priority/protection_candidate_48v_120a_prot_b_unarmed.json",
+        "design/v3/power_priority/protection_uvlo_check.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -299,6 +317,7 @@ V3_SOURCES = {
         "design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md",
         "design/v3/power_priority/48V120A_稳态初始化故障_2026-11-02.md",
         "design/v3/power_priority/50V120A_损耗差额与步长_2026-11-02.md",
+        "design/v3/power_priority/PROT02_独立故障锁存候选对照_2026-11-03.md",
         "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
     ],
     "config": [
@@ -342,6 +361,13 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
+        # PROT-02 raws: A is 1.2 GB (size + mtime), B is 1.1 GB; the unarmed
+        # control is 0.18 GB and the UVLO sub-circuit is 3 MB, so those two
+        # are hashed like every small raw.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.raw",
+        "sim/v3/prot_latch_uvlo_check.raw",
         # The cold-start / cold-OC raws (base and cshunt) are 9-12 GB each and
         # stay out of the hash list; their .log files are the committed
         # measurements.

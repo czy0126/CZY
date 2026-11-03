@@ -1,0 +1,493 @@
+{
+ "kind": "protection_candidate_comparison",
+ "evidence_level": "SIMULATED_ONLY / NOT_HARDWARE / NOT_A_SAFETY_PROOF",
+ "case": "prot_b_unarmed",
+ "decks": {
+  "base": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+  "candidate": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir"
+ },
+ "window_s": [
+  0.0001749999999999998,
+  0.00031999999999999997
+ ],
+ "declared_window_s": [
+  0.0001749999999999998,
+  0.00031999999999999997
+ ],
+ "window_basis": "fault engage to the shorter record's tail; pre-fault is the preceding 35 us",
+ "results": {
+  "trigger": {
+   "node": "V(ocdf)",
+   "reference": "V(ocm)",
+   "threshold_v": 1.8,
+   "trigger_s": null,
+   "trigger_us": null,
+   "base_trip_s": 0.0002150966648764153,
+   "base_trip_us": 215.0966648764153,
+   "trigger_lead_vs_base_us": null,
+   "latch_s": 0.000175000000001257,
+   "latch_us": 175.000000001257,
+   "latch_delay_us": null,
+   "inhibit_s": 0.000175000000001257,
+   "protection_asserted": true,
+   "arming_present": false,
+   "arm_v_at_window_start": null,
+   "armed_before_the_window": false
+  },
+  "pre_fault": {
+   "base": {
+    "window_s": [
+     0.00013999999999999983,
+     0.0001749999999999998
+    ],
+    "vout_mean_v": 1.8738348822266069,
+    "ss_mean_v": 5.051079718399036,
+    "oc_max_v": 0.6965722726532576,
+    "ocd_max_v": 1.552773490570156
+   },
+   "candidate": {
+    "window_s": [
+     0.00013999999999999983,
+     0.0001749999999999998
+    ],
+    "vout_mean_v": 1.80639895280788e-08,
+    "ss_mean_v": 5.051122218735033,
+    "oc_max_v": 3.614966662497778e-07,
+    "ocd_max_v": 7.156653939430734e-06,
+    "ocdf_max_v": 5.19882780056846e-07,
+    "ocdf_min_v": 3.448760847748911e-07
+   },
+   "vout_mean_delta_mv": -1873.8348641626174
+  },
+  "base": {
+   "source": "base",
+   "samples": 224915,
+   "t_last_us": 319.9993221519059,
+   "ipri_peak_a": 97.44266392021632,
+   "ipri_i2t_a2s": 0.12426876986768623,
+   "sr_forward_peak_a": 292.6075980718207,
+   "sr_forward_i2t_total_a2s": 4.4561150224805335,
+   "sr_i2t_while_gate_high_a2s": 4.008098829112146,
+   "vout_min_after_engage_v": -0.007930284266025375,
+   "vout_end_v": -0.007929164570559939,
+   "oc_max_v": 1.256167205175472,
+   "ocd_max_v": 9.674367111794226,
+   "ss_mean_at_engage_v": 5.058571922367306,
+   "all_gates_last_high_s": 0.0003199993221519059,
+   "all_gates_last_high_us": 319.9993221519059,
+   "gates": {
+    "1a": {
+     "gate_settled_low_s": 0.0001760399712914295,
+     "gate_settled_low_us": 176.03997129142948,
+     "last_high_s": 0.0003199993221519059,
+     "last_high_us": 319.9993221519059,
+     "high_fraction_after": 0.3479,
+     "end_v": 10.89045496045943,
+     "high_at_end": true,
+     "forward_peak_a": 292.6075980704264,
+     "forward_i2t_a2s": 0.5663121389427247,
+     "i2t_while_gate_high_a2s": 0.5080077985896804,
+     "drain_min_v": -4.775026587386293
+    },
+    "1b": {
+     "gate_settled_low_s": 0.000175000056684727,
+     "gate_settled_low_us": 175.000056684727,
+     "last_high_s": 0.0002181917665245972,
+     "last_high_us": 218.1917665245972,
+     "high_fraction_after": 0.19998,
+     "end_v": 1.230775622079296e-05,
+     "high_at_end": false,
+     "forward_peak_a": 292.1914808761186,
+     "forward_i2t_a2s": 0.5477166166774442,
+     "i2t_while_gate_high_a2s": 0.4940169086883993,
+     "drain_min_v": -4.890237182758661
+    },
+    "2a": {
+     "gate_settled_low_s": 0.0001760399712914295,
+     "gate_settled_low_us": 176.03997129142948,
+     "last_high_s": 0.0003199993221519059,
+     "last_high_us": 319.9993221519059,
+     "high_fraction_after": 0.3479,
+     "end_v": 10.89045496045943,
+     "high_at_end": true,
+     "forward_peak_a": 292.6075980696863,
+     "forward_i2t_a2s": 0.5663121389404913,
+     "i2t_while_gate_high_a2s": 0.5080077985878568,
+     "drain_min_v": -4.775026587085549
+    },
+    "2b": {
+     "gate_settled_low_s": 0.000175000056684727,
+     "gate_settled_low_us": 175.000056684727,
+     "last_high_s": 0.0002181917665245972,
+     "last_high_us": 218.1917665245972,
+     "high_fraction_after": 0.19998,
+     "end_v": 1.230775622075365e-05,
+     "high_at_end": false,
+     "forward_peak_a": 292.191480875993,
+     "forward_i2t_a2s": 0.5477166166797147,
+     "i2t_while_gate_high_a2s": 0.49401690869026416,
+     "drain_min_v": -4.890237182846394
+    },
+    "3a": {
+     "gate_settled_low_s": 0.0001760399712914295,
+     "gate_settled_low_us": 176.03997129142948,
+     "last_high_s": 0.0003199993221519059,
+     "last_high_us": 319.9993221519059,
+     "high_fraction_after": 0.3479,
+     "end_v": 10.89045496045943,
+     "high_at_end": true,
+     "forward_peak_a": 292.6075980708955,
+     "forward_i2t_a2s": 0.5663121389475952,
+     "i2t_while_gate_high_a2s": 0.5080077985936629,
+     "drain_min_v": -4.775026587233812
+    },
+    "3b": {
+     "gate_settled_low_s": 0.000175000056684727,
+     "gate_settled_low_us": 175.000056684727,
+     "last_high_s": 0.0002181917665245972,
+     "last_high_us": 218.1917665245972,
+     "high_fraction_after": 0.19998,
+     "end_v": 1.230775622230083e-05,
+     "high_at_end": false,
+     "forward_peak_a": 292.1914808749468,
+     "forward_i2t_a2s": 0.5477166166725083,
+     "i2t_while_gate_high_a2s": 0.4940169086843404,
+     "drain_min_v": -4.890237182793929
+    },
+    "4a": {
+     "gate_settled_low_s": 0.0001760399712914295,
+     "gate_settled_low_us": 176.03997129142948,
+     "last_high_s": 0.0003199993221519059,
+     "last_high_us": 319.9993221519059,
+     "high_fraction_after": 0.3479,
+     "end_v": 10.89045496045941,
+     "high_at_end": true,
+     "forward_peak_a": 292.6075980718207,
+     "forward_i2t_a2s": 0.5663121389518508,
+     "i2t_while_gate_high_a2s": 0.5080077985971367,
+     "drain_min_v": -4.775026587352797
+    },
+    "4b": {
+     "gate_settled_low_s": 0.000175000056684727,
+     "gate_settled_low_us": 175.000056684727,
+     "last_high_s": 0.0002181917665245972,
+     "last_high_us": 218.1917665245972,
+     "high_fraction_after": 0.19998,
+     "end_v": 1.230775623122107e-05,
+     "high_at_end": false,
+     "forward_peak_a": 292.1914808742015,
+     "forward_i2t_a2s": 0.5477166166682044,
+     "i2t_while_gate_high_a2s": 0.4940169086808059,
+     "drain_min_v": -4.890237182865083
+    }
+   }
+  },
+  "candidate": {
+   "source": "candidate",
+   "samples": 40278,
+   "t_last_us": 319.9984307071255,
+   "ipri_peak_a": 0.001805665092767667,
+   "ipri_i2t_a2s": 2.0392404325302927e-10,
+   "sr_forward_peak_a": 0.001051521309966823,
+   "sr_forward_i2t_total_a2s": 2.1135949761054273e-10,
+   "sr_i2t_while_gate_high_a2s": 0.0,
+   "vout_min_after_engage_v": 3.179557927247797e-13,
+   "vout_end_v": 5.897687692193464e-13,
+   "oc_max_v": 3.424489296656225e-07,
+   "ocd_max_v": 6.874442186217793e-06,
+   "ss_mean_at_engage_v": 5.058614130048213,
+   "all_gates_last_high_s": 0.000175000000001257,
+   "all_gates_last_high_us": 175.000000001257,
+   "gates": {
+    "1a": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": 4.111287021188778e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001018297190359894,
+     "forward_i2t_a2s": 2.645274105504628e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03140307829753955
+    },
+    "1b": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": -4.153701975951323e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001051521209241339,
+     "forward_i2t_a2s": 2.6387133347707915e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03123967727868598
+    },
+    "2a": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": 4.111287438568215e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001018297363507743,
+     "forward_i2t_a2s": 2.6452741074664898e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03140307852818708
+    },
+    "2b": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": -4.153702397637777e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001051521106436065,
+     "forward_i2t_a2s": 2.6387133346095966e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03123967655286609
+    },
+    "3a": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": 4.11128661223927e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001018297020716883,
+     "forward_i2t_a2s": 2.6452741035826545e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03140307807162303
+    },
+    "3b": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": -4.153701562784547e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001051521309966823,
+     "forward_i2t_a2s": 2.638713334928681e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03123967798975585
+    },
+    "4a": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": 4.111287001679044e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.001018297182271471,
+     "forward_i2t_a2s": 2.645274105424261e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03140307828670021
+    },
+    "4b": {
+     "gate_settled_low_s": 0.000175005000001257,
+     "gate_settled_low_us": 175.005000001257,
+     "last_high_s": null,
+     "last_high_us": null,
+     "high_fraction_after": 0.0,
+     "end_v": -4.153701956238265e-06,
+     "high_at_end": false,
+     "forward_peak_a": 0.00105152121405696,
+     "forward_i2t_a2s": 2.6387133347671716e-11,
+     "i2t_while_gate_high_a2s": 0.0,
+     "drain_min_v": -0.03123967731266027
+    }
+   }
+  },
+  "gates": {
+   "1a": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": 4.111287021188778e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001018297190359894,
+    "forward_i2t_a2s": 2.645274105504628e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03140307829753955
+   },
+   "1b": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": -4.153701975951323e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001051521209241339,
+    "forward_i2t_a2s": 2.6387133347707915e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03123967727868598
+   },
+   "2a": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": 4.111287438568215e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001018297363507743,
+    "forward_i2t_a2s": 2.6452741074664898e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03140307852818708
+   },
+   "2b": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": -4.153702397637777e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001051521106436065,
+    "forward_i2t_a2s": 2.6387133346095966e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03123967655286609
+   },
+   "3a": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": 4.11128661223927e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001018297020716883,
+    "forward_i2t_a2s": 2.6452741035826545e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03140307807162303
+   },
+   "3b": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": -4.153701562784547e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001051521309966823,
+    "forward_i2t_a2s": 2.638713334928681e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03123967798975585
+   },
+   "4a": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": 4.111287001679044e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.001018297182271471,
+    "forward_i2t_a2s": 2.645274105424261e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03140307828670021
+   },
+   "4b": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": -4.153701956238265e-06,
+    "high_at_end": false,
+    "forward_peak_a": 0.00105152121405696,
+    "forward_i2t_a2s": 2.6387133347671716e-11,
+    "i2t_while_gate_high_a2s": 0.0,
+    "drain_min_v": -0.03123967731266027
+   }
+  },
+  "gate_latency_from_latch_us": {
+   "1a": 0.004999999999997411,
+   "1b": 0.004999999999997411,
+   "2a": 0.004999999999997411,
+   "2b": 0.004999999999997411,
+   "3a": 0.004999999999997411,
+   "3b": 0.004999999999997411,
+   "4a": 0.004999999999997411,
+   "4b": 0.004999999999997411
+  },
+  "primary_gates": {
+   "gh": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": 0.19199962965750927,
+    "high_at_end": false
+   },
+   "gl": {
+    "gate_settled_low_s": 0.000175005000001257,
+    "gate_settled_low_us": 175.005000001257,
+    "last_high_s": null,
+    "last_high_us": null,
+    "high_fraction_after": 0.0,
+    "end_v": 0.0,
+    "high_at_end": false
+   }
+  },
+  "primary_gate_off_s": null,
+  "primary_gate_off_latency_us": null,
+  "relief": {
+   "ipri_peak_rel": -0.9999814694609104,
+   "sr_forward_peak_rel": -0.9999964063772886,
+   "sr_forward_i2t_total_rel": -0.9999999999525686,
+   "vout_min_delta_mv": 7.93028426634333
+  },
+  "base_gate_high_at_end": {
+   "1a": true,
+   "1b": false,
+   "2a": true,
+   "2b": false,
+   "3a": true,
+   "3b": false,
+   "4a": true,
+   "4b": false
+  },
+  "all_candidate_gates_low_at_end": true,
+  "hardware_continuous_rating_approved": false,
+  "safety_proof": false
+ },
+ "coverage": {
+  "base_t_last_us": 320.0,
+  "candidate_t_last_us": 320.0,
+  "base_saved_stop_us": 320.0,
+  "candidate_saved_stop_us": 320.0,
+  "base_reached_saved_stop": true,
+  "candidate_reached_saved_stop": true,
+  "declared_window_fully_covered": true
+ },
+ "checks": {
+  "the_candidate_matches_its_generator": true,
+  "the_parent_fault_network_is_unchanged": true,
+  "all_ten_gate_clamps_are_present": true,
+  "the_pre_fault_operating_points_match_within_1_mv": false,
+  "the_candidate_raw_reaches_the_saved_stop": true,
+  "the_declared_window_is_fully_covered": true,
+  "the_candidate_was_armed_before_the_fault": false
+ },
+ "limits": [
+  "a behavioural latch and ideal 0.05 ohm clamps are not a hardware protection design",
+  "no SOA, thermal, comparator noise, gate-loop inductance or restart sequencing is modelled",
+  "the trigger level is a chosen threshold, not a qualified comparator specification",
+  "a candidate that stops early is a prefix; it does not cover the declared window",
+  "the 48 V record is a hot start from .ic V(out)=1.89 V, not a cold start",
+  "the arming latch closes inside the unsaved 2 ms pre-history; the saved axis can only show that it is already high",
+  "the base's A-phase SR gates re-assert after trip; the candidate clamps are the comparison, not a safety claim"
+ ]
+}

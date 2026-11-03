@@ -1,0 +1,29 @@
+{
+ "kind": "protection_uvlo_sub_circuit_check",
+ "evidence_level": "SIMULATED_SUB_CIRCUIT_ONLY / NOT_HARDWARE",
+ "deck": "sim\\v3\\prot_latch_uvlo_check.cir",
+ "results": {
+  "gate_before_v": 9.99999996796799,
+  "gate_after_v": 0.15384615384614628,
+  "arm_before_v": 0.9999999000000105,
+  "arm_after_v": 0.9999999000000105,
+  "inhib_after": 1.0,
+  "prot_after": 0.0,
+  "vddp_after_min_v": 0.0,
+  "gate_fell_below_1v": true,
+  "default_off_asserted": true,
+  "uvlo_forced_gate_low": true
+ },
+ "checks": {
+  "the_deck_has_no_fault_trigger": true,
+  "the_dummy_gate_is_driven_through_3p2_ohm": true,
+  "the_raw_covers_the_200us_window": true,
+  "the_arming_latch_is_closed_before_the_uvlo_drop": true,
+  "the_fault_latch_is_not_set_without_a_trigger": true
+ },
+ "limits": [
+  "this checks the latch and one clamp on a dummy gate, not the power stage",
+  "Vddp is an ideal PWL source; no real UVLO divider, hysteresis or startup delay",
+  "the gate residual is set by the 0.05 ohm clamp against the 3.2 ohm driver"
+ ]
+}

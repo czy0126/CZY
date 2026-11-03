@@ -1,0 +1,19 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\prot_latch_uvlo_check.cir
+Start Time: Tue Nov  3 11:48:53 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.347 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\prot_latch_uvlo_check.cir
+
+arm_after: AVG(V(arm) )=0.999999899999 FROM 0.00015 TO 0.000199
+g_before: AVG(V(g) )=9.99999996794 FROM 9e-05 TO 9.9e-05
+g_after: AVG(V(g) )=0.153846153846 FROM 0.00015 TO 0.000199
+inhib_after: AVG(V(inhib) )=1 FROM 0.00015 TO 0.000199

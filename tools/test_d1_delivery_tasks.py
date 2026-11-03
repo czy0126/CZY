@@ -67,6 +67,9 @@ def test_performance_first_not_fab_release_depends_on_high_margin_hardware():
         "PERF-01", "PERF-02", "PROT-02", "ELE-10"}
     for key in ("PERF-01", "PERF-02", "PROT-02"):
         assert lookup[key]["priority"] == "P0"
-        assert lookup[key]["status"] == "blocked"
+        # Not done is the invariant.  PROT-02 may be in_progress: a candidate
+        # comparison exists for 48 V, but the 50 V record and the hardware
+        # design do not, so it must not reach "done".
+        assert lookup[key]["status"] in {"blocked", "in_progress"}
         assert lookup[key]["acceptance"]
     assert lookup["THERM-01"]["status"] == "deferred"
