@@ -1,0 +1,20 @@
+{
+  "kind": "PROTECTION_INTERFACE_ENGINEERING_PREFLIGHT",
+  "status": "HARDWARE_NOT_IMPLEMENTED",
+  "draft_matches_existing_logical_gates": true,
+  "fabrication_release_approved": false,
+  "errors": [],
+  "checks": {
+    "native_10_gate_identity_consistent": true,
+    "r8_permanent_pullup_still_physical_blocker": true,
+    "four_buffer_drivers_actually_placed": false,
+    "all_driver_uvlo_enable_physical_evidence": false,
+    "independent_hardware_latch_physically_built": false
+  },
+  "warnings": [
+    "UCC27282 EN ~1.5us typical disable, not an instant physical kill",
+    "buffer changes UCC24624 proportional analog VG into logic-level gate voltage",
+    "UCC27524A EN has internal pullup and external default-low is still unplaced",
+    "no real CT comparator, latch, physical CAD, vendor SOA, or lab results"
+  ]
+}

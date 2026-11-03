@@ -37,3 +37,8 @@ def test_launcher_calls_strict_hotfault_log_validator():
     assert "--case $CaseKey --log $Log --raw $Raw --json $Validated" in txt
     assert 'if ($LASTEXITCODE -ne 0)' in txt
     assert "Fault may have run, but post-fault OC/settling evidence is invalid" in txt
+
+
+def test_ltsim_batch_emits_ascii_for_ascii_only_reader():
+    s = (ROOT / 'tools/run_dcx_pending_cases.ps1').read_text(encoding='utf-8')
+    assert '& $LTspice -b -ascii $Deck' in s
