@@ -1,6 +1,6 @@
 {
   "kind": "PROT03_50V_120A_EVIDENCE_DECISION",
-  "evidence_level": "GIT_COMMITTED_JSON_ONLY; RAW_CHECKSUMS_PROVENANCE_SEPARATE",
+  "evidence_level": "GIT_COMMITTED_1FF_2FF_5FF_ANALYSIS_ONLY; RAW_CHECKSUMS_PROVENANCE_SEPARATE",
   "A_2fF": {
     "base_full_320us": true,
     "candidate_full_320us": true,
@@ -13,23 +13,56 @@
     "sr_peak_a_control": 303.411,
     "sr_peak_a_candidate": 303.411,
     "sr_total_i2t_reduction_percent": 0.676,
-    "conclusion": "NO_INITIAL_PEAK_REDUCTION_LATE_TRIP; VALID_SIM_PAIR_NOT_VALID_HARDWARE"
+    "conclusion": "MATCHED_320US_BUT_NO_INITIAL_PEAK_REDUCTION"
   },
   "B_previous_1fF": {
-    "base_full_320us": false,
+    "control_end_us": 254.980482,
+    "control_full_320us": false,
     "candidate_full_320us": true,
-    "base_last_saved_us": 254.980482,
+    "pre_fault_vout_delta_mv": 0,
+    "comparison_full_window": false,
     "nominal_sr_peak_reduction_percent_prefix_only": 54.312,
-    "conclusion": "PROMISING_EARLY_BEHAVIORAL_TRIP_BUT_CONTROL_PREFIX_CENSORED"
+    "conclusion": "PARTIAL_CONTROL_ONLY_NO_FULL_WINDOW_PEAK_CLAIM"
   },
   "B_2fF": {
-    "status": "UNAVAILABLE_NO_COMMITTED_2FF_B_RECORD",
-    "source_file": "design/v3/power_priority/protection_candidate_50v_120a_prot_b_paired_shunt_2f.json",
-    "required_pre_fault_vout_delta_mv_max": 1,
-    "required_base_and_candidate_saved_stop_us": 320
+    "source": "design/v3/power_priority/solver_sweep_2f_B_CONTROL_convergence.json",
+    "control_end_us": 264.514946,
+    "control_full_320us": false,
+    "control_numeric_vs_1ff_checks": {
+      "the_two_decks_differ_only_on_solver_settings": true,
+      "the_comparison_window_is_covered_by_both_raws": true,
+      "the_window_stays_inside_both_decks": true
+    },
+    "solver_failure_identified_in_document": "xsr3:x2:Bage; see docs/D1_EXECUTION_KIT/18_50V成对数值收敛扫参与执行.md",
+    "candidate_reported_full_320us_in_document": true,
+    "completed_matched_pair": false,
+    "conclusion": "SOLVER_FAILED_AT_BAGE_NO_320US_MATCHED_PAIR"
   },
-  "next_command": "python tools/run_d1_50v_matched_cases.py --variant shunt_2f --cases B_CONTROL B_CANDIDATE --execute --run-id solver_2f_B_001 --ltspice D:/ADI/LTspice/LTspice.exe",
-  "acceptance_rule": "Run both B decks at 2fF; check complete 320us and <=1mV pre-fault, eight SR gates, primary gates, I2t, and independent real gate-drive latency separately",
+  "B_5fF": {
+    "source": "design/v3/power_priority/protection_candidate_50v_120a_prot_b_paired_shunt_5f.json",
+    "control_end_us": 235.889681,
+    "control_full_320us": false,
+    "candidate_full_320us": true,
+    "pre_fault_vout_delta_mv": 0,
+    "comparison_full_window": false,
+    "control_solver_timeout_reported_in_document": true,
+    "numeric_vs_1ff_checks": {
+      "the_two_decks_differ_only_on_solver_settings": true,
+      "the_comparison_window_is_covered_by_both_raws": true,
+      "the_window_stays_inside_both_decks": true
+    },
+    "conclusion": "CONTROL_EARLY_TIMEOUT_PREFIX_235P890US"
+  },
+  "B_cshunt_nonmonotone": true,
+  "numeric_solver_next_step": {
+    "strategy": "ISOLATE_KNOWN_BAGE_10V_HARD_RAIL_BEFORE_WIDER_SWEEPS",
+    "model": "models/sr_timing_v3_4_age_rail.lib",
+    "command": "python tools/run_prot03_bage_diagnostic.py --variant shunt_2f --execute --run-id bage_2f_001 --ltspice D:/ADI/LTspice/LTspice.exe",
+    "status": "UNRUN",
+    "requires_paired_320us": true,
+    "requires_pre_fault_vout_delta_mv_max": 1,
+    "requires_model_vs_v3_3_220us_frozen_metrics": true
+  },
   "hardware_gate_passed": false,
   "manufacture_approved": false
 }
