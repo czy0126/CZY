@@ -24,6 +24,15 @@ def base_text() -> str:
     return BASE.read_text(encoding="utf-8")
 
 
+@pytest.fixture(scope="module")
+def parent_texts() -> dict[str, str]:
+    return {key: path.read_text(encoding="utf-8") for key, path in m.PARENTS.items()}
+
+
+def parent_for(case: str, parent_texts: dict[str, str]) -> str:
+    return parent_texts[m.CANDIDATES[case]["parent"]]
+
+
 def strip_insertions(candidate: str, case: str) -> list[str]:
     """Remove the header, the save continuation and the protection block."""
     lines = candidate.splitlines()
@@ -40,16 +49,41 @@ def strip_insertions(candidate: str, case: str) -> list[str]:
     return lines
 
 
-def test_each_candidate_is_the_parent_plus_only_the_protection_additions(base_text: str) -> None:
-    base_lines = base_text.splitlines()
+def test_each_candidate_is_the_parent_plus_only_the_protection_additions(
+        parent_texts: dict[str, str]) -> None:
     for case in m.CANDIDATES:
-        candidate = m.build(base_text, case)
-        assert strip_insertions(candidate, case) == base_lines
+        parent = parent_for(case, parent_texts)
+        candidate = m.build(parent, case)
+        assert strip_insertions(candidate, case) == parent.splitlines()
 
 
-def test_both_primary_and_all_eight_sr_gates_are_clamped(base_text: str) -> None:
+def test_each_candidate_is_built_on_its_declared_parent() -> None:
+    for case, spec in m.CANDIDATES.items():
+        assert m.parent_deck(case) == m.PARENTS[spec["parent"]]
+        assert m.destination(case).parent == Path("sim/v3").resolve()
+        assert m.destination(case).name == (
+            f"{m.parent_deck(case).stem}_{spec['suffix']}.cir")
+
+
+def test_the_50v_candidates_keep_the_parent_cshunt_option(parent_texts: dict[str, str]) -> None:
+    """The 50 V base still stalls at 296.929 us; only the cshunt child finishes.
+
+    The candidate must not silently drop or re-tune that solver option, so it
+    is checked on the generated text rather than trusted from the parent.
+    """
+    parent = parent_texts["50v_cshunt"]
+    assert "cshunt=1e-15" in parent
+    for case, spec in m.CANDIDATES.items():
+        if spec["parent"] != "50v_cshunt":
+            continue
+        text = m.build(parent, case)
+        assert ".options plotwinsize=0 method=gear cshunt=1e-15\n" in text
+        assert ".tran 0 2320u 2000u 5n uic\n" in text
+
+
+def test_both_primary_and_all_eight_sr_gates_are_clamped(parent_texts: dict[str, str]) -> None:
     for case in m.CANDIDATES:
-        text = m.build(base_text, case)
+        text = m.build(parent_for(case, parent_texts), case)
         for node, ref in m.GATES:
             assert f"S{node} {node} {ref} inhib 0 PROT_KILL\n" in text
         assert text.count("inhib 0 PROT_KILL") == 10
@@ -98,7 +132,7 @@ def test_the_save_block_gains_the_latch_and_primary_gate_probes(base_text: str) 
             assert node in m.save_line(case)
 
 
-def test_the_latch_is_blanked_until_soft_start_completes(base_text: str) -> None:
+def test_the_latch_is_blanked_until_soft_start_completes(parent_texts: dict[str, str]) -> None:
     """An unarmed 1.8 V threshold latches on the startup inrush.
 
     The first PROT-B raw proved it: V(prot)=0.998 and V(out)=1.5e-8 at the
@@ -109,7 +143,7 @@ def test_the_latch_is_blanked_until_soft_start_completes(base_text: str) -> None
     for case, spec in m.CANDIDATES.items():
         if not spec["arming"]:
             continue
-        text = m.build(base_text, case)
+        text = m.build(parent_for(case, parent_texts), case)
         assert "Carm arm 0 1n IC=0\n" in text
         assert f"Barm arm 0 I=if(V(ss)>{m.ARM_SS_V},-(1-V(arm))*(1n/{m.TAU_PROT}),0)\n" in text
         assert "if(V(arm)>.5,if(" in text
@@ -131,9 +165,9 @@ def test_the_arming_threshold_sits_below_the_steady_soft_start_level(base_text: 
     assert 4.5 < m.ARM_SS_V < 5.05
 
 
-def test_the_header_marks_the_deck_unrun_and_not_hardware(base_text: str) -> None:
+def test_the_header_marks_the_deck_unrun_and_not_hardware(parent_texts: dict[str, str]) -> None:
     for case in m.CANDIDATES:
-        first = m.build(base_text, case).splitlines()[0]
+        first = m.build(parent_for(case, parent_texts), case).splitlines()[0]
         assert "UNRUN" in first
         assert "NOT hardware" in first
 
@@ -166,6 +200,7 @@ def test_the_uvlo_deck_drops_its_own_bias_and_keeps_the_same_clamp() -> None:
     assert "Carm arm 0 1n IC=0" in text
 
 
-def test_generation_is_deterministic(base_text: str) -> None:
+def test_generation_is_deterministic(parent_texts: dict[str, str]) -> None:
     for case in m.CANDIDATES:
-        assert m.build(base_text, case) == m.build(base_text, case)
+        parent = parent_for(case, parent_texts)
+        assert m.build(parent, case) == m.build(parent, case)

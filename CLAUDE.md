@@ -129,6 +129,17 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   模型没有 UCC24624 standby、SOA 与热模型。记录在
   `design/v3/power_priority/sr_fault_probe_{48v,50v}_120a{,_cshunt}.json`、
   `hotfault_{48v,50v}_120a_cshunt.json` 与同一篇稳态初始化故障文档 §3.5/§3.7/§3.8。
+- **PROT-02 候选 deck 由 `tools/make_protection_candidates.py` 按父 deck 派生**：48 V 三个
+  （A/B/无屏蔽负对照）挂 `..._48v_120a_srprobe.cir`，50 V 两个挂
+  **`..._50v_120a_cshunt_srprobe.cir`**——50 V 基座仍在 296.929 µs 塌缩，cshunt 子变体是唯一
+  跑满 320 µs 的解；`.options cshunt=1e-15` 必须原样带过去，测试逐行锁住。保护块只追加不修改，
+  `strip_insertions` 按每个候选**自己的父 deck** 逐行比对。
+  **50 V 的对照不是配对的**：加入保护节点后求解器路径改变，候选故障前 `V(out)` 比母 deck 高
+  13.2/17.5 mV（48 V 在 1 mV 内），`the_pre_fault_operating_points_match_within_1_mv` 因此是
+  false——这是有意的诚实报告。1.8 V 门槛不必按电压重调：故障前 10 µs 滤波峰值 50 V 1.0389 V、
+  48 V 1.0814 V。**`--base-deck` 的默认值是候选声明的父 deck**；结构检查（生成器一致、
+  故障网络不变）永远对声明父 deck 做，不对比较基准做。
+  负对照 `prot_b_unarmed` 必须保留：它在启动冲击时就锁死，整窗记录的是停机变换器。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的

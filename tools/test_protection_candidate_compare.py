@@ -57,10 +57,11 @@ def test_a_node_pair_trigger_is_read_as_a_difference() -> None:
     assert np.allclose(cmp.trigger_waveform(d, "V(ocdf)", "0"), [1.0, 2.0])
 
 
-def test_the_fault_network_is_unchanged_by_the_candidate(base_text: str) -> None:
-    for case in make.CANDIDATES:
-        assert cmp.shared_fault_network(base_text) == cmp.shared_fault_network(
-            make.build(base_text, case))
+def test_the_fault_network_is_unchanged_by_the_candidate() -> None:
+    for case, spec in make.CANDIDATES.items():
+        parent = make.PARENTS[spec["parent"]].read_text(encoding="utf-8")
+        assert cmp.shared_fault_network(parent) == cmp.shared_fault_network(
+            make.build(parent, case))
 
 
 def test_all_ten_clamps_must_be_present(base_text: str) -> None:
@@ -68,6 +69,15 @@ def test_all_ten_clamps_must_be_present(base_text: str) -> None:
     broken = make.build(base_text, "prot_a_oc1v").replace(
         "Sgb4 gb4 sgnd inhib 0 PROT_KILL\n", "")
     assert not cmp.gate_clamps_present(broken)
+
+
+def test_the_cshunt_flag_is_read_from_the_whole_options_line() -> None:
+    parent = (ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir").read_text(
+        encoding="utf-8")
+    assert ".options plotwinsize=0 method=gear cshunt=1e-15\n" in parent
+    assert cmp.solver_is_cshunt(parent)
+    plain = BASE.read_text(encoding="utf-8")
+    assert not cmp.solver_is_cshunt(plain)
 
 
 def test_the_base_probe_list_does_not_ask_for_protection_nodes() -> None:

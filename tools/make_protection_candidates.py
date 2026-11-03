@@ -1,7 +1,8 @@
-"""Derive PROT-02 independent-latch candidates from the 48 V eight-SR probe deck.
+"""Derive PROT-02 independent-latch candidates from the eight-SR probe decks.
 
-The parent deck already reached 320 us on the saved axis and saves all eight
-SR gate, drain and sense-current nodes.  Each candidate appends *only*:
+The 48 V parent and the 50 V ``cshunt=1 fF`` convergence variant both reached
+the full saved window and save all eight SR gate, drain and sense-current
+nodes.  Each candidate appends *only*:
 
 * a dedicated 12 V bias for the protection logic (``Vddp``);
 * an UVLO detector on that bias (default inhibit when it is missing);
@@ -14,9 +15,14 @@ adds a 10 us low-pass on the CT burden node and triggers at 1.8 V, so it tests
 an independent faster detection path.  The filter is a behavioural integrator
 (``B`` current source into a capacitor), not a passive RC: ``V(ocd)`` sits on
 the 10 ohm CT burden, so a 1 k series resistor there would give a ~100 ns time
-constant, not 10 us.  The 1.8 V level is a measured choice: the 121.67 A
-pre-fault record has a 10 us-filtered peak of 1.0498 V, so the threshold keeps
-a 0.75 V margin instead of false-tripping on CT ripple.
+constant, not 10 us.  The 1.8 V level is a measured choice: the 48 V record has
+a 10 us-filtered pre-fault peak of 1.0814 V and the 50 V cshunt record 1.0603 V,
+so the same threshold keeps a 0.72-0.74 V margin at both voltages instead of
+false-tripping on CT ripple.
+
+The 50 V candidates inherit the ``cshunt=1e-15`` solver option from their
+parent: the 50 V base still stalls at 296.929 us, so this is the only 50 V
+solve that reaches the declared window.  The caveat travels with the record.
 
 Neither deck is hardware evidence.  The clamps are idealized switches; no SOA,
 thermal, comparator noise, gate-loop inductance or restart sequencing exists.
@@ -31,12 +37,30 @@ import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BASE = ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir"
+PARENTS = {
+    "48v": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+    # The 50 V base stalls at 296.929 us; this cshunt child is the only 50 V
+    # solve that reaches the declared 320 us window.  It carries
+    # `.options cshunt=1e-15`, which the derived decks inherit unchanged.
+    "50v_cshunt": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+}
+# Backwards-compatible default: the 48 V parent is what the compare tool and
+# the original test module assume when no deck is named explicitly.
+BASE = PARENTS["48v"]
 SAVE_ANCHOR = "+ I(VSa2) I(VSb2) I(VSa3) I(VSb3)\n"
 TRIGGER_A = "V(oc)"
 TRIGGER_B = "V(ocdf,ocm)"
+FAST_FILTER = (
+    "* independent fast path: 10 us low-pass driven by a high-impedance\n"
+    "* behavioural buffer, so the 10 ohm CT burden is not loaded.\n"
+    "Bocdf ocdf ocm I=(V(ocdf,ocm)-V(ocd,ocm))/1k\n"
+    "Cocdf ocdf ocm 10n\n"
+    "Rocdf ocdf ocm 1G\n"
+)
 CANDIDATES = {
     "prot_a_oc1v": {
+        "parent": "48v",
+        "suffix": "prot_a_oc1v",
         "trigger": TRIGGER_A,
         "threshold": "1",
         "extra_save": "",
@@ -45,16 +69,12 @@ CANDIDATES = {
         "note": "existing V(oc)>1 V OC decision; independent actuation only",
     },
     "prot_b_fast10u_1p8v": {
+        "parent": "48v",
+        "suffix": "prot_b_fast10u_1p8v",
         "trigger": TRIGGER_B,
         "threshold": "1.8",
         "extra_save": " V(ocdf)",
-        "fast_filter": (
-            "* independent fast path: 10 us low-pass driven by a high-impedance\n"
-            "* behavioural buffer, so the 10 ohm CT burden is not loaded.\n"
-            "Bocdf ocdf ocm I=(V(ocdf,ocm)-V(ocd,ocm))/1k\n"
-            "Cocdf ocdf ocm 10n\n"
-            "Rocdf ocdf ocm 1G\n"
-        ),
+        "fast_filter": FAST_FILTER,
         "arming": True,
         "note": "10 us-filtered V(ocd)>1.8 V; trips before the 47 us OC filter",
     },
@@ -63,18 +83,37 @@ CANDIDATES = {
     # window; keeping it reproducible stops the arming latch from looking like
     # an optional refinement.
     "prot_b_unarmed": {
+        "parent": "48v",
+        "suffix": "prot_b_unarmed",
         "trigger": TRIGGER_B,
         "threshold": "1.8",
         "extra_save": " V(ocdf)",
-        "fast_filter": (
-            "* independent fast path: 10 us low-pass driven by a high-impedance\n"
-            "* behavioural buffer, so the 10 ohm CT burden is not loaded.\n"
-            "Bocdf ocdf ocm I=(V(ocdf,ocm)-V(ocd,ocm))/1k\n"
-            "Cocdf ocdf ocm 10n\n"
-            "Rocdf ocdf ocm 1G\n"
-        ),
+        "fast_filter": FAST_FILTER,
         "arming": False,
         "note": "negative control: 1.8 V fast path with no soft-start blanking",
+    },
+    # 50 V pair.  Same protection block, derived from the cshunt child because
+    # the 50 V base still stalls at 296.929 us.  The solver option is inherited
+    # unchanged, so the 50 V record is a cshunt record and must say so.
+    "prot_a_oc1v_50v": {
+        "parent": "50v_cshunt",
+        "suffix": "prot_a_oc1v",
+        "trigger": TRIGGER_A,
+        "threshold": "1",
+        "extra_save": "",
+        "fast_filter": "",
+        "arming": True,
+        "note": "50 V cshunt parent: existing V(oc)>1 V OC decision; actuation only",
+    },
+    "prot_b_fast10u_1p8v_50v": {
+        "parent": "50v_cshunt",
+        "suffix": "prot_b_fast10u_1p8v",
+        "trigger": TRIGGER_B,
+        "threshold": "1.8",
+        "extra_save": " V(ocdf)",
+        "fast_filter": FAST_FILTER,
+        "arming": True,
+        "note": "50 V cshunt parent: 10 us-filtered V(ocd)>1.8 V fast path",
     },
 }
 # 100 ns set/reset is a modelling choice (1 nF, 10 V/us), not a datasheet number.
@@ -94,10 +133,19 @@ GATES = (
 )
 
 
-def destination(case: str) -> Path:
+def spec(case: str) -> dict[str, object]:
     if case not in CANDIDATES:
         raise ValueError(f"unknown protection candidate: {case}")
-    return ROOT / f"sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_{case}.cir"
+    return CANDIDATES[case]
+
+
+def parent_deck(case: str) -> Path:
+    return PARENTS[str(spec(case)["parent"])]
+
+
+def destination(case: str) -> Path:
+    parent = parent_deck(case)
+    return parent.with_name(f"{parent.stem}_{spec(case)['suffix']}.cir")
 
 
 def uvlo_destination() -> Path:
@@ -219,10 +267,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
-    if not BASE.is_file():
-        raise SystemExit(f"missing parent deck: {BASE}")
-    base = BASE.read_text(encoding="utf-8")
-    outputs = [(destination(case), build(base, case)) for case in CANDIDATES]
+    parents = {key: path for key, path in PARENTS.items() if any(
+        spec(case)["parent"] == key for case in CANDIDATES)}
+    missing = [path for path in parents.values() if not path.is_file()]
+    if missing:
+        raise SystemExit(f"missing parent deck: {missing[0]}")
+    texts = {key: path.read_text(encoding="utf-8") for key, path in parents.items()}
+    outputs = [(destination(case), build(texts[str(spec(case)["parent"])], case))
+               for case in CANDIDATES]
     outputs.append((uvlo_destination(), uvlo_deck()))
     for path, text in outputs:
         if args.write:

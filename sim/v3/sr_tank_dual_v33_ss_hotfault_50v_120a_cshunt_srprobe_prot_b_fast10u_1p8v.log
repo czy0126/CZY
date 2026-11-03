@@ -1,0 +1,91 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir
+Start Time: Tue Nov  3 12:31:28 2026
+Options:plotwinsize=0 method=gear cshunt=1e-15
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Warning: Simulation tolerance relaxed to achieve convergence from 9.7265603766114197e-05 to 9.7265603766115199e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.0134120060058960e-04 to 1.0134120060059060e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.2218959615026910e-04 to 1.2218959615027010e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.2218959615027010e-04 to 1.2218959615027111e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.5439821801080890e-04 to 1.5439821801080991e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.1706943714748159e-04 to 2.1706943714748259e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.3933240829539519e-04 to 2.3933240829539920e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.8170321362383911e-04 to 2.8170321362384009e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.8419561278171941e-04 to 2.8419561278172331e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.8421561278170677e-04 to 2.8421561278170774e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 2.8421561278172374e-04 to 2.8421561278172471e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.4152081851413857e-04 to 3.4152081851413955e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.4152081851424911e-04 to 3.4152081851425301e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.4403321876347298e-04 to 3.4403321876347396e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.7392202175438936e-04 to 3.7392202175439034e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 4.9604963396717068e-04 to 4.9604963396717458e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 6.1817724617997108e-04 to 6.1817724617997205e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 6.4310124867237651e-04 to 6.4310124867237748e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 7.1286271714649766e-04 to 7.1286271714649863e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 7.2786284991264896e-04 to 7.2786284991264993e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 8.0261486462364633e-04 to 8.0261486462364731e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 8.0261486462374380e-04 to 8.0261486462374478e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 9.0978807534111163e-04 to 9.0978807534111261e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 9.2456093144754827e-04 to 9.2456093144754924e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 9.7211808474994730e-04 to 9.7211808474994828e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.7147710918082502e-03 to 1.7147710918082601e-03 seconds.
+Total elapsed time: 1371.595 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vout_avg: AVG(V(out) )=1.96159747529 FROM 0 TO 0.00012
+vout_rip: PP(V(out) )=0.0401265759839 FROM 0.00011 TO 0.00012
+vds_a1_min: MIN(V(a1) )=-1.29945666739 FROM 0 TO 0.00012
+vds_a1_max: MAX(V(a1) )=6.10250672509 FROM 0 TO 0.00012
+irev_a1: MAX(I(VSa1) )=5.52822589074 FROM 0 TO 0.00012
+ifwd_a1: MAX(-I(VSa1) )=47.5360320339 FROM 0 TO 0.00012
+ovl_cur: MAX(V(ovl1) )=2.05513527353 FROM 0 TO 0.00012
+ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
+ipri_pk: MAX(abs(I(Lr)) )=15.6918969583 FROM 0 TO 0.00012
+out_last: V(out) =1.97422118022 at 0.00012
+hot_vout_early: AVG(V(out) )=1.96268730792 FROM 0.00012 TO 0.000145
+hot_vout_late: AVG(V(out) )=1.96068656739 FROM 0.000145 TO 0.00017
+hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017
+hot_ctrl_after: AVG(V(ctl_hot) )=4.99999999998 FROM 0.00019 TO 0.0003
+hot_iflt_after: MAX(I(Rflt_hot) )=900.170493964 FROM 0.000175 TO 0.00032
+hot_oc_before: MAX(V(oc) )=0.689845565722 FROM 0.00012 TO 0.00017
+hot_vout_before: AVG(V(out) )=1.96168693765 FROM 0.00012 TO 0.00017
+hot_ss_before: AVG(V(ss) )=5.04466489127 FROM 0.00012 TO 0.00017
+hot_ipri_after: MAX(abs(I(Lr)) )=45.7870066742 FROM 0.000175 TO 0.00032
+hot_oc_after: MAX(V(oc) )=0.706881299611 FROM 0.000175 TO 0.00032
+hot_vout_min: MIN(V(out) )=7.11245580407e-05 FROM 0.000175 TO 0.00032
+Measurement "hot_oc_trip" FAIL'ed
+sr_1a_end: V(ga1) =2.95111487934e-05 at 0.000319
+sr_1a_post_pk: MAX(V(ga1) )=7.36231417059e-05 FROM 0.00023 TO 0.000319
+sr_1a_post_i_pk: MAX(abs(I(VSa1)) )=0.0140372714628 FROM 0.00023 TO 0.000319
+sr_1b_end: V(gb1) =-2.98167540352e-05 at 0.000319
+sr_1b_post_pk: MAX(V(gb1) )=7.31494508104e-05 FROM 0.00023 TO 0.000319
+sr_1b_post_i_pk: MAX(abs(I(VSb1)) )=0.0141000903943 FROM 0.00023 TO 0.000319
+sr_2a_end: V(ga2) =2.95114289469e-05 at 0.000319
+sr_2a_post_pk: MAX(V(ga2) )=7.36199572295e-05 FROM 0.00023 TO 0.000319
+sr_2a_post_i_pk: MAX(abs(I(VSa2)) )=0.0140366633672 FROM 0.00023 TO 0.000319
+sr_2b_end: V(gb2) =-2.98170370869e-05 at 0.000319
+sr_2b_post_pk: MAX(V(gb2) )=7.31524817907e-05 FROM 0.00023 TO 0.000319
+sr_2b_post_i_pk: MAX(abs(I(VSb2)) )=0.0140994811447 FROM 0.00023 TO 0.000319
+sr_3a_end: V(ga3) =2.95119005017e-05 at 0.000319
+sr_3a_post_pk: MAX(V(ga3) )=7.3614302399e-05 FROM 0.00023 TO 0.000319
+sr_3a_post_i_pk: MAX(abs(I(VSa3)) )=0.0140355835688 FROM 0.00023 TO 0.000319
+sr_3b_end: V(gb3) =-2.98175135199e-05 at 0.000319
+sr_3b_post_pk: MAX(V(gb3) )=7.31577555903e-05 FROM 0.00023 TO 0.000319
+sr_3b_post_i_pk: MAX(abs(I(VSb3)) )=0.0140983992543 FROM 0.00023 TO 0.000319
+sr_4a_end: V(ga4) =2.95111260362e-05 at 0.000319
+sr_4a_post_pk: MAX(V(ga4) )=7.36240039554e-05 FROM 0.00023 TO 0.000319
+sr_4a_post_i_pk: MAX(abs(I(VSa4)) )=0.014037436062 FROM 0.00023 TO 0.000319
+sr_4b_end: V(gb4) =-2.98167310425e-05 at 0.000319
+sr_4b_post_pk: MAX(V(gb4) )=7.31488522671e-05 FROM 0.00023 TO 0.000319
+sr_4b_post_i_pk: MAX(abs(I(VSb4)) )=0.0141002553929 FROM 0.00023 TO 0.000319

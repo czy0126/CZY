@@ -126,6 +126,11 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir",
+        # Same protection block on the 50 V cshunt child: the 50 V base still
+        # stalls at 296.929 us, so this is the only 50 V solve that reaches the
+        # declared window.  The cshunt caveat travels with the record.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
         "sim/v3/prot_latch_uvlo_check.cir",
     ],
     "model": [
@@ -299,6 +304,8 @@ V3_SOURCES = {
         "design/v3/power_priority/protection_candidate_48v_120a_prot_a.json",
         "design/v3/power_priority/protection_candidate_48v_120a_prot_b.json",
         "design/v3/power_priority/protection_candidate_48v_120a_prot_b_unarmed.json",
+        "design/v3/power_priority/protection_candidate_50v_120a_prot_a.json",
+        "design/v3/power_priority/protection_candidate_50v_120a_prot_b.json",
         "design/v3/power_priority/protection_uvlo_check.json",
     ],
     "doc": [
@@ -367,6 +374,8 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.raw",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.raw",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.raw",
         "sim/v3/prot_latch_uvlo_check.raw",
         # The cold-start / cold-OC raws (base and cshunt) are 9-12 GB each and
         # stay out of the hash list; their .log files are the committed
