@@ -46,7 +46,8 @@ foreach ($Case in $Cases) {
             throw "Existing validation report must be archived/moved before simulation: $Validated"
         }
     }
-    & $LTspice -b $Deck
+    # This repo postprocessor consumes ASCII raw; -b alone produces binary.
+    & $LTspice -b -ascii $Deck
     if ($LASTEXITCODE -ne 0) { throw "LTspice failed for $Case (exit $LASTEXITCODE)" }
     if (!(Test-Path -LiteralPath $Log -PathType Leaf) -or
         !(Test-Path -LiteralPath $Raw -PathType Leaf)) {
