@@ -57,7 +57,8 @@
     "eia_case": "0805",
     "source_url": "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ6ENF10R0V",
     "source_kind": "OFFICIAL_MANUFACTURER",
-    "notes": "CT burden 89 mW model estimate is ~71% of nominal 0.125 W; pulse + thermal derating hold"
+    "notes": "REJECT FOR R3: 48V/120A 125.7 mW exceeds Panasonic ERJ6ENF10R0V 125 mW nominal; 9.36-10.08W fault pulse; never remap R3 without separate power and pulse proof",
+    "design_status": "REJECTED_120A_CONTINUOUS_POWER"
   },
   "R2R2": {
     "maker": "Yageo",
@@ -148,5 +149,21 @@
     "source_url": "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X7R1H224K125AA",
     "source_kind": "OFFICIAL_MANUFACTURER",
     "notes": "Bootstrap effective capacitance, HB/HS transient and physical routing review"
+  },
+  "R10_2512_HP": {
+    "maker": "Vishay Draloric",
+    "mpn": "CRCW251210R0FKEHHP",
+    "nominal": "10 ohm ±1%; 1.5 W at 70 C; CRCW2512-HP e3 pulse-proof; 2512",
+    "voltage_v": "",
+    "eia_case": "2512",
+    "rated_power_w": 1.5,
+    "max_height_mm": 0.7,
+    "source_url": "https://www.vishay.com/docs/20043/crcwhpe3.pdf",
+    "source_kind": "OFFICIAL_MANUFACTURER",
+    "evidence_grading": "VISHAY_OFFICIAL_SERIES_SPEC_PLUS_AUTHORIZED_DISTRIBUTOR_EXACT_ORDER_MPN",
+    "mpn_evidence_url": "https://www.digikey.com/en/products/detail/vishay-dale/CRCW251210R0FKEHHP/5079191",
+    "manufacturer_series_rev": "17-Mar-2026",
+    "design_status": "CONTINUOUS_POWER_PRELIM_PASS_PULSE_AND_LAYOUT_OPEN",
+    "notes": "R3 upgraded: 1.5W vs max simulated pre-fault 48V/120A 0.1257W = 11.93x P70 nominal headroom. 10-10.1W, 13us equivalent fault pulses require time-resolved single/repetitive pulse check using Vishay p5 and startup raw. Footprint change from legacy 0805 to 2512 mandatory; no native PCB/thermal/pulse approval."
   }
 }
