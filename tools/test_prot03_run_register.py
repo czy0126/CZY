@@ -95,7 +95,7 @@ def canonical_deck_sha256(path: Path) -> str:
     """
     if path.suffix.lower() != ".cir":
         raise ValueError("canonical_deck_sha256 is restricted to SPICE .cir")
-    return hashlib.sha256(path.read_bytes().replace(b"\\r\\n", b"\\n")).hexdigest()
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def local_raw(row_: dict[str, str]) -> Path:
