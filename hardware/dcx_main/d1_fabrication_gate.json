@@ -11,7 +11,8 @@
     "all_required_real_hardware_bom_refs_in_native_design": true,
     "native_erc_evidence": false,
     "routed_pcb_to_schematic_evidence": false,
-    "manufacturing_package_evidence": false
+    "manufacturing_package_evidence": false,
+    "independent_fault_shutdown_design_evidence": false
   },
   "counts": {
     "golden_references": 66,
@@ -301,6 +302,11 @@
       "passed": false,
       "reason": "evidence file absent",
       "path": "hardware/dcx_main/fabrication_approval.json"
+    },
+    "protection_design": {
+      "passed": false,
+      "reason": "evidence file absent",
+      "path": "hardware/dcx_main/protection_design_approved.json"
     }
   },
   "blockers": [
@@ -308,7 +314,8 @@
     "no_electrical_placeholders_or_unselected_bom",
     "native_erc_evidence",
     "routed_pcb_to_schematic_evidence",
-    "manufacturing_package_evidence"
+    "manufacturing_package_evidence",
+    "independent_fault_shutdown_design_evidence"
   ],
   "limitations": [
     "Netlist subset is recomputed from the exported native CAD nets; cache must match but native export still needs editor provenance",
@@ -316,6 +323,8 @@
     "The golden netlist was derived from a SPICE deck, not all physical components",
     "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
     "Evidence records require original repository files and matching SHA256, but hashes do not replace expert approval",
+    "Independent primary and eight SR fault shutdown must be independently design-reviewed in the same native CAD revision",
+    "An ideal behavioural gate clamp cannot replace vendor SOA or real hardware protection signoff",
     "Power and efficiency from LTspice do not constitute hardware continuous rating",
     "Thermal and cold plate design intentionally deferred; continuous rating stays unapproved"
   ]

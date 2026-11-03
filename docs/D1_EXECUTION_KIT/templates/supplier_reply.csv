@@ -1,0 +1,6 @@
+ref,part_role,manufacturer,mpn,official_datasheet_url,doc_revision,package,physical_pad_mapping_evidence_path,max_height_mm,voltage_rating_v,rms_rating_a,esr_mohm_at_frequency,temperature_condition,stock_or_lead_time,quoted_qty,source_image_or_pdf,engineer_owner,independent_reviewer,status,blocking_reason
+Cr,resonant capacitor,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,need >=100V and actual 200kHz RMS/ESR
+Cout,output capacitor bank,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,verify aggregate bank/PCB ESR and ripple
+Lr,resonant inductor,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,verify L(I 100C) Ae and Z stack
+CT,current transformer,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,4 physical terminals needed
+D_BT,bootstrap diode,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,reverse voltage > bus plus ringing

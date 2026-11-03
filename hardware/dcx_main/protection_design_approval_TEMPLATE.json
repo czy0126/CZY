@@ -1,0 +1,28 @@
+{
+  "approved": false,
+  "review_scope": "PRE_FAB_PROTECTION_DESIGN_ONLY",
+  "reviewer": null,
+  "revision": null,
+  "native_project_path": "hardware/dcx_main/dcx_main_board.eprj2",
+  "native_project_sha256": null,
+  "fault_analysis_path": null,
+  "fault_analysis_sha256": null,
+  "driver_shutdown_path": null,
+  "driver_shutdown_sha256": null,
+  "power_sequence_path": null,
+  "power_sequence_sha256": null,
+  "vendor_soa_path": null,
+  "vendor_soa_sha256": null,
+  "simulated_fault_vin_v": [
+    48,
+    50
+  ],
+  "simulated_fault_load_a": 120,
+  "independent_primary_and_all_eight_sr_inhibit_reviewed": false,
+  "gate_disable_on_any_bias_loss_reviewed": false,
+  "fault_latch_and_controlled_restart_reviewed": false,
+  "startup_masking_and_fault_during_mask_reviewed": false,
+  "physical_gate_driver_and_clamp_conflict_reviewed": false,
+  "vendor_pulse_soa_and_winding_stress_reviewed": false,
+  "note": "TEMPLATE. Do not rename to approved until all reviewed native-CAD and vendor source files are real. Never use a behavioural-only model to sign real device SOA."
+}

@@ -1,0 +1,10 @@
+criterion_id,priority,acceptance_rule,required_original_file,required_sha256,reviewer,status,blocking_reason
+PRE-01,P0,saved native EDA opens and reexports current BOM and pad map,hardware/dcx_main/dcx_main_board.eprj2,PENDING,PENDING,PENDING,physical magnetic pins still unresolved
+PRE-02,P0,full genuine GUI ERC reviewed and errors resolved,PENDING,PENDING,PENDING,PENDING,headless histogram is not ERC signoff
+PRE-03,P0,real netted PCB and pad-level schematic diff,PENDING,PENDING,PENDING,PENDING,placement only is not routed
+PRE-04,P0,independent main+8SR hardware inhibit reviewed,PENDING,PENDING,PENDING,PENDING,ideal clamp model is not a circuit
+PRE-05,P0,vendor pulsed SOA and fault before-and-after demonstrated,PENDING,PENDING,PENDING,PENDING,simulated current is not device qualification
+PRE-06,P0,5 magnetics/CT DOT and physical pins verified,PENDING,PENDING,PENDING,PENDING,no vendor terminal map
+PRE-07,P0,61 placeholders each replaced with verified BOM value and MPN,PENDING,PENDING,PENDING,PENDING,component selection pending
+PRE-08,P0,10mm full Z max and high-current return path with manufacturer DFM,PENDING,PENDING,PENDING,PENDING,slot and copper-path design pending
+PRE-09,P0,gerbers drill BOM stackup centroid 3D same revision,PENDING,PENDING,PENDING,PENDING,no manufacturing package

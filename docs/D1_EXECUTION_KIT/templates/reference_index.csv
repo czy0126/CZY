@@ -1,0 +1,10 @@
+id,kind,title,url,revision_or_year,purpose,authority,needs_local_verification
+TI-01,manufacturer,UCC24624 datasheet,https://www.ti.com/lit/ds/symlink/ucc24624.pdf,Rev C 2022,SR UVLO standby VDS sensing,primary,YES
+TI-02,manufacturer,UCC25600 datasheet,https://www.ti.com.cn/lit/gpn/UCC25600,Rev D 2024,OC SS UVLO and fault logic,primary,YES
+TI-03,manufacturer,UCC27282 product and datasheet,https://www.ti.com/product/UCC27282,Rev B 2021,gate driver pinout and bootstrap,primary,YES
+TI-04,manufacturer,Bootstrap Circuitry Selection SLUA887A,https://www.ti.com/lit/an/slua887a/slua887a.pdf,Rev A 2023,bootstrap loss Qg and diode,primary,YES
+TI-05,manufacturer,UCC24624 application notes,https://www.ti.com/product/UCC24624,accessed 2026-11-03,SR layout and standby,primary,YES
+EDA-01,EDA vendor,EasyEDA Pro official guide,https://prodocs.easyeda.com/,accessed 2026-11-03,ERC DRC PCB sync,primary,YES
+FAB-01,PCB vendor,JLCPCB capabilities,https://jlcpcb.com/capabilities/pcb-capabilities/,accessed 2026-11-03,slot tolerance copper constraints,vendor,YES
+IEEE-01,peer reviewed,Integrated Planar Transformer High Voltage Ratio LLC DCX,https://ieeexplore.ieee.org/document/10741344/,2024 DOI 10.1109/OJPEL.2024.3490601,planar transformer and SR capacitor integration,paper,NO
+IEEE-02,peer reviewed,500A Stacked Direct Power Converter Standard PCB Transformer,https://apec2024.eventscribe.net/fsPopup.asp?PresentationID=1350453&efp=SVhBT1ZFQ1UyMDY3NA&mode=presInfo&rnd=0.81449,APEC 2024 DOI 10.1109/APEC48139.2024.10509493,stacked primary and parallel output,paper,NO
