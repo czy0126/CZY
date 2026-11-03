@@ -7,7 +7,7 @@ import pytest
 
 import hotfault_convergence as c
 import make_hot_fault_decks as m
-from hotfault_diagnostic import circuit_differences
+from hotfault_diagnostic import NAMES, circuit_differences
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_48 = ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw"
@@ -56,6 +56,62 @@ def test_the_default_window_stays_inside_the_stalled_base_record():
     # would silently read a truncated prefix as if it were the whole window.
     assert c.COMPARE_WINDOW_US == 220.0
     assert c.COMPARE_WINDOW_US < 296.929
+
+
+DECK_TEXT = """\
+.param VIN=50 RL=15.4m
+.tran 0 2320u 2000u 5n uic
+.ic V(out)=1.89 V(ss)=4
+Vfltctl_hot ctl_hot 0 PWL(0 0 2150u 0 2160u 5 2320u 5)
+Sflt_hot out flt_hot ctl_hot 0 HOTFLT
+Rflt_hot flt_hot 0 1m
+.model HOTFLT SW(Ron=1m Roff=1G Vt=2.5)
+.end
+"""
+
+
+def write_named_raw(path: Path, points: int, step_s: float) -> None:
+    """A structurally exact ASCII raw carrying the five variables the peaks use."""
+    lines = ["Title: synthetic\n", f"No. Variables: {len(NAMES) + 1}\n",
+             f"No. Points: {points}\n", "Variables:\n", "\t0\ttime\ttime\n"]
+    lines += [f"\t{i}\t{name}\tvoltage\n" for i, name in enumerate(NAMES, start=1)]
+    lines.append("Values:\n")
+    for k in range(points):
+        t = k * step_s
+        lines.append(f"{k}\t\t{t:.12e}\n")
+        lines += [f"\t{(i + 1) * 0.5:.12e}\n" for i in range(len(NAMES))]
+    path.write_text("".join(lines), encoding="latin-1")
+
+
+def test_the_window_tolerates_one_integration_step_at_its_end(tmp_path: Path):
+    """A sample cannot land exactly on the window end, so the last in-window
+    sample may sit up to one step short.  Demanding 1 ns against a 5 ns max step
+    rejected a comparison whose raws both spanned the whole window -- the 5 fF B
+    candidate slices ended at 219.9966/219.9990 us and the check said "failed".
+
+    Here 2 ns samples end 4 ns short of the 220 us window: inside one 5 ns step,
+    so the window is covered.  Ending 12 ns short is more than one step and is
+    a real gap.
+    """
+    variant = DECK_TEXT + ".options plotwinsize=0 method=gear cshunt=5e-15\n"
+    base = DECK_TEXT + ".options plotwinsize=0 method=gear cshunt=1e-15\n"
+    (tmp_path / "b.cir").write_text(base, encoding="utf-8")
+    (tmp_path / "v.cir").write_text(variant, encoding="utf-8")
+    short = tmp_path / "short.raw"
+    write_named_raw(short, points=109_999, step_s=2e-9)      # last index 109998 -> 219.996 us
+    gap = tmp_path / "gap.raw"
+    write_named_raw(gap, points=109_995, step_s=2e-9)        # last index 109994 -> 219.988 us
+
+    ok = c.compare(short, tmp_path / "b.cir", short, tmp_path / "v.cir", window_us=220.0)
+    assert ok["checks"]["the_comparison_window_is_covered_by_both_raws"] is True
+    rejected = c.compare(gap, tmp_path / "b.cir", gap, tmp_path / "v.cir", window_us=220.0)
+    assert rejected["checks"]["the_comparison_window_is_covered_by_both_raws"] is False
+
+
+def test_the_coverage_tolerance_is_the_decks_own_max_step():
+    assert c.max_step_s(DECK_TEXT) == pytest.approx(5e-9)
+    # No max step declared means the deck has no basis for a tolerance.
+    assert c.max_step_s(".tran 0 2320u 2000u\n") is None
 
 
 @pytest.mark.skipif(not (RAW_48.exists() and DIAG_RAW_48.exists()),

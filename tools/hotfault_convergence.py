@@ -31,6 +31,7 @@ import json
 from pathlib import Path
 
 from ascii_raw_window import last_time
+from current_manifest import spice_seconds
 from hot_fault_metrics import parse_log, saved_stop_s
 from hotfault_diagnostic import PEAK_KEYS, circuit_differences, relative_deltas, window_peaks
 
@@ -43,6 +44,25 @@ COMPARE_WINDOW_US = 220.0
 # `.tran 0 2220u 2000u`: the window guard needs a tolerance or it rejects a
 # legal window.  1 ps is far below the 5 ns step.
 _WINDOW_TOL_S = 1e-12
+
+
+def max_step_s(deck_text: str) -> float | None:
+    """The deck's ``.tran`` Tmaxstep, or None when it declares none.
+
+    This is the only honest tolerance for "does the raw span the window": no
+    sample can land exactly on the window's end, so the last in-window sample
+    may sit up to one step short of it.  A fixed picosecond rejects a comparison
+    whose raws both span the whole window -- the 5 fF B candidate slices ended
+    at 219.9966 / 219.9990 us of a 220 us window and the check read "failed".
+    """
+    for line in deck_text.splitlines():
+        parts = line.strip().split()
+        if parts and parts[0].lower() == ".tran" and len(parts) >= 5:
+            try:
+                return spice_seconds(parts[4])
+            except ValueError:
+                return None
+    return None
 
 
 def reached_stop(t_last_s: float, stop_s: float, tol_s: float = 1e-9) -> bool:
@@ -77,8 +97,10 @@ def compare(base_raw: Path, base_deck: Path, variant_raw: Path, variant_deck: Pa
                    else variant[key] - base[key]) for key in PEAK_KEYS}
     base_log_data = parse_log(base_log.read_text(encoding="utf-8", errors="replace")) if base_log else None
     variant_log_data = parse_log(variant_log.read_text(encoding="utf-8", errors="replace")) if variant_log else None
-    covered = (float(base["t_last_s"]) >= window_s - 1e-9
-               and float(variant["t_last_s"]) >= window_s - 1e-9)
+    steps = [step for step in (max_step_s(base_text), max_step_s(variant_text)) if step is not None]
+    coverage_tol = max(steps, default=_WINDOW_TOL_S)
+    covered = (float(base["t_last_s"]) >= window_s - coverage_tol
+               and float(variant["t_last_s"]) >= window_s - coverage_tol)
     # Completion is a property of the whole raw, not of the comparison slice:
     # reading the prefix would always end at the window and call a stall a stop.
     base_t_last = last_time(base_raw)
@@ -105,6 +127,7 @@ def compare(base_raw: Path, base_deck: Path, variant_raw: Path, variant_deck: Pa
             "base": base,
             "variant": variant,
             "delta": delta,
+            "coverage_tolerance_s": coverage_tol,
             "relative": relative_deltas(base, variant),
             "base_saved_stop_us": base_stop * 1e6,
             "variant_saved_stop_us": variant_stop * 1e6,
