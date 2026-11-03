@@ -14,12 +14,41 @@ REGISTER=ROOT/"hardware/dcx_main/component_decision_register.json"
 CATALOG=KIT/"vendor_parts_official.json"
 ASSIGN=KIT/"vendor_ref_assignments.json"
 MATRIX=KIT/"templates/vendor_candidate_matrix_61.csv"
+BURDEN=ROOT/"design/v3/bom/oc_burden_pulse.json"
+R3_SCREEN=KIT/"r3_vendor_rating_screen.json"
+
+def r3_minimum_rating(catalog: dict, assignments: dict, burden: dict) -> dict:
+    """R3 must not silently regress to the rejected 0805 at 120 A.
+
+    This is a CONTINUOUS-power-only screening criterion, NOT a pulse,
+    derating, CAD or production approval.
+    """
+    part=catalog[assignments["R3"]]
+    runs=burden["results"]["runs"]
+    bases=[r for r in runs if r["role"]=="base" and "pre_fault" in r]
+    if not bases:
+        raise ValueError("burden reference base runs missing")
+    worst=max(float(r["pre_fault"]["mean_w"]) for r in bases)
+    rating=float(part.get("rated_power_w",0))
+    if not part["nominal"].startswith("10 ohm") or rating < 3 * worst:
+        raise ValueError(f"R3 nominal power unsafe for current model: {rating:g}W vs {worst:g}W pre-fault, need >=3x")
+    if part["eia_case"]=="0805":
+        raise ValueError("R3 is deliberately not the rejected old 0805 footprint")
+    if part.get("design_status")!="CONTINUOUS_POWER_PRELIM_PASS_PULSE_AND_LAYOUT_OPEN":
+        raise ValueError("R3 must keep pulse / CAD design approvals OPEN")
+    return {"ref":"R3","rating_w":rating,"worst_pre_fault_model_w":worst,
+            "ratio_p70_to_model":rating/worst,
+            "footprint_change":"REQUIRED_NEW_2512",
+            "pulse_validation":"OPEN","hardware_validation":"OPEN"}
+
 HEADER=["ref","priority","role","current_package_placeholder","required_value_or_rating","candidate_part_key","candidate_mpn","manufacturer","nominal_spec","rated_voltage_v","nominal_eia_case","source_kind","official_source_url","part_exists","candidate_only","native_eda_verified","application_approved","review_note"]
 
 def render() -> str:
     data=json.loads(REGISTER.read_text(encoding="utf-8"))
     catalog=json.loads(CATALOG.read_text(encoding="utf-8"))
     assign=json.loads(ASSIGN.read_text(encoding="utf-8"))
+    burden=json.loads(BURDEN.read_text(encoding="utf-8"))
+    r3_minimum_rating(catalog,assign,burden)
     items=data["items"]
     refs={x["ref"] for x in items}
     if len(items)!=61 or len(refs)!=61 or data["total_placeholder_refs"]!=61:
@@ -63,7 +92,7 @@ def main() -> int:
         raise SystemExit("stale vendor candidate matrix: run --write")
     reader=list(csv.DictReader(io.StringIO(expected)))
     mapped=sum(bool(x["candidate_mpn"]) for x in reader)
-    print(f"vendor evidence: {mapped}/61 documented candidates; 61/61 refdes covered; zero CAD approvals")
+    print(f"vendor evidence: {mapped}/61 documented candidates; 61/61 refdes covered; zero CAD approvals; R3 power-screen present, pulse NOT certified")
     return 0
 
 if __name__=="__main__":
