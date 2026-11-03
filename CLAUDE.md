@@ -152,6 +152,13 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   **9.72007 ms** 重新 arming、10.3 ms 脉冲重新锁存。它**不证明功率级能重启动**，
   也不覆盖斜坡段（那段门极仍被驱动，只能靠控制器自己的 OC，本 deck 没建模）；
   完整功率级重启需要 9.6 ms 软启动，装不进 320 µs 故障窗口。
+- **逐器件保护表不能混窗口**：`protection_soa_table.json`（`tools/protection_soa_table.py`）
+  把 `sr_fault_probe_*`（`post_trip`）与 `protection_candidate_*`（`saved_window`）并排，
+  同一台 48 V deck 的 `drain_min_v` 因此是 −2.825 对 −4.890 V——**不要相减**，也不要把
+  285.01 A（post-trip 峰）与 292.61 A（全窗峰）当成重复测量。候选对照 JSON **不保存反向峰**，
+  表里是 `null` 并在 `unrecorded_fields` 里列出，不是 0；`gate_last_rise_us` 对从未升高的
+  器件也是合法 `null`（`null_by_design_fields`）。没有厂家 SOA 曲线，380 A 只是询样筛选目标；
+  反向电流是端口量，**不许按 `Vgs` 拆体二极管/沟道**（第二轮审核已撤回该推理）。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的

@@ -541,9 +541,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 49548,
-      "mtime": 1793682778.7823024,
-      "sha256": "a64dfaedbf15229da8034d144580ff246332888574c0f321766752522fd0d604"
+      "bytes": 49913,
+      "mtime": 1793683146.5272179,
+      "sha256": "5da2e9c0a2392c0bf3cf3fc967f6b2e0ea7523a380db77d003de45c52bd25726"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -901,6 +901,20 @@
       "bytes": 4148,
       "mtime": 1793681892.808205,
       "sha256": "09873bc6b6ddc8c8ddc96ce75c6c7c853a75914eaf5c55e5885bddda94063383"
+    },
+    {
+      "path": "tools/protection_soa_table.py",
+      "kind": "script",
+      "bytes": 9794,
+      "mtime": 1793683092.5416226,
+      "sha256": "0da935caf13354c0df8a034aded582ebae41eef859e9ff6937e9105d9691b7fb"
+    },
+    {
+      "path": "tools/test_protection_soa_table.py",
+      "kind": "script",
+      "bytes": 2902,
+      "mtime": 1793683109.183714,
+      "sha256": "a7353b9bf3158c377c148568843299fd8a9f9bd20be1abf443c82a693d39e773"
     },
     {
       "path": "design/v3/magnetics/magnetics_design.json",
@@ -1372,6 +1386,13 @@
       "sha256": "d0c135a48c925b36e7b29682999033cac4744a90af4133a5d127b823e5b309f6"
     },
     {
+      "path": "design/v3/power_priority/protection_soa_table.json",
+      "kind": "result",
+      "bytes": 61625,
+      "mtime": 1793683098.215216,
+      "sha256": "56998b00654c174bcc1b2cca14a18cda19161ecb92a06cfae26864b0f3d37d1c"
+    },
+    {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
       "kind": "doc",
       "bytes": 13544,
@@ -1479,9 +1500,16 @@
     {
       "path": "design/v3/power_priority/PROT02_独立故障锁存候选对照_2026-11-03.md",
       "kind": "doc",
-      "bytes": 19228,
-      "mtime": 1793682731.6727467,
-      "sha256": "1d43690c59a2dc678480c7edc9ca7af97b96055f93f8ce58a22a9a9507290304"
+      "bytes": 19439,
+      "mtime": 1793683141.0173578,
+      "sha256": "6d8d52aa20ac540b9b9568b2aa759fca2b80ff451edfc5b533b46cf3d0a9fd00"
+    },
+    {
+      "path": "design/v3/power_priority/PROT_SOA表_2026-11-03.md",
+      "kind": "doc",
+      "bytes": 4999,
+      "mtime": 1793683135.230846,
+      "sha256": "d730c2092b303fee30314aefde572d978822dea8a5b3706cf0f81219a212387a"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",

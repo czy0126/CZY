@@ -224,6 +224,8 @@ V3_SOURCES = {
         "tools/protection_candidate_compare.py",
         "tools/test_make_protection_candidates.py",
         "tools/test_protection_candidate_compare.py",
+        "tools/protection_soa_table.py",
+        "tools/test_protection_soa_table.py",
     ],
     "result": [
         "design/v3/magnetics/magnetics_design.json",
@@ -314,6 +316,9 @@ V3_SOURCES = {
         "design/v3/power_priority/protection_candidate_50v_120a_prot_b.json",
         "design/v3/power_priority/protection_uvlo_check.json",
         "design/v3/power_priority/protection_restart_check.json",
+        # D4 deliverable: one 48 V/50 V per-device screening table.  It reads
+        # only the committed JSONs above, so it adds no new raw data.
+        "design/v3/power_priority/protection_soa_table.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -332,6 +337,7 @@ V3_SOURCES = {
         "design/v3/power_priority/48V120A_稳态初始化故障_2026-11-02.md",
         "design/v3/power_priority/50V120A_损耗差额与步长_2026-11-02.md",
         "design/v3/power_priority/PROT02_独立故障锁存候选对照_2026-11-03.md",
+        "design/v3/power_priority/PROT_SOA表_2026-11-03.md",
         "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
     ],
     "config": [
