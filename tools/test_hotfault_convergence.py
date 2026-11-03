@@ -26,13 +26,13 @@ def test_reached_stop_accepts_one_nanosecond_and_rejects_a_stall():
 
 
 def test_the_cshunt_variant_is_the_same_circuit_for_this_tool_too():
-    # The tool's own guard must accept the deck it is meant to compare: only
+    # The tool's own guard must accept the decks it is meant to compare: only
     # comments and .options differ, so circuit_differences has to be empty.
-
-    name = m.CONVERGENCE_CASE
-    base = m.build(m.SOURCE[name].read_text(encoding="utf-8"), name)
-    conv = m.convergence(base, name)
-    assert circuit_differences(base, conv) == []
+    # Both cases are checked: the 50 V stall aid and the 48 V robustness control.
+    for name in m.CONVERGENCE_CASES:
+        base = m.build(m.SOURCE[name].read_text(encoding="utf-8"), name)
+        conv = m.convergence(base, name)
+        assert circuit_differences(base, conv) == []
 
 
 def test_a_circuit_change_masquerading_as_a_convergence_aid_is_reported():

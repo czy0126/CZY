@@ -123,6 +123,12 @@ def diagnostic(base: str, name: str) -> str:
 # 200 kHz, i.e. unmeasurable against this circuit, and the run must be
 # compared with the base over the common prefix before anything is quoted.
 CONVERGENCE_CASE = "50v_120a"
+# 48 V needs no convergence aid (its base run completes), but the same 1 fF
+# variant is the control for a different question: is the end-of-record SR
+# gate state robust to a solver-only perturbation?  The 50 V cshunt solve
+# releases its gate where the stalled base kept it high, so the 48 V latch
+# needs the same test before it is treated as a property of the circuit.
+CONVERGENCE_CASES = (CONVERGENCE_CASE, "48v_120a")
 CONV_OPTIONS = BASE_OPTIONS + " cshunt=1e-15"
 CONV_HEADER = (
     "* CONVERGENCE_DIAGNOSTIC: base hot-fault deck with ONLY the solver\n"
@@ -131,6 +137,20 @@ CONV_HEADER = (
     "* This deck is not a result: compare 0..296.9 us against the base\n"
     "* record before the completed 320 us window is quoted.\n"
 )
+ROBUSTNESS_HEADER = (
+    "* CONVERGENCE_DIAGNOSTIC: same circuit, ONLY cshunt=1 fF added.\n"
+    "* The 48 V base already completes; this run asks whether the\n"
+    "* post-trip SR gate state survives a 1 fF node capacitance.\n"
+    "* Compare 0..220 us against the base record before quoting it.\n"
+)
+
+
+def convergence_header(name: str) -> str:
+    if name == CONVERGENCE_CASE:
+        return CONV_HEADER
+    if name in CONVERGENCE_CASES:
+        return ROBUSTNESS_HEADER
+    raise ValueError(f"no convergence case for {name}")
 
 
 def convergence_destination(name: str) -> Path:
@@ -139,11 +159,11 @@ def convergence_destination(name: str) -> Path:
 
 def convergence(base: str, name: str) -> str:
     """Base hot-fault deck with only the cshunt solver option added."""
-    if name != CONVERGENCE_CASE:
+    if name not in CONVERGENCE_CASES:
         raise ValueError(f"no convergence case for {name}")
     if base.count(BASE_OPTIONS) != 1:
         raise ValueError("base hot-fault deck changed; cshunt replace is ambiguous")
-    return CONV_HEADER + base.replace(BASE_OPTIONS, CONV_OPTIONS)
+    return convergence_header(name) + base.replace(BASE_OPTIONS, CONV_OPTIONS)
 
 
 def saved_stop_us(deck: str) -> float:
@@ -164,7 +184,7 @@ def main() -> int:
         diag = diagnostic(data, name)
         outputs = [(destination(name), data, "candidate"),
                    (diagnostic_destination(name), diag, "diagnostic")]
-        if name == CONVERGENCE_CASE:
+        if name in CONVERGENCE_CASES:
             outputs.append((convergence_destination(name), convergence(data, name),
                             "convergence"))
         for out, text, label in outputs:

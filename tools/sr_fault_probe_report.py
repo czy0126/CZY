@@ -34,6 +34,26 @@ CASES = {
         "deck": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_srprobe.cir",
         "base_json": PP / "hotfault_50v_120a.json",
     },
+    # The base 50 V solve stalls at 296.929 us, so the eight-device record that
+    # can cover 319 us is the cshunt variant.  Its trip and stop come from the
+    # convergence record, not from the stalled base JSON.
+    "50v_120a_cshunt": {
+        "raw": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.raw",
+        "deck": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+        "base_json": PP / "hotfault_50v_120a_cshunt.json",
+        "timing": {"trip_s": ("results", "variant", "trip_s"),
+                   "saved_stop_s": ("results", "variant_saved_stop_s")},
+    },
+    # The 48 V robustness control: same eight probes on the 1 fF variant of the
+    # completed base.  If the A-phase latch disappears here, it is solver
+    # sensitivity in the dead state, not a circuit property.
+    "48v_120a_cshunt": {
+        "raw": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
+        "deck": ROOT / "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.cir",
+        "base_json": PP / "hotfault_48v_120a_cshunt.json",
+        "timing": {"trip_s": ("results", "variant", "trip_s"),
+                   "saved_stop_s": ("results", "variant_saved_stop_s")},
+    },
 }
 PAIRS = (1, 2, 3, 4)
 SIDES = ("a", "b")
@@ -206,6 +226,26 @@ def summarize(t: np.ndarray, data: dict[str, np.ndarray], trip_s: float,
     }
 
 
+def nested(data: dict, path: tuple[str, ...]) -> object:
+    """Follow a key path into a JSON record."""
+    for key in path:
+        data = data[key]
+    return data
+
+
+def timing(base: dict, spec: dict) -> tuple[float, float]:
+    """(trip_s, saved_stop_s) for this case.
+
+    Hot-fault records carry them at the top level; a convergence record nests
+    the variant's values, and reading the stalled base JSON instead would put
+    the 50 V probe report 0.1 us off its own solve.
+    """
+    if "timing" in spec:
+        return (float(nested(base, spec["timing"]["trip_s"])),
+                float(nested(base, spec["timing"]["saved_stop_s"])))
+    return float(base["fault"]["trip_s"]), float(base["saved_stop_s"])
+
+
 def build(case: str, raw: Path | None = None) -> dict[str, object]:
     if case not in CASES:
         raise ValueError(f"unsupported case: {case}")
@@ -213,8 +253,7 @@ def build(case: str, raw: Path | None = None) -> dict[str, object]:
     raw = raw or spec["raw"]
     deck = spec["deck"]
     base = json.loads(spec["base_json"].read_text(encoding="utf-8"))
-    trip_s = float(base["fault"]["trip_s"])
-    saved_stop_s = float(base["saved_stop_s"])
+    trip_s, saved_stop_s = timing(base, spec)
     t, data = read_window(raw, all_traces(), max(0.0, ENGAGE_S - READ_LEAD_S),
                           saved_stop_s + READ_TAIL_S)
     require_traces(data)

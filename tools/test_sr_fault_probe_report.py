@@ -106,3 +106,14 @@ def test_a_truncated_record_is_a_prefix_not_a_pass():
     out = report.summarize(t, data, trip_s=1e-6, saved_stop_s=10e-6)
     assert out["reached_tstop"] is False
     assert out["solver_prefix_only"] is True
+
+
+def test_timing_can_come_from_a_convergence_record():
+    # The 50 V eight-device deck is a child of the cshunt variant; its trip
+    # must be the variant's, not the stalled base record's 214.915 us.
+    spec = report.CASES["50v_120a_cshunt"]
+    base = {"results": {"variant": {"trip_s": 215.01441126260292e-6},
+                        "variant_saved_stop_s": 319.99999999999994e-6}}
+    assert report.timing(base, spec) == (215.01441126260292e-6, 319.99999999999994e-6)
+    # Hot-fault records keep their own shape and are read at the top level.
+    assert report.timing({"fault": {"trip_s": 1e-4}, "saved_stop_s": 3.2e-4}, {}) == (1e-4, 3.2e-4)

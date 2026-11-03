@@ -108,6 +108,8 @@ def compare(base_raw: Path, base_deck: Path, variant_raw: Path, variant_deck: Pa
             "relative": relative_deltas(base, variant),
             "base_saved_stop_us": base_stop * 1e6,
             "variant_saved_stop_us": variant_stop * 1e6,
+            "base_saved_stop_s": base_stop,
+            "variant_saved_stop_s": variant_stop,
             "base_reached_saved_stop": base_done,
             "variant_reached_saved_stop": variant_done,
             "base_t_last_us": base_t_last * 1e6,

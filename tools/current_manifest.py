@@ -91,8 +91,18 @@ V3_SOURCES = {
         # CONVERGENCE_DIAGNOSTIC: same 50 V circuit, cshunt=1 fF added.  The
         # base stalls at 296.929 us of 320 us; this variant tests whether a
         # finite node capacitance escapes the dead-zone step-size limit cycle.
-        # tools/hotfault_convergence.py compares it against the base prefix.
+        # tools/hotfault_convergence.py compares it against the base prefix
+        # and records design/v3/power_priority/hotfault_50v_120a_cshunt.json.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
+        # ELE-10: the eight-device probe deck derived from the completed cshunt
+        # variant; the only 50 V deck that can cover 319 us on the saved axis.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+        # ROBUSTNESS control: the same 1 fF perturbation on the 48 V deck that
+        # already completes.  It tests whether the A-phase latch is a circuit
+        # property or a solver-trajectory artifact, and its eight-device child
+        # records the post-trip gate state on the same terms as 50 V.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.cir",
         # ELE-10: eight-device SR probes.  make_sr_fault_probes.py appends only
         # .save and .meas lines to the hot-fault decks, so these are the same
         # circuit with more instruments.  The 48 V deck completed 320 us; the
@@ -243,9 +253,17 @@ V3_SOURCES = {
         # SOLVER_DIAGNOSTIC: base vs tightened tolerance over one common window.
         "design/v3/power_priority/hotfault_48v_120a_diag.json",
         "design/v3/power_priority/hotfault_50v_120a_diag.json",
+        # CONVERGENCE_DIAGNOSTIC: does a 1 fF node capacitance escape the
+        # post-trip stall, and what does it move in the published prefix?
+        "design/v3/power_priority/hotfault_50v_120a_cshunt.json",
+        # ROBUSTNESS: the 48 V control comparison and its eight-device record.
+        "design/v3/power_priority/hotfault_48v_120a_cshunt.json",
+        "design/v3/power_priority/sr_fault_probe_48v_120a_cshunt.json",
         # ELE-10: per-device gate/Vds/current over the same 320 us window.
-        # Only the 48 V case exists; the 50 V probe deck has no full raw yet.
+        # 48 V from the base deck; 50 V only from the cshunt child, which is
+        # the one 50 V solve that reaches 319 us.
         "design/v3/power_priority/sr_fault_probe_48v_120a.json",
+        "design/v3/power_priority/sr_fault_probe_50v_120a_cshunt.json",
         "design/v3/power_priority/unclosed_risk_register.json",
         # ELE-09: the 22-period 5/2 ns pair, the SR decomposition with the
         # gate-drive boundary correction, and the 133-period aligned ledger.
@@ -300,8 +318,16 @@ V3_SOURCES = {
         # SOLVER_DIAGNOSTIC raws: 1.4 GB each, size + mtime only.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw",
+        # CONVERGENCE_DIAGNOSTIC raw: 0.94 GB, the only 50 V solve that reaches
+        # 320 us.  Size + mtime only.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.raw",
         # ELE-10 48 V eight-device probe raw: 1.2 GB, size + mtime only.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
+        # ELE-10 50 V eight-device probe raw: the cshunt child, size + mtime only.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.raw",
+        # ROBUSTNESS (48 V): the 1 fF mother and its eight-device child.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.raw",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
         # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
@@ -699,6 +725,29 @@ REPRODUCE = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
         "python tools/sr_fault_probe_report.py --case 48v_120a "
         "--json design/v3/power_priority/sr_fault_probe_48v_120a.json",
+        # ELE-10, 50 V: the base stalls, so the eight-device record comes from
+        # the completed cshunt child.  Its trip comes from the convergence JSON.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii "
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+        "python tools/sr_fault_probe_report.py --case 50v_120a_cshunt "
+        "--json design/v3/power_priority/sr_fault_probe_50v_120a_cshunt.json",
+        # ROBUSTNESS control: the same 1 fF option on the completed 48 V base.
+        # The comparison is over the full 320 us window; this run decides
+        # whether the 48 V A-phase latch survives a solver-only perturbation.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii "
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir",
+        "python tools/hotfault_convergence.py "
+        "--base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw "
+        "--base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir "
+        "--variant-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.raw "
+        "--variant-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir "
+        "--base-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log "
+        "--variant-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.log "
+        "--json design/v3/power_priority/hotfault_48v_120a_cshunt.json",
+        "/d/ADI/LTspice/LTspice.exe -b -ascii "
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.cir",
+        "python tools/sr_fault_probe_report.py --case 48v_120a_cshunt "
+        "--json design/v3/power_priority/sr_fault_probe_48v_120a_cshunt.json",
         # ELE-09: the 22-period 5/2 ns pair, then the phase-aligned window.
         # The step comparison accepts only decks that differ in .tran step.
         "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",

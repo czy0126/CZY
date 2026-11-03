@@ -1,0 +1,59 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir
+Start Time: Tue Nov  3 09:44:22 2026
+Options:plotwinsize=0 method=gear cshunt=1e-15
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = Gear
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.5036701329757493e-05 to 1.5036701329758492e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.5036701330106384e-05 to 1.5036701330107383e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.5036701330110382e-05 to 1.5036701330111381e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 4.4945190664815144e-05 to 4.4945190664816147e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 6.9289403540798874e-05 to 6.9289403540799877e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 8.9808410125711324e-05 to 8.9808410125712327e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 8.9808410125712327e-05 to 8.9808410125713330e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 8.9808410125713330e-05 to 8.9808410125714332e-05 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.0127867212595315e-04 to 1.0127867212595415e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.2717439957344001e-04 to 1.2717439957344101e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 1.6456056505762925e-04 to 1.6456056505763025e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.0662721773469710e-04 to 3.0662721773469807e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.4667410955566678e-04 to 3.4667410955566776e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.6162857272561353e-04 to 3.6162857272561451e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 3.6162857272561451e-04 to 3.6162857272561548e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 4.6132473868896182e-04 to 4.6132473868896280e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 5.2346605244578555e-04 to 5.2346605244578653e-04 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 6.8065588354958653e-04 to 6.8065588354959043e-04 seconds.
+Total elapsed time: 438.604 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir
+D:\workshop\design_48v-2v\models\ucc25600_legacy_behaviour.lib
+D:\workshop\design_48v-2v\models\sr_timing_v3_3.lib
+D:\workshop\design_48v-2v\models\sr_device_v3.lib
+
+vout_avg: AVG(V(out) )=1.94374040633 FROM 0 TO 0.00012
+vout_rip: PP(V(out) )=0.0407555052828 FROM 0.00011 TO 0.00012
+vds_a1_min: MIN(V(a1) )=-1.28867379842 FROM 0 TO 0.00012
+vds_a1_max: MAX(V(a1) )=5.42057384201 FROM 0 TO 0.00012
+irev_a1: MAX(I(VSa1) )=5.04588458669 FROM 0 TO 0.00012
+ifwd_a1: MAX(-I(VSa1) )=46.1463025064 FROM 0 TO 0.00012
+ovl_cur: MAX(V(ovl1) )=1.18304075261 FROM 0 TO 0.00012
+ovl_gate: MAX(V(ovg1) )=0 FROM 0 TO 0.00012
+ipri_pk: MAX(abs(I(Lr)) )=15.4185291931 FROM 0 TO 0.00012
+out_last: V(out) =1.95563783873 at 0.00012
+hot_vout_early: AVG(V(out) )=1.94373668176 FROM 0.00012 TO 0.000145
+hot_vout_late: AVG(V(out) )=1.94375078713 FROM 0.000145 TO 0.00017
+hot_ctrl_before: AVG(V(ctl_hot) )=0 FROM 0.00012 TO 0.00017
+hot_ctrl_after: AVG(V(ctl_hot) )=4.99999999999 FROM 0.00019 TO 0.0003
+hot_iflt_after: MAX(I(Rflt_hot) )=890.654899803 FROM 0.000175 TO 0.00032
+hot_oc_before: MAX(V(oc) )=0.68210026668 FROM 0.00012 TO 0.00017
+hot_vout_before: AVG(V(out) )=1.94374373445 FROM 0.00012 TO 0.00017
+hot_ss_before: AVG(V(ss) )=5.04466626259 FROM 0.00012 TO 0.00017
+hot_ipri_after: MAX(abs(I(Lr)) )=101.096489995 FROM 0.000175 TO 0.00032
+hot_oc_after: MAX(V(oc) )=1.27172172798 FROM 0.000175 TO 0.00032
+hot_vout_min: MIN(V(out) )=0.000742735337968 FROM 0.000175 TO 0.00032
+hot_oc_trip: V(oc)=1  AT 0.000215014385132

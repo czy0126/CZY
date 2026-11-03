@@ -103,16 +103,32 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   正文不同的两跑做比较），记录 `design/v3/power_priority/hotfault_{48v,50v}_120a_diag.json`。
   另：诊断 deck 的 `.meas ... TO 0.00032` 行不变，所以它在**日志**里的 `hot_*` 只覆盖到 220 µs，
   **不能拿诊断日志的 `hot_ipri_after` 与基座日志的 97.44 A 直接比**——峰值只从 raw 按窗口读。
+- **"跑完了没有"必须从 raw 尾部读，不能从比较窗口读**：`hotfault_convergence.py` 拿收敛辅助
+  deck 与停在 296.929 µs 的基座比较时，共用窗口只能到 220 µs；若用窗口读数的 `t_last` 判完成，
+  每次都会得到"正好等于窗口"，把停机当成跑完。`ascii_raw_window.last_time()` 只读尾部块
+  （50 V 基座最后 0.93 µs 写了 13.3 GB），并要求记录起始行**后面确实有续行**才接受——被切断的
+  时间字段仍能 `float()` 成功，会报出一个偏小的时间。`CONVERGENCE_DIAGNOSTIC` 变体
+  `..._hotfault_50v_120a_cshunt.cir` 只加 `.options cshunt=1e-15`（1 fF = 200 kHz 下 795 kΩ），
+  电路/故障支路/探针/`.tran` 逐字节相同（`circuit_differences()` 为 0 条）。
 - **八只 SR 探针 deck 只追加 `.save`/`.meas`**（`tools/make_sr_fault_probes.py --write` 从 hotfault
   母 deck 派生，`test_make_sr_fault_probes.py` 逐行校验电路与故障网络不变）。`+` 续行必须挂在
   **`.save` 块**上：第一版把续行落在 `.model HOTFLT` 之后，等于给模型语句加参数，探针一个也没存。
   48 V 版**已跑满 320 µs**（500.451 s / 1.205 GB）：A 相四只在 **247.070 µs 同时**锁存 10.890 V
   到终点，B 相四只关断；锁存段每只仅 **1.405 A / 1.04e-4 A²s**，而 trip 后 5.64 µs 的释放窗里
   有 **285 A** 峰与 **0.0304 A²s** 正向 I²t ⇒ **末端高电平是低电流锁存，不是大电流直通**。
-  50 V 版**没有 raw**（基座仍在 296.929 µs 塌缩），`sr_fault_probe_report.py` 会拒绝对缺八只探针的
-  raw 出报告。工具只保证 `coverage_is_reported_not_assumed`（八只都有数据），**不保证安全关断**：
+  **50 V 基座版没有 raw**（仍在 296.929 µs 塌缩），只能建在跑满的 `cshunt=1e-15` 变体上
+  （456.395 s；末端八只全低，A 相 235.2–237.6 µs、B 相 232.1–233.2 µs 各有一段高电平）。
+  `sr_fault_probe_report.py` 会拒绝对缺八只探针的 raw 出报告。
+  **末态门极相位是求解器选的，不是电路属性**：同一 48 V 电路加 1 fF 后，锁存从 A 相四只
+  翻到 **B 相四只**（249.38 µs / 1.20 A），而故障应力只动 **0.04 %**（trip +1.9 ns、
+  `I(Lr)` 峰 +0.0375 %、SR 正向峰 +0.047 %、`circuit_differences()` 0 条；两次都跑满
+  320 µs、549.607 / 594.263 s）。四条运行因此给出四个末态：48 V 基座 A 高、48 V cshunt B 高、
+  50 V 基座前缀 B 高、50 V cshunt 八只全低。**跨变体只剩"锁存是低电流（1.2–1.4 A、
+  每只约 1e-4 A²s）"这一条**，它仍不构成安全关断证据。工具只保证
+  `coverage_is_reported_not_assumed`（八只都有数据），**不保证安全关断**：
   模型没有 UCC24624 standby、SOA 与热模型。记录在
-  `design/v3/power_priority/sr_fault_probe_48v_120a.json` 与同一篇稳态初始化故障文档 §3.5。
+  `design/v3/power_priority/sr_fault_probe_{48v,50v}_120a{,_cshunt}.json`、
+  `hotfault_{48v,50v}_120a_cshunt.json` 与同一篇稳态初始化故障文档 §3.5/§3.7/§3.8。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的

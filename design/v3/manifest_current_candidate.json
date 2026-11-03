@@ -224,17 +224,38 @@
       "sha256": "2f007c3c8aebbe02f70acba6ae37a9bdb8cea4b283eed10dd33785cb13176869"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+      "kind": "deck",
+      "bytes": 14170,
+      "mtime": 1793670799.2122953,
+      "sha256": "3de0b41c5fa76a4d5b477ff2fe0f0aa016797960f50bf6aec6f7ac7882fc2d4a"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir",
+      "kind": "deck",
+      "bytes": 12512,
+      "mtime": 1793671376.3992856,
+      "sha256": "fe9870975b67faa96046da8101a247f3407d0d71952901fcea8ec4295745f5c0"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.cir",
+      "kind": "deck",
+      "bytes": 14186,
+      "mtime": 1793671393.3866346,
+      "sha256": "527152407b08fcd450fef28aa553735fa952bb3dd17a6a15bc0f06f364e6169d"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
       "kind": "deck",
       "bytes": 13854,
-      "mtime": 1793634127.0402167,
+      "mtime": 1793670799.2108867,
       "sha256": "1bb8570181bdf3bc8d2419cb6a558129583101287ba908bd750fe221893fc632"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_srprobe.cir",
       "kind": "deck",
       "bytes": 13854,
-      "mtime": 1793634127.0402167,
+      "mtime": 1793670799.2122953,
       "sha256": "c218e1717123b1a141b670dd271f68b81bce5b88c3ac0a826ce0da4ef83a74d3"
     },
     {
@@ -422,9 +443,9 @@
     {
       "path": "tools/make_hot_fault_decks.py",
       "kind": "script",
-      "bytes": 8755,
-      "mtime": 1793670229.9672217,
-      "sha256": "d6e1585f88410b38e1bbf0d494b0d40df7ae897f98b0e84c54783099cf8c8485"
+      "bytes": 9749,
+      "mtime": 1793671347.9712646,
+      "sha256": "1ff5fad56559a9b66f995a970e8c4f86b100d8adc190c8da9c20f20a212ac7e5"
     },
     {
       "path": "tools/analyze_v3_transient.py",
@@ -464,9 +485,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 41917,
-      "mtime": 1793670586.09059,
-      "sha256": "713243cd6bbbcd7109906b303f9bca930bf365b12db6a0adf3f3fa043298d6a7"
+      "bytes": 45468,
+      "mtime": 1793671606.2196674,
+      "sha256": "11eb5be589c3d5a7dfcce6a6f00225880d877ac0d9aaacb8d85c0eba9985f041"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -688,58 +709,58 @@
     {
       "path": "tools/hotfault_convergence.py",
       "kind": "script",
-      "bytes": 8165,
-      "mtime": 1793670478.625552,
-      "sha256": "c31fb79ae0813df0a2b22021a60f1c042bb0bc2083c577ca334d9a224779be38"
+      "bytes": 8259,
+      "mtime": 1793670760.5433671,
+      "sha256": "73507d545881ca35df43f4d3ea4844bb2abca5f3b9e6a58faa3379c6975b945a"
     },
     {
       "path": "tools/test_hotfault_convergence.py",
       "kind": "script",
-      "bytes": 3600,
-      "mtime": 1793670542.2795563,
-      "sha256": "ea0bbb9296f61544b7f35560a96186b1fea5e3cbd9b0c9312d54319fa187dfdf"
+      "bytes": 3701,
+      "mtime": 1793671793.6009374,
+      "sha256": "4723277774b8ed92344a35442d003d9bff03692db33dbd9afd4fba053ab8f37b"
     },
     {
       "path": "tools/d1_unclosed_risks.py",
       "kind": "script",
-      "bytes": 27336,
-      "mtime": 1793634842.4959333,
-      "sha256": "ee269158e418f2cbf4361341faeb6b88430599030fecd52cfee70df3c72cb8cf"
+      "bytes": 33763,
+      "mtime": 1793672057.0621564,
+      "sha256": "852c7a0390545cbd962030def7a6ca93de28c5327c6018a0083779312be8ced5"
     },
     {
       "path": "tools/test_d1_unclosed_risks.py",
       "kind": "script",
-      "bytes": 11973,
-      "mtime": 1793634847.912396,
-      "sha256": "b3701adcb2d40e69c045a0493b21469612496c1fa9267b0816972ac9fcf24aba"
+      "bytes": 15689,
+      "mtime": 1793672063.0962448,
+      "sha256": "bb07e1b89e361b6c9a21947229f04cf6faa53458596726650cce62d9fe6e1215"
     },
     {
       "path": "tools/make_sr_fault_probes.py",
       "kind": "script",
-      "bytes": 3152,
-      "mtime": 1793634119.993233,
-      "sha256": "5c6d384bc4e39d9338dc0ab7a9aa9f57d8b4e69870790684b3db6acae5a07a7e"
+      "bytes": 4322,
+      "mtime": 1793671829.2997828,
+      "sha256": "20a167bc4e837a81cf39fee30d30edcd9f1051f993ad83b32a3378b4faa22e97"
     },
     {
       "path": "tools/test_make_sr_fault_probes.py",
       "kind": "script",
-      "bytes": 2225,
-      "mtime": 1793634109.9642096,
-      "sha256": "05dd6334cbb832a6d4a962db3ce1fa315a1b3b53059dd9f4fd9a42cdea096e55"
+      "bytes": 2406,
+      "mtime": 1793671647.0361319,
+      "sha256": "26e3c1de68ef062a10a784fed11819d33f3ee5f265baa78e75c0376b36d4cd45"
     },
     {
       "path": "tools/sr_fault_probe_report.py",
       "kind": "script",
-      "bytes": 11001,
-      "mtime": 1793634774.35238,
-      "sha256": "933f41a326453254a3f4d9667907426d9535e765ae28283c2cd1f2da0597a0d6"
+      "bytes": 12920,
+      "mtime": 1793671364.7176075,
+      "sha256": "dc7e565adde6c2da32d78f306f99374828f78f69e850157ae24a8a0b50c1caa1"
     },
     {
       "path": "tools/test_sr_fault_probe_report.py",
       "kind": "script",
-      "bytes": 4577,
-      "mtime": 1793634788.481338,
-      "sha256": "fe43a47ba96f41d38c6c321fa3015b8676b29805c3d38946b07107bbfcb76820"
+      "bytes": 5228,
+      "mtime": 1793670822.5732124,
+      "sha256": "38231f709ad3d2f7b12f225fe1b42dc3038983596a873bf75b62e0f1d3f00a6a"
     },
     {
       "path": "tools/test_ledger_candidate_parameters.py",
@@ -1134,6 +1155,27 @@
       "sha256": "1bec9bb6a0b984ee3a74fa92604ae41ec86293f81e57823b32bd7c0865d2dc15"
     },
     {
+      "path": "design/v3/power_priority/hotfault_50v_120a_cshunt.json",
+      "kind": "result",
+      "bytes": 4616,
+      "mtime": 1793670783.5628166,
+      "sha256": "cbb3767b6cdce61d2d6217c68054e7249afd36ecb855cc1c0f705c688e20e6a2"
+    },
+    {
+      "path": "design/v3/power_priority/hotfault_48v_120a_cshunt.json",
+      "kind": "result",
+      "bytes": 5424,
+      "mtime": 1793671992.9637005,
+      "sha256": "deb680b9dd9d3bda301e8ffaff0b235e3f5cac12919a194dcc942f6f3fbda4aa"
+    },
+    {
+      "path": "design/v3/power_priority/sr_fault_probe_48v_120a_cshunt.json",
+      "kind": "result",
+      "bytes": 9720,
+      "mtime": 1793672020.1961007,
+      "sha256": "7da039d48fe8bef15ca2c79298acc3a6ef1e23371c588ab5614347559aa88d96"
+    },
+    {
       "path": "design/v3/power_priority/sr_fault_probe_48v_120a.json",
       "kind": "result",
       "bytes": 9744,
@@ -1141,11 +1183,18 @@
       "sha256": "7f2cee1902c1344194193beef1410d017245a170a0c2ec2b5f04fe03e48cbced"
     },
     {
+      "path": "design/v3/power_priority/sr_fault_probe_50v_120a_cshunt.json",
+      "kind": "result",
+      "bytes": 7874,
+      "mtime": 1793671277.4727538,
+      "sha256": "4261e91bfe890b91223993adb7ec4aca5f3d576d9d953bc72e4882502cd86815"
+    },
+    {
       "path": "design/v3/power_priority/unclosed_risk_register.json",
       "kind": "result",
-      "bytes": 12155,
-      "mtime": 1793634858.9409873,
-      "sha256": "ed4425f0d6bfd29e684ae77c5289cce7780728c4b41a77deaf1baeac86dea3c4"
+      "bytes": 15036,
+      "mtime": 1793672097.7266626,
+      "sha256": "ab076f7d6b83ed24ba7fbb541e4dbd9a30bccbc3214c2a7231f0980e2d20eda9"
     },
     {
       "path": "design/v3/power_priority/energy_ledger_50v_120a_steps.json",
@@ -1262,9 +1311,9 @@
     {
       "path": "design/v3/power_priority/48V120A_稳态初始化故障_2026-11-02.md",
       "kind": "doc",
-      "bytes": 23628,
-      "mtime": 1793634894.97602,
-      "sha256": "36b6dd77bcd26e03f868e9651ddc03e760b698de0d7090ef58fda0855afd893f"
+      "bytes": 35271,
+      "mtime": 1793672149.658683,
+      "sha256": "1e4ece317305d0092b1a4132643138b5346ac17242474a84557b3ea986a889e5"
     },
     {
       "path": "design/v3/power_priority/50V120A_损耗差额与步长_2026-11-02.md",
@@ -1435,10 +1484,38 @@
       "sha256": "skipped-large-raw"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.raw",
+      "kind": "raw",
+      "bytes": 941858736,
+      "mtime": 1793670700.981676,
+      "sha256": "skipped-large-raw"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
       "kind": "raw",
       "bytes": 1205532932,
       "mtime": 1793634632.788649,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.raw",
+      "kind": "raw",
+      "bytes": 1079779478,
+      "mtime": 1793671261.9380884,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.raw",
+      "kind": "raw",
+      "bytes": 1055527140,
+      "mtime": 1793671957.9968457,
+      "sha256": "skipped-large-raw"
+    },
+    {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
+      "kind": "raw",
+      "bytes": 1209980429,
+      "mtime": 1793672005.6503298,
       "sha256": "skipped-large-raw"
     },
     {
@@ -1800,6 +1877,39 @@
       "cold_start": false
     },
     {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
       "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
       "tran": ".tran 0 2320u 2000u 5n uic",
       "raw_time_start_s": 0.0,
@@ -1919,6 +2029,12 @@
     "python tools/make_sr_fault_probes.py --write",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
     "python tools/sr_fault_probe_report.py --case 48v_120a --json design/v3/power_priority/sr_fault_probe_48v_120a.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+    "python tools/sr_fault_probe_report.py --case 50v_120a_cshunt --json design/v3/power_priority/sr_fault_probe_50v_120a_cshunt.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir",
+    "python tools/hotfault_convergence.py --base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw --base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir --variant-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.raw --variant-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir --base-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log --variant-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.log --json design/v3/power_priority/hotfault_48v_120a_cshunt.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.cir",
+    "python tools/sr_fault_probe_report.py --case 48v_120a_cshunt --json design/v3/power_priority/sr_fault_probe_48v_120a_cshunt.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.cir",
     "python tools/energy_ledger_100a.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw --periods 22 --vin 50 --rl 0.0163 --compare-raw sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw --json design/v3/power_priority/energy_ledger_50v_120a_steps.json",
     "python tools/sr_loss_audit.py --case candidate_50v_120a candidate_50v_120a_2ns --compare candidate_50v_120a candidate_50v_120a_2ns --json design/v3/power_priority/sr_loss_audit_50v_120a_steps.json",

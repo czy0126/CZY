@@ -1,0 +1,134 @@
+{
+  "kind": "hotfault_convergence_diagnostic",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "base_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_50v_120a.cir",
+  "variant_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
+  "window_s": [
+    0.0,
+    0.00021999999999999998
+  ],
+  "window_basis": "220 us: covers fault, trip and both headline peaks",
+  "solver_option_lines": {
+    "base": [
+      ".options plotwinsize=0 method=gear"
+    ],
+    "variant": [
+      ".options plotwinsize=0 method=gear cshunt=1e-15"
+    ]
+  },
+  "results": {
+    "base": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199996146537574,
+      "samples": 423028,
+      "trip_s": 0.0002149153406335383,
+      "delay_from_engage_us": 39.91534063353848,
+      "ipri_peak_a": 101.2626574558339,
+      "ipri_peak_ms": 0.2099490335049762,
+      "sr_forward_peak_a": 303.9300136642725,
+      "sr_reverse_peak_a": 13.75115321805808,
+      "oc_max_v": 1.091767263970779,
+      "vout_min_after_engage_v": 0.9471870188432566
+    },
+    "variant": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199999191571222,
+      "samples": 429543,
+      "trip_s": 0.0002150144112626029,
+      "delay_from_engage_us": 40.014411262603105,
+      "ipri_peak_a": 101.0964899950503,
+      "ipri_peak_ms": 0.209951230862484,
+      "sr_forward_peak_a": 303.4963325825917,
+      "sr_reverse_peak_a": 13.68583957904538,
+      "oc_max_v": 1.090248456153778,
+      "vout_min_after_engage_v": 0.9446629590416862
+    },
+    "delta": {
+      "trip_s": 9.907062906462237e-08,
+      "ipri_peak_a": -0.16616746078359768,
+      "sr_forward_peak_a": -0.43368108168078834,
+      "sr_reverse_peak_a": -0.06531363901270026,
+      "oc_max_v": -0.0015188078170009778,
+      "vout_min_after_engage_v": -0.002524059801570444
+    },
+    "relative": {
+      "trip_s": 0.00046097513919929334,
+      "ipri_peak_a": -0.0016409549675908686,
+      "sr_forward_peak_a": -0.0014269110064261126,
+      "sr_reverse_peak_a": -0.004749684479330107,
+      "oc_max_v": -0.001391146141785815,
+      "vout_min_after_engage_v": -0.0026647956014567153
+    },
+    "base_saved_stop_us": 320.0,
+    "variant_saved_stop_us": 320.0,
+    "base_saved_stop_s": 0.00031999999999999997,
+    "variant_saved_stop_s": 0.00031999999999999997,
+    "base_reached_saved_stop": false,
+    "variant_reached_saved_stop": true,
+    "base_t_last_us": 296.92923057264557,
+    "variant_t_last_us": 320.0,
+    "variant_full_window": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0003199956289366701,
+      "samples": 469399,
+      "trip_s": 0.0002150144112626029,
+      "delay_from_engage_us": 40.014411262603105,
+      "ipri_peak_a": 101.0964899950503,
+      "ipri_peak_ms": 0.209951230862484,
+      "sr_forward_peak_a": 303.4963325825917,
+      "sr_reverse_peak_a": 13.68583957904538,
+      "oc_max_v": 1.271721727981933,
+      "vout_min_after_engage_v": 0.0007429676634210789
+    }
+  },
+  "logs": {
+    "base": {
+      "solver_completed": false,
+      "total_elapsed_s": null,
+      "measurements": {
+        "options": 0.0
+      }
+    },
+    "variant": {
+      "solver_completed": true,
+      "total_elapsed_s": 438.604,
+      "measurements": {
+        "options": 0.0,
+        "vout_avg": 1.94374040633,
+        "vout_rip": 0.0407555052828,
+        "vds_a1_min": -1.28867379842,
+        "vds_a1_max": 5.42057384201,
+        "irev_a1": 5.04588458669,
+        "ifwd_a1": 46.1463025064,
+        "ovl_cur": 1.18304075261,
+        "ovl_gate": 0.0,
+        "ipri_pk": 15.4185291931,
+        "out_last": 1.95563783873,
+        "hot_vout_early": 1.94373668176,
+        "hot_vout_late": 1.94375078713,
+        "hot_ctrl_before": 0.0,
+        "hot_ctrl_after": 4.99999999999,
+        "hot_iflt_after": 890.654899803,
+        "hot_oc_before": 0.68210026668,
+        "hot_vout_before": 1.94374373445,
+        "hot_ss_before": 5.04466626259,
+        "hot_ipri_after": 101.096489995,
+        "hot_oc_after": 1.27172172798,
+        "hot_vout_min": 0.000742735337968,
+        "hot_oc_trip": 0.000215014385132
+      }
+    }
+  },
+  "checks": {
+    "the_two_decks_differ_only_on_solver_settings": true,
+    "the_comparison_window_is_covered_by_both_raws": true,
+    "the_window_stays_inside_both_decks": true
+  },
+  "circuit_differences": [],
+  "limits": [
+    "a convergence aid bounds a numerical artifact; it is not hardware evidence",
+    "peaks are maxima over samples, so one step of sampling difference can move them",
+    "the comparison window ends at 220 us; nothing after it has a base counterpart",
+    "a completed run does not make the post-trip model boundary (no UCC24624 standby, no SOA) safe"
+  ]
+}

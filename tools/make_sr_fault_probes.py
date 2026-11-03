@@ -10,7 +10,13 @@ import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CASES = ("48v_120a", "50v_120a")
+# 50v_120a_cshunt is derived from the CONVERGENCE_DIAGNOSTIC mother deck (the
+# base stalls at 296.929 us).  It is the only 50 V deck that can carry the
+# 319 us measurements, and it inherits cshunt=1e-15 unchanged.
+# 48v_120a_cshunt is the robustness control: the same eight probes on a 1 fF
+# variant of the completed 48 V base, to test whether the A-phase latch is a
+# property of the circuit or of the solver trajectory.
+CASES = ("48v_120a", "50v_120a", "48v_120a_cshunt", "50v_120a_cshunt")
 SAVE = (
     "+ V(ga2) V(gb2) V(ga3) V(gb3)\n"
     "+ V(a2) V(b2) V(a3) V(b3)\n"
@@ -39,6 +45,24 @@ def destination(case: str) -> Path:
     return ROOT / f"sim/v3/sr_tank_dual_v33_ss_hotfault_{case}_srprobe.cir"
 
 
+def header(case: str) -> str:
+    """Short comment header, so the probe deck never claims more than its parent."""
+    text = ("* UNRUN eight-SR post-OC gate and device current diagnostic only.\n"
+            "* 319us is on the rebased saved axis (nominal fault 175us).\n")
+    if case == "50v_120a_cshunt":
+        return text + (
+            "* Derived from the cshunt=1fF convergence variant: this solve must\n"
+            "* reach 319us on its own; prefix deltas are in hotfault_50v_120a_cshunt.json.\n")
+    if case == "48v_120a_cshunt":
+        return text + (
+            "* Derived from the 1fF robustness variant of the completed 48V base:\n"
+            "* prefix deltas are in hotfault_48v_120a_cshunt.json.  A gate state that\n"
+            "* differs here is solver-sensitive, not a circuit property.\n")
+    return text + (
+        "* 50V base record stopped at 296.929us: the new 319us measurements\n"
+        "* REQUIRE a genuinely complete new solve, not an extrapolation.\n")
+
+
 def build(text: str, case: str) -> str:
     if case not in CASES or text.count(".end\n") != 1:
         raise ValueError("invalid source or missing final .end")
@@ -54,11 +78,7 @@ def build(text: str, case: str) -> str:
     # ".model HOTFLT ...", which made LTspice fold them into that model.
     body = text.replace(anchor, anchor + SAVE, 1)
     body = body.replace(".end\n", MEAS + ".end\n", 1)
-    return ("* UNRUN eight-SR post-OC gate and device current diagnostic only.\n"
-            "* 319us is on the rebased saved axis (nominal fault 175us).\n"
-            "* 50V base record stopped at 296.929us: the new 319us measurements\n"
-            "* REQUIRE a genuinely complete new solve, not an extrapolation.\n"
-            + body)
+    return header(case) + body
 
 
 def main() -> int:

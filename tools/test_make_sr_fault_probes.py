@@ -36,10 +36,12 @@ def test_save_probes_continue_the_save_block_not_a_model_or_meas():
 
 def test_injection_and_power_circuit_preserved_verbatim():
     # All non-probe circuit text must be identical to the accepted parent.
+    # Strip the generator's own header by value, not by a fixed line count:
+    # a longer explanation in one case's header is still only a header, and
+    # the invariant is about the circuit text that follows it.
     for case in probes.CASES:
         parent = probes.source(case).read_text(encoding="utf-8")
         generated = probes.destination(case).read_text(encoding="utf-8")
-        core = generated.split("* UNRUN eight-SR", 1)[1]
-        core = core.split("\n", 4)[4]
+        core = generated.removeprefix(probes.header(case))
         core = core.replace(probes.SAVE, "", 1).replace(probes.MEAS, "", 1)
         assert core == parent

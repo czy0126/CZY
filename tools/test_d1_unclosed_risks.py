@@ -211,3 +211,77 @@ def test_f03_is_a_hard_sr_shutdown_blocker_independent_of_the_oc_trip():
     f03 = next(row for row in data["risks"] if row["id"] == "F03")
     assert f03["priority"] == "P0" and f03["blocked"]
     assert data["next_priority"][0] == "F03"
+
+
+def test_the_cshunt_child_is_a_solver_aid_not_a_replacement_for_the_base():
+    """The 50 V base still stalls; the cshunt child supplies the complete axis.
+
+    The register must carry both facts, and the child must be quoted through
+    its prefix deltas -- "it reached 320 us" alone would promote a solver
+    change into a base-run claim.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["hotfault_50v_120a_cshunt_checks_ok"] is True
+    assert e["hotfault_50v_120a_cshunt_variant_completed"] is True
+    assert e["hotfault_50v_120a_cshunt_base_completed"] is False
+    assert abs(e["hotfault_50v_120a_cshunt_ipri_peak_rel"]) < 0.01
+    assert abs(e["hotfault_50v_120a_cshunt_sr_forward_peak_rel"]) < 0.01
+    assert e["hotfault_50v_120a_cshunt_trip_delta_ns"] > 0
+    # The base record is still a prefix of the same solve.
+    assert e["hotfault_50v_120a_solver_completed"] is False
+    assert e["hotfault_50v_120a_solver_prefix_only"] is True
+    f01 = next(row for row in j["risks"] if row["id"] == "F01")
+    assert "cshunt" in f01["next_evidence"]
+    assert all(x["blocked"] for x in j["risks"])
+
+
+def test_the_50v_eight_device_record_is_complete_but_not_safe_shutdown():
+    """The cshunt child answers the eight-device question for 50 V.
+
+    Its end state has no high gate, while the stalled base prefix did.  The
+    register must carry both observations: neither is a safety proof, and the
+    difference is exactly why the end state cannot be treated as a circuit
+    property.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["sr_fault_probe_50v_cshunt_reached_tstop"] is True
+    assert e["sr_fault_probe_50v_cshunt_solver_prefix_only"] is False
+    assert e["sr_fault_probe_50v_cshunt_devices_high_at_end"] == []
+    assert e["sr_fault_probe_50v_cshunt_final_latch_devices"] == []
+    # The base prefix saw the opposite end state; both facts stay recorded.
+    assert e["hotfault_50v_120a_sr_gate_latched_at_end"] is True
+    assert e["hotfault_50v_120a_solver_prefix_only"] is True
+    f03 = next(row for row in j["risks"] if row["id"] == "F03")
+    assert "solver" in (f03["blocker"] + f03["next_evidence"])
+    assert all(x["blocked"] for x in j["risks"])
+
+
+def test_the_48v_control_flips_the_latched_phase_without_moving_the_stress():
+    """If 1 fF changes which phase latches, the phase is not a circuit property.
+
+    The base 48 V run latches all four A gates; the same circuit with
+    cshunt=1 fF latches all four B gates at 249.38 us.  The fault stress moves
+    less than 0.5 %, so this is not a different fault -- it is the dead-state
+    trajectory choosing which phase crosses the SR turn-on threshold.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["sr_fault_probe_48v_devices_high_at_end"] == ["1A", "2A", "3A", "4A"]
+    assert e["sr_fault_probe_48v_cshunt_devices_high_at_end"] == ["1B", "2B", "3B", "4B"]
+    assert e["hotfault_48v_120a_cshunt_checks_ok"] is True
+    assert e["hotfault_48v_120a_cshunt_base_completed"] is True
+    assert e["hotfault_48v_120a_cshunt_variant_completed"] is True
+    assert abs(e["hotfault_48v_120a_cshunt_ipri_peak_rel"]) < 0.01
+    assert abs(e["hotfault_48v_120a_cshunt_sr_forward_peak_rel"]) < 0.01
+    assert e["hotfault_48v_120a_cshunt_circuit_differences"] == 0
+    # The latch keeps its low-current character; only its phase changed.
+    assert 1.0 < e["sr_fault_probe_48v_cshunt_latch_max_current_a"] < 1.5
+    f03 = next(row for row in j["risks"] if row["id"] == "F03")
+    assert "phase" in f03["blocker"]
+    f03_blocked = f03["blocked"]
+    assert f03_blocked is True
+    assert all(x["blocked"] for x in j["risks"])
+
+

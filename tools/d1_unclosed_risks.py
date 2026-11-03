@@ -46,10 +46,24 @@ def build() -> dict:
     # the stop time changed.  It bounds the numerical error of the peaks that
     # the prefix publishes, without pretending the stall itself was fixed.
     diag = _load(PP / "hotfault_50v_120a_diag.json")
+    # The convergence aid: the same 50 V circuit with only cshunt=1 fF added.
+    # It is the one 50 V solve that reaches 320 us, so the register must record
+    # the complete axis *and* the prefix deltas against the stalled base.
+    conv50 = _load(PP / "hotfault_50v_120a_cshunt.json")
     # ELE-10's first half: the 48 V probe deck saves all eight SR gates,
     # drain-source voltages and sense currents.  It localises the end-of-record
     # high gate to a side and quantifies what that gate conducts.
     probe48 = _load(PP / "sr_fault_probe_48v_120a.json")
+    # ELE-10's 50 V half exists only on the cshunt child (the base solve stalls
+    # at 296.929 us and cannot carry the 319 us measurements).  Its end state
+    # disagrees qualitatively with the stalled base prefix, so both sources have
+    # to be recorded; neither is a safe-shutdown proof.
+    probe50 = _load(PP / "sr_fault_probe_50v_120a_cshunt.json")
+    # The 48 V robustness control: the same 1 fF perturbation on the deck whose
+    # base run completes.  If the latched phase changes here, the end-of-record
+    # gate state is selected by the numerical trajectory, not by the circuit.
+    conv48 = _load(PP / "hotfault_48v_120a_cshunt.json")
+    probe48c = _load(PP / "sr_fault_probe_48v_120a_cshunt.json")
     # The control: the 48 V base run passed the strict log pre-check, so the
     # same comparison on it measures the method rather than the 50 V prefix.
     diag48 = _load(PP / "hotfault_48v_120a_diag.json")
@@ -96,7 +110,11 @@ def build() -> dict:
     csink_r = csink["results"]
     diag_r = diag["results"]
     diag48_r = diag48["results"]
+    conv_r = conv50["results"]
     probe_r = probe48["results"]
+    probe50_r = probe50["results"]
+    conv48_r = conv48["results"]
+    probe48c_r = probe48c["results"]
     latches = [row["final_latch"] for row in probe_r["devices"].values()
                if row["final_latch"] is not None]
     latch_max_i = max((row["i_abs_max_a"] for row in latches), default=0.0)
@@ -209,6 +227,41 @@ def build() -> dict:
         "sr_fault_probe_48v_a_gate_high_i2t_a2s": rep_a["i2t_while_gate_high_a2s"],
         "hotfault_50v_120a_sr_gate_latched_at_end":
             hot50["fault"]["sr_gate_latched_at_end"],
+        # The cshunt child's own eight-device record reaches 320 us and has no
+        # gate high at the end -- the opposite of the stalled base prefix.  A
+        # 1 fF node capacitance is electrically negligible here, so the two end
+        # states cannot both be properties of the circuit: the post-trip gate
+        # level is solver-sensitive and must not be quoted as a design fact.
+        "sr_fault_probe_50v_cshunt_checks_ok": all(probe50["checks"].values()),
+        "sr_fault_probe_50v_cshunt_reached_tstop": probe50_r["reached_tstop"],
+        "sr_fault_probe_50v_cshunt_solver_prefix_only": probe50_r["solver_prefix_only"],
+        "sr_fault_probe_50v_cshunt_devices_high_at_end":
+            probe50_r["devices_high_at_end"],
+        "sr_fault_probe_50v_cshunt_final_latch_devices":
+            probe50_r["final_latch_devices"],
+        # ROBUSTNESS control, 48 V: the base latches A, the 1 fF variant latches
+        # B.  The stress barely moves, so the flip is not a different fault --
+        # it is the dead-state trajectory choosing the phase.  Record the whole
+        # pair: the base latch is still a real model observation, but its phase
+        # identity is not a property of the circuit.
+        "hotfault_48v_120a_cshunt_checks_ok": all(conv48["checks"].values()),
+        "hotfault_48v_120a_cshunt_base_completed": conv48_r["base_reached_saved_stop"],
+        "hotfault_48v_120a_cshunt_variant_completed": conv48_r["variant_reached_saved_stop"],
+        "hotfault_48v_120a_cshunt_window_us": conv48["window_s"][1] * 1e6,
+        "hotfault_48v_120a_cshunt_ipri_peak_rel": conv48_r["relative"]["ipri_peak_a"],
+        "hotfault_48v_120a_cshunt_sr_forward_peak_rel":
+            conv48_r["relative"]["sr_forward_peak_a"],
+        "hotfault_48v_120a_cshunt_trip_delta_ns": conv48_r["delta"]["trip_s"] * 1e9,
+        "hotfault_48v_120a_cshunt_circuit_differences": len(conv48["circuit_differences"]),
+        "sr_fault_probe_48v_cshunt_checks_ok": all(probe48c["checks"].values()),
+        "sr_fault_probe_48v_cshunt_reached_tstop": probe48c_r["reached_tstop"],
+        "sr_fault_probe_48v_cshunt_solver_prefix_only": probe48c_r["solver_prefix_only"],
+        "sr_fault_probe_48v_cshunt_devices_high_at_end":
+            probe48c_r["devices_high_at_end"],
+        "sr_fault_probe_48v_cshunt_final_latch_devices":
+            probe48c_r["final_latch_devices"],
+        "sr_fault_probe_48v_cshunt_latch_max_current_a":
+            probe48c_r["final_latch_max_current_a"],
         "hotfault_48v_120a_2turn_flux_at_fault_peak_t": hot_flux2,
         "hotfault_48v_120a_3turn_flux_at_fault_peak_t": hot_flux3,
         # ELE-08, 50 V: same definition, 9.15x overload instead of 8.7x because
@@ -240,6 +293,17 @@ def build() -> dict:
         "hotfault_50v_120a_diag_trip_delta_ns": diag_r["delta"]["trip_s"] * 1e9,
         "hotfault_50v_120a_diag_solver_completed":
             diag["logs"]["diagnostic"]["solver_completed"],
+        # CONVERGENCE_DIAGNOSTIC: the base still stalls, the cshunt child runs
+        # to the stop.  Both flags are recorded so neither half can be dropped.
+        "hotfault_50v_120a_cshunt_checks_ok": all(conv50["checks"].values()),
+        "hotfault_50v_120a_cshunt_base_completed": conv_r["base_reached_saved_stop"],
+        "hotfault_50v_120a_cshunt_variant_completed": conv_r["variant_reached_saved_stop"],
+        "hotfault_50v_120a_cshunt_window_us": conv50["window_s"][1] * 1e6,
+        "hotfault_50v_120a_cshunt_ipri_peak_rel": conv_r["relative"]["ipri_peak_a"],
+        "hotfault_50v_120a_cshunt_sr_forward_peak_rel":
+            conv_r["relative"]["sr_forward_peak_a"],
+        "hotfault_50v_120a_cshunt_trip_delta_ns": conv_r["delta"]["trip_s"] * 1e9,
+        "hotfault_50v_120a_cshunt_circuit_differences": len(conv50["circuit_differences"]),
         # The 48 V control, whose base run passed the strict log pre-check,
         # moves the same way (and a little more) under the same tightening.
         "hotfault_48v_120a_diag_checks_ok": all(diag48["checks"].values()),
@@ -262,10 +326,20 @@ def build() -> dict:
                 f"conducts only {latch_max_i:.2f} A "
                 f"({latch_max_i2t:.2e} A2s per device). The "
                 f"{rep_a['i_forward_peak_post_a']:.1f} A forward peak lands in the "
-                "release window right after trip, not in the latch. 50 V remains a "
-                "prefix with no eight-device evidence, and the model implements "
-                "neither UCC24624 standby turn-off nor thermal/SOA limits, so no "
-                "side may be declared safely shut down."),
+                "release window right after trip, not in the latch. 50 V now has a "
+                "complete eight-device record only on the cshunt child, and it ends "
+                "with no gate high, while the stalled base prefix kept B high from "
+                "244.47 us. A 1 fF node capacitance is electrically negligible here, "
+                "so the post-trip gate level is solver-sensitive: neither end state "
+                "may be quoted as the circuit's behaviour. The 48 V control settles "
+                "it: its base latches all four A-side gates, while the same 1 fF "
+                "perturbation latches all four B-side gates (249.38 us, 1.20 A) and "
+                "leaves A low, with the fault stress moving <0.5 %. The *phase* that "
+                "holds a gate high in the dead zone is therefore chosen by the "
+                "numerical trajectory; only the low-current character of the latch "
+                "(1.2-1.4 A, ~1e-4 A2s per device) survives. The model also "
+                "implements neither UCC24624 standby turn-off nor thermal/SOA "
+                "limits, so no side may be declared safely shut down."),
             "blocked": bool(hot48["fault"]["sr_gate_latched_at_end"] or
                             hot50["fault"]["sr_gate_latched_at_end"] or
                             hot50["solver_prefix_only"] or
@@ -278,13 +352,19 @@ def build() -> dict:
                 f"four A gates re-assert at {latch_start_us:.2f} us; the latch carries "
                 f"{latch_max_i:.2f} A / {latch_total_i2t:.2e} A2s total, three orders "
                 f"below the {rep_a['i2t_forward_post_a2s']:.4f} A2s forward I2t. "
-                "Remaining: (a) a genuinely complete 50 V 320 us eight-device run "
-                "(the solver still stalls at 296.929 us), (b) bench verification of "
+                "Remaining: (a) a solver-independent determination of the dead-state "
+                "gate state, which the 48 V control shows the model cannot supply "
+                "(A latches in the base, B in the 1 fF variant; 50 V's prefix and "
+                "cshunt child disagree as well), and a 50 V eight-device record on a "
+                "solve that completes without a solver-only aid (the base still "
+                "stalls at 296.929 us), (b) bench verification of "
                 "UCC24624 turn-off in the same ~0.1 ms dead state, because the model "
                 "lacks standby and the gate is reset only by drain reverse bias, and "
                 "(c) a device SOA/thermal check for the 1.4 A latch and the 285 A "
                 "release-window peak -- the model has neither. Files: "
-                "design/v3/power_priority/sr_fault_probe_48v_120a.json and "
+                "design/v3/power_priority/sr_fault_probe_48v_120a.json, "
+                "sr_fault_probe_50v_120a_cshunt.json, "
+                "sr_fault_probe_48v_120a_cshunt.json and "
                 "hotfault_48v_120a.json."),
             "file": "design/v3/power_priority/hotfault_48v_120a.json",
         },
@@ -323,8 +403,14 @@ def build() -> dict:
                              f"{diag48_r['relative']['sr_forward_peak_a'] * 100:+.3f} %: both cases move "
                              "down under tightening, so the direction is conservative, but the magnitude "
                              "is sub-percent, not 0.1 %.  "
-                             "The stall itself is still unresolved and no "
-                             "number here is hardware evidence.  Closing F01 now "
+                             "The stall now has a solver-aid answer: the cshunt=1 fF child "
+                             f"({len(conv50['circuit_differences'])} circuit differences) reaches "
+                             "the 320 us stop and moves the same-window peaks by "
+                             f"{conv_r['relative']['ipri_peak_a'] * 100:+.3f} % (I(Lr)) / "
+                             f"{conv_r['relative']['sr_forward_peak_a'] * 100:+.3f} % (SR forward) "
+                             f"with trip {conv_r['delta']['trip_s'] * 1e9:+.0f} ns; the base "
+                             "itself still stalls, so no number here is hardware evidence.  "
+                             "Closing F01 now "
                              "also requires an independent engineering waveform "
                              "review: hotfault_engineering_gate accepts a case only "
                              "when hotfault_<case>_engineering_review.json is signed "

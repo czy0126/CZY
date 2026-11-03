@@ -1,0 +1,156 @@
+{
+  "kind": "hotfault_convergence_diagnostic",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "base_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+  "variant_deck": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.cir",
+  "window_s": [
+    0.0,
+    0.00021999999999999998
+  ],
+  "window_basis": "220 us: covers fault, trip and both headline peaks",
+  "solver_option_lines": {
+    "base": [
+      ".options plotwinsize=0 method=gear"
+    ],
+    "variant": [
+      ".options plotwinsize=0 method=gear cshunt=1e-15"
+    ]
+  },
+  "results": {
+    "base": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199997611659352,
+      "samples": 491875,
+      "trip_s": 0.0002150966648764153,
+      "delay_from_engage_us": 40.096664876415495,
+      "ipri_peak_a": 97.44266392021632,
+      "ipri_peak_ms": 0.2099545028031152,
+      "sr_forward_peak_a": 292.6075980704264,
+      "sr_reverse_peak_a": 13.56010480822495,
+      "oc_max_v": 1.084960451390591,
+      "vout_min_after_engage_v": 0.9083322801807758
+    },
+    "variant": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.000219999802141272,
+      "samples": 493536,
+      "trip_s": 0.0002150985674898927,
+      "delay_from_engage_us": 40.09856748989288,
+      "ipri_peak_a": 97.47920488362,
+      "ipri_peak_ms": 0.2099563696758427,
+      "sr_forward_peak_a": 292.7453766807999,
+      "sr_reverse_peak_a": 13.53815250828522,
+      "oc_max_v": 1.084980503706444,
+      "vout_min_after_engage_v": 0.9081938695503514
+    },
+    "delta": {
+      "trip_s": 1.9026134773843673e-09,
+      "ipri_peak_a": 0.03654096340368085,
+      "sr_forward_peak_a": 0.13777861037351613,
+      "sr_reverse_peak_a": -0.021952299939728803,
+      "oc_max_v": 2.0052315852892022e-05,
+      "vout_min_after_engage_v": -0.0001384106304244126
+    },
+    "relative": {
+      "trip_s": 8.845388088651873e-06,
+      "ipri_peak_a": 0.00037499963500176037,
+      "sr_forward_peak_a": 0.0004708647734443794,
+      "sr_reverse_peak_a": -0.001618888662749396,
+      "oc_max_v": 1.8482070777148252e-05,
+      "vout_min_after_engage_v": -0.00015237885236984994
+    },
+    "base_saved_stop_us": 320.0,
+    "variant_saved_stop_us": 320.0,
+    "base_saved_stop_s": 0.00031999999999999997,
+    "variant_saved_stop_s": 0.00031999999999999997,
+    "base_reached_saved_stop": true,
+    "variant_reached_saved_stop": true,
+    "base_t_last_us": 320.0,
+    "variant_t_last_us": 320.0,
+    "variant_full_window": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0003199963557491583,
+      "samples": 526195,
+      "trip_s": 0.0002150985674898927,
+      "delay_from_engage_us": 40.09856748989288,
+      "ipri_peak_a": 97.47920488362,
+      "ipri_peak_ms": 0.2099563696758427,
+      "sr_forward_peak_a": 292.7453766807999,
+      "sr_reverse_peak_a": 13.53815250828522,
+      "oc_max_v": 1.256384642304498,
+      "vout_min_after_engage_v": -0.006704453037535926
+    }
+  },
+  "logs": {
+    "base": {
+      "solver_completed": true,
+      "total_elapsed_s": 544.086,
+      "measurements": {
+        "options": 0.0,
+        "vout_avg": 1.87386278001,
+        "vout_rip": 0.0411944226237,
+        "vds_a1_min": -1.28784547951,
+        "vds_a1_max": 5.63033637244,
+        "irev_a1": 5.43242575198,
+        "ifwd_a1": 46.9295174153,
+        "ovl_cur": 1.70369015287,
+        "ovl_gate": 0.0,
+        "ipri_pk": 15.6313683973,
+        "out_last": 1.88579335053,
+        "hot_vout_early": 1.87393318457,
+        "hot_vout_late": 1.87382981736,
+        "hot_ctrl_before": 0.0,
+        "hot_ctrl_after": 4.99999999999,
+        "hot_iflt_after": 858.889898342,
+        "hot_oc_before": 0.696572272653,
+        "hot_vout_before": 1.87388150096,
+        "hot_ss_before": 5.04483579059,
+        "hot_ipri_after": 97.4426639202,
+        "hot_oc_after": 1.25616720518,
+        "hot_vout_min": -0.00793028426603,
+        "hot_oc_trip": 0.000215096649025
+      }
+    },
+    "variant": {
+      "solver_completed": true,
+      "total_elapsed_s": 549.607,
+      "measurements": {
+        "options": 0.0,
+        "vout_avg": 1.87343216019,
+        "vout_rip": 0.041121187182,
+        "vds_a1_min": -1.28675849131,
+        "vds_a1_max": 5.63502471162,
+        "irev_a1": 5.43382567629,
+        "ifwd_a1": 46.7912524518,
+        "ovl_cur": 1.68998243358,
+        "ovl_gate": 0.0,
+        "ipri_pk": 15.5809990992,
+        "out_last": 1.88539446714,
+        "hot_vout_early": 1.87345039174,
+        "hot_vout_late": 1.87343272501,
+        "hot_ctrl_before": 0.0,
+        "hot_ctrl_after": 4.99999999999,
+        "hot_iflt_after": 858.716884409,
+        "hot_oc_before": 0.696390426482,
+        "hot_vout_before": 1.87344155837,
+        "hot_ss_before": 5.04494293314,
+        "hot_ipri_after": 97.4792048836,
+        "hot_oc_after": 1.2563846423,
+        "hot_vout_min": -0.00670479525696,
+        "hot_oc_trip": 0.000215098538481
+      }
+    }
+  },
+  "checks": {
+    "the_two_decks_differ_only_on_solver_settings": true,
+    "the_comparison_window_is_covered_by_both_raws": true,
+    "the_window_stays_inside_both_decks": true
+  },
+  "circuit_differences": [],
+  "limits": [
+    "a convergence aid bounds a numerical artifact; it is not hardware evidence",
+    "peaks are maxima over samples, so one step of sampling difference can move them",
+    "the comparison window ends at 220 us; nothing after it has a base counterpart",
+    "a completed run does not make the post-trip model boundary (no UCC24624 standby, no SOA) safe"
+  ]
+}
