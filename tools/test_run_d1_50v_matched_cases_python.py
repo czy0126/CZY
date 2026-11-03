@@ -68,6 +68,74 @@ def test_the_manifest_never_claims_more_than_duration():
     assert report["fabrication_approved"] is False
 
 
+SWEEP = ("shunt_2f", "shunt_5f", "shunt_10f")
+
+
+def test_the_published_variant_is_the_frozen_deck_set():
+    assert runner.decks_for("published") == runner.DECKS
+    assert runner.decks_for("published") is not runner.DECKS
+
+
+@pytest.mark.parametrize("variant", SWEEP)
+def test_a_sweep_variant_names_the_generated_decks(variant):
+    decks = runner.decks_for(variant)
+    assert set(decks) == set(runner.DECKS)
+    for case, name in decks.items():
+        assert name == f"d1_prot03_{variant}_{case}.cir"
+        assert (runner.SIM / name).is_file()
+
+
+@pytest.mark.parametrize("variant", SWEEP)
+def test_a_sweep_deck_passes_only_its_own_cshunt_gate(variant):
+    """Control and candidate must share one shunt: mixing 1 fF with 5 fF is the
+    exact mistake the sweep exists to prevent."""
+    for case in runner.DECKS:
+        text = runner.deck_text(case, variant)
+        runner.validate_deck(case, text, variant)
+        with pytest.raises(ValueError, match="solver options changed"):
+            runner.validate_deck(case, text, "published")
+
+
+def test_the_manifest_records_which_sweep_it_belongs_to():
+    report = runner.manifest("sweep_001", [], "shunt_5f")
+    assert report["variant"] == "shunt_5f"
+    assert report["required_cshunt_farads"] == "5e-15"
+    assert report["fabrication_approved"] is False
+    assert runner.manifest("d1_50v_001", [])["variant"] == "published"
+
+
+def test_the_dry_run_can_name_a_sweep_variant(capsys):
+    assert runner.main(["--variant", "shunt_2f"]) == 0
+    out = capsys.readouterr().out
+    assert out.count("DRY_RUN") == 4
+    assert "d1_prot03_shunt_2f_A_CANDIDATE.cir" in out
+
+
+def test_an_unknown_variant_is_refused():
+    with pytest.raises(SystemExit):
+        runner.main(["--variant", "shunt_9f"])
+
+
+def test_a_dead_solver_in_a_sweep_keeps_the_variant_in_the_manifest(tmp_path):
+    run_id = "d1_swp_pyt"
+    stage = runner.SIM / f"d1_{run_id}_A_CONTROL.cir"
+    try:
+        with pytest.raises(SystemExit, match="incomplete runs retained"):
+            runner.main(["--execute", "--run-id", run_id, "--cases", "A_CONTROL",
+                         "--variant", "shunt_2f", "--ltspice", sys.executable,
+                         "--archive-root", str(tmp_path)])
+        report = json.loads((tmp_path / run_id / "run_manifest.json").read_text(encoding="utf-8"))
+        assert report["variant"] == "shunt_2f"
+        assert report["required_cshunt_farads"] == "2e-15"
+        assert report["cases"][0]["source"] == "d1_prot03_shunt_2f_A_CONTROL.cir"
+        archived = tmp_path / run_id / "A_CONTROL" / stage.name
+        source = runner.SIM / runner.decks_for("shunt_2f")["A_CONTROL"]
+        assert runner.sha256(archived) == runner.sha256(source)
+    finally:
+        for suffix in (".cir", ".raw", ".log"):
+            (runner.SIM / f"d1_{run_id}_A_CONTROL{suffix}").unlink(missing_ok=True)
+
+
 def test_an_existing_archive_is_refused(tmp_path):
     (tmp_path / "d1_50v_001").mkdir()
     with pytest.raises(SystemExit, match="refuse overwrite archive"):

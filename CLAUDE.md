@@ -50,6 +50,7 @@ python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
 python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
+python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
     --ltspice D:/ADI/LTspice/LTspice.exe     # 归档到 out/d1_50v/<RunId>/，只判 320 µs 完整性
 python tools/d1_protection_precheck.py --check   # 十路硬件关断接口契约（--write 重生成）
@@ -69,8 +70,12 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 `tools/run_d1_50v_matched_cases.py` 是它的逐行移植——同样四份 deck、同样三道 deck 门槛、
 同样在 `sim/v3` 暂存（`../../models` 才解析得到）、同样拒绝覆盖归档与暂存文件、
 manifest 里同样三面 false 旗——由 `tools/test_run_d1_50v_matched_cases_python.py` 锁住。
-两处有意不同：搬运归档用 `shutil.move`（`os.replace` 不能跨卷，归档根可能在别的盘），
-每例带 `--timeout-s`（默认 1800 s）——死区里求解器会一边把步长压到 1e-15 s 一边每 GB 级地写盘。
+三处有意不同：搬运归档用 `shutil.move`（`os.replace` 不能跨卷，归档根可能在别的盘），
+每例带 `--timeout-s`（默认 1800 s）——死区里求解器会一边把步长压到 1e-15 s 一边每 GB 级地写盘；
+`--variant` 与 PR 30 的 `-Variant` 同步（`published`/`shunt_2f`/`shunt_5f`/`shunt_10f`，
+换的是 `sim/v3/d1_prot03_<variant>_<case>.cir`），cshunt 门槛按变体取值，
+且 manifest 额外记录 `variant` 与 `required_cshunt_farads`——扫描归档不得与 1 fF 已发布证据混淆。
+变体名写进 manifest 是移植版独有的：`.ps1` 不记，两者归档因此不能逐字节比较。
 
 **不要随手重跑 `python tools/make_round4_decks.py`**：`main()` 会重写全部已冻结 deck，
 刷新 mtime，破坏"raw 与 deck 是否同一输入"的比对（见下）。只用它新增 deck 时，
