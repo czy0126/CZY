@@ -78,6 +78,12 @@ manifest 里同样三面 false 旗——由 `tools/test_run_d1_50v_matched_cases
 且 manifest 额外记录 `variant` 与 `required_cshunt_farads`——扫描归档不得与 1 fF 已发布证据混淆。
 变体名写进 manifest 是移植版独有的：`.ps1` 不记，两者归档因此不能逐字节比较。
 
+**GBK 控制台打不出 `µ`（U+00B5 微符号），但打得出 `μ`（U+03BC 希腊字母 mu）和 `Ω`**：
+`print("µΩ")` 直接 `UnicodeEncodeError: 'gbk' codec can't encode character '\xb5'`。
+新工具的控制台输出要么写 ASCII `uohm`，要么用希腊 `μΩ`（`tools/cout_bank_path.py` 就是后者）。
+JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸在最后一行 `print(data["finding"])`
+时前面的数字都已经印出来了，看起来像"跑完了"。`⇒`（U+21D2）同样不在 GBK 里。
+
 **不要随手重跑 `python tools/make_round4_decks.py`**：`main()` 会重写全部已冻结 deck，
 刷新 mtime，破坏"raw 与 deck 是否同一输入"的比对（见下）。只用它新增 deck 时，
 单独 `import make_round4_decks as m; m.write(name, m.<变体>())`，只写目标文件。
