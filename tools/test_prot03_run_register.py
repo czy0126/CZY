@@ -33,8 +33,23 @@ SOURCES = {
     "P02-50V-B-NOCLAMP": ("protection_candidate_50v_120a_prot_b_noclamp_paired.json", "base"),
 }
 
+# A second, independent execution of the same four 50 V decks: both controls
+# stall at the frozen points and every physical column reproduces the first
+# run, so the stall is a property of the decks, not of one lucky execution.
+RERUN_SOURCES = {
+    "P03-RERUN-A-CAND": ("protection_candidate_50v_120a_prot_a_paired_d1_50v_20261103.json",
+                         "candidate"),
+    "P03-RERUN-A-THRMUTE": ("protection_candidate_50v_120a_prot_a_paired_d1_50v_20261103.json",
+                            "base"),
+    "P03-RERUN-B-CAND": ("protection_candidate_50v_120a_prot_b_paired_d1_50v_20261103.json",
+                         "candidate"),
+    "P03-RERUN-B-THRMUTE": ("protection_candidate_50v_120a_prot_b_paired_d1_50v_20261103.json",
+                            "base"),
+}
+
 REGISTERS = {
     KIT / "simulation_run_register_PROT03_2026-11-03.csv": SOURCES,
+    KIT / "simulation_run_register_PROT03_rerun_2026-11-03.csv": RERUN_SOURCES,
 }
 
 CASES = [(path, run_id) for path, sources in REGISTERS.items() for run_id in sources]
