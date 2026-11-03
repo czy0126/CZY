@@ -1,0 +1,163 @@
+{
+  "kind": "PROT03_MATCHED_NUMERIC_SENSITIVITY_DECKS",
+  "evidence": "STATIC_GENERATION_ONLY_NO_NEW_LTSPICE_RUN",
+  "variants": [
+    {
+      "name": "shunt_2f",
+      "cshunt_farads": "2e-15"
+    },
+    {
+      "name": "shunt_5f",
+      "cshunt_farads": "5e-15"
+    },
+    {
+      "name": "shunt_10f",
+      "cshunt_farads": "1e-14"
+    }
+  ],
+  "baseline_cshunt_farads": "1e-15",
+  "control_pairing_limit_vout_millivolt": 1,
+  "required_saved_window_us": 320,
+  "source_repo_sha": "c841f5571673017facf7e91c3ca9ccadc18a8f6b",
+  "records": [
+    {
+      "variant": "shunt_2f",
+      "shunt_farads": "2e-15",
+      "case_id": "A_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_2f_A_CONTROL.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_2f",
+      "shunt_farads": "2e-15",
+      "case_id": "A_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_2f_A_CANDIDATE.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_2f",
+      "shunt_farads": "2e-15",
+      "case_id": "B_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_2f_B_CONTROL.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_2f",
+      "shunt_farads": "2e-15",
+      "case_id": "B_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_2f_B_CANDIDATE.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_5f",
+      "shunt_farads": "5e-15",
+      "case_id": "A_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_5f_A_CONTROL.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_5f",
+      "shunt_farads": "5e-15",
+      "case_id": "A_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_5f_A_CANDIDATE.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_5f",
+      "shunt_farads": "5e-15",
+      "case_id": "B_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_5f_B_CONTROL.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_5f",
+      "shunt_farads": "5e-15",
+      "case_id": "B_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_5f_B_CANDIDATE.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_10f",
+      "shunt_farads": "1e-14",
+      "case_id": "A_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_10f_A_CONTROL.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_10f",
+      "shunt_farads": "1e-14",
+      "case_id": "A_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_10f_A_CANDIDATE.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_10f",
+      "shunt_farads": "1e-14",
+      "case_id": "B_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_10f_B_CONTROL.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    },
+    {
+      "variant": "shunt_10f",
+      "shunt_farads": "1e-14",
+      "case_id": "B_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
+      "generated_deck": "sim/v3/d1_prot03_shunt_10f_B_CANDIDATE.cir",
+      "simulation_state": "UNRUN",
+      "hardware_state": "NOT_APPROVED",
+      "full_window_320us_confirmed": false,
+      "pairing_pre_fault_1mV_confirmed": false
+    }
+  ],
+  "preferred_run_order": [
+    "shunt_2f",
+    "shunt_5f",
+    "shunt_10f"
+  ],
+  "acceptance": "same solver tweak applied to control & candidate; both 320us plus <=1mV pre-fault Vout; actual physical model SOA separate",
+  "not_for_fab": true
+}
