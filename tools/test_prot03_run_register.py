@@ -47,9 +47,20 @@ RERUN_SOURCES = {
                             "base"),
 }
 
+# The PR 30 solver sweep: a second cshunt, both sides of one pairing.  This is
+# the first 50 V pair where the control reaches the end of the saved window at
+# all, so the rows quote a full-window comparison rather than a prefix.
+SWEEP_2F_SOURCES = {
+    "P03-SWEEP-2F-A-CAND": ("protection_candidate_50v_120a_prot_a_paired_shunt_2f.json",
+                            "candidate"),
+    "P03-SWEEP-2F-A-THRMUTE": ("protection_candidate_50v_120a_prot_a_paired_shunt_2f.json",
+                               "base"),
+}
+
 REGISTERS = {
     KIT / "simulation_run_register_PROT03_2026-11-03.csv": SOURCES,
     KIT / "simulation_run_register_PROT03_rerun_2026-11-03.csv": RERUN_SOURCES,
+    KIT / "simulation_run_register_PROT03_sweep_2f_2026-11-03.csv": SWEEP_2F_SOURCES,
 }
 
 CASES = [(path, run_id) for path, sources in REGISTERS.items() for run_id in sources]
@@ -134,6 +145,22 @@ def test_local_raw_hashes_match_when_the_raw_is_present(path: Path, run_id: str)
     if not raw.is_file():
         pytest.skip(f"{raw} is gitignored and not local")
     assert sha256(raw) == row(path, run_id)["raw_sha256"], run_id
+
+
+@pytest.mark.parametrize("run_id", list(SWEEP_2F_SOURCES))
+def test_a_sweep_row_names_a_sweep_deck_and_the_cshunt_it_ran_with(run_id: str):
+    """A 2 fF row must not be mistakable for the published 1 fF evidence: the
+    deck it names is a PR 30 sweep deck, and the `.options` line on disk still
+    carries the 2 fF the row claims."""
+    import generate_prot03_solver_sweep as sweep
+
+    r = row(KIT / "simulation_run_register_PROT03_sweep_2f_2026-11-03.csv", run_id)
+    deck = ROOT / r["deck_path"]
+    options = [ln.strip() for ln in deck.read_text(encoding="utf-8").splitlines()
+               if ln.startswith(".options")]
+    assert r["solver_options"] == "cshunt=2e-15"
+    assert options == [sweep.ANCHOR.replace("1e-15", sweep.VARIANTS["shunt_2f"])], options
+    assert deck.name.startswith("d1_prot03_shunt_2f_"), deck.name
 
 
 def test_no_row_claims_a_port_ledger_it_never_measured():
