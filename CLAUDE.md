@@ -21,6 +21,7 @@ python tools/cr_stress.py --json design/v3/bom/cr_stress.json   # 由 I(Lr) 积�
 python tools/ct_design.py --json design/v3/bom/ct_design.json  # CT 传递链/负载与分压（10 Ω 已冻结）
 python tools/oc_network_check.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.raw \
     --burden 10 --rd1 10k --json design/v3/bom/oc_network_ct10.json   # 实测 OC 网络，需带 V(oc*) 的变体 raw
+python tools/make_startup_burden_probe.py --write   # 冷启动 burden 探针 deck：只加 V(ocd) V(ocm) I(Rbur)
 python tools/startup_burden_pulse.py --json design/v3/bom/startup_burden_pulse.json
     # 冷启动 R3 脉冲：由 I(Lr) 经理想变比推导；传递比在 hotfault srprobe raw 上标定
     # 约 90 s（冷 raw 8 ms 全读），评级阶梯读 r3_vendor_rating_screen.json（PR 28）
