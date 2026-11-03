@@ -16,6 +16,8 @@ def test_real_baseline_is_not_fabrication_approved():
     assert result["checks"]["golden_subnet_matches"] is True
     assert result["checks"]["cached_netlist_report_matches_live_native_export"] is True
     assert result["checks"]["native_editable_project_present"] is True
+    assert result["checks"]["independent_fault_shutdown_design_evidence"] is False
+    assert "independent_fault_shutdown_design_evidence" in result["blockers"]
     assert result["counts"]["golden_references"] == 66
     assert result["counts"]["golden_logical_pins"] == 193
     assert set(result["counts"]["magnetics_missing_physical_pads"]) == {"CT","T1","T2","T3","T4"}
@@ -101,3 +103,61 @@ def test_stale_cached_netlist_cannot_stay_green_when_native_export_changes(monke
     assert report["checks"]["golden_subnet_matches"] is False
     assert any(row["ref"] == "U2" for row in report["counts"]["live_native_netlist_missing_or_wrong"])
     assert report["release_approved"] is False
+
+
+def test_protection_gate_refuses_missing_approval(tmp_path, monkeypatch):
+    monkeypatch.setattr(gate, "PROTECTION_APPROVAL", tmp_path / "missing.json")
+    result = gate._protection_design_gate()
+    assert result["passed"] is False
+    assert "absent" in result["reason"]
+
+
+def test_protection_gate_requires_all_flags_vendor_source_and_cad_revision(tmp_path, monkeypatch):
+    monkeypatch.setattr(gate, "ROOT", tmp_path)
+    approval = tmp_path / "hardware/dcx_main/protection_design_approved.json"
+    approval.parent.mkdir(parents=True)
+    monkeypatch.setattr(gate, "PROTECTION_APPROVAL", approval)
+    sources = {
+        "native_project_path": "hardware/dcx_main/dcx_main_board.eprj2",
+        "fault_analysis_path": "docs/fault_review.md",
+        "driver_shutdown_path": "docs/driver_review.md",
+        "power_sequence_path": "docs/power_sequence.md",
+        "vendor_soa_path": "docs/vendor_soa.md",
+    }
+    record = {
+        "approved": True, "review_scope": "PRE_FAB_PROTECTION_DESIGN_ONLY",
+        "reviewer": "reviewer", "revision": "R2",
+        "simulated_fault_vin_v": [48, 50],
+        "simulated_fault_load_a": 120,
+    }
+    record.update(sources)
+    for field, rel in sources.items():
+        file = tmp_path / rel
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text("synthetic-only file for test", encoding="utf-8")
+        record[field[:-5] + "_sha256"] = hashlib.sha256(file.read_bytes()).hexdigest()
+    approval.write_text(json.dumps(record), encoding="utf-8")
+    assert gate._protection_design_gate()["passed"] is False
+    flags = (
+        "independent_primary_and_all_eight_sr_inhibit_reviewed",
+        "gate_disable_on_any_bias_loss_reviewed",
+        "fault_latch_and_controlled_restart_reviewed",
+        "startup_masking_and_fault_during_mask_reviewed",
+        "physical_gate_driver_and_clamp_conflict_reviewed",
+        "vendor_pulse_soa_and_winding_stress_reviewed",
+    )
+    for key in flags:
+        record[key] = True
+    record["simulated_fault_vin_v"] = [48]
+    approval.write_text(json.dumps(record), encoding="utf-8")
+    assert gate._protection_design_gate()["passed"] is False
+    record["simulated_fault_vin_v"] = [48, 50]
+    record["review_scope"] = "HARDWARE_RATED"
+    approval.write_text(json.dumps(record), encoding="utf-8")
+    assert gate._protection_design_gate()["passed"] is False
+    record["review_scope"] = "PRE_FAB_PROTECTION_DESIGN_ONLY"
+    approval.write_text(json.dumps(record), encoding="utf-8")
+    assert gate._protection_design_gate()["passed"] is True
+    # Edited CAD invalidates source hash; even a synthetic approval fails.
+    (tmp_path / sources["native_project_path"]).write_bytes(b"modified CAD")
+    assert gate._protection_design_gate()["passed"] is False

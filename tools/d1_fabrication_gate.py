@@ -35,6 +35,8 @@ import main_board_schematic as mbs
 NATIVE_ERC = HW / "native_erc_approved.json"
 PCB_NET_DIFF = HW / "pcb_to_schematic_verified.json"
 FAB_APPROVAL = HW / "fabrication_approval.json"
+# This P0 design review is separate from ERC/PCB/DFM and from hardware rating.
+PROTECTION_APPROVAL = HW / "protection_design_approved.json"
 
 
 def _read(path: Path) -> dict:
@@ -90,6 +92,50 @@ def _manual_gate(path: Path, required: tuple[str, ...]) -> dict:
             "reason": "source hashes verified; still needs human signature review" if ok else reason}
 
 
+
+def _protection_design_gate() -> dict:
+    """Fail closed until real hardware fault-inhibit design is independently reviewed.
+
+    An ideal LTspice behavioural latch or 0.05-ohm clamp cannot serve as this
+    approval. Source hashes bind the review to a saved native CAD revision;
+    these metadata checks do not constitute hardware SOA certification.
+    """
+    fields = (
+        "native_project_path", "fault_analysis_path", "driver_shutdown_path",
+        "power_sequence_path", "vendor_soa_path", "reviewer", "revision",
+    )
+    result = _manual_gate(PROTECTION_APPROVAL, fields)
+    if not result["passed"]:
+        return result
+    doc = _read(PROTECTION_APPROVAL)
+    if doc.get("review_scope") != "PRE_FAB_PROTECTION_DESIGN_ONLY":
+        return {**result, "passed": False,
+                "reason": "protection review must be a pre-fabrication design check"}
+    if doc.get("native_project_path") != "hardware/dcx_main/dcx_main_board.eprj2":
+        return {**result, "passed": False,
+                "reason": "fault shutdown review not bound to the native main-board CAD"}
+    guarantees = (
+        "independent_primary_and_all_eight_sr_inhibit_reviewed",
+        "gate_disable_on_any_bias_loss_reviewed",
+        "fault_latch_and_controlled_restart_reviewed",
+        "startup_masking_and_fault_during_mask_reviewed",
+        "physical_gate_driver_and_clamp_conflict_reviewed",
+        "vendor_pulse_soa_and_winding_stress_reviewed",
+    )
+    missing = [key for key in guarantees if doc.get(key) is not True]
+    if missing:
+        return {**result, "passed": False,
+                "reason": "missing protection design approvals: " + ", ".join(missing)}
+    load = doc.get("simulated_fault_load_a")
+    if (doc.get("simulated_fault_vin_v") != [48, 50] or
+        isinstance(load, bool) or not isinstance(load, (int, float))
+        or not (120 <= load < 10000)):
+        return {**result, "passed": False,
+                "reason": "protection evidence must cover 48/50 V and at least 120 A"}
+    return {**result, "reason":
+            "original source hashes matched; design-only signoff, NOT a hardware rating"}
+
+
 def build() -> dict:
     golden = _csv(GOLDEN)
     net = _read(NETLIST)
@@ -129,6 +175,7 @@ def build() -> dict:
     pcb_diff = _manual_gate(PCB_NET_DIFF, ("report_path", "reviewer", "revision"))
     fab_signoff = _manual_gate(FAB_APPROVAL, ("gerber_path", "bom_path", "pcb_drc_path",
                                                "stackup_path", "reviewer", "revision"))
+    protection_design = _protection_design_gate()
 
     logical_ok = (
         bool(live_net.get("subset_ok"))
@@ -171,6 +218,7 @@ def build() -> dict:
         "native_erc_evidence": native_erc["passed"],
         "routed_pcb_to_schematic_evidence": pcb_diff["passed"],
         "manufacturing_package_evidence": fab_signoff["passed"],
+        "independent_fault_shutdown_design_evidence": protection_design["passed"],
     }
     blockers = [key for key, passed in checks.items() if not passed]
     return {
@@ -198,6 +246,7 @@ def build() -> dict:
             "native_erc": native_erc,
             "pcb_to_schematic": pcb_diff,
             "fab_approval": fab_signoff,
+            "protection_design": protection_design,
         },
         "blockers": blockers,
         "limitations": [
@@ -206,6 +255,8 @@ def build() -> dict:
             "The golden netlist was derived from a SPICE deck, not all physical components",
             "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
             "Evidence records require original repository files and matching SHA256, but hashes do not replace expert approval",
+            "Independent primary and eight SR fault shutdown must be independently design-reviewed in the same native CAD revision",
+            "An ideal behavioural gate clamp cannot replace vendor SOA or real hardware protection signoff",
             "Power and efficiency from LTspice do not constitute hardware continuous rating",
             "Thermal and cold plate design intentionally deferred; continuous rating stays unapproved",
         ],
