@@ -87,6 +87,17 @@ def test_the_solver_shunt_is_reported_for_any_value() -> None:
     assert cmp.solver_is_cshunt(".options cshunt=2e-15")
 
 
+def test_a_comment_that_mentions_cshunt_is_not_the_solver_option() -> None:
+    """Every 50 V deck has a header comment like "derived from cshunt=1fF";
+    reading the first match in the file would report the comment, not the
+    .options line that the solver actually used."""
+    text = ("* Derived from the cshunt=1fF convergence variant\n"
+            "* option cshunt=1 fF added\n"
+            ".options plotwinsize=0 method=gear cshunt=5e-15\n")
+    assert cmp.solver_cshunt_farads(text) == "5e-15"
+    assert cmp.solver_cshunt_farads("* option cshunt=1 fF added\n.model X\n") is None
+
+
 def test_the_rail_is_named_by_the_case_not_the_deck_file() -> None:
     """A sweep deck is called d1_prot03_shunt_2f_A_CANDIDATE.cir and carries no
     rail in its name; reading the rail from the file would label 50 V as 48 V."""

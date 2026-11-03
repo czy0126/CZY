@@ -115,7 +115,9 @@ def shared_fault_network(deck_text: str) -> list[str]:
             if line.strip().startswith(prefixes)]
 
 
-CSHUNT = re.compile(r"cshunt=\s*([0-9.eE+-]+)")
+# Anchored to the .options line on purpose: every 50 V deck header mentions
+# "cshunt=1fF" in a comment, and the first match in the file is that comment.
+CSHUNT = re.compile(r"^\.options[^\n]*\bcshunt=\s*([0-9.eE+-]+)", re.MULTILINE)
 
 
 def solver_cshunt_farads(deck_text: str) -> str | None:
