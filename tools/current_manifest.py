@@ -77,6 +77,11 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.cir",
         "sim/v3/sr_tank_dual_v33_cold_vin48_i120_target.cir",
         "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+        # CONVERGENCE_DIAGNOSTIC: the cold-overload fault stalls at 7.5714 ms of
+        # its 8 ms window.  This child adds cshunt=1 fF and nothing else;
+        # tools/cold_oc_convergence.py compares the common 5.4-6.0 ms prefix
+        # before any post-stall number is quoted.
+        "sim/v3/sr_tank_dual_v33_cold_oc_vin48_i120_target_cshunt.cir",
         # ELE-08: steady-state-initialized faults.  The .ic precharge is a
         # starting state, not proof of settling; the run records are
         # design/v3/power_priority/hotfault_{48v,50v}_120a.json and
@@ -182,6 +187,8 @@ V3_SOURCES = {
         "tools/test_hotfault_diagnostic.py",
         "tools/hotfault_convergence.py",
         "tools/test_hotfault_convergence.py",
+        "tools/cold_oc_convergence.py",
+        "tools/test_cold_oc_convergence.py",
         "tools/d1_unclosed_risks.py",
         "tools/test_d1_unclosed_risks.py",
         "tools/make_sr_fault_probes.py",
@@ -246,6 +253,11 @@ V3_SOURCES = {
         # ELE-07: true cold start and 8.7x overload on the 15.4 mOhm target.
         "design/v3/power_priority/cold_start_48v_120a_target.json",
         "design/v3/power_priority/fault_48v_120a_target.json",
+        # CONVERGENCE_DIAGNOSTIC on the same overload: the cshunt child stalls
+        # earlier than the base (5.6141 vs 7.5714 ms), so it is a negative
+        # result, not a substitute record.  The record keeps the common slice
+        # and states that the declared window was not covered.
+        "design/v3/power_priority/cold_oc_vin48_i120_cshunt.json",
         # ELE-08: settled-state faults at 48 V and 50 V, plus the gate register
         # that keeps F01/M01 blocked on this evidence.
         "design/v3/power_priority/hotfault_48v_120a.json",
@@ -330,8 +342,9 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
         "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
-        # The three cold-start / cold-OC raws are 11-12 GB each and stay out of
-        # the hash list; their .log files are the committed measurements.
+        # The cold-start / cold-OC raws (base and cshunt) are 9-12 GB each and
+        # stay out of the hash list; their .log files are the committed
+        # measurements.
     ],
 }
 

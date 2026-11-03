@@ -25,6 +25,14 @@
       }
     ],
     "48v_120a_fault_solver_prefix_only": true,
+    "cold_oc_cshunt_variant_completed": false,
+    "cold_oc_cshunt_base_t_last_us": 7571.410174008682,
+    "cold_oc_cshunt_variant_t_last_us": 5614.0558156558,
+    "cold_oc_cshunt_declared_window_covered": false,
+    "cold_oc_cshunt_ipri_peak_rel": -0.00040253344182972217,
+    "cold_oc_cshunt_sr_forward_peak_rel": -0.0007209875365060681,
+    "cold_oc_cshunt_trip_delta_s": 5.803649397390434e-07,
+    "cold_oc_cshunt_circuit_differences": 0,
     "48v_120a_cold_reached_full_tstop": true,
     "50v_120a_model_loss_residual_w": 0.49861430297388587,
     "50v_120a_model_closure_residual_w": 0.6708277004123957,
@@ -170,9 +178,9 @@
     {
       "id": "F02",
       "priority": "P0",
-      "blocker": "original 120A overload transient did not reach 8ms",
+      "blocker": "the 120A overload record still stops at 7.5714 ms; the 1 fF cshunt child stalls even earlier at 5.6141 ms",
       "blocked": true,
-      "next_evidence": "complete one independently logged fault run; inspect nonlinear model/solver near collapse",
+      "next_evidence": "the cshunt aid is ruled out for this deck: it stalls 1.96 ms earlier while moving the pre-stall peaks by 0.040 % (I(Lr)) and 0.072 % (SR forward) over the common slice; trip moves 580.36 ns.  Completion needs a different numerical strategy or an independently logged run; the published peaks stay prefix-bounded",
       "file": "design/v3/power_priority/fault_48v_120a_target.json"
     },
     {

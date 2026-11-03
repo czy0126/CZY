@@ -24,6 +24,11 @@ def _load(path: Path) -> dict:
 def build() -> dict:
     fault = _load(PP / "fault_48v_120a_target.json")
     cold = _load(PP / "cold_start_48v_120a_target.json")
+    # F02 follow-up: the same 1 fF aid that completed the 50 V hot-fault does
+    # not complete this deck -- it stalls 1.96 ms earlier.  That is a negative
+    # result, so the register must carry it rather than leave the aid as an
+    # untried prescription.
+    cold_conv = _load(PP / "cold_oc_vin48_i120_cshunt.json")
     hot48 = _load(PP / "hotfault_48v_120a.json")
     hot50 = _load(PP / "hotfault_50v_120a.json")
     ledger50 = _load(PP / "energy_ledger_50v_120a.json")
@@ -140,6 +145,14 @@ def build() -> dict:
         "hotfault_50v_solver_prefix": bool(hot50["solver_prefix_only"]),
         "independent_hotfault_evidence": independent_hotfault["cases"],
         "48v_120a_fault_solver_prefix_only": fault["solver_prefix_only"],
+        "cold_oc_cshunt_variant_completed": cold_conv["results"]["variant_reached_saved_stop"],
+        "cold_oc_cshunt_base_t_last_us": cold_conv["results"]["base_t_last_us"],
+        "cold_oc_cshunt_variant_t_last_us": cold_conv["results"]["variant_t_last_us"],
+        "cold_oc_cshunt_declared_window_covered": cold_conv["results"]["declared_window_fully_covered"],
+        "cold_oc_cshunt_ipri_peak_rel": cold_conv["results"]["relative"]["ipri_peak_a"],
+        "cold_oc_cshunt_sr_forward_peak_rel": cold_conv["results"]["relative"]["sr_forward_peak_a"],
+        "cold_oc_cshunt_trip_delta_s": cold_conv["results"]["delta"]["trip_s"],
+        "cold_oc_cshunt_circuit_differences": len(cold_conv["circuit_differences"]),
         "48v_120a_cold_reached_full_tstop": cold["reached_tstop"],
         "50v_120a_model_loss_residual_w": loss_gap,
         "50v_120a_model_closure_residual_w": closure,
@@ -421,9 +434,21 @@ def build() -> dict:
         {
             "id": "F02",
             "priority": "P0",
-            "blocker": "original 120A overload transient did not reach 8ms",
+            "blocker": (
+                f"the 120A overload record still stops at "
+                f"{cold_conv['results']['base_t_last_us'] / 1e3:.4f} ms; the 1 fF cshunt "
+                f"child stalls even earlier at {cold_conv['results']['variant_t_last_us'] / 1e3:.4f} ms"),
             "blocked": bool(fault["solver_prefix_only"]),
-            "next_evidence": "complete one independently logged fault run; inspect nonlinear model/solver near collapse",
+            "next_evidence": (
+                "the cshunt aid is ruled out for this deck: it stalls "
+                f"{abs(cold_conv['results']['base_t_last_us'] - cold_conv['results']['variant_t_last_us']) / 1e3:.2f} ms "
+                "earlier while moving the pre-stall peaks by "
+                f"{abs(cold_conv['results']['relative']['ipri_peak_a']) * 100:.3f} % (I(Lr)) and "
+                f"{abs(cold_conv['results']['relative']['sr_forward_peak_a']) * 100:.3f} % (SR forward) "
+                f"over the common slice; trip moves "
+                f"{cold_conv['results']['delta']['trip_s'] * 1e9:.2f} ns.  Completion needs a "
+                "different numerical strategy or an independently logged run; the published "
+                "peaks stay prefix-bounded"),
             "file": "design/v3/power_priority/fault_48v_120a_target.json",
         },
         {

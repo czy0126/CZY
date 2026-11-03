@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import make_120a_transients as tr
+from hotfault_diagnostic import circuit_differences
 
 
 def test_only_load_changes_in_true_cold_models():
@@ -39,3 +40,23 @@ def test_severe_overload_only_in_oc_variant():
     assert "OC_TRIP WHEN V(oc)=1 CROSS=1" in oc
     assert "IPRI_AFTER MAX abs(I(Lr))" in oc
     assert "0.9" not in tr.PARAM  # no arbitrary relaxed OC threshold
+
+
+def test_the_cshunt_control_changes_only_a_solver_option():
+    """The aid must be comparable: comments and .options may differ, nothing else.
+
+    ``circuit_differences`` strips comments, .tran and .options, so an empty
+    result is the statement that the 8 ms fault circuit is unchanged.  If a
+    future edit drops or reorders a device, this test goes red rather than
+    letting the comparison mix a circuit change into a numerical one.
+    """
+    base = tr.dest("cold_oc").read_text(encoding="utf-8")
+    variant = tr.cshunt_dest("cold_oc").read_text(encoding="utf-8")
+    assert variant == tr.cshunt_variant(base)
+    assert tr.CSHUNT_OPTIONS in variant
+    assert "cshunt=1e-15" in variant
+    assert circuit_differences(base, variant) == []
+    assert ".tran 0 8m 0 10n uic" in variant
+    assert "Sflt out flt ctl 0 SFLT" in variant
+    # The control stays a control: it is never generated for the clean cold start.
+    assert not tr.cshunt_dest("cold").exists()

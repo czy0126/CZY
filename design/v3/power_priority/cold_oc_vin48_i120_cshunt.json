@@ -1,0 +1,103 @@
+{
+ "kind": "cold_oc_convergence_diagnostic",
+ "evidence_level": "SIMULATED_ONLY / NOT_RATED / NOT_A_COLD_START",
+ "base_deck": "sim\\v3\\sr_tank_dual_v33_cold_oc_vin48_i120_target.cir",
+ "variant_deck": "sim\\v3\\sr_tank_dual_v33_cold_oc_vin48_i120_target_cshunt.cir",
+ "window_s": [
+  0.005399999999999999,
+  0.0056140558156558
+ ],
+ "declared_window_s": [
+  0.005399999999999999,
+  0.006
+ ],
+ "window_basis": "5.4-6.0 ms: covers fault engage (5.55 ms), the OC trip and the I(Lr) peak; both sides are truncated to the shorter record's tail",
+ "solver_option_lines": {
+  "base": [
+   ".options plotwinsize=0 method=gear"
+  ],
+  "variant": [
+   ".options plotwinsize=0 method=gear cshunt=1e-15"
+  ]
+ },
+ "results": {
+  "base": {
+   "t_first_s": 0.005400000364718218,
+   "t_last_s": 0.005614055116995295,
+   "samples": 429100,
+   "trip_s": 0.005591808675548297,
+   "delay_from_engage_us": 41.808675548297806,
+   "ipri_peak_a": 84.82680100160617,
+   "ipri_peak_ms": 5.5806854006371,
+   "sr_forward_peak_a": 255.2246733470057,
+   "oc_max_v": 1.20019275623255,
+   "vout_min_after_engage_v": 0.2236160144859083
+  },
+  "variant": {
+   "t_first_s": 0.00540000019495735,
+   "t_last_s": 0.005614055815655159,
+   "samples": 1343952,
+   "trip_s": 0.005592389040488036,
+   "delay_from_engage_us": 42.38904048803685,
+   "ipri_peak_a": 84.79265537743959,
+   "ipri_peak_ms": 5.583113525729815,
+   "sr_forward_peak_a": 255.0406595385137,
+   "oc_max_v": 1.199307351266105,
+   "vout_min_after_engage_v": 0.229962253326063
+  },
+  "delta": {
+   "trip_s": 5.803649397390434e-07,
+   "ipri_peak_a": -0.03414562416658384,
+   "sr_forward_peak_a": -0.18401380849201132,
+   "oc_max_v": -0.0008854049664450692,
+   "vout_min_after_engage_v": 0.0063462388401547
+  },
+  "relative": {
+   "trip_s": 0.00010378841148073192,
+   "ipri_peak_a": -0.00040253344182972217,
+   "sr_forward_peak_a": -0.0007209875365060681,
+   "oc_max_v": -0.0007377189720960686,
+   "vout_min_after_engage_v": 0.02838007311213664
+  },
+  "base_saved_stop_us": 8000.0,
+  "variant_saved_stop_us": 8000.0,
+  "base_reached_saved_stop": false,
+  "variant_reached_saved_stop": false,
+  "base_t_last_us": 7571.410174008682,
+  "variant_t_last_us": 5614.0558156558,
+  "window_end_us": 5614.0558156558,
+  "declared_window_end_us": 6000.0,
+  "declared_window_fully_covered": false
+ },
+ "logs": {
+  "base": {
+   "solver_completed": false,
+   "total_elapsed_s": null,
+   "measurements": {
+    "options": 0.0
+   }
+  },
+  "variant": {
+   "solver_completed": false,
+   "total_elapsed_s": null,
+   "measurements": {
+    "options": 0.0
+   }
+  }
+ },
+ "checks": {
+  "the_two_decks_differ_only_on_solver_settings": true,
+  "the_comparison_window_is_covered_by_both_raws": false,
+  "the_window_stays_inside_both_decks": true
+ },
+ "circuit_differences": [],
+ "limits": [
+  "a convergence aid bounds a numerical artifact; it is not hardware evidence",
+  "peaks are maxima over samples, so one step of sampling difference can move them",
+  "the comparison window ends at 6000 us; nothing after it has a base counterpart",
+  "vout_min_after_engage_v is window-limited: the published -4.98 mV full-prefix dip happens after 6 ms, so the two numbers are different quantities",
+  "a completed run does not approve the fault, the 8.7x stress or the hardware SOA",
+  "the common slice ends at 5614.06 us, not 6000 us: the shorter record stops there, so the full-window deltas do not exist",
+  "the variant stalled too; its post-stall samples are not evidence"
+ ]
+}

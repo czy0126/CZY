@@ -168,6 +168,17 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   **按 PID 终止的 run 日志没有 `Total elapsed time` 也没有 `.meas`**；`analyze_v3_transient.py`
   记 `solver_prefix_only`，引用必须写 5.55–7.5714 ms 前缀。见
   `design/v3/power_priority/48V120A_冷启动与故障_2026-11-02.md` 与 `{cold_start,fault}_48v_120a_target.json`。
+- **cshunt 补救对冷启动过载无效，而且让塌缩更早**：`..._cold_oc_vin48_i120_target_cshunt.cir`
+  （`make_120a_transients.py` 派生，只改 `.options`，`circuit_differences()` 0 条）在
+  **5.6141 ms** 停住（基座 7.5714 ms，早 1.96 ms），日志同样无 `Total elapsed time`/`.meas`，
+  终止前写了 9.03 GB。**不要把 50 V hotfault 那次 cshunt 成功外推到这条 deck。**
+  公共切片 5.400–5.614 ms 上 trip +580 ns、`I(Lr)` 峰 −0.040 %、SR 正向 −0.072 %、
+  `V(oc)` 最大 −0.074 % ⇒ 已发布峰值不是该设置的伪影；变体同一时间片用了 3.1 倍采样点，
+  说明塌缩前就在压步长。记录在 `design/v3/power_priority/cold_oc_vin48_i120_cshunt.json`，
+  F02 仍 `blocked`。**`cold_oc_convergence.py` 会把两侧都截到 `min(声明终点, 两条 raw 尾部)`**
+  再取最大值——不这么截，基座多出的 386 µs 只会让最大值单调变大，差额变成覆盖度；
+  `declared_window_fully_covered=false` 就是这个事实。`vout_min_after_engage_v` 因此
+  **不能**与已发布的全长前缀 −4.98 mV 直接比（那个下探在 6 ms 之后）。
 
 ## 测量口径（工具不变式）
 

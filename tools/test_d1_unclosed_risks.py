@@ -285,3 +285,28 @@ def test_the_48v_control_flips_the_latched_phase_without_moving_the_stress():
     assert all(x["blocked"] for x in j["risks"])
 
 
+
+
+def test_the_cshunt_aid_does_not_complete_the_cold_overload():
+    """The 50 V rescue does not transfer: this deck stalls 1.96 ms earlier.
+
+    Recording it as a negative result keeps the aid from being re-proposed as
+    an untried prescription.  The common slice also bounds the pre-stall peaks:
+    the aid moves them by less than a tenth of a percent, so the published
+    84.83 A / 255.22 A are not artifacts of this solver setting.
+    """
+    j = r.build()
+    e = j["evidence"]
+    assert e["cold_oc_cshunt_variant_completed"] is False
+    assert e["cold_oc_cshunt_base_t_last_us"] == pytest.approx(7571.41, abs=0.1)
+    assert e["cold_oc_cshunt_variant_t_last_us"] == pytest.approx(5614.06, abs=0.1)
+    assert e["cold_oc_cshunt_variant_t_last_us"] < e["cold_oc_cshunt_base_t_last_us"]
+    assert e["cold_oc_cshunt_declared_window_covered"] is False
+    assert e["cold_oc_cshunt_circuit_differences"] == 0
+    assert abs(e["cold_oc_cshunt_ipri_peak_rel"]) < 0.001
+    assert abs(e["cold_oc_cshunt_sr_forward_peak_rel"]) < 0.001
+    assert abs(e["cold_oc_cshunt_trip_delta_s"]) < 1e-6  # 580 ns, still 1e-4 relative
+    f02 = next(row for row in j["risks"] if row["id"] == "F02")
+    assert "cshunt" in (f02["blocker"] + f02["next_evidence"])
+    assert f02["blocked"] is True
+    assert all(x["blocked"] for x in j["risks"])
