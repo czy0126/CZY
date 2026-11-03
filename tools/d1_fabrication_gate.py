@@ -26,6 +26,7 @@ REVIEW = HW / "pin_footprint_review.csv"
 BOM = ROOT / "design/v3/bom/bom_draft.csv"
 
 import d1_bom_coverage as bomcov
+import d1_functional_net_audit as functional_audit
 import check_main_board_netlist as native_check
 import main_board_schematic as mbs
 
@@ -156,6 +157,8 @@ def build() -> dict:
     live_net = native_check.compare(
         mbs.load_golden(), native_export["value"]["refs"], mbs.load_library())
     subset_snapshot_fresh = live_net == net
+    functional_check = functional_audit.compare(native_export["value"]["refs"])
+
 
     gold_refs = {x["ref"] for x in golden}
     present = set(placement["refs"])
@@ -212,6 +215,7 @@ def build() -> dict:
         "native_editable_project_present": (HW / "dcx_main_board.eprj2").is_file(),
         "golden_subnet_matches": logical_ok,
         "cached_netlist_report_matches_live_native_export": subset_snapshot_fresh,
+        "controller_rt_dt_roles_match_native_netlist": functional_check["passed"],
         "all_golden_refs_and_magnetic_physical_pads_verified": all_placed,
         "no_electrical_placeholders_or_unselected_bom": all_values_frozen,
         "all_required_real_hardware_bom_refs_in_native_design": not native_bom_missing_reported,
@@ -232,6 +236,7 @@ def build() -> dict:
             "placed_references": len(present),
             "golden_pads_checked_by_subnet": live_net.get("pads_checked"),
             "live_native_netlist_missing_or_wrong": live_net.get("missing_or_wrong"),
+            "functional_control_net_mismatches": functional_check["problems"],
             "unplaced_references": missing_refs,
             "magnetics_missing_physical_pads": incomplete_magnets,
             "refs_with_placeholders": placeholders,
@@ -252,6 +257,7 @@ def build() -> dict:
         "limitations": [
             "Netlist subset is recomputed from the exported native CAD nets; cache must match but native export still needs editor provenance",
             "Subset netlist check is NOT a complete schematic pin or footprint check",
+            "Controller RT/DT functional-value crosscheck detects BOM-to-net mislabelling but does NOT substitute native ERC",
             "The golden netlist was derived from a SPICE deck, not all physical components",
             "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
             "Evidence records require original repository files and matching SHA256, but hashes do not replace expert approval",

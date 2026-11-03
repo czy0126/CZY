@@ -14,6 +14,7 @@ def test_real_baseline_is_not_fabrication_approved():
     assert result["release_approved"] is False
     assert result["status"] == "NOT_FOR_FAB"
     assert result["checks"]["golden_subnet_matches"] is True
+    assert result["checks"]["controller_rt_dt_roles_match_native_netlist"] is True
     assert result["checks"]["cached_netlist_report_matches_live_native_export"] is True
     assert result["checks"]["native_editable_project_present"] is True
     assert result["checks"]["independent_fault_shutdown_design_evidence"] is False
@@ -161,3 +162,17 @@ def test_protection_gate_requires_all_flags_vendor_source_and_cad_revision(tmp_p
     # Edited CAD invalidates source hash; even a synthetic approval fails.
     (tmp_path / sources["native_project_path"]).write_bytes(b"modified CAD")
     assert gate._protection_design_gate()["passed"] is False
+
+
+def test_wrong_rt_dt_candidate_mapping_blocks_controller_gate(monkeypatch):
+    import d1_functional_net_audit as functional
+    original=functional.compare
+    def mutate(*args, **kwargs):
+        result=original(*args,**kwargs)
+        return {**result,"passed":False,"problems":["injected wrong RT candidate"]}
+    monkeypatch.setattr(gate.functional_audit,"compare",mutate)
+    report=gate.build()
+    assert report["release_approved"] is False
+    assert not report["checks"]["controller_rt_dt_roles_match_native_netlist"]
+    assert "controller_rt_dt_roles_match_native_netlist" in report["blockers"]
+    assert report["counts"]["functional_control_net_mismatches"]==["injected wrong RT candidate"]

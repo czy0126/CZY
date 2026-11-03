@@ -18,8 +18,8 @@ def test_committed_matrix_is_current():
 def test_known_critical_values_and_native_approval_is_absent():
     parts=json.loads(x.CATALOG.read_text(encoding="utf-8"))
     links=json.loads(x.ASSIGN.read_text(encoding="utf-8"))
-    assert parts[links["R1"]]["mpn"]=="ERJ3EKF9760V"
-    assert parts[links["R2"]]["mpn"]=="ERJ3EKF5361V"
+    assert parts[links["R1"]]["mpn"]=="ERJ3EKF5361V"
+    assert parts[links["R2"]]["mpn"]=="ERJ3EKF9760V"
     assert parts[links["R3"]]["eia_case"]=="2512"
     assert parts[links["R3"]]["mpn"]=="CRCW251210R0FKEHHP"
     assert x.r3_minimum_rating(parts,links,json.loads(x.BURDEN.read_text(encoding="utf-8")))["pulse_validation"]=="OPEN"
