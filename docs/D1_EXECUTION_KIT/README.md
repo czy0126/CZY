@@ -13,6 +13,18 @@ python tools/verify_vendor_candidate_matrix.py --check
 python -m pytest tools/test_verify_vendor_candidate_matrix.py -q
 ```
 
+## 2026-11-03 增补二：原厂 SOA/Zth 数字化与八只 SR 筛查
+
+[11](11_原厂实证与逐位号候选.md) 的第 3 条已从"待确认"推进到"已确认到什么程度"：
+`tools/vendor_soa.py` 把 `references/datasheets/bsc010n04ls6.pdf` 第 6 页的 6 条 SOA 曲线和单脉冲 Zth
+从矢量数据里读出来（`design/v3/power_priority/vendor_soa_digitized.json`），
+`tools/sr_soa_screen.py` 再在三条故障 raw 上逐管比对（`sr_soa_screen.json`）。
+
+结论分三份，不能合并：**第一象限**逐点占用率 ≤6.52 %；**第三象限**是故障应力主体，而原厂图只画
+`VDS>0`，**没有判据**，只能记录实测 −292.61 A/15.54 V（48 V）与 −303.50 A/15.46 V（50 V cshunt）；
+**热**按管芯探针 190.7/214.2 W 经 Zth 卷积得 1.84–1.88 K 温升，但模型 TJ 钉在 25 °C、无热反馈。
+所以本包**仍然不写"已通过器件 SOA"**：缺的是第三象限的厂家判据与逐器件热签核。
+
 ## 最短启动路线
 
 1. **先跑检查**（Windows，仓库根目录）：
