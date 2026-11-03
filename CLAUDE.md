@@ -34,6 +34,10 @@ python tools/energy_ledger_100a.py --json design/v3/stage_f/energy_ledger_100a.j
 python tools/sr_loss_audit.py --json design/v3/stage_f/sr_loss_audit.json
     # SR 量纲/步长/驱动功率专项排查；要本地有六条 raw（含 2.44+2.25+3.78 GB），约 20 min
     # 100 A 同窗口端口能量账；默认读 ..._100a_ledger.raw（424 MB，不入 Git）
+python tools/vendor_soa.py --json design/v3/power_priority/vendor_soa_digitized.json
+    # SOA/Zth 数字化；需 PyMuPDF（**不是项目依赖**，CI 上没有时该重生成测试自动 skip）
+python tools/sr_soa_screen.py --json design/v3/power_priority/sr_soa_screen.json
+    # 八只 SR 的一/三象限与 Zth 温升；需三条 srprobe raw（各约 1.1–1.2 GB）
 python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐项比对
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
@@ -493,6 +497,31 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   碰 `hb` 的只有 `Dbt`/`Cbt` 两只，模型里的自举电容只是恒定 12 V 偏置。
   所以 9.63 mA（`Qg` 48 nC max × 200.6 kHz）、218 mV 压降、~0.4 A 峰值全是代数值/推导值，
   不是测量值；`test_the_deck_does_not_load_the_bootstrap_capacitor` 锁住这个前提。
+
+- **SR 主要在第三象限导通，厂家的 SOA 图是第一象限**：`Xsa1 da1 ga1 sgnd` 的源是 `sgnd`，
+  `V(a1)` 就是 VDS；整流时 `V(a1) < 0` 且 `I(VSa1) < 0`，两者的**乘积为正**（与
+  `Vdie·(Ich−Idb) > 0` 同一口径）。所以第三象限的"功率"是 `V·I`，不是 `−V·I`。
+  厂家 SOA 图只画 `VDS > 0, ID > 0`，**对主导应力没有任何曲线可判**——
+  `sr_soa_screen.py` 因此把第三象限写成"图外、不评分"，只记录实测值，不要给它配一条判据。
+  第一象限只是换流/反向恢复的短暂区间，实测占用率 **≤6.5 %**（三个故障跑）。
+- **端口乘积不是管芯耗散**：`V(a1)·I(VSa1)` 含封装引线电感的 `L·di/dt`，
+  48 V 跑到 **351 W**，而管芯探针只有 **190.7 W**（50 V cshunt 374 / 214 W）。
+  温度只能按管芯算；端口数当上界，不能当第二次测量。
+- **`V(xsa1:di)` 的实例名是 `xsa1`/`xsb1`**（`xs`+侧+`1`），不是 `xa1`——
+  写错时 `read_window` 会列出整条 raw 的变量名，别顺手改成 `V(a1)`（那是封装外端子）。
+- **PDF 数字化：刻度和虚线都只能从几何上认**：刻度是 8 pt 的 `"10"` 加一个 5 pt 上标，
+  位置取**两块合并后的中心**（只用 `"10"` 的中心会把 Zth 零点偏 2.86 pt，合并后只差 1.07 pt）；
+  映射是 `pos = a + b·log10(v)`，`a` 就是 10^0 的位置。曲线描边宽 **1.2**（格子线 0.9），
+  虚线每段是**独立的单段 drawing** 且 `dashes` 恒为 `'[] 0'`，
+  所以只能按**弦长**区分：单脉冲曲线 4.3–7 pt，占空比族 0.65 pt（阈值 2 pt）。
+  三个锚点验轴：1 µs 平台 1125 A 对印在文件里的 1140 A（−1.3 %）、右沿 41.07 V 对 40 V 额定、
+  `Zth(1 s)` 0.994 K/W 对 `Rth(j-c)` 1 K/W。见 `tools/vendor_soa.py`。
+- **PyMuPDF 不是项目依赖**（`requirements.txt` 只有 pytest/numpy/matplotlib/PyLTSpice），
+  所以 `vendor_soa` 里是惰性 `import pymupdf`，重生成测试用
+  `pytest.importorskip("pymupdf")`；提交的 JSON 在没有 PyMuPDF 的 CI 上照样能校验不变量。
+- **Zth 叠加以窗口起点为参考**：`ΔTj = Σ (P_k − P_{k−1})·Zth(t − t_k)`，
+  模型把 TJ 钉在 25 °C，所以 `peak_rise_k` 是**相对故障前**的温升，不是绝对结温；
+  它同时不代表额定——没有第三象限的厂家 SOA，也没有热反馈。
 
 ## 已知工具陷阱（已修，勿回归）
 

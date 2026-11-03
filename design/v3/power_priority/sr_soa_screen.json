@@ -1,0 +1,1037 @@
+{
+ "source": {
+  "vendored_pdf": "references/datasheets/bsc010n04ls6.pdf",
+  "sha256": "c868cf67712a0f5f8d1834adf0a810475e3ee88037ae9aadd2761a2f956d8b63",
+  "digitized_json": "design/v3/power_priority/vendor_soa_digitized.json"
+ },
+ "results": {
+  "runs": {
+   "48v_120a": {
+    "raw": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
+    "probe_record": "design/v3/power_priority/sr_fault_probe_48v_120a.json",
+    "window": {
+     "from_s": 0.000165,
+     "to_s": 0.00032,
+     "trip_s": 0.000215097
+    },
+    "devices": {
+     "1A": {
+      "vds_max_v": 15.5413,
+      "vds_rating_utilization": 0.388533,
+      "first_quadrant": {
+       "samples": 51972,
+       "samples_compared": 51972,
+       "peak_current_a": 13.4961,
+       "peak_voltage_v": 15.5413,
+       "peak_power_w": 91.8406,
+       "worst_point": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864
+       },
+       "peak_utilization_10_us": 0.0147807,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864,
+        "limit_a": 600.014,
+        "utilization": 0.0147807
+       },
+       "peak_utilization_100_us": 0.0630052,
+       "worst_point_against_100_us": {
+        "vds_v": 12.61,
+        "id_a": 6.79215,
+        "limit_a": 107.803,
+        "utilization": 0.0630052
+       },
+       "peak_utilization": 0.0630052
+      },
+      "third_quadrant": {
+       "samples": 55264,
+       "peak_current_a": -292.608,
+       "peak_voltage_v": -4.77503,
+       "peak_port_power_w": 351.325
+      }
+     },
+     "1B": {
+      "vds_max_v": 15.2397,
+      "vds_rating_utilization": 0.380993,
+      "first_quadrant": {
+       "samples": 42827,
+       "samples_compared": 42827,
+       "peak_current_a": 13.5601,
+       "peak_voltage_v": 15.2397,
+       "peak_power_w": 88.6164,
+       "worst_point": {
+        "vds_v": 9.93508,
+        "id_a": 8.91955
+       },
+       "peak_utilization_10_us": 0.0142611,
+       "worst_point_against_10_us": {
+        "vds_v": 10.1246,
+        "id_a": 8.75258,
+        "limit_a": 613.737,
+        "utilization": 0.0142611
+       },
+       "peak_utilization_100_us": 0.0590972,
+       "worst_point_against_100_us": {
+        "vds_v": 12.4435,
+        "id_a": 6.54288,
+        "limit_a": 110.714,
+        "utilization": 0.0590972
+       },
+       "peak_utilization": 0.0590972
+      },
+      "third_quadrant": {
+       "samples": 59936,
+       "peak_current_a": -292.191,
+       "peak_voltage_v": -4.89024,
+       "peak_port_power_w": 350.644
+      }
+     },
+     "2A": {
+      "vds_max_v": 15.5413,
+      "vds_rating_utilization": 0.388533,
+      "first_quadrant": {
+       "samples": 51972,
+       "samples_compared": 51972,
+       "peak_current_a": 13.4961,
+       "peak_voltage_v": 15.5413,
+       "peak_power_w": 91.8406,
+       "worst_point": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864
+       },
+       "peak_utilization_10_us": 0.0147807,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864,
+        "limit_a": 600.014,
+        "utilization": 0.0147807
+       },
+       "peak_utilization_100_us": 0.0630052,
+       "worst_point_against_100_us": {
+        "vds_v": 12.61,
+        "id_a": 6.79215,
+        "limit_a": 107.803,
+        "utilization": 0.0630052
+       },
+       "peak_utilization": 0.0630052
+      },
+      "third_quadrant": {
+       "samples": 55264,
+       "peak_current_a": -292.608,
+       "peak_voltage_v": -4.77503,
+       "peak_port_power_w": 351.326
+      }
+     },
+     "2B": {
+      "vds_max_v": 15.2397,
+      "vds_rating_utilization": 0.380993,
+      "first_quadrant": {
+       "samples": 42827,
+       "samples_compared": 42827,
+       "peak_current_a": 13.5601,
+       "peak_voltage_v": 15.2397,
+       "peak_power_w": 88.6164,
+       "worst_point": {
+        "vds_v": 9.93508,
+        "id_a": 8.91955
+       },
+       "peak_utilization_10_us": 0.0142611,
+       "worst_point_against_10_us": {
+        "vds_v": 10.1246,
+        "id_a": 8.75258,
+        "limit_a": 613.737,
+        "utilization": 0.0142611
+       },
+       "peak_utilization_100_us": 0.0590972,
+       "worst_point_against_100_us": {
+        "vds_v": 12.4435,
+        "id_a": 6.54288,
+        "limit_a": 110.714,
+        "utilization": 0.0590972
+       },
+       "peak_utilization": 0.0590972
+      },
+      "third_quadrant": {
+       "samples": 59936,
+       "peak_current_a": -292.191,
+       "peak_voltage_v": -4.89024,
+       "peak_port_power_w": 350.644
+      }
+     },
+     "3A": {
+      "vds_max_v": 15.5413,
+      "vds_rating_utilization": 0.388533,
+      "first_quadrant": {
+       "samples": 51972,
+       "samples_compared": 51972,
+       "peak_current_a": 13.4961,
+       "peak_voltage_v": 15.5413,
+       "peak_power_w": 91.8406,
+       "worst_point": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864
+       },
+       "peak_utilization_10_us": 0.0147807,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864,
+        "limit_a": 600.014,
+        "utilization": 0.0147807
+       },
+       "peak_utilization_100_us": 0.0630052,
+       "worst_point_against_100_us": {
+        "vds_v": 12.61,
+        "id_a": 6.79215,
+        "limit_a": 107.803,
+        "utilization": 0.0630052
+       },
+       "peak_utilization": 0.0630052
+      },
+      "third_quadrant": {
+       "samples": 55264,
+       "peak_current_a": -292.608,
+       "peak_voltage_v": -4.77503,
+       "peak_port_power_w": 351.325
+      }
+     },
+     "3B": {
+      "vds_max_v": 15.2397,
+      "vds_rating_utilization": 0.380993,
+      "first_quadrant": {
+       "samples": 42827,
+       "samples_compared": 42827,
+       "peak_current_a": 13.5601,
+       "peak_voltage_v": 15.2397,
+       "peak_power_w": 88.6164,
+       "worst_point": {
+        "vds_v": 9.93508,
+        "id_a": 8.91955
+       },
+       "peak_utilization_10_us": 0.0142611,
+       "worst_point_against_10_us": {
+        "vds_v": 10.1246,
+        "id_a": 8.75258,
+        "limit_a": 613.737,
+        "utilization": 0.0142611
+       },
+       "peak_utilization_100_us": 0.0590972,
+       "worst_point_against_100_us": {
+        "vds_v": 12.4435,
+        "id_a": 6.54288,
+        "limit_a": 110.714,
+        "utilization": 0.0590972
+       },
+       "peak_utilization": 0.0590972
+      },
+      "third_quadrant": {
+       "samples": 59936,
+       "peak_current_a": -292.191,
+       "peak_voltage_v": -4.89024,
+       "peak_port_power_w": 350.644
+      }
+     },
+     "4A": {
+      "vds_max_v": 15.5413,
+      "vds_rating_utilization": 0.388533,
+      "first_quadrant": {
+       "samples": 51972,
+       "samples_compared": 51972,
+       "peak_current_a": 13.4961,
+       "peak_voltage_v": 15.5413,
+       "peak_power_w": 91.8406,
+       "worst_point": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864
+       },
+       "peak_utilization_10_us": 0.0147807,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3557,
+        "id_a": 8.86864,
+        "limit_a": 600.014,
+        "utilization": 0.0147807
+       },
+       "peak_utilization_100_us": 0.0630052,
+       "worst_point_against_100_us": {
+        "vds_v": 12.61,
+        "id_a": 6.79215,
+        "limit_a": 107.803,
+        "utilization": 0.0630052
+       },
+       "peak_utilization": 0.0630052
+      },
+      "third_quadrant": {
+       "samples": 55264,
+       "peak_current_a": -292.608,
+       "peak_voltage_v": -4.77503,
+       "peak_port_power_w": 351.325
+      }
+     },
+     "4B": {
+      "vds_max_v": 15.2397,
+      "vds_rating_utilization": 0.380993,
+      "first_quadrant": {
+       "samples": 42827,
+       "samples_compared": 42827,
+       "peak_current_a": 13.5601,
+       "peak_voltage_v": 15.2397,
+       "peak_power_w": 88.6164,
+       "worst_point": {
+        "vds_v": 9.93508,
+        "id_a": 8.91955
+       },
+       "peak_utilization_10_us": 0.0142611,
+       "worst_point_against_10_us": {
+        "vds_v": 10.1246,
+        "id_a": 8.75258,
+        "limit_a": 613.737,
+        "utilization": 0.0142611
+       },
+       "peak_utilization_100_us": 0.0590972,
+       "worst_point_against_100_us": {
+        "vds_v": 12.4435,
+        "id_a": 6.54288,
+        "limit_a": 110.714,
+        "utilization": 0.0590972
+       },
+       "peak_utilization": 0.0590972
+      },
+      "third_quadrant": {
+       "samples": 59936,
+       "peak_current_a": -292.191,
+       "peak_voltage_v": -4.89024,
+       "peak_port_power_w": 350.644
+      }
+     }
+    },
+    "thermal": {
+     "device": "1A",
+     "steady_state_die_power_w": 3.03613,
+     "peak_die_power_w": 190.734,
+     "peak_channel_power_w": 213.835,
+     "peak_body_diode_power_w": 190.734,
+     "blocking_voltage_max_v": 19.6843,
+     "energy_equivalent_width_s": 4.73264e-06,
+     "peak_rise_k": 1.83663,
+     "rectangular_estimate_k": 3.02736,
+     "devices": {
+      "1A": {
+       "device": "1A",
+       "steady_state_die_power_w": 3.03613,
+       "peak_die_power_w": 190.734,
+       "peak_channel_power_w": 213.835,
+       "peak_body_diode_power_w": 190.734,
+       "blocking_voltage_max_v": 19.6843,
+       "energy_equivalent_width_s": 4.73264e-06,
+       "peak_rise_k": 1.83663,
+       "rectangular_estimate_k": 3.02736
+      },
+      "1B": {
+       "device": "1B",
+       "steady_state_die_power_w": 2.87165,
+       "peak_die_power_w": 182.499,
+       "peak_channel_power_w": 213.778,
+       "peak_body_diode_power_w": 182.499,
+       "blocking_voltage_max_v": 19.2658,
+       "energy_equivalent_width_s": 4.79259e-06,
+       "peak_rise_k": 1.48173,
+       "rectangular_estimate_k": 2.91548
+      }
+     }
+    }
+   },
+   "48v_120a_cshunt": {
+    "raw": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
+    "probe_record": "design/v3/power_priority/sr_fault_probe_48v_120a_cshunt.json",
+    "window": {
+     "from_s": 0.000165,
+     "to_s": 0.00032,
+     "trip_s": 0.000215099
+    },
+    "devices": {
+     "1A": {
+      "vds_max_v": 15.633,
+      "vds_rating_utilization": 0.390826,
+      "first_quadrant": {
+       "samples": 44168,
+       "samples_compared": 44168,
+       "peak_current_a": 13.5382,
+       "peak_voltage_v": 15.586,
+       "peak_power_w": 92.0628,
+       "worst_point": {
+        "vds_v": 10.5268,
+        "id_a": 8.74555
+       },
+       "peak_utilization_10_us": 0.014817,
+       "worst_point_against_10_us": {
+        "vds_v": 10.5268,
+        "id_a": 8.74555,
+        "limit_a": 590.238,
+        "utilization": 0.014817
+       },
+       "peak_utilization_100_us": 0.0632949,
+       "worst_point_against_100_us": {
+        "vds_v": 12.616,
+        "id_a": 6.81694,
+        "limit_a": 107.701,
+        "utilization": 0.0632949
+       },
+       "peak_utilization": 0.0632949
+      },
+      "third_quadrant": {
+       "samples": 59088,
+       "peak_current_a": -292.745,
+       "peak_voltage_v": -4.84531,
+       "peak_port_power_w": 354.071
+      }
+     },
+     "1B": {
+      "vds_max_v": 15.3419,
+      "vds_rating_utilization": 0.383549,
+      "first_quadrant": {
+       "samples": 51394,
+       "samples_compared": 51394,
+       "peak_current_a": 13.3236,
+       "peak_voltage_v": 15.3419,
+       "peak_power_w": 89.7097,
+       "worst_point": {
+        "vds_v": 10.3754,
+        "id_a": 8.64637
+       },
+       "peak_utilization_10_us": 0.0144379,
+       "worst_point_against_10_us": {
+        "vds_v": 10.4357,
+        "id_a": 8.59637,
+        "limit_a": 595.403,
+        "utilization": 0.0144379
+       },
+       "peak_utilization_100_us": 0.0604933,
+       "worst_point_against_100_us": {
+        "vds_v": 12.2526,
+        "id_a": 6.90823,
+        "limit_a": 114.198,
+        "utilization": 0.0604933
+       },
+       "peak_utilization": 0.0604933
+      },
+      "third_quadrant": {
+       "samples": 57826,
+       "peak_current_a": -292.022,
+       "peak_voltage_v": -4.92379,
+       "peak_port_power_w": 356.71
+      }
+     },
+     "2A": {
+      "vds_max_v": 15.633,
+      "vds_rating_utilization": 0.390825,
+      "first_quadrant": {
+       "samples": 44168,
+       "samples_compared": 44168,
+       "peak_current_a": 13.5381,
+       "peak_voltage_v": 15.5859,
+       "peak_power_w": 92.062,
+       "worst_point": {
+        "vds_v": 10.5267,
+        "id_a": 8.74555
+       },
+       "peak_utilization_10_us": 0.0148169,
+       "worst_point_against_10_us": {
+        "vds_v": 10.5267,
+        "id_a": 8.74555,
+        "limit_a": 590.243,
+        "utilization": 0.0148169
+       },
+       "peak_utilization_100_us": 0.0632945,
+       "worst_point_against_100_us": {
+        "vds_v": 12.6159,
+        "id_a": 6.81697,
+        "limit_a": 107.703,
+        "utilization": 0.0632945
+       },
+       "peak_utilization": 0.0632945
+      },
+      "third_quadrant": {
+       "samples": 59089,
+       "peak_current_a": -292.745,
+       "peak_voltage_v": -4.84531,
+       "peak_port_power_w": 354.067
+      }
+     },
+     "2B": {
+      "vds_max_v": 15.3419,
+      "vds_rating_utilization": 0.383547,
+      "first_quadrant": {
+       "samples": 51394,
+       "samples_compared": 51394,
+       "peak_current_a": 13.3236,
+       "peak_voltage_v": 15.3419,
+       "peak_power_w": 89.7089,
+       "worst_point": {
+        "vds_v": 10.3753,
+        "id_a": 8.64636
+       },
+       "peak_utilization_10_us": 0.0144378,
+       "worst_point_against_10_us": {
+        "vds_v": 10.4356,
+        "id_a": 8.59635,
+        "limit_a": 595.407,
+        "utilization": 0.0144378
+       },
+       "peak_utilization_100_us": 0.0604925,
+       "worst_point_against_100_us": {
+        "vds_v": 12.2525,
+        "id_a": 6.90824,
+        "limit_a": 114.2,
+        "utilization": 0.0604925
+       },
+       "peak_utilization": 0.0604925
+      },
+      "third_quadrant": {
+       "samples": 57828,
+       "peak_current_a": -292.021,
+       "peak_voltage_v": -4.92379,
+       "peak_port_power_w": 356.706
+      }
+     },
+     "3A": {
+      "vds_max_v": 15.633,
+      "vds_rating_utilization": 0.390824,
+      "first_quadrant": {
+       "samples": 44168,
+       "samples_compared": 44168,
+       "peak_current_a": 13.5381,
+       "peak_voltage_v": 15.5859,
+       "peak_power_w": 92.0615,
+       "worst_point": {
+        "vds_v": 10.5267,
+        "id_a": 8.74556
+       },
+       "peak_utilization_10_us": 0.0148168,
+       "worst_point_against_10_us": {
+        "vds_v": 10.5267,
+        "id_a": 8.74556,
+        "limit_a": 590.246,
+        "utilization": 0.0148168
+       },
+       "peak_utilization_100_us": 0.0632941,
+       "worst_point_against_100_us": {
+        "vds_v": 12.6159,
+        "id_a": 6.81699,
+        "limit_a": 107.703,
+        "utilization": 0.0632941
+       },
+       "peak_utilization": 0.0632941
+      },
+      "third_quadrant": {
+       "samples": 59089,
+       "peak_current_a": -292.745,
+       "peak_voltage_v": -4.8453,
+       "peak_port_power_w": 354.065
+      }
+     },
+     "3B": {
+      "vds_max_v": 15.3418,
+      "vds_rating_utilization": 0.383546,
+      "first_quadrant": {
+       "samples": 51394,
+       "samples_compared": 51394,
+       "peak_current_a": 13.3237,
+       "peak_voltage_v": 15.3418,
+       "peak_power_w": 89.7084,
+       "worst_point": {
+        "vds_v": 10.3753,
+        "id_a": 8.64635
+       },
+       "peak_utilization_10_us": 0.0144377,
+       "worst_point_against_10_us": {
+        "vds_v": 10.4356,
+        "id_a": 8.59634,
+        "limit_a": 595.41,
+        "utilization": 0.0144377
+       },
+       "peak_utilization_100_us": 0.0604919,
+       "worst_point_against_100_us": {
+        "vds_v": 12.2525,
+        "id_a": 6.90824,
+        "limit_a": 114.201,
+        "utilization": 0.0604919
+       },
+       "peak_utilization": 0.0604919
+      },
+      "third_quadrant": {
+       "samples": 57829,
+       "peak_current_a": -292.021,
+       "peak_voltage_v": -4.92379,
+       "peak_port_power_w": 356.704
+      }
+     },
+     "4A": {
+      "vds_max_v": 15.633,
+      "vds_rating_utilization": 0.390824,
+      "first_quadrant": {
+       "samples": 44168,
+       "samples_compared": 44168,
+       "peak_current_a": 13.5381,
+       "peak_voltage_v": 15.5859,
+       "peak_power_w": 92.0613,
+       "worst_point": {
+        "vds_v": 10.5266,
+        "id_a": 8.74556
+       },
+       "peak_utilization_10_us": 0.0148168,
+       "worst_point_against_10_us": {
+        "vds_v": 10.5266,
+        "id_a": 8.74556,
+        "limit_a": 590.248,
+        "utilization": 0.0148168
+       },
+       "peak_utilization_100_us": 0.063294,
+       "worst_point_against_100_us": {
+        "vds_v": 12.6158,
+        "id_a": 6.81701,
+        "limit_a": 107.704,
+        "utilization": 0.063294
+       },
+       "peak_utilization": 0.063294
+      },
+      "third_quadrant": {
+       "samples": 59089,
+       "peak_current_a": -292.745,
+       "peak_voltage_v": -4.8453,
+       "peak_port_power_w": 354.064
+      }
+     },
+     "4B": {
+      "vds_max_v": 15.3418,
+      "vds_rating_utilization": 0.383546,
+      "first_quadrant": {
+       "samples": 51394,
+       "samples_compared": 51394,
+       "peak_current_a": 13.3237,
+       "peak_voltage_v": 15.3418,
+       "peak_power_w": 89.7081,
+       "worst_point": {
+        "vds_v": 10.3753,
+        "id_a": 8.64634
+       },
+       "peak_utilization_10_us": 0.0144376,
+       "worst_point_against_10_us": {
+        "vds_v": 10.4355,
+        "id_a": 8.59633,
+        "limit_a": 595.412,
+        "utilization": 0.0144376
+       },
+       "peak_utilization_100_us": 0.0604917,
+       "worst_point_against_100_us": {
+        "vds_v": 12.2524,
+        "id_a": 6.90825,
+        "limit_a": 114.202,
+        "utilization": 0.0604917
+       },
+       "peak_utilization": 0.0604917
+      },
+      "third_quadrant": {
+       "samples": 57830,
+       "peak_current_a": -292.021,
+       "peak_voltage_v": -4.92379,
+       "peak_port_power_w": 356.703
+      }
+     }
+    },
+    "thermal": {
+     "device": "1A",
+     "steady_state_die_power_w": 3.14264,
+     "peak_die_power_w": 181.932,
+     "peak_channel_power_w": 214.833,
+     "peak_body_diode_power_w": 181.932,
+     "blocking_voltage_max_v": 19.8196,
+     "energy_equivalent_width_s": 4.9203e-06,
+     "peak_rise_k": 1.79748,
+     "rectangular_estimate_k": 2.94029,
+     "devices": {
+      "1A": {
+       "device": "1A",
+       "steady_state_die_power_w": 3.14264,
+       "peak_die_power_w": 181.932,
+       "peak_channel_power_w": 214.833,
+       "peak_body_diode_power_w": 181.932,
+       "blocking_voltage_max_v": 19.8196,
+       "energy_equivalent_width_s": 4.9203e-06,
+       "peak_rise_k": 1.79748,
+       "rectangular_estimate_k": 2.94029
+      },
+      "1B": {
+       "device": "1B",
+       "steady_state_die_power_w": 2.83998,
+       "peak_die_power_w": 180.481,
+       "peak_channel_power_w": 218.568,
+       "peak_body_diode_power_w": 180.481,
+       "blocking_voltage_max_v": 19.4391,
+       "energy_equivalent_width_s": 4.828e-06,
+       "peak_rise_k": 1.50194,
+       "rectangular_estimate_k": 2.89388
+      }
+     }
+    }
+   },
+   "50v_120a_cshunt": {
+    "raw": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.raw",
+    "probe_record": "design/v3/power_priority/sr_fault_probe_50v_120a_cshunt.json",
+    "window": {
+     "from_s": 0.000165001,
+     "to_s": 0.00032,
+     "trip_s": 0.000215014
+    },
+    "devices": {
+     "1A": {
+      "vds_max_v": 15.4644,
+      "vds_rating_utilization": 0.386611,
+      "first_quadrant": {
+       "samples": 46890,
+       "samples_compared": 46890,
+       "peak_current_a": 13.6483,
+       "peak_voltage_v": 15.3139,
+       "peak_power_w": 90.3379,
+       "worst_point": {
+        "vds_v": 10.3101,
+        "id_a": 8.76212
+       },
+       "peak_utilization_10_us": 0.0145388,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3101,
+        "id_a": 8.76212,
+        "limit_a": 602.673,
+        "utilization": 0.0145388
+       },
+       "peak_utilization_100_us": 0.0614424,
+       "worst_point_against_100_us": {
+        "vds_v": 12.5013,
+        "id_a": 6.73962,
+        "limit_a": 109.69,
+        "utilization": 0.0614424
+       },
+       "peak_utilization": 0.0614424
+      },
+      "third_quadrant": {
+       "samples": 61158,
+       "peak_current_a": -303.496,
+       "peak_voltage_v": -5.0049,
+       "peak_port_power_w": 371.947
+      }
+     },
+     "1B": {
+      "vds_max_v": 15.7962,
+      "vds_rating_utilization": 0.394905,
+      "first_quadrant": {
+       "samples": 43835,
+       "samples_compared": 43835,
+       "peak_current_a": 13.6858,
+       "peak_voltage_v": 15.7208,
+       "peak_power_w": 93.7793,
+       "worst_point": {
+        "vds_v": 10.3723,
+        "id_a": 9.04135
+       },
+       "peak_utilization_10_us": 0.0150928,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3723,
+        "id_a": 9.04135,
+        "limit_a": 599.051,
+        "utilization": 0.0150928
+       },
+       "peak_utilization_100_us": 0.0651707,
+       "worst_point_against_100_us": {
+        "vds_v": 12.7654,
+        "id_a": 6.85529,
+        "limit_a": 105.19,
+        "utilization": 0.0651707
+       },
+       "peak_utilization": 0.0651707
+      },
+      "third_quadrant": {
+       "samples": 66153,
+       "peak_current_a": -303.223,
+       "peak_voltage_v": -4.88021,
+       "peak_port_power_w": 374.392
+      }
+     },
+     "2A": {
+      "vds_max_v": 15.4644,
+      "vds_rating_utilization": 0.38661,
+      "first_quadrant": {
+       "samples": 46890,
+       "samples_compared": 46890,
+       "peak_current_a": 13.6483,
+       "peak_voltage_v": 15.3138,
+       "peak_power_w": 90.3374,
+       "worst_point": {
+        "vds_v": 10.31,
+        "id_a": 8.76213
+       },
+       "peak_utilization_10_us": 0.0145387,
+       "worst_point_against_10_us": {
+        "vds_v": 10.31,
+        "id_a": 8.76213,
+        "limit_a": 602.678,
+        "utilization": 0.0145387
+       },
+       "peak_utilization_100_us": 0.0614424,
+       "worst_point_against_100_us": {
+        "vds_v": 12.5013,
+        "id_a": 6.73965,
+        "limit_a": 109.691,
+        "utilization": 0.0614424
+       },
+       "peak_utilization": 0.0614424
+      },
+      "third_quadrant": {
+       "samples": 61159,
+       "peak_current_a": -303.496,
+       "peak_voltage_v": -5.0049,
+       "peak_port_power_w": 371.942
+      }
+     },
+     "2B": {
+      "vds_max_v": 15.7962,
+      "vds_rating_utilization": 0.394904,
+      "first_quadrant": {
+       "samples": 43835,
+       "samples_compared": 43835,
+       "peak_current_a": 13.6858,
+       "peak_voltage_v": 15.7207,
+       "peak_power_w": 93.7786,
+       "worst_point": {
+        "vds_v": 10.3722,
+        "id_a": 9.04135
+       },
+       "peak_utilization_10_us": 0.0150927,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3722,
+        "id_a": 9.04135,
+        "limit_a": 599.055,
+        "utilization": 0.0150927
+       },
+       "peak_utilization_100_us": 0.06517,
+       "worst_point_against_100_us": {
+        "vds_v": 12.7653,
+        "id_a": 6.85532,
+        "limit_a": 105.191,
+        "utilization": 0.06517
+       },
+       "peak_utilization": 0.06517
+      },
+      "third_quadrant": {
+       "samples": 66153,
+       "peak_current_a": -303.223,
+       "peak_voltage_v": -4.88021,
+       "peak_port_power_w": 374.386
+      }
+     },
+     "3A": {
+      "vds_max_v": 15.4644,
+      "vds_rating_utilization": 0.38661,
+      "first_quadrant": {
+       "samples": 46891,
+       "samples_compared": 46891,
+       "peak_current_a": 13.6483,
+       "peak_voltage_v": 15.3138,
+       "peak_power_w": 90.337,
+       "worst_point": {
+        "vds_v": 10.3099,
+        "id_a": 8.76214
+       },
+       "peak_utilization_10_us": 0.0145386,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3099,
+        "id_a": 8.76214,
+        "limit_a": 602.681,
+        "utilization": 0.0145386
+       },
+       "peak_utilization_100_us": 0.0614424,
+       "worst_point_against_100_us": {
+        "vds_v": 12.5013,
+        "id_a": 6.73967,
+        "limit_a": 109.691,
+        "utilization": 0.0614424
+       },
+       "peak_utilization": 0.0614424
+      },
+      "third_quadrant": {
+       "samples": 61160,
+       "peak_current_a": -303.496,
+       "peak_voltage_v": -5.0049,
+       "peak_port_power_w": 371.939
+      }
+     },
+     "3B": {
+      "vds_max_v": 15.7961,
+      "vds_rating_utilization": 0.394903,
+      "first_quadrant": {
+       "samples": 43836,
+       "samples_compared": 43836,
+       "peak_current_a": 13.6858,
+       "peak_voltage_v": 15.7207,
+       "peak_power_w": 93.778,
+       "worst_point": {
+        "vds_v": 10.3721,
+        "id_a": 9.04135
+       },
+       "peak_utilization_10_us": 0.0150926,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3721,
+        "id_a": 9.04135,
+        "limit_a": 599.059,
+        "utilization": 0.0150926
+       },
+       "peak_utilization_100_us": 0.0651696,
+       "worst_point_against_100_us": {
+        "vds_v": 12.7652,
+        "id_a": 6.85533,
+        "limit_a": 105.192,
+        "utilization": 0.0651696
+       },
+       "peak_utilization": 0.0651696
+      },
+      "third_quadrant": {
+       "samples": 66155,
+       "peak_current_a": -303.223,
+       "peak_voltage_v": -4.88022,
+       "peak_port_power_w": 374.382
+      }
+     },
+     "4A": {
+      "vds_max_v": 15.4644,
+      "vds_rating_utilization": 0.38661,
+      "first_quadrant": {
+       "samples": 46890,
+       "samples_compared": 46890,
+       "peak_current_a": 13.6483,
+       "peak_voltage_v": 15.3138,
+       "peak_power_w": 90.3368,
+       "worst_point": {
+        "vds_v": 10.3099,
+        "id_a": 8.76215
+       },
+       "peak_utilization_10_us": 0.0145386,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3099,
+        "id_a": 8.76215,
+        "limit_a": 602.682,
+        "utilization": 0.0145386
+       },
+       "peak_utilization_100_us": 0.0614424,
+       "worst_point_against_100_us": {
+        "vds_v": 12.5013,
+        "id_a": 6.73968,
+        "limit_a": 109.691,
+        "utilization": 0.0614424
+       },
+       "peak_utilization": 0.0614424
+      },
+      "third_quadrant": {
+       "samples": 61161,
+       "peak_current_a": -303.496,
+       "peak_voltage_v": -5.0049,
+       "peak_port_power_w": 371.937
+      }
+     },
+     "4B": {
+      "vds_max_v": 15.7961,
+      "vds_rating_utilization": 0.394903,
+      "first_quadrant": {
+       "samples": 43836,
+       "samples_compared": 43836,
+       "peak_current_a": 13.6857,
+       "peak_voltage_v": 15.7207,
+       "peak_power_w": 93.7778,
+       "worst_point": {
+        "vds_v": 10.3721,
+        "id_a": 9.04135
+       },
+       "peak_utilization_10_us": 0.0150925,
+       "worst_point_against_10_us": {
+        "vds_v": 10.3721,
+        "id_a": 9.04135,
+        "limit_a": 599.06,
+        "utilization": 0.0150925
+       },
+       "peak_utilization_100_us": 0.0651694,
+       "worst_point_against_100_us": {
+        "vds_v": 12.7652,
+        "id_a": 6.85534,
+        "limit_a": 105.193,
+        "utilization": 0.0651694
+       },
+       "peak_utilization": 0.0651694
+      },
+      "third_quadrant": {
+       "samples": 66155,
+       "peak_current_a": -303.223,
+       "peak_voltage_v": -4.88022,
+       "peak_port_power_w": 374.38
+      }
+     }
+    },
+    "thermal": {
+     "device": "1A",
+     "steady_state_die_power_w": 4.27349,
+     "peak_die_power_w": 214.227,
+     "peak_channel_power_w": 219.7,
+     "peak_body_diode_power_w": 214.227,
+     "blocking_voltage_max_v": 19.5867,
+     "energy_equivalent_width_s": 4.45238e-06,
+     "peak_rise_k": 1.87768,
+     "rectangular_estimate_k": 3.28452,
+     "devices": {
+      "1A": {
+       "device": "1A",
+       "steady_state_die_power_w": 4.27349,
+       "peak_die_power_w": 214.227,
+       "peak_channel_power_w": 219.7,
+       "peak_body_diode_power_w": 214.227,
+       "blocking_voltage_max_v": 19.5867,
+       "energy_equivalent_width_s": 4.45238e-06,
+       "peak_rise_k": 1.87768,
+       "rectangular_estimate_k": 3.28452
+      },
+      "1B": {
+       "device": "1B",
+       "steady_state_die_power_w": 3.28656,
+       "peak_die_power_w": 190.975,
+       "peak_channel_power_w": 221.843,
+       "peak_body_diode_power_w": 190.975,
+       "blocking_voltage_max_v": 20.0605,
+       "energy_equivalent_width_s": 4.83465e-06,
+       "peak_rise_k": 1.59723,
+       "rectangular_estimate_k": 3.05966
+      }
+     }
+    }
+   }
+  },
+  "quadrants": {
+   "first_quadrant_is_the_drawn_domain": true,
+   "third_quadrant_screened_by_the_chart": false,
+   "explanation": "the SR carries current from source to drain with the drain below the source; the vendor diagram plots VDS > 0, ID > 0"
+  },
+  "soa": {
+   "curves_used": [
+    "10 us",
+    "100 us"
+   ],
+   "vds_rating_v": 40.0
+  },
+  "cross_checks": {
+   "die_power_never_exceeds_the_port_product": true,
+   "note": "the port product includes the package lead inductance, so it is an upper bound on dissipation, not a second measurement of it"
+  },
+  "limits": "SIMULATED_ONLY / NOT_RATED. Die probes exist for pair 1 only, so the die power and the thermal rise are measured for 1A and 1B and assumed to represent the other six identical model devices. The vendor SOA diagram is drawn in the first quadrant and says nothing about the third-quadrant conduction that dominates this fault. The model pins TJ at 25 C with no thermal feedback, so Rds(on) does not rise with temperature, and no vendor SOA exists for VDS < 0. A passing thermal rise here is not a qualified transient-thermal rating."
+ },
+ "checks": {
+  "ok": true,
+  "all_eight_devices_have_waveforms": true,
+  "every_first_quadrant_sample_was_compared": true,
+  "the_soa_curve_covers_the_measured_voltage_range": true,
+  "the_zth_trace_covers_the_saved_window": true
+ }
+}
