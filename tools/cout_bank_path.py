@@ -64,6 +64,9 @@ LIMITS = [
     "part ESR is a vendor-page summary; ESR at 200 kHz, at 2 V bias and at end of "
     "life is not included",
     "no thermal model: the current share below is a resistance ratio, not a temperature",
+    "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) "
+    "was computed with the ideal 0.200 mohm bank Rser; raising a branch impedance cannot "
+    "lower the ripple, so that figure is a lower bound as well",
 ]
 
 DIRECTION = ("a lower bound on the interconnect term; AC crowding and the shared "
