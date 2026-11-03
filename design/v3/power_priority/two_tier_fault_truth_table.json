@@ -1,0 +1,333 @@
+{
+  "kind": "TWO_TIER_HARD_AND_FAST_LOGIC_TRUTH_TABLE",
+  "evidence_level": "BOOLEAN_ONLY_NOT_A_POWER_STAGE_OR_HARDWARE_SIM",
+  "protection_approved": false,
+  "hardware_latch_exists": false,
+  "reset_requires_external_gate_off_measurement": true,
+  "cases": [
+    {
+      "case": "POWER_UP_UNHEALTHY",
+      "initial_latched_off": true,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": false,
+        "secondary_bias_good": false,
+        "ct_signal_valid": false,
+        "comparator_bias_good": false,
+        "start_sequence_ready": false,
+        "operator_run": false,
+        "reset_ack": false,
+        "all_ten_gates_off": false
+      },
+      "outputs": {
+        "hard_fault_effective": true,
+        "fast_fault_effective": false,
+        "fault_effective": true,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "RAILS_HEALTHY_NO_ACK",
+      "initial_latched_off": true,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": false,
+        "fault_effective": false,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "ACK_SAFE",
+      "initial_latched_off": true,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": true,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": false,
+        "fault_effective": false,
+        "reset_accepted": true,
+        "latched_off_next": false,
+        "primary_en_permit": true,
+        "secondary_sr_permit": true,
+        "all_ten_gate_disable": false
+      }
+    },
+    {
+      "case": "RUN_COLD_UNARMED_FAST_ONLY",
+      "initial_latched_off": false,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": true,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": false,
+        "fault_effective": false,
+        "reset_accepted": false,
+        "latched_off_next": false,
+        "primary_en_permit": true,
+        "secondary_sr_permit": true,
+        "all_ten_gate_disable": false
+      }
+    },
+    {
+      "case": "HARD_SHORT_UNARMED",
+      "initial_latched_off": false,
+      "inputs": {
+        "hard_trip": true,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": true,
+        "fast_fault_effective": false,
+        "fault_effective": true,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "CLEAR_FAULT_BUT_NO_ACK",
+      "initial_latched_off": true,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": false,
+        "fault_effective": false,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "FAST_ARMED",
+      "initial_latched_off": false,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": true,
+        "armed": true,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": true,
+        "fault_effective": true,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "SENSOR_OPEN_UNARMED",
+      "initial_latched_off": false,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": false,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": true,
+        "fast_fault_effective": false,
+        "fault_effective": true,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "SUPERVISOR_POWER_LOST",
+      "initial_latched_off": false,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": false,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": true,
+        "fast_fault_effective": false,
+        "fault_effective": true,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "RESET_DURING_HARD_FAULT",
+      "initial_latched_off": true,
+      "inputs": {
+        "hard_trip": true,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": true,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": true,
+        "fast_fault_effective": false,
+        "fault_effective": true,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "RESET_BEFORE_GATES_OFF",
+      "initial_latched_off": true,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": true,
+        "reset_ack": true,
+        "all_ten_gates_off": false
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": false,
+        "fault_effective": false,
+        "reset_accepted": false,
+        "latched_off_next": true,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    },
+    {
+      "case": "OPERATOR_RUN_LOW",
+      "initial_latched_off": false,
+      "inputs": {
+        "hard_trip": false,
+        "fast_trip": false,
+        "armed": false,
+        "primary_bias_good": true,
+        "secondary_bias_good": true,
+        "ct_signal_valid": true,
+        "comparator_bias_good": true,
+        "start_sequence_ready": true,
+        "operator_run": false,
+        "reset_ack": false,
+        "all_ten_gates_off": true
+      },
+      "outputs": {
+        "hard_fault_effective": false,
+        "fast_fault_effective": false,
+        "fault_effective": false,
+        "reset_accepted": false,
+        "latched_off_next": false,
+        "primary_en_permit": false,
+        "secondary_sr_permit": false,
+        "all_ten_gate_disable": true
+      }
+    }
+  ]
+}
