@@ -6,7 +6,8 @@
     "category": "controller",
     "official": "https://www.ti.com/product/UCC25600",
     "asset": "UCC25600 PSpice Transient Model SLUM401.ZIP",
-    "notes": "Model source exists on product page; not auto-imported"
+    "notes": "Model source exists on product page; not auto-imported",
+    "entry_grade": "OFFICIAL_MANUFACTURER_REFERENCE_NOT_PROVEN_ECAD_OR_HARDWARE"
   },
   {
     "ref": "U2",
@@ -15,7 +16,8 @@
     "category": "half-bridge driver",
     "official": "https://www.ti.com/product/UCC27282/part-details/UCC27282DRCR",
     "asset": "UCC27282 Unencrypted PSpice Transient SLUM720.ZIP; PSpice SNVMBN3.ZIP",
-    "notes": "VSON-10 DRC with EN, not D 8-pin; integrated bootstrap diode"
+    "notes": "VSON-10 DRC with EN, not D 8-pin; integrated bootstrap diode",
+    "entry_grade": "OFFICIAL_MANUFACTURER_REFERENCE_NOT_PROVEN_ECAD_OR_HARDWARE"
   },
   {
     "ref": "U3-U6",
@@ -24,7 +26,8 @@
     "category": "SR dual controller",
     "official": "https://www.ti.com/product/UCC24624",
     "asset": "UCC24624 official datasheet Rev.C & application notes",
-    "notes": "SOIC-8; device driver by itself not an independent fault-off circuit"
+    "notes": "SOIC-8; device driver by itself not an independent fault-off circuit",
+    "entry_grade": "OFFICIAL_MANUFACTURER_REFERENCE_NOT_PROVEN_ECAD_OR_HARDWARE"
   },
   {
     "ref": "QH QL",
@@ -33,7 +36,8 @@
     "category": "primary MOSFET",
     "official": "https://www.ti.com/product/CSD19531Q5A",
     "asset": "Datasheet Rev.B / PSpice links",
-    "notes": "5.3mOhm typical vs 6.4mOhm maximum at 10V; re-evaluate loss"
+    "notes": "5.3mOhm typical vs 6.4mOhm maximum at 10V; re-evaluate loss",
+    "entry_grade": "OFFICIAL_MANUFACTURER_REFERENCE_NOT_PROVEN_ECAD_OR_HARDWARE"
   },
   {
     "ref": "SR1A-SR4B",
@@ -42,7 +46,8 @@
     "category": "secondary MOSFET",
     "official": "https://www.infineon.com/part/BSC010N04LS6",
     "asset": "Datasheet Rev.2.3 / OptiMOS6 official PSpice models",
-    "notes": "40V 1.0mOhm max at 10V; 285A and 1140A labels are NOT transient SOA approvals"
+    "notes": "40V 1.0mOhm max at 10V; 285A and 1140A labels are NOT transient SOA approvals",
+    "entry_grade": "OFFICIAL_MANUFACTURER_REFERENCE_NOT_PROVEN_ECAD_OR_HARDWARE"
   },
   {
     "ref": "T1-T4 cores",
@@ -51,6 +56,7 @@
     "category": "core half",
     "official": "https://product.tdk.com/en/search/ferrite/ferrite/ferrite-core/info?part_no=B66287G0000X197",
     "asset": "ELP32 manufacturer datasheet present in references/datasheets",
-    "notes": "Core stock part only, NOT finished transformer"
+    "notes": "Core stock part only, NOT finished transformer",
+    "entry_grade": "OFFICIAL_MANUFACTURER_REFERENCE_NOT_PROVEN_ECAD_OR_HARDWARE"
   }
 ]
