@@ -57,10 +57,26 @@ SWEEP_2F_SOURCES = {
                                "base"),
 }
 
+# The 5 fF rung: the pairing clause holds exactly, the reach clause does not.
+# The base row is a killed prefix, so its `last_saved_us` is where the solve
+# stopped and `full_duration` says `KILLED_BY_PID` instead of a duration.
+SWEEP_5F_SOURCES = {
+    "P03-SWEEP-5F-B-CAND": ("protection_candidate_50v_120a_prot_b_paired_shunt_5f.json",
+                            "candidate"),
+    "P03-SWEEP-5F-B-THRMUTE": ("protection_candidate_50v_120a_prot_b_paired_shunt_5f.json",
+                               "base"),
+}
+
+SWEEP_REGISTERS = {
+    KIT / "simulation_run_register_PROT03_sweep_2f_2026-11-03.csv": ("shunt_2f", "cshunt=2e-15"),
+    KIT / "simulation_run_register_PROT03_sweep_5f_2026-11-03.csv": ("shunt_5f", "cshunt=5e-15"),
+}
+
 REGISTERS = {
     KIT / "simulation_run_register_PROT03_2026-11-03.csv": SOURCES,
     KIT / "simulation_run_register_PROT03_rerun_2026-11-03.csv": RERUN_SOURCES,
     KIT / "simulation_run_register_PROT03_sweep_2f_2026-11-03.csv": SWEEP_2F_SOURCES,
+    KIT / "simulation_run_register_PROT03_sweep_5f_2026-11-03.csv": SWEEP_5F_SOURCES,
 }
 
 CASES = [(path, run_id) for path, sources in REGISTERS.items() for run_id in sources]
@@ -147,20 +163,22 @@ def test_local_raw_hashes_match_when_the_raw_is_present(path: Path, run_id: str)
     assert sha256(raw) == row(path, run_id)["raw_sha256"], run_id
 
 
-@pytest.mark.parametrize("run_id", list(SWEEP_2F_SOURCES))
-def test_a_sweep_row_names_a_sweep_deck_and_the_cshunt_it_ran_with(run_id: str):
-    """A 2 fF row must not be mistakable for the published 1 fF evidence: the
+@pytest.mark.parametrize("path,run_id", [(p, run_id) for p in SWEEP_REGISTERS
+                                         for run_id in REGISTERS[p]])
+def test_a_sweep_row_names_a_sweep_deck_and_the_cshunt_it_ran_with(path: Path, run_id: str):
+    """A sweep row must not be mistakable for the published 1 fF evidence: the
     deck it names is a PR 30 sweep deck, and the `.options` line on disk still
-    carries the 2 fF the row claims."""
+    carries the shunt value the row claims."""
     import generate_prot03_solver_sweep as sweep
 
-    r = row(KIT / "simulation_run_register_PROT03_sweep_2f_2026-11-03.csv", run_id)
+    variant, expected = SWEEP_REGISTERS[path]
+    r = row(path, run_id)
     deck = ROOT / r["deck_path"]
     options = [ln.strip() for ln in deck.read_text(encoding="utf-8").splitlines()
                if ln.startswith(".options")]
-    assert r["solver_options"] == "cshunt=2e-15"
-    assert options == [sweep.ANCHOR.replace("1e-15", sweep.VARIANTS["shunt_2f"])], options
-    assert deck.name.startswith("d1_prot03_shunt_2f_"), deck.name
+    assert r["solver_options"] == expected
+    assert options == [sweep.ANCHOR.replace("1e-15", sweep.VARIANTS[variant])], options
+    assert deck.name.startswith(f"d1_prot03_{variant}_"), deck.name
 
 
 def test_no_row_claims_a_port_ledger_it_never_measured():

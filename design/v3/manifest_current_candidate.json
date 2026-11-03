@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-03",
+  "generated": "2026-11-04",
   "scope": "100 A design delivery: v3 decks/raws, magnetics package, stage-F protocol, BOM package, 48 V/110 A and 120 A candidate records + deck-derived run metadata",
   "supersedes": {
     "path": "design/v2/manifest_current_candidate.json",
@@ -800,16 +800,16 @@
     {
       "path": "tools/hotfault_convergence.py",
       "kind": "script",
-      "bytes": 8259,
-      "mtime": 1793670760.5433671,
-      "sha256": "73507d545881ca35df43f4d3ea4844bb2abca5f3b9e6a58faa3379c6975b945a"
+      "bytes": 9329,
+      "mtime": 1793721701.0478957,
+      "sha256": "a8c66e34fc2a84290c8c0a15b84819d474b15091f54b63c9c47e47f5f6432635"
     },
     {
       "path": "tools/test_hotfault_convergence.py",
       "kind": "script",
-      "bytes": 3701,
-      "mtime": 1793671793.6009374,
-      "sha256": "4723277774b8ed92344a35442d003d9bff03692db33dbd9afd4fba053ab8f37b"
+      "bytes": 6327,
+      "mtime": 1793721729.940236,
+      "sha256": "2ca3e6d2895b39af72620800c3c12f0332eeee7575279c61e1f8c9bd58fc1dc7"
     },
     {
       "path": "tools/cold_oc_convergence.py",
