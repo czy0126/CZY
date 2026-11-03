@@ -1,0 +1,70 @@
+{
+  "kind": "PROT03_SRBAGE_SOFT_RAIL_CONTROLLED_DIAGNOSTIC",
+  "motivation": "50V B 2fF CONTROL stopped at 264.515 us with LTspice convergence failure instance xsr3:x2:Bage",
+  "evidence": "GENERATED_NOT_SIMULATED",
+  "original_model": "models/sr_timing_v3_3.lib",
+  "new_model": "models/sr_timing_v3_4_age_rail.lib",
+  "model_change_count": 1,
+  "modification": "Bage 10V discontinuous hard upper rail to continuous 9.9-10V soft rail",
+  "affects_on_blank_comparator_threshold": false,
+  "original_on_blank_threshold_v": 0.475,
+  "on_state_current_below_age_9p9v_unchanged": true,
+  "unmodified_bton_and_btoff_discontinuities_remain": true,
+  "compare_rules": [
+    "Control and candidate must use same variant, solver options, and v3_4_age_rail model",
+    "Compare v3_3 and v3_4 only over same 0-220us prefix before claiming no operating point drift",
+    "Pass requires both 320us, <=1mV pre-fault Vout, 10-gate state, and independent device SOA review",
+    "Bage age rail smoothing is a numerical surrogate modification, not OEM driver behavior"
+  ],
+  "records": [
+    {
+      "variant": "published",
+      "role": "B_CONTROL",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir",
+      "generated_deck": "sim/v3/d1_prot03_agefix_published_B_CONTROL.cir",
+      "new_sr_model": "models/sr_timing_v3_4_age_rail.lib",
+      "old_sr_model": "models/sr_timing_v3_3.lib",
+      "execution_state": "UNRUN",
+      "both_320us_qualified": false,
+      "pre_fault_1mv_qualified": false,
+      "physical_circuit_or_silicon_verified": false
+    },
+    {
+      "variant": "published",
+      "role": "B_CANDIDATE",
+      "source_deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
+      "generated_deck": "sim/v3/d1_prot03_agefix_published_B_CANDIDATE.cir",
+      "new_sr_model": "models/sr_timing_v3_4_age_rail.lib",
+      "old_sr_model": "models/sr_timing_v3_3.lib",
+      "execution_state": "UNRUN",
+      "both_320us_qualified": false,
+      "pre_fault_1mv_qualified": false,
+      "physical_circuit_or_silicon_verified": false
+    },
+    {
+      "variant": "shunt_2f",
+      "role": "B_CONTROL",
+      "source_deck": "sim/v3/d1_prot03_shunt_2f_B_CONTROL.cir",
+      "generated_deck": "sim/v3/d1_prot03_agefix_shunt_2f_B_CONTROL.cir",
+      "new_sr_model": "models/sr_timing_v3_4_age_rail.lib",
+      "old_sr_model": "models/sr_timing_v3_3.lib",
+      "execution_state": "UNRUN",
+      "both_320us_qualified": false,
+      "pre_fault_1mv_qualified": false,
+      "physical_circuit_or_silicon_verified": false
+    },
+    {
+      "variant": "shunt_2f",
+      "role": "B_CANDIDATE",
+      "source_deck": "sim/v3/d1_prot03_shunt_2f_B_CANDIDATE.cir",
+      "generated_deck": "sim/v3/d1_prot03_agefix_shunt_2f_B_CANDIDATE.cir",
+      "new_sr_model": "models/sr_timing_v3_4_age_rail.lib",
+      "old_sr_model": "models/sr_timing_v3_3.lib",
+      "execution_state": "UNRUN",
+      "both_320us_qualified": false,
+      "pre_fault_1mv_qualified": false,
+      "physical_circuit_or_silicon_verified": false
+    }
+  ],
+  "fabrication_approved": false
+}
