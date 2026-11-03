@@ -114,6 +114,38 @@ def find_offset(handle, t0: float, size: int, n_variables: int) -> int:
             return pos
 
 
+def last_time(path: str | Path, chunk: int = 1 << 20) -> float:
+    """Time of the last complete record, read from the tail only.
+
+    A stalled solve can write gigabytes per nanosecond of simulated time (the
+    50 V hot-fault run spent 13.3 GB on its last 0.93 us), so reading the whole
+    file just to learn where it stopped is not affordable.  Records are one
+    time line plus one line per non-time variable, so the search walks
+    backwards over blocks until a non-continuation line parses as a time.
+    """
+    path = Path(path)
+    size = path.stat().st_size
+    with path.open("rb") as handle:
+        end = size
+        while end > 0:
+            start = max(0, end - chunk)
+            handle.seek(start)
+            lines = handle.read(end - start).split(b"\n")
+            # A non-zero start lands mid-line: drop that partial first line.
+            scan = lines[1:] if start > 0 else lines
+            # Only a record start followed by a value line is complete: a write
+            # cut inside the time field can still parse, but its continuation
+            # never arrived, so accepting it would report a wrong last time.
+            for i in range(len(scan) - 2, -1, -1):
+                line = scan[i]
+                if not line.startswith(b"\t") and scan[i + 1].startswith(b"\t"):
+                    value = _record_time(line)
+                    if value is not None:
+                        return value
+            end = start
+    raise ValueError(f"{path.name} has no record times")
+
+
 def read_window(path: str | Path, names: list[str], t0: float,
                 t1: float | None = None) -> tuple[np.ndarray, dict[str, np.ndarray]]:
     """Return (time, {name: values}) for records with t0 <= t < t1."""

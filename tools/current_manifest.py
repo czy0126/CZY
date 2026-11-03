@@ -88,6 +88,11 @@ V3_SOURCES = {
         # not a replacement for the base record.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir",
+        # CONVERGENCE_DIAGNOSTIC: same 50 V circuit, cshunt=1 fF added.  The
+        # base stalls at 296.929 us of 320 us; this variant tests whether a
+        # finite node capacitance escapes the dead-zone step-size limit cycle.
+        # tools/hotfault_convergence.py compares it against the base prefix.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
         # ELE-10: eight-device SR probes.  make_sr_fault_probes.py appends only
         # .save and .meas lines to the hot-fault decks, so these are the same
         # circuit with more instruments.  The 48 V deck completed 320 us; the
@@ -165,6 +170,8 @@ V3_SOURCES = {
         "tools/test_hot_fault_metrics.py",
         "tools/test_make_hot_fault_decks.py",
         "tools/test_hotfault_diagnostic.py",
+        "tools/hotfault_convergence.py",
+        "tools/test_hotfault_convergence.py",
         "tools/d1_unclosed_risks.py",
         "tools/test_d1_unclosed_risks.py",
         "tools/make_sr_fault_probes.py",
@@ -670,6 +677,19 @@ REPRODUCE = {
         "--base-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log "
         "--diag-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.log "
         "--json design/v3/power_priority/hotfault_48v_120a_diag.json",
+        # CONVERGENCE_DIAGNOSTIC: same circuit, cshunt=1 fF, full 320 us window.
+        # The comparison reads both raws over a shared 220 us prefix (the base
+        # stalls at 296.929 us) and judges completion from each raw's tail.
+        "/d/ADI/LTspice/LTspice.exe -b -ascii "
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
+        "python tools/hotfault_convergence.py "
+        "--base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw "
+        "--base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir "
+        "--variant-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.raw "
+        "--variant-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir "
+        "--base-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log "
+        "--variant-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.log "
+        "--json design/v3/power_priority/hotfault_50v_120a_cshunt.json",
         "python tools/d1_unclosed_risks.py --write",
         # ELE-10: regenerate the eight-device probe decks, run the 48 V one, and
         # extract the per-device latch.  The 50 V probe deck has no full raw

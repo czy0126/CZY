@@ -65,6 +65,40 @@ def test_the_diagnostic_deck_does_not_replace_the_base_record():
         assert m.diagnostic_destination(key).name.endswith("_diag.cir")
 
 
+def test_the_cshunt_variant_changes_only_the_solver_option():
+    """D2 follow-up: the 50 V stall needs a solver aid, not a circuit change.
+
+    The base run freezes every saved voltage to microvolts at 296.93 us while
+    the charge-defined Cds/Cgd currents swing by hundreds of amps: a step-size
+    limit cycle in the post-trip dead zone.  cshunt gives each node a finite
+    capacitance to ground so the dead-zone nodes are no longer charge-only.
+    It must be a solver-only variant, otherwise it is a different circuit.
+    """
+    name = m.CONVERGENCE_CASE
+    assert name == "50v_120a"  # only this deck has a stall to fix
+    base = m.build(m.SOURCE[name].read_text(encoding="utf-8"), name)
+    conv = m.convergence(base, name)
+    assert [line for line in conv.splitlines() if line.startswith(".options")] == [m.CONV_OPTIONS]
+    assert m.CONV_OPTIONS.startswith(m.BASE_OPTIONS)
+    # Header prepended, every other byte identical to the base deck.
+    assert conv.replace(m.CONV_OPTIONS, m.BASE_OPTIONS).endswith(base)
+    assert "CONVERGENCE_DIAGNOSTIC" in conv
+    assert "not a result" in conv
+    assert m.convergence_destination(name).name.endswith("_cshunt.cir")
+    assert m.convergence_destination(name) != m.destination(name)
+
+
+def test_the_cshunt_variant_refuses_a_changed_base_deck():
+    name = m.CONVERGENCE_CASE
+    base = m.build(m.SOURCE[name].read_text(encoding="utf-8"), name)
+    try:
+        m.convergence(base.replace(m.BASE_OPTIONS, ""), name)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("an ambiguous .options replace must be refused")
+
+
 def test_fault_time_is_not_confused_with_saved_time_axis():
     assert "2170u 0 2180u 5" in m.FAULT
     assert "FROM=175u TO=320u" in m.PROBES

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-02",
+  "generated": "2026-11-03",
   "scope": "100 A design delivery: v3 decks/raws, magnetics package, stage-F protocol, BOM package, 48 V/110 A and 120 A candidate records + deck-derived run metadata",
   "supersedes": {
     "path": "design/v2/manifest_current_candidate.json",
@@ -217,6 +217,13 @@
       "sha256": "835a158d9da305cedcd45ccebe070d7e5f96e88b6da56266e41efb338fe92819"
     },
     {
+      "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
+      "kind": "deck",
+      "bytes": 12553,
+      "mtime": 1793670242.709942,
+      "sha256": "2f007c3c8aebbe02f70acba6ae37a9bdb8cea4b283eed10dd33785cb13176869"
+    },
+    {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
       "kind": "deck",
       "bytes": 13854,
@@ -268,9 +275,9 @@
     {
       "path": "tools/ascii_raw_window.py",
       "kind": "script",
-      "bytes": 7404,
-      "mtime": 1793592332.5790513,
-      "sha256": "1de2d6048a3d539f8826adacaab3f9dd8cbf91cc7bea661e7c39b5639c4dbc7e"
+      "bytes": 8919,
+      "mtime": 1793670488.2658603,
+      "sha256": "9733db77dd5424e1c1c1e05dc3692a80703aedfc9e17209a010a35509b091709"
     },
     {
       "path": "tools/magnetics_design.py",
@@ -415,9 +422,9 @@
     {
       "path": "tools/make_hot_fault_decks.py",
       "kind": "script",
-      "bytes": 6831,
-      "mtime": 1793628677.879554,
-      "sha256": "4cfddeb575845ee93567da9525b92cb3489537546f5764b0073aa640428e867f"
+      "bytes": 8755,
+      "mtime": 1793670229.9672217,
+      "sha256": "d6e1585f88410b38e1bbf0d494b0d40df7ae897f98b0e84c54783099cf8c8485"
     },
     {
       "path": "tools/analyze_v3_transient.py",
@@ -457,16 +464,16 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 40504,
-      "mtime": 1793635032.5361068,
-      "sha256": "216a3d3f5be40d0b0fcc6188e2a5aab7bb7253cd16ae530a741296ea4a59fe3a"
+      "bytes": 41917,
+      "mtime": 1793670586.09059,
+      "sha256": "713243cd6bbbcd7109906b303f9bca930bf365b12db6a0adf3f3fa043298d6a7"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
       "kind": "script",
-      "bytes": 2828,
-      "mtime": 1793592313.9460776,
-      "sha256": "3d18fb0ecd9c9a45e07a3ec85456647f94c66198510ceaa98c4893f83bc25939"
+      "bytes": 3674,
+      "mtime": 1793670509.595968,
+      "sha256": "6fcf21cc685091d386016263d55491d3054d1c5486b0ec89e08482dd0be27d88"
     },
     {
       "path": "tools/test_magnetics_design.py",
@@ -667,9 +674,9 @@
     {
       "path": "tools/test_make_hot_fault_decks.py",
       "kind": "script",
-      "bytes": 3740,
-      "mtime": 1793628677.8845527,
-      "sha256": "7b7036978b5dcc7ff401b60bae8c6154a970461a1ad939a12b1eb5d0e4f7d7a2"
+      "bytes": 5376,
+      "mtime": 1793670216.1824439,
+      "sha256": "613c00e41efc19a9d5a155ad1fcbcc6630bc685798060866b42fb8883d4e1567"
     },
     {
       "path": "tools/test_hotfault_diagnostic.py",
@@ -677,6 +684,20 @@
       "bytes": 4216,
       "mtime": 1793628677.4176514,
       "sha256": "b3e5c368f0ce078567bdafcbaeb5ff05ebb0bbc826ebcbf8a948a620fe37e420"
+    },
+    {
+      "path": "tools/hotfault_convergence.py",
+      "kind": "script",
+      "bytes": 8165,
+      "mtime": 1793670478.625552,
+      "sha256": "c31fb79ae0813df0a2b22021a60f1c042bb0bc2083c577ca334d9a224779be38"
+    },
+    {
+      "path": "tools/test_hotfault_convergence.py",
+      "kind": "script",
+      "bytes": 3600,
+      "mtime": 1793670542.2795563,
+      "sha256": "ea0bbb9296f61544b7f35560a96186b1fea5e3cbd9b0c9312d54319fa187dfdf"
     },
     {
       "path": "tools/d1_unclosed_risks.py",
@@ -1768,6 +1789,17 @@
       "cold_start": false
     },
     {
+      "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
+      "tran": ".tran 0 2320u 2000u 5n uic",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.00031999999999999997,
+      "display_offset_us": 2000.0,
+      "max_step_s": 5e-09,
+      "has_ic": true,
+      "uic": true,
+      "cold_start": false
+    },
+    {
       "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
       "tran": ".tran 0 2320u 2000u 5n uic",
       "raw_time_start_s": 0.0,
@@ -1881,6 +1913,8 @@
     "python tools/hotfault_diagnostic.py --base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw --base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir --diag-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw --diag-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.cir --base-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log --diag-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.log --json design/v3/power_priority/hotfault_50v_120a_diag.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir",
     "python tools/hotfault_diagnostic.py --base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw --base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir --diag-raw sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw --diag-deck sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.cir --base-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.log --diag-log sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.log --json design/v3/power_priority/hotfault_48v_120a_diag.json",
+    "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir",
+    "python tools/hotfault_convergence.py --base-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw --base-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.cir --variant-raw sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.raw --variant-deck sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.cir --base-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.log --variant-log sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.log --json design/v3/power_priority/hotfault_50v_120a_cshunt.json",
     "python tools/d1_unclosed_risks.py --write",
     "python tools/make_sr_fault_probes.py --write",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",

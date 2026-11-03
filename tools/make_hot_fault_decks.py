@@ -112,6 +112,40 @@ def diagnostic(base: str, name: str) -> str:
     return DIAG_HEADER + body
 
 
+# CONVERGENCE_DIAGNOSTIC: the 50 V base run reaches 296.928 us of its 320 us
+# window and then advances 0.93 us in ~62 min, writing 13.3 GB of raw for 1 ns
+# of simulated time.  In that dead zone every saved voltage is frozen to
+# microvolts (V(out), V(sw), V(ss) move <1e-5 V) while the charge-defined
+# Cds/Cgd currents of the off SRs swing by hundreds of amps -- the step-size
+# controller is chasing its own noise, not physics.  cshunt puts a finite
+# capacitance from every node to ground, so a node whose only capacitance is a
+# behavioral charge expression is no longer charge-only.  1 fF is 795 kOhm at
+# 200 kHz, i.e. unmeasurable against this circuit, and the run must be
+# compared with the base over the common prefix before anything is quoted.
+CONVERGENCE_CASE = "50v_120a"
+CONV_OPTIONS = BASE_OPTIONS + " cshunt=1e-15"
+CONV_HEADER = (
+    "* CONVERGENCE_DIAGNOSTIC: base hot-fault deck with ONLY the solver\n"
+    "* option cshunt=1 fF added; the circuit, fault switch, probes and\n"
+    "* .tran window are byte-identical.\n"
+    "* This deck is not a result: compare 0..296.9 us against the base\n"
+    "* record before the completed 320 us window is quoted.\n"
+)
+
+
+def convergence_destination(name: str) -> Path:
+    return ROOT / f"sim/v3/sr_tank_dual_v33_ss_hotfault_{name}_cshunt.cir"
+
+
+def convergence(base: str, name: str) -> str:
+    """Base hot-fault deck with only the cshunt solver option added."""
+    if name != CONVERGENCE_CASE:
+        raise ValueError(f"no convergence case for {name}")
+    if base.count(BASE_OPTIONS) != 1:
+        raise ValueError("base hot-fault deck changed; cshunt replace is ambiguous")
+    return CONV_HEADER + base.replace(BASE_OPTIONS, CONV_OPTIONS)
+
+
 def saved_stop_us(deck: str) -> float:
     """Tstop on the Tstart-rebased axis, in microseconds."""
     for line in deck.splitlines():
@@ -128,8 +162,12 @@ def main() -> int:
     for name, path in SOURCE.items():
         data = build(path.read_text(encoding="utf-8"), name)
         diag = diagnostic(data, name)
-        for out, text, label in ((destination(name), data, "candidate"),
-                                 (diagnostic_destination(name), diag, "diagnostic")):
+        outputs = [(destination(name), data, "candidate"),
+                   (diagnostic_destination(name), diag, "diagnostic")]
+        if name == CONVERGENCE_CASE:
+            outputs.append((convergence_destination(name), convergence(data, name),
+                            "convergence"))
+        for out, text, label in outputs:
             if args.write:
                 out.write_text(text, encoding="utf-8", newline="\n")
             elif out.read_text(encoding="utf-8") != text:

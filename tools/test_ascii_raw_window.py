@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from ascii_raw_window import read_header, read_window
+from ascii_raw_window import last_time, read_header, read_window
 
 
 def write_raw(path: Path, variables: int, points: int, step_s: float = 1e-6) -> None:
@@ -72,3 +72,22 @@ def test_the_header_offset_points_at_the_first_record(tmp_path: Path):
         assert names[0] == "time"
         handle.seek(offset)
         assert handle.readline().split(b"\t")[0] == b"0"
+
+
+@pytest.mark.parametrize("variables", [8, 80, 200])
+def test_last_time_reads_the_final_record_from_the_tail(tmp_path: Path, variables: int):
+    # A stalled solve can be gigabytes deep, so "did it reach the stop?" must
+    # cost one tail read, not a full parse.
+    raw = tmp_path / "wide.raw"
+    write_raw(raw, variables, points=3000)
+    assert last_time(raw) == pytest.approx(2999e-6, rel=1e-12)
+
+
+def test_last_time_ignores_a_record_start_cut_mid_write(tmp_path: Path):
+    # A killed run can leave a hole where the time line should be.  The line
+    # parses, but no value line follows it, so it is not a complete record.
+    raw = tmp_path / "cut.raw"
+    write_raw(raw, 40, points=100)
+    with raw.open("ab") as handle:
+        handle.write(b"100\t\t1.0000000")
+    assert last_time(raw) == pytest.approx(99e-6, rel=1e-12)
