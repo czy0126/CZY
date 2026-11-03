@@ -58,3 +58,15 @@ def test_release_has_explicit_cad_pcb_and_manufacturing_gates():
     assert set(lookup["CAD-03"]["depends_on"].split(";")) >= {"MAG-01","BOM-01","CAD-02"}
     assert lookup["THERM-01"]["status"] == "deferred"
     assert lookup["QA-01"]["status"] != "done"
+
+
+
+def test_performance_first_not_fab_release_depends_on_high_margin_hardware():
+    lookup = {r["id"]: r for r in tasks()}
+    assert set(lookup["QA-01"]["depends_on"].split(";")) >= {
+        "PERF-01", "PERF-02", "PROT-02", "ELE-10"}
+    for key in ("PERF-01", "PERF-02", "PROT-02"):
+        assert lookup[key]["priority"] == "P0"
+        assert lookup[key]["status"] == "blocked"
+        assert lookup[key]["acceptance"]
+    assert lookup["THERM-01"]["status"] == "deferred"
