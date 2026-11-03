@@ -1,0 +1,5 @@
+id,priority,component_or_region,question,requested_supplier_document,required_test_or_measurement,evidence_received_path,revision,owner,manufacturer_response,status,blocker
+DFM-01,P0,all 5 ELP32-position components,can all T1-T4 and Lr slots fit with chosen multilayer stack-up,section drawing with layer copper and blind-slot tolerance,remaining dielectric and z max measured,PENDING,PENDING,PENDING,PENDING,PENDING,do not manufacture slots without stack-up
+DFM-02,P0,CT,can actual 4-terminal CT footprint replace 2-pad provisional part,official terminal and DOT drawing,low voltage phase check,PENDING,PENDING,PENDING,PENDING,PENDING,current CT footprint is physically inconsistent
+DFM-03,P0,100A output path,what are achievable multilayer copper/bar joints and 4 wire micro-ohm targets,lamination stack and sample joint specs,contact resistance temp cycling,PENDING,PENDING,PENDING,PENDING,PENDING,DRC alone cannot certify 100A
+DFM-04,P0,10mm z envelope,does height include TIM cold plate and fasteners,tolerance chain and 3D STEP,physical worst-case stack-up,PENDING,PENDING,PENDING,PENDING,PENDING,height boundary undefined
