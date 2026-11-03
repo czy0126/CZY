@@ -140,6 +140,19 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   48 V 1.0814 V。**`--base-deck` 的默认值是候选声明的父 deck**；结构检查（生成器一致、
   故障网络不变）永远对声明父 deck 做，不对比较基准做。
   负对照 `prot_b_unarmed` 必须保留：它在启动冲击时就锁死，整窗记录的是停机变换器。
+- **PROT-03 的两条判据在 50 V 上不能同时成立**（2026-11-03 四份对照跑完，结论冻结）：
+  要同时满足「故障前 35 µs 内 `V(out)` 配对 ≤1 mV」和「两个 320 µs 窗口都跑满」。
+  `_thrmute_control.cir` 只把 `Bprot` 的触发常数（1.0/1.8 V → 100 V）改掉，**精确配对**
+  （故障前差 **0.000000 mV**，触发前 961 298 / 824 449 个采样点逐位相同），但按 PID 终止在
+  **250.151 / 254.980 µs**；`_noclamp_control.cir` 只把 `PROT_KILL` 的 `Vt .5`→`10`，跑满
+  320 µs，故障前却仍差 **13.201 / 17.474 mV**。**漏流不是原因**：`prot_switch_leak_probe.cir`
+  实测两个门槛的关断漏流都是 **1.001e-9 A**，13–17 mV 是求解器路径改变（开关节点导通点不同），
+  不是残余钳位——所以不要试图用降低漏流来"修"配对。两条判据互斥时**不许二选一当通过**：
+  `paired_change_can_be_attributed_to_protection` 对 noclamp 行是 false，50 V 的保护收益只能
+  写成"截断切片值"或"完整但未配对"。六次运行已填进
+  `docs/D1_EXECUTION_KIT/templates/simulation_run_register_PROT03_2026-11-03.csv`（新副本，
+  不改空白模板），两个 thrmute 行 `full_duration` 写 `KILLED_BY_PID`，端口/账本列 `PENDING`；
+  `tools/test_prot03_run_register.py` 逐行回查。见 `PROT02_独立故障锁存候选对照_2026-11-03.md` §5.6/§7。
 - **B 源的正电流离开节点，所以锁存清除项是 `+V(node)*(1n/TAU)`，不是 `-V`**：
   `-V` 是正反馈。这个 bug 一直没暴露，因为五个功率级候选的 `Vddp` 恒 12 V ⇒ `V(uvlo)≡0`，
   清除分支**从未被选中**；第一次真正掉电重启的 `prot_latch_restart_check.cir` 直接发散到 **1e86**。
@@ -265,6 +278,12 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   实跑峰值/平均是 1.660 而非 π/2，所以真实门槛 **24.2 A**（`..._ct10.raw` 实测 24.18 A，代数 +0.1 %；
   `..._ct47.raw` 47 Ω 实测 0.690 V 对代数 0.700 V，−1.3 %）。**10 Ω / 10 k 保持不变**，
   与 22.9 A 对应的理想负载 10.58 Ω 只差 5.5 %。见 `tools/ct_design.py`、`tools/oc_network_check.py`。
+  **负载功耗必须按 `mean(V²)/R`，而且要看对的电流点**：`ct_design.json` 的 **89 mW** 口径没错
+  （`R_b·(I_rms/N)²`），但它跑的是 **100 A** 窗口；48 V/120 A 的 `srprobe` 实测
+  **125.7 mW**（`oc_burden_pulse.json`，form factor 1.102），已是 0.125 W 0805 标称的
+  **100.6 %**，故障脉冲峰 9.36 W / 0.123 mJ（50 V 10.08 W / 0.131 mJ，PROT-B 降到
+  2.07 W / 0.0060 mJ），等效宽度约 13 µs。所以 BOM `R3` **阻值仍冻结（10 Ω）、MPN/封装
+  改 `TO SELECT`**；SOURCE-05 里另一个 **103 mW** 才是 `mean(V)²/R`，低 1.21 倍。
 - **`V(ovl1)` 不是过流脚**：deck 里的 `Bovl1 ovl1 0 V=min(max(-I(VSa1),0),max(-I(VSb1),0))`
   量的是同一组两路 SR **同时正向导通**的电流（单位 A），`.meas` 行把它印成 `ovl_cur`。
   111 A 时它读 **1.510**，而 Level-1 `VOC` 是 **1 V** —— 直接对照就会得出"已经跳闸"的反结论，

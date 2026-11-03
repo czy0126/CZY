@@ -7,12 +7,14 @@ for a frozen purchase list.  These tests pin the schema and the labels.
 from __future__ import annotations
 
 import csv
+import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BOM = ROOT / "design/v3/bom/bom_draft.csv"
 DATASHEET = ROOT / "references/datasheets/csd19531q5a.txt"
+BURDEN_PULSE = ROOT / "design/v3/bom/oc_burden_pulse.json"
 COLUMNS = ["group", "ref", "qty", "item", "mpn", "package", "value_or_rating", "basis", "status", "source"]
 STATUSES = {"VERIFIED", "VALUE FROZEN", "TO SELECT", "TO BUILD"}
 
@@ -46,6 +48,34 @@ def test_unselected_parts_do_not_carry_a_fake_mpn():
     for row in rows():
         if row["status"] == "TO SELECT":
             assert row["mpn"] == "TO SELECT", row["ref"]
+
+
+def test_the_oc_burden_row_cites_the_measured_power_not_the_old_estimate():
+    """SOURCE-05: the old 89 mW was the 100 A figure, not the 120 A load.
+
+    ``ct_design.json`` already used R*(I_rms/N)^2, but it was taken on the
+    100 A deck; the same definition at 48 V/120 A gives 125.7 mW, which is
+    what the row must carry.  The number is formatted from the JSON itself so
+    regenerating it cannot leave a stale BOM row behind.  The 10 ohm value
+    stays frozen; only the part selection reopens.
+    """
+    assert BURDEN_PULSE.is_file(), BURDEN_PULSE
+    runs = {x["run"]: x for x in
+            json.loads(BURDEN_PULSE.read_text(encoding="utf-8"))["results"]["runs"]}
+    base = runs["48v_base"]
+    row = next(r for r in rows() if r["ref"] == "R3")
+    value = row["value_or_rating"]
+    assert f'{base["pre_fault"]["mean_w"] * 1e3:.1f} mW' in value
+    assert "125.7 mW" in value
+    assert "89 mW" not in value
+    assert f'{base["fault"]["peak_w"]:.2f} W' in value
+    assert f'{base["fault"]["energy_mj"]:.3f} mJ' in value
+    assert "0.125 W" in value
+    assert row["mpn"] == "TO SELECT"
+    assert row["package"] == "-"
+    assert row["status"] == "VALUE FROZEN"
+    assert "oc_burden_pulse.json" in row["basis"]
+    assert row["source"] == "design/v3/bom/oc_burden_pulse.json"
 
 
 def test_the_primary_fet_max_rds_matches_the_vendored_datasheet():

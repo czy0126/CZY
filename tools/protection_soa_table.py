@@ -2,7 +2,7 @@
 
 The D4 deliverable asks for one 48 V/50 V table of ``Vgs``/``Vds``/``Id``,
 reverse current and I2t.  Today that evidence is split across three probe
-records and five candidate-comparison records, and no single file answers
+records and seven candidate-comparison records, and no single file answers
 "which device saw the worst stress".
 
 This tool adds **no new raw data**.  Every number is copied from a committed
@@ -91,6 +91,14 @@ COMPARE_RUNS = {
                    "cshunt=1e-15", "declared_parent"),
     "50v_prot_b": ("protection_candidate_50v_120a_prot_b.json", 50.0, "prot_b_fast10u_1p8v",
                    "cshunt=1e-15", "declared_parent"),
+    # PROT-03: the same two candidates differenced against a threshold-muted
+    # control instead of the parent.  Only these rows can attribute a change to
+    # the protection, because the control keeps the candidate's pre-fault
+    # numerical path; the parent rows above stay as the exploratory record.
+    "50v_prot_a_ctrl": ("protection_candidate_50v_120a_prot_a_paired.json", 50.0, "prot_a_oc1v",
+                        "cshunt=1e-15", "topology_matched_control"),
+    "50v_prot_b_ctrl": ("protection_candidate_50v_120a_prot_b_paired.json", 50.0,
+                        "prot_b_fast10u_1p8v", "cshunt=1e-15", "topology_matched_control"),
 }
 
 
@@ -229,6 +237,14 @@ def build() -> dict:
                 "pairing criterion (13-18 mV offset); their performance gains are exploratory, "
                 "not paired effects.  Each row's comparison_basis names the deck it was "
                 "differenced against",
+                "the 50 V *_ctrl rows come from *_paired.json, which differences the candidate "
+                "against a threshold-muted control deck; they are the only 50 V rows whose change "
+                "can be attributed to the protection, and only when paired_pre_fault is true AND "
+                "every device row reaches the declared window",
+                "the threshold-muted 50 V control pairs exactly (0.000 mV pre-fault) but stalls at "
+                "250.151 us (A) / 254.980 us (B) against a 320 us candidate, so its compare_base "
+                "rows are truncated at that tail; the 50 V paired change is measured over the "
+                "common slice, not the declared window",
                 "two candidate fields (gate peak, drain max) and reverse current are not recorded "
                 "in the comparison JSONs; they are null, not zero",
             ],
@@ -243,6 +259,12 @@ def build() -> dict:
                 not run.get("paired_change_can_be_attributed_to_protection", False)
                 for run in runs if run.get("case") and run["vin_v"] == 50.0
                 and run["comparison_basis"] == "declared_parent"),
+            # Structural: a control-based row must come from a paired record and
+            # must say so.  Whether the pairing succeeded is a measured result and
+            # stays in the row, never in this gate.
+            "control_based_rows_come_from_paired_records": all(
+                run["source_json"].endswith("_paired.json")
+                for run in runs if run.get("comparison_basis") == "topology_matched_control"),
             "unrecorded_fields_are_null_not_zero": all(
                 name in run["unrecorded_fields"] or name in run["null_by_design_fields"]
                 for run in runs for row in run["devices"] for name, value in row.items()

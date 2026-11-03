@@ -862,12 +862,12 @@
       "ref": "R3",
       "priority": "P1",
       "part_role": "OC burden resistor",
-      "existing_value_or_rating": "10 ohm; 89 mW at rated (measured); the ideal 10.58 ohm is within the CT's own tolerance, so 10 is kept",
-      "current_mpn": "TO ASSIGN",
-      "current_package": "0805",
-      "source_path": "sim/v2/startup_ct_fault_drv.cir",
+      "existing_value_or_rating": "10 ohm (kept: the ideal 10.58 ohm is inside the CT's own tolerance); continuous 125.7 mW at 48 V/120 A from mean(V^2)/R = 100.6 % of the 0.125 W 0805 nominal before 70-155 C derating (SOURCE-05); fault pulse 9.36 W peak / 0.123 mJ, t_eq 13.1 us at 48 V and 10.08 W / 0.131 mJ at 50 V, cut to 2.07 W / 0.0060 mJ by PROT-B; no vendor pulse-derating curve is vendored, so a larger or pulse-rated 10 ohm part must be selected",
+      "current_mpn": "TO SELECT",
+      "current_package": "-",
+      "source_path": "design/v3/bom/oc_burden_pulse.json",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but the 0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the resistance is frozen and the package/MPN are TO SELECT"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,

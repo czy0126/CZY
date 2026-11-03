@@ -205,8 +205,14 @@ PLACEHOLDER: dict[str, str] = {
     "Cout": "PLACEHOLDER 100 nF 0603; the design is 15 x 470 uF (TO SELECT)",
     "D_BT": "PLACEHOLDER SOD-323 BAT54WS; the BOM calls for a 0603 >=100 V part",
 }
-for _r in ("R1", "R2", "R3", "R4", "R5", "R15", "R16", "R17", "R18", "R19"):
+for _r in ("R1", "R2", "R4", "R5", "R15", "R16", "R17", "R18", "R19"):
     PLACEHOLDER[_r] = "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+# R3 is the OC burden: the BOM freezes 10 ohm, but the 0805 0.125 W part is
+# ruled out by the measured 125.7 mW continuous burden, so package and MPN are
+# back to selection while the resistance is not.
+PLACEHOLDER["R3"] = ("PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but the "
+                     "0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the "
+                     "resistance is frozen and the package/MPN are TO SELECT")
 for _n in range(20, 36):
     PLACEHOLDER[f"R{_n}"] = "PLACEHOLDER 0603 10k; value is TO ASSIGN"
 for _n in (5, 6, 7, 8, 9, 10, 11, 12):

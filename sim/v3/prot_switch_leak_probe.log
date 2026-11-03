@@ -1,0 +1,17 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\_probe_sw.cir
+Start Time: Tue Nov  3 15:48:29 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.015 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\_probe_sw.cir
+
+i_low: AVG(I(Vs1))=1.001e-09 FROM 0 TO 0.001
+i_high: AVG(I(Vs2))=1.001e-09 FROM 0 TO 0.001

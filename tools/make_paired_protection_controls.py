@@ -38,6 +38,13 @@ INACTIVE = ".model PROT_KILL SW(Ron=.05 Roff=1G Vt=10)"
 MUTED_THRESHOLD_V = 100
 TRIGGER = re.compile(r"(if\(V\([^)]*\))>([0-9.]+)(,-\(1-V\(prot\)\))")
 KINDS = ("noclamp", "thrmute")
+# The header is deliberately *pre-registration*, not run state: the generator
+# rebuilds these decks from the candidates, so anything it stamps must stay true
+# across a rebuild.  Run outcomes live in
+# design/v3/power_priority/protection_candidate_50v_120a_prot_{a,b}{,_noclamp}_paired.json
+# and PROT02_独立故障锁存候选对照_2026-11-03.md §5.6.  Measured 2026-11-03:
+# thrmute pairs to 0.000 mV but stalls at 250.151/254.980 us; noclamp completes
+# 320 us but sits 13.2/17.5 mV from the candidate.
 HEADER = {
     "noclamp": (
         "* UNRUN 50V paired-control #1: gate-clamp switches intentionally NEVER close.\n"

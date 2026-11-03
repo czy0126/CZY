@@ -41,11 +41,11 @@
     "issue_id": "SOURCE-05",
     "importance": "P1",
     "ref": "R3",
-    "finding": "Panasonic 0805 10ohm ERJ6ENF10R0V nominal 0.125W; the project's simulated 89mW burden power leaves limited margin before de-rating and transient excursions.",
+    "finding": "Panasonic 0805 10ohm ERJ6ENF10R0V is nominally 0.125W, but the measured continuous burden dissipation is 125.7mW at 48V/120A (mean(V^2)/R), already 100.6% of the nominal rating before any temperature de-rating; the fault pulse peaks at 9.36-10.08W with an equivalent width of about 13us.",
     "source": "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ6ENF10R0V",
-    "action": "Run startup/fault pulse energy, waveform peak, temperature-dependent rating and package selection; consider larger/high-pulse resistor",
+    "action": "Select a larger or pulse-rated 10 ohm part; obtain the vendor pulse-derating curve and local-ambient temperature; measure the startup pulse before closing the package decision",
     "state": "OPEN_POWER_RATING",
-    "progress": "P_rated is now pinned to measured burden voltage: oc_network_ct10.json gives V(ocd) mean 0.8342 V at 100 A, hence 69.6 mW in the 10 ohm burden; V(ocd) is proportional to primary current, so the 121.67 A record implies about 103 mW. An 0805 0.125 W part is already at 82 % of nominal at 70 C and its linear derating (0.125 W at 70 C to 0 at 155 C) falls below 103 mW above about 90 C local ambient. No local-ambient measurement or Panasonic derating/pulse curve is vendored, so the package decision is not closed; a 1206 0.25 W or pulse-rated 10 ohm part removes the doubt. Fault-window pulse energy is still unmeasured because no fault raw saves V(ocd), only V(oc) after the divider."
+    "progress": "P_rated is now taken from V(ocd)-V(ocm) across the deck's own Rbur=10 ohm in the srprobe raws (tools/oc_burden_pulse.py, design/v3/bom/oc_burden_pulse.json). The earlier 69.6mW/103mW figures used mean(V)^2/R, which is low by the rectified waveform's form factor squared (1.102 here): the correct continuous value is 125.7mW at 48V/120A, i.e. already at 100.6% of the 0.125W nominal before the 70C-to-155C linear de-rating. The fault pulse, previously called unmeasured because no raw saved V(ocd), is measurable now that the srprobe family saves it: peak 9.359W (48V) / 10.072-10.083W (50V), energy 0.1226/0.1309mJ, equivalent width 13.1us; PROT-B reduces it to 2.07W / 0.0060mJ. No Panasonic pulse-derating curve is vendored, so the pulse is a selection input, not a pass/fail. The 8ms cold-start deck still does not save the burden nodes, so the startup pulse is unmeasured."
   },
   {
     "issue_id": "SOURCE-06",

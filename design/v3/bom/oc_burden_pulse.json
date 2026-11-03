@@ -1,0 +1,374 @@
+{
+ "kind": "ct_burden_fault_pulse",
+ "evidence_level": "SIMULATED_ONLY / NO_VENDOR_PULSE_CURVE",
+ "results": {
+  "rated_part": "Panasonic ERJ6ENF10R0V (0805)",
+  "rated_power_w": 0.125,
+  "pulse_curve_available": false,
+  "runs": [
+   {
+    "run": "48v_base",
+    "vin_v": 48.0,
+    "role": "base",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 524294,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.125701,
+     "mean_voltage_squared_w": 0.103488,
+     "mean_voltage_v": 1.01729,
+     "rms_voltage_v": 1.12117,
+     "form_factor": 1.10211,
+     "samples": 363561
+    },
+    "fault": {
+     "v_peak_abs_v": 9.67437,
+     "peak_w": 9.35934,
+     "t_peak_us": 209.955,
+     "mean_w": 0.845817,
+     "energy_mj": 0.122643,
+     "equivalent_width_us": 13.104,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 74.87,
+     "energy_in_rated_watt_seconds": 981.15
+    }
+   },
+   {
+    "run": "48v_prot_a",
+    "vin_v": 48.0,
+    "role": "candidate",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 509204,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.125674,
+     "mean_voltage_squared_w": 0.103456,
+     "mean_voltage_v": 1.01713,
+     "rms_voltage_v": 1.12104,
+     "form_factor": 1.10216,
+     "samples": 363291
+    },
+    "fault": {
+     "v_peak_abs_v": 9.67378,
+     "peak_w": 9.35821,
+     "t_peak_us": 209.955,
+     "mean_w": 0.839959,
+     "energy_mj": 0.121794,
+     "equivalent_width_us": 13.015,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 74.87,
+     "energy_in_rated_watt_seconds": 974.35
+    }
+   },
+   {
+    "run": "48v_prot_b",
+    "vin_v": 48.0,
+    "role": "candidate",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 431243,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.125677,
+     "mean_voltage_squared_w": 0.103463,
+     "mean_voltage_v": 1.01717,
+     "rms_voltage_v": 1.12106,
+     "form_factor": 1.10214,
+     "samples": 363133
+    },
+    "fault": {
+     "v_peak_abs_v": 4.5589,
+     "peak_w": 2.07835,
+     "t_peak_us": 184.88,
+     "mean_w": 0.041114,
+     "energy_mj": 0.005961,
+     "equivalent_width_us": 2.868,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 16.63,
+     "energy_in_rated_watt_seconds": 47.69
+    }
+   },
+   {
+    "run": "50v_base_a",
+    "vin_v": 50.0,
+    "role": "base",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_noclamp_control.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 473040,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.12203,
+     "mean_voltage_squared_w": 0.09923,
+     "mean_voltage_v": 0.99614,
+     "rms_voltage_v": 1.10467,
+     "form_factor": 1.10895,
+     "samples": 299231
+    },
+    "fault": {
+     "v_peak_abs_v": 10.03605,
+     "peak_w": 10.07223,
+     "t_peak_us": 209.951,
+     "mean_w": 0.902401,
+     "energy_mj": 0.130848,
+     "equivalent_width_us": 12.991,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 80.58,
+     "energy_in_rated_watt_seconds": 1046.78
+    }
+   },
+   {
+    "run": "50v_prot_a",
+    "vin_v": 50.0,
+    "role": "candidate",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 1005650,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.121759,
+     "mean_voltage_squared_w": 0.100632,
+     "mean_voltage_v": 1.00315,
+     "rms_voltage_v": 1.10345,
+     "form_factor": 1.09998,
+     "samples": 726794
+    },
+    "fault": {
+     "v_peak_abs_v": 10.0294,
+     "peak_w": 10.05889,
+     "t_peak_us": 212.451,
+     "mean_w": 0.883941,
+     "energy_mj": 0.128171,
+     "equivalent_width_us": 12.742,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 80.47,
+     "energy_in_rated_watt_seconds": 1025.37
+    }
+   },
+   {
+    "run": "50v_base_b",
+    "vin_v": 50.0,
+    "role": "base",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_noclamp_control.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 463289,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.122026,
+     "mean_voltage_squared_w": 0.099229,
+     "mean_voltage_v": 0.99614,
+     "rms_voltage_v": 1.10465,
+     "form_factor": 1.10894,
+     "samples": 298075
+    },
+    "fault": {
+     "v_peak_abs_v": 10.04161,
+     "peak_w": 10.08339,
+     "t_peak_us": 209.951,
+     "mean_w": 0.903262,
+     "energy_mj": 0.130973,
+     "equivalent_width_us": 12.989,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 80.67,
+     "energy_in_rated_watt_seconds": 1047.78
+    }
+   },
+   {
+    "run": "50v_prot_b",
+    "vin_v": 50.0,
+    "role": "candidate",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 865937,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.122812,
+     "mean_voltage_squared_w": 0.101549,
+     "mean_voltage_v": 1.00771,
+     "rms_voltage_v": 1.10821,
+     "form_factor": 1.09972,
+     "samples": 752569
+    },
+    "fault": {
+     "v_peak_abs_v": 4.54312,
+     "peak_w": 2.064,
+     "t_peak_us": 184.926,
+     "mean_w": 0.041096,
+     "energy_mj": 0.005959,
+     "equivalent_width_us": 2.887,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 16.51,
+     "energy_in_rated_watt_seconds": 47.67
+    }
+   },
+   {
+    "run": "50v_parent_reference",
+    "vin_v": 50.0,
+    "role": "reference",
+    "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.cir",
+    "burden_ohm": 10.0,
+    "window": {
+     "ramp_start_us": 170.0,
+     "fault_start_us": 175.0,
+     "saved_stop_us": 320.0,
+     "last_sample_us": 320.0,
+     "samples": 469400,
+     "reached_saved_stop": true
+    },
+    "pre_fault": {
+     "mean_w": 0.122028,
+     "mean_voltage_squared_w": 0.099228,
+     "mean_voltage_v": 0.99613,
+     "rms_voltage_v": 1.10466,
+     "form_factor": 1.10895,
+     "samples": 296692
+    },
+    "fault": {
+     "v_peak_abs_v": 10.03645,
+     "peak_w": 10.07302,
+     "t_peak_us": 209.951,
+     "mean_w": 0.902457,
+     "energy_mj": 0.130856,
+     "equivalent_width_us": 12.991,
+     "duration_us": 145.0
+    },
+    "rating": {
+     "part": "Panasonic ERJ6ENF10R0V (0805)",
+     "power_w": 0.125,
+     "peak_over_rated": 80.58,
+     "energy_in_rated_watt_seconds": 1046.85
+    }
+   }
+  ],
+  "benefits": [
+   {
+    "base_run": "48v_base",
+    "candidate_run": "48v_prot_a",
+    "vin_v": 48.0,
+    "peak_reduction_pct": 0.012,
+    "energy_reduction_pct": 0.692,
+    "candidate_peak_w": 9.35821,
+    "candidate_energy_mj": 0.121794
+   },
+   {
+    "base_run": "48v_base",
+    "candidate_run": "48v_prot_b",
+    "vin_v": 48.0,
+    "peak_reduction_pct": 77.794,
+    "energy_reduction_pct": 95.14,
+    "candidate_peak_w": 2.07835,
+    "candidate_energy_mj": 0.005961
+   },
+   {
+    "base_run": "50v_base_a",
+    "candidate_run": "50v_prot_a",
+    "vin_v": 50.0,
+    "peak_reduction_pct": 0.132,
+    "energy_reduction_pct": 2.046,
+    "candidate_peak_w": 10.05889,
+    "candidate_energy_mj": 0.128171
+   },
+   {
+    "base_run": "50v_base_b",
+    "candidate_run": "50v_prot_b",
+    "vin_v": 50.0,
+    "peak_reduction_pct": 79.531,
+    "energy_reduction_pct": 95.45,
+    "candidate_peak_w": 2.064,
+    "candidate_energy_mj": 0.005959
+   }
+  ],
+  "limits": [
+   "the 0.125 W figure is a continuous rating from a search summary; the datasheet text and pulse-derating curve are not vendored, so the peak is an input to part selection, not a pass/fail",
+   "a 13 us pulse is not continuous dissipation; comparing it with the nominal power is a screening ratio only",
+   "the startup pulse is not measured: the 8 ms cold-start deck does not save V(ocd)/V(ocm)",
+   "the CT model is ideal (Lct2 = 20 mH, Kct = 1), so core saturation and magnetising current are absent from this burden voltage",
+   "50 V benefits use the complete Vt=10 controls, not the declared parent; the control clamps leak 1 nA (measured on a probe deck) but the run still sits 13.2/17.5 mV from the candidate before the fault, so the 50 V percentages are screening numbers, not paired effects.  The exactly-paired threshold-muted control stalls at 250.151/254.980 us and cannot price a full pulse",
+   "the parent rows are reference only and are not paired",
+   "the rated power is the resistor's nominal value, not a temperature-derated value at the local ambient",
+   "the steady burden power is mean(V^2)/R; the 69.6/103 mW figures in SOURCE-05 used mean(V)^2/R and are low by the form factor squared (about 1.21x)",
+   "samples between the fault ramp start and the switch threshold belong to neither segment and are excluded from both"
+  ]
+ },
+ "checks": {
+  "every_run_reached_the_saved_stop": true,
+  "the_burden_is_ten_ohms_everywhere": true,
+  "energy_and_mean_power_agree": true,
+  "the_peak_is_not_reported_as_a_continuous_rating": true,
+  "the_pre_fault_power_is_not_the_mean_voltage_squared": true,
+  "the_pre_fault_window_stops_at_the_fault_ramp": true,
+  "benefits_are_computed_only_against_a_matching_base": true,
+  "the_50v_base_is_a_complete_topology_matched_control": true
+ }
+}

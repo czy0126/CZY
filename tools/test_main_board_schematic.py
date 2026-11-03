@@ -156,6 +156,18 @@ def test_every_review_row_carries_a_status_and_a_basis():
         (r["ref"], r["pad"]) for r in rows if r["review_status"] == "OPEN - NEEDS DECISION"]
 
 
+def test_the_oc_burden_placeholder_reports_the_measured_rating_failure():
+    """The EDA still draws a generic 0603 10k at R3, but the BOM freezes a
+    10 ohm burden whose 0805 0.125 W part is ruled out at 125.7 mW.  A note
+    that still said "value is TO ASSIGN" would hide which half is open."""
+    notes = [r["note"] for r in plan()["review_rows"] if r["ref"] == "R3"]
+    assert len(notes) == 2, notes
+    assert all("10 ohm OC burden" in n for n in notes), notes
+    assert all("125.7 mW" in n for n in notes), notes
+    assert all("TO SELECT" in n for n in notes), notes
+    assert not any("value is TO ASSIGN" in n for n in notes), notes
+
+
 def test_the_seventeen_real_peripherals_are_declared():
     """The BOM gap is 17 refs: four U2 defaults, the EN filter and 12
     decouplers.  Dropping one silently would put the fabrication gate back to

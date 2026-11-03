@@ -160,8 +160,8 @@ C11,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,OC1,"tw
 C11,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
 R15,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
 R15,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OCD,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R3,2. Resonant tank and T1-T4,0603WAF1002T5E,C25804,R0603,N1,1,OCD,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R3,2. Resonant tank and T1-T4,0603WAF1002T5E,C25804,R0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R3,2. Resonant tank and T1-T4,0603WAF1002T5E,C25804,R0603,N1,1,OCD,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but the 0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the resistance is frozen and the package/MPN are TO SELECT"
+R3,2. Resonant tank and T1-T4,0603WAF1002T5E,C25804,R0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but the 0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the resistance is frozen and the package/MPN are TO SELECT"
 C10,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
 C10,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
 C6,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN

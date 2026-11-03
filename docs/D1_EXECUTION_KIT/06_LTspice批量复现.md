@@ -19,8 +19,9 @@ Windows 本地安装官方 LTspice（ADI），记录版本号与路径；仓库 
 
 | 优先级 | 仿真输入 | 检查 |
 |---|---|---|
-| P0 | sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_noclamp_control.cir | 与 PROT-B 同拓扑、仅钳位关闭的 50V 配对负对照；当前尚无 RAW |
-| P0 | sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_noclamp_control.cir | 同理 PROT-A 配对负对照 |
+| P0 | sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_noclamp_control.cir | **已运行**（527.175 s，320 µs 完整）：与 PROT-B 同拓扑、仅钳位关闭；但故障前比候选低 **17.5 mV**，所以它**不是**配对对照，只作完整窗口的负对照 |
+| P0 | sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_noclamp_control.cir | **已运行**（559.690 s，320 µs 完整）：同理，故障前低 **13.2 mV** |
+| P0 | sim/v3/..._prot_{a,b}_..._thrmute_control.cir | **已运行但塌缩**：配对 **0.000 mV**，停在 **250.151 / 254.980 µs**（按 PID 终止，日志无 `Total elapsed time`）；PROT-03 的配对判据成立、完整窗口判据不成立 |
 | P0 | 50V 基准热故障 deck | 报告停算 296.929µs 原因；cshunt=1fF 不是电路鲁棒证明 |
 | P0 | 48V/50V PROT-B 真实驱动/关断替代版 | 替换理想开关后重跑 8×SR 与原边 |
 | P1 | 100A 5/2/1/0.5ns 同参数全窗 | 模型工作点移动、能量损耗与求解器稳定性 |
@@ -43,12 +44,17 @@ Windows 本地安装官方 LTspice（ADI），记录版本号与路径；仓库 
 
 - .tran 声明停止点与保存偏移、RAW 最后 t、log 完整状态三方相符；非 320µs 全窗不能报告完整故障。
 - 同一时间窗统计 P_in、P_out、SR/原边损耗与端点储能；峰值与稳态平均不得混用。
-- 记录改变的唯一变量；添加 cshunt、理想开关、失压/软启动逻辑等均是**模型变更**。50V 旧比较有 13–18mV 故障前 Vout 偏移，未做配对确认前不能归因于保护。
+- 记录改变的唯一变量；添加 cshunt、理想开关、失压/软启动逻辑等均是**模型变更**。50V 旧比较有 13–18mV 故障前 Vout 偏移，未做配对确认前不能归因于保护。**2026-11-03 补跑后**：no-clamp 控制仍是 13.2/17.5 mV（完整 320 µs），thrmute 控制配对到 0.000 mV 但塌缩在 250.151/254.980 µs——两条判据没有同时成立，所以截断切片上的收益只能写成"可归因于保护的切片值"。
 - 每只 SR 单列 Vgs/Vds/Id、正反峰值、I²t、末端门态、触发/关断延迟、波形截图及客观判据。源漏反向电流不能仅按门压分割沟道/体二极管。
 
 ## 5. 数据回填及自动化边界
 
 将一次运行填入 templates/simulation_run_register.csv 的**新副本**，不能改空白模板冒充结果。需要保存 SHA256、仿真版本、参数、测量时间窗、RAW 成功与否、审查状态。用户成本无限也不等于结果可以省略误差、重跑或只比较“最好一次”。
+
+本轮已填 `templates/simulation_run_register_PROT03_2026-11-03.csv`（六行，与空白模板同列）：
+deck/log/raw 哈希、`last_saved_us`、故障前 Vout 与配对差值都由 JSON 记录生成，
+`tools/test_prot03_run_register.py` 逐行回查。两个 thrmute 行 `full_duration = KILLED_BY_PID`，
+端口/账本列是 `PENDING`——故障 deck 没有这些测量，空着比填估计值诚实。
 
 验证工具：
 

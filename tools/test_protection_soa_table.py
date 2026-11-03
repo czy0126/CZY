@@ -114,6 +114,40 @@ def test_parent_basis_50v_comparisons_are_explicitly_unpaired(table):
     assert table["checks"]["unpaired_50v_parent_comparisons_not_claimed_as_paired"]
 
 
+def test_control_based_50v_rows_report_the_verdict_they_measured(table):
+    """PROT-03 rows must exist and must not overstate what they measured.
+
+    The verdict itself is data: a re-run that misses the 1 mV criterion makes
+    ``paired_pre_fault`` false and this test still passes, because it checks the
+    verdict against the recorded delta rather than against 1 mV.
+    """
+    rows = [run for run in table["results"]["runs"]
+            if run.get("comparison_basis") == "topology_matched_control"]
+    assert {run["source_json"] for run in rows} == {
+        "protection_candidate_50v_120a_prot_a_paired.json",
+        "protection_candidate_50v_120a_prot_b_paired.json"}
+    for run in rows:
+        assert run["vin_v"] == 50.0
+        rec = json.loads((ROOT / "design/v3/power_priority" / run["source_json"])
+                         .read_text(encoding="utf-8"))
+        assert run["paired_pre_fault"] == (run["pre_fault_vout_delta_mv"] <= 1.0)
+        # Attribution needs both clauses: the same pre-fault state *and* a
+        # complete window.  A truncated comparison is still paired, but its
+        # benefit may only be quoted over the common slice.
+        assert run["paired_change_can_be_attributed_to_protection"] == (
+            run["paired_pre_fault"] and rec["coverage"]["declared_window_fully_covered"])
+        side = "base" if run["role"] == "compare_base" else "candidate"
+        assert run["reached_declared_window"] == rec["coverage"][f"{side}_reached_saved_stop"]
+    assert table["checks"]["control_based_rows_come_from_paired_records"]
+
+
+def test_an_incomplete_row_is_prefix_only_and_never_attributed(table):
+    for run in table["results"]["runs"]:
+        if not run["reached_declared_window"]:
+            assert run["solver_prefix_only"]
+            assert not run["paired_change_can_be_attributed_to_protection"]
+
+
 def test_report_coverage_is_taken_from_evidence_not_hardcoded():
     data = soa.compare_runs("50vcmp", (
         "protection_candidate_50v_120a_prot_b.json", 50.0,

@@ -1,0 +1,16 @@
+* off-state conductance of the PROT_KILL switch model at control node 0 V
+Vc1 c1 0 0
+Vc2 c2 0 0
+V1 a1 0 1
+V2 a2 0 1
+Vs1 a1 b1 0
+Vs2 a2 b2 0
+S1 b1 0 c1 0 SWLOW
+S2 b2 0 c2 0 SWHIGH
+.model SWLOW SW(Ron=.05 Roff=1G Vt=.5)
+.model SWHIGH SW(Ron=.05 Roff=1G Vt=10)
+.tran 0 1m 0 1m
+.meas tran I_LOW avg I(Vs1)
+.meas tran I_HIGH avg I(Vs2)
+.save I(Vs1) I(Vs2)
+.end

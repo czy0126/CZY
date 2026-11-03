@@ -131,6 +131,19 @@ V3_SOURCES = {
         # declared window.  The cshunt caveat travels with the record.
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
+        # PROT-03 topology-matched controls.  The Vt=10 family moved the
+        # off-state switch model and with it the solver path, so it lands on
+        # the parent's pre-fault V(out) rather than the candidate's.  The
+        # threshold-muted family keeps the model byte-identical and only stops
+        # the latch from setting.  See D1_保护数据配对与工程修补_2026-11-03.md.
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_noclamp_control.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_noclamp_control.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v_thrmute_control.cir",
+        "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v_thrmute_control.cir",
+        # PROT-03 leak probe: the same ideal clamp switch at Vt=.5 and Vt=10
+        # both pass 1.001e-9 A, so the noclamp family's 13-17 mV offset is a
+        # changed solver path, not residual clamping.  See PROT02 section 5.6.
+        "sim/v3/prot_switch_leak_probe.cir",
         "sim/v3/prot_latch_uvlo_check.cir",
         # PROT-02 restart sequencing: logic-level sub-circuit only.  A full
         # power-stage restart needs 9.6 ms of soft-start ramp (0.5 mV/us) and
@@ -226,6 +239,15 @@ V3_SOURCES = {
         "tools/test_protection_candidate_compare.py",
         "tools/protection_soa_table.py",
         "tools/test_protection_soa_table.py",
+        # Control-deck generator: each control differs from its candidate by
+        # exactly one line, so a pairing miss cannot hide a model change.
+        "tools/make_paired_protection_controls.py",
+        "tools/test_make_paired_protection_controls.py",
+        "tools/test_paired_50v_protection.py",
+        # SOURCE-05: the fault-window burden pulse comes from V(ocd)-V(ocm)
+        # across Rbur, which the srprobe family already saves.
+        "tools/oc_burden_pulse.py",
+        "tools/test_oc_burden_pulse.py",
     ],
     "result": [
         "design/v3/magnetics/magnetics_design.json",
@@ -246,6 +268,7 @@ V3_SOURCES = {
         "design/v3/bom/ct_design.json",
         "design/v3/bom/oc_network_ct10.json",
         "design/v3/bom/oc_network_ct47.json",
+        "design/v3/bom/oc_burden_pulse.json",
         "design/v3/bom/connector_budget.json",
         "design/v3/bom/bom_draft.csv",
         "design/v3/pcb/board_netlist.csv",
@@ -314,6 +337,10 @@ V3_SOURCES = {
         "design/v3/power_priority/protection_candidate_48v_120a_prot_b_unarmed.json",
         "design/v3/power_priority/protection_candidate_50v_120a_prot_a.json",
         "design/v3/power_priority/protection_candidate_50v_120a_prot_b.json",
+        # PROT-03: the same 50 V candidates against their threshold-muted
+        # controls, which reproduce the candidate pre-fault path bit for bit.
+        "design/v3/power_priority/protection_candidate_50v_120a_prot_a_paired.json",
+        "design/v3/power_priority/protection_candidate_50v_120a_prot_b_paired.json",
         "design/v3/power_priority/protection_uvlo_check.json",
         "design/v3/power_priority/protection_restart_check.json",
         # D4 deliverable: one 48 V/50 V per-device screening table.  It reads
