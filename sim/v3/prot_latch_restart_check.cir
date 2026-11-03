@@ -1,0 +1,35 @@
+* Restart-sequencing sub-circuit check for the PROT-02 latch (NOT hardware).
+* Armed -> CT pulse latches -> 20 us Vddp power cycle resets both latches
+* and holds the gate low -> V(ss) restarts from 0 at 0.5 mV/us (5 uA into
+* 10 nF) -> a pulse during the ramp must NOT latch -> after V(ss) > 4.8 V
+* the arming latch closes and a later pulse MUST latch.
+* Logic only: no power stage, no controller OC, no gate driver.
+Vddp vddp 0 PWL(0 12 100u 12 100.1u 0 119.9u 0 120u 12 10600u 12)
+Vss ss 0 PWL(0 5 100u 5 101u 0 120u 0 10120u 5)
+Voc oc 0 PWL(0 0 60u 0 60.1u 2.5 65u 2.5 65.1u 0 2000u 0 2000.1u 2.5 2005u 2.5 2005.1u 0 10300u 0 10300.1u 2.5 10305u 2.5 10305.1u 0 10600u 0)
+Vdrv drv 0 10
+Rdrv drv g 3.2
+Cg g 0 10n
+Buvlo uvlo 0 V=if(V(vddp)<8,1,0)
+Carm arm 0 1n IC=0
+Rarm arm 0 1G
+Barm arm 0 I=if(V(uvlo)>.5,V(arm)*(1n/100n),if(V(ss)>4.8,-(1-V(arm))*(1n/100n),0))
+Cprot prot 0 1n IC=0
+Rprot prot 0 1G
+Bprot prot 0 I=if(V(uvlo)>.5,V(prot)*(1n/100n),if(V(arm)>.5,if(V(oc)>1.8,-(1-V(prot))*(1n/100n),0),0))
+Binhib inhib 0 V=if(V(uvlo)>.5,1,if(V(prot)>.5,1,0))
+Sg g 0 inhib 0 PROT_KILL
+.model PROT_KILL SW(Ron=.05 Roff=1G Vt=.5)
+.tran 0 10600u 0 10n
+.save V(vddp) V(ss) V(uvlo) V(arm) V(prot) V(inhib) V(g) V(oc)
+.meas tran ARM_BEFORE AVG V(arm) FROM=60u TO=99u
+.meas tran PROT_LATCHED AVG V(prot) FROM=70u TO=99u
+.meas tran G_LATCHED AVG V(g) FROM=70u TO=99u
+.meas tran PROT_CLEARED FIND V(prot) AT=119.9u
+.meas tran ARM_CLEARED FIND V(arm) AT=119.9u
+.meas tran PROT_RESTART_MAX MAX V(prot) FROM=2000.2u TO=2100u
+.meas tran G_RESTART AVG V(g) FROM=130u TO=9700u
+.meas tran ARM_REARM_MAX MAX V(arm) FROM=9730u TO=10290u
+.meas tran PROT_REARM_MAX MAX V(prot) FROM=10310u TO=10590u
+.meas tran G_REARM_MIN MIN V(g) FROM=10310u TO=10590u
+.end

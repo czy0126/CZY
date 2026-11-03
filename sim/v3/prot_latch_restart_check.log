@@ -1,0 +1,25 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\sim\v3\prot_latch_restart_check.cir
+Start Time: Tue Nov  3 13:08:35 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 12.591 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\sim\v3\prot_latch_restart_check.cir
+
+arm_before: AVG(V(arm) )=0.999999899999 FROM 6e-05 TO 9.9e-05
+prot_latched: AVG(V(prot) )=0.999980430227 FROM 7e-05 TO 9.9e-05
+g_latched: AVG(V(g) )=0.153846153846 FROM 7e-05 TO 9.9e-05
+prot_cleared: V(prot) =4.30860293e-87 at 0.0001199
+arm_cleared: V(arm) =4.30875373374e-87 at 0.0001199
+prot_restart_max: MAX(V(prot) )=2.2073391171e-87 FROM 0.0020002 TO 0.0021
+g_restart: AVG(V(g) )=9.99999996724 FROM 0.00013 TO 0.0097
+arm_rearm_max: MAX(V(arm) )=0.9999999 FROM 0.00973 TO 0.01029
+prot_rearm_max: MAX(V(prot) )=0.999994930013 FROM 0.01031 TO 0.01059
+g_rearm_min: MIN(V(g) )=0.153846153846 FROM 0.01031 TO 0.01059

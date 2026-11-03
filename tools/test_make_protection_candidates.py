@@ -200,6 +200,54 @@ def test_the_uvlo_deck_drops_its_own_bias_and_keeps_the_same_clamp() -> None:
     assert "Carm arm 0 1n IC=0" in text
 
 
+def test_the_latch_clear_terms_drain_the_capacitor(parent_texts: dict[str, str]) -> None:
+    """A B current source's positive current leaves the node.
+
+    ``+V(node)*(1n/100n)`` drains the 1 nF latch; the negative form is positive
+    feedback.  Every power-stage deck holds Vddp at 12 V, so the branch is
+    never selected there -- the first restart deck was where it ran, and it
+    diverged to 1e86.  Lock the sign on every generated text.
+    """
+    for case in m.CANDIDATES:
+        text = m.build(parent_for(case, parent_texts), case)
+        assert "-V(prot)*(1n/" not in text
+        assert "V(prot)*(1n/" in text
+    assert "-V(prot)*(1n/" not in m.uvlo_deck()
+    assert "-V(prot)*(1n/" not in m.restart_deck()
+    assert "-V(arm)*(1n/" not in m.restart_deck()
+
+
+def test_the_restart_deck_resets_both_latches_and_keeps_the_same_clamp() -> None:
+    text = m.restart_deck()
+    assert "Barm arm 0 I=if(V(uvlo)>.5,V(arm)*(1n/100n)," in text
+    assert "Bprot prot 0 I=if(V(uvlo)>.5,V(prot)*(1n/100n)," in text
+    assert "Sg g 0 inhib 0 PROT_KILL" in text
+    assert ".model PROT_KILL SW(Ron=.05 Roff=1G Vt=.5)" in text
+    assert "Rdrv drv g 3.2" in text
+    # One step per 100 ns tau diverges; the deck must keep 10 ns.
+    assert ".tran 0 10600u 0 10n" in text
+
+
+def test_the_restart_stimulus_has_a_pulse_inside_and_after_the_blanked_ramp() -> None:
+    text = m.restart_deck()
+    # Soft-start slope is the datasheet model number, not a free parameter.
+    assert m.SS_RAMP_V_PER_S == 0.5e3
+    assert "Vss ss 0 PWL(0 5 100u 5 101u 0 120u 0 10120u 5)" in text
+    assert "2000.1u 2.5" in text      # during the ramp, must not latch
+    assert "10300.1u 2.5" in text     # after 4.8 V, must latch
+    # The ramp pulse is well before the arming crossing at 9.72 ms.
+    assert m.RESTART_PULSE_S < m.POWER_RETURN_S + m.ARM_SS_V / m.SS_RAMP_V_PER_S
+    assert m.REARM_PULSE_S > m.POWER_RETURN_S + m.ARM_SS_V / m.SS_RAMP_V_PER_S
+
+
+def test_the_arming_reset_only_adds_the_uvlo_branch() -> None:
+    plain = m.latch_terms()
+    reset = m.latch_terms(reset_on_uvlo=True)
+    assert "V(uvlo)" not in plain
+    assert "if(V(uvlo)>.5,V(arm)" in reset
+    assert "if(V(ss)>4.8,-(1-V(arm))*(1n/100n),0))\n" in reset
+
+
 def test_generation_is_deterministic(parent_texts: dict[str, str]) -> None:
     for case in m.CANDIDATES:
         parent = parent_for(case, parent_texts)

@@ -296,7 +296,7 @@ Rarm arm 0 1G
 Barm arm 0 I=if(V(ss)>4.8,-(1-V(arm))*(1n/100n),0)
 Cprot prot 0 1n IC=0
 Rprot prot 0 1G
-Bprot prot 0 I=if(V(uvlo)>.5,-V(prot)*(1n/100n),if(V(arm)>.5,if(V(oc)>1,-(1-V(prot))*(1n/100n),0),0))
+Bprot prot 0 I=if(V(uvlo)>.5,V(prot)*(1n/100n),if(V(arm)>.5,if(V(oc)>1,-(1-V(prot))*(1n/100n),0),0))
 Binhib inhib 0 V=if(V(uvlo)>.5,1,if(V(prot)>.5,1,0))
 Sgh gh sw inhib 0 PROT_KILL
 Sgl gl 0 inhib 0 PROT_KILL

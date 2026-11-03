@@ -140,6 +140,18 @@ LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
   48 V 1.0814 V。**`--base-deck` 的默认值是候选声明的父 deck**；结构检查（生成器一致、
   故障网络不变）永远对声明父 deck 做，不对比较基准做。
   负对照 `prot_b_unarmed` 必须保留：它在启动冲击时就锁死，整窗记录的是停机变换器。
+- **B 源的正电流离开节点，所以锁存清除项是 `+V(node)*(1n/TAU)`，不是 `-V`**：
+  `-V` 是正反馈。这个 bug 一直没暴露，因为五个功率级候选的 `Vddp` 恒 12 V ⇒ `V(uvlo)≡0`，
+  清除分支**从未被选中**；第一次真正掉电重启的 `prot_latch_restart_check.cir` 直接发散到 **1e86**。
+  改这一行对已发布 raw 的数值影响为零（分支不可达），但任何重启动 deck 都必须用 `+V`。
+  另外这个显式积分器要求 `.tran` 最大步长远小于 τ=100 ns——**10 ns** 可用，100 ns 发散。
+  测试 `test_the_latch_clear_terms_drain_the_capacitor` 逐份锁死。
+  重启时序只在**逻辑级子电路**里验证（`sim/v3/prot_latch_restart_check.cir`，
+  `protection_candidate_compare.py --restart-raw` 出 `protection_restart_check.json`）：
+  20 µs 掉电后 `inhib` 保持 1、双锁存清零、软启动斜坡内脉冲不锁存、`V(ss)` 过 4.8 V 后
+  **9.72007 ms** 重新 arming、10.3 ms 脉冲重新锁存。它**不证明功率级能重启动**，
+  也不覆盖斜坡段（那段门极仍被驱动，只能靠控制器自己的 OC，本 deck 没建模）；
+  完整功率级重启需要 9.6 ms 软启动，装不进 320 µs 故障窗口。
 - `Tstart` 会**重排保存的时间轴**：raw 里的 `0..120 us` 实际是 `880..1000 us`。
   任何窗口都要同时记录 `raw_time_start_s` 与 `display_offset_us`（manifest 已如此）。
   这两个值现在由 `current_manifest.deck_timing()` 从 deck 的 `.tran` 行解析，并与 LTspice 日志里的

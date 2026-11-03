@@ -12,7 +12,7 @@ Rarm arm 0 1G
 Barm arm 0 I=if(V(ss)>4.8,-(1-V(arm))*(1n/100n),0)
 Cprot prot 0 1n IC=0
 Rprot prot 0 1G
-Bprot prot 0 I=if(V(uvlo)>.5,-V(prot)*(1n/100n),0)
+Bprot prot 0 I=if(V(uvlo)>.5,V(prot)*(1n/100n),0)
 Binhib inhib 0 V=if(V(uvlo)>.5,1,if(V(prot)>.5,1,0))
 Sg g 0 inhib 0 PROT_KILL
 .model PROT_KILL SW(Ron=.05 Roff=1G Vt=.5)

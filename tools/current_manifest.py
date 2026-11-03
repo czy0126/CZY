@@ -132,6 +132,12 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
         "sim/v3/prot_latch_uvlo_check.cir",
+        # PROT-02 restart sequencing: logic-level sub-circuit only.  A full
+        # power-stage restart needs 9.6 ms of soft-start ramp (0.5 mV/us) and
+        # does not fit the 320 us fault window; this deck checks the order
+        # (power cycle clears both latches, the ramp is blanked, re-arm then
+        # latches again) with ideal PWL sources.
+        "sim/v3/prot_latch_restart_check.cir",
     ],
     "model": [
         "models/ucc25600_legacy_behaviour.lib",
@@ -307,6 +313,7 @@ V3_SOURCES = {
         "design/v3/power_priority/protection_candidate_50v_120a_prot_a.json",
         "design/v3/power_priority/protection_candidate_50v_120a_prot_b.json",
         "design/v3/power_priority/protection_uvlo_check.json",
+        "design/v3/power_priority/protection_restart_check.json",
     ],
     "doc": [
         "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -377,6 +384,8 @@ V3_SOURCES = {
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.raw",
         "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.raw",
         "sim/v3/prot_latch_uvlo_check.raw",
+        # 236 MB restart sub-circuit raw: hashed like the other small raws.
+        "sim/v3/prot_latch_restart_check.raw",
         # The cold-start / cold-OC raws (base and cshunt) are 9-12 GB each and
         # stay out of the hash list; their .log files are the committed
         # measurements.

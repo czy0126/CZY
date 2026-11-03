@@ -15,7 +15,9 @@ The report separates two questions that are easy to blur:
 
 Neither is a hardware safety proof.  The clamp is an ideal 0.05 ohm switch, the
 latch is a behavioural integrator, and there is no SOA, thermal, comparator
-noise, gate-loop inductance or restart sequencing.
+noise or gate-loop inductance.  Restart order is checked only in a logic-level
+sub-circuit (``restart_check``), never in the power stage; that deck is where
+the arming latch gains its UVLO reset.
 
 Usage:
     python tools/protection_candidate_compare.py \
@@ -25,6 +27,11 @@ Usage:
         --uvlo-raw sim/v3/prot_latch_uvlo_check.raw \
         --json design/v3/power_priority/protection_candidate_48v_120a_prot_b.json \
         --uvlo-json design/v3/power_priority/protection_uvlo_check.json
+
+    # sub-circuit checks alone (no candidate comparison):
+    python tools/protection_candidate_compare.py \
+        --restart-raw sim/v3/prot_latch_restart_check.raw \
+        --restart-json design/v3/power_priority/protection_restart_check.json
 """
 from __future__ import annotations
 
@@ -441,28 +448,134 @@ def uvlo_check(uvlo_raw: Path, uvlo_deck: Path) -> dict[str, object]:
     }
 
 
+def restart_check(restart_raw: Path, restart_deck: Path) -> dict[str, object]:
+    """Logic-level restart order: latch, power cycle, blanked ramp, re-arm.
+
+    Every quantity here is a *result*, not a check: the checks only assert that
+    the deck is the generator output and covers the declared window.
+    """
+    text = restart_deck.read_text(encoding="utf-8")
+    names = ["V(vddp)", "V(ss)", "V(uvlo)", "V(arm)", "V(prot)", "V(inhib)", "V(g)", "V(oc)"]
+    t, d = read_window(restart_raw, names, 0.0, make.RESTART_STOP_S)
+    guard = 0.2e-6
+    latch_w = (70e-6, 99e-6)
+    cycle_w = (make.POWER_CYCLE_S + guard, make.POWER_RETURN_S - guard)
+    ramp_w = (make.POWER_RETURN_S + guard, make.RESTART_PULSE_S - 0.1e-3)
+    pulse_w = (make.RESTART_PULSE_S + guard, make.RESTART_PULSE_S + 0.1e-3)
+    arm_s = make.POWER_RETURN_S + make.ARM_SS_V / make.SS_RAMP_V_PER_S
+    armed_w = (arm_s + 0.03e-3, make.REARM_PULSE_S - 0.01e-3)
+    rearm_w = (make.REARM_PULSE_S + 0.02e-3, make.RESTART_STOP_S - 0.01e-3)
+
+    def window_max(name: str, w: tuple[float, float]) -> float | None:
+        mask = (t >= w[0]) & (t <= w[1])
+        return float(d[name][mask].max()) if mask.any() else None
+
+    def window_min(name: str, w: tuple[float, float]) -> float | None:
+        mask = (t >= w[0]) & (t <= w[1])
+        return float(d[name][mask].min()) if mask.any() else None
+
+    def window_mean(name: str, w: tuple[float, float]) -> float:
+        return mean_window(t, d[name], *w)
+
+    cleared_w = (make.POWER_RETURN_S - 0.9e-6, make.POWER_RETURN_S - 0.1e-6)
+    arm_closed = first_cross(t, d["V(arm)"], 0.5, make.POWER_RETURN_S)
+    ss_cross = first_cross(t, d["V(ss)"], make.ARM_SS_V, make.POWER_RETURN_S)
+    sequence = {
+        "latch_set_before_power_cycle": bool(window_mean("V(prot)", latch_w) > 0.5),
+        "gate_low_while_latched": bool(window_mean("V(g)", latch_w) < 1.0),
+        "power_cycle_inhibits": bool((window_min("V(inhib)", cycle_w) or 0.0) > 0.5),
+        "gate_low_during_power_cycle": bool((window_max("V(g)", cycle_w) or 0.0) < 1.0),
+        "latch_cleared_by_power_cycle": bool(window_max("V(prot)", cleared_w) < 0.05),
+        "arming_latch_cleared_by_power_cycle": bool(window_max("V(arm)", cleared_w) < 0.05),
+        "fast_path_blanked_during_restart_ramp":
+            bool(window_max("V(prot)", pulse_w) < 0.05),
+        "arming_latch_reclosed_after_soft_start":
+            bool((window_max("V(arm)", armed_w) or 0.0) > 0.5),
+        "latch_sets_again_after_rearm":
+            bool((window_max("V(prot)", rearm_w) or 0.0) > 0.5),
+        "gate_low_after_rearm_latch": bool(window_mean("V(g)", rearm_w) < 1.0),
+    }
+    results = {
+        "armed_before_fault_v": window_mean("V(arm)", latch_w),
+        "latch_before_power_cycle_v": window_mean("V(prot)", latch_w),
+        "gate_latched_low_v": window_mean("V(g)", latch_w),
+        "vddp_min_during_power_cycle_v": window_min("V(vddp)", cycle_w),
+        "inhibit_min_during_power_cycle": window_min("V(inhib)", cycle_w),
+        "gate_max_during_power_cycle_v": window_max("V(g)", cycle_w),
+        "latch_after_power_cycle_v": window_max("V(prot)", cleared_w),
+        "arming_latch_after_power_cycle_v": window_max("V(arm)", cleared_w),
+        "restart_ramp_s": arm_s,
+        "arming_latch_closed_s": arm_closed,
+        "arming_latch_closed_ms": None if arm_closed is None else arm_closed * 1e3,
+        "soft_start_crossed_arm_level_s": ss_cross,
+        "soft_start_crossed_arm_level_ms": None if ss_cross is None else ss_cross * 1e3,
+        "restart_pulse_peak_v": window_max("V(prot)", pulse_w),
+        "gate_during_restart_ramp_v": window_mean("V(g)", ramp_w),
+        "rearm_pulse_peak_v": window_max("V(prot)", rearm_w),
+        "gate_after_rearm_latch_v": window_mean("V(g)", rearm_w),
+        "sequence": sequence,
+        "restart_sequence_verified": all(sequence.values()),
+    }
+    return {
+        "kind": "protection_restart_sub_circuit_check",
+        "evidence_level": "SIMULATED_SUB_CIRCUIT_ONLY / NOT_HARDWARE",
+        "deck": str(restart_deck.relative_to(ROOT)) if restart_deck.is_relative_to(ROOT)
+        else str(restart_deck),
+        "results": results,
+        "checks": {
+            "the_deck_is_the_generator_output": bool(text == make.restart_deck()),
+            "the_deck_resets_both_latches_on_uvlo":
+                bool("V(prot)*(1n/100n)" in text and "V(arm)*(1n/100n)" in text),
+            "the_dummy_gate_is_driven_through_3p2_ohm": "Rdrv drv g 3.2" in text,
+            # LTspice stops at the last internal step, so the saved axis can
+            # end up to one 10 ns max step short of the declared 10.6 ms.
+            "the_raw_covers_the_restart_window": bool(t[-1] >= make.RESTART_STOP_S - 10e-9),
+        },
+        "limits": [
+            "logic-only sub-circuit: ideal PWL sources, no power stage, no controller "
+            "Level-1 OC and no real gate driver",
+            "the gate is still driven during the blanked restart ramp; protection in that "
+            "window relies on the controller's own OC, which this deck does not model",
+            "the arming-latch UVLO reset is an addition carried only by this deck; the "
+            "frozen comparison decks hold Vddp at 12 V, where the branch is never selected",
+            "TAU_PROT = 100 ns is a modelling choice, not a datasheet reset time",
+        ],
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--case", choices=sorted(make.CANDIDATES), required=True)
-    ap.add_argument("--base-raw", type=Path, required=True)
-    ap.add_argument("--candidate-raw", type=Path, required=True)
+    ap.add_argument("--case", choices=sorted(make.CANDIDATES))
+    ap.add_argument("--base-raw", type=Path)
+    ap.add_argument("--candidate-raw", type=Path)
     # Default is the candidate's declared parent, not a hard-coded deck: the
     # 50 V candidates hang off the cshunt child.
     ap.add_argument("--base-deck", type=Path)
     ap.add_argument("--candidate-deck", type=Path)
     ap.add_argument("--uvlo-raw", type=Path)
     ap.add_argument("--uvlo-deck", type=Path, default=make.uvlo_destination())
-    ap.add_argument("--json", type=Path, required=True)
+    ap.add_argument("--restart-raw", type=Path)
+    ap.add_argument("--restart-deck", type=Path, default=make.restart_destination())
+    ap.add_argument("--json", type=Path)
     ap.add_argument("--uvlo-json", type=Path)
+    ap.add_argument("--restart-json", type=Path)
     args = ap.parse_args()
-    record = compare(args.case, args.base_raw, args.candidate_raw,
-                     base_deck=args.base_deck, candidate_deck=args.candidate_deck)
-    args.json.parent.mkdir(parents=True, exist_ok=True)
-    args.json.write_text(json.dumps(record, indent=1, ensure_ascii=False) + "\n",
-                         encoding="utf-8")
-    print(f"wrote {args.json}")
-    print(f"base trip {record['results']['trigger']['base_trip_us']} us / "
-          f"latch {record['results']['trigger']['latch_us']} us")
+    comparison = (args.case is not None or args.base_raw is not None
+                  or args.candidate_raw is not None or args.json is not None)
+    if comparison:
+        missing = [name for name, value in (("--case", args.case), ("--base-raw", args.base_raw),
+                                            ("--candidate-raw", args.candidate_raw),
+                                            ("--json", args.json)) if value is None]
+        if missing:
+            ap.error(f"{', '.join(missing)} required for a candidate comparison")
+        record = compare(args.case, args.base_raw, args.candidate_raw,
+                         base_deck=args.base_deck, candidate_deck=args.candidate_deck)
+        args.json.parent.mkdir(parents=True, exist_ok=True)
+        args.json.write_text(json.dumps(record, indent=1, ensure_ascii=False) + "\n",
+                             encoding="utf-8")
+        print(f"wrote {args.json}")
+        print(f"base trip {record['results']['trigger']['base_trip_us']} us / "
+              f"latch {record['results']['trigger']['latch_us']} us")
     if args.uvlo_raw:
         uvlo = uvlo_check(args.uvlo_raw, args.uvlo_deck)
         if args.uvlo_json:
@@ -472,6 +585,15 @@ def main() -> int:
             print(f"wrote {args.uvlo_json}")
         print(f"uvlo gate {uvlo['results']['gate_after_v']:.3f} V, "
               f"default off {uvlo['results']['default_off_asserted']}")
+    if args.restart_raw:
+        restart = restart_check(args.restart_raw, args.restart_deck)
+        if args.restart_json:
+            args.restart_json.parent.mkdir(parents=True, exist_ok=True)
+            args.restart_json.write_text(json.dumps(restart, indent=1, ensure_ascii=False) + "\n",
+                                         encoding="utf-8")
+            print(f"wrote {args.restart_json}")
+        print(f"restart sequence verified {restart['results']['restart_sequence_verified']}, "
+              f"re-arm at {restart['results']['arming_latch_closed_ms']} ms")
     return 0
 
 

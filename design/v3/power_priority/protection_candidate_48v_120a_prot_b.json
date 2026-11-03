@@ -4,7 +4,9 @@
  "case": "prot_b_fast10u_1p8v",
  "decks": {
   "base": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
-  "candidate": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir"
+  "candidate": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
+  "declared_parent": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir",
+  "solver_cshunt": false
  },
  "window_s": [
   0.0001749999999999998,
@@ -488,6 +490,6 @@
   "a candidate that stops early is a prefix; it does not cover the declared window",
   "the 48 V record is a hot start from .ic V(out)=1.89 V, not a cold start",
   "the arming latch closes inside the unsaved 2 ms pre-history; the saved axis can only show that it is already high",
-  "the base's A-phase SR gates re-assert after trip; the candidate clamps are the comparison, not a safety claim"
+  "the base's SR gates re-assert after trip (the phase and count differ between runs); the candidate clamps are the comparison, not a safety claim"
  ]
 }

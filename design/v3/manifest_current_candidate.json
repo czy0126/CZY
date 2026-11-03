@@ -282,44 +282,51 @@
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.cir",
       "kind": "deck",
-      "bytes": 15421,
-      "mtime": 1793678901.1904814,
-      "sha256": "dc516b9a6669902d18c1004fc11439c438fb29db4cdd8f7bf50674430525baed"
+      "bytes": 15420,
+      "mtime": 1793682580.7432866,
+      "sha256": "66f5060a92abb3e953b4db5fa1a6d2506219fc89f2a9405f9deca5692576f162"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.cir",
       "kind": "deck",
-      "bytes": 15650,
-      "mtime": 1793678901.1904814,
-      "sha256": "5473881700ae3d894fc1cdc07fe811ee82a585acfcdf1771d704442a8b2d075a"
+      "bytes": 15649,
+      "mtime": 1793682580.7432866,
+      "sha256": "d7b6900184da66c6a086fcdd1c6cde78be94fe88a270ae6e269872ffdb06208b"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.cir",
       "kind": "deck",
-      "bytes": 15427,
-      "mtime": 1793678901.191481,
-      "sha256": "1c92891105e66ac49a67df92a55455b7cc91a3227ba1e898231d2e98c7336ddd"
+      "bytes": 15426,
+      "mtime": 1793682580.7432866,
+      "sha256": "9a2b9cb6bb335e888b8cd70d357418daf4fa89ba5fa1261025b58be102a339bd"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.cir",
       "kind": "deck",
-      "bytes": 15745,
-      "mtime": 1793678901.191481,
-      "sha256": "912dbd54eae7027b29eef1325808b843dd8d16bebeeac9b5f1362d337a529ba9"
+      "bytes": 15744,
+      "mtime": 1793682580.7442877,
+      "sha256": "cfb807d6a310d50b4d9448f63e74828c8f8f849414b8c9c8bfbbca1c6e8cc5cc"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.cir",
       "kind": "deck",
-      "bytes": 15962,
-      "mtime": 1793678901.191481,
-      "sha256": "30282cbc6db3dfe7d70cfe162d900a382b5f644e37aff33a78fd8fc7e6e2c329"
+      "bytes": 15961,
+      "mtime": 1793682580.7442877,
+      "sha256": "e79aa893a319de03b58f3cbf70d6c5cf9497323057f16e0e994c4c219a023a70"
     },
     {
       "path": "sim/v3/prot_latch_uvlo_check.cir",
       "kind": "deck",
-      "bytes": 922,
-      "mtime": 1793678901.191481,
-      "sha256": "6de7e37391e16a850dd7bad603487611aef6e3a9cb7cc497bafe48f1dfb3ec68"
+      "bytes": 921,
+      "mtime": 1793682580.7442877,
+      "sha256": "9bebe5c08a58d6ec67fe6460b52bc9e20dd6eddaca15fafbf35478b7264a3797"
+    },
+    {
+      "path": "sim/v3/prot_latch_restart_check.cir",
+      "kind": "deck",
+      "bytes": 1736,
+      "mtime": 1793682580.7442877,
+      "sha256": "b1d083826165492861479a9f8eebfdb6a92afd5874485717615f93642a190392"
     },
     {
       "path": "models/ucc25600_legacy_behaviour.lib",
@@ -534,9 +541,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 48948,
-      "mtime": 1793681691.9404655,
-      "sha256": "51354f6659008bdcbe5b00c6724a837579cc618e06f91df1e65d372729d77bd0"
+      "bytes": 49548,
+      "mtime": 1793682778.7823024,
+      "sha256": "a64dfaedbf15229da8034d144580ff246332888574c0f321766752522fd0d604"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -870,23 +877,23 @@
     {
       "path": "tools/make_protection_candidates.py",
       "kind": "script",
-      "bytes": 11980,
-      "mtime": 1793678892.456584,
-      "sha256": "2efb434be2eaa008fa2c8e11cc7bb9db71bad0d694814550a3f1ffe1922b9bb7"
+      "bytes": 17760,
+      "mtime": 1793682508.38524,
+      "sha256": "c7142fcc3743d78c1a0fd315154dc3a5b6997d11f504ddf4d0023493af9b9486"
     },
     {
       "path": "tools/protection_candidate_compare.py",
       "kind": "script",
-      "bytes": 23211,
-      "mtime": 1793681888.5390463,
-      "sha256": "4c051bee2ef72a0187f7fb524feab5921b82a2c89ad78378c77957a48ea1aeb8"
+      "bytes": 30235,
+      "mtime": 1793682618.987816,
+      "sha256": "88bee331545fb3339d1e49443182b7ae3cc07adcd1429c83920754fe3c4d472e"
     },
     {
       "path": "tools/test_make_protection_candidates.py",
       "kind": "script",
-      "bytes": 8187,
-      "mtime": 1793678928.773268,
-      "sha256": "26ac2c16b05ff95b60b79113559e19b93b4ebc9a5b5867bd387eb20b9e11e3ef"
+      "bytes": 10408,
+      "mtime": 1793682573.3258607,
+      "sha256": "19bea7ce8ca29da068d92893f6e8801aaadd28e7ff4b4391d903e15b2454ee6d"
     },
     {
       "path": "tools/test_protection_candidate_compare.py",
@@ -1318,44 +1325,51 @@
     {
       "path": "design/v3/power_priority/protection_candidate_48v_120a_prot_a.json",
       "kind": "result",
-      "bytes": 17437,
-      "mtime": 1793678589.9420526,
-      "sha256": "a2037a959c2071690c33961c6b25095d7474a77ecfd5f9c0add17044a7266525"
+      "bytes": 17582,
+      "mtime": 1793682676.653495,
+      "sha256": "ef44861e41726b493e90522c86003be18a1858798ac4112638b94c3b38a3e783"
     },
     {
       "path": "design/v3/power_priority/protection_candidate_48v_120a_prot_b.json",
       "kind": "result",
-      "bytes": 17581,
-      "mtime": 1793678604.3007586,
-      "sha256": "fb91ba1cf1ec1c2f3b4c49a189faa64fe88f9eae4ff226245b45a8f335f06560"
+      "bytes": 17726,
+      "mtime": 1793682690.689679,
+      "sha256": "a6c7861cff8183844c9bbf33efc882a8a2dfaed08bbfa5062089f17f99b01061"
     },
     {
       "path": "design/v3/power_priority/protection_candidate_48v_120a_prot_b_unarmed.json",
       "kind": "result",
-      "bytes": 16856,
-      "mtime": 1793678546.746544,
-      "sha256": "22bcf859da0b6033d667fd125d1edd75c9a7d968b7924f78e12cc30b65de596f"
+      "bytes": 17001,
+      "mtime": 1793682700.9608533,
+      "sha256": "f8308fced7937190d9728668485d26872e258225f9064a82ddbcba765a975eda"
     },
     {
       "path": "design/v3/power_priority/protection_candidate_50v_120a_prot_a.json",
       "kind": "result",
       "bytes": 17882,
-      "mtime": 1793681931.1506302,
+      "mtime": 1793682726.930864,
       "sha256": "7090926f7d206ce25e735240bb7a91fe24f7e3fcb591a938f29b59f4000ade00"
     },
     {
       "path": "design/v3/power_priority/protection_candidate_50v_120a_prot_b.json",
       "kind": "result",
       "bytes": 18071,
-      "mtime": 1793681950.4435885,
+      "mtime": 1793682746.4291677,
       "sha256": "5ad23cba849795a94280b906c8354ac37b94998bd92f9bf1be892df82209811a"
     },
     {
       "path": "design/v3/power_priority/protection_uvlo_check.json",
       "kind": "result",
       "bytes": 1045,
-      "mtime": 1793678590.014715,
+      "mtime": 1793682587.671556,
       "sha256": "af0d469a176a9e3bf062809d5119108a020e19b0d99792cae190d5b0674c4bea"
+    },
+    {
+      "path": "design/v3/power_priority/protection_restart_check.json",
+      "kind": "result",
+      "bytes": 2253,
+      "mtime": 1793682630.37401,
+      "sha256": "d0c135a48c925b36e7b29682999033cac4744a90af4133a5d127b823e5b309f6"
     },
     {
       "path": "design/v3/magnetics/磁件设计包_2026-10-31.md",
@@ -1465,9 +1479,9 @@
     {
       "path": "design/v3/power_priority/PROT02_独立故障锁存候选对照_2026-11-03.md",
       "kind": "doc",
-      "bytes": 16053,
-      "mtime": 1793681949.8669944,
-      "sha256": "375ad730d6f0d5b53beca584769da5107a981e6fa7c1bdcf0589cd124455fbff"
+      "bytes": 19228,
+      "mtime": 1793682731.6727467,
+      "sha256": "1d43690c59a2dc678480c7edc9ca7af97b96055f93f8ce58a22a9a9507290304"
     },
     {
       "path": "pcb/control_validation/控制验证板_设计与测试说明_2026-10-31.md",
@@ -1718,8 +1732,15 @@
       "path": "sim/v3/prot_latch_uvlo_check.raw",
       "kind": "raw",
       "bytes": 3958643,
-      "mtime": 1793677733.8170106,
-      "sha256": "034e7e99f8d9e16e883a0e3992727601dd60c02e7741d54877b4da2abc1eecc3"
+      "mtime": 1793682587.0960295,
+      "sha256": "18e98e62be535f7c5925312168c9c39395ca79036794169602539faee58ae318"
+    },
+    {
+      "path": "sim/v3/prot_latch_restart_check.raw",
+      "kind": "raw",
+      "bytes": 236361838,
+      "mtime": 1793682527.8691118,
+      "sha256": "1b2761af7cdf6dadcda726ceb30d5cb5ceab1959f9df268a60fceded475985eb"
     }
   ],
   "missing": [],
@@ -2213,6 +2234,17 @@
       "tran": ".tran 0 200u 0 10n",
       "raw_time_start_s": 0.0,
       "raw_time_end_s": 0.00019999999999999998,
+      "display_offset_us": 0.0,
+      "max_step_s": 1e-08,
+      "has_ic": false,
+      "uic": false,
+      "cold_start": false
+    },
+    {
+      "deck": "sim/v3/prot_latch_restart_check.cir",
+      "tran": ".tran 0 10600u 0 10n",
+      "raw_time_start_s": 0.0,
+      "raw_time_end_s": 0.0106,
       "display_offset_us": 0.0,
       "max_step_s": 1e-08,
       "has_ic": false,

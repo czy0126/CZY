@@ -1,0 +1,49 @@
+{
+ "kind": "protection_restart_sub_circuit_check",
+ "evidence_level": "SIMULATED_SUB_CIRCUIT_ONLY / NOT_HARDWARE",
+ "deck": "sim\\v3\\prot_latch_restart_check.cir",
+ "results": {
+  "armed_before_fault_v": 0.9999999000000116,
+  "latch_before_power_cycle_v": 0.9999804302264304,
+  "gate_latched_low_v": 0.15384615384614628,
+  "vddp_min_during_power_cycle_v": 0.0,
+  "inhibit_min_during_power_cycle": 1.0,
+  "gate_max_during_power_cycle_v": 0.1538461538461463,
+  "latch_after_power_cycle_v": 1.229832248903937e-83,
+  "arming_latch_after_power_cycle_v": 1.229875293786124e-83,
+  "restart_ramp_s": 0.00972,
+  "arming_latch_closed_s": 0.009720070086451982,
+  "arming_latch_closed_ms": 9.720070086451981,
+  "soft_start_crossed_arm_level_s": 0.00972000171073459,
+  "soft_start_crossed_arm_level_ms": 9.72000171073459,
+  "restart_pulse_peak_v": 2.207339106063923e-87,
+  "gate_during_restart_ramp_v": 9.999999870351603,
+  "rearm_pulse_peak_v": 0.9999849251135725,
+  "gate_after_rearm_latch_v": 0.15384615384614633,
+  "sequence": {
+   "latch_set_before_power_cycle": true,
+   "gate_low_while_latched": true,
+   "power_cycle_inhibits": true,
+   "gate_low_during_power_cycle": true,
+   "latch_cleared_by_power_cycle": true,
+   "arming_latch_cleared_by_power_cycle": true,
+   "fast_path_blanked_during_restart_ramp": true,
+   "arming_latch_reclosed_after_soft_start": true,
+   "latch_sets_again_after_rearm": true,
+   "gate_low_after_rearm_latch": true
+  },
+  "restart_sequence_verified": true
+ },
+ "checks": {
+  "the_deck_is_the_generator_output": true,
+  "the_deck_resets_both_latches_on_uvlo": true,
+  "the_dummy_gate_is_driven_through_3p2_ohm": true,
+  "the_raw_covers_the_restart_window": true
+ },
+ "limits": [
+  "logic-only sub-circuit: ideal PWL sources, no power stage, no controller Level-1 OC and no real gate driver",
+  "the gate is still driven during the blanked restart ramp; protection in that window relies on the controller's own OC, which this deck does not model",
+  "the arming-latch UVLO reset is an addition carried only by this deck; the frozen comparison decks hold Vddp at 12 V, where the branch is never selected",
+  "TAU_PROT = 100 ns is a modelling choice, not a datasheet reset time"
+ ]
+}
