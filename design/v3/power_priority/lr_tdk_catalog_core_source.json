@@ -1,0 +1,89 @@
+{
+  "kind": "MANUFACTURER_PUBLISHED_CORE_DIMENSIONS_NOT_ASSEMBLY",
+  "created": "2026-11-03",
+  "manufacturer_reference_pdf": "https://www.tdk-electronics.tdk.com/download/2527774/1e429cb7ad3fd0be062bcfe03f8ed498/ferrites-planar-cores-pb.pdf",
+  "manufacturer_document": "Planar Cores for Power Applications, EPCOS Product Brief 2019, pp.2-4",
+  "manufacturer": "TDK Electronics",
+  "source_confidence": "TDK PRIMARY MANUFACTURER PRINTED DIMENSIONS AND MAGNETIC CHARACTERISTICS; NOT MANUFACTURER VALIDATED ASSEMBLY",
+  "requirements": {
+    "converter_max_total_height_mm": 10,
+    "include_board_windings_pads_pocket": true,
+    "minimum_amin_3turn_mm2": 179.659554,
+    "preferred_amin_3turn_mm2": 200,
+    "minimum_amin_4turn_mm2": 134.744665,
+    "preferred_amin_4turn_mm2": 150,
+    "magnetic_b_limit_t": 0.248,
+    "model_three_turn_b_at_128mm2_t": 0.34809,
+    "flux_screen_assumption": "Bpeak≈L*Ipk/(N*Amin) with existing Lmax and 1.2x peak RFQ. Flux estimate is not measured nonlinear BH nor vendor L(I). A_min used as conservative cross-section screen.",
+    "area_conditions_are_nominal": true
+  },
+  "cores": [
+    {
+      "id": "ELP32_I32",
+      "core": "ELP 32/6/20",
+      "plate": "I 32/3/20",
+      "material": "N97",
+      "tdk_ordering_prefix": "B66457G0000X",
+      "amin_mm2": 128,
+      "ae_mm2": 130,
+      "core_height_nom_mm": 6.35,
+      "core_height_tolerance_mm": 0.15,
+      "plate_height_nom_mm": 3.15,
+      "plate_height_tolerance_mm": 0.15
+    },
+    {
+      "id": "ELP38_I38",
+      "core": "ELP 38/8/25",
+      "plate": "I 38/4/25",
+      "material": "N97",
+      "tdk_ordering_prefix": "B66459G0000X",
+      "amin_mm2": 192,
+      "ae_mm2": 194,
+      "core_height_nom_mm": 8.25,
+      "core_height_tolerance_mm": 0.15,
+      "plate_height_nom_mm": 3.8,
+      "plate_height_tolerance_mm": 0.15
+    },
+    {
+      "id": "ELP43_I43",
+      "core": "ELP 43/10/28",
+      "plate": "I 43/4/28",
+      "material": "N97",
+      "tdk_ordering_prefix": "B66461G0000X",
+      "amin_mm2": 217,
+      "ae_mm2": 225,
+      "core_height_nom_mm": 9.5,
+      "core_height_tolerance_mm": 0.15,
+      "plate_height_nom_mm": 4.1,
+      "plate_height_tolerance_mm": 0.15
+    },
+    {
+      "id": "ELP58_I58",
+      "core": "ELP 58/11/38",
+      "plate": "I 58/4/38",
+      "material": "N97",
+      "tdk_ordering_prefix": "B66293G0000X",
+      "amin_mm2": 308,
+      "ae_mm2": 310,
+      "core_height_nom_mm": 10.55,
+      "core_height_tolerance_mm": 0.1,
+      "plate_height_nom_mm": 4.05,
+      "plate_height_tolerance_mm": 0.2
+    },
+    {
+      "id": "ELP64_I64",
+      "core": "ELP 64/10/50",
+      "plate": "I 64/5/50",
+      "material": "N97",
+      "tdk_ordering_prefix": "B66295G0000X",
+      "amin_mm2": 518,
+      "ae_mm2": 519,
+      "core_height_nom_mm": 10.2,
+      "core_height_tolerance_mm": 0.15,
+      "plate_height_nom_mm": 5.1,
+      "plate_height_tolerance_mm": 0.15
+    }
+  ],
+  "status": "RAW_CATALOG_ONLY",
+  "fab_release": false
+}

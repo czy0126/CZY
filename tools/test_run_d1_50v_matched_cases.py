@@ -27,3 +27,10 @@ def test_dry_run_powershell_parses_without_ltspice():
     assert r.returncode==0,(r.stdout,r.stderr)
     assert r.stdout.count("DRY_RUN")==4
     assert "NO NEW RAW" in r.stdout
+
+
+def test_sweep_selector_requires_identical_cshunt_for_control_and_candidate():
+    s=FILE.read_text(encoding='utf-8')
+    assert 'ValidateSet("published","shunt_2f","shunt_5f","shunt_10f")' in s
+    assert '$RequiredShunt = switch($Variant)' in s
+    assert 'if(!$Txt.Contains(".options plotwinsize=0 method=gear cshunt="+$RequiredShunt))' in s

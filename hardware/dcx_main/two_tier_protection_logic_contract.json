@@ -1,0 +1,71 @@
+{
+  "kind": "P0_DUAL_HARD_AND_ARMED_FAST_PROTECTION_STATE_MACHINE_CANDIDATE",
+  "created": "2026-11-03",
+  "fabrication_approval": false,
+  "hardware_implemented": false,
+  "hardware_component_candidate": {
+    "manufacturer": "Texas Instruments",
+    "orderable": "TLV3211DCKR",
+    "official_orderable_page": "https://www.ti.com/product/TLV3211/part-details/TLV3211DCKR",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tlv3211.pdf",
+    "type": "high-speed low-voltage comparator with known output state in POR",
+    "features_confirmed": "1.8-5.5V operating, approx 40ns typical comparator propagation, POR initially low, SC70-5",
+    "recommended_function": "primary CT conditioning and hard-trip comparator; configure comparator output HIGH only if CT signal safely below threshold AND its local 5V power is in range",
+    "limits": "CT burden may exceed comparator rails at faults; add explicit attenuation/clamp/series impedance + reference accuracy; POR low may last up to 32us; 40ns typical not a worst-case trip bound",
+    "mpn_selection_status": "SOURCE_ONLY_NOT_CIRCUIT_QUALIFIED"
+  },
+  "tiers": [
+    {
+      "name": "ALWAYS_ACTIVE_HARD_TRIP",
+      "active": "whenever power stage is eligible to run, including cold start",
+      "trip_source": "independent conditioned CT, sensor integrity, comparator PGOOD, primary and secondary bias health",
+      "numeric_threshold_v": null,
+      "trip_armed_after_soft_start": false,
+      "rationale": "No masking may leave a short during soft start unprotected"
+    },
+    {
+      "name": "FAST_OPTIMIZATION_TRIP",
+      "active": "only after explicitly confirmed stable soft-start state",
+      "trip_source": "dedicated fast filtered CT monitor",
+      "numeric_threshold_v": null,
+      "trip_armed_after_soft_start": true,
+      "rationale": "PROT-B unarmed 1.8V trial latched during startup; need tuned min/max thresholds"
+    },
+    {
+      "name": "FAIL_SAFE_DEFAULT",
+      "active": "power/CT/permit invalid at any point",
+      "trip_source": "power-on asserted hardware latch with explicit acknowledge after healthy power",
+      "numeric_threshold_v": null,
+      "trip_armed_after_soft_start": false,
+      "rationale": "Do not rely on UCC24624 standby or independent controller reset alone"
+    }
+  ],
+  "required_inputs": [
+    "hard_trip",
+    "fast_trip",
+    "armed",
+    "primary_bias_good",
+    "secondary_bias_good",
+    "ct_signal_valid",
+    "comparator_bias_good",
+    "start_sequence_ready",
+    "operator_run",
+    "reset_ack",
+    "all_ten_gates_off"
+  ],
+  "logic_start_state": "LATCHED_OFF until all rails and monitor valid AND manual reset/ack with all 10 gates low",
+  "soft_start_rule": "hard_trip unconditionally overrides reset and early-arming; fast_trip is optional only while armed",
+  "rearm_rule": "manual reset only if all good, no active trip, start sequence ready and all ten gates confirmed off",
+  "physical_output_rule": "primary U2.EN LOW and all 8 SR external EN LOW (TI buffered candidate) or TRIG HIGH (onsemi native alternative), independent bias and communication fault handling required",
+  "design_missing": [
+    "Sensor CT open/short detection threshold and independent test",
+    "12V->5V comparator supply/analog attenuation and input clamp",
+    "Hardware latch with set priority, asynchronous POR and manual reset",
+    "Independent fail-low primary RUN and eight SR inhibits; propagation/UVLO waveforms",
+    "Isolated signal transfer if any primary and secondary domain separation",
+    "Actual primary gate turn-off and 8x SR gate/off time verification",
+    "No interposer testing or real logic assembled"
+  ],
+  "state_machine_only_not_board_evidence": true,
+  "status": "DESIGN_REVIEW_LOGIC_ONLY_NOT_FOR_FAB"
+}
