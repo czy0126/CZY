@@ -1,0 +1,10 @@
+stage,step,input_v,load_target_a,advance_gate,measurements_required,evidence_state
+D0,01_LATCH_UNPOWERED,0,0,all 10 outputs must default off with supervisor absent,gate voltage and 12V/5V rails plus reset input,NOT_RUN
+D0,02_LATCH_HARD_TRIP,0,0,CT fault and cold start hard trip disables 2 primary plus 8 SR gates,ten gate equivalent loads and individual hardware latch and comparator timing,NOT_RUN
+D0,03_STUCK_RESET_POWER_RECOVERY,0,0,ACK held high across fault and rail recovery must not restart,ten gate outputs and fresh ACK edge and UVLO power transient,NOT_RUN
+D1,04_25A,48,25,D0 all checks and 24 magnetics terminals/100C L(I)/ERC+DRC approved,scope Vgs/Vds/Id and input/output voltage current and thermal,NOT_RUN
+D1,05_50A,48,50,25A thermal and SOA passed,scope 10 gate channels and current sharing and Cout ripple,NOT_RUN
+D1,06_75A,48,75,50A thermal and fault evidence passed,scope 10 gates and MOS switching+body diode waveform and magnetic temps,NOT_RUN
+D1,07_100A,48,100,75A no failures and load output >=1.8V under agreed boundary,steady VIN VOUT IOUT Pin efficiency temps and 46/50V corners,NOT_RUN
+D2,08_120A,48,120,D1 validated and D2 output bank and magnetics/safety requalified,all gate SOA fault timing and 120A temperatures/voltage/current,NOT_RUN
+D3,09_10MM,48,100,D1 or D2 certified and actual 10mm inclusive mechanical CTE review,full height worst-case including coldplate and EMC with remeasured performance,NOT_RUN
