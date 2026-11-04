@@ -152,7 +152,7 @@ def _primary_en_default_low_precheck(refs: dict) -> dict:
     problems = []
     if run_net != "RUN":
         problems.append("U2 pin6 EN is not on the reviewed RUN net")
-    if set(r7.values()) != {"RUN", "PGND"} or len(r7) != 2:
+    if set(r7) != {"1", "2"} or set(r7.values()) != {"RUN", "PGND"}:
         problems.append("R7 passive default-low path RUN->PGND missing")
     if run_net:
         powered = sorted(
