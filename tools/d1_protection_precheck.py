@@ -31,12 +31,46 @@ def build(spec=None, nets=None) -> dict:
     got={ch["sr"] for ch in spec["proposed_sr_channels"]}
     if len(spec["proposed_sr_channels"])!=8 or got!=expected:
         errors.append("not precisely all eight SRs")
+    # A per-channel uniqueness check is insufficient: swapping two complete
+    # channels, aliasing both output nets, or using a wrong INA/EN pad can still
+    # appear one-to-one. Lock this candidate to the OEM UCC27524A SOIC-8
+    # pinout and the *actual* eight controller/gate-resistor identities.
+    # A different buffer/footprint requires a new independently reviewed map.
+    expected_driver_mpn="UCC27524ADR"
+    if any(part!=expected_driver_mpn for part in spec["proposed_sr_drivers"].values()):
+        errors.append("proposed buffer MPN changed; OEM pinout must be requalified")
     driver_pins=set()
     used_rg=set()
     for ch in spec["proposed_sr_channels"]:
         sr=ch["sr"]
         if sr not in expected:
             continue
+        group=int(sr[2])
+        side=sr[-1]
+        expected_route={
+            "controller":f"U{group+2}",
+            "controller_output_pin":"1" if side=="A" else "8",
+            "controller_output_net":f"VG{group}_{side}",
+            "proposed_buffer":f"U{group+6}",
+            "buffer_channel":side,
+            "buffer_input_pin":"2" if side=="A" else "4",
+            "buffer_output_pin":"7" if side=="A" else "5",
+            "buffer_output_net":f"SRBUF{group}_{side}",
+            "buffer_enable_pin":"1" if side=="A" else "8",
+            "buffer_enable_net":"SR_SAFE_PERMIT",
+            "buffer_power_pin":"6",
+            "buffer_power_net":"VCC12_S",
+            "buffer_ground_pin":"3",
+            "buffer_ground_net":"PGND",
+            "native_gate_resistor":f"R{18+2*group+(side=='B')}",
+            "native_gate_resistor_input_net":f"VG{group}_{side}",
+            "native_gate_resistor_output_net":f"G{side}{group}",
+            "mos_gate_net":f"G{side}{group}",
+            "mos_source_net":"PGND",
+        }
+        for field, expected_value in expected_route.items():
+            if ch.get(field)!=expected_value:
+                errors.append(f"{sr}: {field} is {ch.get(field)!r}; expected {expected_value!r}")
         if ch["proposed_buffer"] not in spec["proposed_sr_drivers"]:
             errors.append(sr+": no valid proposed buffer")
         if ch["buffer_enable_net"]!="SR_SAFE_PERMIT" or ch["physical_application_status"]!="NOT_IMPLEMENTED_IN_NATIVE_CAD":
