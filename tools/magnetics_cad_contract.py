@@ -20,7 +20,10 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
+
+import board_netlist as spice_board
 
 ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "design/v3/pcb/board_netlist.csv"
@@ -56,6 +59,89 @@ def native_symbols() -> dict[str, dict]:
     return out
 
 
+def verify_live_coupling_coefficients() -> None:
+    """Reject inverted/unreviewed SPICE K even when all winding names match.
+
+    The legacy winding_layout() validated K *membership*, not the K sign
+    or magnitude. A negative K in LTspice changes the coupling polarity
+    while retaining the same first-node DOT labels. The V3 frozen deck
+    uses +0.999 on K1..K4; any change requires magnetic/tank review.
+    """
+    observed = {}
+    for line in spice_board.deck_lines(spice_board.ROOT / spice_board.DECK):
+        fields = line.split()
+        if not fields or not fields[0].upper().startswith("K"):
+            continue
+        name = fields[0].upper()
+        if name not in {"K1", "K2", "K3", "K4"}:
+            continue
+        if name in observed:
+            raise ValueError(f"{name}: duplicate SPICE magnetic coupling")
+        if len(fields) != 5:
+            raise ValueError(f"{name}: coupling must name three windings and a coefficient")
+        try:
+            coeff = float(fields[4])
+        except ValueError as error:
+            raise ValueError(f"{name}: coupling coefficient is not numeric") from error
+        if not math.isfinite(coeff) or not math.isclose(
+            coeff, 0.999, rel_tol=0.0, abs_tol=1e-9
+        ):
+            raise ValueError(
+                f"{name}: K={coeff} differs from positive reviewed 0.999; "
+                "DOT and leakage require requalification")
+        observed[name] = coeff
+    if set(observed) != {"K1", "K2", "K3", "K4"}:
+        raise ValueError("missing live SPICE transformer coupling coefficients")
+
+
+def verify_spice_polarity(pol: dict, refs: dict[str, dict[str, str]]) -> None:
+    """Recompute DOT from the *live SPICE deck*, not the saved summary.
+
+    A reverse-ordered Lsa/Lsb in the deck or a changed CTAP in the
+    schematic must not remain green just because a cached polarity JSON
+    still says ok=true. Also reject any change in winding pin order or
+    first-node (DOT) assignment, including changes with otherwise valid
+    logical net connectivity. CT has no trustworthy vendor DOT yet.
+    """
+    verify_live_coupling_coefficients()
+    live = spice_board.winding_layout()
+    if not live["ok"]:
+        failed = [x["name"] for x in live["checks"] if not x["ok"]]
+        raise ValueError("live SPICE winding polarity invalid: " + ", ".join(failed))
+    if (pol.get("ok") is not True
+            or pol.get("transformers") != live["transformers"]
+            or pol.get("checks") != live["checks"]):
+        raise ValueError("saved winding polarity is stale or differs from live SPICE deck")
+    if pol.get("primary_series_order") != ["T1", "T2", "T3", "T4"]:
+        raise ValueError("unexpected four-transformer primary series order")
+    if pol.get("ctap_definition") != "CTAP = S_A DOT = S_B NON-DOT":
+        raise ValueError("invalid centre tap polarity definition")
+
+    for ref in ("T1", "T2", "T3", "T4"):
+        pins = refs[ref]
+        winds = live["transformers"][ref]
+        for winding, required_pair in (
+            ("primary", ("PRI_A", "PRI_B")),
+            ("secondary_a", ("CTAP", "SEC_A")),
+            ("secondary_b", ("SEC_B", "CTAP")),
+        ):
+            entry = winds[winding]
+            board_pair = (entry["dot_pin"], entry["non_dot_pin"])
+            if board_pair != required_pair or entry["board_pins"] != list(required_pair):
+                raise ValueError(f"{ref}.{winding}: reversed DOT or pin-order mapping")
+            for pin, node in zip(board_pair,
+                                 (entry["dot_node"], entry["non_dot_node"])):
+                target = spice_board.NODE_NET.get(node)
+                if target is None:
+                    raise ValueError(f"{ref}.{winding}: unmapped deck node {node!r}")
+                if pins.get(pin) != target:
+                    raise ValueError(
+                        f"{ref}.{pin}: golden net {pins.get(pin)!r} is not live "
+                        f"SPICE {node!r}->{target!r}")
+        if pins.get("CTAP") != "VOUT":
+            raise ValueError(f"{ref}: centre tap does not lead to VOUT")
+
+
 def build() -> dict:
     refs = {x: {} for x in ("CT", "T1", "T2", "T3", "T4")}
     with GOLDEN.open(encoding="utf-8", newline="") as f:
@@ -63,6 +149,7 @@ def build() -> dict:
             if row["ref"] in refs:
                 refs[row["ref"]][row["pin"]] = row["net"]
     pol = json.loads(POLARITY.read_text(encoding="utf-8"))
+    verify_spice_polarity(pol, refs)
     native = native_symbols()
     symbols = []
     for ref, pin_map in sorted(refs.items()):

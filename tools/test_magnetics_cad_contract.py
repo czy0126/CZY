@@ -2,6 +2,10 @@
 from __future__ import annotations
 
 import sys
+import copy
+import json
+
+import pytest
 
 import magnetics_cad_contract as mc
 
@@ -62,3 +66,101 @@ def test_saved_contract_is_fresh_and_claims_no_physical_pads(monkeypatch):
     monkeypatch.setattr(sys, 'argv', ['magnetics_cad_contract'])
     mc.main()
     assert all(p["physical_pad"] is None for s in mc.build()["symbols"] for p in s["pins"])
+
+
+def _frozen_refs():
+    return {
+        sym["ref"]: {pin["logical_pin"]: pin["golden_net"] for pin in sym["pins"]}
+        for sym in mc.build()["symbols"]
+    }
+
+
+def test_source_of_truth_is_live_spice_not_only_cached_ok_true():
+    pol = json.loads(mc.POLARITY.read_text(encoding="utf-8"))
+    refs = _frozen_refs()
+    mc.verify_spice_polarity(pol, refs)
+    assert mc.spice_board.winding_layout()["ok"] is True
+
+
+def test_mutating_the_saved_polarity_report_to_reverse_a_secondary_is_caught():
+    pol = json.loads(mc.POLARITY.read_text(encoding="utf-8"))
+    reversed_half = copy.deepcopy(pol)
+    w = reversed_half["transformers"]["T2"]["secondary_b"]
+    w["dot_pin"], w["non_dot_pin"] = w["non_dot_pin"], w["dot_pin"]
+    # A cached ok=true cannot override actual inductance node order.
+    reversed_half["ok"] = True
+    with pytest.raises(ValueError, match="saved winding polarity is stale"):
+        mc.verify_spice_polarity(reversed_half, _frozen_refs())
+
+
+def test_a_cached_dot_report_cannot_hide_a_reversed_live_spice_inductor(monkeypatch):
+    pol = json.loads(mc.POLARITY.read_text(encoding="utf-8"))
+    refs = _frozen_refs()
+    original_live = mc.spice_board.winding_layout
+    live = original_live()
+    corrupted = copy.deepcopy(live)
+    corrupted["ok"] = False
+    corrupted["checks"][0]["ok"] = False
+    monkeypatch.setattr(mc.spice_board, "winding_layout", lambda: corrupted)
+    with pytest.raises(ValueError, match="live SPICE winding polarity invalid"):
+        mc.verify_spice_polarity(pol, refs)
+
+
+def test_wrong_sole_ctap_or_secondary_golden_net_is_rejected():
+    pol = json.loads(mc.POLARITY.read_text(encoding="utf-8"))
+    for name, wrong in (("CTAP", "OUT"), ("SEC_A", "SEC_B_ALIAS"),
+                        ("PRI_A", "PRI_12")):
+        refs = _frozen_refs()
+        refs["T1"][name] = wrong
+        with pytest.raises(ValueError, match="golden net"):
+            mc.verify_spice_polarity(pol, refs)
+
+
+def test_primary_or_secondary_dot_pin_pair_inverted_in_live_map_is_rejected(monkeypatch):
+    pol = json.loads(mc.POLARITY.read_text(encoding="utf-8"))
+    original = mc.spice_board.winding_layout
+    for section in ("primary", "secondary_a", "secondary_b"):
+        live = copy.deepcopy(original())
+        wind = live["transformers"]["T3"][section]
+        wind["dot_pin"], wind["non_dot_pin"] = wind["non_dot_pin"], wind["dot_pin"]
+        monkeypatch.setattr(mc.spice_board, "winding_layout", lambda live=live: live)
+        with pytest.raises(ValueError, match="saved winding polarity is stale"):
+            mc.verify_spice_polarity(pol, _frozen_refs_from_saved_contract())
+
+
+def _frozen_refs_from_saved_contract():
+    document = json.loads(mc.OUT.read_text(encoding="utf-8"))
+    return {
+        sym["ref"]: {pin["logical_pin"]: pin["golden_net"] for pin in sym["pins"]}
+        for sym in document["symbols"]
+    }
+
+
+def test_all_four_live_k_couplings_are_positive_and_frozen():
+    mc.verify_live_coupling_coefficients()
+
+
+def test_spice_k_sign_or_magnitude_change_cannot_pass_named_winding_check(monkeypatch):
+    original = mc.spice_board.deck_lines
+    for invalid in ("-.999", ".90", "1.001", "nan"):
+        def perturbed(path, invalid=invalid):
+            return [line.replace("K1 Lp1 Lsa1 Lsb1 .999",
+                                 f"K1 Lp1 Lsa1 Lsb1 {invalid}")
+                    for line in original(path)]
+        monkeypatch.setattr(mc.spice_board, "deck_lines", perturbed)
+        with pytest.raises(ValueError, match="differs from positive reviewed"):
+            mc.verify_live_coupling_coefficients()
+        # winding_layout still sees identical K membership and node order.
+        # Replacing the coefficient alone is precisely the old blind spot.
+        assert mc.spice_board.winding_layout()["ok"] is True
+    monkeypatch.setattr(mc.spice_board, "deck_lines", original)
+
+
+def test_duplicate_live_k_coefficient_is_rejected(monkeypatch):
+    original = mc.spice_board.deck_lines
+    def duplicated(path):
+        rows = original(path)
+        return rows + ["K1 Lp1 Lsa1 Lsb1 .999"]
+    monkeypatch.setattr(mc.spice_board, "deck_lines", duplicated)
+    with pytest.raises(ValueError, match="duplicate SPICE magnetic coupling"):
+        mc.verify_live_coupling_coefficients()
