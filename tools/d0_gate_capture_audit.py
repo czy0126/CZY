@@ -202,7 +202,7 @@ def _report(cfg, t, limits, spacing, violations, channels, trip_time):
         "limits": limits,
         "channels": channels,
         "violations": violations,
-        "is_simulation": False,  # this tool cannot authenticate the origin of supplied samples
+        "origin_classification": "UNVERIFIED_CSV_MAY_BE_SYNTHETIC",
         "waveform_origin_authenticated": False,
         "all_ten_real_hardware_gates_verified": False,
         "hardware_protection_approved": False,
