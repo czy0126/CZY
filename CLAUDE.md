@@ -54,6 +54,7 @@ python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
+python tools/placeholder_eco.py --write          # 61 占位逐件责任清单（json + csv），只连表不造 MPN
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
 python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
@@ -853,6 +854,33 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
   波形表里写死"按各绕组实际电压积分"。
 - 询价单与 `vendor_terminal_request.json` 的 24 个逻辑端子**必须逐项相同**
   （测试比对 `(terminal, net, dot)` 三元组），否则会出现第七个端子。
+
+## 61 占位责任清单（`hardware/dcx_main/placeholder_eco.{json,csv}`）
+
+`tools/placeholder_eco.py` 是**连表工具，不是新审核**：把已经存在的四份工件按位号连起来
+（`component_decision_register.json` 的 61 行、`board_netlist.csv` 的派生网表、
+`main_board_schematic.py:PERIPHERALS` 的 17 个外围、`pin_footprint_review.csv` 的逐脚状态），
+为每一行给出"谁定连接、谁定取值、原生设计实测到哪一步、还差哪一件事"。
+它**不产生 MPN**：本仓库没有厂家证据，`verified_mpn` 恒为 null，61 行的 `decision_owner`
+也全部为空——"0 个负责人 / 0 个已核实 MPN"是清单要报告的事实，不是缺陷。
+
+- **61 = 44 金网表 + 17 外围，互相不交**：17 个外围正是 `PERIPHERALS` 的键
+  （12 只 VDD 去耦、`C13` EN 滤波、`R7`–`R10` 控制下拉与 RUN 跳线）。新加占位若两边都不在，
+  `netlist_governance` 会变成 `UNGOVERNED` 而 `checks` 变红——那是唯一会让一行悄悄
+  进制造的口子。
+- **49 行有可复算的需求出处，12 行没有**：没有的是 4 只 REG 电容（2.2 µF 来自
+  UCC24624 数据手册建议，仓库里没有算出它的工件）与 8 只 SR 漏极开尔文链（要求是拓扑的：
+  VD1/VD2 必须在漏极取样，不是数值）。这 12 行的 `next_action` 写"先定义需求再选型"，
+  **不能写成"选一个满足要求的件"**——没有要求就没有可核对的对象。
+- **Lr 的 `native_pin_review` 是 MAPPED，但那只是逻辑端子名**：`native_pin_review_scope`
+  为 `LOGICAL_TERMINAL_NAME_ONLY` 的六行（T1–T4/Lr/CT）仍然 `blocked_on` =
+  `MAGNETIC_PHYSICAL_TERMINAL_DRAWING`。把 MAPPED 读成"物理引脚已核实"正是这条路线上
+  要防的事。
+- **deck 出处按元件名引用，第四列不一定是数**：`Dbt aux hb DBOOT` 的值是模型名，
+  `element()` 的 `_si()` 解析失败时记 `null` 而不是抛错。`Cf`/`Rf` 的 τ 由两侧
+  `_si()` 相乘得到（47 µs），不手抄。
+- **`energy_mj` 已经是毫焦**：再乘 1e3 会把 R3 的故障脉冲印成 122.6 mJ（真值 0.123 mJ）。
+  测试 `test_the_burden_resistor_is_traced_to_both_its_value_and_its_power` 锁住这个量纲。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
