@@ -24,6 +24,7 @@ def config():
         "gate_columns": list(m.GATES),
         "gate_off_max_v": 1.0,
         "gate_on_min_v": 4.0,
+        "gate_overlap_forbidden_above_v": 2.0,
         "trip_low_max_v": 0.8,
         "trip_high_min_v": 2.5,
         "max_disable_latency_s": 2e-6,
@@ -37,8 +38,11 @@ def trace():
     t = [i * 0.1e-6 for i in range(301)]
     wave = {"TRIP_STIMULUS": [0 if i < 100 else 3.3 for i in range(len(t))]}
     for g, name in enumerate(m.GATES):
+        # Exercise each channel in its own pretrip slot; do not synthesize
+        # mutually conducting primary or center-tapped SR gate pairs.
         wave[name] = [
-            5.0 if ((80 + g <= i < 96) or (100 <= i <= 103 + g))
+            5.0 if ((80 + 2*g <= i < 82 + 2*g) or
+                    (name == "SR4B" and 100 <= i <= 106))
             else 0.0
             for i in range(len(t))
         ]
@@ -58,6 +62,29 @@ def test_all_ten_synthetic_traces_pass_capture_only_not_hardware():
     assert not report["hardware_protection_approved"]
     assert not report["power_stage_fabrication_approved"]
     assert not report["waveform_origin_authenticated"]
+
+
+def test_overlap_between_primary_or_either_sr_pair_is_never_accepted():
+    pairs=[("P_HO","P_LO","PRIMARY")] + [
+        (f"SR{i}A",f"SR{i}B",f"SR{i}") for i in range(1,5)
+    ]
+    for a,b,label in pairs:
+        t,wave=trace()
+        moment=next(i for i in range(len(t)) if wave[b][i]>=4)
+        wave[a][moment]=5.0
+        result=m.evaluate(config(),t,wave)
+        assert result["status"]=="REJECTED"
+        assert f"{label}:GATE_OVERLAP" in result["violations"]
+        assert result["pair_overlap_events"][label]["sample_count"]>=1
+
+
+def test_overlap_threshold_must_be_independently_reviewed_not_only_high_gate():
+    cfg=config()
+    cfg["gate_overlap_forbidden_above_v"]=1.5
+    t,wave=trace()
+    wave["P_HO"][82]=1.6
+    result=m.evaluate(cfg,t,wave)
+    assert "PRIMARY:GATE_OVERLAP" in result["violations"]
 
 
 def test_each_of_ten_channels_is_independently_required():
@@ -130,6 +157,8 @@ def test_all_limits_are_explicit_finite_and_physically_ordered():
         ("max_disable_latency_s", 0),
         ("max_sample_spacing_s", float("nan")),
         ("gate_off_max_v", 6.0),
+        ("gate_overlap_forbidden_above_v", 0.0),
+        ("gate_overlap_forbidden_above_v", 6.0),
         ("trip_high_min_v", 0.1),
         ("max_sample_spacing_s", 1e-6),
         ("max_disable_latency_s", False),
