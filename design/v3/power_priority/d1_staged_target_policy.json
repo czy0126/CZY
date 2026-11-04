@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "status": "ACTIVE_STAGED_TARGETS_DESIGN_ONLY_NOT_HARDWARE_RATED",
+  "effective_date": "2026-11-04",
+  "decision": "STOP_REPEATING_SOLVED_BAGE; STAGE_CURRENT_HEIGHT_AND_COLDPLATE_INSTEAD_OF_ONE_ALL_OR_NOTHING_TARGET",
+  "replaces_strict_requirements_for_early_prototypes": [
+    "48V_and_120A_AND_total_height_le_10mm_synchronous_hard_block",
+    "custom_magnetics_required_for_every_stage"
+  ],
+  "electrical_architecture": {
+    "input_nominal_v": 48,
+    "input_characterization_v": [
+      46,
+      48,
+      50
+    ],
+    "fixed_nominal_ratio": 24,
+    "topology": "LLC-DCX",
+    "expected_real_output_under_load": "about 1.87-1.95 V in existing steady-state simulations at 48V 100-120A; not a regulated 2.000V rail",
+    "nominal_output_label_v": 2,
+    "nominal_output_label_is_regulated": false
+  },
+  "safety_invariants": {
+    "must_keep_fabrication_gate": "NOT_FOR_FAB",
+    "must_not_relax": [
+      "real primary and all eight SR gate shutdown",
+      "power on reset and stuck ACK prevention",
+      "magnetic L(I) at 100 C and real physical terminal/DOT",
+      "MOSFET pulsed forward and third-quadrant SOA",
+      "netted PCB, GUI ERC/DRC, thermal and electrical isolation",
+      "manufacturer-confirmed BOM and no unsafe placeholder"
+    ],
+    "stage_mechanics_can_change_without_fab_permission": true
+  },
+  "stages": [
+    {
+      "id": "D0_CONTROL",
+      "purpose": "separate low-energy protection and SR-controller bench with emulated MOS gate loads",
+      "vin_nominal_v": null,
+      "load_current_class_a": null,
+      "height_limit_mm": null,
+      "min_output_at_converter_v": null,
+      "required_real_evidence": [
+        "physical comparator/latch and POR",
+        "8 SR disables + 2 primary gate disables demonstrated with separate bias fails",
+        "cold-start short, stuck-reset and lost-rail fault injection"
+      ],
+      "fab_release": false,
+      "gate": "NO_POWER_STAGE_RELEASE"
+    },
+    {
+      "id": "D1_100A",
+      "purpose": "first functional high-current 24:1 LLC-DCX hardware demonstrator; make mechanical clearance feasible",
+      "vin_nominal_v": 48,
+      "load_current_class_a": 100,
+      "minimum_model_current_a": 98,
+      "height_limit_mm": 16,
+      "min_output_at_converter_v": 1.8,
+      "target_measured_total_efficiency_pct": 90,
+      "preferred_magnetic_core": "ELP38_I38",
+      "measure_at_load_instead_of_ideal_vout": true,
+      "required_real_evidence": [
+        "D0 ten-gate protect implemented and characterized",
+        "T1-T4/CT 24 physical pins and DOT; Lr 100C L(I) qualified",
+        "actual height with PCB/clamp/adhesive/cold plate interfaces <=16mm",
+        "native schematic and routed copper, ERC/DRC and thermal proof",
+        "25,50,75,100A staged tests at 46/48/50V with measured Vin/Iout/Vout and loss"
+      ],
+      "fab_release": false,
+      "gate": "HARDWARE_EVIDENCE_MISSING"
+    },
+    {
+      "id": "D2_120A",
+      "purpose": "power expansion only after D1 credible fault, SOA and temperature proof",
+      "vin_nominal_v": 48,
+      "load_current_class_a": 120,
+      "minimum_model_current_a": 115,
+      "height_limit_mm": 16,
+      "min_output_at_converter_v": 1.8,
+      "target_measured_total_efficiency_pct": 90,
+      "preferred_magnetic_core": "ELP38_I38_OR_ELP43_I43_IF_STACK_FITS",
+      "measure_at_load_instead_of_ideal_vout": true,
+      "required_real_evidence": [
+        "D1 operating, protection and temperature evidence",
+        "120A steady at 48V; characterize 46/50V corners separately",
+        "50V fault and cold-start transients with validated 100C magnetics and eight-SR SOA",
+        "Cout 100kHz ESR, 200kHz/temperature ripple and shared copper measured",
+        "true 16mm assembled worst-case stack approved"
+      ],
+      "fab_release": false,
+      "gate": "HARDWARE_EVIDENCE_MISSING"
+    },
+    {
+      "id": "D3_THIN",
+      "purpose": "optional 10mm low-profile optimization once D1/D2 behavior and cold plate are stable",
+      "vin_nominal_v": 48,
+      "load_current_class_a": 100,
+      "height_limit_mm": 10,
+      "min_output_at_converter_v": 1.8,
+      "target_measured_total_efficiency_pct": 90,
+      "preferred_magnetic_core": "CUSTOM_LOWER_HEIGHT_OR_INTEGRATED_WINDING",
+      "measure_at_load_instead_of_ideal_vout": true,
+      "required_real_evidence": [
+        "custom magnetic full Z and L(I), flux/loss verified",
+        "coldplate/PCB/window/adhesive stack under 10mm including tolerance",
+        "repeat D1/D2 thermal and electrical/protection comparison after topology changes"
+      ],
+      "fab_release": false,
+      "gate": "OPTIONAL_NOT_A_D1_D2_BLOCKER"
+    }
+  ],
+  "staged_go_no_go": {
+    "gate_for_D1": "10 gate safe hardware + real magnetics/CT pins DOT and L(I) + native board ERC/DRC and SOA/thermal; size is 16mm target, not 10mm",
+    "gate_for_D2": "D1 approved plus 120A independent full-load and worst-case fault evidence",
+    "gate_for_D3": "D1 or D2 approved plus <=10mm reengineered magnetics and new assembly/thermal signoff",
+    "preserve_legacy_high_margin_design_gate_as": "REFERENCE_STRETCH_ONLY_NOT_ACTIVE_D1_MINIMUM"
+  },
+  "stop_loss_rules": [
+    {
+      "id": "BAGE_SOLVER",
+      "current": "CLOSED_FOR_2FF_SIMULATION",
+      "trigger": "both v3_4 2fF B runs complete 320us and matched",
+      "action": "no more 1/2/5/10 fF repeats without a new physical-model defect; shift to actual hardware EN/TRIG and MOS stress"
+    },
+    {
+      "id": "MAGNETICS_Z",
+      "current": "NEED_VENDOR_RESPONSE",
+      "trigger": "two independent 10mm geometry trials have no validated full-stack+L(I) solution",
+      "action": "use 16mm D1/D2 route and an ELP38/ELP43 manufacturer quotation, leave 10mm in D3"
+    },
+    {
+      "id": "FALLBACK_CURRENT",
+      "current": "EVALUATE_AT_D1_TEST",
+      "trigger": "100A hardware fails derated steady-state thermal or fault SOA after one root-cause revision",
+      "action": "commission protected 75A or 50A characterization demonstrator, not an unsafe 100A release; preserve 100A as next validation target"
+    },
+    {
+      "id": "NATIVE_CAD",
+      "current": "MISSING_QUALIFIED_GUI_EVIDENCE",
+      "trigger": "automatic reconstruction cannot reliably resolve vendor physical DOT/pads and netted PCB",
+      "action": "stop guessing pinouts; send 24 physical-pad map + ECO table to EDA engineer and supplier; hardware release still blocked"
+    }
+  ],
+  "preferred_parallel_workstreams": [
+    "D0 low-energy control bench schematic & bill of materials",
+    "D1 16mm ELP38/ELP43 multi-vendor mechanical+L(I) RFQ",
+    "D1 native schematic real MPN/R3 footprint/pad ERC & netted PCB",
+    "D1 output bank higher voltage and path impedance extraction",
+    "D2 120A stress only after D1 qualified"
+  ],
+  "hardware_approved": false,
+  "production_approved": false
+}

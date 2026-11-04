@@ -1,0 +1,108 @@
+{
+  "kind": "D1_STAGED_REBASELINE_LIVE_EVIDENCE_SCREEN",
+  "assessment": "DESIGN_ONLY_NEVER_FAB_PERMISSION",
+  "policy_source": "design/v3/power_priority/d1_staged_target_policy.json",
+  "legacy_10mm_goal": "D3_STRETCH_ONLY",
+  "stages": {
+    "D0_CONTROL": {
+      "status": "LOW_ENERGY_PROTECTION_BOARD_NOT_BUILT",
+      "physical_evidence_pending": true
+    },
+    "D1_100A": {
+      "status": "100A_CLASS_MODELED_ONLY_NOT_HARDWARE",
+      "observed_sim_current_a": 99.82464,
+      "sim_converter_vout_v": 1.886686,
+      "sim_converter_output_w": 188.345,
+      "target_total_height_mm": 16,
+      "physical_evidence_pending": true
+    },
+    "D2_120A": {
+      "status": "120A_CLASS_MODELED_ONLY_NOT_HARDWARE",
+      "observed_sim_current_a": 121.66834,
+      "sim_converter_vout_v": 1.873692,
+      "sim_converter_output_w": 227.978,
+      "target_total_height_mm": 16,
+      "physical_evidence_pending": true
+    },
+    "D3_THIN": {
+      "status": "STRETCH_NOT_BLOCKING_D1_D2",
+      "target_total_height_mm": 10,
+      "physical_evidence_pending": true
+    }
+  },
+  "model_only_100_to_120_power_gain_w": 39.64,
+  "ohmic_loss_factor_120_over_100_at_equal_path": 1.44,
+  "elp_core_candidates": [
+    {
+      "core_id": "ELP32_I32",
+      "amin_mm2": 128,
+      "three_turn_fault_flux_scenario_t": 0.34809,
+      "three_turn_flux_screen_pass": false,
+      "manufacturer_bare_core_plus_plate_worst_height_mm": 9.8,
+      "remaining_16mm_for_ALL_other_layers_mm": 6.2,
+      "bare_core_fits_16mm": true,
+      "preliminary_combined_16mm_candidate": false,
+      "full_stack_and_100c_LI_verified": false,
+      "fab_approved": false
+    },
+    {
+      "core_id": "ELP38_I38",
+      "amin_mm2": 192,
+      "three_turn_fault_flux_scenario_t": 0.23206,
+      "three_turn_flux_screen_pass": true,
+      "manufacturer_bare_core_plus_plate_worst_height_mm": 12.35,
+      "remaining_16mm_for_ALL_other_layers_mm": 3.65,
+      "bare_core_fits_16mm": true,
+      "preliminary_combined_16mm_candidate": true,
+      "full_stack_and_100c_LI_verified": false,
+      "fab_approved": false
+    },
+    {
+      "core_id": "ELP43_I43",
+      "amin_mm2": 217,
+      "three_turn_fault_flux_scenario_t": 0.205325,
+      "three_turn_flux_screen_pass": true,
+      "manufacturer_bare_core_plus_plate_worst_height_mm": 13.9,
+      "remaining_16mm_for_ALL_other_layers_mm": 2.1,
+      "bare_core_fits_16mm": true,
+      "preliminary_combined_16mm_candidate": true,
+      "full_stack_and_100c_LI_verified": false,
+      "fab_approved": false
+    },
+    {
+      "core_id": "ELP58_I58",
+      "amin_mm2": 308,
+      "three_turn_fault_flux_scenario_t": 0.144661,
+      "three_turn_flux_screen_pass": true,
+      "manufacturer_bare_core_plus_plate_worst_height_mm": 14.9,
+      "remaining_16mm_for_ALL_other_layers_mm": 1.1,
+      "bare_core_fits_16mm": true,
+      "preliminary_combined_16mm_candidate": true,
+      "full_stack_and_100c_LI_verified": false,
+      "fab_approved": false
+    },
+    {
+      "core_id": "ELP64_I64",
+      "amin_mm2": 518,
+      "three_turn_fault_flux_scenario_t": 0.086015,
+      "three_turn_flux_screen_pass": true,
+      "manufacturer_bare_core_plus_plate_worst_height_mm": 15.6,
+      "remaining_16mm_for_ALL_other_layers_mm": 0.4,
+      "bare_core_fits_16mm": true,
+      "preliminary_combined_16mm_candidate": true,
+      "full_stack_and_100c_LI_verified": false,
+      "fab_approved": false
+    }
+  ],
+  "elp38_initial_16mm_feasibility": "CORE_PLUS_PLATE_ONLY_WITH_3P65MM_LEFT_NOT_A_FULL_STACK",
+  "numerical_Bage_pair_320us_qualified": true,
+  "physical_SR_inhibit_done": false,
+  "magnetic_100c_LI_and_real_pads_done": false,
+  "native_board_erc_and_net_pcb_done": false,
+  "fabrication_approved": false,
+  "next_active_milestones": [
+    "D0 ten-gate real inhibit demonstrator",
+    "ELP38 preliminary 16mm full-stack dimensioned RFQ and 100C L(I)",
+    "D1 nominal 48V/100A actual load voltage and thermal benchmark"
+  ]
+}
