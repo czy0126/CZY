@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
 
 import board_netlist as spice_board
@@ -58,6 +59,41 @@ def native_symbols() -> dict[str, dict]:
     return out
 
 
+def verify_live_coupling_coefficients() -> None:
+    """Reject inverted/unreviewed SPICE K even when all winding names match.
+
+    The legacy winding_layout() validated K *membership*, not the K sign
+    or magnitude. A negative K in LTspice changes the coupling polarity
+    while retaining the same first-node DOT labels. The V3 frozen deck
+    uses +0.999 on K1..K4; any change requires magnetic/tank review.
+    """
+    observed = {}
+    for line in spice_board.deck_lines(spice_board.ROOT / spice_board.DECK):
+        fields = line.split()
+        if not fields or not fields[0].upper().startswith("K"):
+            continue
+        name = fields[0].upper()
+        if name not in {"K1", "K2", "K3", "K4"}:
+            continue
+        if name in observed:
+            raise ValueError(f"{name}: duplicate SPICE magnetic coupling")
+        if len(fields) != 5:
+            raise ValueError(f"{name}: coupling must name three windings and a coefficient")
+        try:
+            coeff = float(fields[4])
+        except ValueError as error:
+            raise ValueError(f"{name}: coupling coefficient is not numeric") from error
+        if not math.isfinite(coeff) or not math.isclose(
+            coeff, 0.999, rel_tol=0.0, abs_tol=1e-9
+        ):
+            raise ValueError(
+                f"{name}: K={coeff} differs from positive reviewed 0.999; "
+                "DOT and leakage require requalification")
+        observed[name] = coeff
+    if set(observed) != {"K1", "K2", "K3", "K4"}:
+        raise ValueError("missing live SPICE transformer coupling coefficients")
+
+
 def verify_spice_polarity(pol: dict, refs: dict[str, dict[str, str]]) -> None:
     """Recompute DOT from the *live SPICE deck*, not the saved summary.
 
@@ -67,6 +103,7 @@ def verify_spice_polarity(pol: dict, refs: dict[str, dict[str, str]]) -> None:
     first-node (DOT) assignment, including changes with otherwise valid
     logical net connectivity. CT has no trustworthy vendor DOT yet.
     """
+    verify_live_coupling_coefficients()
     live = spice_board.winding_layout()
     if not live["ok"]:
         failed = [x["name"] for x in live["checks"] if not x["ok"]]
