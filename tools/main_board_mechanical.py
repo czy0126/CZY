@@ -808,7 +808,12 @@ def board_file(libs: dict[str, str]) -> str:
         "\t)\n"
         "\t(layers\n"
         '\t\t(0 "F.Cu" signal)\n\t\t(31 "B.Cu" signal)\n'
+        # Paste and mask are declared, not only referenced by pads: kicad-cli
+        # plots only the layers this table lists and drops the rest without a
+        # message, so a board that omits them yields a package with no mask.
+        '\t\t(34 "B.Paste" user)\n\t\t(35 "F.Paste" user)\n'
         '\t\t(36 "B.SilkS" user "B.Silkscreen")\n\t\t(37 "F.SilkS" user "F.Silkscreen")\n'
+        '\t\t(38 "B.Mask" user)\n\t\t(39 "F.Mask" user)\n'
         '\t\t(44 "Edge.Cuts" user)\n\t\t(46 "B.CrtYd" user "B.Courtyard")\n'
         '\t\t(47 "F.CrtYd" user "F.Courtyard")\n'
         '\t\t(48 "B.Fab" user)\n\t\t(49 "F.Fab" user)\n\t)\n'
