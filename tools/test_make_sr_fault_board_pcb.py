@@ -245,6 +245,57 @@ def test_the_fp_lib_table_points_only_at_vendored_or_generated_libraries():
     assert "stock_footprints" in table and "dcx.pretty" in table
 
 
+# ---------------------------------------------------------------- assembly
+def test_the_board_and_the_bom_list_the_same_parts(placed):
+    """The BOM is read back from disk, so this compares two artefacts rather
+    than the generator against itself."""
+    data = pcb.report(placed)
+    a = data["assembly_review"]
+    assert a["source"] == "BOM.csv beside the board file"
+    assert a["bom_rows"] == a["parts_on_board"] == 71
+    assert a["in_bom_but_not_on_the_board"] == []
+    assert a["on_the_board_but_not_in_the_bom"] == []
+    assert a["value_or_footprint_mismatch"] == []
+    assert a["duplicate_bom_rows"] == []
+    assert data["checks"]["the_bom_and_the_board_are_the_same_parts"] is True
+
+
+def test_the_assembly_review_can_fail(tmp_path, monkeypatch, placed):
+    """A check that cannot go red is not a check."""
+    import csv as _csv
+    rows = list(_csv.DictReader((OUT / "BOM.csv").open(encoding="utf-8", newline="")))
+    keep = [r for r in rows if r["Reference"] != "Rsh1"]
+    for r in keep:
+        if r["Reference"] == "Rg1":
+            r["Value"] = "wrong"
+    with (tmp_path / "BOM.csv").open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.DictWriter(fh, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(keep + [dict(keep[0])])          # duplicate one row as well
+    monkeypatch.setattr(pcb, "OUT", tmp_path)
+    table = {p.ref: p for p in sch.parts() if p.footprint}
+    a = pcb.assembly_review(placed, table)
+    assert a["on_the_board_but_not_in_the_bom"] == ["Rsh1"]
+    assert a["value_or_footprint_mismatch"] == ["Rg1"]
+    assert a["duplicate_bom_rows"] == [keep[0]["Reference"]]
+
+
+def test_the_through_hole_parts_are_the_connectors(placed):
+    """A position file would need to know these are hand-soldered, not placed."""
+    a = pcb.report(placed)["assembly_review"]
+    assert a["through_hole_refs"] == ["J1", "J2", "J3", "J4", "JP1", "JP2", "JP3"]
+    assert "position file" in a["position_file_note"]
+
+
+def test_the_dnp_parts_are_still_placed(placed):
+    """DNP means "do not populate", not "do not place": the pads have to exist."""
+    data = pcb.report(placed)
+    dnp = data["assembly_review"]["dnp_parts_placed"]
+    assert len(dnp) == 10
+    on_board = {p.ref for p in placed}
+    assert set(dnp) <= on_board
+
+
 # ---------------------------------------------------------------- DRC reader
 def test_the_drc_reader_sees_unconnected_items(tmp_path):
     """kicad-cli writes ``unconnected_items`` to its own top-level array.

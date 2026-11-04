@@ -875,7 +875,39 @@
     "no_two_courtyards_are_closer_than_the_gap": true,
     "overlapping_pairs": [],
     "every_part_is_inside_the_outline": true,
-    "no_track_or_via_is_emitted": true
+    "no_track_or_via_is_emitted": true,
+    "the_bom_and_the_board_are_the_same_parts": true
+  },
+  "assembly_review": {
+    "source": "BOM.csv beside the board file",
+    "bom_rows": 71,
+    "parts_on_board": 71,
+    "in_bom_but_not_on_the_board": [],
+    "on_the_board_but_not_in_the_bom": [],
+    "value_or_footprint_mismatch": [],
+    "duplicate_bom_rows": [],
+    "dnp_parts_placed": [
+      "CGL1",
+      "CGL2",
+      "Csn1",
+      "Csn2",
+      "Q42",
+      "Q43",
+      "R47",
+      "R48",
+      "Rsn1",
+      "Rsn2"
+    ],
+    "through_hole_refs": [
+      "J1",
+      "J2",
+      "J3",
+      "J4",
+      "JP1",
+      "JP2",
+      "JP3"
+    ],
+    "position_file_note": "no position file is exported: it would look orderable next to an unrouted board"
   },
   "routed": false,
   "routing_backlog_note": "the nets exist as a ratsnest; no copper is routed, so this board is a layout, not a manufacturing package",

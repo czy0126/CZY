@@ -37,6 +37,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import collections
+import csv
 import json
 import re
 import subprocess
@@ -517,6 +519,50 @@ def _used_footprints() -> list[str]:
 
 
 # ---------------------------------------------------------------- report
+def assembly_review(placed: list[Placed], table: dict) -> dict:
+    """Cross-check the board against the BOM that would be ordered.
+
+    Read back from ``BOM.csv`` rather than from ``sch.parts()``: comparing the
+    board to the table it was generated from proves nothing, while comparing it
+    to the file a purchaser receives is the review this board actually needs.
+    The two files are produced by different generators, so this is a real
+    cross-check and not a tautology.
+    """
+    path = OUT / "BOM.csv"
+    if not path.exists():
+        raise SystemExit(f"{path} is missing: run tools/make_sr_fault_board.py first, "
+                         f"otherwise the assembly review has nothing to compare against")
+    with path.open(encoding="utf-8", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    bom = {row["Reference"]: row for row in rows}
+    board = {p.ref: p for p in placed}
+    duplicated = sorted(r for r, n in collections.Counter(
+        row["Reference"] for row in rows).items() if n > 1)
+    mismatch = sorted(
+        (ref for ref in set(board) & set(bom)
+         if bom[ref]["Value"] != board[ref].value
+         or bom[ref]["Footprint"] != board[ref].footprint),
+        key=_natural)
+    through_hole = sorted(
+        (ref for ref in board if re.search(r"\(pad \"[^\"]*\" (np_)?thru_hole",
+                                            _source(board[ref].footprint))),
+        key=_natural)
+    return {
+        "source": "BOM.csv beside the board file",
+        "bom_rows": len(rows),
+        "parts_on_board": len(board),
+        "in_bom_but_not_on_the_board": sorted(set(bom) - set(board), key=_natural),
+        "on_the_board_but_not_in_the_bom": sorted(set(board) - set(bom), key=_natural),
+        "value_or_footprint_mismatch": mismatch,
+        "duplicate_bom_rows": duplicated,
+        "dnp_parts_placed": sorted((r for r, p in board.items() if table[r].dnp),
+                                   key=_natural),
+        "through_hole_refs": through_hole,
+        "position_file_note": "no position file is exported: it would look orderable "
+                              "next to an unrouted board",
+    }
+
+
 def report(placed: list[Placed] | None = None) -> dict:
     placed = placed or placement()
     table = {p.ref: p for p in sch.parts() if p.footprint}
@@ -534,6 +580,7 @@ def report(placed: list[Placed] | None = None) -> dict:
     inside = all(0 <= p.rect[0] and p.rect[2] <= BOARD_W_MM
                  and 0 <= p.rect[1] and p.rect[3] <= BOARD_D_MM
                  for p in placed)
+    assembly = assembly_review(placed, table)
     return {
         "status": STATUS,
         "board": {
@@ -568,7 +615,13 @@ def report(placed: list[Placed] | None = None) -> dict:
             "overlapping_pairs": overlaps,
             "every_part_is_inside_the_outline": inside,
             "no_track_or_via_is_emitted": True,
+            "the_bom_and_the_board_are_the_same_parts": not (
+                assembly["on_the_board_but_not_in_the_bom"]
+                or assembly["in_bom_but_not_on_the_board"]
+                or assembly["value_or_footprint_mismatch"]
+                or assembly["duplicate_bom_rows"]),
         },
+        "assembly_review": assembly,
         "routed": False,
         "routing_backlog_note": "the nets exist as a ratsnest; no copper is routed, so this "
                                 "board is a layout, not a manufacturing package",

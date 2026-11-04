@@ -843,6 +843,12 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
   **不要**靠改符号引脚号或改 vendor 封装去抹平。
 - SOT-23 封装配两脚稳压管（`D40`）会多出一个空焊盘：未命名的焊盘**必须保持无网络**，
   `test_a_pad_the_schematic_never_names_stays_netless` 锁住"闲置铜箔"与"接到未声明网络"的区别。
+- **装配审核是拿板子和 `BOM.csv` 对，不是拿板子和自己的件表对**：`assembly_review()` 从
+  BOM 文件读回来比 Reference/Value/Footprint（**必须是文件**，读生成器自己的表等于自证），
+  输出 `in_bom_but_not_on_the_board`/`on_the_board_but_not_in_the_bom`/
+  `value_or_footprint_mismatch`/`duplicate_bom_rows`，并计入 `checks`。
+  同时列出 7 只通孔件（J1–J4、JP1–JP3）与 10 只 DNP 件（DNP 是"不上料"，焊盘仍在）。
+  **position 文件不导出**：未布线的板子旁边放一个贴片坐标文件，看起来就能下单了。
 
 ## TLV3501 快速过流 ECO 模块（`pcb/fast_oc`）
 
