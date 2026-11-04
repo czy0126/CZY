@@ -824,6 +824,22 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   等操作员合闸。参考模型 `two_tier_fault_logic.py` **没有 POR 输入**（它把上电表达成
   初态 `latched_off=True`），因此 POR 为真时没有"逐步相等"可比，测试只断言
   板子不比模型更早放开（`test_the_latch_update_is_the_reference_transition`）。
+- **D0 板的封装名必须真的存在于 `Diode_SMD.pretty`**：这个 KiCad 里没有
+  `D_SOT-23_ANK`（只有 `D_SOD-123` 一族），SOT-23 的稳压管要写
+  `Package_TO_SOT_SMD:SOT-23`（与 Q1/Q2 相同）。ERC 把它报成 `footprint_link_issues`
+  ——warning 级，但 `check()` 对任何 severity 都 fail-closed，所以名字错会让 `--check` 直接红。
+  同一类陷阱还咬过一次：`Device:D_Zener` 之前不在 `STANDARD` 映射里，`build_symbols()`
+  直接 `SystemExit`。
+- **D0 的"十路全关"是求和门限，不是每路比较器，单管门限是 3.1–4.0 V**：十路 10k 星形
+  经 1k 到地，其它九路会一起加载该节点，所以单管 10 V 只给 **0.500 V**（驱动把其余九路
+  拉低时）/ **0.645 V**（驱动未上电、只剩 10k 下拉时），**不是** `1k/(10k+1k)=0.0909` 的
+  0.909 V/2.2 V。十路全高会把 GSUM 推到 **5 V**，超过 LM393 的 `VCC−1.5 = 3.5 V`
+  common-mode 上限，超出时输出未定义、若读成低就等价于"全关"——所以有 **R77 10k + D9
+  BZX84C3V0**（阴极朝比较器）把输入钳在 3.0 V。改电阻值回不到"单管 2.2 V"，
+  要那样只能改成每路比较器。**ACK 释放令牌是电平锁存而不是边沿采样**
+  （`ACK_ARM = READY ∧ ¬ACK_RAW` 置位，任何故障或失去 READY 复位）：边沿采样只在
+  **松开**时采样，开机后第一次按下会被吞掉。三条都锁在
+  `tools/test_make_d0_protection_board.py`。
 - 默认 `sch erc -o x.rpt` **不含 exclusions**；"0 条"要成立必须加 `--severity-all`。
 - `-o` 给 `/tmp/x.json` 会被改写成 `C:\Users\...\Temp\x.json`，回读时按 Windows 路径找。
 - ERC JSON 是 UTF-8，中文描述用 GBK 控制台打出来是乱码；**读 JSON 必须显式
