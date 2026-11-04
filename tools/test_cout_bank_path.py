@@ -78,11 +78,11 @@ def test_a_thicker_plane_lowers_the_bank_esr():
 
 # ---------------------------------------------------------------- provenance
 def test_the_units_come_from_the_placement_study():
-    """Move C100 and the answer must move; nothing here may be a constant."""
+    """Move Cout1 and the answer must move; nothing here may be a constant."""
     placed = cp.units(mbm.report())
     assert len(placed) == placed_bank()["n"] == 15
-    assert placed[0]["ref"] == "C100" and placed[0]["x_mm"] == pytest.approx(14.0)
-    assert placed[-1]["ref"] == "C114" and placed[-1]["x_mm"] == pytest.approx(128.8)
+    assert placed[0]["ref"] == "Cout1" and placed[0]["x_mm"] == pytest.approx(14.0)
+    assert placed[-1]["ref"] == "Cout15" and placed[-1]["x_mm"] == pytest.approx(128.8)
 
 
 def test_the_lane_width_is_the_measured_unit_pitch():

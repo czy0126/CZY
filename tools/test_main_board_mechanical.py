@@ -83,7 +83,7 @@ def test_the_flat_board_clears_the_limit_by_less_than_a_manufacturing_tolerance(
     So the placement has to say two things at once: every outline fits in X/Y,
     and the Z stack does not fit at all unless the cores sit in pockets.
     """
-    magnetics = [p for p in mbm.PARTS if p.footprint == mbm.ELP32_FP]
+    magnetics = [p for p in mbm.PARTS if p.footprint in mbm.CORE_FOOTPRINTS]
     assert len(magnetics) == 5, "T1-T4 and Lr are all on ELP32"
     report = mbm.report()
     height = report["height"]
@@ -398,7 +398,7 @@ def test_the_pocket_table_is_derived_from_the_cores_on_the_board():
     """Areas come from the ELP32 outline times the number of cores *placed*,
     not from a remembered count of five."""
     pocket = mbm.pocket_requirements()
-    cores = [p for p in mbm.PARTS if p.footprint == mbm.ELP32_FP]
+    cores = [p for p in mbm.PARTS if p.footprint in mbm.CORE_FOOTPRINTS]
     assert pocket["cores"] == len(cores) == 5
     w, d = mbm.board_rect()
     assert pocket["board_area_mm2"] == pytest.approx(w * d, abs=0.2)
@@ -485,6 +485,133 @@ def test_oem_A720_max_height_carries_into_all_15_placed_parts():
     from cout_bank import CANDIDATES
     part=next(p for p in CANDIDATES if p["mpn"]=="KEMET A720V477M2R5APE003")
     assert part["height_mm"]==2.1
-    physical=[p for p in mbm.report()["parts"] if p["ref"] in {f"C{i}" for i in range(100,115)}]
+    physical=[p for p in mbm.report()["parts"] if p["ref"].startswith("Cout")]
     assert len(physical)==15
     assert all(p["h_mm_worst"]==2.1 for p in physical)
+
+
+# ---------------------------------------------------------------- nets
+def test_the_bank_refs_collide_with_nothing_the_schematic_already_uses():
+    """The bank used to be C100-C114, but the schematic spends C101-C112 on the
+    twelve IC decoupling capacitors.  Two parts sharing one designator is not a
+    style problem: it is a 470 uF bulk part cross-referenced onto an 0603
+    position the moment anyone compares the board with the BOM."""
+    schematic = {r["ref"] for r in mbm.review_rows()}
+    bank = {p.ref for p in mbm.PARTS if p.ref.startswith(mbm.BANK_PREFIX)}
+    assert len(bank) == 15
+    assert not bank & schematic
+    assert "C101" in schematic, "the collision this rename avoids must still exist"
+
+
+def test_every_landed_net_is_the_one_the_review_table_says():
+    """Nets land on pads by *name*.  A pad whose name the table does not carry
+    (the Lr's N1/N2 versus its "1"/"2", the U2 outline with no pads) silently
+    drops off the board, and the ratsnest looks complete without it."""
+    for part in mbm.PARTS:
+        got = mbm.part_nets(part)
+        if part.ref.startswith(mbm.BANK_PREFIX):
+            assert set(got) == {"1", "2"}          # borrowed from the lumped Cout
+            continue
+        assert all(pad in mbm._pad_positions(part.footprint) for pad in got)
+        assert set(got) == _expected_pads(part), part.ref
+
+
+def _expected_pads(part) -> set[str]:
+    """Independent read of the review table: a part's pads must be exactly the
+    rows naming it, restricted to pads its footprint shows."""
+    rows = [r for r in mbm.review_rows() if r["ref"] == part.ref and r["net"].strip()]
+    local = set(mbm._pad_positions(part.footprint))
+    return {r["pad"] for r in rows} & local
+
+
+def test_a_part_the_table_has_no_row_for_carries_no_net():
+    table = mbm.pad_nets()
+    for part in mbm.PARTS:
+        if part.ref not in table and not part.ref.startswith(mbm.BANK_PREFIX):
+            assert mbm.part_nets(part) == {}, part.ref
+
+
+def test_the_padless_outline_is_not_counted_as_a_connection():
+    """U2 stands for the whole control section and has no pads.  Returning its
+    eleven table rows anyway put it in the ground net, which would make the
+    board report a connection that has no copper behind it."""
+    u2 = next(p for p in mbm.PARTS if p.ref == "U2")
+    assert mbm.pad_nets()[u2.ref], "the table does list U2 pins; it is the footprint that has none"
+    assert mbm.part_nets(u2) == {}
+    assert not mbm._pad_positions("dcx:Placeholder_12x12")
+
+
+def test_the_sr_drain_pins_without_a_pad_are_reported_not_hidden():
+    """The vendored TDSON-8 numbers all five drain pads "5", so symbol pins 6, 7
+    and 8 have no pad of their own.  Electrically nothing is lost -- they share
+    the net -- but a part-specific land pattern is still owed, and a report that
+    stayed silent would let it look done."""
+    report = mbm.nets_report()
+    groups = report["netlist_pins_without_a_physical_pad"]
+    flat = [x for v in groups.values() for x in v]
+    drains = [x for x in flat if re.match(r"SR[1-4][AB]\.(6|7|8)$", x)]
+    assert len(drains) == 24                # 8 FETs x 3 pins
+    assert any("more than once" in k for k in groups), "the reason must be stated"
+    assert any("no pads at all" in k for k in groups)
+    report = mbm.report()
+    assert report["nets"]["netlist_pins_without_a_physical_pad"]
+
+
+def test_the_two_pad_counts_are_both_reported_because_they_differ():
+    """KiCad treats same-numbered pads of one footprint as one connected pad, so
+    152 copper pads draw 120 pad entities and a 90-line ratsnest.  Reporting
+    only one of the two numbers makes the other look like a missing connection."""
+    nets = mbm.nets_report()
+    assert nets["physical_pads_netted"] > nets["pads_landed"]
+    assert nets["physical_pads_netted"] - nets["pads_landed"] == 8 * 4
+    board = (mbm.OUT / "power_stage_placement.kicad_pcb").read_text(encoding="utf-8")
+    board_level = len(re.findall(r'^\t\(net \d+ "', board, re.M))
+    assert board_level == nets["net_count"]
+    assert board.count("(net ") - board_level == nets["physical_pads_netted"]
+
+
+def test_the_four_secondary_groups_are_drawn_the_same_length():
+    """The four SR groups are electrically identical, so a placement that gives
+    one of them materially more copper than the others has broken the current
+    sharing assumption before a single track is routed."""
+    rows = {n["net"]: n for n in mbm.nets_report()["nets"]}
+    for suffix in ("_A", "_B"):
+        lengths = [rows[f"SEC{i}{suffix}"]["straight_line_mst_mm"] for i in range(1, 5)]
+        assert len({round(x, 6) for x in lengths}) == 1, (suffix, lengths)
+        pad_counts = {rows[f"SEC{i}{suffix}"]["pads"] for i in range(1, 5)}
+        assert pad_counts == {2}
+
+
+def test_a_one_pad_net_is_listed_rather_than_read_as_routed():
+    """CS1, GA1 and friends leave this board towards parts that are not placed.
+    They draw no ratsnest line, so nothing would ever flag them."""
+    nets = mbm.nets_report()
+    single = set(nets["single_pad_nets"])
+    assert {"GH", "GL"} <= single
+    assert all(n.startswith(("GA", "GB", "CS")) for n in single - {"GH", "GL"})
+    assert "owes no track" in nets["single_pad_nets_note"]
+
+
+def test_the_lumped_cout_is_disclosed_rather_than_counted_as_fifteen_parts():
+    nets = mbm.nets_report()
+    lump = nets["lumped_from_one_netlist_element"]
+    (key,) = lump.keys()
+    assert key.startswith("Cout1..Cout15")
+    assert "BOM" in lump[key]
+
+
+def test_the_board_declares_every_net_it_places():
+    """A ``(net N "NAME")`` child on a pad is a reference to the board's net
+    table; an undeclared one is what KiCad reports as a dangling reference."""
+    board = (mbm.OUT / "power_stage_placement.kicad_pcb").read_text(encoding="utf-8")
+    declared = set(re.findall(r'^\t\(net \d+ "([^"]*)"\)', board, re.M))
+    assert len(declared) == mbm.nets_report()["net_count"]
+    used = set(re.findall(r'\(net \d+ "([^"]*)"\)', board))
+    assert used == declared, used - declared
+
+
+def test_the_committed_board_is_netted_and_says_it_is_not_routed():
+    board = (mbm.OUT / "power_stage_placement.kicad_pcb").read_text(encoding="utf-8")
+    assert "NETTED PLACEMENT" in board
+    assert "no routing" in board
+    assert mbm.report()["nets"]["status"] == "NETTED_PLACEMENT_NOT_ROUTED"

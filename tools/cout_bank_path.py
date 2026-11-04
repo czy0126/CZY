@@ -90,10 +90,20 @@ def parallel_esr(part_esr: float, branch_ohm: Sequence[float]) -> float:
 
 
 def units(report: dict) -> list[dict]:
-    """The Cout units in x order, straight from the placement study."""
-    placed = [p for p in report["parts"]
-              if p["ref"].startswith("C1") and p["ref"][1:].isdigit()
-              and int(p["ref"][1:]) >= 100]
+    """The Cout units in x order, straight from the placement study.
+
+    The refs come from ``placement_report.json:cout_bank_refs`` rather than a
+    pattern.  Selecting by ``C1xx`` used to work; when the bank was renamed to
+    ``Cout1..Cout15`` (it collided with the twelve decoupling capacitors the
+    schematic already spends ``C101``-``C112`` on) the pattern kept matching
+    nothing and this tool reported a pitch error instead of naming the cause.
+    """
+    want = set(report["cout_bank_refs"])
+    placed = [p for p in report["parts"] if p["ref"] in want]
+    missing = want - {p["ref"] for p in placed}
+    if missing:
+        raise ValueError("placement study names bank units it does not place: "
+                         + ", ".join(sorted(missing)))
     return sorted(placed, key=lambda p: float(p["x_mm"]))
 
 

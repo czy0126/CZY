@@ -1,18 +1,30 @@
-"""A5: 1:1 mechanical placement of the main power stage (placement only).
+"""A5: 1:1 mechanical placement of the main power stage, now carrying nets.
 
 What this is
 ------------
 A single table of parts with real outlines, laid out on a KiCad board that
-opens in the editor and renders in 3D.  There are **no nets and no tracks** --
-this is the answer to "does it all physically fit, and where does the height
-problem land", which is the question the delivery plan puts before routing.
+opens in the editor and renders in 3D.  Two questions live here:
+
+* **does it all physically fit, and where does the height problem land** -- the
+  outlines, the clearances and the A6 section;
+* **where does the current actually have to go** -- every pad now carries the
+  net `pin_footprint_review.csv` assigns it, so the editor draws the real
+  ratsnest and per-net straight-line lengths can be compared across the four
+  identical groups (ELE-04).
+
+The nets are *read*, not invented: ``hardware/dcx_main/pin_footprint_review.csv``
+is the table that already arbitrates the logical netlist against a footprint.
+Where that table has no row for a placed part, the pad stays netless and the
+report says which one and why -- the fifteen bulk capacitors are the clear case,
+because the schematic models the whole bank as a single lumped ``Cout``.
 
 What it is not
 --------------
-Not a routed board, not a DRC-clean design, not a manufacturing output.  Every
-pad is unconnected by design.  `kicad-cli pcb drc` is still run, but only for
-the two things a placement can be wrong about: courtyards that touch, and
-footprints from a library the project cannot see (a footprint KiCad cannot
+Not a routed board, not a DRC-clean design, not a manufacturing output.  Nets
+make the connectivity visible; they do not route it, and every ratsnest line is
+still a missing track.  `kicad-cli pcb drc` is still run, but only for the
+things a placement can be wrong about: courtyards that touch, pads that collide,
+and footprints from a library the project cannot see (a footprint KiCad cannot
 resolve is a black box, so its courtyard is not checked either -- the same trap
 already documented for the schematic side in ``make_control_board.py``).
 
@@ -47,6 +59,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import re
@@ -68,9 +81,12 @@ STOCK = ROOT / "hardware" / "stock_footprints"
 NS = uuid.UUID("a5b6c7d8-1e2f-4a3b-9c4d-5e6f7a8b9c0d")
 
 HEIGHT_LIMIT_MM = 10.0
-ELP32_FP = "dcx:ELP32_31.75x25.4"
+XFMR_FP = "dcx:ELP32_XFMR"
+LR_FP = "dcx:ELP32_LR"
+CORE_FOOTPRINTS = (XFMR_FP, LR_FP)
 EDGE_MARGIN_MM = 5.0
 BOARD_T = 1.6
+REVIEW = ROOT / "hardware" / "dcx_main" / "pin_footprint_review.csv"
 
 
 def uid(*parts: str) -> str:
@@ -79,6 +95,71 @@ def uid(*parts: str) -> str:
 
 def _load(rel: str) -> dict:
     return json.loads((DESIGN / rel).read_text(encoding="utf-8"))
+
+
+# ---------------------------------------------------------------- netlist
+# The arbitration table: one row per (ref, logical pin, footprint pad, net).  It
+# already exists for the schematic side, so the board reads it instead of
+# re-deriving connectivity from the deck -- two derivations would eventually
+# disagree and there would be no way to say which one the board believed.
+BANK_PREFIX = "Cout"
+
+
+def review_rows() -> list[dict]:
+    with REVIEW.open(encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def pad_nets() -> dict[str, dict[str, str]]:
+    """``ref -> pad -> net`` for every pin the review table has mapped.
+
+    An empty net cell means the table mapped the pad but not to a net (U2.2);
+    it is dropped rather than turned into a net called ``""``, and the report's
+    ``pad_without_a_net`` list keeps it visible.
+    """
+    out: dict[str, dict[str, str]] = {}
+    for row in review_rows():
+        if row["net"].strip():
+            out.setdefault(row["ref"], {})[row["pad"]] = row["net"].strip()
+    return out
+
+
+def bank_nets() -> dict[str, str]:
+    """The bulk bank's pad->net, taken from the *lumped* ``Cout`` symbol.
+
+    ``cout_bank.json`` asks for fifteen physical capacitors while the schematic
+    models all of them as one ``Cout``.  Fifteen refs therefore have no row of
+    their own; borrowing the lumped symbol's two nets is the only reading that
+    does not invent connectivity, and the report says so.
+    """
+    return pad_nets()["Cout"]
+
+
+def part_nets(part: "Part") -> dict[str, str]:
+    """The nets for one placed part: its own rows, or the bank's, or none.
+
+    Filtered to the pads this footprint actually carries.  Without that filter a
+    padless outline would still be counted as a connection -- the control area
+    ``U2`` stands for a whole section, and its eleven netlist pins would appear
+    on the board as if they had somewhere to land."""
+    table = pad_nets()
+    if part.ref in table:
+        got = table[part.ref]
+    elif part.ref.startswith(BANK_PREFIX):
+        got = bank_nets()
+    else:
+        return {}
+    local = _pad_positions(part.footprint)
+    return {pad: net for pad, net in got.items() if pad in local}
+
+
+def placed_nets() -> dict[str, list[str]]:
+    """``net -> refs`` across the whole board, for the report and the ratsnest."""
+    out: dict[str, list[str]] = {}
+    for part in PARTS:
+        for pad, net in part_nets(part).items():
+            out.setdefault(net, []).append(f"{part.ref}.{pad}")
+    return {net: sorted(members) for net, members in sorted(out.items())}
 
 
 # ---------------------------------------------------------------- part table
@@ -118,7 +199,6 @@ def parts() -> tuple[Part, ...]:
     mag_w = core["outer_length_m"] * 1e3
     mag_d = core["core_depth_m"] * 1e3
     mag_h = core["height_max_m"] * 1e3
-    elp32 = ELP32_FP
     COUT_FP = "dcx:Placeholder_Cout"
     tds = "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm"
 
@@ -128,10 +208,10 @@ def parts() -> tuple[Part, ...]:
     # argument, not decoration.
     for i, x in enumerate((20.0, 58.0, 96.0, 134.0), start=1):
         out.append(Part(f"T{i}", "3:1:1 ELP32", mag_w, mag_d, mag_h, x, 20.0,
-                        "generated-json", elp32))
+                        "generated-json", XFMR_FP))
     # Row 2 -- primary side, left to right in power-flow order.
     out.append(Part("Lr", "1.0 uH", mag_w, mag_d, mag_h, 20.0, 52.0,
-                    "generated-json", elp32,
+                    "generated-json", LR_FP,
                     note="same ELP32 core as T1-T4, so it shares the pocket"))
     # Q5A package table (datasheet p9): D1 max 5.00, E max 6.10, A max 1.10.
     # Using the maximums, not the 5x6x1 nominal the BOM calls it -- that is the
@@ -161,11 +241,17 @@ def parts() -> tuple[Part, ...]:
                         "kicad-library", tds))
         out.append(Part(f"SR{i}B", "BSC010N04LS6", 7.36, 5.64, 1.0, x0 + 10.0, 82.0,
                         "kicad-library", tds))
-    # Row 4 -- the output bank, one row between the SRs and the busbar.
+    # Row 4 -- the output bank, one row between the SRs and the busbar.  The
+    # refs are Cout1..Cout15, *not* C100..: the schematic already spends
+    # C101-C112 on the twelve IC decoupling capacitors, so reusing those names
+    # here would attach a 470 uF bulk part to a 0603 position the moment anyone
+    # cross-referenced the board against the BOM.
     for i in range(cout["n"]):
-        out.append(Part(f"C{100 + i}", "470 uF 2.5 V", 7.3, 4.3, cout["height_mm"],
-                        14.0 + 8.2 * i, 98.0, "generated-json", COUT_FP,
-                        note="height from cout_bank.json; case size assumed"))
+        out.append(Part(f"{BANK_PREFIX}{i + 1}", "470 uF 2.5 V", 7.3, 4.3,
+                        cout["height_mm"], 14.0 + 8.2 * i, 98.0, "generated-json",
+                        COUT_FP,
+                        note="height from cout_bank.json; case size assumed; "
+                             "the schematic models this whole bank as one lumped Cout"))
     # Row 5 -- the output busbar, last so the 100 A leaves at the board edge.
     out.append(Part("J_OUT", "20x2 mm bar", bar["length_mm"], bar["width_mm"],
                     bar["thickness_mm"], 100.0, 116.0, "generated-json",
@@ -235,15 +321,175 @@ def _ceil_half(v: float) -> float:
 
 
 # ---------------------------------------------------------------- report
+def _footprint_text(lib_id: str) -> str:
+    name = lib_id.split(":", 1)[1]
+    libs = footprint_library()
+    return libs.get(f"{name}.kicad_mod") or _stock_footprint(lib_id)
+
+
+def _pad_blocks(lib_id: str) -> list[str]:
+    """Every numbered pad block's name, in file order, duplicates kept.
+
+    Distinct from ``_pad_positions``: the vendored TDSON-8 numbers its five
+    drain pads all ``"5"``, so the *name* count is 5 while the *copper* count is
+    9.  A report that counted names would understate how much copper a net
+    actually lands on, and ``_inject_pad_nets`` -- which walks blocks -- would
+    agree with the wrong number.
+    """
+    return [m.group(1) for m in
+            re.finditer(r'\(pad "([^"]*)"', _footprint_text(lib_id)) if m.group(1)]
+
+
+def _pad_positions(lib_id: str) -> dict[str, tuple[float, float]]:
+    """Pad name -> (x, y) in the footprint's own frame, read back out of the
+    footprint text.  Reading it back rather than restating the table means the
+    distances below cannot drift from the pads the board actually carries."""
+    text = _footprint_text(lib_id)
+    out: dict[str, tuple[float, float]] = {}
+    for match in re.finditer(r'\(pad "([^"]*)"[^(]*\(at (-?[\d.]+) (-?[\d.]+)', text):
+        name, px, py = match.group(1), float(match.group(2)), float(match.group(3))
+        if name:
+            out.setdefault(name, (px, py))
+    return out
+
+
+def _mst_mm(points: list[tuple[float, float]]) -> float:
+    """Straight-line minimum spanning tree length over pad centres.
+
+    A lower bound on the copper, not a route: it ignores obstacle detours, layer
+    changes and the fact that a 100 A path is a plane.  Useful for comparing the
+    four identical groups against each other, which is why it is here.
+    """
+    if len(points) < 2:
+        return 0.0
+    left, total = list(points[1:]), 0.0
+    tree = [points[0]]
+    while left:
+        best = None
+        for a in tree:
+            for b in left:
+                dist = ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
+                if best is None or dist < best[0]:
+                    best = (dist, b)
+        total += best[0]
+        tree.append(best[1])
+        left.remove(best[1])
+    return total
+
+
+def _padless_reason(part: "Part", pad: str) -> str:
+    """Why a netlisted pin has no pad here -- the two causes are not the same.
+
+    A repeated pad name is a gap in the vendored land pattern that a
+    part-specific footprint would close; a padless outline is a placeholder
+    that was never meant to carry pins.  Folding them into one list would let
+    a real land-pattern defect look like a deliberate placeholder.
+    """
+    blocks = _pad_blocks(part.footprint)
+    if not blocks:
+        return ("the outline stands for a whole functional block and carries no "
+                "pads at all, so no pin of it has a position yet")
+    dup = sorted({n for n in blocks if blocks.count(n) > 1})
+    if dup:
+        return (f"the vendored footprint names pad {', '.join(dup)} more than once, "
+                f"so the other pins of that group have no pad of their own")
+    return "the footprint has no pad with this name"
+
+
+def nets_report() -> dict:
+    """What the connectivity actually is, and what it does not reach.
+
+    Three lists matter as much as the net count: the parts the review table has
+    no row for, the manifest pins with no physical pad, and the pads it mapped
+    without naming a net.  Each is a place a reader could otherwise assume the
+    ratsnest was complete.
+    """
+    nets = placed_nets()
+    table = pad_nets()
+    placed = {p.ref for p in PARTS}
+    groups: dict[str, list[tuple[float, float]]] = {}
+    landed = 0
+    for part in PARTS:
+        local = _pad_positions(part.footprint)
+        for pad, net in part_nets(part).items():
+            if pad not in local:
+                continue
+            x, y = local[pad]
+            groups.setdefault(net, []).append((part.x + x, part.y + y))
+            landed += 1
+    rows = [
+        {"net": net, "pads": len(points),
+         "refs": sorted({m.split(".")[0] for m in nets[net]}),
+         "straight_line_mst_mm": round(_mst_mm(points), 3)}
+        for net, points in groups.items()
+    ]
+    rows.sort(key=lambda r: (-r["straight_line_mst_mm"], r["net"]))
+    # Two different questions, so two different loops.  ``physical`` counts the
+    # copper the nets actually land on, which includes the bank parts that have
+    # no row of their own.  ``padless`` has to read the *table*, not
+    # ``part_nets``: the latter filters unknown pads out, and those are exactly
+    # the ones worth reporting.
+    physical = sum(1 for part in PARTS
+                   for name in _pad_blocks(part.footprint)
+                   if name in part_nets(part))
+    padless: dict[str, list[str]] = {}
+    for part in PARTS:
+        local = _pad_positions(part.footprint)
+        for pad in table.get(part.ref, {}):
+            if pad not in local:
+                padless.setdefault(_padless_reason(part, pad), []).append(
+                    f"{part.ref}.{pad}")
+    return {
+        "status": "NETTED_PLACEMENT_NOT_ROUTED",
+        "source": "hardware/dcx_main/pin_footprint_review.csv",
+        "net_count": len(nets),
+        "pads_landed": landed,
+        "physical_pads_netted": physical,
+        "pads_landed_note": "pad names with a net; physical pads are higher where a "
+                            "footprint repeats a name (the TDSON-8 drain).  KiCad "
+                            "treats same-numbered pads of one footprint as a single "
+                            "connected pad, so the ratsnest count follows this number, "
+                            "not physical_pads_netted",
+        "nets": rows,
+        "single_pad_nets": [n["net"] for n in rows if n["pads"] == 1],
+        "single_pad_nets_note": "a net with one pad here draws no ratsnest line and "
+                                "owes no track: its other members (gate resistors, the "
+                                "CT secondary rectifiers) are off this board. Listed so "
+                                "they are not read as routed",
+        "lumped_from_one_netlist_element": {
+            f"{BANK_PREFIX}1..{BANK_PREFIX}{_cout()['n']}":
+                "the schematic models the whole bank as one lumped Cout; these "
+                "fifteen borrow its two nets and the BOM must expand it into "
+                "fifteen lines"},
+        "not_in_the_netlist_at_all": ["U2"],
+        "not_in_the_netlist_reason": "one outline stands for the whole control "
+                                     "section; it has no pads and carries no net",
+        "netlist_pins_without_a_physical_pad": padless,
+        "netlist_pins_without_a_physical_pad_note": "grouped by why, because the two "
+                                                   "causes are different defects: a "
+                                                   "repeated pad name is a land-pattern "
+                                                   "gap, a padless outline is a "
+                                                   "placeholder",
+        "pad_without_a_net": [{"ref": r["ref"], "pad": r["pad"], "note": r["note"]}
+                              for r in review_rows()
+                              if r["ref"] in placed and not r["net"].strip()],
+        "not_placed_here_netlist_refs": sorted(set(table) - placed),
+        "not_placed_here_reason": "power-stage placement only; control, drive and "
+                                  "decoupling parts have no position on this board",
+        "length_note": "straight-line spanning tree over pad centres, a lower "
+                       "bound on copper and not a route",
+    }
+
+
 def report() -> dict:
     height = _load("magnetics/magnetics_design.json")["height"]
     flat = height["flat_no_pocket"]
     clamp = height["with_0.5mm_clamp"]
-    magnetics = sorted(p.ref for p in PARTS if p.footprint == ELP32_FP)
+    magnetics = sorted(p.ref for p in PARTS if p.footprint in CORE_FOOTPRINTS)
     gap, ga, gb = min_gap_mm()
     w, d = board_rect()
     return {
-        "status": "placement only - no nets, no routing, unconnected pads are expected",
+        "status": "netted placement - connectivity drawn, nothing routed",
         "board": {"width_mm": w, "depth_mm": d, "thickness_mm": BOARD_T},
         "parts": [
             {"ref": p.ref, "value": p.value, "evidence": p.evidence,
@@ -276,6 +522,13 @@ def report() -> dict:
         "land_pattern_provisional": sorted(
             p.ref for p in PARTS
             if p.evidence == "datasheet" or "land pattern" in p.note.lower()),
+        "nets": nets_report(),
+        # Named explicitly so a consumer never has to guess the reference
+        # scheme.  ``cout_bank_path.py`` used to select the bank by ``C1xx``;
+        # renaming the units to ``Cout1..`` then silently emptied its input and
+        # it failed with "a bank row needs at least two units" rather than
+        # saying which part it could not find.
+        "cout_bank_refs": [p.ref for p in PARTS if p.ref.startswith(BANK_PREFIX)],
         "toolchain": toolchain(),
     }
 
@@ -318,10 +571,16 @@ def _pad(number: str, x: float, y: float, dx: float, dy: float, shape: str = "re
     )
 
 
-def _outline_footprint(name: str, w: float, d: float, descr: str, pads: list[tuple[float, float]]) -> str:
+def _outline_footprint(name: str, w: float, d: float, descr: str,
+                       pads: list[tuple[str, float, float]],
+                       pad_mm: float = 2.0) -> str:
     """A rectangular through-hole footprint: fab outline, courtyard at +0.25 mm,
-    and one pad per terminal the caller names.  Deliberately minimal -- there is
-    no copper land pattern here because the part is not selected."""
+    and one pad per terminal the caller names.
+
+    The pad *names* matter now that the board carries nets: they are the same
+    strings ``pin_footprint_review.csv`` uses, so a net lands on a pad by
+    identity rather than by position in a list.  Deliberately minimal -- there
+    is no copper land pattern here because the part is not selected."""
     cy, cx = d / 2 + 0.25, w / 2 + 0.25
     s = (f'(footprint "{name}"\n'
          f'\t(version 20260206)\n'
@@ -337,8 +596,8 @@ def _outline_footprint(name: str, w: float, d: float, descr: str, pads: list[tup
         s += (f'\t(fp_rect (start {-half_w:g} {-half_d:g}) (end {half_w:g} {half_d:g})\n'
               f'\t\t(stroke (width {0.05 if layer == "F.CrtYd" else 0.1:g}) (type solid))\n'
               f'\t\t(fill none) (layer "{layer}") (uuid "{uid("rect", name, layer)}"))\n')
-    for i, (px, py) in enumerate(pads, start=1):
-        s += _pad(str(i), px, py, 2.0, 2.0)
+    for pad_name, px, py in pads:
+        s += _pad(pad_name, px, py, pad_mm, pad_mm)
     return s + ")\n"
 
 
@@ -352,38 +611,62 @@ def footprint_library() -> dict[str, str]:
     files = {
         # Terminals at +/- 10 mm are a place to draw the winding exit, not a
         # measured bobbin.  Stated in the descr so the board file says it too.
-        "ELP32_31.75x25.4.kicad_mod": _outline_footprint(
-            "ELP32_31.75x25.4", w, d,
+        # Two footprints on one core outline: the transformer exposes the five
+        # logical terminals the netlist names, the inductor only its two.  A
+        # single five-pad footprint would leave three pads dangling on Lr.
+        "ELP32_XFMR.kicad_mod": _outline_footprint(
+            "ELP32_XFMR", w, d,
             "TDK ELP32 (B66287) 3:1:1 planar, 31.75x25.4x9.5 mm. "
             "Terminal positions PROVISIONAL: the winding exit is not drawn yet.",
-            [(-10.0, 0.0), (10.0, 0.0)]),
+            [("PRI_A", -10.0, -4.0), ("PRI_B", -10.0, 4.0), ("CTAP", 10.0, 0.0),
+             ("SEC_A", 10.0, -5.0), ("SEC_B", 10.0, 5.0)]),
+        "ELP32_LR.kicad_mod": _outline_footprint(
+            "ELP32_LR", w, d,
+            "TDK ELP32 (B66287), same core as T1-T4, two terminals. "
+            "Pad names are the review table's pad column (1, 2), not the "
+            "schematic's logical N1/N2, so a net lands by identity. "
+            "Terminal positions PROVISIONAL.",
+            [("1", -10.0, 0.0), ("2", 10.0, 0.0)]),
         "Busbar_20x2.kicad_mod": _outline_footprint(
             "Busbar_20x2", bar["length_mm"], bar["width_mm"],
             "Output copper bar 80x20x2 mm. Contact resistance UNVERIFIED.",
-            [(-35.0, 0.0), (35.0, 0.0)]),
+            [("1", -35.0, 0.0), ("2", 35.0, 0.0)]),
         "Placeholder_18x6.kicad_mod": _outline_footprint(
             "Placeholder_18x6", 18, 6, "PROVISIONAL - Cr film capacitor, no part selected",
-            [(-7.0, 0.0), (7.0, 0.0)]),
+            [("1", -7.0, 0.0), ("2", 7.0, 0.0)]),
         "Placeholder_20x15.kicad_mod": _outline_footprint(
-            "Placeholder_20x15", 20, 15, "PROVISIONAL - over-current CT, no part selected",
-            [(-8.0, 0.0), (8.0, 0.0)]),
+            "Placeholder_20x15", 20, 15,
+            "PROVISIONAL - over-current CT, no part selected. Four logical "
+            "terminals per the netlist; the physical part is not chosen and no "
+            "pinout is verified.",
+            [("PRI_A", -8.0, -3.0), ("PRI_B", -8.0, 3.0),
+             ("SEC_A", 8.0, -3.0), ("SEC_B", 8.0, 3.0)]),
         "Placeholder_10x10.kicad_mod": _outline_footprint(
             "Placeholder_10x10", 10, 10, "PROVISIONAL - 48 V input terminal, no part selected",
-            [(-2.54, 0.0), (2.54, 0.0)]),
+            [("1", -2.54, 0.0), ("2", 2.54, 0.0)]),
         "Placeholder_12x12.kicad_mod": _outline_footprint(
-            "Placeholder_12x12", 12, 12, "PROVISIONAL - control area, no layout done",
+            "Placeholder_12x12", 12, 12,
+            "PROVISIONAL - control area, no layout done. Deliberately padless: "
+            "this outline stands for the whole control section, so any pad it "
+            "carried would be a pin of a part that has no position yet.",
             []),
+        # Nine pads because the netlist gives QH/QL nine pins (1-3 source,
+        # 4 gate, 5-9 drain).  0.6 mm pads on a 1 mm pitch are a drawing, not a
+        # land pattern -- the recommended layout is a figure in the datasheet.
         "Placeholder_SON_5x6.kicad_mod": _outline_footprint(
             "Placeholder_SON_5x6", 5.00, 6.10,
             "PROVISIONAL land pattern - CSD19531Q5A (VSONP DQJ): body 5.00x6.10 from "
             "datasheet p9, but the recommended board pads are a figure, not text, and "
             "are not reproduced here",
-            [(-1.5, -2.5), (-1.5, 2.5)]),
+            [("1", -1.6, -1.0), ("2", -1.6, 0.0), ("3", -1.6, 1.0),
+             ("4", -1.6, 2.0), ("5", 1.2, -2.0), ("6", 1.2, -1.0),
+             ("7", 1.2, 0.0), ("8", 1.2, 1.0), ("9", 1.2, 2.0)],
+            pad_mm=0.6),
         "Placeholder_Cout.kicad_mod": _outline_footprint(
             "Placeholder_Cout", 7.3, 4.3,
             "Bulk output capacitor: max height 2.1 mm from YAGEO OEM; the "
             "7.3x4.3 outline fixed by OEM; PCB land pads are PROVISIONAL",
-            [(-2.0, 0.0), (2.0, 0.0)]),
+            [("1", -2.0, 0.0), ("2", 2.0, 0.0)]),
     }
     return files
 
@@ -418,13 +701,57 @@ def project_file() -> str:
 
 
 # ---------------------------------------------------------------- board file
-def _embed(mod_text: str, lib_id: str, ref: str, value: str, x: float, y: float, rot: float) -> str:
+def _inject_pad_nets(text: str, nets: dict[str, str], ids: dict[str, int]) -> str:
+    """Add ``(net N "NAME")`` to every pad whose name the review table knows.
+
+    Found by paren depth rather than by regex: a pad block contains nested
+    parentheses (``size``, ``layers``, ``drill``) and a regex that stopped at
+    the first ``)`` would cut the block in half.  The net goes where KiCad puts
+    it -- after ``layers``, before ``uuid``.
+    """
+    out: list[str] = []
+    i = 0
+    marker = '(pad "'
+    while True:
+        j = text.find(marker, i)
+        if j < 0:
+            out.append(text[i:])
+            return "".join(out)
+        out.append(text[i:j])
+        k = text.find('"', j + len(marker))
+        name = text[j + len(marker):k]
+        depth, end = 0, j
+        while end < len(text):
+            if text[end] == "(":
+                depth += 1
+            elif text[end] == ")":
+                depth -= 1
+                if depth == 0:
+                    break
+            end += 1
+        block = text[j:end + 1]
+        net = nets.get(name)
+        if net:
+            pos = block.rfind("(uuid ")
+            if pos > 0:
+                line = block.rfind("\n", 0, pos) + 1
+                indent = block[line:pos]
+                block = (block[:line] + indent + f'(net {ids[net]} "{net}")\n'
+                         + block[line:])
+        out.append(block)
+        i = end + 1
+
+
+def _embed(mod_text: str, lib_id: str, ref: str, value: str, x: float, y: float,
+           rot: float, nets: dict[str, str] | None = None,
+           ids: dict[str, int] | None = None) -> str:
     """Turn a ``.kicad_mod`` body into a placed footprint instance.
 
     A ``.kicad_pcb`` carries the geometry inline, so the library file is copied
-    in rather than referenced.  Four things change: the library id, the
-    placement, the reference, and every uuid (two instances sharing a uuid make
-    KiCad pick one at random when the file is opened)."""
+    in rather than referenced.  Five things change: the library id, the
+    placement, the reference, every uuid (two instances sharing a uuid make
+    KiCad pick one at random when the file is opened), and -- when the netlist
+    has a row for this pad -- the net."""
     text = mod_text
     for pat in (r"\(version [^)]*\)\s*", r'\(generator "[^"]*"\)\s*',
                 r'\(generator_version "[^"]*"\)\s*'):
@@ -437,18 +764,22 @@ def _embed(mod_text: str, lib_id: str, ref: str, value: str, x: float, y: float,
     text = text.replace('(property "Reference" "REF**"', f'(property "Reference" "{ref}"', 1)
     text = re.sub(r'\(property "Value" "[^"]*"', f'(property "Value" "{value}"', text, count=1)
     text = re.sub(r'\(uuid "([^"]+)"\)', lambda m: f'(uuid "{uid(ref, m.group(1))}")', text)
+    if nets:
+        text = _inject_pad_nets(text, nets, ids or {})
     return "\t" + text.strip() + "\n"
 
 
 def board_file(libs: dict[str, str]) -> str:
     w, d = board_rect()
     mods = {f"dcx:{Path(name).stem}": text for name, text in libs.items()}
+    nets = placed_nets()
+    ids = {net: i for i, net in enumerate(sorted(nets), start=1)}
     out = [
         "(kicad_pcb\n\t(version 20260206)\n\t(generator \"main_board_mechanical\")\n"
         "\t(generator_version \"10.0\")\n\t(general (thickness 1.6))\n"
         "\t(paper \"A3\")\n\t(title_block\n"
         "\t\t(title \"DCX 48V-2V 100A - A5 1:1 power-stage placement\")\n"
-        "\t\t(comment 1 \"PLACEMENT ONLY - no nets, no routing\")\n"
+        "\t\t(comment 1 \"NETTED PLACEMENT - no routing; every ratsnest line is a missing track\")\n"
         "\t\t(comment 2 \"PROVISIONAL outlines: CT, Cr, J_IN, U2 area, Cout case size\")\n"
         "\t)\n"
         "\t(layers\n"
@@ -459,6 +790,8 @@ def board_file(libs: dict[str, str]) -> str:
         '\t\t(48 "B.Fab" user)\n\t\t(49 "F.Fab" user)\n\t)\n'
         "\t(setup (pad_to_mask_clearance 0))\n"
     ]
+    for net in sorted(nets):
+        out.append(f'\t(net {ids[net]} "{net}")\n')
     # Edge.Cuts as four straight segments -- a rectangle drawn with gr_rect is
     # legal but some viewers only close the outline from segments.
     for name, (x0, y0, x1, y1) in {
@@ -472,7 +805,8 @@ def board_file(libs: dict[str, str]) -> str:
         lib_id = part.footprint
         text = mods.get(lib_id) or _stock_footprint(lib_id)
         out.append("\t" + _embed(text, lib_id, part.ref, part.value,
-                                 part.x, part.y, part.rot).strip() + "\n")
+                                 part.x, part.y, part.rot,
+                                 part_nets(part), ids).strip() + "\n")
     out.append(")\n")
     return "".join(out)
 
@@ -590,7 +924,7 @@ def pocket_requirements() -> dict:
     """
     data = _load("magnetics/magnetics_design.json")
     core = data["core"]
-    cores = [p for p in PARTS if p.footprint == ELP32_FP]
+    cores = [p for p in PARTS if p.footprint in CORE_FOOTPRINTS]
     w = core["outer_length_m"] * 1e3
     d = core["core_depth_m"] * 1e3
     per_core = w * d
@@ -736,12 +1070,27 @@ def draw(out_dir: Path | None = None) -> list[Path]:
     return [svg, png]
 
 
-def violations(path: Path | None = None) -> list[dict]:
+def _drc(path: Path | None = None) -> dict:
     path = path or OUT / "drc.json"
     if not path.exists():
-        return []
-    data = json.loads(path.read_text(encoding="utf-8"))
-    return data.get("violations", [])
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def violations(path: Path | None = None) -> list[dict]:
+    return _drc(path).get("violations", [])
+
+
+def unconnected(path: Path | None = None) -> list[dict]:
+    """Ratsnest lines still missing a track.
+
+    ``kicad-cli`` puts these in a **second** top-level array, not in
+    ``violations``, so reading only the first one reports "nothing
+    unconnected" on a board where nothing is routed at all.  This board is
+    unrouted on purpose, so the count is reported as debt -- it is the number
+    of connections the layout still owes, not a defect of the placement.
+    """
+    return _drc(path).get("unconnected_items", [])
 
 
 def check() -> None:
@@ -773,8 +1122,19 @@ def check() -> None:
     # nothing about placement.  ``project_file()`` raises it to error; count it
     # here so a silent regression shows up in the printed line too.
     bare = [v for v in vs if v["type"] == "missing_courtyard"]
+    nets = data["nets"]
+    ratsnest = unconnected()
     print(f"DRC: {len(vs)} violations, {len(errors)} errors, {len(unknown)} unknown-footprint, "
           f"{len(bare)} footprints without a courtyard")
+    print(f"nets: {nets['net_count']} nets on {nets['pads_landed']} netlist pads; "
+          f"ratsnest: {len(ratsnest)} unconnected pairs still owing a track")
+    # An empty ratsnest on a board that carries nets would mean the injections
+    # did not reach the pads -- the exact inversion the SR board hit when it
+    # read ``violations`` and found "0 unconnected" on an unrouted layout.
+    if nets["net_count"] and not ratsnest:
+        raise SystemExit("the board declares nets but kicad-cli reports nothing unconnected "
+                         "-- either every net was routed, or the (net ...) children never "
+                         "reached the pads")
     for v in (errors + unknown + bare)[:5]:
         print(f"  {v['severity']} {v['type']}: {v['description']}")
     if errors or unknown or bare:

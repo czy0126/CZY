@@ -1,5 +1,5 @@
 {
-  "status": "placement only - no nets, no routing, unconnected pads are expected",
+  "status": "netted placement - connectivity drawn, nothing routed",
   "board": {
     "width_mm": 155.0,
     "depth_mm": 131.0,
@@ -235,7 +235,7 @@
       "note": ""
     },
     {
-      "ref": "C100",
+      "ref": "Cout1",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -244,10 +244,10 @@
       "x_mm": 14.0,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C101",
+      "ref": "Cout2",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -256,10 +256,10 @@
       "x_mm": 22.2,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C102",
+      "ref": "Cout3",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -268,10 +268,10 @@
       "x_mm": 30.4,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C103",
+      "ref": "Cout4",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -280,10 +280,10 @@
       "x_mm": 38.6,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C104",
+      "ref": "Cout5",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -292,10 +292,10 @@
       "x_mm": 46.8,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C105",
+      "ref": "Cout6",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -304,10 +304,10 @@
       "x_mm": 55.0,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C106",
+      "ref": "Cout7",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -316,10 +316,10 @@
       "x_mm": 63.2,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C107",
+      "ref": "Cout8",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -328,10 +328,10 @@
       "x_mm": 71.4,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C108",
+      "ref": "Cout9",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -340,10 +340,10 @@
       "x_mm": 79.6,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C109",
+      "ref": "Cout10",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -352,10 +352,10 @@
       "x_mm": 87.8,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C110",
+      "ref": "Cout11",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -364,10 +364,10 @@
       "x_mm": 96.0,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C111",
+      "ref": "Cout12",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -376,10 +376,10 @@
       "x_mm": 104.2,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C112",
+      "ref": "Cout13",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -388,10 +388,10 @@
       "x_mm": 112.4,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C113",
+      "ref": "Cout14",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -400,10 +400,10 @@
       "x_mm": 120.6,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
-      "ref": "C114",
+      "ref": "Cout15",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
       "w_mm": 7.3,
@@ -412,7 +412,7 @@
       "x_mm": 128.8,
       "y_mm": 98.0,
       "rot_deg": 0.0,
-      "note": "height from cout_bank.json; case size assumed"
+      "note": "height from cout_bank.json; case size assumed; the schematic models this whole bank as one lumped Cout"
     },
     {
       "ref": "J_OUT",
@@ -454,8 +454,8 @@
   "clearance": {
     "min_gap_mm": 0.9,
     "between": [
-      "C110",
-      "C111"
+      "Cout11",
+      "Cout12"
     ]
   },
   "overlaps": [],
@@ -576,6 +576,472 @@
   "land_pattern_provisional": [
     "QH",
     "QL"
+  ],
+  "nets": {
+    "status": "NETTED_PLACEMENT_NOT_ROUTED",
+    "source": "hardware/dcx_main/pin_footprint_review.csv",
+    "net_count": 30,
+    "pads_landed": 120,
+    "physical_pads_netted": 152,
+    "pads_landed_note": "pad names with a net; physical pads are higher where a footprint repeats a name (the TDSON-8 drain).  KiCad treats same-numbered pads of one footprint as a single connected pad, so the ratsnest count follows this number, not physical_pads_netted",
+    "nets": [
+      {
+        "net": "PGND",
+        "pads": 45,
+        "refs": [
+          "Cout1",
+          "Cout10",
+          "Cout11",
+          "Cout12",
+          "Cout13",
+          "Cout14",
+          "Cout15",
+          "Cout2",
+          "Cout3",
+          "Cout4",
+          "Cout5",
+          "Cout6",
+          "Cout7",
+          "Cout8",
+          "Cout9",
+          "J_IN",
+          "J_OUT",
+          "QL",
+          "SR1A",
+          "SR1B",
+          "SR2A",
+          "SR2B",
+          "SR3A",
+          "SR3B",
+          "SR4A",
+          "SR4B",
+          "T4"
+        ],
+        "straight_line_mst_mm": 346.534
+      },
+      {
+        "net": "VOUT",
+        "pads": 20,
+        "refs": [
+          "Cout1",
+          "Cout10",
+          "Cout11",
+          "Cout12",
+          "Cout13",
+          "Cout14",
+          "Cout15",
+          "Cout2",
+          "Cout3",
+          "Cout4",
+          "Cout5",
+          "Cout6",
+          "Cout7",
+          "Cout8",
+          "Cout9",
+          "J_OUT",
+          "T1",
+          "T2",
+          "T3",
+          "T4"
+        ],
+        "straight_line_mst_mm": 325.209
+      },
+      {
+        "net": "CT_LR",
+        "pads": 2,
+        "refs": [
+          "CT",
+          "Lr"
+        ],
+        "straight_line_mst_mm": 74.061
+      },
+      {
+        "net": "SEC1_A",
+        "pads": 2,
+        "refs": [
+          "SR1A",
+          "T1"
+        ],
+        "straight_line_mst_mm": 68.73
+      },
+      {
+        "net": "SEC2_A",
+        "pads": 2,
+        "refs": [
+          "SR2A",
+          "T2"
+        ],
+        "straight_line_mst_mm": 68.73
+      },
+      {
+        "net": "SEC3_A",
+        "pads": 2,
+        "refs": [
+          "SR3A",
+          "T3"
+        ],
+        "straight_line_mst_mm": 68.73
+      },
+      {
+        "net": "SEC4_A",
+        "pads": 2,
+        "refs": [
+          "SR4A",
+          "T4"
+        ],
+        "straight_line_mst_mm": 68.73
+      },
+      {
+        "net": "VIN_P",
+        "pads": 6,
+        "refs": [
+          "J_IN",
+          "QH"
+        ],
+        "straight_line_mst_mm": 64.26
+      },
+      {
+        "net": "SEC1_B",
+        "pads": 2,
+        "refs": [
+          "SR1B",
+          "T1"
+        ],
+        "straight_line_mst_mm": 57.248
+      },
+      {
+        "net": "SEC2_B",
+        "pads": 2,
+        "refs": [
+          "SR2B",
+          "T2"
+        ],
+        "straight_line_mst_mm": 57.248
+      },
+      {
+        "net": "SEC3_B",
+        "pads": 2,
+        "refs": [
+          "SR3B",
+          "T3"
+        ],
+        "straight_line_mst_mm": 57.248
+      },
+      {
+        "net": "SEC4_B",
+        "pads": 2,
+        "refs": [
+          "SR4B",
+          "T4"
+        ],
+        "straight_line_mst_mm": 57.248
+      },
+      {
+        "net": "PRI_T1",
+        "pads": 2,
+        "refs": [
+          "Lr",
+          "T1"
+        ],
+        "straight_line_mst_mm": 41.183
+      },
+      {
+        "net": "PRI_12",
+        "pads": 2,
+        "refs": [
+          "T1",
+          "T2"
+        ],
+        "straight_line_mst_mm": 38.833
+      },
+      {
+        "net": "PRI_23",
+        "pads": 2,
+        "refs": [
+          "T2",
+          "T3"
+        ],
+        "straight_line_mst_mm": 38.833
+      },
+      {
+        "net": "PRI_34",
+        "pads": 2,
+        "refs": [
+          "T3",
+          "T4"
+        ],
+        "straight_line_mst_mm": 38.833
+      },
+      {
+        "net": "SW",
+        "pads": 9,
+        "refs": [
+          "Cr",
+          "QH",
+          "QL"
+        ],
+        "straight_line_mst_mm": 24.6
+      },
+      {
+        "net": "CR_CT",
+        "pads": 2,
+        "refs": [
+          "CT",
+          "Cr"
+        ],
+        "straight_line_mst_mm": 5.831
+      },
+      {
+        "net": "CS1",
+        "pads": 1,
+        "refs": [
+          "CT"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "CS2",
+        "pads": 1,
+        "refs": [
+          "CT"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GA1",
+        "pads": 1,
+        "refs": [
+          "SR1A"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GA2",
+        "pads": 1,
+        "refs": [
+          "SR2A"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GA3",
+        "pads": 1,
+        "refs": [
+          "SR3A"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GA4",
+        "pads": 1,
+        "refs": [
+          "SR4A"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GB1",
+        "pads": 1,
+        "refs": [
+          "SR1B"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GB2",
+        "pads": 1,
+        "refs": [
+          "SR2B"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GB3",
+        "pads": 1,
+        "refs": [
+          "SR3B"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GB4",
+        "pads": 1,
+        "refs": [
+          "SR4B"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GH",
+        "pads": 1,
+        "refs": [
+          "QH"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "GL",
+        "pads": 1,
+        "refs": [
+          "QL"
+        ],
+        "straight_line_mst_mm": 0.0
+      }
+    ],
+    "single_pad_nets": [
+      "CS1",
+      "CS2",
+      "GA1",
+      "GA2",
+      "GA3",
+      "GA4",
+      "GB1",
+      "GB2",
+      "GB3",
+      "GB4",
+      "GH",
+      "GL"
+    ],
+    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track: its other members (gate resistors, the CT secondary rectifiers) are off this board. Listed so they are not read as routed",
+    "lumped_from_one_netlist_element": {
+      "Cout1..Cout15": "the schematic models the whole bank as one lumped Cout; these fifteen borrow its two nets and the BOM must expand it into fifteen lines"
+    },
+    "not_in_the_netlist_at_all": [
+      "U2"
+    ],
+    "not_in_the_netlist_reason": "one outline stands for the whole control section; it has no pads and carries no net",
+    "netlist_pins_without_a_physical_pad": {
+      "the outline stands for a whole functional block and carries no pads at all, so no pin of it has a position yet": [
+        "U2.7",
+        "U2.8",
+        "U2.4",
+        "U2.10",
+        "U2.3",
+        "U2.9",
+        "U2.6",
+        "U2.5",
+        "U2.1",
+        "U2.11"
+      ],
+      "the vendored footprint names pad 5 more than once, so the other pins of that group have no pad of their own": [
+        "SR1A.6",
+        "SR1A.7",
+        "SR1A.8",
+        "SR1B.6",
+        "SR1B.7",
+        "SR1B.8",
+        "SR2A.6",
+        "SR2A.7",
+        "SR2A.8",
+        "SR2B.6",
+        "SR2B.7",
+        "SR2B.8",
+        "SR3A.6",
+        "SR3A.7",
+        "SR3A.8",
+        "SR3B.6",
+        "SR3B.7",
+        "SR3B.8",
+        "SR4A.6",
+        "SR4A.7",
+        "SR4A.8",
+        "SR4B.6",
+        "SR4B.7",
+        "SR4B.8"
+      ]
+    },
+    "netlist_pins_without_a_physical_pad_note": "grouped by why, because the two causes are different defects: a repeated pad name is a land-pattern gap, a padless outline is a placeholder",
+    "pad_without_a_net": [
+      {
+        "ref": "U2",
+        "pad": "2",
+        "note": "NC by datasheet"
+      }
+    ],
+    "not_placed_here_netlist_refs": [
+      "C10",
+      "C101",
+      "C102",
+      "C103",
+      "C104",
+      "C105",
+      "C106",
+      "C107",
+      "C108",
+      "C109",
+      "C11",
+      "C110",
+      "C111",
+      "C112",
+      "C12",
+      "C13",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9",
+      "Cin",
+      "Cout",
+      "D_BT",
+      "D_CT1",
+      "D_CT2",
+      "D_CT3",
+      "D_CT4",
+      "R1",
+      "R10",
+      "R15",
+      "R16",
+      "R17",
+      "R18",
+      "R19",
+      "R2",
+      "R20",
+      "R21",
+      "R22",
+      "R23",
+      "R24",
+      "R25",
+      "R26",
+      "R27",
+      "R28",
+      "R29",
+      "R3",
+      "R30",
+      "R31",
+      "R32",
+      "R33",
+      "R34",
+      "R35",
+      "R4",
+      "R5",
+      "R7",
+      "R8",
+      "R9",
+      "U1",
+      "U3",
+      "U4",
+      "U5",
+      "U6"
+    ],
+    "not_placed_here_reason": "power-stage placement only; control, drive and decoupling parts have no position on this board",
+    "length_note": "straight-line spanning tree over pad centres, a lower bound on copper and not a route"
+  },
+  "cout_bank_refs": [
+    "Cout1",
+    "Cout2",
+    "Cout3",
+    "Cout4",
+    "Cout5",
+    "Cout6",
+    "Cout7",
+    "Cout8",
+    "Cout9",
+    "Cout10",
+    "Cout11",
+    "Cout12",
+    "Cout13",
+    "Cout14",
+    "Cout15"
   ],
   "toolchain": {
     "generator": "tools/main_board_mechanical.py",

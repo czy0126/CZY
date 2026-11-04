@@ -2,7 +2,7 @@
 	(version 20260206)
 	(generator "main_board_mechanical")
 	(layer "F.Cu")
-	(descr "PROVISIONAL - control area, no layout done")
+	(descr "PROVISIONAL - control area, no layout done. Deliberately padless: this outline stands for the whole control section, so any pad it carried would be a pin of a part that has no position yet.")
 	(attr through_hole)
 	(property "Reference" "REF**" (at 0 -7.45 0) (layer "F.SilkS")
 		(uuid "a2a8dc18-6bf7-53e9-9f18-ba4331919add"))

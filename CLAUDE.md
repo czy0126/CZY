@@ -50,7 +50,7 @@ python tools/sr_soa_screen.py --json design/v3/power_priority/sr_soa_screen.json
 python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐项比对
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
-python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
+python tools/main_board_mechanical.py --check   # A5 带网摆放（1:1）：重生成 + SVG/PNG + DRC + 老鼠线计数（需 KiCad 10.0）
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
 python tools/make_sr_fault_board_pcb.py --check   # 该板的布局 pass 1：重生成 + kicad-cli DRC（未布线，只判摆放）
@@ -1051,6 +1051,42 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
   （换成 8.2 mm）。这两条都不是"看起来对"能发现的。
 - `pcb render` 只画**有 3D model** 的封装。生成的占位封装没有 model，所以磁件在 PNG 里
   只剩焊盘——要看轮廓用 1:1 SVG，不要以为渲染图里的空白是漏画。
+
+## A5 带网摆放（`hardware/dcx_mech/`）
+
+`main_board_mechanical.py` 已从"无网摆件"改成**带网摆放**（网从
+`hardware/dcx_main/pin_footprint_review.csv` 读，按**焊盘名**落户）。板仍然是**未布线**的。
+
+- **三个数不是同一个量**：`pads_landed` **120**（带网的焊盘**名**）、`physical_pads_netted`
+  **152**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **90**（= 120 − 30 条网）。
+  差额 32 = 8 只 SR × 4，因为 vendored TDSON-8 把五个漏极焊盘全编号 `"5"`。
+  **KiCad 把同一封装里同号焊盘当一只连接实体**，所以老鼠线条数跟着焊盘**名**数走，
+  不跟物理铜走——这正是厂家用同号漏极焊盘表达"这五个是一个引脚"的原因。两个数都报，
+  报一个会让另一个看起来像丢了的连接。
+- **`unconnected_items` 是第二个顶层数组**，不在 `violations` 里。只读 `violations` 会在
+  一块一条线都没画的板上读出"0 个未连接"。`check()` 现在打印两个数，并带一条**反向守卫**：
+  声明了网却报 0 条老鼠线 ⇒ `SystemExit`（要么真布完了，要么 `(net …)` 没落到焊盘上）。
+  **90 条是欠账，不是失败门**——`check()` 不为未连接失败。
+- **焊盘名就是身份**：Lr 用审查表的 `1`/`2`，**不是**原理图的 `N1`/`N2`（第一版按 N1/N2 建
+  封装，Lr 一条网都没落上）；U2 的占位外形**没有焊盘**，所以它的十一条网表行一条都不该上板
+  ——`part_nets()` 必须先按 `_pad_positions()` 过滤，否则 U2 会出现在 `PGND` 里。
+- **输出电容阵位号是 `Cout1`–`Cout15`，不是 `C100`–`C114`**：原理图把 `C101`–`C112` 用在
+  十二只 IC 去耦电容上，同号会让 470 µF 落到 0603 位置上。
+  `placement_report.json:cout_bank_refs` 显式列出这十五只，`tools/cout_bank_path.py` 的
+  `units()` **读它而不是按 `C1xx` 猜**——改名后旧写法静默匹配空集，报的是
+  "a bank row needs at least two units"，看不出是找不到电容。
+- **原理图把整组输出电容画成一只集总 `Cout`**：十五颗物理电容没有自己的网表行，借那只符号的
+  两条网。BOM 必须展开成十五行，`nets_report()` 的 `lumped_from_one_netlist_element` 明写。
+- **12 条网只有一只焊盘**（`CS1`/`CS2`、`GA1`–`GB4`、`GH`/`GL`）：另一头是门极电阻和 CT 副边
+  整流桥，不在这块板上。**一焊盘的网画不出老鼠线**，所以欠账里看不见，必须单列
+  （`single_pad_nets`），否则会被读成"已经连好了"。
+- `nets_report().nets[*].straight_line_mst_mm` 是**直线生成树下界**，不是走线上界；
+  `PGND` 346.5 mm / `VOUT` 325.2 mm 这两个是要铺铜的面，别拿它当长度预算。
+  四条 `SEC*_A`（2 焊盘各 68.73 mm）与四条 `SEC*_B`（57.248 mm）**逐位相同**，
+  `test_the_four_secondary_groups_are_drawn_the_same_length` 锁的是布线前那一半。
+- **提交的 `drc.json` 逐次重跑会大改**（带 `date`、每条未连接项带 uuid 与坐标），
+  重跑后看到两千行 diff 是正常的；没有测试逐字节比对它，只比对**板子本身**
+  （`test_the_committed_board_is_what_the_table_produces`）。
 
 ## A6 机械剖面（Issue #12）
 
