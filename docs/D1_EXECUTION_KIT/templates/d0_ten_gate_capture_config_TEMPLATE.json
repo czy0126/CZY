@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "case_id": "D0_HARD_TRIP_REPLACE_ME",
+  "hardware_revision": "PENDING",
+  "instrument_id": "PENDING",
+  "limit_basis": "PENDING",
+  "limits_review_status": "PENDING",
+  "time_column": "time_s",
+  "trip_column": "TRIP_STIMULUS",
+  "gate_columns": [
+    "P_HO",
+    "P_LO",
+    "SR1A",
+    "SR1B",
+    "SR2A",
+    "SR2B",
+    "SR3A",
+    "SR3B",
+    "SR4A",
+    "SR4B"
+  ],
+  "gate_off_max_v": null,
+  "gate_on_min_v": null,
+  "trip_low_max_v": null,
+  "trip_high_min_v": null,
+  "max_disable_latency_s": null,
+  "max_sample_spacing_s": null,
+  "min_pretrip_s": null,
+  "min_post_trip_hold_s": null,
+  "gate_overlap_forbidden_above_v": null
+}
