@@ -50,6 +50,7 @@ python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐�
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
 python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
+python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
 python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
@@ -811,6 +812,18 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   这三条 warning 与电路无关，但看起来像设计缺陷，足以诱人去改符号（改了也没用）。
   `tools/make_control_board.py` 的 `project_file()` 现在生成它，`tools/test_control_board_erc.py`
   用"删掉工程文件后必须变红"锁住（已验证：删掉后 2 个测试红，且三条 warning 原样复现）。
+- **4xxx 门单元的输出脚不是每组的最后一个号**：4081/4071/4093 四单元的布局是
+  1,2→**3** / 5,6→**4** / 8,9→**10** / 12,13→**11**（不是 6、13），4069 是
+  1→2 / 3→4 / 5→6 / 9→8 / 11→10 / 13→12。写成 4,5→6 会把**输出脚接到电源轨**、
+  把输入脚当输出用，而 ERC 只会报一条看起来无关的 `pin_to_pin`。
+  `tools/make_d0_protection_board.py` 的第一版就这么错了两处（4093 unit 2 的输出脚 4
+  挂在 `PGND`、unit 4 的输出脚 11 挂 `ACK_RAW` 而输入脚 13 挂 `ACK_N` ⇒ token 时钟
+  根本没有驱动）。`tools/test_make_d0_protection_board.py` 从零件表重推电路、
+  与 `hardware_step()` 逐组合比较，才把这类错误变成测试红而不是 ERC 行。
+- **D0 板的 POR 折进了故障锁存**：`flt = fault_b or por`，所以冷启动就是锁存关断，
+  等操作员合闸。参考模型 `two_tier_fault_logic.py` **没有 POR 输入**（它把上电表达成
+  初态 `latched_off=True`），因此 POR 为真时没有"逐步相等"可比，测试只断言
+  板子不比模型更早放开（`test_the_latch_update_is_the_reference_transition`）。
 - 默认 `sch erc -o x.rpt` **不含 exclusions**；"0 条"要成立必须加 `--severity-all`。
 - `-o` 给 `/tmp/x.json` 会被改写成 `C:\Users\...\Temp\x.json`，回读时按 Windows 路径找。
 - ERC JSON 是 UTF-8，中文描述用 GBK 控制台打出来是乱码；**读 JSON 必须显式
