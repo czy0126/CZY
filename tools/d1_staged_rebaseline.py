@@ -77,6 +77,8 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
     base_b=float(high["magnetics"]["existing_three_turn_worst_b_t"])
     a0=float(high["magnetics"]["existing_core_amin_mm2"])
     b_limit=float(high["magnetics"]["design_flux_limit_t"])
+    reserve_mm=float(p["mechanical_planning"]["minimum_reserved_noncore_packaging_mm"])
+    if reserve_mm<=0:raise ValueError("a positive non-core mechanical planning allowance is required")
     candidates=[]
     for c in core["cores"]:
         worst=float(c["core_plus_plate_height_max_mm"])
@@ -89,7 +91,8 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
             "manufacturer_bare_core_plus_plate_worst_height_mm":round(worst,2),
             "remaining_16mm_for_ALL_other_layers_mm":round(16-worst,2),
             "bare_core_fits_16mm":worst<=16,
-            "preliminary_combined_16mm_candidate":worst<=16 and b3<=b_limit,
+            "planning_noncore_allowance_2mm_screen_pass":16-worst>=reserve_mm,
+            "preliminary_combined_16mm_candidate":worst<=16 and b3<=b_limit and 16-worst>=reserve_mm,
             "full_stack_and_100c_LI_verified":False,
             "fab_approved":False,
         })
@@ -124,6 +127,7 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         "model_only_100_to_120_power_gain_w":round(float(o120["pout_w"])-v100*seen_100,3),
         "ohmic_loss_factor_120_over_100_at_equal_path":i2r_factor,
         "elp_core_candidates":candidates,
+        "temporary_noncore_package_reserve_mm":reserve_mm,
         "elp38_initial_16mm_feasibility":"CORE_PLUS_PLATE_ONLY_WITH_3P65MM_LEFT_NOT_A_FULL_STACK",
         "numerical_Bage_pair_320us_qualified":True,
         "physical_SR_inhibit_done":False,

@@ -149,5 +149,10 @@
     "D2 120A stress only after D1 qualified"
   ],
   "hardware_approved": false,
-  "production_approved": false
+  "production_approved": false,
+  "mechanical_planning": {
+    "minimum_reserved_noncore_packaging_mm": 2,
+    "provenance": "Provisional early-stage engineering allowance, NOT an OEM minimum; total actual stack must be measured",
+    "includes": "PCB pad/solder/insert/clamp/TIM/coldplate interface; actual allocation remains open"
+  }
 }

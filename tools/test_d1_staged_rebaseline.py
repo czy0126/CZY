@@ -15,6 +15,9 @@ def test_rebaseline_is_traceable_to_real_spice_and_coldplate_height_screen():
     assert elp38["three_turn_fault_flux_scenario_t"]==pytest.approx(.23206,abs=.0001)
     assert elp38["remaining_16mm_for_ALL_other_layers_mm"]==pytest.approx(3.65,abs=.001)
     assert elp38["preliminary_combined_16mm_candidate"]
+    assert elp38["planning_noncore_allowance_2mm_screen_pass"]
+    assert not next(x for x in r["elp_core_candidates"] if x["core_id"]=="ELP58_I58")["preliminary_combined_16mm_candidate"]
+    assert not next(x for x in r["elp_core_candidates"] if x["core_id"]=="ELP64_I64")["preliminary_combined_16mm_candidate"]
     assert not elp38["full_stack_and_100c_LI_verified"]
     assert not any(x["fab_approved"] for x in r["elp_core_candidates"])
     assert r["numerical_Bage_pair_320us_qualified"]
