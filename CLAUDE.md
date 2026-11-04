@@ -117,6 +117,39 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
 刷新 mtime，破坏"raw 与 deck 是否同一输入"的比对（见下）。只用它新增 deck 时，
 单独 `import make_round4_decks as m; m.write(name, m.<变体>())`，只写目标文件。
 
+## 远端仿真主机（winsrv）
+
+本机内存/性能不足，**仿真一律在远端 `winsrv` 上跑**（2026-11-04 用户指令）。本地仓库仍是真值，
+远端只执行。下面只记会踩到的操作事实。
+
+- **VPN 开着时 `ssh winsrv` 连不上**：Wintun 装的 `0.0.0.0/1` 长前缀压过物理默认路由。
+  不要改路由（要管理员），用源地址绑定：`ssh -b <本机 WLAN IP> winsrv`、
+  `scp -o BindAddress=<同一 IP>`。IP 是 DHCP，用前现查 `ipconfig`。
+- **LTspice 用 `D:\ADI\LTspice-26.0.2\LTspice.exe`**（与本地同版本、同 sha256）；
+  同一台机器上原有的 `D:\ADI\LTspice\LTspice.exe` 是 **26.1.1**，不得用于本项目。
+- **跨主机数值不逐位相同**：同为 26.0.2，冻结 100 A deck 在远端是 213 603 点、本地 216 689 点
+  （−1.42 %），`Vout`/`Iout` 差约 0.0075 %、纹波差约 **1.0 %**（49.235 对 49.733 mVpp）。
+  原因是自动探测的线程数不同（远端 `Maximum thread count: 64`、本地 24），而 LTspice
+  **没有线程数开关**（`-threads` 与 `.options` 里都没有）。**同一台主机上重跑是逐位相同的**
+  （去掉 `Title:`/`Date:` 头两行后 SHA-256 一致），所以一次比较的两侧必须都在远端产生，
+  **不许拿历史本地 raw 配新远端 raw**。
+- **暂存用 Python `tarfile` 解包，不要用远端 `tar.exe`**：bsdtar 在 GBK locale 下把 UTF-8
+  中文路径写成乱码副本，还剩 22+ 个文档解不出来。`git archive --format=tar HEAD | gzip -6`
+  上传后 Python 解包，1936 个文件与 `git -c core.quotepath=false ls-tree` 对齐。
+- **deck 的目录深度是承重的**：`.include ../../models/...` 只在 `sim/` 下一层（如 `sim\v3`）
+  能解析；放成 `sim\bench_par\lane0` 就报 `File not found` 且不产生 raw。并行 lane 必须是
+  `v3` 的**兄弟目录**。
+- **并发上限 3 是 sshd 的 Job Object，不是 LTspice**：经 ssh 直接起的 LTspice，第 4 个起
+  退出码 0 且什么都不写（1 s / 10 s 错峰都一样，重试 8 次也活不下来）；改成经 `schtasks`
+  启动后 **6/6 存活**。所以并行必须由 `schtasks` 起，它还顺带解决会话结束时子进程被整棵杀掉。
+- **`schtasks` 的令牌是受限的**：任务对 `D:\work\...` 那条暂存树连 `icacls` 都被拒，
+  所以经 `schtasks` 跑的东西要放在 `C:\work\...` 下（连同 `models\` 一起复制）。
+  不要为此去放宽暂存树的 ACL。
+- **进度不能用 raw 大小看**：正常运行时 ASCII raw 在结束前一直是 **0 字节**（结束后一次性出现，
+  308 832 722 字节），`.log` 只在启动时写一次。判活/判死看**进程 CPU 时间是否还在增长**
+  （`GetProcessTimes`）；两种已知故障是"退出 0 但什么都没写"和"活着但 CPU 不涨"。
+- 结束 LTspice 仍然只按 PID（见上）；supervisor 只能杀自己的子进程。
+
 ## 仿真文件
 
 - `uic` 且无 `.ic` = 真正的零初态（冷启动）。只要有一行 `.ic`，即使 `uic` 也**不是**冷启动；
