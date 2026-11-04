@@ -60,6 +60,8 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         raise ValueError("behavioural Bage fix is not physical protection proof")
     if not 90<=p["stages"][1]["load_current_class_a"]<=100:
         raise ValueError("D1 must retain a meaningful 100A-class demonstration")
+    if p["stages"][2]["load_current_class_a"]!=120:
+        raise ValueError("D2 is labelled 120A; changing its target requires a program review")
     if p["stages"][1]["height_limit_mm"]!=16 or p["stages"][2]["height_limit_mm"]!=16:
         raise ValueError("D1/D2 mechanical target changed; needs fresh program decision")
     if p["stages"][3]["height_limit_mm"]!=10:
@@ -74,9 +76,11 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         raise ValueError("modeled current below new stage thresholds")
     v100=float(o100["Vout_V"])
     v120=float(o120["vout_avg_v"])
-    if min(v100,v120)<min(p["stages"][1]["min_output_at_converter_v"],
-                         p["stages"][2]["min_output_at_converter_v"]):
-        raise ValueError("current model does not even support staged converter voltage")
+    # Compare each load point with *its own* acceptance requirement. Taking
+    # min(both thresholds) would silently waive a stricter D1 or D2 target.
+    if (v100<float(p["stages"][1]["min_output_at_converter_v"]) or
+        v120<float(p["stages"][2]["min_output_at_converter_v"])):
+        raise ValueError("current model does not support a stage-specific converter voltage")
     if any(r["three_turn_joint_pass"] for r in core["cores"]):
         raise ValueError("10mm core screen changed; rerun design review")
     base_b=float(high["magnetics"]["existing_three_turn_worst_b_t"])

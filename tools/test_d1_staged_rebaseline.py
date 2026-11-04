@@ -42,6 +42,22 @@ def test_no_silent_safety_or_stage_target_waivers():
     gate["release_approved"]=True
     with pytest.raises(ValueError,match="manufacture gate"):m.evaluate(gate=gate)
 
+def test_stage_specific_voltage_limit_cannot_be_waived_by_lower_other_stage():
+    for index in (1,2):
+        policy=json.loads(m.POLICY.read_text(encoding="utf-8"))
+        policy["stages"][index]["min_output_at_converter_v"]=1.90
+        # Other stage stays at 1.80V: old min(min()) incorrectly passed.
+        with pytest.raises(ValueError,match="stage-specific converter voltage"):
+            m.evaluate(policy=policy)
+
+
+def test_d2_label_must_follow_d2_current_target():
+    policy=json.loads(m.POLICY.read_text(encoding="utf-8"))
+    policy["stages"][2]["load_current_class_a"]=100
+    with pytest.raises(ValueError,match="D2 is labelled 120A"):
+        m.evaluate(policy=policy)
+
+
 def test_stage_local_fab_release_cannot_be_silently_promoted():
     for index in range(4):
         policy=json.loads(m.POLICY.read_text(encoding="utf-8"))
