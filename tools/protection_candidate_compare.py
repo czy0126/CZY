@@ -45,6 +45,7 @@ from pathlib import Path
 
 import numpy as np
 
+import generate_prot03_bage_diagnostic as bage
 import generate_prot03_solver_sweep as sweep
 import make_protection_candidates as make
 from analyze_v3_transient import first_cross, i2t, low_runs, mean_window
@@ -152,6 +153,16 @@ def solver_sweep_deck(deck: Path) -> tuple[str, str] | None:
     return (match.group("label"), match.group("case")) if match else None
 
 
+AGEFIX_DECK = re.compile(
+    r"^d1_prot03_agefix_(?P<variant>published|shunt_2f)_(?P<role>B_(?:CONTROL|CANDIDATE))\.cir$")
+
+
+def agefix_deck(deck: Path) -> tuple[str, str] | None:
+    """(variant, role) when ``deck`` carries the v3_4 Bage soft-rail model."""
+    match = AGEFIX_DECK.match(deck.name)
+    return (match.group("variant"), match.group("role")) if match else None
+
+
 def expected_deck_text(declared_text: str, case: str, deck: Path) -> str:
     """The text the deck's own generator would write.
 
@@ -162,7 +173,12 @@ def expected_deck_text(declared_text: str, case: str, deck: Path) -> str:
     report a legitimate diagnostic as generator drift.
     """
     sweep_deck = solver_sweep_deck(deck)
-    return sweep.build(*sweep_deck) if sweep_deck else make.build(declared_text, case)
+    if sweep_deck:
+        return sweep.build(*sweep_deck)
+    agefix = agefix_deck(deck)
+    if agefix:
+        return bage.deck_content(*agefix)
+    return make.build(declared_text, case)
 
 
 def rail(case: str) -> str:
@@ -338,6 +354,27 @@ def mixed_sweep_variants(base_deck: Path, candidate_deck: Path) -> str | None:
     return None
 
 
+def mixed_model_variants(base_deck: Path, candidate_deck: Path) -> str | None:
+    """Why this pair would mix the v3_3 and v3_4 SR models, or None.
+
+    The whole Bage diagnostic pairs two decks that use the same altered model.
+    Comparing a v3_4 deck against a v3_3 deck with this tool would attribute the
+    model change to the protection, so the pair is refused and the shared-window
+    tool (``prot03_bage_model_check``) is the one that may read both models.
+    """
+    base = agefix_deck(base_deck)
+    candidate = agefix_deck(candidate_deck)
+    if base is None and candidate is None:
+        return None
+    if base is None:
+        return f"{candidate_deck.name} uses the v3_4 model but {base_deck.name} does not"
+    if candidate is None:
+        return f"{base_deck.name} uses the v3_4 model but {candidate_deck.name} does not"
+    if base[0] != candidate[0]:
+        return f"{base_deck.name} is {base[0]} but {candidate_deck.name} is {candidate[0]}"
+    return None
+
+
 def compare(case: str, base_raw: Path, candidate_raw: Path, *,
             base_deck: Path | None = None,
             candidate_deck: Path | None = None) -> dict[str, object]:
@@ -346,6 +383,9 @@ def compare(case: str, base_raw: Path, candidate_raw: Path, *,
     mixing = mixed_sweep_variants(base_deck, candidate_deck)
     if mixing:
         raise ValueError(mixing)
+    model_mixing = mixed_model_variants(base_deck, candidate_deck)
+    if model_mixing:
+        raise ValueError(model_mixing)
     base_text = base_deck.read_text(encoding="utf-8")
     candidate_text = candidate_deck.read_text(encoding="utf-8")
     # Structural checks always run against the *declared parent*, never against

@@ -205,3 +205,24 @@ def test_relative_change_is_undefined_for_a_zero_base() -> None:
     assert cmp.relative(100.0, 80.0) == pytest.approx(-0.2)
     assert cmp.relative(0.0, 80.0) is None
     assert cmp.relative(None, 80.0) is None
+
+
+AGEFIX_CONTROL = ROOT / "sim/v3/d1_prot03_agefix_shunt_2f_B_CONTROL.cir"
+AGEFIX_CANDIDATE = ROOT / "sim/v3/d1_prot03_agefix_shunt_2f_B_CANDIDATE.cir"
+
+
+def test_an_agefix_deck_is_checked_against_its_own_generator() -> None:
+    """The v3_4 deck is a declared generator output too; checking it against
+    make.build() would report the model experiment as generator drift."""
+    text = make.parent_deck("prot_b_fast10u_1p8v_50v").read_text(encoding="utf-8")
+    assert cmp.agefix_deck(AGEFIX_CANDIDATE) == ("shunt_2f", "B_CANDIDATE")
+    got = cmp.expected_deck_text(text, "prot_b_fast10u_1p8v_50v", AGEFIX_CANDIDATE)
+    assert got == AGEFIX_CANDIDATE.read_text(encoding="utf-8")
+    assert got != make.build(text, "prot_b_fast10u_1p8v_50v")
+
+
+def test_an_agefix_pairing_refuses_to_mix_the_two_models() -> None:
+    assert cmp.mixed_model_variants(AGEFIX_CONTROL, AGEFIX_CANDIDATE) is None
+    published = ROOT / "sim/v3/d1_prot03_shunt_2f_B_CANDIDATE.cir"
+    assert "v3_4" in cmp.mixed_model_variants(AGEFIX_CONTROL, published)
+    assert "v3_4" in cmp.mixed_model_variants(published, AGEFIX_CANDIDATE)
