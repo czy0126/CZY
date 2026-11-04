@@ -29,6 +29,7 @@ import d1_bom_coverage as bomcov
 import d1_functional_net_audit as functional_audit
 import check_main_board_netlist as native_check
 import main_board_schematic as mbs
+import magnetics_cad_contract as magnetics_contract
 
 # No such files have been delivered in the current main branch. Do not turn
 # these checks green until the native EDA evidence has been independently
@@ -137,10 +138,47 @@ def _protection_design_gate() -> dict:
             "original source hashes matched; design-only signoff, NOT a hardware rating"}
 
 
+def _primary_en_default_low_precheck(refs: dict) -> dict:
+    """Static structural veto on always-on RUN; *not* protection approval.
+
+    A real fault latch must independently be reviewed, but paperwork cannot
+    override a 1k pullup hardwired between VCC12 and the UCC27282 EN pin.
+    Search all resistor refs (not just R8), in either pin order, so renaming
+    the unsafe resistor cannot evade the check.
+    """
+    u2 = refs.get("U2") or {}
+    r7 = refs.get("R7") or {}
+    run_net = u2.get("6")
+    problems = []
+    if run_net != "RUN":
+        problems.append("U2 pin6 EN is not on the reviewed RUN net")
+    if set(r7.values()) != {"RUN", "PGND"} or len(r7) != 2:
+        problems.append("R7 passive default-low path RUN->PGND missing")
+    if run_net:
+        powered = sorted(
+            ref for ref, pins in refs.items()
+            if ref.startswith("R") and isinstance(pins, dict)
+            and len(pins) == 2 and set(pins.values()) == {"VCC12", run_net}
+        )
+        if powered:
+            problems.append("unconditional resistor pullup to VCC12: " +
+                            ", ".join(powered))
+    return {"passed": not problems, "problems": problems,
+            "limited_scope": "static RUN routing only; no proof of fault latch, "
+                             "power loss, real driver inhibit or measured gate VGS"}
+
+
 def build() -> dict:
     golden = _csv(GOLDEN)
     net = _read(NETLIST)
+    # Never accept edited physical-pad/DOT approval booleans from the cached
+    # JSON. The current contract generator still has NO vendor drawings and
+    # therefore must remain unverified. Any future physical-pad approval
+    # requires a reviewed generator change plus real native-CAD evidence.
     magnets = _read(CONTRACT)["symbols"]
+    live_magnets = magnetics_contract.build()["symbols"]
+    if magnets != live_magnets:
+        raise ValueError("magnetics CAD contract differs from live SPICE/native source")
     placement = _read(HW / "placement_plan.json")
     review = _csv(REVIEW)
     bom = _csv(BOM)
@@ -158,6 +196,7 @@ def build() -> dict:
         mbs.load_golden(), native_export["value"]["refs"], mbs.load_library())
     subset_snapshot_fresh = live_net == net
     functional_check = functional_audit.compare(native_export["value"]["refs"])
+    primary_en_precheck = _primary_en_default_low_precheck(native_export["value"]["refs"])
 
 
     gold_refs = {x["ref"] for x in golden}
@@ -222,7 +261,8 @@ def build() -> dict:
         "native_erc_evidence": native_erc["passed"],
         "routed_pcb_to_schematic_evidence": pcb_diff["passed"],
         "manufacturing_package_evidence": fab_signoff["passed"],
-        "independent_fault_shutdown_design_evidence": protection_design["passed"],
+        "independent_fault_shutdown_design_evidence": (
+            protection_design["passed"] and primary_en_precheck["passed"]),
     }
     blockers = [key for key, passed in checks.items() if not passed]
     return {
