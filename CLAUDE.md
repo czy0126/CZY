@@ -17,6 +17,8 @@ python tools/passive_requirements.py --json design/v3/bom/passive_requirements.j
 python tools/passive_requirements.py --cin-raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.raw \
     --json design/v3/bom/passive_requirements.json   # 追加输入电流（需先有探针 raw）
 python tools/lr_design.py --json design/v3/bom/lr_design.json   # Lr 匝数/气隙/Isat 表
+python tools/transformer_flux.py --json design/v3/magnetics/transformer_flux_100a.json
+    # 变压器磁通由副边实测电压积分（T1/T4 各半），不是方波公式；需 313 MB 100 A raw
 python tools/cout_bank.py --json design/v3/bom/cout_bank.json   # Cout 并联数量与主导约束
 python tools/cr_stress.py --json design/v3/bom/cr_stress.json   # 由 I(Lr) 积分重建 v_Cr
 python tools/ct_design.py --json design/v3/bom/ct_design.json  # CT 传递链/负载与分压（10 Ω 已冻结）
@@ -1071,6 +1073,30 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   `d1_staged_target_screen.json:elp38_full_stack_budget` 是"已知层都算上还剩多少"。
   `d1_staged_rebaseline.elp38_stack_budget()` 同时校验两者的裸芯高度一致（差 1e-9 即 `ValueError`），
   但有意不校验余量——它们的定义不同。
+
+- **变压器磁通已由副边实测电压积分，不再只引方波公式**：`tools/transformer_flux.py` 读
+  `..._100a.raw` 的 `V(a1)/V(b1)/V(a4)/V(b4)−V(out)`，按 `B=∫v/(N_sec·Ae)` 积分（N_sec=1）。
+  **一个半周期跨完整个峰峰**，所以正、负半摆幅是同一个摆幅的两次测量，**不能相加**（第一版
+  相加，`measured/analytic` 读出 2.04）；周期净伏秒必须**隔一个取一对**（`range(0, n−1, 2)`），
+  重叠配对会把累计偏磁翻倍。实测：**ΔB_pp 39.16 mT、B_ac 19.58 mT（6.3 % Bsat）、
+  对方波式 38.34 mT 高 2.1 %**；单周期不平衡最大 **0.481 mT**（峰峰的 1.2 %），
+  整窗累计 **−2.10 mT**、三角上界 **5.04 mT = 1.63 % Bsat**；T1/T4 以及 A/B 两半的摆幅
+  一致到 **0.08 mT**。漏感界 0.48 mT（k=0.999，`L_leak·i_pair/Ae`）。
+  **`cumulative_net_t` 是相对本 120 µs 窗口起点的漂移，不是绝对磁通偏置**（raw 不存激磁电流）；
+  deck 的磁芯是线性的，这对"会不会饱和"不构成证据。T2/T3 不存副边电压，只能"代表"、
+  不可写成实测——RFQ 的 T2/T3 单因此写 UNKNOWN。见
+  `design/v3/magnetics/transformer_flux_100a.json` 与 `tools/test_transformer_flux.py`。
+- **故障窗的磁通只能报"故障前摆幅 + 跳闸后伏秒上界"，跳闸后的积分不是磁通**：48 V/120 A
+  hotfault raw（1.05 GB）上，故障由 `Vfltctl_hot` 的 0→5 V 斜坡在 **2175.0 µs** 穿过
+  `HOTFLT` 的 `Vt=2.5` 触发，保存轴上 **175.00 µs**（`.tran` Tstart=2000 µs）——
+  `fault_instant()` 从 PWL 与 Vt 的交点算，**不要用 PWL 起点 2170 µs**。
+  故障前 **38.56 mT pp = 12.4 % Bsat pp**（半摆幅 6.2 %），与 100 A 窗口一致；
+  跳闸后主桥停振、两个副边半绕组各被自己那只 SR 钳住，A/B 两条积分**不再一致**
+  （3.09 对 9.83 mT），所以只报较大者 **9.83 mT = 3.17 % Bsat**，并写成上界。
+  **`|v|` 的积分在跳闸后在零附近振铃，会读出约 620 mT（200 % Bsat），已刻意不报**——
+  它量的是振铃，不是磁通。只有 48 V 基座跑满声明的 320 µs（50 V 在 296.9 µs 塌缩），
+  所以这条只建立在 48 V 上。故障 deck 只存 T1 副边电压 ⇒ RFQ 只有 T1 引这组数。
+  见 `design/v3/magnetics/transformer_flux_fault_48v.json`。
 
 ## 61 占位责任清单（`hardware/dcx_main/placeholder_eco.{json,csv}`）
 

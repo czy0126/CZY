@@ -1,0 +1,156 @@
+{
+  "status": "APPLIED_VOLT_SECONDS_IN_THE_48V_FAULT_WINDOW_NOT_A_SATURATION_TEST",
+  "raw": {
+    "path": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
+    "bytes": 1051638412,
+    "mtime": 1793629489.1141574
+  },
+  "deck": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.cir",
+  "fault": {
+    "absolute_us": 2175.0,
+    "saved_us": 175.0,
+    "tstart_us": 2000.0,
+    "switch_threshold_v": 2.5,
+    "source": "Vfltctl_hot PWL crossing of the HOTFLT Vt, minus the .tran Tstart"
+  },
+  "core": {
+    "ae_m2": 0.00013,
+    "amin_m2": 0.000128,
+    "bsat_t": 0.31
+  },
+  "windings": {
+    "T1": {
+      "A": {
+        "pre_fault": {
+          "half_cycles": 69,
+          "positive_halves": 34,
+          "negative_halves": 35,
+          "delta_b_positive_half_t": 0.038513444947409374,
+          "delta_b_negative_half_t": 0.038604825366786874,
+          "delta_b_half_min_t": 0.03849274628262263,
+          "delta_b_half_max_t": 0.03863398141197101,
+          "peak_to_peak_t": 0.03855913515709812,
+          "ac_amplitude_t": 0.01927956757854906,
+          "period_net_t": [
+            -7.240943965013125e-05,
+            -8.37352534134514e-05,
+            -0.00011056752900454742,
+            -8.497870390963141e-05,
+            -0.00010119202909127101,
+            -6.98981404118823e-05,
+            -9.53108133936939e-05,
+            -0.00014123512934838267,
+            -6.472963742661791e-05,
+            -8.505859235247853e-05,
+            -0.0001009578111675069,
+            -9.354809702864092e-05,
+            -0.00010348358387284734,
+            -0.00010066524341242195,
+            -0.00011882985784028577,
+            -0.00010141467125293624,
+            -6.937786057435724e-05,
+            -6.207744321741482e-05,
+            -6.345017667064301e-05,
+            -9.069721427130972e-05,
+            -8.938948638103489e-05,
+            -8.607099065711943e-05,
+            -0.00011189635083511812,
+            -9.439371980584504e-05,
+            -0.00010686091088976668,
+            -8.837550194029653e-05,
+            -8.682223586921334e-05,
+            -9.835936248244609e-05,
+            -0.00010014761643551556,
+            -8.234068209549139e-05,
+            -0.00010497251602207408,
+            -7.738343623127364e-05,
+            -6.850436838018448e-05,
+            -9.301951513042417e-05
+          ],
+          "max_abs_period_net_t": 0.00014123512934838267,
+          "cumulative_net_t": -0.003102153920466255,
+          "cumulative_abs_t": 0.003102153920466255,
+          "signs_alternate": true
+        },
+        "fault_segment_net_t": 0.003085760707894141
+      },
+      "B": {
+        "pre_fault": {
+          "half_cycles": 69,
+          "positive_halves": 34,
+          "negative_halves": 35,
+          "delta_b_positive_half_t": 0.03860500947619419,
+          "delta_b_negative_half_t": 0.038513986761010754,
+          "delta_b_half_min_t": 0.03849295721726407,
+          "delta_b_half_max_t": 0.03862804439541294,
+          "peak_to_peak_t": 0.03855949811860247,
+          "ac_amplitude_t": 0.019279749059301236,
+          "period_net_t": [
+            0.00011129133165029698,
+            9.737024057469151e-05,
+            7.195548144096897e-05,
+            9.892627916098518e-05,
+            7.94969148555924e-05,
+            0.00011399857714144979,
+            8.556202626232995e-05,
+            4.0718934229175274e-05,
+            0.0001192917728955259,
+            9.625268031076412e-05,
+            8.12867079151916e-05,
+            8.848683730251772e-05,
+            7.926205633274758e-05,
+            8.275794902571493e-05,
+            6.312720718924109e-05,
+            8.20035875909661e-05,
+            0.00011238102477876405,
+            0.00012066492475435592,
+            0.00011843018342170414,
+            9.121170582847976e-05,
+            9.359204145190092e-05,
+            9.600179787047636e-05,
+            6.953383134368496e-05,
+            8.958981059577209e-05,
+            7.431660001546575e-05,
+            9.455195696059238e-05,
+            9.609677012661216e-05,
+            8.325967097091297e-05,
+            8.233222616235714e-05,
+            0.0001006591561461545,
+            7.656194490703733e-05,
+            0.00010612743571938865,
+            0.00011275481756416877,
+            8.870293564663262e-05
+          ],
+          "max_abs_period_net_t": 0.00012066492475435592,
+          "cumulative_net_t": 0.0030985574181426195,
+          "cumulative_abs_t": 0.0030985574181426195,
+          "signs_alternate": true
+        },
+        "fault_segment_net_t": 0.00982602307311278
+      }
+    }
+  },
+  "results": {
+    "pre_fault_peak_to_peak_t": 0.03855913515709812,
+    "pre_fault_ac_amplitude_t": 0.01927956757854906,
+    "pre_fault_peak_to_peak_frac_bsat": 0.12438430695838104,
+    "pre_fault_ac_amplitude_frac_bsat": 0.06219215347919052,
+    "pre_fault_max_abs_period_net_t": 0.00014123512934838267,
+    "winding_agreement_pre_fault_t": 9.156452878481686e-05,
+    "fault_segment_net_bound_t": 0.00982602307311278,
+    "fault_segment_net_bound_frac_bsat": 0.03169684862294445
+  },
+  "caveats": [
+    "Pre-fault is measured; the fault segment is not.  After the OC trip the bridge stops and each half sits against its SR, so the two winding integrals stop agreeing and the reported bound is the larger of them, not a flux reading.",
+    "This is the 48 V / 120 A hot-fault deck, not the 100 A operating point; the duty differs slightly, so its swing is not the transformer_flux_100a.json number.",
+    "The deck's transformer is linear (no B-H curve), and the raw starts with an arbitrary flux reference; only the swing and the window-referenced integral are measured.",
+    "T4/T2/T3 are not saved in the fault deck, so the fault window measures T1; the four cores are identical in the deck.",
+    "The 50 V base hot-fault run collapses at 296.929 us, so only the 48 V window covers its declared duration."
+  ],
+  "checks": {
+    "raw_is_present": true,
+    "the_fault_instant_is_inside_the_saved_window": true,
+    "pre_fault_drive_alternates": true,
+    "pre_fault_has_enough_half_cycles": true
+  }
+}

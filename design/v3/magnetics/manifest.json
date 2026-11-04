@@ -2,7 +2,7 @@
   "date": "2026-11-05",
   "status": "design estimate, not hardware validated",
   "test_command": "python -m pytest tools -q",
-  "test_result": "1243 passed, 9 skipped in 80.27s (0:01:20)",
+  "test_result": "1358 passed, 9 skipped in 310.53s (0:05:10)",
   "files": {
     "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir": {
       "sha256": "84b3ee25c1ea05ec489ee66bf6f68874f4d9899f98996739a1dc8e640f27089a",
@@ -17,8 +17,8 @@
       "bytes": 1171
     },
     "tools/magnetics_design.py": {
-      "sha256": "6767d434f6ec25cf7025edd54176151f47000692d4408d8ad12e32326e39c68f",
-      "bytes": 23306
+      "sha256": "fbb246a0c65424b1eb6fec85c0df64c0d64dac7e3b66b3db4c9b1b1e69b64c9d",
+      "bytes": 24421
     },
     "tools/extract_op_point.py": {
       "sha256": "6468d762f77fb08ee9e334cca054e104b303742b60117e90b469b3abbd56d5f0",
@@ -36,9 +36,13 @@
       "sha256": "3c137d1662d7301704c4bbd070eb58b7e12340ea92b3b2d2a8ce16ec0dd2ce2b",
       "bytes": 21756
     },
+    "tools/transformer_flux.py": {
+      "sha256": "01c6ca01763a728f17211247add9b5f4a4a824e246263c15bd9591ab6f31a02e",
+      "bytes": 18013
+    },
     "tools/make_magnetics_manifest.py": {
-      "sha256": "27df6bb5e36f5bd81faf15f9196b5e839bef4ae763e0ade6f61dbd43ef34f895",
-      "bytes": 3070
+      "sha256": "10e33af47b4b076f70e40937e3766ab2ce02e053478bdaf2ac89fe0fc144f97b",
+      "bytes": 3258
     },
     "tools/test_magnetics_design.py": {
       "sha256": "f16917ed33fccba04b7697b53bce3ae606e8264f3520ca096f9a847a9506a1b8",
@@ -56,21 +60,33 @@
       "sha256": "045c31ca461ed20738be870c5412a1dd8ac2ffc1fd9e309c4655caa46cb54743",
       "bytes": 14260
     },
+    "tools/test_transformer_flux.py": {
+      "sha256": "7fbb127159ced341dedc33cd4b1902c7f67e1b25e4a5b7d0f336fb3dd2045812",
+      "bytes": 13196
+    },
     "design/v3/magnetics/磁件设计包_2026-10-31.md": {
-      "sha256": "d3a3f2e588b360e9613be44d54b21d4c184f973081cf4697ff3f6db0969b5b9f",
-      "bytes": 13544
+      "sha256": "ed2c9876ccdd490c8d23fd6c00672f12cd9a3bc5966fcfb51acf8b01e4114d06",
+      "bytes": 15787
     },
     "design/v3/magnetics/绕组工艺卡_2026-11-01.md": {
       "sha256": "5e43d581313d2df80c713b0186bcfa2f394e2212b8566c1e7c51db59a876eb92",
       "bytes": 7627
     },
     "design/v3/magnetics/magnetics_design.json": {
-      "sha256": "a47b4e9e02012d654f9d594add44c70ac69f65d418c58b5fe03639fc74ca4532",
-      "bytes": 12355
+      "sha256": "3495f58ecc0bf1fc33792be65b3441993b1c5170cc0702738edc9a38653d84d0",
+      "bytes": 13472
     },
     "design/v3/magnetics/operating_point_100a.json": {
       "sha256": "8e7fdd796e75a9010b1420303a0d2f15d269f63f9b82534550b15047834d9c05",
       "bytes": 1227
+    },
+    "design/v3/magnetics/transformer_flux_100a.json": {
+      "sha256": "32d195ffb6cf955bc0b2647743e688707860a92e7e7dc9108d1f3c1861a2da29",
+      "bytes": 8655
+    },
+    "design/v3/magnetics/transformer_flux_fault_48v.json": {
+      "sha256": "28562ddda17a9d4ff740afba24357391c9a685eb7043495b75718245d265e211",
+      "bytes": 6226
     },
     "design/v3/magnetics/winding_cross_section.svg": {
       "sha256": "9df31b85aaf5da9b6b37116f4dfa5785cfe5dbea372bffba52744822b7c699a6",

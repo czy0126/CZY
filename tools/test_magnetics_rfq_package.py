@@ -136,6 +136,63 @@ def test_the_transformer_flux_is_not_the_inductor_rule(devs):
     assert "L*I/(N*Ae)" in rule
 
 
+def _flux() -> dict:
+    return json.loads((MAG / "transformer_flux_100a.json").read_text(encoding="utf-8"))["results"]
+
+
+def test_the_measured_flux_is_quoted_only_for_the_two_probed_cores(devs):
+    """T1/T4 save V(a*)/V(b*); T2/T3 do not.  The four cores are identical in
+    the deck, so T1/T4 represent them -- but a represented number must not be
+    printed as a measurement."""
+    flux = _flux()
+    for ref in ("T1", "T4"):
+        assert find(devs[ref], "waveform", "实测磁密峰峰 ΔB（副边电压积分）")["value"] == pytest.approx(
+            flux["peak_to_peak_t"])
+        assert find(devs[ref], "waveform", "实测磁密峰值（半摆幅）")["value"] == pytest.approx(
+            flux["ac_amplitude_t"])
+        assert find(devs[ref], "waveform", "实测 / 方波式 ΔB")["value"] == pytest.approx(
+            flux["measured_over_analytic"])
+    for ref in ("T2", "T3"):
+        assert pkg.UNKNOWN in str(
+            find(devs[ref], "waveform", "实测磁密峰峰 ΔB（副边电压积分）")["value"])
+
+
+def test_the_measured_flux_is_a_second_derivation_not_the_ideal_value_restated(devs):
+    mag = json.loads((MAG / "magnetics_design.json").read_text(encoding="utf-8"))
+    flux = _flux()
+    ideal = mag["flux"]["48v_delta_b_t"]
+    assert 0.90 < flux["peak_to_peak_t"] / ideal < 1.10
+    assert flux["peak_to_peak_t"] != pytest.approx(ideal, rel=1e-3)
+
+
+def test_the_drift_row_is_built_from_the_measurement(devs):
+    flux = _flux()
+    text = find(devs["T1"], "waveform", "周期伏秒不平衡（实测）")["value"]
+    assert f"{flux['max_abs_period_net_t'] * 1e3:.3f}" in text
+    assert f"{flux['cumulative_abs_t'] * 1e3:.2f}" in text
+    assert f"{flux['drift_bound_frac_bsat'] * 100:.2f}" in text
+
+
+def _fault_flux() -> dict:
+    path = MAG / "transformer_flux_fault_48v.json"
+    return json.loads(path.read_text(encoding="utf-8"))["results"]
+
+
+def test_the_fault_window_flux_is_quoted_only_for_the_core_the_fault_deck_saves(devs):
+    """The fault deck saves T1's secondary voltages and no other core's.  Since
+    the post-trip integral is a bound rather than a flux reading, the sheet has
+    to say so; printing it as a measurement would let a supplier read a number
+    the raw does not support."""
+    fault = _fault_flux()
+    text = find(devs["T1"], "waveform", "故障窗磁通（48 V/120 A，副边电压积分）")["value"]
+    assert f"{fault['pre_fault_peak_to_peak_t'] * 1e3:.2f}" in text
+    assert f"{fault['fault_segment_net_bound_t'] * 1e3:.2f}" in text
+    assert "上界" in text and "不是磁通读数" in text
+    for ref in ("T2", "T3", "T4"):
+        assert pkg.UNKNOWN in str(
+            find(devs[ref], "waveform", "故障窗磁通（48 V/120 A，副边电压积分）")["value"])
+
+
 def test_the_inductor_al_and_gap_come_from_the_three_turn_candidate():
     lr = json.loads((BOM / "lr_design.json").read_text(encoding="utf-8"))
     three = next(c for c in lr["candidates"] if c["turns"] == 3)

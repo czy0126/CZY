@@ -124,6 +124,25 @@ def transformer(ref: str) -> dict:
     al_target_nh = lp / turns**2 * 1e9
     flat = mag["height"]["flat_no_pocket"]
     pocket = mag["height"]["pocket_0.5mm_no_clamp"]
+    # The measured flux comes from secondaries that only T1 and T4 save.  The
+    # deck gives all four cores identical constants, so T1/T4 represent T2/T3
+    # -- but the sheet must say "represented", not print a measurement the raw
+    # does not contain.
+    flux = _json(MAG / "transformer_flux_100a.json")["results"]
+    measured = ref in ("T1", "T4")
+    flux_source = ("transformer_flux_100a.json:results" if measured
+                   else "transformer_flux_100a.json:caveats（T2/T3 未存副边电压）")
+    # The fault deck saves only T1's two secondary halves, so the fault-window
+    # row is a T1 measurement and a represented value for the other three.
+    fault = _json(MAG / "transformer_flux_fault_48v.json")["results"]
+    fault_measured = ref == "T1"
+    fault_row = (
+        f"故障前 {fault['pre_fault_peak_to_peak_t'] * 1e3:.2f} mT pp"
+        f"（{fault['pre_fault_peak_to_peak_frac_bsat'] * 100:.1f} % Bsat）；"
+        f"跳闸后驱动停止，残余伏秒上界 {fault['fault_segment_net_bound_t'] * 1e3:.2f} mT"
+        f" = {fault['fault_segment_net_bound_frac_bsat'] * 100:.2f} % Bsat"
+        f"（上界，不是磁通读数）") if fault_measured else (
+        f"{UNKNOWN}（故障 deck 只存 T1 副边电压；四只磁芯常数相同，按 T1 代表）")
     return {
         "ref": ref,
         "kind": "TRANSFORMER_3_1_1_CENTRE_TAP",
@@ -146,6 +165,28 @@ def transformer(ref: str) -> dict:
             row("原边磁密峰值 @50 V", mag["flux"]["50v_b_pk_t"], "magnetics_design.json:flux", unit="T", digits=5),
             row("原边磁密峰值 @48 V", mag["flux"]["48v_b_pk_t"], "magnetics_design.json:flux", unit="T", digits=5),
             row("原边磁密峰峰 ΔB @48 V", mag["flux"]["48v_delta_b_t"], "magnetics_design.json:flux", unit="T", digits=5),
+            row("实测磁密峰峰 ΔB（副边电压积分）",
+                flux["peak_to_peak_t"] if measured
+                else f"{UNKNOWN}（同型未测；四只磁芯常数逐项相同，按 T1/T4 代表）",
+                flux_source, unit="T" if measured else "", digits=5),
+            row("实测磁密峰值（半摆幅）",
+                flux["ac_amplitude_t"] if measured else UNKNOWN,
+                flux_source, unit="T" if measured else "", digits=5),
+            row("实测磁密占 Bsat",
+                flux["ac_amplitude_frac_bsat"] * 100.0 if measured else UNKNOWN,
+                flux_source, unit="%" if measured else "", digits=2),
+            row("实测 / 方波式 ΔB",
+                flux["measured_over_analytic"] if measured else UNKNOWN,
+                flux_source, unit="", digits=4),
+            row("周期伏秒不平衡（实测）",
+                (f"单周期最大 {flux['max_abs_period_net_t'] * 1e3:.3f} mT"
+                 f"（峰峰的 {flux['max_abs_period_net_t'] / flux['peak_to_peak_t'] * 100:.2f} %）；"
+                 f"整窗三角上界 {flux['cumulative_abs_t'] * 1e3:.2f} mT"
+                 f" = {flux['drift_bound_frac_bsat'] * 100:.2f} % Bsat")
+                if measured else f"{UNKNOWN}（按 T1/T4 代表）",
+                flux_source),
+            row("故障窗磁通（48 V/120 A，副边电压积分）", fault_row,
+                "transformer_flux_fault_48v.json:results"),
             row("磁通判据", "按各绕组实际电压积分；不要用 L*I/(N*Ae)（那是 Lr 的判据）", "路线 §P1 磁件"),
             row("原边激励", "半桥方波 ±VIN/2，四只原边串联均分，每只承担 1/4", "磁件设计包 §2"),
         ],
