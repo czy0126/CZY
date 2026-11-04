@@ -147,7 +147,7 @@ def main():
     res=evaluate()
     text=json.dumps(res,ensure_ascii=False,indent=2)+"\n"
     if a.check:
-        if not a.json.is_file() or a.json.read_text(encoding="utf-8")!=text:
+        if not a.json.is_file() or json.loads(a.json.read_text(encoding="utf-8"))!=res:
             raise SystemExit("outdated staged engineering assessment: "+str(a.json))
     else:
         a.json.parent.mkdir(parents=True,exist_ok=True)
