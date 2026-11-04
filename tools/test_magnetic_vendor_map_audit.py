@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import copy
 import csv
+import hashlib
 import json
 
 import pytest
@@ -191,3 +192,40 @@ def test_sha256_case_only_difference_is_not_an_identity_conflict():
     result = m.evaluate(rows)
     assert result["status"] == "REVIEW_PACKAGE_COMPLETE_NOT_APPROVED"
     assert not any("terminals disagree" in p for p in result["errors"])
+
+
+def test_a_duplicated_contract_terminal_is_refused_instead_of_collapsing():
+    pin = {"logical_pin": "PRI_A", "golden_net": "PRI_A", "polarity": "DOT"}
+    contract = {"symbols": [{"ref": "T1", "placeholder_footprint": "F",
+                             "pins": [pin, dict(pin)]}]}
+    with pytest.raises(ValueError, match="duplicate logical terminal"):
+        m.contract_entries(contract)
+
+
+def test_the_report_names_the_contract_bytes_it_was_judged_against():
+    fingerprint = m.contract_fingerprint()
+    assert fingerprint["sha256"] == hashlib.sha256(m.CONTRACT.read_bytes()).hexdigest()
+    assert fingerprint["logical_terminal_count"] == 24
+    assert fingerprint["symbols"] == 5
+    assert fingerprint["path"].endswith("magnetics_symbol_contract.json")
+
+
+def test_editing_the_contract_changes_the_fingerprint(tmp_path):
+    contract = json.loads(m.CONTRACT.read_text(encoding="utf-8"))
+    contract["symbols"][0]["pins"][0]["golden_net"] = "EDITED_FOR_TEST"
+    edited = tmp_path / "contract.json"
+    edited.write_text(json.dumps(contract), encoding="utf-8")
+    assert m.contract_fingerprint(edited)["sha256"] != m.contract_fingerprint()["sha256"]
+
+
+def test_main_writes_both_the_input_and_contract_hashes(tmp_path):
+    response = tmp_path / "reply.csv"
+    with response.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=m.FIELDS)
+        writer.writeheader()
+        writer.writerows(synthetic_complete_rows())
+    out = tmp_path / "audit.json"
+    assert m.main(["--input", str(response), "--output", str(out)]) == 0
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    assert doc["input_sha256"] == hashlib.sha256(response.read_bytes()).hexdigest()
+    assert doc["contract"]["sha256"] == hashlib.sha256(m.CONTRACT.read_bytes()).hexdigest()

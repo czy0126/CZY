@@ -35,16 +35,45 @@ PER_REF_IDENTITY_FIELDS = (
 )
 
 
-def contract_entries(contract=None):
+def contract_entries(contract: dict | None = None) -> dict[tuple[str, str], dict[str, str]]:
     doc = (json.loads(CONTRACT.read_text(encoding="utf-8"))
            if contract is None else contract)
+    entries: dict[tuple[str, str], dict[str, str]] = {}
+    for symbol in doc["symbols"]:
+        for pin in symbol["pins"]:
+            key = (symbol["ref"], pin["logical_pin"])
+            if key in entries:
+                # A collapsed dictionary would silently shrink the expected set
+                # below 24 terminals, so a malformed contract can never be
+                # audited as if it were the frozen one.
+                raise ValueError(f"frozen contract declares duplicate logical terminal {key!r}")
+            entries[key] = {
+                "golden_net": pin["golden_net"],
+                "model_polarity": pin["polarity"],
+                "placeholder_footprint": symbol["placeholder_footprint"],
+            }
+    return entries
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return path.resolve().as_posix()
+
+
+def contract_fingerprint(path: Path = CONTRACT) -> dict[str, str | int]:
+    """Name the exact contract revision a vendor packet was judged against.
+
+    The report is only meaningful for these bytes: after any edit to the
+    contract the packet must be re-audited, never carried forward.
+    """
+    doc = json.loads(path.read_text(encoding="utf-8"))
     return {
-        (sym["ref"], pin["logical_pin"]): {
-            "golden_net": pin["golden_net"],
-            "model_polarity": pin["polarity"],
-            "placeholder_footprint": sym["placeholder_footprint"],
-        }
-        for sym in doc["symbols"] for pin in sym["pins"]
+        "path": _display_path(path),
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "symbols": len(doc["symbols"]),
+        "logical_terminal_count": len(contract_entries(doc)),
     }
 
 
@@ -228,12 +257,12 @@ def evaluate(rows, contract=None):
     }
 
 
-def main():
+def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--write-template", type=Path)
     p.add_argument("--input", type=Path)
     p.add_argument("--output", type=Path)
-    opts = p.parse_args()
+    opts = p.parse_args(argv)
     if opts.write_template:
         write_template(opts.write_template)
         print("Wrote nonpassing 24-terminal supplier response template")
@@ -244,11 +273,13 @@ def main():
         rows = load_rows(opts.input)
         result = evaluate(rows)
         result["input_sha256"] = hashlib.sha256(opts.input.read_bytes()).hexdigest()
+        result["contract"] = contract_fingerprint()
         exit_code = (0 if result["status"] == "REVIEW_PACKAGE_COMPLETE_NOT_APPROVED"
                      else 2 if result["status"] == "CONTRACT_REJECTED" else 1)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         result = {"kind": "D1_MAGNETIC_VENDOR_TERMINAL_AUDIT",
                   "status": "INVALID_PACKET", "errors": [str(exc)],
+                  "contract": None,
                   "physical_pad_map_verified": False,
                   "fabrication_approved": False}
         exit_code = 2
