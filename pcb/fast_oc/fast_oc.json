@@ -1,0 +1,247 @@
+{
+  "kind": "TLV3501_FAST_OVERCURRENT_ECO_MODULE",
+  "evidence_level": "GENERATED_SCHEMATIC_AND_NETLIST_NOT_HARDWARE",
+  "hardware_built": false,
+  "fabrication_approved": false,
+  "part_instances": 28,
+  "physical_parts": 26,
+  "nets": 9,
+  "net_map": {
+    "FAST_TRIP": [
+      "J1.4",
+      "Q1.3",
+      "R7.2",
+      "TP5.1"
+    ],
+    "INP": [
+      "C4.1",
+      "D1.1",
+      "D2.2",
+      "R2.2",
+      "R3.1",
+      "R4.1",
+      "TP2.1",
+      "U1.3"
+    ],
+    "OCD": [
+      "J1.3",
+      "R2.1",
+      "TP1.1"
+    ],
+    "OUT": [
+      "R4.2",
+      "R5.1",
+      "TP4.1",
+      "U1.5"
+    ],
+    "PGND": [
+      "#FLG2.1",
+      "C1.2",
+      "C2.2",
+      "C3.2",
+      "C4.2",
+      "D1.2",
+      "J1.2",
+      "Q1.2",
+      "R3.2",
+      "R6.2",
+      "R8.1",
+      "TP8.1",
+      "U1.2",
+      "U2.2"
+    ],
+    "Q1G": [
+      "Q1.1",
+      "R5.2",
+      "R6.1"
+    ],
+    "REF": [
+      "C3.1",
+      "R1.2",
+      "TP3.1",
+      "U1.1",
+      "U2.1"
+    ],
+    "SHDN": [
+      "R8.2",
+      "TP6.1",
+      "U1.6"
+    ],
+    "V5": [
+      "#FLG1.1",
+      "C1.1",
+      "C2.1",
+      "D2.1",
+      "J1.1",
+      "R1.1",
+      "R7.1",
+      "TP7.1",
+      "U1.4"
+    ]
+  },
+  "threshold": {
+    "divider_ratio": 0.3333333333333333,
+    "nominal_trip_current_a": 75.0,
+    "trip_burden_v": 7.659574468085108,
+    "release_burden_v": 7.340425531914894,
+    "trip_current_a": 76.59574468085107,
+    "release_current_a": 73.40425531914893,
+    "hysteresis_v": 0.31914893617021356,
+    "hysteresis_a": 3.1914893617021356,
+    "thevenin_ohm": 10000.0,
+    "input_tau_s": 1e-06
+  },
+  "common_mode": {
+    "common_mode_range_v": [
+      -0.2,
+      4.8
+    ],
+    "absolute_max_range_v": [
+      -0.5,
+      5.3
+    ],
+    "current_at_common_mode_limit_a": 143.99999999999997,
+    "current_at_clamp_conduction_a": 158.99999999999997,
+    "rows": [
+      {
+        "case": "steady_state_rated",
+        "primary_peak_a": 13.88,
+        "burden_v": 1.3880000000000001,
+        "in_plus_v": 0.4626666666666667,
+        "within_common_mode": true,
+        "within_absolute_max": true
+      },
+      {
+        "case": "ucc25600_level1",
+        "primary_peak_a": 24.2,
+        "burden_v": 2.42,
+        "in_plus_v": 0.8066666666666666,
+        "within_common_mode": true,
+        "within_absolute_max": true
+      },
+      {
+        "case": "frozen_short_circuit_deck",
+        "primary_peak_a": 73.68,
+        "burden_v": 7.368000000000001,
+        "in_plus_v": 2.4560000000000004,
+        "within_common_mode": true,
+        "within_absolute_max": true
+      },
+      {
+        "case": "cold_start_fault",
+        "primary_peak_a": 84.83,
+        "burden_v": 8.483,
+        "in_plus_v": 2.827666666666667,
+        "within_common_mode": true,
+        "within_absolute_max": true
+      },
+      {
+        "case": "hotfault_48v",
+        "primary_peak_a": 97.44,
+        "burden_v": 9.744,
+        "in_plus_v": 3.248,
+        "within_common_mode": true,
+        "within_absolute_max": true
+      },
+      {
+        "case": "hotfault_50v_prefix",
+        "primary_peak_a": 101.26,
+        "burden_v": 10.126000000000001,
+        "in_plus_v": 3.375333333333334,
+        "within_common_mode": true,
+        "within_absolute_max": true
+      }
+    ]
+  },
+  "delay": {
+    "input_tau_s": 1e-06,
+    "comparator_worst_s": 1.2e-08,
+    "comparator_typ_s": 4.5e-09,
+    "gate_network_s": 5e-08,
+    "module_total_s": 1.062e-06,
+    "existing_path": [
+      {
+        "stage": "rf_cf",
+        "tau_s": 4.7e-05
+      },
+      {
+        "stage": "rd1_rd2_coc",
+        "tau_s": 7.058823529411765e-05
+      },
+      {
+        "stage": "r12_c13",
+        "tau_s": 1e-05
+      }
+    ],
+    "existing_path_comparator_s": 1.3e-06,
+    "existing_path_total_s": 0.00012888823529411765,
+    "improvement_factor": 121.36368671762492,
+    "worst_case_basis": "5 mV overdrive, -40 to +125 C, 12 ns",
+    "note": "the existing figure is a sum of cascaded time constants, not a propagation delay; it is an order-of-magnitude comparison only"
+  },
+  "supply": {
+    "bias_current_a": 0.0010416666666666667,
+    "reference_holds_down_to_v": 2.5,
+    "shutdown_enable_threshold_v": 3.3,
+    "shutdown_logic": "SHDN low enables; within 0.9 V of V+ disables",
+    "quiescent_current_max_a": 0.005,
+    "loss_of_5v": "reference and comparator dead; R6 holds Q1 off, so FAST_TRIP is released -- no false trip, but no fast protection either",
+    "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum operating current is not in this repository"
+  },
+  "d0_connection": [
+    "J1.1 V5 -> D0 V5 (bench 5 V rail)",
+    "J1.2 PGND -> D0 PGND",
+    "J1.3 OCD -> D0 R8/OCD node (the burden, before R9)",
+    "J1.4 FAST_TRIP -> D0 FAST_TRIP (R15/TP8); both drivers are open drain"
+  ],
+  "observations": [
+    {
+      "id": "OC-01",
+      "finding": "The LM393 is not the bottleneck: the three filters in front of it total ~127.6 us of time constants.",
+      "evidence": "D0 ct_parts Rf/Cf, Rd1/Rd2/Coc, R12/C13",
+      "status": "DESIGN_FACT"
+    },
+    {
+      "id": "OC-02",
+      "finding": "The module trips at 76.6 A peak (7.66 V burden) and releases at 73.4 A; the nominal divider crossing is 75.0 A.",
+      "evidence": "divider arithmetic against the references/datasheets/tlv3501.txt reference and the project CT transfer 0.1 V/A",
+      "status": "DESIGN_ESTIMATE"
+    },
+    {
+      "id": "OC-03",
+      "finding": "Total module delay is ~1.06 us using the 12 ns over-temperature comparator number, about 121x faster than the existing filtered path.",
+      "evidence": "references/datasheets/tlv3501.txt switching characteristics, overdrive 5 mV, -40 to +125 C",
+      "status": "DESIGN_ESTIMATE"
+    },
+    {
+      "id": "OC-04",
+      "finding": "The input pin stays inside the common-mode range up to 144 A peak. Above that the comparator is out of range but still inside its absolute maximum, so it is already tripped and the output state no longer matters.",
+      "evidence": "references/datasheets/tlv3501.txt common-mode range (V-)-0.2 V to (V+)-0.2 V, absolute maximum (V-)-0.3 V to (V+)+0.3 V",
+      "status": "BOUNDARY"
+    },
+    {
+      "id": "OC-05",
+      "finding": "The threshold sits above the 73.68 A peak of the frozen short-circuit deck, so that case is left to the controller's own overcurrent. The module is aimed at the 84-101 A severe faults.",
+      "evidence": "design/v3/power_priority: lr_design.json PHYSICAL_PEAKS and the hotfault prefixes",
+      "status": "DESIGN_DECISION"
+    },
+    {
+      "id": "OC-06",
+      "finding": "SHDN tied high would disable the comparator; it is tied to PGND through R8.",
+      "evidence": "references/datasheets/tlv3501.txt shutdown section: high (within 0.9 V of V+) disables, more than 1.7 V below V+ enables",
+      "status": "DESIGN_FACT"
+    },
+    {
+      "id": "OC-07",
+      "finding": "The module does not latch; the CD4013 on D0 does. Used standalone, the output follows the current.",
+      "evidence": "D0 FAST_TRIP net and CD4013 unit 4",
+      "status": "DESIGN_FACT"
+    }
+  ],
+  "limits": [
+    "module only; the CT, rectifier and burden stay on D0",
+    "no latch, no isolation, no reverse-supply protection beyond D2",
+    "the LM4040DBZ-2.5 minimum operating current is unverified, so the low-supply corner is not characterised",
+    "a clean ERC only says the drawing agrees with itself"
+  ]
+}

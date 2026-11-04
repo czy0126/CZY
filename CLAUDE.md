@@ -52,6 +52,7 @@ python tools/make_control_board.py --check   # 控制验证板：重生成 + 网
 python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
+python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
 python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
@@ -807,6 +808,34 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 - **跳线两侧要各放一个 `PWR_FLAG`**：U1 的 VDD 是 `power_in`，被 JP1（被动引脚）与
   `VDD_IN` 隔开，只在 `VDD_IN` 上放旗子会报 `power_pin_not_driven`。ERC 的 0 违规
   必须用 `--severity-all` 且报告不比原理图旧，否则"干净"没有意义。
+
+## TLV3501 快速过流 ECO 模块（`pcb/fast_oc`）
+
+`tools/make_fast_oc_eco.py`：D0 的快速过流通道（U3B LM393）**不是比较器慢，是它前面
+三级滤波慢**——1k/47nF、10k‖24k+10nF、10k/1nF 合计 **127.6 µs** 时间常数，再加快 1.3 µs
+传播。所以"把 LM393 换成 4.5 ns 的 TLV3501"在系统上只值约 1.3 µs，属于路线点名的
+"只换 BOM 名称"。本模块直接取 CT 负载节点 OCD，单极点 1 µs + 12 ns + 50 ns ≈ **1.06 µs**。
+
+- **SHDN 接高电平会把比较器关掉**：SBOS321E 里 SHDN 距 V+ 不足 0.9 V 即关断（输出高阻），
+  低于 V+ 超过 1.7 V 才使能。接 V+ 得到的是 ERC 干净、永不翻转的板子。R8 10k 拉到 PGND，
+  `test_shutdown_is_pulled_low_because_high_disables_the_comparator` 锁死。
+- **推挽输出不能直接并到 `FAST_TRIP`**：D0 那条网是 U3B 漏极开路 + R15 10k 上拉，本模块
+  用 R5→Q1(2N7002)→漏极开路才合法。`U1.5` 不在 `FAST_TRIP` 网络里，测试锁死。
+- **最坏值用 12 ns，不用 4.5 ns**：12 ns 是 5 mV 过驱、−40…+125 °C 的 max。典型值只配当注释。
+- **门限 75.0 A 标称 / 76.6 A 跳闸 / 73.4 A 释放**（2.5 V × 3 / 0.1 V/A）。它**刻意高于**
+  冻结短路 deck 的 73.68 A——那一档留给 UCC25600 自己的 1 V/24 A、2 V/48 A 两级；
+  本模块指向 84.83 / 97.44 / 101.26 A 的严重故障。改分压就改这个次序，测试会红。
+- 共模上限对应 **144 A**，绝对最大值对应 **159 A**；已发布的峰值全部在共模内。
+- **5 V 丢失 = 失去快速保护，不是误跳闸**：R6 把 Q1 栅极拉到地，FAST_TRIP 释放。
+  LM4040DBZ-2.5 的最小工作电流本仓库没有，低压拐点标 UNVERIFIED，不许填数字。
+- **本模块不锁存**，锁存在 D0 的 CD4013。单独使用时输出跟随电流。
+- 生成器复用 `make_sr_fault_board` 的解析/校验helper（`Part`/`Pin`/`custom_symbol`/
+  `extract_symbol`/`pin_tips`/`validate*`/`erc_violations`），UUID 命名空间与件表是本板自己的，
+  两块板不会撞。改 helper 的签名要同时看两个测试。
+
+**本机 `PostToolUse` 钩子会对编辑过的 `.py` 跑 `ruff check --fix`，它会删掉"暂时未使用"的 import**：
+先加 `import x`、下一次编辑才写用法的分步做法会被吃掉（`make_fast_oc_eco.py` 与它的测试都撞过）。
+要么一次写完 import + 用法，要么在用法落地后再补 import。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
