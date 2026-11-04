@@ -649,24 +649,183 @@ def test_the_honesty_flags_keep_the_board_unreleased():
     """``routed`` is a fact about connectivity, not a release.
 
     Every net is connected, DRC is clean of placement defects, the pours have
-    been refilled and measured, and BSC010N04LS6 now carries a land pattern
-    digitised from its datasheet -- and nothing has been built.  The fills
-    retain 2.5-64 % of their outlines, so the current path is still a 0.8 mm
-    escape: ``routed`` is a fact about connectivity, never a release.
+    been refilled and measured, BSC010N04LS6 carries a land pattern digitised
+    from its datasheet, and a fabrication package exists -- and nothing has
+    been built.  ``routed`` is a fact about connectivity, never a release.
     """
     data = pcb.report()
     assert data["routed"] is True
     assert data["hardware_built"] is False
     assert data["fabrication_approved"] is False
-    assert data["manufacturing_package"] == "NOT_RELEASED"
+    assert data["manufacturing_package"] == pcb.MANUFACTURING_PACKAGE_EXPORTED
     assert data["status"].endswith("NOT_RELEASED")
     assert (OUT / pcb.BOARD).read_text(encoding="utf-8").count("(segment ") > 0
 
 
-def test_no_manufacturing_files_were_exported():
-    """A routed board with a drill file still looks orderable, and is not."""
+def test_the_fab_files_live_under_fab_and_nowhere_else():
+    """A drill file next to the board looks orderable; one under fab/ has a manifest.
+
+    The point of the directory is the manifest: it binds every file to the
+    board hash and says what the package is not.
+    """
     for pattern in ("*.gbr", "*.drl", "*.g*", "*.pos", "*.csv.tmp"):
         assert not list(OUT.glob(pattern)), pattern
+    assert (pcb.FAB / "manifest.json").is_file()
+
+
+def test_the_fab_manifest_binds_the_files_to_the_board():
+    manifest = json.loads((pcb.FAB / "manifest.json").read_text(encoding="utf-8"))
+    board = OUT / pcb.BOARD
+    assert manifest["board_sha256"] == pcb._sha256(board)
+    assert manifest["files"], "the manifest lists no exported file"
+    for row in manifest["files"]:
+        path = pcb.FAB / row["name"]
+        assert path.is_file(), row["name"]
+        assert path.stat().st_size == row["bytes"]
+        assert pcb._sha256(path) == row["sha256"], row["name"]
+    assert manifest["copper_weight_oz"] == pcb.FAB_COPPER_WEIGHT_OZ
+    assert manifest["layers"][0] == "F.Cu" and "Edge.Cuts" in manifest["layers"]
+    # Requested and plotted are recorded separately because kicad-cli drops an
+    # undeclared layer silently; a package that ships fewer plots than it
+    # claims is the failure this pair exists to expose.
+    assert sorted(manifest["plotted_layers"]) == sorted(manifest["layers"])
+    assert manifest["flags"] == {"hardware_built": False, "fabrication_approved": False}
+
+
+def test_the_board_declares_the_paste_and_mask_layers_it_plots():
+    """kicad-cli plots only layers the board's ``(layers)`` table declares.
+
+    Pads may name F.Mask/F.Paste all day; if the board's own table omits them
+    the plot returns 0 and writes nothing for that layer.  The first package
+    came out with five of nine layers and a manifest claiming nine.
+    """
+    text = (OUT / pcb.BOARD).read_text(encoding="utf-8")
+    block = re.search(r"\t\(layers\n(.*?)\n\t\)\n", text, re.S)
+    assert block, "the board has no (layers) table"
+    body = block.group(1)
+    for name in pcb.FAB_GERBER_SUFFIX:
+        declared = {"F.Silkscreen": "F.SilkS", "B.Silkscreen": "B.SilkS"}.get(name, name)
+        assert f'"{declared}"' in body, f"{name} is plotted but not declared"
+
+
+def test_a_layer_the_export_did_not_plot_fails_the_package(tmp_path: Path):
+    """The count alone is not enough: the failure names the layer."""
+    for suffix in pcb.FAB_GERBER_SUFFIX.values():
+        (tmp_path / f"board{suffix}").write_text("x", encoding="utf-8")
+    pcb.check_plotted_layers(tmp_path)          # nine of nine: no complaint
+    (tmp_path / "board.gts").unlink()           # the front soldermask vanishes
+    with pytest.raises(SystemExit, match="F.Mask"):
+        pcb.check_plotted_layers(tmp_path)
+
+
+def test_the_position_file_places_no_dnp_part():
+    """The CSV is what a machine follows, so this reads the CSV, not the manifest.
+
+    ``--exclude-dnp`` reads the footprint's ``(attr ... dnp)``.  The first export
+    passed the flag on a board where no footprint carried it, and all ten DNP
+    parts -- the gate clamps that are meant to stay empty -- came back in the
+    placement file.
+    """
+    refs = pcb.position_refs(pcb.FAB / "sr_fault_validation-pos.csv")
+    assert refs, "the position file is empty"
+    assert not (refs & pcb._dnp_refs()), sorted(refs & pcb._dnp_refs())
+    assert {"Q1", "Q2", "U1"} <= refs      # the populated parts are still there
+
+
+def test_a_position_file_that_places_a_dnp_part_fails_the_package(tmp_path: Path):
+    path = tmp_path / "pos.csv"
+    dnp_ref = sorted(pcb._dnp_refs())[0]
+    path.write_text("Ref,Val,Package,PosX,PosY,Rot,Side\n"
+                    f"{dnp_ref},x,y,0,0,0,top\n", encoding="utf-8")
+    with pytest.raises(SystemExit, match=dnp_ref):
+        pcb.check_position_excludes_dnp(path)
+
+
+def test_the_process_requirements_say_where_each_number_comes_from():
+    """A package a fabricator can quote needs thickness, weight, finish, minimums.
+
+    Two numbers are measured on the board, four are the router's design rules,
+    and the rest are our choice.  The three lists must partition the fields, so
+    a reader never has to guess whether "1 oz" was measured or assumed.
+    """
+    pr = pcb.report()["process_requirements"]
+    declared = pr["measured_here"] + pr["design_rules"] + pr["our_choice_not_measured"]
+    fields = {key for key, value in pr.items() if not isinstance(value, list)}
+    assert len(declared) == len(set(declared)), "a field is in two families"
+    assert set(declared) == fields, sorted(fields ^ set(declared))
+    assert pr["min_track_mm"] > 0 and pr["min_track_mm"] <= pcb.ROUTE_POWER_MM
+    assert pr["min_drill_mm"] == pcb.router.VIA_DRILL_MM
+    assert pr["thickness_mm"] == pcb.THICKNESS_MM
+
+
+def test_the_fab_manifest_repeats_the_rating_rather_than_pointing_at_it():
+    """The fabricator gets the package, not the repository."""
+    manifest = json.loads((pcb.FAB / "manifest.json").read_text(encoding="utf-8"))
+    rating = manifest["current_rating"]
+    assert set(rating["nets"]) == {"SEC_A", "SEC_B"}
+    for row in rating["nets"].values():
+        assert row["rating"], row["rating"]
+    assert manifest["current_rating"] == pcb.report()["power_path"]["escape_rating"]
+
+
+# ---------------------------------------------------------------- current rating
+def test_the_escape_rating_reads_the_copper_the_router_laid():
+    """The elements come from the route, not from a table in this file."""
+    data = pcb.report()["power_path"]["escape_rating"]
+    for net in ("SEC_A", "SEC_B"):
+        row = data["nets"][net]
+        assert row["tracks"] >= 1 and row["vias"] >= 2, row
+        assert row["narrowest_track_mm"] == pytest.approx(pcb.ROUTE_POWER_MM, abs=1e-9)
+        # The pour edge is x 43 and the drain land starts at x 46.87, so the box
+        # has to span that gap; a box that missed it would rate nothing.
+        x0, x1 = row["escape_box_mm"][0], row["escape_box_mm"][1]
+        assert x0 < row["pour_right_mm"] < x1
+        assert x0 < row["drain_land_left_mm"] < x1
+        assert row["pour_right_mm"] == pytest.approx(43.0)
+        assert row["drain_land_left_mm"] == pytest.approx(46.87, abs=0.005)
+
+
+def test_the_via_barrel_binds_the_pulse_not_the_track():
+    """A 0.3 mm drill with 0.020 mm of plating is less copper than 0.8 mm of 1 oz.
+
+    Both are the same length, so the barrel is the element that reaches the
+    temperature first at every copper weight -- which is why widening the track
+    would not change the pulse number.
+    """
+    data = pcb.report()["power_path"]["escape_rating"]
+    for row in data["nets"].values():
+        for oz in pcb.COPPER_WEIGHTS_OZ:
+            rating = row["rating"][f"{oz}oz"]
+            assert rating["binding_element"].startswith("via_barrel"), rating
+    barrel = pcb.via_element(pcb.router.VIA_DRILL_MM, pcb.THICKNESS_MM)
+    assert barrel["area_mm2"] < pcb.ROUTE_POWER_MM * pcb.COPPER_OZ_MM
+
+
+def test_the_adiabatic_i2t_is_independent_of_length_and_fourfold_at_2oz():
+    """I2t = mc dT / R with m and R both proportional to length.
+
+    Both identities hold on the unrounded quantities; the reported fields carry
+    three decimals, so each comparison has to allow the rounding of its operands
+    (4 x 0.0005 + 0.0005 for the fourfold, 10 x 0.0005 + 0.0005 for the length
+    scaling) rather than a relative epsilon.  At the 0.8 mm track's 1.54 A2s the
+    former is 2e-3 relative, and at its 0.618 mOhm the latter is 9e-3 relative
+    -- the identity, not the arithmetic, is what the test is for.
+    """
+    short = pcb.track_element(0.8, pcb.COPPER_OZ_MM, 1.0)
+    long = pcb.track_element(0.8, pcb.COPPER_OZ_MM, 10.0)
+    assert short["i2t_a2s"] == pytest.approx(long["i2t_a2s"])
+    assert short["r20_mohm"] * 10.0 == pytest.approx(long["r20_mohm"], abs=0.006)
+    double = pcb.track_element(0.8, 2.0 * pcb.COPPER_OZ_MM, 1.0)
+    assert double["i2t_a2s"] == pytest.approx(4.0 * short["i2t_a2s"], abs=0.003)
+
+
+def test_the_chart_reproduces_the_ipc2221_numbers_the_documents_quote():
+    """Anchors, not a re-derivation: these are the figures the prose repeats."""
+    assert pcb.chart_current_a(0.8, pcb.COPPER_OZ_MM, 10.0) == pytest.approx(2.03, abs=0.02)
+    assert pcb.chart_current_a(0.8, pcb.COPPER_OZ_MM, 20.0) == pytest.approx(2.75, abs=0.02)
+    assert pcb.chart_current_a(0.8, 2 * pcb.COPPER_OZ_MM, 10.0) == pytest.approx(3.35, abs=0.03)
+    assert pcb.chart_current_a(3.61, 2 * pcb.COPPER_OZ_MM, 10.0) == pytest.approx(10.0, abs=0.1)
+
 
 
 # ---------------------------------------------------------------- provenance

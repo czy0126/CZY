@@ -868,7 +868,8 @@
     "no_copper_is_closer_than_the_clearance": true,
     "the_bom_and_the_board_are_the_same_parts": true,
     "every_power_net_has_a_pour": true,
-    "the_pours_are_ordered_where_they_overlap": true
+    "the_pours_are_ordered_where_they_overlap": true,
+    "every_secondary_escape_is_rated": true
   },
   "assembly_review": {
     "source": "BOM.csv beside the board file",
@@ -1064,9 +1065,233 @@
       "SEC_B",
       "SR_SRC"
     ],
-    "note": "the tracks are the escape from each land.  The pours are now kept as corridors by route pressure (keep_clear -> Router._zone_cost), and measured in fill.json they recover 79 %-94 % of their outline as one patch each.  That makes them copper in parallel with the escapes; it does not make them a quoted conductor.  IPC-2221 at 1 oz and a 10 degC rise puts 10 A at about 7 mm, the copper weight is undecided, and the Q1/Q2 gap at x 43-46.4 mm is still crossed by 0.8 mm tracks.  Those ampacity numbers are a chart, quoted to say what the copper is not; they are not a measurement, a thermal model or a rating.  VSS is routed at signal width on purpose: it is the controller's source reference through the R1 Kelvin tap, not a current path."
+    "escape_rating": {
+      "nets": {
+        "SEC_A": {
+          "pour_right_mm": 43.0,
+          "drain_land_left_mm": 46.87,
+          "escape_box_mm": [
+            42.0,
+            47.37,
+            31.5,
+            47.0
+          ],
+          "tracks": 1,
+          "vias": 2,
+          "narrowest_track_mm": 0.8,
+          "elements": [
+            {
+              "kind": "track",
+              "width_mm": 0.8,
+              "thickness_mm": 0.0348,
+              "area_mm2": 0.02784,
+              "length_mm": 4.875,
+              "r20_mohm": 3.012,
+              "energy_j_for_pulse_rise": 0.023409,
+              "i2t_a2s": 7.077
+            },
+            {
+              "kind": "via_barrel",
+              "drill_mm": 0.3,
+              "plating_mm": 0.02,
+              "area_mm2": 0.02011,
+              "length_mm": 1.6,
+              "r20_mohm": 1.369,
+              "energy_j_for_pulse_rise": 0.005549,
+              "i2t_a2s": 3.691
+            },
+            {
+              "kind": "via_barrel",
+              "drill_mm": 0.3,
+              "plating_mm": 0.02,
+              "area_mm2": 0.02011,
+              "length_mm": 1.6,
+              "r20_mohm": 1.369,
+              "energy_j_for_pulse_rise": 0.005549,
+              "i2t_a2s": 3.691
+            }
+          ],
+          "rating": {
+            "1oz": {
+              "copper_thickness_mm": 0.0348,
+              "series_r_mohm": 5.75,
+              "i2t_a2s": 3.691,
+              "binding_element": "via_barrel 0.3 mm",
+              "hold_ms_at_10a": 36.91,
+              "chart_a": {
+                "10k_rise": 2.03,
+                "20k_rise": 2.75
+              }
+            },
+            "2oz": {
+              "copper_thickness_mm": 0.0696,
+              "series_r_mohm": 4.244,
+              "i2t_a2s": 3.691,
+              "binding_element": "via_barrel 0.3 mm",
+              "hold_ms_at_10a": 36.91,
+              "chart_a": {
+                "10k_rise": 3.35,
+                "20k_rise": 4.54
+              }
+            }
+          }
+        },
+        "SEC_B": {
+          "pour_right_mm": 43.0,
+          "drain_land_left_mm": 46.87,
+          "escape_box_mm": [
+            42.0,
+            47.37,
+            44.5,
+            67.5
+          ],
+          "tracks": 4,
+          "vias": 2,
+          "narrowest_track_mm": 0.8,
+          "elements": [
+            {
+              "kind": "track",
+              "width_mm": 0.8,
+              "thickness_mm": 0.0348,
+              "area_mm2": 0.02784,
+              "length_mm": 0.375,
+              "r20_mohm": 0.232,
+              "energy_j_for_pulse_rise": 0.001801,
+              "i2t_a2s": 7.077
+            },
+            {
+              "kind": "track",
+              "width_mm": 0.8,
+              "thickness_mm": 0.0348,
+              "area_mm2": 0.02784,
+              "length_mm": 2.75,
+              "r20_mohm": 1.699,
+              "energy_j_for_pulse_rise": 0.013205,
+              "i2t_a2s": 7.077
+            },
+            {
+              "kind": "track",
+              "width_mm": 0.8,
+              "thickness_mm": 0.0348,
+              "area_mm2": 0.02784,
+              "length_mm": 0.125,
+              "r20_mohm": 0.077,
+              "energy_j_for_pulse_rise": 0.0006,
+              "i2t_a2s": 7.077
+            },
+            {
+              "kind": "track",
+              "width_mm": 0.8,
+              "thickness_mm": 0.0348,
+              "area_mm2": 0.02784,
+              "length_mm": 11.75,
+              "r20_mohm": 7.259,
+              "energy_j_for_pulse_rise": 0.056422,
+              "i2t_a2s": 7.077
+            },
+            {
+              "kind": "via_barrel",
+              "drill_mm": 0.3,
+              "plating_mm": 0.02,
+              "area_mm2": 0.02011,
+              "length_mm": 1.6,
+              "r20_mohm": 1.369,
+              "energy_j_for_pulse_rise": 0.005549,
+              "i2t_a2s": 3.691
+            },
+            {
+              "kind": "via_barrel",
+              "drill_mm": 0.3,
+              "plating_mm": 0.02,
+              "area_mm2": 0.02011,
+              "length_mm": 1.6,
+              "r20_mohm": 1.369,
+              "energy_j_for_pulse_rise": 0.005549,
+              "i2t_a2s": 3.691
+            }
+          ],
+          "rating": {
+            "1oz": {
+              "copper_thickness_mm": 0.0348,
+              "series_r_mohm": 12.005,
+              "i2t_a2s": 3.691,
+              "binding_element": "via_barrel 0.3 mm",
+              "hold_ms_at_10a": 36.91,
+              "chart_a": {
+                "10k_rise": 2.03,
+                "20k_rise": 2.75
+              }
+            },
+            "2oz": {
+              "copper_thickness_mm": 0.0696,
+              "series_r_mohm": 7.372,
+              "i2t_a2s": 3.691,
+              "binding_element": "via_barrel 0.3 mm",
+              "hold_ms_at_10a": 36.91,
+              "chart_a": {
+                "10k_rise": 3.35,
+                "20k_rise": 4.54
+              }
+            }
+          }
+        }
+      },
+      "assumptions": {
+        "copper_thickness_mm": {
+          "1oz": 0.0348,
+          "2oz": 0.0696
+        },
+        "barrel_plating_mm": 0.02,
+        "board_thickness_mm": 1.6,
+        "pulse_rise_k": 50.0,
+        "chart_rises_k": [
+          10.0,
+          20.0
+        ],
+        "copper_density_g_per_mm3": 0.00896,
+        "copper_heat_capacity_j_per_g_k": 0.385,
+        "copper_rho_20c_ohm_mm": 1.72e-05,
+        "copper_alpha_per_k": 0.00393,
+        "ipc2221_k_external": 0.048
+      },
+      "checks": {
+        "every_secondary_escape_is_rated": true
+      },
+      "note": "pulse: adiabatic, no cooling term, so the times are lower bounds.  continuous: IPC-2221 external-trace chart only -- it has no via-barrel term, so the continuous number bounds the track and says nothing about the barrel that binds the pulse number.  Neither number is a measurement and neither is a thermal model of this board."
+    },
+    "note": "the fills are copper in parallel with the escapes, but a fill is not in the board file -- only its outline is -- so the escape is the only part that can be rated from the geometry that is.  Each secondary half leaves its pour at x 43 and reaches the drain land at x 46.87 through one 0.8 mm track and two 0.3 mm-drill vias in series, and escape_rating quotes that path in both bases (adiabatic I2t for a fault pulse, IPC-2221 chart for a continuous current) rather than blending them.  The via barrel binds the pulse number at either copper weight.  VSS is routed at signal width on purpose: it is the controller's source reference through the R1 Kelvin tap, not a current path."
   },
-  "manufacturing_package": "NOT_RELEASED",
+  "process_requirements": {
+    "copper_layers": 2,
+    "thickness_mm": 1.6,
+    "copper_weight_oz": 1,
+    "min_track_mm": 0.25,
+    "min_clearance_mm": 0.2,
+    "min_drill_mm": 0.3,
+    "min_hole_to_copper_mm": 0.25,
+    "copper_to_edge_mm": 0.5,
+    "material": "FR-4",
+    "surface_finish": "HASL, lead-free",
+    "mask_and_silk_colour": "fabricator default -- not specified here",
+    "measured_here": [
+      "copper_layers",
+      "min_track_mm"
+    ],
+    "design_rules": [
+      "min_clearance_mm",
+      "min_drill_mm",
+      "min_hole_to_copper_mm",
+      "copper_to_edge_mm"
+    ],
+    "our_choice_not_measured": [
+      "thickness_mm",
+      "copper_weight_oz",
+      "material",
+      "surface_finish",
+      "mask_and_silk_colour"
+    ]
+  },
+  "manufacturing_package": "EXPORTED_WITH_STATED_CURRENT_LIMIT",
   "hardware_built": false,
   "fabrication_approved": false,
   "evidence": {
@@ -1079,9 +1304,9 @@
   },
   "remaining_work": [
     "check the digitised land against a vendor CAD model or an IPC-7351 calculation when one is available: it is measured from Fig. 2 of the datasheet (max residual 4.9 um) but is still a redrawing, and neither this repository nor the sheet's board-pads figure says whether the lands are to IPC density level A, B or C",
-    "quote the corridor ampacity: the fills now retain 79 %-94 % of their outlines as one patch each (they kept 2.5 %-65 % when the routing crossed the corridors), so the corridors are conductors -- but the number still has to be derived from the copper weight and the IPC-2221 chart before any current is claimed, and the Q1/Q2 escape gap at x 43-46.4 mm is still crossed by 0.8 mm tracks rather than by fill",
+    "widen the secondary escape before claiming more than a fault pulse: the 0.8 mm track and the two 0.3 mm-drill vias between the pour edge at x 43 and the drain land at x 46.87 are quoted in power_path.escape_rating, and at 1 oz the chart puts one half at about 2 A continuous.  IPC-2221 has no via-barrel term, so a continuous rating needs a barrel calculation from the fabricator's plating spec, not a wider chart lookup",
     "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what must not creep up to it, and that is a fill question, not a track question",
-    "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the IPC-2221 figures here are a chart, not a measurement",
-    "export gerbers, drill and position: the two stated preconditions (fills measured, DRC clean with the zones refilled) now hold, and nothing is exported because the copper weight and the ampacity statement are still open -- a fabrication package is a claim about what may be built"
+    "confirm the copper weight with the fabricator: the package asks for 1 oz, which is what the escape_rating chart numbers are quoted at; 2 oz would raise the track figure but not the via barrel that binds the pulse number",
+    "the fab package in pcb/sr_fault_validation/fab/ is exported and is still not an approval: the manifest binds the nine gerbers, the drill file and the DNP-excluded position CSV to the board hash and repeats the escape rating as a stated limit, and the export fails if a layer it asked for is missing or a DNP part is still in the CSV.  hardware_built and fabrication_approved stay false until a person signs, and the 1 oz in it is a request to the fabricator, not a measurement"
   ]
 }

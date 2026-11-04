@@ -12,8 +12,12 @@
 	(layers
 		(0 "F.Cu" signal)
 		(31 "B.Cu" signal)
+		(34 "B.Paste" user)
+		(35 "F.Paste" user)
 		(36 "B.SilkS" user "B.Silkscreen")
 		(37 "F.SilkS" user "F.Silkscreen")
+		(38 "B.Mask" user)
+		(39 "F.Mask" user)
 		(44 "Edge.Cuts" user)
 		(46 "B.CrtYd" user "B.Courtyard")
 		(47 "F.CrtYd" user "F.Courtyard")
@@ -1113,7 +1117,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.14058 -0.51)
@@ -1229,7 +1233,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.14058 -0.51)
@@ -1345,7 +1349,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.14058 -0.51)
@@ -1461,7 +1465,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.14058 -0.51)
@@ -5765,7 +5769,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.76 -1.56)
@@ -6086,7 +6090,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.76 -1.56)
@@ -7799,7 +7803,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.227064 -0.735)
@@ -7915,7 +7919,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.227064 -0.735)
@@ -8611,7 +8615,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.237258 -0.5225)
@@ -8727,7 +8731,7 @@
 			)
 		)
 	)
-	(attr smd)
+	(attr smd dnp)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -0.237258 -0.5225)

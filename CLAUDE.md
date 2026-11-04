@@ -830,10 +830,40 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 因此同库的其它 0805 一个字节不动；`fill.json` 的填充面积与改前逐位相同（铜没变）。
 五个电源网各有 zone 外形（PGND/VOUT 在 B.Cu，
 SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
-`fabrication_approved`/`hardware_built` 仍 false、`manufacturing_package` 仍
-`NOT_RELEASED`：**铺铜保留外形面积的 79 %–94 %**（见下条），铜厚未定、Q1/Q2 逃逸口
-仍是 0.8 mm 走线，所以**还没有载流结论**。不导出 gerber/drill/position。
-`--check` 会重生成 + 跑 `kicad-cli pcb drc` + 实测填充写 `fill.json`。
+`fabrication_approved`/`hardware_built` 仍 false：**铺铜保留外形面积的 79 %–94 %**（见下条）。
+载流不再靠"铺得满"来声称：**填充根本不在板文件里**（只存外形），所以
+`power_path.escape_rating` 只对**布出来的逃逸铜**报价，且两种口径分开——故障脉冲用绝热
+`I²t`（无散热项，是下界），连续电流用 IPC-2221 外表走线图表，**两个数不混用**。
+每半副边从 x 43 的铺铜边缘经**一条 0.8 mm 走线 + 两个 0.3 mm 钻孔过孔**串到 x 46.87 的
+漏极焊盘；**两种铜厚下都是过孔筒壁绑住脉冲数**（0.3 mm 钻 / 0.020 mm 壁 = 0.0201 mm²，
+小于 1 oz 的 0.0278 mm²，长度相同），所以**加宽走线没用，要加大钻孔**。
+`--check` 现在同时导出 `fab/`（gerber 带 `--check-zones`、drill、position）与
+`fab/manifest.json`（逐文件 sha256 + 板哈希 + 重复那份载流评级 + 两个 false 旗）；
+`--fab` 在没有 kicad-cli 时直接失败。**这只是制造包，不是签核**：
+`hardware_built`/`fabrication_approved` 不变，1 oz 是包的要求。
+`--check` 会重生成 + 跑 `kicad-cli pcb drc` + 实测填充写 `fill.json` + 导出 `fab/`。
+清单另有 `process_requirements`，字段按出处三分（`measured_here` 读布线 /
+`design_rules` 路由器常量 / `our_choice_not_measured`），三组互斥且覆盖全部非列表字段，
+测试锁住；阻焊与丝印颜色写"板厂默认"，不编颜色。
+
+**kicad-cli 只绘板文件 `(layers)` 表里声明过的层，没声明的静默丢弃**（退出码 0、
+无消息、无输出行），焊盘上写着 `(layers "F.Cu" "F.Mask" "F.Paste")` 也不算数。
+第一版生成器的表只有 F.Cu/B.Cu/丝印/Edge.Cuts，于是"九层"的包实际是**五层、
+无阻焊无钢网**，而清单照请求列表印了九层。两份板生成器（`make_sr_fault_board_pcb.py`
+与 `main_board_mechanical.py`）现在都把 `B.Paste`/`F.Paste`/`B.Mask`/`F.Mask` 写进表里；
+`check_plotted_layers()` 在导出后逐层核对、缺哪层点名失败，清单同时记 `layers`（请求）
+与 `plotted_layers`（实得），测试要求两者相等。**空层也会生成文件**（B.Paste/B.Mask
+各一个），所以"文件数等于层数"是可用信号。
+
+**`--exclude-dnp` 读的是封装上的 `(attr ... dnp)`，不是件表里的 `dnp` 标记**：SR 板的
+十个 DNP（门极钳位 Q42/Q43/R47/R48/CGL1/2/Csn1/2/Rsn1/2）只记在件表里，板文件里
+一个封装都没这个属性，于是 `--exclude-dnp` 什么也没排除——**十只默认不贴的件全进了
+贴片坐标**，而 `manifest.json` 的 `excluded_from_position` 照件表宣称"已排除"，两份
+工件互相矛盾。现在 `_embed(..., dnp=part.dnp)` 写进封装属性，`export_fab` 导出后
+用 `check_position_excludes_dnp()` **读回 CSV** 逐位核对（位置文件 51 → 41 行）。
+同类教训：清单里"我说已排除"不构成证据，判据必须从交付文件读回来。**`dnp` 与
+`exclude_from_pos_files` 是两个属性**：测试点（TP1–TP20）用的是后者，DNP 件仍要
+有焊盘与坐标之外的"不上料"语义，不能拿一个冒充另一个。
 
 **Q1/Q2 的封装现在是从数据手册量出来的，不是厂商 vendored 件**：
 `tools/bsc010n04ls6_land.py` 数字化 `references/datasheets/bsc010n04ls6.pdf` 第 10 页的

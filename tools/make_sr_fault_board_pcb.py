@@ -17,13 +17,16 @@ crossing a corridor (``Router._zone_cost``).  Before that pressure existed the
 same board kept 2.5 %-65 %: a signal crossing the outline cuts the fill in two,
 and ``island_removal_mode 0`` deletes the half that reaches no pad, so the pour
 looked present and carried nothing.  What the corridors still are not is a
-*quoted* conductor: the ampacity depends on the copper weight, which is open,
-and the Q1/Q2 escape gap is still crossed by 0.8 mm tracks.  The power path,
-the remaining work and the three false
-flags (`routed` here means "every net connected", never "released") are all in
-``sr_fault_validation_pcb.json``.  A manufacturing package (gerbers, drill,
-position) is deliberately *not* exported: a board whose copper has not been
-made to carry the stated current looks orderable and is not.
+*quoted* conductor on their own: the fill is a build product and is not in the
+board file, so the current is quoted against the routed escape (``power_path
+.escape_rating``) in two separate bases -- an adiabatic I2t for one fault pulse,
+an IPC-2221 chart for a continuous current -- and the via barrel binds the
+pulse number at either copper weight.  The power path, the remaining work and
+the three false flags (`routed` here means "every net connected", never
+"released") are all in ``sr_fault_validation_pcb.json``.  ``--fab`` exports
+gerbers, drill and position into ``fab/`` with a manifest that binds every file
+to the board hash and repeats the rating as a stated limit; it is a package,
+not an approval, and the two approval flags stay false.
 
 Why placement is worth doing before routing
 -------------------------------------------
@@ -41,7 +44,8 @@ fabrication-approved board.
 
 Usage:
     python tools/make_sr_fault_board_pcb.py --write
-    python tools/make_sr_fault_board_pcb.py --check    # + kicad-cli DRC
+    python tools/make_sr_fault_board_pcb.py --check    # + DRC, fills, fab/
+    python tools/make_sr_fault_board_pcb.py --fab      # --check, fail if no package
 """
 
 from __future__ import annotations
@@ -50,6 +54,7 @@ import argparse
 import collections
 import csv
 import functools
+import hashlib
 import json
 import math
 import re
@@ -67,6 +72,22 @@ OUT = ROOT / "pcb" / "sr_fault_validation"
 STOCK = ROOT / "hardware" / "stock_footprints"
 BOARD = "sr_fault_validation.kicad_pcb"
 REPORT = "sr_fault_validation_pcb.json"
+FAB = OUT / "fab"
+FAB_MANIFEST = FAB / "manifest.json"
+FAB_COPPER_WEIGHT_OZ = 1        # the package's requirement; 1 oz is the standard process
+FAB_GERBER_LAYERS = ("F.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,"
+                     "F.Mask,B.Mask,Edge.Cuts")
+# What kicad-cli names each plot.  Checking by suffix rather than by counting
+# files is what turns "one layer vanished" into a named failure: the first
+# package silently shipped five plots for nine requested layers.
+FAB_GERBER_SUFFIX = {
+    "F.Cu": ".gtl", "B.Cu": ".gbl",
+    "F.Paste": ".gtp", "B.Paste": ".gbp",
+    "F.Silkscreen": ".gto", "B.Silkscreen": ".gbo",
+    "F.Mask": ".gts", "B.Mask": ".gbs",
+    "Edge.Cuts": ".gm1",
+}
+MANUFACTURING_PACKAGE_EXPORTED = "EXPORTED_WITH_STATED_CURRENT_LIMIT"
 NS = uuid.UUID("c7e2a4f1-5b3d-4a8e-9f60-2d1c8b7a4e53")
 
 BOARD_W_MM = 132.0
@@ -234,15 +255,15 @@ class Pour:
 #   path should be 6 mm.
 # * SEC_A runs up from J3.1 (18, 46) and SEC_B down from J3.3 (28, 46) as two
 #   corridors that stop at x 43, one millimetre short of the SR columns.  They
-#   stop there because they have to: Q1's source pads start at x 44.6 and its
-#   drain lands at x 46.4, a 0.6 mm gap, so SEC_A and SR_SRC interleave with
-#   nothing between them -- a pour over one carves the other and there is no
-#   width left to carve.  The last few millimetres to the drain lands stay a
-#   track, and the pour carries the corridor.
+#   stop there because they have to: Q1's source and gate lands end at
+#   x 45.73 and its drain land starts at x 46.87, a 1.14 mm gap, so SEC_A and
+#   SR_SRC interleave with nothing between them -- a pour over one carves the
+#   other and there is no width left to carve.  The last few millimetres to the
+#   drain lands stay a track, and the pour carries the corridor.
 #
 #   The first attempt at SEC_B was (24, 51)-(43, 66), placed by eye above the
 #   J3 row's y 46 and left of the SR column.  It contained no SEC_B pad at
-#   all -- J3.3 is at y 46 and the Q2 drain lands start at x 46.4 -- so the
+#   all -- J3.3 is at y 46 and the Q2 drain land starts at x 46.87 -- so the
 #   whole fill was orphaned copper: DRC reported 7 ``isolated_copper``
 #   warnings, all on that one zone.  The outlines now overlap the terminal
 #   lands they are named for (SEC_A up to y 45.5, SEC_B from y 46, against
@@ -774,12 +795,18 @@ def inject_nets(text: str, nets: dict[str, int], names: list[str]) -> str:
 
 
 def _embed(text: str, lib_id: str, ref: str, value: str, nets: dict[str, int],
-           names: list[str], x: float, y: float, rot: float) -> str:
+           names: list[str], x: float, y: float, rot: float,
+           dnp: bool = False) -> str:
     """Copy a footprint into the board, placed and netted.
 
     Same four substitutions as the A5 placement generator (library id,
     placement, reference, every uuid), plus the pad nets.  Two instances sharing
     a uuid make KiCad pick one at random, so every uuid is derived from the ref.
+
+    ``dnp`` writes the footprint's ``dnp`` attribute.  It is what
+    ``kicad-cli pcb export pos --exclude-dnp`` reads; a part the part table
+    calls "do not populate" but the board file does not mark is placed anyway,
+    and the position CSV is the file a machine follows.
     """
     text = re.sub(r"\(version [^)]*\)\s*", "", text, count=1)
     text = re.sub(r'\(generator "[^"]*"\)\s*', "", text, count=1)
@@ -801,6 +828,9 @@ def _embed(text: str, lib_id: str, ref: str, value: str, nets: dict[str, int],
             text, count=1)
     text = re.sub(r'\(property "Value" "[^"]*"', f'(property "Value" "{value}"', text, count=1)
     text = re.sub(r'\(uuid "([^"]+)"\)', lambda m: f'(uuid "{uid(ref, m.group(1))}")', text)
+    if dnp:
+        # The attribute list is the only place KiCad looks: ``(attr smd dnp)``.
+        text = re.sub(r"\(attr ([^)\n]*)\)", r"(attr \1 dnp)", text, count=1)
     return "\t" + text.strip() + "\n"
 
 
@@ -952,7 +982,14 @@ def board_file(placed: list[Placed] | None = None,
         "\t)\n"
         "\t(layers\n"
         '\t\t(0 "F.Cu" signal)\n\t\t(31 "B.Cu" signal)\n'
+        # Paste and mask have to be declared, not just referenced by pads:
+        # kicad-cli plots only layers the board's own table lists, and it drops
+        # the rest silently (no message, no non-zero exit).  Without these four
+        # lines the package came out with five layers while the manifest said
+        # nine -- a mask-less board looks perfectly plottable.
+        '\t\t(34 "B.Paste" user)\n\t\t(35 "F.Paste" user)\n'
         '\t\t(36 "B.SilkS" user "B.Silkscreen")\n\t\t(37 "F.SilkS" user "F.Silkscreen")\n'
+        '\t\t(38 "B.Mask" user)\n\t\t(39 "F.Mask" user)\n'
         '\t\t(44 "Edge.Cuts" user)\n\t\t(46 "B.CrtYd" user "B.Courtyard")\n'
         '\t\t(47 "F.CrtYd" user "F.Courtyard")\n'
         '\t\t(48 "B.Fab" user)\n\t\t(49 "F.Fab" user)\n\t)\n'
@@ -974,7 +1011,7 @@ def board_file(placed: list[Placed] | None = None,
         part = table[p.ref]
         nets = {num: index[name] for num, name in part.nets.items() if name != sch.NC}
         out.append(_embed(_source(p.footprint), p.footprint, p.ref, p.value,
-                          nets, names, p.x, p.y, p.rot))
+                          nets, names, p.x, p.y, p.rot, dnp=part.dnp))
     out.extend(copper_lines(result))
     out.extend(zone_lines(names))
     out.append(")\n")
@@ -1226,6 +1263,228 @@ def fill_report(text: str, pads: list | None = None, names: list[str] | None = N
     }
 
 
+# ------------------------------------------------------------- current rating
+#
+# What the secondary current actually crosses.  The SEC_A/SEC_B pours stop at
+# x 43, short of the SR column, because the Q1/Q2 source and gate lands run up
+# x 44.6-45.7 and the drain land starts at x 46.87; a pour over that gap would
+# carve the source corridor.  So the last few millimetres of a secondary half
+# are the router's escape, and the escape -- not the fill -- is what a current
+# claim has to be made against.  The fill cannot even be rated from the board
+# text: the committed board carries the zone outlines and no fill at all.
+#
+# Two numbers, two different bases, both stated rather than blended:
+#
+# * ``i2t_a2s`` -- adiabatic heating of the copper to ``PULSE_RISE_K``, from
+#   geometry, density, heat capacity and resistivity with the cooling term at
+#   zero, so it understates how long the copper survives.  This is the basis
+#   that fits this board: it exists to watch one fault event of a few tens of
+#   microseconds.
+# * ``chart_a`` -- IPC-2221's external-trace chart, per copper weight and
+#   temperature rise.  A chart, quoted to say what a *continuous* current is
+#   not, and carrying nothing about the via barrel: IPC-2221 has no barrel
+#   term, so the continuous number bounds the track only.
+#
+# The barrel is what binds the pulse number at every copper weight.  A 0.3 mm
+# drill with a 0.020 mm wall is 0.0201 mm2 of copper against the track's
+# 0.028 mm2 at 1 oz, and both are the same length, so the via runs hotter
+# sooner.  Enlarging the drill is the fix; widening the track is not.
+COPPER_OZ_MM = 0.0348                    # 1 oz nominal, 35 um
+COPPER_RHO_20C_OHM_MM = 1.72e-5
+COPPER_ALPHA_PER_K = 0.00393
+COPPER_CP_J_PER_G_K = 0.385
+COPPER_G_PER_MM3 = 8.96e-3
+PLATING_MM = 0.020                       # minimum barrel wall, not a specification
+PULSE_RISE_K = 50.0
+CHART_RISES_K = (10.0, 20.0)
+CHART_K_EXTERNAL = 0.048                 # IPC-2221 external-layer coefficient
+COPPER_WEIGHTS_OZ = (1, 2)               # undecided; both are reported
+
+# The gap the escape crosses, as a margin off the two pieces it joins.  The
+# pour margin reaches back into the outline to pick up the via that sits
+# inside it; the land margin reaches into the drain land for the same reason.
+# The y margin keeps the band off the rest of each net's copper while still
+# spanning from one corner of the pour to the other.
+ESCAPE_POUR_MARGIN_MM = 1.0
+ESCAPE_LAND_MARGIN_MM = 0.5
+ESCAPE_Y_MARGIN_MM = 1.5
+SECONDARY_NETS = ("SEC_A", "SEC_B")
+
+
+def copper_rho_ohm_mm(temp_c: float) -> float:
+    return COPPER_RHO_20C_OHM_MM * (1.0 + COPPER_ALPHA_PER_K * (temp_c - 20.0))
+
+
+def _element(kind: str, area_mm2: float, length_mm: float, **extra: object) -> dict:
+    """Resistance and adiabatic I2t of one conductor of a given cross-section.
+
+    ``i2t`` is ``mc dT / R(T_avg)``: the energy that heats the mass by
+    ``PULSE_RISE_K`` divided by the resistance at the middle of that rise, so
+    the resistivity increase is carried rather than ignored.
+    """
+    mass_g = area_mm2 * length_mm * COPPER_G_PER_MM3
+    r20 = copper_rho_ohm_mm(20.0) * length_mm / area_mm2
+    energy_j = mass_g * COPPER_CP_J_PER_G_K * PULSE_RISE_K
+    r_mid = r20 * (1.0 + COPPER_ALPHA_PER_K * PULSE_RISE_K / 2.0)
+    return {
+        "kind": kind,
+        **extra,
+        "area_mm2": round(area_mm2, 5),
+        "length_mm": round(length_mm, 3),
+        "r20_mohm": round(r20 * 1e3, 3),
+        "energy_j_for_pulse_rise": round(energy_j, 6),
+        "i2t_a2s": round(energy_j / r_mid, 3),
+    }
+
+
+def track_element(width_mm: float, thickness_mm: float, length_mm: float) -> dict:
+    return _element("track", width_mm * thickness_mm, length_mm,
+                    width_mm=round(width_mm, 3), thickness_mm=round(thickness_mm, 4))
+
+
+def via_element(drill_mm: float, length_mm: float) -> dict:
+    outer = drill_mm + 2.0 * PLATING_MM
+    area = math.pi / 4.0 * (outer ** 2 - drill_mm ** 2)
+    return _element("via_barrel", area, length_mm,
+                    drill_mm=round(drill_mm, 3), plating_mm=PLATING_MM)
+
+
+def chart_current_a(width_mm: float, thickness_mm: float, rise_k: float) -> float:
+    """IPC-2221 external-trace chart: I = k dT^0.44 A^0.725 with A in mil2."""
+    area_mil2 = (width_mm / 0.0254) * (thickness_mm / 0.0254)
+    return CHART_K_EXTERNAL * rise_k ** 0.44 * area_mil2 ** 0.725
+
+
+def _drain_land(pads: list, net: int) -> tuple[float, float, float, float]:
+    """The largest Q1/Q2 land of ``net`` -- the drain base the escape feeds."""
+    lands = [p for p in pads if p.net == net and p.ref in ("Q1", "Q2")]
+    if not lands:
+        raise SystemExit(f"net {net} has no Q1/Q2 land to escape into")
+    return max(lands, key=lambda p: p.w * p.h).rect
+
+
+def escape_box(pour: Pour, land_rect: tuple[float, float, float, float]
+               ) -> tuple[float, float, float, float]:
+    """The rectangle an escape lies in: from inside the pour to inside the land.
+
+    x spans the gap the fill cannot cross (pour edge at 43, drain land at
+    46.87); y spans the pour with a margin, so the band holds the escape and
+    not the rest of the net's copper at the far end of the board.
+    """
+    xs = [x for x, _ in pour.outline]
+    ys = [y for _, y in pour.outline]
+    return (max(xs) - ESCAPE_POUR_MARGIN_MM, land_rect[0] + ESCAPE_LAND_MARGIN_MM,
+            min(ys) - ESCAPE_Y_MARGIN_MM, max(ys) + ESCAPE_Y_MARGIN_MM)
+
+
+def _inside_box(x: float, y: float, box: tuple[float, float, float, float]) -> bool:
+    return box[0] - 1e-9 <= x <= box[1] + 1e-9 and box[2] - 1e-9 <= y <= box[3] + 1e-9
+
+
+def escape_rating(pads: list, result: router.RouteResult, names: list[str]) -> dict:
+    """Rate the copper that leaves each secondary pour on its way to the SR.
+
+    Reads the routed copper, not a table: the elements are whatever segments
+    and vias of that net lie wholly inside the escape box, so a re-route moves
+    the numbers with it.  ``checks.every_secondary_escape_is_rated`` is the
+    invariant that the box caught a series path at all.
+    """
+    thickness = {oz: COPPER_OZ_MM * oz for oz in COPPER_WEIGHTS_OZ}
+    rated: dict[str, dict] = {}
+    for pour in POURS:
+        if pour.net not in SECONDARY_NETS:
+            continue
+        net = names.index(pour.net)
+        land = _drain_land(pads, net)
+        box = escape_box(pour, land)
+        segs = [s for s in result.segments
+                if s.net == net and _inside_box(s.x0, s.y0, box) and _inside_box(s.x1, s.y1, box)]
+        vias = [v for v in result.vias if v.net == net and _inside_box(v.x, v.y, box)]
+        barrels = [via_element(router.VIA_DRILL_MM, THICKNESS_MM) for _ in vias]
+        narrowest = min((s.width for s in segs), default=0.0)
+        rows: dict[str, dict] = {}
+        for oz in COPPER_WEIGHTS_OZ:
+            elements = [track_element(s.width, thickness[oz], math.hypot(s.x1 - s.x0, s.y1 - s.y0))
+                        for s in segs] + barrels
+            worst = min(elements, key=lambda e: e["i2t_a2s"]) if elements else None
+            rows[f"{oz}oz"] = {
+                "copper_thickness_mm": round(thickness[oz], 4),
+                "series_r_mohm": round(sum(e["r20_mohm"] for e in elements), 3),
+                "i2t_a2s": worst["i2t_a2s"] if worst else None,
+                "binding_element": (f'{worst["kind"]} '
+                                    f'{worst.get("drill_mm", worst.get("width_mm"))} mm') if worst else None,
+                "hold_ms_at_10a": round(worst["i2t_a2s"] / 100.0 * 1e3, 2) if worst else None,
+                "chart_a": {f"{int(rise)}k_rise": round(
+                    chart_current_a(narrowest, thickness[oz], rise), 2)
+                    for rise in CHART_RISES_K} if narrowest else {},
+            }
+        rated[pour.net] = {
+            "pour_right_mm": round(max(x for x, _ in pour.outline), 3),
+            "drain_land_left_mm": round(land[0], 3),
+            "escape_box_mm": [round(v, 3) for v in box],
+            "tracks": len(segs),
+            "vias": len(vias),
+            "narrowest_track_mm": round(narrowest, 3),
+            "elements": [track_element(s.width, thickness[COPPER_WEIGHTS_OZ[0]],
+                                       math.hypot(s.x1 - s.x0, s.y1 - s.y0)) for s in segs] + barrels,
+            "rating": rows,
+        }
+    return {
+        "nets": rated,
+        "assumptions": {
+            "copper_thickness_mm": {f"{oz}oz": round(t, 4) for oz, t in thickness.items()},
+            "barrel_plating_mm": PLATING_MM,
+            "board_thickness_mm": THICKNESS_MM,
+            "pulse_rise_k": PULSE_RISE_K,
+            "chart_rises_k": list(CHART_RISES_K),
+            "copper_density_g_per_mm3": COPPER_G_PER_MM3,
+            "copper_heat_capacity_j_per_g_k": COPPER_CP_J_PER_G_K,
+            "copper_rho_20c_ohm_mm": COPPER_RHO_20C_OHM_MM,
+            "copper_alpha_per_k": COPPER_ALPHA_PER_K,
+            "ipc2221_k_external": CHART_K_EXTERNAL,
+        },
+        "checks": {
+            "every_secondary_escape_is_rated": all(
+                v["tracks"] and v["vias"] for v in rated.values()) and bool(rated),
+        },
+        "note": "pulse: adiabatic, no cooling term, so the times are lower bounds.  "
+                "continuous: IPC-2221 external-trace chart only -- it has no via-barrel "
+                "term, so the continuous number bounds the track and says nothing about "
+                "the barrel that binds the pulse number.  Neither number is a measurement "
+                "and neither is a thermal model of this board.",
+    }
+
+
+def process_requirements(result: router.RouteResult) -> dict:
+    """What a fabricator has to hold, split by where each number comes from.
+
+    Two of these are measured on this board, four are the router's design rules,
+    and material/finish are a choice.  Mask and silk colours are deliberately
+    left to the fabricator: inventing a colour would put a preference where a
+    requirement belongs.  The three lists exist so a reader can tell which is
+    which without reading this docstring.
+    """
+    widths = [segment.width for segment in result.segments]
+    return {
+        "copper_layers": len({segment.layer for segment in result.segments}),
+        "thickness_mm": THICKNESS_MM,
+        "copper_weight_oz": FAB_COPPER_WEIGHT_OZ,
+        "min_track_mm": round(min(widths), 3) if widths else None,
+        "min_clearance_mm": router.CLEARANCE_MM,
+        "min_drill_mm": router.VIA_DRILL_MM,
+        "min_hole_to_copper_mm": router.HOLE_CLEARANCE_MM,
+        "copper_to_edge_mm": router.EDGE_CLEARANCE_MM,
+        "material": "FR-4",
+        "surface_finish": "HASL, lead-free",
+        "mask_and_silk_colour": "fabricator default -- not specified here",
+        "measured_here": ["copper_layers", "min_track_mm"],
+        "design_rules": ["min_clearance_mm", "min_drill_mm",
+                         "min_hole_to_copper_mm", "copper_to_edge_mm"],
+        "our_choice_not_measured": ["thickness_mm", "copper_weight_oz", "material",
+                                    "surface_finish", "mask_and_silk_colour"],
+    }
+
+
 def report(placed: list[Placed] | None = None,
            result: router.RouteResult | None = None) -> dict:
     placed = placed or placement()
@@ -1233,6 +1492,7 @@ def report(placed: list[Placed] | None = None,
     table = {p.ref: p for p in sch.parts() if p.footprint}
     names = net_table(list(table.values()))
     routing = routing_report(placed, result)
+    escape = escape_rating(pads_of(placed), result, names)
     rects = [(p.ref, p.rect) for p in placed]
     overlaps: list[list[str]] = []
     for i, (ra, a) in enumerate(rects):
@@ -1291,6 +1551,8 @@ def report(placed: list[Placed] | None = None,
                 or assembly["duplicate_bom_rows"]),
             "every_power_net_has_a_pour": {p.net for p in POURS} == POWER_NETS,
             "the_pours_are_ordered_where_they_overlap": not pour_conflicts(),
+            "every_secondary_escape_is_rated":
+                escape["checks"]["every_secondary_escape_is_rated"],
         },
         "assembly_review": assembly,
         "routed": routing["routed"],
@@ -1313,19 +1575,21 @@ def report(placed: list[Placed] | None = None,
         "power_path": {
             "track_width_mm": ROUTE_POWER_MM,
             "poured_nets": [p.net for p in POURS],
-            "note": "the tracks are the escape from each land.  The pours are now kept as "
-                    "corridors by route pressure (keep_clear -> Router._zone_cost), and "
-                    "measured in fill.json they recover 79 %-94 % of their outline as one "
-                    "patch each.  That makes them copper in parallel with the escapes; it "
-                    "does not make them a quoted conductor.  IPC-2221 at 1 oz and a 10 degC "
-                    "rise puts 10 A at about 7 mm, the copper weight is undecided, and the "
-                    "Q1/Q2 gap at x 43-46.4 mm is still crossed by 0.8 mm tracks.  Those "
-                    "ampacity numbers are a chart, quoted to say what the copper is not; "
-                    "they are not a measurement, a thermal model or a rating.  VSS is "
+            "escape_rating": escape,
+            "note": "the fills are copper in parallel with the escapes, but a fill is not "
+                    "in the board file -- only its outline is -- so the escape is the only "
+                    "part that can be rated from the geometry that is.  Each secondary half "
+                    "leaves its pour at x 43 and reaches the drain land at x 46.87 through "
+                    "one 0.8 mm track and two 0.3 mm-drill vias in series, and escape_rating "
+                    "quotes that path in both bases (adiabatic I2t for a fault pulse, "
+                    "IPC-2221 chart for a continuous current) rather than blending them.  "
+                    "The via barrel binds the pulse number at either copper weight.  VSS is "
                     "routed at signal width on purpose: it is the controller's source "
                     "reference through the R1 Kelvin tap, not a current path.",
         },
-        "manufacturing_package": "NOT_RELEASED",
+        "process_requirements": process_requirements(result),
+        "manufacturing_package": (MANUFACTURING_PACKAGE_EXPORTED
+                                  if FAB_MANIFEST.is_file() else "NOT_EXPORTED"),
         "hardware_built": False,
         "fabrication_approved": False,
         "evidence": {
@@ -1353,20 +1617,24 @@ def report(placed: list[Placed] | None = None,
             "datasheet (max residual 4.9 um) but is still a redrawing, and neither "
             "this repository nor the sheet's board-pads figure says whether the "
             "lands are to IPC density level A, B or C",
-            "quote the corridor ampacity: the fills now retain 79 %-94 % of their "
-            "outlines as one patch each (they kept 2.5 %-65 % when the routing "
-            "crossed the corridors), so the corridors are conductors -- but the "
-            "number still has to be derived from the copper weight and the IPC-2221 "
-            "chart before any current is claimed, and the Q1/Q2 escape gap at x 43-"
-            "46.4 mm is still crossed by 0.8 mm tracks rather than by fill",
+            "widen the secondary escape before claiming more than a fault pulse: the "
+            "0.8 mm track and the two 0.3 mm-drill vias between the pour edge at x 43 "
+            "and the drain land at x 46.87 are quoted in power_path.escape_rating, and "
+            "at 1 oz the chart puts one half at about 2 A continuous.  IPC-2221 has no "
+            "via-barrel term, so a continuous rating needs a barrel calculation from the "
+            "fabricator's plating spec, not a wider chart lookup",
             "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what "
             "must not creep up to it, and that is a fill question, not a track question",
-            "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the "
-            "IPC-2221 figures here are a chart, not a measurement",
-            "export gerbers, drill and position: the two stated preconditions (fills "
-            "measured, DRC clean with the zones refilled) now hold, and nothing is "
-            "exported because the copper weight and the ampacity statement are still "
-            "open -- a fabrication package is a claim about what may be built",
+            "confirm the copper weight with the fabricator: the package asks for 1 oz, "
+            "which is what the escape_rating chart numbers are quoted at; 2 oz would "
+            "raise the track figure but not the via barrel that binds the pulse number",
+            "the fab package in pcb/sr_fault_validation/fab/ is exported and is still "
+            "not an approval: the manifest binds the nine gerbers, the drill file and "
+            "the DNP-excluded position CSV to the board hash and repeats the escape "
+            "rating as a stated limit, and the export fails if a layer it asked for is "
+            "missing or a DNP part is still in the CSV.  hardware_built and "
+            "fabrication_approved stay false until a person signs, and the 1 oz in it "
+            "is a request to the fabricator, not a measurement",
         ],
     }
 
@@ -1534,7 +1802,7 @@ def measure_fills(cli: Path, version: str = "") -> dict:
             path.unlink(missing_ok=True)
 
 
-def check() -> None:
+def check(fab: bool = False) -> None:
     data = write()
     checks = data["checks"]
     if not all(v for k, v in checks.items() if isinstance(v, bool)):
@@ -1545,6 +1813,9 @@ def check() -> None:
           f"{data['counts']['test_points']} test points")
     cli = find_kicad_cli()
     if cli is None:
+        if fab:
+            raise SystemExit("--fab needs kicad-cli (KICAD_CLI, PATH, or a standard "
+                             "install): the gerbers are whatever kicad-cli plots")
         print("kicad-cli not found (KICAD_CLI, PATH, or a standard install) -- "
               "DRC NOT reproduced; the committed board was still regenerated")
         return
@@ -1585,6 +1856,22 @@ def check() -> None:
         raise SystemExit("no unconnected items on an unrouted board: the netlist did not "
                          "reach the board, so the DRC result means nothing")
     measure_and_record(cli, version)
+    manifest = export_fab(cli, version, data)
+    # ``report()`` reads the manifest's existence, so it was written before the
+    # package existed; restate the one field the export changed and rewrite.
+    data["manufacturing_package"] = MANUFACTURING_PACKAGE_EXPORTED
+    (OUT / REPORT).write_text(_report_text(data), encoding="utf-8", newline="\n")
+    print(f"fab: {len(manifest['files'])} files, "
+          f"{sum(f['bytes'] for f in manifest['files']) / 1024.0:.0f} KiB, "
+          f"{manifest['copper_weight_oz']} oz, kicad-cli {version}")
+    for net, row in manifest["current_rating"]["nets"].items():
+        lead = row["rating"][f"{COPPER_WEIGHTS_OZ[0]}oz"]
+        print(f"  escape {net}: {row['tracks']} track(s) + {row['vias']} via(s), "
+              f"{lead['series_r_mohm']} mOhm at {COPPER_WEIGHTS_OZ[0]} oz, "
+              f"I2t {lead['i2t_a2s']} A2s by the {lead['binding_element']} "
+              f"({lead['hold_ms_at_10a']} ms at 10 A), "
+              f"chart {next(iter(lead['chart_a'].values()))} A at "
+              f"{CHART_RISES_K[0]:.0f} K")
 
 
 def measure_and_record(cli: Path, version: str) -> None:
@@ -1601,13 +1888,160 @@ def measure_and_record(cli: Path, version: str) -> None:
         raise SystemExit(f"the pours did not fill as designed: {bad}")
 
 
+def fab_commands(cli: Path, board: Path, out: Path) -> dict[str, list[str]]:
+    """The three exports that make a fabrication package.
+
+    ``--check-zones`` on the gerbers is the one that matters.  The committed
+    board carries zone *outlines* and no fill, so a plot without it would ship
+    empty pours next to a DRC run that refilled them -- the package would
+    disagree with its own evidence.  The position file excludes the DNP parts:
+    they have lands but are not placed, which is what "do not populate" means.
+    """
+    return {
+        "gerbers": [str(cli), "pcb", "export", "gerbers", "--check-zones",
+                    "-l", FAB_GERBER_LAYERS, "-o", str(out), str(board)],
+        "drill": [str(cli), "pcb", "export", "drill", "--format", "excellon",
+                  "-u", "mm", "-o", str(out), str(board)],
+        "position": [str(cli), "pcb", "export", "pos", "--format", "csv",
+                     "--units", "mm", "--exclude-dnp",
+                     "-o", str(out / "sr_fault_validation-pos.csv"), str(board)],
+    }
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def plotted_layers(out: Path) -> list[str]:
+    """The gerber plots kicad-cli actually wrote, by layer name.
+
+    A layer the board's ``(layers)`` table does not declare is dropped without
+    a message or a non-zero exit, so "the export returned 0" is not evidence
+    that every requested layer was plotted.
+    """
+    present = {p.suffix.lower() for p in out.iterdir() if p.is_file()}
+    return [name for name, suffix in FAB_GERBER_SUFFIX.items() if suffix in present]
+
+
+def check_plotted_layers(out: Path) -> None:
+    """Fail, naming the layer, when a requested gerber layer produced no file."""
+    missing = [name for name in FAB_GERBER_SUFFIX if name not in plotted_layers(out)]
+    if missing:
+        raise SystemExit(
+            "kicad-cli plotted no file for: " + ", ".join(missing)
+            + ".  It plots only the layers the board's own (layers) table declares;"
+              " add them there rather than dropping them from the package.")
+
+
+def position_refs(path: Path) -> set[str]:
+    """The references a pick-and-place machine would act on, read from the CSV."""
+    with path.open(encoding="utf-8", newline="") as fh:
+        return {row["Ref"] for row in csv.DictReader(fh)}
+
+
+def check_position_excludes_dnp(path: Path) -> None:
+    """Fail, naming the part, when a DNP part is still in the position file.
+
+    ``--exclude-dnp`` reads the footprint's ``(attr ... dnp)``, not the part
+    table.  The first package was exported with the flag on a board where no
+    footprint carried it, so the ten DNP parts -- the gate clamps that are
+    meant to stay unpopulated -- went into the CSV a machine follows.
+    """
+    leaked = sorted(position_refs(path) & _dnp_refs())
+    if leaked:
+        raise SystemExit(
+            f"{path.name} still places the DNP part(s) {', '.join(leaked)}.  "
+            f"--exclude-dnp reads the footprint's (attr ... dnp); the dnp flag in the "
+            f"part table has to be written onto the board as well.")
+
+
+def export_fab(cli: Path, version: str, data: dict) -> dict:
+    """Write ``fab/`` and the manifest that says what the package is.
+
+    The manifest repeats the escape rating rather than pointing at the board
+    report: a fabricator receives the zip, not the repository, so the limit has
+    to travel with the copper.  It also carries the two approval flags as
+    false, because a package that can be ordered is exactly the artefact that
+    gets mistaken for an approved one.
+    """
+    board = OUT / BOARD
+    drc = OUT / "drc.json"
+    fills = OUT / "fill.json"
+    for path in (drc, fills):
+        if not path.is_file():
+            raise SystemExit(f"{path.name} is missing: run --check before --fab")
+        if path.stat().st_mtime < board.stat().st_mtime:
+            raise SystemExit(f"{path.name} is older than the board -- it describes a "
+                             f"different design; run --check again")
+    if not all(json.loads(fills.read_text(encoding="utf-8"))["checks"].values()):
+        raise SystemExit("fill.json has a failed pour check; not packaging it")
+
+    FAB.mkdir(parents=True, exist_ok=True)
+    for stale in FAB.iterdir():
+        if stale.is_file():
+            stale.unlink()
+    for name, argv in fab_commands(cli, board, FAB).items():
+        proc = subprocess.run(argv, capture_output=True, encoding="utf-8", errors="replace")
+        if proc.returncode != 0:
+            raise SystemExit(f"kicad-cli {name} export failed (exit {proc.returncode}): "
+                             f"{(proc.stderr or proc.stdout).strip()}")
+    files = sorted(p for p in FAB.iterdir() if p.is_file() and p.name != FAB_MANIFEST.name)
+    if not files:
+        raise SystemExit("the fabrication export wrote no files")
+    check_plotted_layers(FAB)
+    # A package can be complete by count and still instruct a machine to place
+    # a part that must stay empty, so the position file is checked on content.
+    check_position_excludes_dnp(FAB / "sr_fault_validation-pos.csv")
+    rating = data["power_path"]["escape_rating"]
+    manifest = {
+        "board": BOARD,
+        "board_sha256": _sha256(board),
+        "kicad_cli": version,
+        "copper_weight_oz": FAB_COPPER_WEIGHT_OZ,
+        "layers": FAB_GERBER_LAYERS.split(","),
+        "plotted_layers": plotted_layers(FAB),
+        "excluded_from_position": sorted(_dnp_refs() & {p["ref"] for p in data["placement"]}),
+        "files": [{"name": p.name, "bytes": p.stat().st_size, "sha256": _sha256(p)}
+                  for p in files],
+        "current_rating": rating,
+        "process_requirements": data["process_requirements"],
+        "what_this_is": "gerbers, drill and a position file for a fault-response "
+                        "validation board: two UCC24624, two BSC010N04LS6, and the "
+                        "fault interface.  The escapes are rated in current_rating.",
+        "what_this_is_not": [
+            "an approval to build: hardware_built and fabrication_approved are false",
+            "a 100 A power stage -- the board is for one fault event of a few tens of "
+            "microseconds, and the continuous figure in current_rating is a chart. "
+            "The 10 A in the board document is a pulse, not a continuous rating",
+            "a thermal model: current_rating has no cooling term and no junction "
+            "temperature, and IPC-2221 has no via-barrel term at all",
+            "a released assembly drawing: the DNP parts have lands and no placement",
+        ],
+        "flags": {"hardware_built": False, "fabrication_approved": False},
+    }
+    FAB_MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                            encoding="utf-8", newline="\n")
+    return manifest
+
+
+def _dnp_refs() -> set[str]:
+    return {p.ref for p in sch.parts() if p.dnp}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--check", action="store_true", help="regenerate and run kicad-cli DRC")
+    ap.add_argument("--check", action="store_true",
+                    help="regenerate, run kicad-cli DRC, measure the fills and export fab/")
     ap.add_argument("--write", action="store_true", help="regenerate the board and report")
+    ap.add_argument("--fab", action="store_true",
+                    help="like --check, and fail loudly if the fab package cannot be written")
     args = ap.parse_args()
-    if args.check:
-        check()
+    if args.check or args.fab:
+        check(fab=args.fab)
     else:
         data = write()
         print(f"wrote {OUT} ({data['counts']['parts_with_footprint']} parts, "
