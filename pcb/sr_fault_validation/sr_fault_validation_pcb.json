@@ -1,5 +1,5 @@
 {
-  "status": "LAYOUT_PASS_2_ROUTED_NOT_RELEASED",
+  "status": "LAYOUT_PASS_3_ROUTED_AND_POURED_NOT_RELEASED",
   "board": {
     "width_mm": 132.0,
     "depth_mm": 92.0,
@@ -877,7 +877,9 @@
     "every_part_is_inside_the_outline": true,
     "every_pad_net_is_fully_connected": true,
     "no_copper_is_closer_than_the_clearance": true,
-    "the_bom_and_the_board_are_the_same_parts": true
+    "the_bom_and_the_board_are_the_same_parts": true,
+    "every_power_net_has_a_pour": true,
+    "the_pours_are_ordered_where_they_overlap": true
   },
   "assembly_review": {
     "source": "BOM.csv beside the board file",
@@ -996,9 +998,84 @@
       "VG2": 0.25
     }
   },
+  "pours": {
+    "fill": "outlines only in the board file; kicad-cli --refill-zones fills them for DRC and the fill is never committed",
+    "zones": [
+      {
+        "net": "PGND",
+        "layer": "B.Cu",
+        "priority": 0,
+        "bbox_mm": [
+          12.0,
+          32.0,
+          128.0,
+          78.0
+        ],
+        "why": "return plane; carries the SR and shunt current back to J3.4/J2.2"
+      },
+      {
+        "net": "VOUT",
+        "layer": "B.Cu",
+        "priority": 2,
+        "bbox_mm": [
+          20.0,
+          40.0,
+          122.0,
+          45.5
+        ],
+        "why": "centre tap to output terminal along the J3/J2 row; its lower edge meets the pads and its body passes above the J3.4 return pin"
+      },
+      {
+        "net": "SEC_A",
+        "layer": "F.Cu",
+        "priority": 1,
+        "bbox_mm": [
+          15.0,
+          33.0,
+          43.0,
+          45.5
+        ],
+        "why": "corridor from J3.1 up to the Q1 drain; stops 1 mm short of SR_SRC, which the drain lands interleave"
+      },
+      {
+        "net": "SEC_B",
+        "layer": "F.Cu",
+        "priority": 1,
+        "bbox_mm": [
+          25.0,
+          46.0,
+          43.0,
+          66.0
+        ],
+        "why": "corridor from J3.3 down to the Q2 drain; starts at the J3 row so it actually contains its pad"
+      },
+      {
+        "net": "SR_SRC",
+        "layer": "F.Cu",
+        "priority": 1,
+        "bbox_mm": [
+          44.0,
+          33.0,
+          67.0,
+          66.0
+        ],
+        "why": "both source columns to the shunt; the cross keeps it off SEC_A/B"
+      }
+    ],
+    "overlapping_pairs_at_equal_priority": [],
+    "island_removal": "mode 0 (prune fills that touch no pad of their net), stated explicitly so the fill does not follow a KiCad default that may change; the pours are slit by the signal tracks and vias crossing them, so the surviving copper is patches",
+    "measured_in": "fill.json -- kicad-cli refills a throwaway copy with --refill-zones --save-board and the polygons are read back; the numbers there are a build product, not a design intent"
+  },
   "power_path": {
     "track_width_mm": 0.8,
-    "note": "the widths are a routing compromise, not a current rating.  At 1 oz copper a 0.8 mm track carries roughly 5 A at a 10 degC rise, and this board's ceiling is 10 A, so SEC_A/SEC_B/SR_SRC/PGND/VOUT have to become pours before the board is released.  VSS is routed at signal width on purpose: it is the controller's source reference through the R1 Kelvin tap, not a current path.  Nothing here is a thermal model."
+    "poured_nets": [
+      "PGND",
+      "VOUT",
+      "SEC_A",
+      "SEC_B",
+      "SR_SRC"
+    ],
+    "note": "the tracks are the escape from each land.  The pours were added after the routing, so every track crossing an outline slits it: measured, they recover between a fortieth and two thirds of their own outline area (fill.json).  They are extra copper in parallel with the escapes, not a plane, and this layout should not be quoted as a 10 A conductor -- IPC-2221 at 1 oz and a 10 degC rise puts 10 A at about 7 mm of conductor.  Those ampacity numbers are a chart, quoted to say what the copper is not; they are not a measurement, a thermal model or a rating.  VSS is routed at signal width on purpose: it is the controller's source reference through the R1 Kelvin tap, not a current path."
   },
   "manufacturing_package": "NOT_RELEASED",
   "hardware_built": false,
@@ -1008,13 +1085,15 @@
     "placement": "block packing, not an optimised placement; the power-stage bodies are fixed to keep the commutation loop in one direction",
     "nets": "same part table as the schematic generator, so the net names are the schematic's",
     "drc": "kicad-cli output goes to drc.json; the router's own clearance check runs in CI, where kicad-cli is absent",
-    "routing": "deterministic Manhattan grid router (tools/sr_board_router.py) on two layers; the widths and the net order are in this file, and the copper it emits is re-checked against the same clearance by clearance_violations()"
+    "routing": "deterministic Manhattan grid router (tools/sr_board_router.py) on two layers; the widths and the net order are in this file, and the copper it emits is re-checked against the same clearance by clearance_violations()",
+    "pours": "zone outlines in POURS, filled only at DRC time; the fill is a build product and its patchiness is reported, not assumed away"
   },
   "remaining_work": [
     "get a device-specific land pattern for BSC010N04LS6: the vendored PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain pins 6-8 have no pad of their own",
-    "fill copper for the power nets (SEC_A, SEC_B, SR_SRC, PGND, VOUT): a 0.8 mm track is a routing compromise, not a 10 A conductor",
-    "keep the VSS Kelvin tap (R1) off the power return -- the router's VSS track does not establish the split, the pour has to",
+    "route with the pours in mind: measured in fill.json, the fills recover between 2.5 % and 64 % of their own outline because the routing came first and every track crossing an outline slits it.  The secondary corridors show it worst: SEC_B keeps 2.5 % of 360 mm2 and contains one of the lands it serves (J3.3, whose centre sits on the outline edge), SEC_A keeps 10.7 % and contains no land centre at all -- it joins the net through the tracks the fill touches.  So each corridor is a strip beside a 0.8 mm escape, not a conductor.  Either re-route with the pour corridors kept clear of signal copper, or go to four layers and use an inner plane; until then the current path is the escapes",
+    "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what must not creep up to it, and that is a fill question, not a track question",
     "move the reference designators off one another (the cosmetic silk backlog)",
-    "export gerbers, drill and position only after DRC is clean and the pours land"
+    "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the IPC-2221 figures here are a chart, not a measurement",
+    "export gerbers, drill and position only after the fills are measured and DRC is clean with the zones refilled"
   ]
 }

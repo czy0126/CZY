@@ -22,6 +22,11 @@ __pycache__/
 
 # Session scratch: issue texts, temporary ledgers, probe project copies.
 .tmp_*/
+
+# Throwaway board copies kicad-cli writes zone fills into.  They must live next
+# to the board for its fp-lib-table to resolve; a killed run can leave one.
+pcb/*/_fill_tmp*
+pcb/*/_refill_tmp*
 .tmp_*.png
 # EasyEDA probe copies.  The client keeps these SQLite files open, so rm can
 # still fail with "Device or resource busy" after every session reports closed.

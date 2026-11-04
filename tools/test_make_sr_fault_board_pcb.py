@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
@@ -233,14 +234,184 @@ def test_every_pad_net_index_points_at_the_right_name(board_text):
 
 
 def test_the_board_carries_routed_copper(board_text):
-    """Pass 2 routes every net; what it does not do is pour the power nets.
-
-    A ``(zone ...)`` here would claim a current path the router never sized,
-    so its absence is checked as deliberately as the tracks' presence.
-    """
+    """The router emits both tracks and the vias that join the two layers."""
     assert "(segment " in board_text
     assert "(via " in board_text
-    assert "(zone " not in board_text, "power nets are not poured yet"
+
+
+# ---------------------------------------------------------------- pours
+def _zones(text: str) -> list[dict]:
+    """Every ``(zone ...)`` block, parsed from the board text.
+
+    Read out of the file, not out of the generator's own zone table: a test
+    that reads the answer back from the code that wrote it cannot see a
+    record that never made it into the file.
+    """
+    out = []
+    i = 0
+    while True:
+        j = text.find("(zone ", i)
+        if j < 0:
+            return out
+        end = sch.block_end(text, j)
+        block = text[j:end]
+        name = re.search(r'\(net_name "([^"]+)"\)', block)
+        layer = re.search(r'\(layer "([^"]+)"\)', block)
+        pts = [(float(x), float(y)) for x, y in
+               re.findall(r"\(xy ([-\d.]+) ([-\d.]+)\)", block)]
+        out.append({"net": name.group(1) if name else None,
+                    "layer": layer.group(1) if layer else None,
+                    "points": pts,
+                    "filled": "(filled_polygon" in block})
+        i = end
+
+
+def test_every_power_net_carries_a_pour(board_text):
+    """A track is how a net escapes a land; a pour is how it carries current.
+
+    The board's ceiling is 10 A.  Five power nets routed at 0.8 mm on one
+    layer is the state this test exists to stop being the final one: the
+    copper that carries the current has to be a filled region, not the
+    widest track that fits between two SOIC lands.
+    """
+    zones = _zones(board_text)
+    assert {z["net"] for z in zones} == set(pcb.POWER_NETS)
+    for z in zones:
+        assert z["layer"] in {"F.Cu", "B.Cu"}, z
+        assert len(z["points"]) >= 4, z
+
+
+def test_the_committed_board_stores_outlines_and_no_fills(board_text):
+    """Fills are a build product, so the file keeps only the outline.
+
+    Two reasons, one mechanical and one about honesty.  A committed
+    ``filled_polygon`` is a snapshot of one KiCad version's fill algorithm: it
+    would have to be regenerated whenever anything moved, and it drifts from
+    the outline it came from.  Measured on this board: the outline-only file is
+    about 2.5k lines; the same board with fills written back is 33.6k.  DRC
+    fills from the outline itself (``--refill-zones``), so the outline is the
+    complete description of the design.
+    """
+    zones = _zones(board_text)
+    assert zones, "no zone in the board text"
+    assert not any(z["filled"] for z in zones), "a fill was committed with the outline"
+
+
+def test_every_pour_sits_inside_the_board_outline(board_text):
+    """An outline that runs past ``Edge.Cuts`` is a short to the milled edge."""
+    zones = _zones(board_text)
+    assert zones, "no zone in the board text"     # else the loop below is vacuous
+    for z in zones:
+        for x, y in z["points"]:
+            assert 0 <= x <= pcb.BOARD_W_MM, (z["net"], x, y)
+            assert 0 <= y <= pcb.BOARD_D_MM, (z["net"], x, y)
+
+
+def test_a_drc_that_did_not_run_refuses_the_previous_report(tmp_path):
+    """A failed load must leave nothing to misread.
+
+    ``kicad-cli`` exits non-zero when it cannot load the board and writes no
+    report; a reader that keeps the old ``drc.json`` then reports the previous
+    board's numbers.  This happened once, for real: a zone token this KiCad
+    does not accept made every load fail with exit 3 and the check printed the
+    old run's "0 unconnected, 4 silk".  ``sys.executable`` stands in for the
+    CLI here -- any command that fails without writing the report will do.
+    """
+    board = tmp_path / "b.kicad_pcb"
+    board.write_text("(kicad_pcb)\n", encoding="utf-8")
+    out = tmp_path / "drc.json"
+    out.write_text('{"violations": []}', encoding="utf-8")      # a stale report
+    with pytest.raises(SystemExit):
+        pcb.run_drc(Path(sys.executable), board, out)
+    assert not out.exists(), "the stale report survived a DRC that did not run"
+
+
+def test_the_drc_refills_the_zones_before_it_judges_them():
+    """Without ``--refill-zones`` DRC judges an unfilled outline.
+
+    ``--save-board`` is not passed: the fill would then be written into the
+    committed file, which is exactly what the outline-only rule forbids.
+    """
+    argv = pcb.drc_command(Path("kicad-cli"), OUT / pcb.BOARD, OUT / "drc.json")
+    assert "--refill-zones" in argv
+    assert "--save-board" not in argv
+
+
+# ------------------------------------------------------------------ fill
+def _filled_board(net: str = "A") -> str:
+    """A board text with one zone and one filled patch (square with a hole)."""
+    return """(kicad_pcb
+\t(zone
+\t\t(net "%s")
+\t\t(layer "F.Cu")
+\t\t(polygon (pts (xy 0 0) (xy 10 0) (xy 10 10) (xy 0 10)))
+\t\t(filled_polygon
+\t\t\t(layer "F.Cu")
+\t\t\t(pts
+\t\t\t\t(xy 0 0) (xy 10 0) (xy 10 10) (xy 0 10)
+\t\t\t)
+\t\t\t(pts
+\t\t\t\t(xy 4 4) (xy 6 4) (xy 6 6) (xy 4 6)
+\t\t\t)
+\t\t)
+\t)
+)
+""" % net
+
+
+class _Pad:
+    def __init__(self, ref, number, net, x, y):
+        self.ref, self.number, self.net, self.x, self.y = ref, number, net, x, y
+
+
+# The pour spec the synthetic boards below are written against.
+_A = [("A", "F.Cu", 0, [(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0)])]
+
+
+def test_a_fill_is_measured_from_the_polygons_and_not_from_the_outline():
+    """The outline is the design; the fill is what the tool decided to keep.
+
+    The patch here is a 10x10 square with a 2x2 hole, so its area is 96, not
+    the 100 the outline encloses -- measuring the outline would report copper
+    that was never poured.
+    """
+    patches = pcb.fill_patches(_filled_board())["A"]
+    assert len(patches) == 1
+    assert patches[0]["area_mm2"] == pytest.approx(96.0)
+    assert len(patches[0]["holes"]) == 1
+
+
+def test_a_pad_in_a_fill_hole_is_reported_as_not_covered():
+    """A thermal-relief hole is not copper under the pad.
+
+    It does not mean the pad is unconnected -- the spokes connect it -- but it
+    does mean a point-in-polygon test has to look at the holes, or every
+    thermally relieved pad reads as covered when its centre is empty.
+    """
+    pads = [_Pad("R1", "1", 1, 1.0, 1.0), _Pad("R2", "1", 1, 5.0, 5.0),
+            _Pad("R3", "1", 1, 20.0, 20.0)]
+    report = pcb.fill_report(_filled_board(), pads=pads, names=["", "A"], specs=_A)
+    pour = report["pours"]["A"]
+    assert pour["pads_in_outline"] == 2          # the third pad is outside
+    assert pour["pads_covered"] == ["R1.1"]
+    assert pour["pads_uncovered"] == ["R2.1"]
+    assert pour["area_mm2"] == pytest.approx(96.0)
+
+
+def test_a_zone_with_no_fill_is_reported_rather_than_skipped():
+    text = '(kicad_pcb\n\t(zone\n\t\t(net "A")\n\t\t(layer "F.Cu")\n'
+    text += "\t\t(polygon (pts (xy 0 0) (xy 10 0) (xy 10 10)))\n\t)\n)\n"
+    report = pcb.fill_report(text, pads=[], names=["", "A"], specs=_A)
+    assert report["pours"]["A"]["patches"] == 0
+    assert report["checks"]["every_pour_has_fill"] is False
+
+
+@pytest.mark.skipif(not (OUT / "fill.json").exists(), reason="no fill.json in this checkout")
+def test_the_committed_fill_report_covers_every_pour():
+    data = json.loads((OUT / "fill.json").read_text(encoding="utf-8"))
+    assert set(data["pours"]) == set(pcb.POWER_NETS)
+    assert data["checks"]["every_pour_has_fill"] is True
+    assert data["checks"]["no_pour_patch_is_isolated"] is True
 
 
 def test_the_fp_lib_table_points_only_at_vendored_or_generated_libraries():
@@ -334,6 +505,33 @@ def test_the_committed_drc_found_no_placement_defect():
     assert items["schematic_parity"] == []
 
 
+def test_an_isolated_pour_is_a_gate_and_not_a_note():
+    """A fill that touches no pad of its own net is a pour that never reached.
+
+    It has to fail the check: the copper is what carries the current, so a
+    pour pruned out from under its pads leaves the net on the 0.8 mm escape
+    track alone -- which is the state the pours were added to end.  KiCad calls
+    it ``isolated_copper``; leaving it in an "unclassified" bucket would still
+    fail, but with a message that reads like an unknown DRC type.
+    """
+    buckets = pcb.classify_violations([
+        {"type": "isolated_copper", "severity": "warning"},
+        {"type": "silk_overlap", "severity": "warning"},
+        {"type": "clearance", "severity": "error"},
+    ])
+    assert [v["type"] for v in buckets["pours"]] == ["isolated_copper"]
+    assert [v["type"] for v in buckets["placement"]] == ["clearance"]
+    assert [v["type"] for v in buckets["cosmetic"]] == ["silk_overlap"]
+    assert buckets["other"] == []
+    assert pcb.POUR_ERRORS.isdisjoint(pcb.PLACEMENT_ERRORS | pcb.COSMETIC_TYPES)
+
+
+@pytest.mark.skipif(not DRC.exists(), reason="no drc.json in this checkout")
+def test_the_committed_pours_all_reach_a_pad():
+    pours = pcb.classify_violations(pcb.drc_items()["violations"])["pours"]
+    assert pours == [], [v["description"] for v in pours]
+
+
 @pytest.mark.skipif(not DRC.exists(), reason="no drc.json in this checkout")
 def test_the_committed_board_has_no_unrouted_net():
     """An empty ratsnest alone proves nothing, so both halves are asserted.
@@ -379,10 +577,11 @@ def test_the_mounting_hole_library_is_generated(placed):
 def test_the_honesty_flags_keep_the_board_unreleased():
     """``routed`` is a fact about connectivity, not a release.
 
-    Every net is connected and DRC is clean of placement defects, yet the
-    power nets are still 0.8 mm tracks rather than pours, the BSC010N04LS6
-    has no device-specific land, and nothing has been built.  Those are the
-    flags that keep the board out of a fabrication order.
+    Every net is connected and DRC is clean of placement defects, and the
+    power nets now carry pours -- but those pours are outlines whose fill has
+    not been measured, the BSC010N04LS6 has no device-specific land, and
+    nothing has been built.  Those are the flags that keep the board out of a
+    fabrication order.
     """
     data = pcb.report()
     assert data["routed"] is True

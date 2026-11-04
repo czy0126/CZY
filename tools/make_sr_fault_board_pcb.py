@@ -1,4 +1,4 @@
-"""Layout pass 2 of the single-pair SR validation board: placement and routing.
+"""Layout pass 3 of the single-pair SR validation board: routed and poured.
 
 What this is
 ------------
@@ -9,13 +9,18 @@ multi-pad net routed on two layers, and DRC run over the result.
 
 What it is not
 --------------
-**Not fabricable.**  The tracks are signal-width copper, not the current path:
-at 0.8 mm they are a routing compromise and the power nets need pours before
-this board can be ordered.  The power path, the remaining work and the three
-false flags (`routed` here means "every net connected", never "released") are
-all in ``sr_fault_validation_pcb.json``.  A manufacturing package (gerbers,
-drill, position) is deliberately *not* exported: a board whose power path is a
-0.8 mm trace that carries a drill file looks orderable and is not.
+**Not released.**  The five power nets in ``POURS`` carry a zone outline and
+the fills have been measured (``fill.json``, written by ``--check`` from a
+copy kicad-cli refilled): between 2.5 % and 64 % of each outline survives,
+because the routing came first and every track crossing an outline slits it.
+So the pours are extra copper in parallel with the 0.8 mm escapes, not a
+plane, and the series path from the centre tap through an SR to the shunt is
+still track-width.  That is the honest state of the copper and the first item
+of the leftover work.  The power path, the remaining work and the three false
+flags (`routed` here means "every net connected", never "released") are all in
+``sr_fault_validation_pcb.json``.  A manufacturing package (gerbers, drill,
+position) is deliberately *not* exported: a board whose copper has not been
+made to carry the stated current looks orderable and is not.
 
 Why placement is worth doing before routing
 -------------------------------------------
@@ -86,7 +91,7 @@ ROUTE_POWER_MM = 0.8
 # leaves 0.67 mm.
 POWER_NETS = frozenset({"SEC_A", "SEC_B", "SR_SRC", "PGND", "VOUT"})
 
-STATUS = "LAYOUT_PASS_2_ROUTED_NOT_RELEASED"
+STATUS = "LAYOUT_PASS_3_ROUTED_AND_POURED_NOT_RELEASED"
 
 # Why 1.25 mm and not the 0.75 mm the placement study used.  Two facts, one
 # geometric and one measured:
@@ -159,6 +164,96 @@ CLUSTERS: tuple[tuple[str, ...], ...] = (
 )
 
 MOUNTING_HOLES = ((6.0, 6.0), (126.0, 6.0), (6.0, 86.0), (126.0, 86.0))
+
+
+@dataclass(frozen=True)
+class Pour:
+    """One copper region, as an outline only.
+
+    The fill is not part of this record.  It is computed by
+    ``kicad-cli pcb drc --refill-zones`` at check time, so the committed file
+    describes the *design* and not one KiCad version's fill algorithm.
+    """
+
+    net: str
+    layer: str
+    priority: int
+    outline: tuple[tuple[float, float], ...]
+    why: str
+
+
+# Why pours at all.  At 1 oz copper and a 10 degC rise the IPC-2221 chart puts
+# 10 A at about 7 mm of track, and half of it (the two secondary halves) at
+# about 3.7 mm.  The router's widest legal track is 0.8 mm, so no track width
+# this board can represent is a 10 A conductor.
+#
+# Adding the pours was necessary and it was not sufficient.  They were drawn
+# after the routing, so every track crossing an outline slits it: measured,
+# 2.5 % to 64 % of each outline survives (fill.json), and the two secondary
+# corridors do not even contain the lands they serve.  The pours are extra
+# copper in parallel with the escapes, not a plane -- see the note in
+# ``power_path`` and the first open item in ``remaining_work``.
+#
+# Shapes and layers, read off the placement:
+#
+# * PGND is the return plane, so it takes B.Cu over the whole power region.
+#   Its pads run from y 4.7 (bias) to y 72.5 (J4), but the current that matters
+#   leaves Rsh1.2 (69.0, 50) and J2.2 (126, 46); the plane is over the power
+#   block, and the bias-side pads are joined by tracks.
+# * VOUT is the long run from the centre tap J3.2 (23, 46) to the output
+#   terminal J2.1 (121, 46).  It goes to B.Cu as a band with priority above
+#   PGND, so the plane yields around it; on F.Cu it would cut the SR_SRC
+#   cross in half.  The band's body sits at y 40-45.5 and only its lower edge
+#   meets the two terminal lands: a band centred on y 46 would be slit in two
+#   by the PGND pin J3.4 at x 33, leaving two 1.4 mm strips where the current
+#   path should be 6 mm.
+# * SEC_A runs up from J3.1 (18, 46) and SEC_B down from J3.3 (28, 46) as two
+#   corridors that stop at x 43, one millimetre short of the SR columns.  They
+#   stop there because they have to: Q1's source pads start at x 44.6 and its
+#   drain lands at x 46.4, a 0.6 mm gap, so SEC_A and SR_SRC interleave with
+#   nothing between them -- a pour over one carves the other and there is no
+#   width left to carve.  The last few millimetres to the drain lands stay a
+#   track, and the pour carries the corridor.
+#
+#   The first attempt at SEC_B was (24, 51)-(43, 66), placed by eye above the
+#   J3 row's y 46 and left of the SR column.  It contained no SEC_B pad at
+#   all -- J3.3 is at y 46 and the Q2 drain lands start at x 46.4 -- so the
+#   whole fill was orphaned copper: DRC reported 7 ``isolated_copper``
+#   warnings, all on that one zone.  The outlines now overlap the terminal
+#   lands they are named for (SEC_A up to y 45.5, SEC_B from y 46, against
+#   J3.1/J3.3 spanning y 44.6-47.4).  Note that fill.json counts a pad as "in"
+#   a pour only when its centre is inside the outline: SEC_A therefore reports
+#   no pad at all even though the fill overlaps the J3.1 land, and SEC_B
+#   reports just J3.3, whose centre sits exactly on the outline edge.  The
+#   connectivity verdict is the refilled DRC's, not this count.
+# * SR_SRC is a cross: the Q1/Q2 source column (x 44-48, y 33-66) joined to
+#   the shunt Rsh1.1 (63, 50) by the y 46-54 arm.  Its left edge is x 44,
+#   one millimetre clear of the corridors' x 43, and it stays inside the
+#   power block in y so it never reaches the fault block.
+#
+# Priorities are only load-bearing where two zones would overlap on one layer:
+# VOUT over PGND on B.Cu.  Everything else is disjoint by construction.
+POURS: tuple[Pour, ...] = (
+    Pour("PGND", "B.Cu", 0,
+         ((12.0, 32.0), (128.0, 32.0), (128.0, 78.0), (12.0, 78.0)),
+         "return plane; carries the SR and shunt current back to J3.4/J2.2"),
+    Pour("VOUT", "B.Cu", 2,
+         ((20.0, 40.0), (122.0, 40.0), (122.0, 45.5), (20.0, 45.5)),
+         "centre tap to output terminal along the J3/J2 row; its lower edge "
+         "meets the pads and its body passes above the J3.4 return pin"),
+    Pour("SEC_A", "F.Cu", 1,
+         ((15.0, 33.0), (43.0, 33.0), (43.0, 45.5), (15.0, 45.5)),
+         "corridor from J3.1 up to the Q1 drain; stops 1 mm short of SR_SRC, "
+         "which the drain lands interleave"),
+    Pour("SEC_B", "F.Cu", 1,
+         ((25.0, 46.0), (43.0, 46.0), (43.0, 66.0), (25.0, 66.0)),
+         "corridor from J3.3 down to the Q2 drain; starts at the J3 row so it "
+         "actually contains its pad"),
+    Pour("SR_SRC", "F.Cu", 1,
+         ((44.0, 33.0), (48.0, 33.0), (48.0, 46.0), (67.0, 46.0),
+          (67.0, 54.0), (48.0, 54.0), (48.0, 66.0), (44.0, 66.0)),
+         "both source columns to the shunt; the cross keeps it off SEC_A/B"),
+)
 
 
 def uid(*parts: str) -> str:
@@ -633,6 +728,41 @@ def copper_lines(result: router.RouteResult) -> list[str]:
     return out
 
 
+def zone_lines(names: list[str]) -> list[str]:
+    """The ``(zone ...)`` records, one per pour, outlines only.
+
+    Two options are not defaults and are stated on purpose:
+
+    * ``connect_pads yes`` is a solid connection, not a thermal relief.  A
+      thermal relief needs spokes narrower than the pad, and on the 1 mm test
+      points the first experiment produced a ``starved_thermal`` -- a pad the
+      fill could not reach at all.  This board is not reflowed by hand at
+      hobby temperatures; solid is the connection the current path wants.
+    * ``island_removal_mode 0`` prunes fills that touch no pad of their net.
+      That is the behaviour KiCad defaults to today, and writing it down keeps
+      the fill reproducible: the pours here are large enough to be slit by the
+      signal vias and tracks that cross them, so "how much of the outline
+      survives" is a real question and not a formatting detail.
+    """
+    index = {name: i for i, name in enumerate(names)}
+    out = []
+    for pour in POURS:
+        pts = " ".join(f"(xy {x:g} {y:g})" for x, y in pour.outline)
+        out.append(
+            f'\t(zone (net {index[pour.net]}) (net_name "{pour.net}")'
+            f' (layer "{pour.layer}")\n'
+            f'\t\t(priority {pour.priority}) (uuid "{uid("zone", pour.net)}")\n'
+            '\t\t(hatch edge 0.5)\n'
+            '\t\t(connect_pads yes (clearance 0.2))\n'
+            '\t\t(min_thickness 0.25)\n'
+            '\t\t(filled_areas_thickness no)\n'
+            '\t\t(fill yes (thermal_gap 0.5) (thermal_bridge_width 0.5)'
+            ' (island_removal_mode 0))\n'
+            f'\t\t(polygon (pts {pts}))\n'
+            '\t)\n')
+    return out
+
+
 def board_file(placed: list[Placed] | None = None,
                result: router.RouteResult | None = None) -> str:
     placed = placed or placement()
@@ -647,7 +777,7 @@ def board_file(placed: list[Placed] | None = None,
         f"\t(general (thickness {THICKNESS_MM:g}))\n"
         "\t(paper \"A4\")\n\t(title_block\n"
         "\t\t(title \"DCX 48V-2V - single-pair UCC24624 SR fault-shutdown validation board\")\n"
-        "\t\t(comment 1 \"LAYOUT PASS 2 - routed tracks on two layers; power nets NOT poured\")\n"
+        "\t\t(comment 1 \"LAYOUT PASS 3 - routed tracks plus power pours (outlines; fill at DRC)\")\n"
         "\t\t(comment 2 \"not a manufacturing package; hardware not built\")\n"
         "\t)\n"
         "\t(layers\n"
@@ -676,6 +806,7 @@ def board_file(placed: list[Placed] | None = None,
         out.append(_embed(_source(p.footprint), p.footprint, p.ref, p.value,
                           nets, names, p.x, p.y, p.rot))
     out.extend(copper_lines(result))
+    out.extend(zone_lines(names))
     out.append(")\n")
     return "".join(out)
 
@@ -772,6 +903,158 @@ def routing_report(placed: list[Placed], result: router.RouteResult | None = Non
     }
 
 
+def _box(points: tuple[tuple[float, float], ...]) -> tuple[float, float, float, float]:
+    xs = [x for x, _ in points]
+    ys = [y for _, y in points]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def pour_conflicts() -> list[list[str]]:
+    """Same-layer zones at equal priority whose boxes overlap.
+
+    Overlapping zones of *different* nets are legal when their priorities
+    differ -- that is exactly how VOUT's band gets carved out of the PGND
+    plane.  At equal priority the winner is decided by fill order, which is not
+    a design statement, so those pairs are reported and fail the check.
+    """
+    out = []
+    for i, a in enumerate(POURS):
+        for b in POURS[i + 1:]:
+            if a.layer != b.layer or a.priority != b.priority:
+                continue
+            ax0, ay0, ax1, ay1 = _box(a.outline)
+            bx0, by0, bx1, by1 = _box(b.outline)
+            if ax0 < bx1 and bx0 < ax1 and ay0 < by1 and by0 < ay1:
+                out.append(sorted([a.net, b.net]))
+    return out
+
+
+# --------------------------------------------------------------- fill measurement
+# The zone outlines are the design.  The fill is what KiCad decides to keep
+# after clearance, thermal reliefs and island removal, and it is not in the
+# committed file -- so it has to be measured, not assumed.  Everything below
+# reads a board text that *does* carry ``filled_polygon`` blocks, i.e. one that
+# kicad-cli wrote back after ``--refill-zones --save-board``.
+
+Point = tuple[float, float]
+
+
+def _signed_area(points: list[Point]) -> float:
+    """Shoelace area, positive for one winding and negative for the other."""
+    total = 0.0
+    for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]):
+        total += x0 * y1 - x1 * y0
+    return total / 2.0
+
+
+def _inside(points: list[Point], x: float, y: float) -> bool:
+    """Ray casting with the boundary counted as inside."""
+    hit = False
+    for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]):
+        if (y0 > y) != (y1 > y):
+            if x < x0 + (y - y0) * (x1 - x0) / (y1 - y0):
+                hit = not hit
+        cross = (x1 - x0) * (y - y0) - (y1 - y0) * (x - x0)
+        if (abs(cross) < 1e-9 and min(x0, x1) - 1e-9 <= x <= max(x0, x1) + 1e-9
+                and min(y0, y1) - 1e-9 <= y <= max(y0, y1) + 1e-9):
+            return True
+    return hit
+
+
+def _zone_blocks(text: str) -> list[str]:
+    """Every ``(zone ...)`` block, splitting on balanced parentheses."""
+    out, i = [], text.find("(zone")
+    while i >= 0:
+        end = sch.block_end(text, i)
+        out.append(text[i:end])
+        i = text.find("(zone", end)
+    return out
+
+
+def _pts(block: str) -> list[list[Point]]:
+    """The coordinate lists inside one ``(filled_polygon ...)`` block."""
+    lists = re.findall(r"\(pts\s+((?:\(xy [-\d.]+\s+[-\d.]+\)\s*)+)\)", block)
+    return [[(float(a), float(b)) for a, b in re.findall(r"\(xy\s+([-\d.]+)\s+([-\d.]+)\)", p)]
+            for p in lists]
+
+
+def fill_patches(text: str) -> dict[str, list[dict]]:
+    """Per net, the filled regions KiCad kept: outer contour, holes, area."""
+    out: dict[str, list[dict]] = {}
+    for block in _zone_blocks(text):
+        m = re.search(r'\(net "([^"]+)"\)', block)
+        if not m:
+            continue
+        patches = out.setdefault(m.group(1), [])
+        for fp in _polygon_blocks(block):
+            polys = _pts(fp)
+            if not polys:
+                continue
+            # Holes are subtracted by |area|, not by winding: KiCad writes them
+            # with the opposite orientation, but a reader that depends on that
+            # adds each hole to the copper it was cut out of.
+            patches.append({"outer": polys[0], "holes": polys[1:],
+                            "area_mm2": abs(_signed_area(polys[0]))
+                            - sum(abs(_signed_area(h)) for h in polys[1:])})
+    return out
+
+
+def _polygon_blocks(block: str) -> list[str]:
+    out, i = [], block.find("(filled_polygon")
+    while i >= 0:
+        end = sch.block_end(block, i)
+        out.append(block[i:end])
+        i = block.find("(filled_polygon", end)
+    return out
+
+
+def fill_report(text: str, pads: list | None = None, names: list[str] | None = None,
+                specs: list[tuple[str, str, int, list[Point]]] | None = None) -> dict:
+    """Area, patches and pad coverage for every pour.
+
+    ``specs`` is ``(net, layer, priority, outline)``; it defaults to ``POURS``
+    so the call site cannot describe a different board than the one generated.
+    The parameter exists for tests, which have to inject a geometry they can
+    compute the answer for by hand.
+    """
+    pads = pads if pads is not None else pads_of(placement())
+    names = names if names is not None else net_table(list(_table().values()))
+    specs = specs if specs is not None else [(p.net, p.layer, p.priority, list(p.outline))
+                                             for p in POURS]
+    fills = fill_patches(text)
+    pours = {}
+    for net, layer, priority, outline in specs:
+        patches = fills.get(net, [])
+        own = [p for p in pads if p.net >= 0 and names[p.net] == net]
+        within = [p for p in own if _inside(outline, p.x, p.y)]
+        covered = [f"{p.ref}.{getattr(p, 'number', '?')}" for p in within
+                   if any(_inside(pt["outer"], p.x, p.y)
+                          and not any(_inside(h, p.x, p.y) for h in pt["holes"])
+                          for pt in patches)]
+        pours[net] = {
+            "layer": layer,
+            "priority": priority,
+            "outline_area_mm2": abs(_signed_area(outline)),
+            "patches": len(patches),
+            "area_mm2": round(sum(p["area_mm2"] for p in patches), 3),
+            "patch_areas_mm2": [round(p["area_mm2"], 1) for p in patches],
+            "pads_in_outline": len(within),
+            "pads_covered": covered,
+            "pads_uncovered": [f"{p.ref}.{getattr(p, 'number', '?')}" for p in within
+                               if f"{p.ref}.{getattr(p, 'number', '?')}" not in covered],
+        }
+    return {
+        "pours": pours,
+        "checks": {"every_pour_has_fill": all(v["patches"] > 0 for v in pours.values())},
+        "note": "measured from a board kicad-cli wrote back after --refill-zones "
+                "--save-board; the committed board carries outlines only.  "
+                "pads_in_outline counts the pads of the pour's own net that lie "
+                "inside the outline; a pour with none there (VOUT, SEC_A) still "
+                "reaches its net through the tracks the fill touches, which is "
+                "why isolation is judged by the DRC and not by this count",
+    }
+
+
 def report(placed: list[Placed] | None = None,
            result: router.RouteResult | None = None) -> dict:
     placed = placed or placement()
@@ -833,18 +1116,40 @@ def report(placed: list[Placed] | None = None,
                 or assembly["in_bom_but_not_on_the_board"]
                 or assembly["value_or_footprint_mismatch"]
                 or assembly["duplicate_bom_rows"]),
+            "every_power_net_has_a_pour": {p.net for p in POURS} == POWER_NETS,
+            "the_pours_are_ordered_where_they_overlap": not pour_conflicts(),
         },
         "assembly_review": assembly,
         "routed": routing["routed"],
         "routing": routing,
+        "pours": {
+            "fill": "outlines only in the board file; kicad-cli --refill-zones fills them "
+                    "for DRC and the fill is never committed",
+            "zones": [{"net": p.net, "layer": p.layer, "priority": p.priority,
+                       "bbox_mm": list(_box(p.outline)), "why": p.why} for p in POURS],
+            "overlapping_pairs_at_equal_priority": pour_conflicts(),
+            "island_removal": "mode 0 (prune fills that touch no pad of their net), stated "
+                              "explicitly so the fill does not follow a KiCad default that "
+                              "may change; the pours are slit by the signal tracks and vias "
+                              "crossing them, so the surviving copper is patches",
+            "measured_in": "fill.json -- kicad-cli refills a throwaway copy with "
+                           "--refill-zones --save-board and the polygons are read back; "
+                           "the numbers there are a build product, not a design intent",
+        },
         "power_path": {
             "track_width_mm": ROUTE_POWER_MM,
-            "note": "the widths are a routing compromise, not a current rating.  At 1 oz "
-                    "copper a 0.8 mm track carries roughly 5 A at a 10 degC rise, and this "
-                    "board's ceiling is 10 A, so SEC_A/SEC_B/SR_SRC/PGND/VOUT have to become "
-                    "pours before the board is released.  VSS is routed at signal width on "
-                    "purpose: it is the controller's source reference through the R1 Kelvin "
-                    "tap, not a current path.  Nothing here is a thermal model.",
+            "poured_nets": [p.net for p in POURS],
+            "note": "the tracks are the escape from each land.  The pours were added after "
+                    "the routing, so every track crossing an outline slits it: measured, "
+                    "they recover between a fortieth and two thirds of their own outline "
+                    "area (fill.json).  They are extra copper in parallel with the escapes, "
+                    "not a plane, and this layout should not be quoted as a 10 A "
+                    "conductor -- IPC-2221 at 1 oz and a 10 degC rise puts 10 A at about "
+                    "7 mm of conductor.  Those ampacity numbers are a chart, quoted to say "
+                    "what the copper is not; they are not a measurement, a thermal model or "
+                    "a rating.  VSS is routed at signal width on purpose: it is the "
+                    "controller's source reference through the R1 Kelvin tap, not a current "
+                    "path.",
         },
         "manufacturing_package": "NOT_RELEASED",
         "hardware_built": False,
@@ -862,17 +1167,30 @@ def report(placed: list[Placed] | None = None,
                        "two layers; the widths and the net order are in this file, and the "
                        "copper it emits is re-checked against the same clearance by "
                        "clearance_violations()",
+            "pours": "zone outlines in POURS, filled only at DRC time; the fill is a build "
+                     "product and its patchiness is reported, not assumed away",
         },
         "remaining_work": [
             "get a device-specific land pattern for BSC010N04LS6: the vendored "
             "PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain "
             "pins 6-8 have no pad of their own",
-            "fill copper for the power nets (SEC_A, SEC_B, SR_SRC, PGND, VOUT): a "
-            "0.8 mm track is a routing compromise, not a 10 A conductor",
-            "keep the VSS Kelvin tap (R1) off the power return -- the router's VSS track "
-            "does not establish the split, the pour has to",
+            "route with the pours in mind: measured in fill.json, the fills recover "
+            "between 2.5 % and 64 % of their own outline because the routing came "
+            "first and every track crossing an outline slits it.  The secondary "
+            "corridors show it worst: SEC_B keeps 2.5 % of 360 mm2 and contains one "
+            "of the lands it serves (J3.3, whose centre sits on the outline edge), "
+            "SEC_A keeps 10.7 % and contains no land centre at all -- it joins the "
+            "net through the tracks the fill touches.  So each corridor is a strip "
+            "beside a 0.8 mm escape, not a conductor.  Either re-route with the pour "
+            "corridors kept clear of signal copper, or go to four layers and use an "
+            "inner plane; until then the current path is the escapes",
+            "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what "
+            "must not creep up to it, and that is a fill question, not a track question",
             "move the reference designators off one another (the cosmetic silk backlog)",
-            "export gerbers, drill and position only after DRC is clean and the pours land",
+            "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the "
+            "IPC-2221 figures here are a chart, not a measurement",
+            "export gerbers, drill and position only after the fills are measured and "
+            "DRC is clean with the zones refilled",
         ],
     }
 
@@ -922,11 +1240,120 @@ PLACEMENT_ERRORS = {"lib_footprint_issues", "lib_footprint_mismatch", "missing_c
                     "courtyards_overlap", "clearance", "shorting_items", "hole_clearance",
                     "hole_to_hole", "edge_clearance", "copper_edge_clearance"}
 
+# A pour defect.  ``isolated_copper`` is a fill patch that touches no pad of
+# its own net: KiCad pruned it to nothing useful.  This is the failure mode the
+# pours exist to avoid -- if every patch under a power net is isolated, the net
+# is back on its 0.8 mm escape track alone, and the board looks poured.
+POUR_ERRORS = {"isolated_copper", "starved_thermal"}
+
 # Cosmetic only: the reference designators have never been moved off one
 # another, so a few still overlap.  Reported as backlog, not as a gate -- a
 # gate that can never go green stops being read.
 COSMETIC_TYPES = {"silk_overlap", "silk_over_copper", "text_over_copper",
                   "text_thickness", "text_height"}
+
+
+def classify_violations(violations: list[dict]) -> dict[str, list[dict]]:
+    """Split DRC violations into placement / pour / cosmetic / unclassified."""
+    return {
+        "placement": [v for v in violations if v.get("type") in PLACEMENT_ERRORS],
+        "pours": [v for v in violations if v.get("type") in POUR_ERRORS],
+        "cosmetic": [v for v in violations if v.get("type") in COSMETIC_TYPES],
+        "other": [v for v in violations
+                  if v.get("type") not in PLACEMENT_ERRORS | POUR_ERRORS | COSMETIC_TYPES],
+    }
+
+
+def drc_command(cli: Path, board: Path, out: Path) -> list[str]:
+    """The ``kicad-cli pcb drc`` argv.
+
+    ``--refill-zones`` fills the outlines in memory before DRC looks at them.
+    Without it the zones are empty, and DRC then judges a board with no pour
+    at all -- the check passes precisely because the copper is missing.
+
+    ``--save-board`` is deliberately absent.  It is the only way to get the
+    fill written back, and writing it back would make the committed board file
+    depend on the KiCad version that computed it: 33.6k lines instead of 2.5k
+    for the same design, and a diff on every version bump.
+    """
+    return [str(cli), "pcb", "drc", "--format", "json", "--severity-all",
+            "--refill-zones", "-o", str(out), str(board)]
+
+
+def run_drc(cli: Path, board: Path, out: Path) -> dict[str, list[dict]]:
+    """Run kicad-cli and refuse to read a report it did not write.
+
+    kicad-cli exits 0 for DRC *violations*, so return code is not a verdict --
+    but a non-zero code is a load failure, and a missing report is a run that
+    never happened.  Either way the old ``drc.json`` must not be read: it is a
+    report about a different board, and reading it turns a broken file into
+    "0 unconnected items".
+
+    This is not hypothetical.  A zone token this KiCad does not accept made
+    every load fail with exit 3, ``subprocess.run(check=False)`` swallowed it,
+    and ``check()`` reported the previous run's "0 unconnected, 4 silk" as if
+    it had just been measured.  Deleting the report first is the fix: after a
+    failed run there is nothing to misread.
+    """
+    if out.exists():
+        out.unlink()
+    # ``encoding``/``errors`` are explicit on purpose.  The default text mode
+    # decodes with the console code page (GBK here), and kicad-cli emits bytes
+    # that are not valid GBK: the reader thread raised UnicodeDecodeError and
+    # every captured message became ``None``.  A DRC runner that cannot quote
+    # its own failure is a DRC runner that cannot fail.
+    proc = subprocess.run(drc_command(cli, board, out), capture_output=True,
+                          encoding="utf-8", errors="replace")
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout).strip()
+        raise SystemExit(f"kicad-cli DRC did not run (exit {proc.returncode}): {detail}")
+    if not out.exists():
+        raise SystemExit(f"kicad-cli exited 0 but wrote no report to {out}")
+    return drc_items(out)
+
+
+def fill_command(cli: Path, board: Path, out: Path) -> list[str]:
+    """``kicad-cli pcb drc`` with the fill written back into ``board``.
+
+    ``--save-board`` is legal only together with ``--refill-zones``, and it is
+    used here on a throwaway copy: the fill is a measurement, not part of the
+    committed board file.
+    """
+    return [str(cli), "pcb", "drc", "--format", "json", "--severity-all",
+            "--refill-zones", "--save-board", "-o", str(out), str(board)]
+
+
+def measure_fills(cli: Path, version: str = "") -> dict:
+    """Refill a throwaway copy of the board and report what survived.
+
+    The copy has to live in ``OUT``: the footprints are resolved through the
+    project's ``fp-lib-table``, which is found next to the board.  A copy in a
+    temp directory loads with every library missing and fills nothing.
+    """
+    tmp = OUT / "_fill_tmp.kicad_pcb"
+    rpt = OUT / "_fill_tmp_drc.json"
+    tmp.write_text((OUT / BOARD).read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+    for path in (rpt, OUT / "_fill_tmp.kicad_prl"):
+        path.unlink(missing_ok=True)
+    try:
+        proc = subprocess.run(fill_command(cli, tmp, rpt), capture_output=True,
+                              encoding="utf-8", errors="replace")
+        if proc.returncode != 0:
+            detail = (proc.stderr or proc.stdout).strip()
+            raise SystemExit(f"the fill could not be measured (exit {proc.returncode}): {detail}")
+        if not rpt.exists():
+            raise SystemExit(f"kicad-cli exited 0 but wrote no report to {rpt}")
+        data = fill_report(tmp.read_text(encoding="utf-8"))
+        items = drc_items(rpt)
+        data["checks"]["no_pour_patch_is_isolated"] = not classify_violations(
+            items["violations"])["pours"]
+        data["checks"]["no_unconnected_items_with_the_zones_filled"] = not items[
+            "unconnected_items"]
+        data["kicad_cli"] = version
+        return data
+    finally:
+        for path in (tmp, rpt, OUT / "_fill_tmp.kicad_prl"):
+            path.unlink(missing_ok=True)
 
 
 def check() -> None:
@@ -943,32 +1370,33 @@ def check() -> None:
         print("kicad-cli not found (KICAD_CLI, PATH, or a standard install) -- "
               "DRC NOT reproduced; the committed board was still regenerated")
         return
-    version = subprocess.run([str(cli), "--version"], capture_output=True, text=True,
-                             check=False).stdout.strip()
+    version = subprocess.run([str(cli), "--version"], capture_output=True,
+                             encoding="utf-8", errors="replace", check=False).stdout.strip()
     print("kicad-cli:", version)
-    subprocess.run([str(cli), "pcb", "drc", "--format", "json", "--severity-all",
-                    "-o", str(OUT / "drc.json"), str(OUT / BOARD)],
-                   check=False, capture_output=True)
-    items = drc_items()
+    items = run_drc(cli, OUT / BOARD, OUT / "drc.json")
     vs = items["violations"]
     unconnected = items["unconnected_items"]
     parity = items["schematic_parity"]
     by_type: dict[str, int] = {}
     for v in vs:
         by_type[v["type"]] = by_type.get(v["type"], 0) + 1
-    real = [v for v in vs if v["type"] in PLACEMENT_ERRORS]
-    cosmetic = [v for v in vs if v["type"] in COSMETIC_TYPES]
-    other = [v for v in vs if v["type"] not in PLACEMENT_ERRORS | COSMETIC_TYPES]
+    buckets = classify_violations(vs)
+    real, pours, cosmetic = buckets["placement"], buckets["pours"], buckets["cosmetic"]
+    other = buckets["other"]
     print(f"DRC: {len(vs)} violations {by_type or '{}'}")
     for v in real[:8]:
+        print(f"  {v['severity']} {v['type']}: {v['description']}")
+    print(f"pour backlog: {len(pours)} isolated fills (a gate)")
+    for v in pours[:8]:
         print(f"  {v['severity']} {v['type']}: {v['description']}")
     print(f"routing backlog: {len(unconnected)} unconnected items")
     print(f"cosmetic backlog: {len(cosmetic)} silkscreen/text items (not a gate)")
     print(f"schematic parity: {len(parity)} items")
-    if real or parity or other:
+    if real or pours or parity or other:
         raise SystemExit(
-            f"DRC found a placement defect -- {len(real)} courtyard/clearance/footprint "
-            f"items, {len(parity)} parity items, {len(other)} unclassified")
+            f"DRC found a defect -- {len(real)} courtyard/clearance/footprint items, "
+            f"{len(pours)} isolated pour fills, {len(parity)} parity items, "
+            f"{len(other)} unclassified")
     routed = data["routing"]["routed"]
     if routed and unconnected:
         raise SystemExit(
@@ -978,6 +1406,21 @@ def check() -> None:
     if not routed and not unconnected:
         raise SystemExit("no unconnected items on an unrouted board: the netlist did not "
                          "reach the board, so the DRC result means nothing")
+    measure_and_record(cli, version)
+
+
+def measure_and_record(cli: Path, version: str) -> None:
+    """Write ``fill.json`` and fail if a pour did not fill."""
+    fills = measure_fills(cli, version)
+    (OUT / "fill.json").write_text(json.dumps(fills, indent=2) + "\n", encoding="utf-8")
+    for net, row in fills["pours"].items():
+        print(f"fill {net:7s} {row['layer']:5s} {row['patches']} patch(es) "
+              f"{row['area_mm2']:8.1f} mm2 of {row['outline_area_mm2']:7.1f} outline, "
+              f"{row['pads_covered'] and len(row['pads_covered']) or 0}/"
+              f"{row['pads_in_outline']} pads inside the outline on the fill")
+    bad = [name for name, ok in fills["checks"].items() if not ok]
+    if bad:
+        raise SystemExit(f"the pours did not fill as designed: {bad}")
 
 
 def main() -> None:
