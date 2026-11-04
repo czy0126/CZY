@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-01",
+  "date": "2026-11-05",
   "status": "design estimate, not hardware validated",
   "test_command": "python -m pytest tools -q",
-  "test_result": "189 passed in 1.10s",
+  "test_result": "1243 passed, 9 skipped in 80.27s (0:01:20)",
   "files": {
     "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir": {
       "sha256": "84b3ee25c1ea05ec489ee66bf6f68874f4d9899f98996739a1dc8e640f27089a",
@@ -17,8 +17,8 @@
       "bytes": 1171
     },
     "tools/magnetics_design.py": {
-      "sha256": "ff8682e02878a52975a290546989bc95c507015d6fc855d102656f06db656569",
-      "bytes": 13596
+      "sha256": "6767d434f6ec25cf7025edd54176151f47000692d4408d8ad12e32326e39c68f",
+      "bytes": 23306
     },
     "tools/extract_op_point.py": {
       "sha256": "6468d762f77fb08ee9e334cca054e104b303742b60117e90b469b3abbd56d5f0",
@@ -29,20 +29,20 @@
       "bytes": 10903
     },
     "tools/winding_polarity.py": {
-      "sha256": "e813434de7219bc4661d4a7051e31e3c52e05bfe4da21494e3ffa7fa9b5e2c0c",
-      "bytes": 7783
+      "sha256": "cff21483a52029f163dc53065cc2ac47d60d8cdbd0f921432d3baa3dc721ba5d",
+      "bytes": 8002
     },
     "tools/board_netlist.py": {
-      "sha256": "3701ef173bf665b70dc404ca4d4d596593c497ef500ef0fab2cf5933387ff76d",
-      "bytes": 21302
+      "sha256": "3c137d1662d7301704c4bbd070eb58b7e12340ea92b3b2d2a8ce16ec0dd2ce2b",
+      "bytes": 21756
     },
     "tools/make_magnetics_manifest.py": {
-      "sha256": "fec8c38e9757b45173fdc46a33ca4c7050b0e2eb20f39eef2a3cf4a571a0d664",
-      "bytes": 2979
+      "sha256": "27df6bb5e36f5bd81faf15f9196b5e839bef4ae763e0ade6f61dbd43ef34f895",
+      "bytes": 3070
     },
     "tools/test_magnetics_design.py": {
-      "sha256": "8fe921ebaa748aa6bb4c43ac7f5da5782c12aecaba82a25399e93b4e75b7a1e2",
-      "bytes": 6303
+      "sha256": "f16917ed33fccba04b7697b53bce3ae606e8264f3520ca096f9a847a9506a1b8",
+      "bytes": 11190
     },
     "tools/test_extract_op_point.py": {
       "sha256": "6473e81275997bd7f94208550f65213c94077004a3d457e92181c41992e3869a",
@@ -53,20 +53,20 @@
       "bytes": 964
     },
     "tools/test_board_netlist.py": {
-      "sha256": "c6a8307e21169991281ee032fb9f6d1789c3593db0aed7e59977e9c80355c2bb",
-      "bytes": 13089
+      "sha256": "045c31ca461ed20738be870c5412a1dd8ac2ffc1fd9e309c4655caa46cb54743",
+      "bytes": 14260
     },
     "design/v3/magnetics/磁件设计包_2026-10-31.md": {
       "sha256": "d3a3f2e588b360e9613be44d54b21d4c184f973081cf4697ff3f6db0969b5b9f",
       "bytes": 13544
     },
     "design/v3/magnetics/绕组工艺卡_2026-11-01.md": {
-      "sha256": "169a5fb33240ed9732038c1f09ca8693bda2a670bf849ed5abed96a99b385b00",
-      "bytes": 7052
+      "sha256": "5e43d581313d2df80c713b0186bcfa2f394e2212b8566c1e7c51db59a876eb92",
+      "bytes": 7627
     },
     "design/v3/magnetics/magnetics_design.json": {
-      "sha256": "494dcefe3000004eaf698386b67d481fec59769ee2e3530dfc485f18d216c22d",
-      "bytes": 5873
+      "sha256": "a47b4e9e02012d654f9d594add44c70ac69f65d418c58b5fe03639fc74ca4532",
+      "bytes": 12355
     },
     "design/v3/magnetics/operating_point_100a.json": {
       "sha256": "8e7fdd796e75a9010b1420303a0d2f15d269f63f9b82534550b15047834d9c05",
@@ -85,16 +85,16 @@
       "bytes": 47043
     },
     "design/v3/magnetics/winding_polarity.json": {
-      "sha256": "dc93a8151bb58f53030936d64e925d2b5cc97ec5e8c099ed7271833bade872a0",
-      "bytes": 24650
+      "sha256": "b26c2c8d3bc78083dc99c3c2f2b3e777867b2f033f49baf965782bba281b498f",
+      "bytes": 24790
     },
     "design/v3/magnetics/winding_polarity.csv": {
       "sha256": "5241fb8936bed62042f3518551a89c0531a8fa795e08b4b3e0f34acc429518f3",
       "bytes": 1992
     },
     "design/v3/magnetics/first_article_polarity_record.csv": {
-      "sha256": "22223d8c50bf0c324be4502740d68dcc7896e6f0fdc3a0951fcd4b6cf1b98259",
-      "bytes": 2564
+      "sha256": "c36ae252079d54e696c1cfec97583837f967241631965cea3c75f6bf47c26840",
+      "bytes": 2704
     },
     "design/v3/magnetics/height_stackup.csv": {
       "sha256": "f025d9f4a5b3dbd0209083ee944f0291b5c47b1687d0e1fae32f0c0be54aa791",

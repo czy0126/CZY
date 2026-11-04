@@ -8,6 +8,7 @@
 python -m pytest tools -q          # 全部离线工具测试，必须全绿
 python tools/make_round4_decks.py  # 生成 round-4 deck（改母 deck 后必须重跑）
 python tools/magnetics_design.py --json design/v3/magnetics/magnetics_design.json
+    # 同一张表里有 catalogue_core_stack：五种 TDK ELP 套件在 D1 16 mm / D3 10 mm 下的 Z 预算
 python tools/draw_magnetics.py --out design/v3/magnetics   # 含 winding_connections.svg（带 DOT 端子图）
 python tools/winding_polarity.py --out design/v3/magnetics # 端子 DOT 表 + 首件极性记录（由 deck 派生）
 python tools/make_magnetics_manifest.py   # 改磁件包任一文件后重跑（含 SVG/源工具）
@@ -340,6 +341,12 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   `iout_from_v_a = avg(Vout)/RL` 才是总输出电流（约 99.8 A）。
 - 高度最坏值必须用胶/标签的**最大**厚度，不是标称：`height_stack()` 的
   `glue_max_m`/`label_max_m` 默认等于标称值，做公差分析时必须显式传入。
+- **裸芯筛选会系统性漏掉胶和标签**：`d1_staged_target_screen.json` 的"剩余 3.65 mm"只减了
+  裸芯+I 片，`catalogue_core_stack` 补上四项非磁芯项（胶 0.08 / 标签 0.06 / 压块 0.5 / 沉槽 −0.5）
+  后是 **3.51 mm**；**ELP43 因此从"过"翻成"不过"**（2.10 → 1.96 mm，差 0.04 mm 越过 2 mm 预留）。
+  高度与磁通是两个筛子：过 16 mm 预留的只有 ELP32/ELP38，其中过三匝面积筛选的只有 ELP38。
+  高度上限从 `d1_staged_target_policy.json` 读，**不要写死 16/10**——改了 policy 而工具不跟，就是
+  一份看起来通过的旧结论。
 - **48 V/120 A 候选已跑**：`..._vin48_i120.cir`（219.8 s、373 MB、59 变量）与探针
   `..._vin48_i120_cin.cir`（228.8 s、505 MB、80 变量）都是 258 235 点，`.meas` 行逐字相同。
   负载端 **1.8737 V / 121.67 A / 227.978 W**，端口效率 **94.227 %**，

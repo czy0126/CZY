@@ -8,14 +8,19 @@ loss table.
 
 from __future__ import annotations
 
+import json
 import math
+import shutil
+from pathlib import Path
 
+import magnetics_design
 import pytest
 
 from magnetics_design import (
     CORE,
     OP,
     OP_100,
+    catalogue_core_stack,
     core_gap_m,
     core_loss_bound_w_per_set,
     dowell_fr,
@@ -28,6 +33,23 @@ from magnetics_design import (
     transformer_copper_loss,
     winding_stack,
 )
+
+DESIGN = Path(__file__).resolve().parent.parent / "design" / "v3"
+FED = (
+    "power_priority/lr_tdk_catalog_core_source.json",
+    "power_priority/lr_tdk_catalog_core_screen.json",
+    "power_priority/d1_staged_target_policy.json",
+    "power_priority/d1_staged_target_screen.json",
+)
+
+
+def _fed_tree(tmp_path: Path) -> Path:
+    """A copy of just the files ``catalogue_core_stack()`` reads."""
+    for rel in FED:
+        target = tmp_path / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(DESIGN / rel, target)
+    return tmp_path
 
 
 def test_core_gap_hits_target_inductance() -> None:
@@ -160,6 +182,87 @@ def test_output_estimate_scales_with_input() -> None:
     out50 = output_estimate(50.0, 100.0)
     assert out46["pout_w"] < out50["pout_w"]
     assert out50["pout_w"] < 200.0
+
+
+def test_the_catalogue_stack_reproduces_the_published_10mm_stack() -> None:
+    # The screen must run the *same* arithmetic as the design package.  If the
+    # two ever disagree, one of them is quoting a number nobody computed.
+    published = magnetics_design.design_report()["height"]
+    row = next(r for r in catalogue_core_stack()["cores"] if r["id"] == "ELP32_I32")
+    assert row["stack_flat_no_clamp_worst_mm"] == pytest.approx(
+        published["flat_no_pocket"]["worst_case_m"] * 1e3, abs=1e-9)
+    assert row["stack_clamped_worst_mm"] == pytest.approx(
+        published["with_0.5mm_clamp"]["worst_case_m"] * 1e3, abs=1e-9)
+
+
+def test_the_catalogue_elp32_matches_the_datasheet_conversion() -> None:
+    # 6.35 +- 0.15 half core plus 3.15 +- 0.15 I plate is 9.8 mm worst case; the
+    # constant this module designs to must say the same thing.
+    row = next(r for r in catalogue_core_stack()["cores"] if r["id"] == "ELP32_I32")
+    assert row["core_pack_worst_mm"] == pytest.approx(CORE["height_max_m"] * 1e3, abs=1e-9)
+    assert row["core_pack_nominal_mm"] == pytest.approx(CORE["height_nominal_m"] * 1e3, abs=1e-9)
+
+
+def test_the_full_stack_moves_elp43_out_of_the_16mm_reserve() -> None:
+    """The bare-core screen passed ELP43 with 2.1 mm left; the glue and the
+    label are 0.14 mm, so the full stack is 1.96 mm -- under the 2 mm reserve.
+    That flip is the whole reason for computing the terms the screen omitted."""
+    screen = catalogue_core_stack()
+    elp43 = next(r for r in screen["cores"] if r["id"] == "ELP43_I43")
+    assert elp43["d1_budget_left_for_tim_cold_plate_fasteners_mm"] < screen["non_core_reserve_mm"]
+    assert "ELP43_I43" in screen["screens_the_bare_core_test_passed_but_the_full_stack_does_not"]
+
+
+def test_elp38_clears_16mm_and_elp32_is_the_only_10mm_set() -> None:
+    screen = catalogue_core_stack()
+    elp38 = next(r for r in screen["cores"] if r["id"] == "ELP38_I38")
+    assert elp38["d1_clears_the_non_core_reserve"] is True
+    assert elp38["d1_budget_left_for_tim_cold_plate_fasteners_mm"] == pytest.approx(3.51, abs=0.01)
+    assert elp38["d3_10mm_flat_fits"] is False
+    fitting_ten = [r["id"] for r in screen["cores"] if r["d3_10mm_flat_fits"]]
+    assert fitting_ten == ["ELP32_I32"]
+
+
+def test_a_taller_core_leaves_less_room() -> None:
+    rows = sorted(catalogue_core_stack()["cores"], key=lambda r: r["core_pack_worst_mm"])
+    budget = [r["d1_budget_left_for_tim_cold_plate_fasteners_mm"] for r in rows]
+    assert budget == sorted(budget, reverse=True)
+
+
+def test_the_height_limits_come_from_the_policy_not_from_a_literal(tmp_path, monkeypatch) -> None:
+    _fed_tree(tmp_path)
+    policy_path = tmp_path / "power_priority" / "d1_staged_target_policy.json"
+    policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    for stage in policy["stages"]:
+        if stage["id"] == "D1_100A":
+            stage["height_limit_mm"] = 12.0
+    policy_path.write_text(json.dumps(policy, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(magnetics_design, "DESIGN", tmp_path)
+    screen = catalogue_core_stack()
+    assert screen["limits_mm"]["D1_100A_and_D2_120A"] == 12.0
+    # At 12 mm only the smallest set can carry the known stack.
+    assert screen["cores_clearing_the_16mm_reserve"] == ["ELP32_I32"]
+
+
+def test_a_catalogue_height_that_disagrees_with_the_published_screen_is_refused(
+        tmp_path, monkeypatch) -> None:
+    _fed_tree(tmp_path)
+    catalogue = tmp_path / "power_priority" / "lr_tdk_catalog_core_source.json"
+    data = json.loads(catalogue.read_text(encoding="utf-8"))
+    data["cores"][1]["plate_height_nom_mm"] += 0.5      # ELP38 plate is not 3.8 mm
+    catalogue.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(magnetics_design, "DESIGN", tmp_path)
+    with pytest.raises(SystemExit, match="stale"):
+        catalogue_core_stack()
+
+
+def test_the_screen_states_what_it_does_not_know() -> None:
+    screen = catalogue_core_stack()
+    unknowns = " ".join(screen["unknowns"])
+    assert "L(I)" in unknowns
+    assert "TIM" in unknowns
+    assert screen["gate"].startswith("NOT_A_STACK")
+    assert screen["non_core_terms"]["evidence"].startswith("ASSUMED/DESIGN")
 
 
 def test_all_design_numbers_are_finite_and_positive() -> None:

@@ -138,6 +138,151 @@
       "margin_m": -0.0004399999999999994
     }
   },
+  "catalogue_core_stack": {
+    "kind": "STAGED_Z_BUDGET_FOR_EVERY_CATALOGUE_CORE_SET",
+    "source": "power_priority/lr_tdk_catalog_core_source.json",
+    "limits_mm": {
+      "D1_100A_and_D2_120A": 16.0,
+      "D3_THIN": 10.0
+    },
+    "non_core_terms": {
+      "glue_mm": [
+        0.05,
+        0.08
+      ],
+      "label_mm": [
+        0.05,
+        0.06
+      ],
+      "clamp_mm": 0.5,
+      "pocket_mm": 0.5,
+      "evidence": "ASSUMED/DESIGN -- no adhesive, label, clamp or pocket specification exists in this repository"
+    },
+    "non_core_reserve_mm": 2.0,
+    "cores": [
+      {
+        "id": "ELP32_I32",
+        "core": "ELP 32/6/20",
+        "plate": "I 32/3/20",
+        "material": "N97",
+        "tdk_ordering_prefix": "B66457G0000X",
+        "Amin_mm2": 128,
+        "Ae_mm2": 130,
+        "core_pack_nominal_mm": 9.5,
+        "core_pack_worst_mm": 9.8,
+        "stack_flat_no_clamp_worst_mm": 9.94,
+        "stack_clamped_worst_mm": 10.44,
+        "stack_clamped_pocketed_worst_mm": 9.94,
+        "d1_budget_left_for_tim_cold_plate_fasteners_mm": 6.06,
+        "d1_clears_the_non_core_reserve": true,
+        "d3_10mm_flat_margin_mm": 0.06,
+        "d3_10mm_flat_fits": true,
+        "three_turn_fault_flux_t": 0.34809,
+        "three_turn_area_screen_pass": false,
+        "disposition_as_previously_screened": "REJECT_FOR_THREE_AND_FOUR_TURN_FLUX_AT_RFQ_CURRENT"
+      },
+      {
+        "id": "ELP38_I38",
+        "core": "ELP 38/8/25",
+        "plate": "I 38/4/25",
+        "material": "N97",
+        "tdk_ordering_prefix": "B66459G0000X",
+        "Amin_mm2": 192,
+        "Ae_mm2": 194,
+        "core_pack_nominal_mm": 12.05,
+        "core_pack_worst_mm": 12.35,
+        "stack_flat_no_clamp_worst_mm": 12.49,
+        "stack_clamped_worst_mm": 12.99,
+        "stack_clamped_pocketed_worst_mm": 12.49,
+        "d1_budget_left_for_tim_cold_plate_fasteners_mm": 3.51,
+        "d1_clears_the_non_core_reserve": true,
+        "d3_10mm_flat_margin_mm": -2.49,
+        "d3_10mm_flat_fits": false,
+        "three_turn_fault_flux_t": 0.23206,
+        "three_turn_area_screen_pass": true,
+        "disposition_as_previously_screened": "REJECT_STANDARD_UNMODIFIED_AS_HEIGHT_EXCEEDS_TOTAL_LIMIT"
+      },
+      {
+        "id": "ELP43_I43",
+        "core": "ELP 43/10/28",
+        "plate": "I 43/4/28",
+        "material": "N97",
+        "tdk_ordering_prefix": "B66461G0000X",
+        "Amin_mm2": 217,
+        "Ae_mm2": 225,
+        "core_pack_nominal_mm": 13.6,
+        "core_pack_worst_mm": 13.9,
+        "stack_flat_no_clamp_worst_mm": 14.04,
+        "stack_clamped_worst_mm": 14.54,
+        "stack_clamped_pocketed_worst_mm": 14.04,
+        "d1_budget_left_for_tim_cold_plate_fasteners_mm": 1.96,
+        "d1_clears_the_non_core_reserve": false,
+        "d3_10mm_flat_margin_mm": -4.04,
+        "d3_10mm_flat_fits": false,
+        "three_turn_fault_flux_t": 0.205325,
+        "three_turn_area_screen_pass": true,
+        "disposition_as_previously_screened": "REJECT_STANDARD_UNMODIFIED_AS_HEIGHT_EXCEEDS_TOTAL_LIMIT"
+      },
+      {
+        "id": "ELP58_I58",
+        "core": "ELP 58/11/38",
+        "plate": "I 58/4/38",
+        "material": "N97",
+        "tdk_ordering_prefix": "B66293G0000X",
+        "Amin_mm2": 308,
+        "Ae_mm2": 310,
+        "core_pack_nominal_mm": 14.6,
+        "core_pack_worst_mm": 14.9,
+        "stack_flat_no_clamp_worst_mm": 15.04,
+        "stack_clamped_worst_mm": 15.54,
+        "stack_clamped_pocketed_worst_mm": 15.04,
+        "d1_budget_left_for_tim_cold_plate_fasteners_mm": 0.96,
+        "d1_clears_the_non_core_reserve": false,
+        "d3_10mm_flat_margin_mm": -5.04,
+        "d3_10mm_flat_fits": false,
+        "three_turn_fault_flux_t": 0.144661,
+        "three_turn_area_screen_pass": true,
+        "disposition_as_previously_screened": "REJECT_STANDARD_UNMODIFIED_AS_HEIGHT_EXCEEDS_TOTAL_LIMIT"
+      },
+      {
+        "id": "ELP64_I64",
+        "core": "ELP 64/10/50",
+        "plate": "I 64/5/50",
+        "material": "N97",
+        "tdk_ordering_prefix": "B66295G0000X",
+        "Amin_mm2": 518,
+        "Ae_mm2": 519,
+        "core_pack_nominal_mm": 15.3,
+        "core_pack_worst_mm": 15.6,
+        "stack_flat_no_clamp_worst_mm": 15.74,
+        "stack_clamped_worst_mm": 16.24,
+        "stack_clamped_pocketed_worst_mm": 15.74,
+        "d1_budget_left_for_tim_cold_plate_fasteners_mm": 0.26,
+        "d1_clears_the_non_core_reserve": false,
+        "d3_10mm_flat_margin_mm": -5.74,
+        "d3_10mm_flat_fits": false,
+        "three_turn_fault_flux_t": 0.086015,
+        "three_turn_area_screen_pass": true,
+        "disposition_as_previously_screened": "REJECT_STANDARD_UNMODIFIED_AS_HEIGHT_EXCEEDS_TOTAL_LIMIT"
+      }
+    ],
+    "cores_clearing_the_16mm_reserve": [
+      "ELP32_I32",
+      "ELP38_I38"
+    ],
+    "screens_the_bare_core_test_passed_but_the_full_stack_does_not": [
+      "ELP43_I43"
+    ],
+    "finding": "ELP38 is 12.35 mm bare (core + I plate, worst case); the known stack adds 0.14 mm of glue, label, clamp and pocket, leaving 3.51 mm of the 16 mm D1 budget for TIM, cold plate and fastener heads -- 1.51 mm beyond the 2 mm policy reserve. ELP43_I43 passed the bare-core reserve test but fails it once glue and label are counted. ELP32 is the only set that fits D3's 10 mm flat (by 0.06 mm) and it loses that margin the moment a clamp is added. Height is not the only screen: of the sets that clear the reserve, only ELP38_I38 also passes the three-turn area screen at the RFQ fault current, so the D1 core choice is still a trade between a core that fits and a core that does not saturate -- not a settled answer.",
+    "unknowns": [
+      "胶、标签、压块的规格与公差（本仓库没有规格书，全部是假设）",
+      "0.5 mm 沉槽能否由板厂实现、以及沉槽下 1.1 mm FR-4 的绝缘与回流铜",
+      "ELP38 的窗口高度与绕组构造（目录摘录没有窗口尺寸，平面绕组是否放得下未验证）",
+      "TIM 厚度与压缩量、冷板离板高度、紧固件头部凸出、板弯",
+      "100 degC 的实际 L(I)：面积/磁通筛选用的是 L*I/(N*Amin) 近似，不是厂家 L(I) 曲线"
+    ],
+    "gate": "NOT_A_STACK：这是已知项的预算，不是可制造高度。D1 的任何高度声明都必须等厂家给出完整装配高度与 100 degC L(I) 之后才能成立。"
+  },
   "loss_at_95a": {
     "iout_a": 94.9317,
     "pout_at_converter_w": 178.9869,

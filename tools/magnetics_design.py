@@ -29,6 +29,18 @@ MU0 = 4e-7 * math.pi
 RHO_CU_100C = 2.227e-8      # ohm m, 1.72e-8 at 20 degC with alpha 3.93e-3/K
 ALPHA_CU = 3.93e-3
 
+DESIGN = Path(__file__).resolve().parent.parent / "design" / "v3"
+
+# The four non-core terms of the Z stack.  They are assumptions, not datasheet
+# values: this repository holds no adhesive or label specification, the clamp
+# is a design choice (five bare cores cannot float), and the 0.5 mm pocket has
+# not been cleared with a fabricator.  The maximum glue/label thickness is what
+# the worst case must use -- the same trap ``main_board_mechanical.py`` avoids.
+GLUE_M, GLUE_MAX_M = 0.05e-3, 0.08e-3
+LABEL_M, LABEL_MAX_M = 0.05e-3, 0.06e-3
+CLAMP_M = 0.5e-3
+POCKET_M = 0.5e-3
+
 CORE: dict[str, float | str] = {
     "name": "TDK EILP32 N97 B66287G0000X197 + B66287K0000X197",
     "Ae_m2": 130e-6,
@@ -176,19 +188,170 @@ def transformer_copper_loss(op: dict[str, float] | None = None) -> dict[str, flo
     }
 
 
+def _load(rel: str) -> dict:
+    return json.loads((DESIGN / rel).read_text(encoding="utf-8"))
+
+
 def height_stack(glue_m: float, label_m: float, clamp_m: float = 0.0,
                  glue_max_m: float | None = None,
-                 label_max_m: float | None = None) -> dict[str, float]:
+                 label_max_m: float | None = None,
+                 core: dict | None = None,
+                 limit_m: float = 10e-3) -> dict[str, float]:
     """Core + glue + label + optional clamp, measured above the PCB top.
 
     Nominal uses the nominal core height; worst case uses the datasheet maximum
     core height and the *maximum* glue/label thickness, not their nominals.
+
+    ``core`` defaults to the EILP32 set this package designs around; passing a
+    different ``{"height_nominal_m", "height_max_m"}`` pair re-runs the *same*
+    arithmetic for another catalogue set rather than forking the formula.
+    ``limit_m`` is the total the stack is measured against -- 10 mm for D3,
+    16 mm for D1/D2 -- because a margin against the wrong target is a number
+    that looks like an answer.
     """
+    c = CORE if core is None else core
     g_max = glue_m if glue_max_m is None else glue_max_m
     l_max = label_m if label_max_m is None else label_max_m
-    nominal = float(CORE["height_nominal_m"]) + glue_m + label_m + clamp_m
-    worst = float(CORE["height_max_m"]) + g_max + l_max + clamp_m
-    return {"nominal_m": nominal, "worst_case_m": worst, "margin_m": 10e-3 - worst}
+    nominal = float(c["height_nominal_m"]) + glue_m + label_m + clamp_m
+    worst = float(c["height_max_m"]) + g_max + l_max + clamp_m
+    return {"nominal_m": nominal, "worst_case_m": worst, "margin_m": limit_m - worst}
+
+
+def catalogue_core_stack() -> dict[str, object]:
+    """The Z budget for every core set in the TDK planar catalogue extract.
+
+    ``magnetics_design.json`` answers the Z question for the one core it
+    designs (EILP32) against one target (10 mm).  The staged policy adopted on
+    2026-11-04 moves D1/D2 to 16 mm and keeps 10 mm as the D3 stretch, and the
+    ELP38 route was screened on **bare core height only** -- that screen states
+    its remainder is "not a full stack".  This table closes the gap by running
+    the same glue/label/clamp/pocket terms through :func:`height_stack` for
+    every catalogue set, so the comparison is like for like across cores and
+    across the two height targets.
+
+    What it is still not: a stack.  Winding construction, pocket feasibility,
+    TIM, cold plate, fastener heads and board bow are absent, so the number it
+    prints is the *budget left for them*, not a height anyone can build to.
+    ``d1_staged_target_screen.json`` already says the same about its 3.65 mm;
+    this only removes the terms that were already modelled.
+    """
+    src = _load("power_priority/lr_tdk_catalog_core_source.json")
+    policy = _load("power_priority/d1_staged_target_policy.json")
+    staged = _load("power_priority/d1_staged_target_screen.json")
+    screened = _load("power_priority/lr_tdk_catalog_core_screen.json")
+    limits = {s["id"]: s.get("height_limit_mm") for s in policy["stages"]}
+    d1_mm = float(limits["D1_100A"])
+    d3_mm = float(limits["D3_THIN"])
+    d1, d3 = d1_mm * 1e-3, d3_mm * 1e-3
+    reserve = float(staged["temporary_noncore_package_reserve_mm"])
+    bare_rows = {r["id"]: r for r in screened["cores"]}
+    screen_rows = {r["core_id"]: r for r in staged["elp_core_candidates"]}
+
+    rows = []
+    for c in src["cores"]:
+        nom = c["core_height_nom_mm"] + c["plate_height_nom_mm"]
+        worst = nom + c["core_height_tolerance_mm"] + c["plate_height_tolerance_mm"]
+        geom = {"height_nominal_m": nom * 1e-3, "height_max_m": worst * 1e-3}
+        flat = height_stack(GLUE_M, LABEL_M, 0.0, GLUE_MAX_M, LABEL_MAX_M,
+                            core=geom, limit_m=d1)
+        clamped = height_stack(GLUE_M, LABEL_M, CLAMP_M, GLUE_MAX_M, LABEL_MAX_M,
+                               core=geom, limit_m=d1)
+        pocketed = height_stack(GLUE_M, LABEL_M, CLAMP_M - POCKET_M,
+                                GLUE_MAX_M, LABEL_MAX_M, core=geom, limit_m=d1)
+        thin = height_stack(GLUE_M, LABEL_M, 0.0, GLUE_MAX_M, LABEL_MAX_M,
+                            core=geom, limit_m=d3)
+        bare = bare_rows[c["id"]]
+        # Two independent computations of the same bare height must agree: this
+        # catalogue extract, and the screen already published from it.
+        if abs(worst - bare["core_plus_plate_height_max_mm"]) > 1e-6:
+            raise SystemExit(
+                f"{c['id']}: catalogue gives {worst} mm bare height but "
+                f"lr_tdk_catalog_core_screen.json says "
+                f"{bare['core_plus_plate_height_max_mm']} -- one of the two is stale")
+        if c["id"] not in screen_rows:
+            raise SystemExit(f"{c['id']} is missing from d1_staged_target_screen.json")
+        residual = pocketed["margin_m"] * 1e3
+        rows.append({
+            "id": c["id"], "core": c["core"], "plate": c["plate"],
+            "material": c["material"], "tdk_ordering_prefix": c["tdk_ordering_prefix"],
+            "Amin_mm2": c["amin_mm2"], "Ae_mm2": c["ae_mm2"],
+            "core_pack_nominal_mm": round(nom, 3),
+            "core_pack_worst_mm": round(worst, 3),
+            "stack_flat_no_clamp_worst_mm": round(flat["worst_case_m"] * 1e3, 3),
+            "stack_clamped_worst_mm": round(clamped["worst_case_m"] * 1e3, 3),
+            "stack_clamped_pocketed_worst_mm": round(pocketed["worst_case_m"] * 1e3, 3),
+            "d1_budget_left_for_tim_cold_plate_fasteners_mm": round(residual, 3),
+            "d1_clears_the_non_core_reserve": residual >= reserve - 1e-9,
+            "d3_10mm_flat_margin_mm": round(thin["margin_m"] * 1e3, 3),
+            "d3_10mm_flat_fits": thin["margin_m"] >= -1e-12,
+            "three_turn_fault_flux_t": bare["flux_model_3turn_t"],
+            "three_turn_area_screen_pass": bare["three_turn_area_pass"],
+            "disposition_as_previously_screened": bare["disposition"],
+        })
+
+    # The catalogue's ELP32 (6.35 +- 0.15 half core, 3.15 +- 0.15 plate) must
+    # land exactly on the datasheet-derived constant this module designs to.
+    elp32 = next(r for r in rows if r["id"] == "ELP32_I32")
+    if abs(elp32["core_pack_worst_mm"] - float(CORE["height_max_m"]) * 1e3) > 1e-6:
+        raise SystemExit(
+            f"catalogue ELP32 bare height {elp32['core_pack_worst_mm']} mm disagrees "
+            f"with CORE['height_max_m'] {float(CORE['height_max_m']) * 1e3} mm")
+
+    passing = [r["id"] for r in rows if r["d1_clears_the_non_core_reserve"]]
+    optimistic = [
+        r["id"] for r in rows
+        if screen_rows[r["id"]]["planning_noncore_allowance_2mm_screen_pass"]
+        and not r["d1_clears_the_non_core_reserve"]
+    ]
+    elp38 = next(r for r in rows if r["id"] == "ELP38_I38")
+    both = [r["id"] for r in rows
+            if r["d1_clears_the_non_core_reserve"] and r["three_turn_area_screen_pass"]]
+    return {
+        "kind": "STAGED_Z_BUDGET_FOR_EVERY_CATALOGUE_CORE_SET",
+        "source": "power_priority/lr_tdk_catalog_core_source.json",
+        "limits_mm": {"D1_100A_and_D2_120A": d1_mm, "D3_THIN": d3_mm},
+        "non_core_terms": {
+            "glue_mm": [round(GLUE_M * 1e3, 3), round(GLUE_MAX_M * 1e3, 3)],
+            "label_mm": [round(LABEL_M * 1e3, 3), round(LABEL_MAX_M * 1e3, 3)],
+            "clamp_mm": round(CLAMP_M * 1e3, 3),
+            "pocket_mm": round(POCKET_M * 1e3, 3),
+            "evidence": "ASSUMED/DESIGN -- no adhesive, label, clamp or pocket "
+                        "specification exists in this repository",
+        },
+        "non_core_reserve_mm": reserve,
+        "cores": rows,
+        "cores_clearing_the_16mm_reserve": passing,
+        "screens_the_bare_core_test_passed_but_the_full_stack_does_not": optimistic,
+        "finding": (
+            f"ELP38 is {elp38['core_pack_worst_mm']:.2f} mm bare (core + I plate, worst "
+            f"case); the known stack adds {elp38['stack_clamped_pocketed_worst_mm'] - elp38['core_pack_worst_mm']:.2f} mm "
+            f"of glue, label, clamp and pocket, leaving "
+            f"{elp38['d1_budget_left_for_tim_cold_plate_fasteners_mm']:.2f} mm of the "
+            f"{d1_mm:.0f} mm D1 budget for TIM, cold plate and fastener heads -- "
+            f"{elp38['d1_budget_left_for_tim_cold_plate_fasteners_mm'] - reserve:.2f} mm "
+            f"beyond the {reserve:.0f} mm policy reserve. "
+            + (f"{', '.join(optimistic)} passed the bare-core reserve test but fails it "
+               f"once glue and label are counted. " if optimistic else
+               "No core set changes side when the non-core terms are added: every set "
+               "the bare-core screen passed still clears the reserve. ")
+            + f"ELP32 is the only set that fits D3's {d3_mm:.0f} mm flat "
+            f"(by {elp32['d3_10mm_flat_margin_mm']:.2f} mm) and it loses that margin the "
+            f"moment a clamp is added. "
+            f"Height is not the only screen: of the sets that clear the reserve, only "
+            f"{', '.join(both) or 'none'} also passes the three-turn area screen at the "
+            f"RFQ fault current, so the D1 core choice is still a trade between a core "
+            f"that fits and a core that does not saturate -- not a settled answer."
+        ),
+        "unknowns": [
+            "胶、标签、压块的规格与公差（本仓库没有规格书，全部是假设）",
+            "0.5 mm 沉槽能否由板厂实现、以及沉槽下 1.1 mm FR-4 的绝缘与回流铜",
+            "ELP38 的窗口高度与绕组构造（目录摘录没有窗口尺寸，平面绕组是否放得下未验证）",
+            "TIM 厚度与压缩量、冷板离板高度、紧固件头部凸出、板弯",
+            "100 degC 的实际 L(I)：面积/磁通筛选用的是 L*I/(N*Amin) 近似，不是厂家 L(I) 曲线",
+        ],
+        "gate": "NOT_A_STACK：这是已知项的预算，不是可制造高度。D1 的任何高度声明"
+                "都必须等厂家给出完整装配高度与 100 degC L(I) 之后才能成立。",
+    }
 
 
 def output_estimate(vin_v: float, iout_a: float,
@@ -284,13 +447,14 @@ def design_report() -> dict[str, object]:
         "window_width_mm": (float(CORE["outer_length_m"]) - float(CORE["centre_leg_width_m"])) / 2 * 1e3,
         "copper_width_max_mm": float(CORE["core_depth_m"]) * 1e3 - 2 * 1.5,
         "height": {
-            "flat_no_pocket": height_stack(0.05e-3, 0.05e-3, 0.0,
-                                          glue_max_m=0.08e-3, label_max_m=0.06e-3),
-            "pocket_0.5mm_no_clamp": height_stack(0.05e-3, 0.05e-3, -0.5e-3,
-                                                 glue_max_m=0.08e-3, label_max_m=0.06e-3),
-            "with_0.5mm_clamp": height_stack(0.05e-3, 0.05e-3, 0.5e-3,
-                                            glue_max_m=0.08e-3, label_max_m=0.06e-3),
+            "flat_no_pocket": height_stack(GLUE_M, LABEL_M, 0.0,
+                                          glue_max_m=GLUE_MAX_M, label_max_m=LABEL_MAX_M),
+            "pocket_0.5mm_no_clamp": height_stack(GLUE_M, LABEL_M, -POCKET_M,
+                                                 glue_max_m=GLUE_MAX_M, label_max_m=LABEL_MAX_M),
+            "with_0.5mm_clamp": height_stack(GLUE_M, LABEL_M, CLAMP_M,
+                                            glue_max_m=GLUE_MAX_M, label_max_m=LABEL_MAX_M),
         },
+        "catalogue_core_stack": catalogue_core_stack(),
         "loss_at_95a": loss_budget(OP),
         "loss_at_100a": loss_budget(OP_100),
         "output_100a": {

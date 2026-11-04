@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-04",
+  "generated": "2026-11-05",
   "scope": "100 A design delivery: v3 decks/raws, magnetics package, stage-F protocol, BOM package, 48 V/110 A and 120 A candidate records + deck-derived run metadata",
   "supersedes": {
     "path": "design/v2/manifest_current_candidate.json",
@@ -394,9 +394,9 @@
     {
       "path": "tools/magnetics_design.py",
       "kind": "script",
-      "bytes": 13596,
-      "mtime": 1793461176.0301201,
-      "sha256": "ff8682e02878a52975a290546989bc95c507015d6fc855d102656f06db656569"
+      "bytes": 23306,
+      "mtime": 1793810417.5271125,
+      "sha256": "6767d434f6ec25cf7025edd54176151f47000692d4408d8ad12e32326e39c68f"
     },
     {
       "path": "tools/draw_magnetics.py",
@@ -590,9 +590,9 @@
     {
       "path": "tools/test_magnetics_design.py",
       "kind": "script",
-      "bytes": 6303,
-      "mtime": 1793461181.0013003,
-      "sha256": "8fe921ebaa748aa6bb4c43ac7f5da5782c12aecaba82a25399e93b4e75b7a1e2"
+      "bytes": 11190,
+      "mtime": 1793810394.408152,
+      "sha256": "f16917ed33fccba04b7697b53bce3ae606e8264f3520ca096f9a847a9506a1b8"
     },
     {
       "path": "tools/test_draw_magnetics.py",
@@ -989,9 +989,9 @@
     {
       "path": "design/v3/magnetics/magnetics_design.json",
       "kind": "result",
-      "bytes": 5670,
-      "mtime": 1793461197.8283825,
-      "sha256": "b4dfabe3bd241864777c1ad0dd42ca12465de40a8785131d992de5746ae740c1"
+      "bytes": 12007,
+      "mtime": 1793810423.1110144,
+      "sha256": "3d1947e035689a7086148d17ada13f6f4c6f2316ac422f5cb2ba1118ac7cd46d"
     },
     {
       "path": "design/v3/magnetics/operating_point_100a.json",
@@ -1017,9 +1017,9 @@
     {
       "path": "design/v3/magnetics/manifest.json",
       "kind": "result",
-      "bytes": 4129,
-      "mtime": 1793502476.224109,
-      "sha256": "7a70259542b8f42ca10d7dd4d5d0a8404cdd079cc998c069cb5165f2008be44e"
+      "bytes": 4154,
+      "mtime": 1793810504.1999125,
+      "sha256": "199b04b22d8fd553d3e502284918ba879c2dd064f071ed1a4b5d3bb468ba80d3"
     },
     {
       "path": "design/v3/magnetics/height_stackup.csv",
