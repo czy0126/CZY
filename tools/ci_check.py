@@ -53,10 +53,12 @@ def _historical_crlf_equivalent(path: str, old: dict, fresh: dict) -> bool:
         return False
     normalized = content.replace(b"\r\n", b"\n")
     historical = normalized.replace(b"\n", b"\r\n")
+    # `fresh` is canonical LF now (see current_manifest.entry), so a CRLF
+    # working tree must be compared in its normalised form.
     return (
         len(historical) == old["bytes"]
         and hashlib.sha256(historical).hexdigest() == old["sha256"]
-        and hashlib.sha256(content).hexdigest() == fresh.get("sha256")
+        and hashlib.sha256(normalized).hexdigest() == fresh.get("sha256")
     )
 
 

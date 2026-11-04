@@ -507,19 +507,31 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+# Text sources are hashed after CRLF -> LF so a checkout with core.autocrlf=true
+# reproduces the manifest CI generates from LF bytes.  Anything else (notably
+# .raw) keeps its byte identity: RAWs are binary evidence, not sources.
+TEXT_SUFFIXES = frozenset({
+    ".cir", ".csv", ".inc", ".json", ".kicad_pcb", ".kicad_pro", ".kicad_sch",
+    ".lib", ".md", ".net", ".py", ".sch", ".sub", ".svg", ".tsv", ".txt", ".yaml", ".yml",
+})
+
+
+def canonical_bytes(path: Path) -> bytes:
+    data = path.read_bytes()
+    return data.replace(b"\r\n", b"\n") if path.suffix.lower() in TEXT_SUFFIXES else data
+
+
 def entry(path: str, kind: str) -> dict[str, object]:
     full = ROOT / path
     if not full.exists():
         return {"path": path, "kind": kind, "status": "missing"}
     size = full.stat().st_size
-    row: dict[str, object] = {
-        "path": path,
-        "kind": kind,
-        "bytes": size,
-        "mtime": full.stat().st_mtime,
-        "sha256": sha256(full) if size <= HASH_LIMIT_BYTES else "skipped-large-raw",
-    }
-    return row
+    if size > HASH_LIMIT_BYTES:
+        return {"path": path, "kind": kind, "bytes": size,
+                "mtime": full.stat().st_mtime, "sha256": "skipped-large-raw"}
+    data = canonical_bytes(full)
+    return {"path": path, "kind": kind, "bytes": len(data),
+            "mtime": full.stat().st_mtime, "sha256": hashlib.sha256(data).hexdigest()}
 
 
 _SPICE_SUFFIX = (("meg", 1e6), ("t", 1e12), ("g", 1e9), ("k", 1e3),

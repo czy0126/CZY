@@ -162,6 +162,28 @@ def test_crlf_historical_manifest_is_equal_to_lf_checkout(monkeypatch, tmp_path)
     assert "sha256" in " ".join(compare_manifests(old, changed))
 
 
+def test_a_crlf_checkout_still_reproduces_the_historic_crlf_manifest(monkeypatch, tmp_path):
+    """Both halves of the comparison: old CRLF hashes, fresh canonical LF.
+
+    ``current_manifest.entry`` hashes text sources as LF, so on a machine with
+    core.autocrlf=true the fresh row carries the LF byte count and hash while
+    the committed row still carries the Windows CRLF ones.  The equivalence
+    check has to normalise the on-disk file before comparing it with ``fresh``.
+    """
+    import ci_check
+    import hashlib
+
+    lf = b".param X=1\nR1 a b 10k\n"
+    crlf = lf.replace(b"\n", b"\r\n")
+    (tmp_path / "source.cir").write_bytes(crlf)
+    monkeypatch.setattr(ci_check, "ROOT", tmp_path)
+    old = manifest([{"path": "source.cir", "kind": "deck", "bytes": len(crlf),
+                     "sha256": hashlib.sha256(crlf).hexdigest(), "mtime": 1.0}])
+    fresh = manifest([{"path": "source.cir", "kind": "deck", "bytes": len(lf),
+                       "sha256": hashlib.sha256(lf).hexdigest(), "mtime": 2.0}])
+    assert compare_manifests(old, fresh) == []
+
+
 def test_binary_or_missing_content_does_not_bypass_manifest_mismatch(monkeypatch, tmp_path):
     import ci_check
     import hashlib
