@@ -819,16 +819,48 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
   `VDD_IN` 隔开，只在 `VDD_IN` 上放旗子会报 `power_pin_not_driven`。ERC 的 0 违规
   必须用 `--severity-all` 且报告不比原理图旧，否则"干净"没有意义。
 
-### 布局 pass 2：布线（`tools/make_sr_fault_board_pcb.py` + `tools/sr_board_router.py`）
+### 布局 pass 3：布线 + 铺铜（`tools/make_sr_fault_board_pcb.py` + `tools/sr_board_router.py`）
 
 原生 `.kicad_pcb`：71 只件各摆一次、每只焊盘带原理图网络、132×92 mm 外形、四个 M3 孔，
 **两层全部布通**（119/119 连接、106 个过孔、约 2300 段），`drc.json` 的
-`unconnected_items` 为 **0**，只剩 4 条 `silk_overlap`（位号从未挪开，按欠账报）。
-`routed` 因此是 true，但 `fabrication_approved`/`hardware_built` 仍 false、
-`manufacturing_package` 仍 `NOT_RELEASED`：**电源网（SEC_A/SEC_B/SR_SRC/PGND/VOUT）
-还是 0.8 mm 走线、没有铺铜**，1 oz 下约 5 A 而板子上限 10 A；BSC010N04LS6 仍缺器件专用
-land pattern。不导出 gerber/drill/position——一块"布通了但电源没铺铜"的板配上坐标文件，
-看起来就能下单。`--check` 会重生成 + 跑 `kicad-cli pcb drc`。
+`unconnected_items` 为 **0**、`schematic_parity` 为 0，只剩 4 条 `silk_overlap`
+（位号从未挪开，按欠账报）。五个电源网各有 zone 外形（PGND/VOUT 在 B.Cu，
+SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
+`fabrication_approved`/`hardware_built` 仍 false、`manufacturing_package` 仍
+`NOT_RELEASED`：BSC010N04LS6 仍缺器件专用 land pattern，**铺铜实测只保留外形面积的
+2.5 %–64.5 %**，电流路径仍是 0.8 mm 逃逸走线。不导出 gerber/drill/position。
+`--check` 会重生成 + 跑 `kicad-cli pcb drc` + 实测填充写 `fill.json`。
+
+**铺铜是布线之后加的，所以每条穿过外形的走线都会把它剪开**：实测 PGND 1925.6/5336.0 mm²
+（36.1 %，2 块）、VOUT 62.7/561.0（11.2 %）、SEC_A 37.4/350.0（10.7 %）、
+SEC_B 9.1/360.0（**2.5 %**，1 块）、SR_SRC 183.1/284.0（64.5 %）。**两条副边走廊几乎没有
+本网焊盘**：SEC_B 只含 J3.3（中心恰在外形边界 y=46 上），SEC_A 的外形里一个焊盘中心都没有
+（J3.1 在 y=46 而外形到 45.5、Q1 漏极从 x=46.4 起而外形到 43），
+填充靠走线连回网络，所以"中心抽头 → SR → 分流电阻"这条串联路径**仍只有 0.8 mm**。
+`fill.json` 的"外形内的本网焊盘"按**焊盘中心**判定，连通性只看重新填充后的 DRC
+（`unconnected_items`=0、`isolated_copper`=0），不要拿这个计数当连接判据。
+IPC-2221 在 1 oz/10 °C 下给 10 A 约 7 mm——那是图表不是测量，但足以说明**本板不能按
+10 A 导体引用**。要真载流：按铺铜走廊重布线，或改四层用内层平面。
+`fill.json` 是构建产物（kicad-cli 版本相关），提交但不逐字节比对。
+
+三条铺铜专属的坑（都在 `test_make_sr_fault_board_pcb.py` 里）：
+
+- **`island_removal_mode` 只能写在 `(fill ...)` 里**。写到 zone 层 KiCad 10.0.6 拒绝加载
+  （退出码 3）。旧 `check()` 用 `check=False` 吞掉，然后读到上一次的 `drc.json`，
+  把"0 未连接、4 条 silk"当成刚测出来的——**stale report 比崩溃更危险**。
+  `run_drc()` 现在先 `unlink` 报告再跑，非零退出或无报告一律 `SystemExit`。
+- **`--save-board` 只在测填充时用，而且只对 `pcb/sr_fault_validation/` 里的临时副本用**：
+  出了这个目录 `fp-lib-table` 找不到，填充为空（看起来像"铺铜没填上"）；
+  写回真板会让文件从 2.5k 行变成 33.6k 行。
+- **VOUT 带子必须避开 J3.4**：PGND 通孔 x 31.6–34.4、y 44.6–47.4，一条居中在 y=46 的带子
+  会被剪成两条 1.4 mm 细条；现在放在 y 40–45.5。
+
+另外：**热焊盘中心本来就不在铜上**（0.5 mm 热隔离 + 辐条），所以"焊盘中心落在填充上"
+的计数低于外形内焊盘数**不代表没连上**；判连通用重新填充后的 DRC
+（`unconnected_items`=0、`isolated_copper`=0），`isolated_copper` 已进 `POUR_ERRORS` 门槛。
+`kicad-cli` 的 stdout 不是 GBK：`subprocess.run(..., text=True)` 会在读线程里抛
+`UnicodeDecodeError`，把捕获的消息全变成 `None`——所有 kicad-cli 调用都加
+`encoding="utf-8", errors="replace"`。
 
 生成器的 `check()` 有两条**互相反向**的守卫，缺一条就会被净空表骗过：
 router 说全连而 kicad-cli 还报未连接 ⇒ SystemExit（铜没落到网表点名的焊盘上）；
