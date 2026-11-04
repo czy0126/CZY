@@ -1,0 +1,25 @@
+(kicad_symbol_lib (version 20241209) (generator "make_sr_fault_board.py")
+(symbol "UCC24624"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 8.890 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "UCC24624" (at 0 -8.890 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "UCC24624_0_1"
+				(rectangle (start -5.080 6.350) (end 5.080 -6.350) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "UCC24624_1_1"
+				(pin output line (at 7.620 2.540 180) (length 2.54) (name "VG1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin power_in line (at 0.000 -8.890 90) (length 2.54) (name "PGND" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin power_out line (at 0.000 8.890 270) (length 2.54) (name "REG" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -7.620 2.540 0) (length 2.54) (name "VD1" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -7.620 0.000 0) (length 2.54) (name "VSS" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -7.620 -2.540 0) (length 2.54) (name "VD2" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+				(pin power_in line (at 7.620 0.000 180) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+				(pin output line (at 7.620 -2.540 180) (length 2.54) (name "VG2" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+)

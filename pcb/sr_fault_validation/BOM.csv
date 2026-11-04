@@ -1,0 +1,72 @@
+Reference,Value,Footprint,Rating,Note,DNP,MPN,LCSC,Qty
+J1,VBIAS 15V,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,"15 V, 0.5 A",bias input; polarity marked on the silk,,,,1
+F1,0.5A,Fuse:Fuse_1206_3216Metric,0.5 A,bias fuse,,,,1
+D1,SMBJ15A,Diode_SMD:D_SMB,15 V standoff,bias TVS,,,,1
+D2,SS34,Diode_SMD:D_SMA,40 V 3 A,reverse-polarity block; pin 1 is the cathode,,,,1
+JP1,VDD CUT,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,shunt fitted = VDD connected; remove to test a VDD-only cut,,,,1
+C1,10uF/35V,Capacitor_SMD:C_1210_3225Metric,35 V X7R,,,,,1
+C2,1uF/35V,Capacitor_SMD:C_0805_2012Metric,35 V X7R,,,,,1
+C3,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,at pin 7,,,,1
+U1,UCC24624DR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,230 V VD pins,"SR controller, SOIC-8",,,,1
+C4,2.2uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,"REG bypass, <=1 cm from pin 3",,,,1
+C5,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,REG HF bypass,,,,1
+R1,0R,Resistor_SMD:R_0805_2012Metric,<=212 R option,Roffset: VTHOFF = 10.5 mV + 330 uA * R; 0R keeps the datasheet value,,,,1
+R2,0R,Resistor_SMD:R_0603_1608Metric,100 R option,VD1 series link; 100R only if drain ringing demands it,,,,1
+R3,0R,Resistor_SMD:R_0603_1608Metric,100 R option,VD2 series link,,,,1
+Q1,BSC010N04LS6,Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm,40 V 1.0 mR,SR1; source Kelvin to VSS,,,,1
+Q2,BSC010N04LS6,Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm,40 V 1.0 mR,SR2; source Kelvin to VSS,,,,1
+Rg1,2.2R,Resistor_SMD:R_0805_2012Metric,1/8 W,"gate resistor, main-board value",,,,1
+Rg2,2.2R,Resistor_SMD:R_0805_2012Metric,1/8 W,"gate resistor, main-board value",,,,1
+Rgs1,10k,Resistor_SMD:R_0603_1608Metric,1/10 W,gate-source pulldown,,,,1
+Rgs2,10k,Resistor_SMD:R_0603_1608Metric,1/10 W,gate-source pulldown,,,,1
+CGL1,6.8nF DNP,Capacitor_SMD:C_0603_1608Metric,50 V,gate-load test,yes,,,1
+CGL2,6.8nF DNP,Capacitor_SMD:C_0603_1608Metric,50 V,gate-load test,yes,,,1
+Rsh1,1mR 1%,Resistor_SMD:R_2512_6332Metric,2 W,return current sense; 10 A -> 10 mV,,,,1
+Rsn1,10R DNP,Resistor_SMD:R_0603_1608Metric,1/10 W,RC snubber,yes,,,1
+Csn1,1nF DNP,Capacitor_SMD:C_0603_1608Metric,50 V,RC snubber,yes,,,1
+Rsn2,10R DNP,Resistor_SMD:R_0603_1608Metric,1/10 W,RC snubber,yes,,,1
+Csn2,1nF DNP,Capacitor_SMD:C_0603_1608Metric,50 V,RC snubber,yes,,,1
+J3,SEC A/CT/B,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm,"20 V peak, 10 A",isolated low-voltage centre-tapped source,,,,1
+C6,100uF/6.3V,Capacitor_SMD:C_1210_3225Metric,6.3 V X5R,,,,,1
+C7,10uF/10V,Capacitor_SMD:C_0805_2012Metric,10 V X7R,,,,,1
+J2,LOAD 0.2-2R,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,2 A max,load / electronic load,,,,1
+R5,1k,Resistor_SMD:R_0603_1608Metric,1/10 W,VD1 injection,,,,1
+R6,1k,Resistor_SMD:R_0603_1608Metric,1/10 W,VD2 injection,,,,1
+JP2,FORCE1 low,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,shunt = force VD1 low,,,,1
+JP3,FORCE2 low,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,shunt = force VD2 low,,,,1
+J4,FAULT/STATUS,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,"3.3/5 V CMOS or open-drain, active high","pin 1 = fault request, pin 3 = open-drain status",,,,1
+R40,1k,Resistor_SMD:R_0603_1608Metric,1/10 W,series limit into the clamp,,,,1
+D40,BZX84C5V1,Package_TO_SOT_SMD:SOT-23,5.1 V,input clamp; cathode on FAULT_G,,,,1
+R41,10k,Resistor_SMD:R_0603_1608Metric,1/10 W,default = no fault; 10k * 1nF = 10 us input filter,,,,1
+C40,1nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,10 us; a 1 ms debounce would dominate every other delay,,,,1
+Q40,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain status: low while the fault is asserted,,,,1
+R42,100k,Resistor_SMD:R_0603_1608Metric,1/10 W,status default low; pull up externally to the logic rail,,,,1
+R43,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,crowbar gate resistor,,,,1
+Q41,NMOS 30V IDM>=3A,Package_TO_SOT_SMD:SOT-23,"30 V, IDM >= 3 A","REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm",,,,1
+R44,4.7R 0.5W,Resistor_SMD:R_1206_3216Metric,0.5 W pulse,limits the crowbar to ~1.5 A and sets tau ~14 us,,,,1
+R45,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,VG1 clamp gate resistor,,,,1
+Q42,NMOS clamp DNP,Package_TO_SOT_SMD:SOT-23,30 V,optional VG1 clamp; contention test only,yes,,,1
+R47,0R DNP,Resistor_SMD:R_0805_2012Metric,1/4 W,clamp link: fitting this removes U1's ability to hold VG1 high,yes,,,1
+R46,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,VG2 clamp gate resistor,,,,1
+Q43,NMOS clamp DNP,Package_TO_SOT_SMD:SOT-23,30 V,optional VG2 clamp; contention test only,yes,,,1
+R48,0R DNP,Resistor_SMD:R_0805_2012Metric,1/4 W,clamp link,yes,,,1
+TP1,VDD_IN,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP2,VDD,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP3,REG,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP4,REG_CROW,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP5,VG1,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP6,VG2,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP7,G1,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP8,G2,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP9,VD1,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP10,VD2,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP11,VSS,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP12,SR_SRC,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP13,SEC_A,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP14,SEC_B,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP15,VOUT,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP16,FAULT_IN,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP17,FAULT_G,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP18,FAULT_N,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP19,PGND,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1
+TP20,PGND,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe / Kelvin point,,,,1

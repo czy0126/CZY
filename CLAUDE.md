@@ -51,6 +51,7 @@ python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
 python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
+python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
 python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
@@ -780,6 +781,32 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   否则 `test_every_placed_ref_sits_in_exactly_one_section` 红。外围网络名用**金网表里的名字**
   （U2.6=EN 叫 `RUN`，HI/LI 叫 `GD1`/`GD2`，`12V_P` 叫 `VCC12`），
   `test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses` 锁住这一点。
+
+## 单对真实 SR 关断验证板（`pcb/sr_fault_validation`）
+
+`tools/make_sr_fault_board.py` 是 D0 之后的下一实物：**一对真实 UCC24624 + 两只
+BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能验逻辑的台架。
+它只到原理图/网表/ERC/BOM + 争流算术，`hardware_built`/`fabrication_approved` 恒 false。
+
+- **主关断是 REG 撬棒（Q41+R44 4.7 Ω），不是切 VDD、也不是门极钳位**：UCC24624 没有
+  enable，只有 REG UVLO 或 standby 才会把 VG 拉低。2.3 µF×11 V=139 µJ，撬棒
+  **13.6 µs** 到 VREGOFF；只切 VDD 要 **75.5 ms**（1.1 µF 级电容 ÷ 1.5 mA 运行电流）。
+- **门极钳位默认 DNP（R47/R48/Q42/Q43）**：能压住 VG 的钳位（≤0.2 Ω）要 UCC24624
+  在输出级烧 **16–18 W**，因为 6.5 Ω 上拉与钳位分压后仍要求 1.5 A 源流；2N7002 级
+  （1.5 Ω）只能压到 **2.06 V**，高于 SR 的 VGS(th) 下限 1.3 V。焊盘留着是为了**实测一次**。
+- **`VG1` 网络成员恰好 4 个**（`U1.1`/`Rg1.1`/`TP5`/`R47.2`），测试锁死——不许把第二个
+  推挽驱动硬并到 VG（路线 P1 明令）。
+- **`VSS` 与 `PGND` 是两个网络**，只经 R1(0 Ω)→SR_SRC→Rsh1(1 mΩ) 相连；不然门极电流
+  的返回路径不可测。改这两只件等于放弃这条测量。
+- **SR 支路 23.6 µs > 参考原边支路 1.29 µs**（REG→UVLO 是主导项），所以
+  `t_stop = t_common + max(t_primary, t_SR)` 在这里选 SR；两支路并联**不许相加**。
+
+生成器两个踩过的坑：
+- SR 符号把 S1–S3、D5–D8 合并到同一个图形端点，所以"不同器件不许共用 pin tip"的校验
+  必须放行**同一器件、同一网络**的重合，只拒绝跨器件重合。
+- **跳线两侧要各放一个 `PWR_FLAG`**：U1 的 VDD 是 `power_in`，被 JP1（被动引脚）与
+  `VDD_IN` 隔开，只在 `VDD_IN` 上放旗子会报 `power_pin_not_driven`。ERC 的 0 违规
+  必须用 `--severity-all` 且报告不比原理图旧，否则"干净"没有意义。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
