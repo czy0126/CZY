@@ -1,0 +1,28 @@
+(kicad_symbol_lib (version 20241209) (generator "make_d0_protection_board.py")
+(symbol "UCC27282DRCR"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "UCC27282DRCR" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "Package_SON:Texas_S-PVSON-N10" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "UCC27282DRCR_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "UCC27282DRCR_1_1"
+				(pin power_in line (at 0.000 12.700 270) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 6.350 12.700 270) (length 2.54) (name "HB" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin output line (at 11.430 5.080 180) (length 2.54) (name "HO" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 11.430 0.000 180) (length 2.54) (name "HS" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin output line (at 11.430 -5.080 180) (length 2.54) (name "LO" (effects (font (size 1.27 1.27)))) (number "10" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -11.430 5.080 0) (length 2.54) (name "EN" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -11.430 2.540 0) (length 2.54) (name "HI" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -11.430 -2.540 0) (length 2.54) (name "LI" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+				(pin power_in line (at 0.000 -12.700 90) (length 2.54) (name "VSS" (effects (font (size 1.27 1.27)))) (number "9" (effects (font (size 1.27 1.27)))))
+				(pin power_in line (at -6.350 -12.700 90) (length 2.54) (name "EP" (effects (font (size 1.27 1.27)))) (number "11" (effects (font (size 1.27 1.27)))))
+				(pin unspecified line (at -11.430 -5.080 0) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+)

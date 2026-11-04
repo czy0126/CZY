@@ -1,0 +1,25 @@
+(kicad_symbol_lib (version 20241209) (generator "make_d0_protection_board.py")
+(symbol "UCC27524ADR"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 12.700 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "UCC27524ADR" (at 0 -12.700 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "UCC27524ADR_0_1"
+				(rectangle (start -8.890 10.160) (end 8.890 -10.160) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "UCC27524ADR_1_1"
+				(pin input line (at -8.890 5.080 0) (length 2.54) (name "ENA" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -8.890 2.540 0) (length 2.54) (name "INA" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -8.890 -2.540 0) (length 2.54) (name "INB" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin input line (at -8.890 -5.080 0) (length 2.54) (name "ENB" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+				(pin output line (at 8.890 5.080 180) (length 2.54) (name "OUTA" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+				(pin output line (at 8.890 -5.080 180) (length 2.54) (name "OUTB" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin power_in line (at 0.000 10.160 270) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+				(pin power_in line (at 0.000 -10.160 90) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+)
