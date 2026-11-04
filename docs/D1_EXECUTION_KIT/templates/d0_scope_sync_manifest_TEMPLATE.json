@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "case_id": "PENDING",
+  "sync": {
+    "alignment_basis": "PENDING: state the physical/common-signal basis for the shared timebase",
+    "basis_review_status": "PENDING",
+    "max_remaining_skew_s": null
+  },
+  "grid": {
+    "pre_s": null,
+    "post_s": null,
+    "dt_s": null
+  },
+  "instruments": [
+    {
+      "id": "SCOPE_A",
+      "csv": "PENDING/scope_a.csv",
+      "time_column": "time_s",
+      "trigger": {
+        "column": "TRIP_STIMULUS",
+        "edge": "rising",
+        "threshold_v": null,
+        "search_start_s": null,
+        "search_end_s": null
+      },
+      "channels": {
+        "TRIP_STIMULUS": "TRIP_STIMULUS",
+        "P_HO": "P_HO",
+        "P_LO": "P_LO"
+      },
+      "instrument_id": "PENDING",
+      "probe_model": "PENDING",
+      "probe_bandwidth_hz": null,
+      "sample_rate_hz": null
+    },
+    {
+      "id": "SCOPE_B",
+      "csv": "PENDING/scope_b.csv",
+      "time_column": "time_s",
+      "trigger": {
+        "column": "SYNC",
+        "edge": "rising",
+        "threshold_v": null,
+        "search_start_s": null,
+        "search_end_s": null
+      },
+      "channels": {
+        "SR1A": "SR1A",
+        "SR1B": "SR1B",
+        "SR2A": "SR2A",
+        "SR2B": "SR2B",
+        "SR3A": "SR3A",
+        "SR3B": "SR3B",
+        "SR4A": "SR4A",
+        "SR4B": "SR4B"
+      },
+      "instrument_id": "PENDING",
+      "probe_model": "PENDING",
+      "probe_bandwidth_hz": null,
+      "sample_rate_hz": null
+    }
+  ]
+}

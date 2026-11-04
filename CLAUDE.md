@@ -55,7 +55,15 @@ python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫�
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
     --ltspice D:/ADI/LTspice/LTspice.exe     # 归档到 out/d1_50v/<RunId>/，只判 320 µs 完整性
 python tools/d1_protection_precheck.py --check   # 十路硬件关断接口契约（--write 重生成）
+python tools/d0_scope_sync_align.py --manifest out/d0_scope/sync.json \
+    --csv out/d0_scope/aligned.csv --report out/d0_scope/aligned.json
+    # 多示波器对齐 -> 第29章 12 列 CSV；网格不得细于最粗原始间隔，不外推
 ```
+
+**D0 多仪器对齐的两个硬约束（`tools/d0_scope_sync_align.py`）**：输出 `dt_s` 必须 ≥ 所有原始记录的最大相邻间隔
+（否则等于凭空造分辨率）；manifest 的 `trigger.threshold_v` 应与第29章的 `trip_high_min_v` 相同，
+否则对齐后原点样点可能落在 `trip_low_max_v` 与 `trip_high_min_v` 之间，被审计器判为 ambiguous。
+`basis_review_status` 不是 `ENGINEER_REVIEWED` 时仍会写 CSV，但退出码 1；物理同时性永远为 false。
 
 LTspice 批处理：`/d/ADI/LTspice/LTspice.exe -b -ascii deck.cir`。
 **结束 LTspice 只能按 PID**：`kill <pid>`（`ps -W` 查）。禁止 `taskkill //IM LTspice.exe`
