@@ -317,6 +317,60 @@ def delay() -> dict:
     }
 
 
+SR_BOARD = ROOT / "pcb" / "sr_fault_validation" / "sr_fault_validation.json"
+
+
+def system_delay() -> dict:
+    """The roadmap's whole-machine t_stop, not just this module.
+
+    ``t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic + max(t_primary, t_SR)``
+
+    The module only owns the first two terms.  The shutdown branches come from
+    the single-pair SR board's ``delay_budget``, which is read rather than
+    re-derived so the two documents cannot drift.  On this machine the SR
+    branch wins by an order of magnitude: the UCC24624 does not let go of VG
+    until REG has fallen through UVLO.
+
+    The SR board's own 10 us fault-input RC is excluded -- it belongs to that
+    validation board's front end, not to the main board's latch output.
+    """
+    if not SR_BOARD.is_file():
+        raise SystemExit(f"{SR_BOARD} is missing; run tools/make_sr_fault_board.py first")
+    sr = json.loads(SR_BOARD.read_text(encoding="utf-8"))["delay_budget"]
+    branch = sr["sr_branch"]
+    sr_branch = (branch["crowbar_fet_turn_on_s"] + branch["reg_to_uvlo_s"]
+                 + branch["vg_active_low_s"])
+    primary_branch = sr["primary_branch_reference"]["total_s"]
+    slowest = max(sr_branch, primary_branch)
+    module = delay()["module_total_s"]
+    existing = delay()["existing_path_total_s"]
+    return {
+        "equation": "t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic "
+                    "+ max(t_primary, t_SR)",
+        "detection_module_s": module,
+        "common_logic_s": None,
+        "common_logic_note": "the D0 CD4013 latch and its gating are not modelled here, so "
+                             "every total below is a floor, not a worst case",
+        "sr_branch_s": sr_branch,
+        "sr_branch_terms": {
+            "crowbar_fet_turn_on_s": branch["crowbar_fet_turn_on_s"],
+            "reg_to_uvlo_s": branch["reg_to_uvlo_s"],
+            "vg_active_low_s": branch["vg_active_low_s"],
+            "excluded_input_rc_s": branch["input_rc_s"],
+            "excluded_input_rc_reason": "the 10 us RC is the validation board's front end, "
+                                        "not the main board's fault path",
+        },
+        "primary_branch_s": primary_branch,
+        "slowest_branch": "sr" if sr_branch > primary_branch else "primary",
+        "system_floor_s": module + slowest,
+        "existing_system_floor_s": existing + slowest,
+        "system_improvement_factor": (existing + slowest) / (module + slowest),
+        "note": "the 121x module figure is a detection-only comparison; against the whole "
+                "machine the comparator change is worth the ratio below, because the REG "
+                "crowbar sets the stop time",
+    }
+
+
 def supply() -> dict:
     bias = (V5 - VREF) / R_BIAS
     return {
@@ -335,6 +389,7 @@ def supply() -> dict:
 
 def observations() -> list[dict]:
     d, dl, cm = divider(), delay(), common_mode()
+    sd = system_delay()
     return [
         {
             "id": "OC-01",
@@ -361,6 +416,18 @@ def observations() -> list[dict]:
                        "existing filtered path.",
             "evidence": f"{CMP} switching characteristics, overdrive 5 mV, "
                         "-40 to +125 C",
+            "status": "DESIGN_ESTIMATE",
+        },
+        {
+            "id": "OC-03b",
+            "finding": f"That 121x is detection only. With the SR board's shutdown branch "
+                       f"added, the whole-machine stop goes from "
+                       f"~{sd['existing_system_floor_s'] * 1e6:.1f} us to "
+                       f"~{sd['system_floor_s'] * 1e6:.1f} us -- "
+                       f"{sd['system_improvement_factor']:.1f}x -- because the "
+                       f"{sd['slowest_branch']} branch sets it. D0's latch is not "
+                       "modelled, so both are floors.",
+            "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget",
             "status": "DESIGN_ESTIMATE",
         },
         {
@@ -419,6 +486,7 @@ def report(ps: list[Part]) -> dict:
         "threshold": divider(),
         "common_mode": common_mode(),
         "delay": delay(),
+        "system_delay": system_delay(),
         "supply": supply(),
         "d0_connection": [
             "J1.1 V5 -> D0 V5 (bench 5 V rail)",
@@ -429,6 +497,9 @@ def report(ps: list[Part]) -> dict:
         "observations": observations(),
         "limits": [
             "module only; the CT, rectifier and burden stay on D0",
+            "the system stop is NOT set by this comparator: the SR branch waits for REG to "
+            "fall through UVLO, so the whole-machine floor is quoted in system_delay",
+            "D0's CD4013 latch propagation is not modelled, so system_delay totals are floors",
             "no latch, no isolation, no reverse-supply protection beyond D2",
             "the LM4040DBZ-2.5 minimum operating current is unverified, so the "
             "low-supply corner is not characterised",
@@ -584,6 +655,10 @@ def main() -> None:
     (OUT / "fast_oc.json").write_text(
         json.dumps(report(ps), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {OUT / 'fast_oc.json'}")
+    sd = system_delay()
+    print(f"module delay {sd['detection_module_s'] * 1e6:.2f} us; whole-machine floor "
+          f"{sd['system_floor_s'] * 1e6:.1f} us (slowest branch: {sd['slowest_branch']}), "
+          f"{sd['system_improvement_factor']:.1f}x vs the filtered path")
     if args.check:
         check()
 

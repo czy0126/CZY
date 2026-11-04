@@ -154,6 +154,59 @@ def test_the_existing_path_is_three_cascaded_poles(report):
     assert stages[2]["tau_s"] == pytest.approx(10e-6, rel=1e-3)
 
 
+# ---------------------------------------------------------------- whole machine
+def test_the_system_stop_is_not_the_module_delay(report):
+    """The 121x figure is detection only.  The machine waits for the slowest
+    shutdown branch, so the two numbers must not be conflated."""
+    sd = report["system_delay"]
+    assert sd["detection_module_s"] == pytest.approx(report["delay"]["module_total_s"])
+    # The machine ratio must be far smaller than the detection-only ratio: if a
+    # future edit made them equal, the 121x line could be quoted as the system
+    # number, which is exactly what the roadmap forbids.
+    assert sd["system_improvement_factor"] < report["delay"]["improvement_factor"] / 5
+    assert sd["system_floor_s"] > 5 * sd["detection_module_s"]
+
+
+def test_the_shutdown_branch_comes_from_the_sr_board_report(report):
+    sr = json.loads((board.ROOT / "pcb/sr_fault_validation/sr_fault_validation.json")
+                    .read_text(encoding="utf-8"))["delay_budget"]
+    branch = sr["sr_branch"]
+    expected = (branch["crowbar_fet_turn_on_s"] + branch["reg_to_uvlo_s"]
+                + branch["vg_active_low_s"])
+    sd = report["system_delay"]
+    assert sd["sr_branch_s"] == pytest.approx(expected)
+    assert sd["slowest_branch"] == "sr"
+    # The board's own max_branch_s is larger by its input RC, which the main
+    # board does not have; the difference must be exactly that RC.
+    assert sr["max_branch_s"] - sd["sr_branch_s"] == pytest.approx(branch["input_rc_s"])
+
+
+def test_the_sr_front_end_rc_is_not_charged_to_the_main_board(report):
+    sd = report["system_delay"]
+    terms = sd["sr_branch_terms"]
+    assert terms["excluded_input_rc_s"] == pytest.approx(10e-6)
+    assert "validation board" in terms["excluded_input_rc_reason"]
+    # The charged branch is exactly the three terms, with the RC kept aside.
+    summed = (terms["crowbar_fet_turn_on_s"] + terms["reg_to_uvlo_s"]
+              + terms["vg_active_low_s"])
+    assert sd["sr_branch_s"] == pytest.approx(summed)
+    assert sd["sr_branch_s"] < terms["excluded_input_rc_s"] * 2
+
+
+def test_the_unmodelled_latch_is_reported_as_a_floor_not_a_worst_case(report):
+    sd = report["system_delay"]
+    assert sd["common_logic_s"] is None
+    assert "floor" in sd["common_logic_note"]
+    assert sd["system_floor_s"] == pytest.approx(
+        sd["detection_module_s"] + max(sd["sr_branch_s"], sd["primary_branch_s"]))
+
+
+def test_the_equation_is_the_roadmap_one(report):
+    assert report["system_delay"]["equation"] == (
+        "t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic "
+        "+ max(t_primary, t_SR)")
+
+
 # ---------------------------------------------------------------- boundaries
 def test_every_published_fault_peak_stays_inside_the_common_mode_range(report):
     for row in report["common_mode"]["rows"]:

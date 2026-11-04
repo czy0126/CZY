@@ -179,6 +179,26 @@
     "worst_case_basis": "5 mV overdrive, -40 to +125 C, 12 ns",
     "note": "the existing figure is a sum of cascaded time constants, not a propagation delay; it is an order-of-magnitude comparison only"
   },
+  "system_delay": {
+    "equation": "t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic + max(t_primary, t_SR)",
+    "detection_module_s": 1.062e-06,
+    "common_logic_s": null,
+    "common_logic_note": "the D0 CD4013 latch and its gating are not modelled here, so every total below is a floor, not a worst case",
+    "sr_branch_s": 1.3627271893432765e-05,
+    "sr_branch_terms": {
+      "crowbar_fet_turn_on_s": 5e-08,
+      "reg_to_uvlo_s": 1.3560921893432765e-05,
+      "vg_active_low_s": 1.635e-08,
+      "excluded_input_rc_s": 1e-05,
+      "excluded_input_rc_reason": "the 10 us RC is the validation board's front end, not the main board's fault path"
+    },
+    "primary_branch_s": 1.2899999999999997e-06,
+    "slowest_branch": "sr",
+    "system_floor_s": 1.4689271893432764e-05,
+    "existing_system_floor_s": 0.0001425155071875504,
+    "system_improvement_factor": 9.702013021575686,
+    "note": "the 121x module figure is a detection-only comparison; against the whole machine the comparator change is worth the ratio below, because the REG crowbar sets the stop time"
+  },
   "supply": {
     "bias_current_a": 0.0010416666666666667,
     "reference_holds_down_to_v": 2.5,
@@ -214,6 +234,12 @@
       "status": "DESIGN_ESTIMATE"
     },
     {
+      "id": "OC-03b",
+      "finding": "That 121x is detection only. With the SR board's shutdown branch added, the whole-machine stop goes from ~142.5 us to ~14.7 us -- 9.7x -- because the sr branch sets it. D0's latch is not modelled, so both are floors.",
+      "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget",
+      "status": "DESIGN_ESTIMATE"
+    },
+    {
       "id": "OC-04",
       "finding": "The input pin stays inside the common-mode range up to 144 A peak. Above that the comparator is out of range but still inside its absolute maximum, so it is already tripped and the output state no longer matters.",
       "evidence": "references/datasheets/tlv3501.txt common-mode range (V-)-0.2 V to (V+)-0.2 V, absolute maximum (V-)-0.3 V to (V+)+0.3 V",
@@ -240,6 +266,8 @@
   ],
   "limits": [
     "module only; the CT, rectifier and burden stay on D0",
+    "the system stop is NOT set by this comparator: the SR branch waits for REG to fall through UVLO, so the whole-machine floor is quoted in system_delay",
+    "D0's CD4013 latch propagation is not modelled, so system_delay totals are floors",
     "no latch, no isolation, no reverse-supply protection beyond D2",
     "the LM4040DBZ-2.5 minimum operating current is unverified, so the low-supply corner is not characterised",
     "a clean ERC only says the drawing agrees with itself"

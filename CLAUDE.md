@@ -818,6 +818,18 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 传播。所以"把 LM393 换成 4.5 ns 的 TLV3501"在系统上只值约 1.3 µs，属于路线点名的
 "只换 BOM 名称"。本模块直接取 CT 负载节点 OCD，单极点 1 µs + 12 ns + 50 ns ≈ **1.06 µs**。
 
+- **系统级 `t_stop` 由 SR 支路决定，不是比较器**：`system_delay()` 按路线 P1-b 的式子
+  `t_stop = t_CT/整流/滤波 + t_cmp + t_common_logic + max(t_primary, t_SR)` 组装。
+  SR 支路从单对 SR 板的 `delay_budget` **读出**（不重推，防止两份文档漂移）：撬棒 50 ns +
+  REG→UVLO **13.56 µs** + VG 拉低 16 ns = **13.63 µs**；那块板自己的 **10 µs 输入 RC 不计入**
+  （它是验证板前端，不是主板的故障通路，`sr_branch_terms.excluded_input_rc_*` 显式记着）。
+  原边参考支路 1.29 µs ⇒ 慢支路是 SR。整机地板 **14.69 µs**，对原滤波通路 142.5 µs 是
+  **≈9.7×**，而模块自身的 **121×** 只是**检测段**比较。D0 的 CD4013 锁存与门控**没建模**，
+  `common_logic_s` 恒 `null`，所以这两个总数都是**地板不是最坏值**——不得引用成最坏关断时间。
+  `test_the_system_stop_is_not_the_module_delay` 锁住 9.7× 必须远小于 121×（<1/5），
+  `test_the_shutdown_branch_comes_from_the_sr_board_report` 锁住 SR 板 `max_branch_s` 与
+  这里之差**恰好**是那条被排除的 RC。
+
 - **SHDN 接高电平会把比较器关掉**：SBOS321E 里 SHDN 距 V+ 不足 0.9 V 即关断（输出高阻），
   低于 V+ 超过 1.7 V 才使能。接 V+ 得到的是 ERC 干净、永不翻转的板子。R8 10k 拉到 PGND，
   `test_shutdown_is_pulled_low_because_high_disables_the_comparator` 锁死。
