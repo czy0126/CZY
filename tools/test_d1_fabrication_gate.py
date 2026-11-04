@@ -176,3 +176,82 @@ def test_wrong_rt_dt_candidate_mapping_blocks_controller_gate(monkeypatch):
     assert not report["checks"]["controller_rt_dt_roles_match_native_netlist"]
     assert "controller_rt_dt_roles_match_native_netlist" in report["blockers"]
     assert report["counts"]["functional_control_net_mismatches"]==["injected wrong RT candidate"]
+
+
+def _native_ref_nets():
+    exported = gate._read(gate.HW / "gen/netlist_export_raw.json")
+    return copy.deepcopy(exported["value"]["refs"])
+
+
+def test_primary_driver_is_structurally_blocked_by_always_on_r8():
+    result = gate._primary_en_default_low_precheck(_native_ref_nets())
+    assert result["passed"] is False
+    assert any("R8" in p for p in result["problems"])
+
+
+def test_driver_static_preflight_can_accept_removed_constant_pullup_only():
+    nets = _native_ref_nets()
+    del nets["R8"]
+    result = gate._primary_en_default_low_precheck(nets)
+    assert result["passed"]
+    assert result["problems"] == []
+    # The check is intentionally limited; it does not prove protection.
+    assert "no proof" in result["limited_scope"]
+
+
+def test_reversing_r8_pins_or_renaming_resistor_cannot_hide_run_pullup():
+    for mode in ("reverse", "rename", "duplicate"):
+        nets = _native_ref_nets()
+        if mode == "reverse":
+            nets["R8"] = {"1": "RUN", "2": "VCC12"}
+        elif mode == "rename":
+            nets["R88"] = nets.pop("R8")
+        else:
+            nets["R88"] = nets.pop("R8")
+            nets["R89"] = {"1": "RUN", "2": "VCC12"}
+        result = gate._primary_en_default_low_precheck(nets)
+        assert not result["passed"]
+        assert any("unconditional resistor pullup" in p for p in result["problems"])
+
+
+def test_no_primary_en_pin_or_missing_r7_passive_pulldown_is_a_veto():
+    for case in ("missing_u2", "en_short_vcc", "missing_r7", "wrong_r7"):
+        nets = _native_ref_nets()
+        nets.pop("R8")
+        if case == "missing_u2":
+            del nets["U2"]["6"]
+        elif case == "en_short_vcc":
+            nets["U2"]["6"] = "VCC12"
+        elif case == "missing_r7":
+            del nets["R7"]
+        else:
+            nets["R7"]["2"] = "VCC12"
+        assert not gate._primary_en_default_low_precheck(nets)["passed"]
+
+
+def test_forged_protection_approval_cannot_override_live_r8_hazard(monkeypatch):
+    monkeypatch.setattr(gate, "_protection_design_gate", lambda: {
+        "passed": True, "reason": "synthetic approval for negative test"})
+    report = gate.build()
+    assert report["checks"]["independent_fault_shutdown_design_evidence"] is False
+    assert not report["release_approved"]
+    assert "independent_fault_shutdown_design_evidence" in report["blockers"]
+
+
+def test_fabrication_gate_rejects_edited_cache_physical_pad_approval(monkeypatch):
+    original_read = gate._read
+
+    def forged_cache(path):
+        document = original_read(path)
+        if path == gate.CONTRACT:
+            document = copy.deepcopy(document)
+            for sym in document["symbols"]:
+                sym["physical_pad_map_verified"] = True
+                for i, pin in enumerate(sym["pins"], 1):
+                    pin["physical_pad"] = str(i)
+        return document
+
+    monkeypatch.setattr(gate, "_read", forged_cache)
+    import pytest
+    with pytest.raises(ValueError, match="differs from live SPICE/native source"):
+        gate.build()
