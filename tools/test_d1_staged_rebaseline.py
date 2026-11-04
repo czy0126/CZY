@@ -42,6 +42,18 @@ def test_no_silent_safety_or_stage_target_waivers():
     gate["release_approved"]=True
     with pytest.raises(ValueError,match="manufacture gate"):m.evaluate(gate=gate)
 
+def test_stage_local_fab_release_cannot_be_silently_promoted():
+    for index in range(4):
+        policy=json.loads(m.POLICY.read_text(encoding="utf-8"))
+        policy["stages"][index]["fab_release"]=True
+        with pytest.raises(ValueError,match="stage-local fabrication approval"):
+            m.evaluate(policy=policy)
+    policy=json.loads(m.POLICY.read_text(encoding="utf-8"))
+    del policy["stages"][1]["fab_release"]
+    with pytest.raises(ValueError,match="stage-local fabrication approval"):
+        m.evaluate(policy=policy)
+
+
 def test_supplier_failure_fallback_changes_target_not_fab_gate():
     p=json.loads(m.POLICY.read_text(encoding="utf-8"))
     assert any(x["id"]=="MAGNETICS_Z" and "16mm" in x["action"]
