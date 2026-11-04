@@ -841,6 +841,16 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   **松开**时采样，开机后第一次按下会被吞掉。三条都锁在
   `tools/test_make_d0_protection_board.py`。
 - 默认 `sch erc -o x.rpt` **不含 exclusions**；"0 条"要成立必须加 `--severity-all`。
+- **ERC 报告缺席/过期/指向别的原理图，都不能读成"0 条"**：`kicad-cli` 报违规时**退出码仍是 0**，
+  所以 `check=True` 只挡硬失败；`d0` 的 `erc_violations()` 自己校验文件存在、`source` 等于
+  `d0_protection.kicad_sch`、mtime 不早于原理图，再加"`sheets` 非空"，任一不满足直接 `SystemExit`。
+  旧版缺文件时返回 `[]`，于是崩溃的和跑通的都印出 "0 violation(s)"。
+- **指向 deck 的出处写元件名，不写行号**：`deck_line('Rbur')` 解析第一列令牌，改动/改名会当场
+  `SystemExit`；手写行号已经错过——R8（10 Ω burden）引来的是第 117 行，即 0 V 测试源 `Vctg`，
+  D7/D8 也一起指到了 D2 那一行。测试里另外维护一张**独立的** ref→element 表回查，不从生成器读回答案。
+- **值里的电压和 `rating` 必须相等**：电容把电压写了两遍（`100nF/16V` 与 `16 V X7R`），
+  四只驱动 bulk 曾写 `1uF/16V` 配 `25 V X7R`——25 V 不会"否决"16 V，只会悄悄指向另一种货，
+  所以判据是相等而不是 `<=`。
 - `-o` 给 `/tmp/x.json` 会被改写成 `C:\Users\...\Temp\x.json`，回读时按 Windows 路径找。
 - ERC JSON 是 UTF-8，中文描述用 GBK 控制台打出来是乱码；**读 JSON 必须显式
   `encoding="utf-8"`**（默认 GBK 会 `UnicodeDecodeError`）。

@@ -26,6 +26,9 @@ only says the drawing agrees with itself.
 from __future__ import annotations
 
 import itertools
+import json
+import os
+import re
 import sys
 from pathlib import Path
 
@@ -514,3 +517,99 @@ def test_the_report_claims_no_hardware():
     assert report["hardware_built"] is False
     assert report["fabrication_approved"] is False
     assert report["observations"], "the report must carry its own limitations"
+
+
+# The truth is written here, not read back out of the generator: a part that
+# cites a deck line has to name the element an auditor would go looking for.
+# The first version cited R8's burden as line 117, which is the 0 V test source
+# Vctg, so the pointer survived every check and still sent the reader elsewhere.
+DECK_ELEMENTS = {
+    "D5": "D1", "D6": "D2", "D7": "D3", "D8": "D4",
+    "R8": "Rbur", "R9": "Rf", "C11": "Cf", "R10": "Rd1", "R11": "Rd2", "C12": "Coc",
+}
+
+
+def _deck_lines() -> list[str]:
+    return (board.ROOT / board.DECK).read_text(encoding="utf-8").splitlines()
+
+
+def test_every_deck_pointer_names_the_element_it_cites():
+    lines = _deck_lines()
+    parts = {p.ref: p for p in board.parts()}
+    for ref, element in DECK_ELEMENTS.items():
+        source = parts[ref].source
+        assert source.startswith(f"{board.DECK}:"), (ref, source)
+        number = int(source.rsplit(":", 1)[1])
+        assert 1 <= number <= len(lines), (ref, number)
+        assert lines[number - 1].split()[:1] == [element], (ref, lines[number - 1])
+
+
+def test_every_source_ranges_over_a_real_deck_element():
+    lines = _deck_lines()
+    for observation in board.observations():
+        if not observation["source"].startswith(f"{board.DECK}:"):
+            continue
+        span = observation["source"].rsplit(":", 1)[1]
+        first, _, last = span.partition("-")
+        for number in (int(first), int(last or first)):
+            assert 1 <= number <= len(lines), (observation["id"], number)
+            assert lines[number - 1].strip(), (observation["id"], number)
+
+
+def test_no_part_value_contradicts_its_own_voltage_rating():
+    """A value string that embeds a voltage is a claim about the same part.
+
+    Every capacitor in the table spells its voltage twice -- "100nF/16V" in the
+    value and "16 V X7R" in the rating -- so the two must agree.  The driver
+    bulk caps said "1uF/16V" next to "25 V X7R"; one of them was wrong and
+    nothing compared them, because a rating of 25 V does not *fail* a 16 V
+    value, it just quietly proposes a different part.
+    """
+    for part in board.parts():
+        match = re.search(r"/(\d+(?:\.\d+)?)V", part.value)
+        if match is None:
+            continue
+        assert part.rating, f"{part.ref} embeds {match.group(1)} V but has no rating"
+        rating = re.match(r"(\d+(?:\.\d+)?)\s*V", part.rating)
+        assert rating, (part.ref, part.rating)
+        assert float(match.group(1)) == float(rating.group(1)), (part.ref, part.value, part.rating)
+
+
+def test_a_missing_erc_report_is_never_read_as_clean(tmp_path: Path):
+    with pytest.raises(SystemExit):
+        board.erc_violations(tmp_path / "erc.json")
+
+
+def test_an_erc_report_about_another_schematic_is_rejected(tmp_path: Path):
+    path = tmp_path / "erc.json"
+    path.write_text(json.dumps({"source": "something_else.kicad_sch",
+                                "sheets": [{"violations": []}]}), encoding="utf-8")
+    with pytest.raises(SystemExit):
+        board.erc_violations(path)
+
+
+def test_an_erc_report_with_no_sheets_is_rejected(tmp_path: Path):
+    path = tmp_path / "erc.json"
+    path.write_text(json.dumps({"source": "d0_protection.kicad_sch", "sheets": []}),
+                    encoding="utf-8")
+    with pytest.raises(SystemExit):
+        board.erc_violations(path)
+
+
+def test_an_erc_report_older_than_the_schematic_is_rejected(tmp_path: Path):
+    schematic = tmp_path / "d0_protection.kicad_sch"
+    schematic.write_text("(kicad_sch)", encoding="utf-8")
+    report = tmp_path / "erc.json"
+    report.write_text(json.dumps({"source": "d0_protection.kicad_sch",
+                                  "sheets": [{"violations": []}]}), encoding="utf-8")
+    stale = schematic.stat().st_mtime - 60
+    os.utime(report, (stale, stale))
+    with pytest.raises(SystemExit):
+        board.erc_violations(report, newer_than=schematic)
+
+
+def test_a_clean_erc_report_is_read_back():
+    report = board.OUT / "erc.json"
+    if not report.exists():
+        pytest.skip("erc.json has not been exported here")
+    assert board.erc_violations(report) == []

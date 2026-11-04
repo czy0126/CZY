@@ -71,6 +71,22 @@ CT_DESIGN = "design/v3/bom/ct_design.json"
 LOGIC = "tools/two_tier_fault_logic.py"
 
 
+def deck_line(element: str) -> int:
+    """1-based line of the deck element whose first token is ``element``.
+
+    Provenance used to be integer literals, and they drifted: R8 (the 10 ohm
+    burden) cited line 117, which is a 0 V test source, so an auditor was sent
+    to the wrong element.  Resolving by name moves every pointer with an
+    inserted line, and a renamed or deleted element fails loudly instead of
+    silently naming its neighbour.
+    """
+    lines = (ROOT / DECK).read_text(encoding="utf-8").splitlines()
+    hits = [number for number, line in enumerate(lines, 1) if line.split()[:1] == [element]]
+    if len(hits) != 1:
+        raise SystemExit(f"{DECK}: expected exactly one '{element}', found {hits}")
+    return hits[0]
+
+
 @dataclass(frozen=True)
 class Pin:
     number: str
@@ -395,32 +411,32 @@ def ct_parts() -> list[Part]:
              note="CT 24/35-turn secondary; this board IS the burden path"),
         Part("D5", "Device:D_Schottky", "BAT54", sch, 62, 118,
              {"1": "OCD", "2": "CT_S1"}, rating="30 V 200 mA",
-             note="bridge: anode CT_S1 -> cathode OCD (deck D1)", source=f"{DECK}:112"),
+             note="bridge: anode CT_S1 -> cathode OCD (deck D1)", source=f"{DECK}:{deck_line('D1')}"),
         Part("D6", "Device:D_Schottky", "BAT54", sch, 62, 142,
              {"1": "OCD", "2": "CT_S2"}, rating="30 V 200 mA",
-             note="bridge: anode CT_S2 -> cathode OCD (deck D2)", source=f"{DECK}:112"),
+             note="bridge: anode CT_S2 -> cathode OCD (deck D2)", source=f"{DECK}:{deck_line('D2')}"),
         Part("D7", "Device:D_Schottky", "BAT54", sch, 78, 118,
              {"1": "CT_S1", "2": "OCM"}, rating="30 V 200 mA",
-             note="bridge: anode OCM -> cathode CT_S1 (deck D3)", source=f"{DECK}:113"),
+             note="bridge: anode OCM -> cathode CT_S1 (deck D3)", source=f"{DECK}:{deck_line('D3')}"),
         Part("D8", "Device:D_Schottky", "BAT54", sch, 78, 142,
              {"1": "CT_S2", "2": "OCM"}, rating="30 V 200 mA",
-             note="bridge: anode OCM -> cathode CT_S2 (deck D4)", source=f"{DECK}:113"),
+             note="bridge: anode OCM -> cathode CT_S2 (deck D4)", source=f"{DECK}:{deck_line('D4')}"),
         Part("R8", "Device:R", "10R 1%", "Resistor_SMD:R_0805_2012Metric", 100, 130,
              {"1": "OCD", "2": "OCM"}, rating="0.25 W", note="burden Rbur (main R3)",
-             source=f"{DECK}:117"),
+             source=f"{DECK}:{deck_line('Rbur')}"),
         Part("R9", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric", 118, 118,
-             {"1": "OCD", "2": "OCF"}, note="Rf (main R15)", source=f"{DECK}:118"),
+             {"1": "OCD", "2": "OCF"}, note="Rf (main R15)", source=f"{DECK}:{deck_line('Rf')}"),
         Part("C11", "Device:C", "47nF/16V", "Capacitor_SMD:C_0603_1608Metric", 118, 130,
              {"1": "OCF", "2": "OCM"}, rating="16 V X7R", note="Cf (main C11)",
-             source=f"{DECK}:119"),
+             source=f"{DECK}:{deck_line('Cf')}"),
         Part("R10", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 136, 118,
-             {"1": "OCF", "2": "OC"}, note="Rd1 (main R16)", source=f"{DECK}:120"),
+             {"1": "OCF", "2": "OC"}, note="Rd1 (main R16)", source=f"{DECK}:{deck_line('Rd1')}"),
         Part("R11", "Device:R", "24k", "Resistor_SMD:R_0603_1608Metric", 136, 130,
              {"1": "OC", "2": "OCM"}, note="Rd2: divider gain 24/35 = 0.6857 (main R17)",
-             source=f"{DECK}:121"),
+             source=f"{DECK}:{deck_line('Rd2')}"),
         Part("C12", "Device:C", "10nF/16V", "Capacitor_SMD:C_0603_1608Metric", 136, 142,
              {"1": "OC", "2": "OCM"}, rating="16 V X7R", note="Coc (main C12)",
-             source=f"{DECK}:122"),
+             source=f"{DECK}:{deck_line('Coc')}"),
         Part("R12", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 154, 118,
              {"1": "OC", "2": "OC_FILT"}, note="fast-channel filter, 10 us with C13"),
         Part("C13", "Device:C", "1nF/16V", "Capacitor_SMD:C_0603_1608Metric", 154, 130,
@@ -516,11 +532,11 @@ def bench_input_parts() -> list[Part]:
         Part("J9", "Connector_Generic:Conn_01x02", "ACK button", strap, 160, 200,
              {"1": "ACK_RAW", "2": "V5"}, note="press = ACK high; release = low"),
         Part("R30", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 160, 212,
-             {"1": "ACK_RAW", "2": "PGND"}, note="ACK pull-down, 10 ms with C17"),
+             {"1": "ACK_RAW", "2": "PGND"}, note="ACK pull-down; release decay in ACK_TIMING_UNQUALIFIED"),
         Part("C17", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 172, 212,
              {"1": "ACK_RAW", "2": "PGND"}, rating="16 V X7R", note="contact debounce"),
         Part("R31", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 186, 200,
-             {"1": "ACK_RAW", "2": "ACK_RC"}, note="edge-detect lag, 1 ms with C18"),
+             {"1": "ACK_RAW", "2": "ACK_RC"}, note="edge-detect lag; window in ACK_TIMING_UNQUALIFIED"),
         Part("C18", "Device:C", "10nF/16V", "Capacitor_SMD:C_0603_1608Metric", 186, 212,
              {"1": "ACK_RC", "2": "PGND"}, rating="16 V X7R", note="edge-detect lag"),
         Part("R32", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 200, 200,
@@ -673,7 +689,7 @@ def driver_parts() -> list[Part]:
             Part(f"R{37 + 2 * index}", "Device:R", "4.7k", "Resistor_SMD:R_0603_1608Metric",
                  48 + 55 * index, 270, {"1": "PERMIT_RAIL", "2": "PGND"},
                  note=f"{ref} ENB default-off pull-down"),
-            Part(f"C{20 + 2 * index}", "Device:C", "1uF/16V", "Capacitor_SMD:C_1206_3216Metric",
+            Part(f"C{20 + 2 * index}", "Device:C", "1uF/25V", "Capacitor_SMD:C_1206_3216Metric",
                  40 + 55 * index, 316, {"1": "V12S", "2": "PGND"},
                  rating="25 V X7R", note=f"{ref} VDD bulk"),
             Part(f"C{21 + 2 * index}", "Device:C", "100nF/50V", "Capacitor_SMD:C_0603_1608Metric",
@@ -1048,12 +1064,27 @@ def project_file() -> str:
     }, indent=2) + "\n"
 
 
-def erc_violations(path: Path | None = None) -> list[dict]:
+def erc_violations(path: Path | None = None, *, source: str = "d0_protection.kicad_sch",
+                   newer_than: Path | None = None) -> list[dict]:
+    """Violations from a fresh ERC report -- never from a stale or absent one.
+
+    This used to return ``[]`` when the report was missing, so a crashed or
+    unsupported ``kicad-cli sch erc`` read as "0 violations".  A check that
+    cannot distinguish "clean" from "nothing ran" is not a check.
+    """
     path = path or OUT / "erc.json"
     if not path.exists():
-        return []
+        raise SystemExit(f"ERC report missing: {path} -- refusing to report it as clean")
+    if newer_than is not None and path.stat().st_mtime < newer_than.stat().st_mtime:
+        raise SystemExit(f"ERC report {path.name} is older than {newer_than.name}: "
+                         "it does not describe this schematic")
     data = json.loads(path.read_text(encoding="utf-8"))
-    return [v for sheet in data.get("sheets", []) for v in sheet.get("violations", [])]
+    if data.get("source") != source:
+        raise SystemExit(f"ERC report {path.name} is about {data.get('source')!r}, not {source!r}")
+    sheets = data.get("sheets") or []
+    if not sheets:
+        raise SystemExit(f"ERC report {path.name} has no sheets: this is not a completed run")
+    return [v for sheet in sheets for v in sheet.get("violations", [])]
 
 
 def resistance(text: str) -> float:
@@ -1064,6 +1095,24 @@ def resistance(text: str) -> float:
     if suffix == "R":
         return float(text[:-1])
     return float(text)
+
+
+def capacitance(text: str) -> float:
+    """Parse the part-table capacitor spelling: '100nF/16V', '1uF/25V', '10nF'."""
+    body = text.split("/")[0]
+    for suffix, scale in (("pF", 1e-12), ("nF", 1e-9), ("uF", 1e-6)):
+        if body.endswith(suffix):
+            return float(body[: -len(suffix)]) * scale
+    raise ValueError(f"cannot read a capacitance from {text!r}")
+
+
+def rc_ms(ref_resistor: str, ref_capacitor: str) -> float:
+    """RC time constant in milliseconds, read from the part table.
+
+    The ACK notes used to state "10 ms (R30*C17)" in prose while R30 and C17
+    were separate table entries, so changing either value left the text lying.
+    """
+    return resistance(part_value(ref_resistor)) * capacitance(part_value(ref_capacitor)) * 1e3
 
 
 def part_value(ref: str) -> str:
@@ -1135,7 +1184,7 @@ def observations() -> list[dict]:
          "consequence": "The 'fast' channel is a confirmation channel, not a faster "
                         "one. It cannot protect anything the hard trip does not already "
                         "catch; it can only add a second opinion.",
-         "source": f"{DECK}:118-122"},
+         "source": f"{DECK}:{deck_line('Rbur')}-{deck_line('Coc')}"},
         {"id": "RAIL_GOOD_TRIP_IS_A_DIVIDER_RATIO",
          "statement": f"Both 12 V supervisors compare a 100k/14.7k divider against the "
                       f"{divider_output('R2', 'R3'):.3f} V reference: trip "
@@ -1143,10 +1192,11 @@ def observations() -> list[dict]:
                       f"base has to stay low -- with the 2.5 V reference the first draft "
                       f"read 3.84 V at 12 V, above the LM393's VCC-1.5 V = 3.5 V "
                       f"common-mode limit, where the output is undefined.",
-         "consequence": "Rail-good is a 7.8 V threshold on a 12 V rail, so the drivers are "
-                        "declared healthy down to 7.8 V and run with reduced gate drive in "
-                        "that band. The trip is set by resistor choice and is not adjusted "
-                        "at first article.",
+         "consequence": f"Rail-good is a {rail_good_trip():.1f} V threshold on a 12 V rail, "
+                        f"so the drivers are declared healthy down to "
+                        f"{rail_good_trip():.1f} V and run with reduced gate drive in that "
+                        f"band. The trip is set by resistor choice and is not adjusted "
+                        f"at first article.",
          "source": f"{CTRL}:proposed_sr_channels"},
         {"id": "EN_THRESHOLD_NOT_VERIFIED",
          "statement": "UCC27524ADR ENA/ENB thresholds at VDD = 12 V are not checked "
@@ -1176,11 +1226,13 @@ def observations() -> list[dict]:
                       "or lost READY clears it, so the first press after power-up is the "
                       "one that clears the fault latch (an edge sampler armed on release "
                       "would swallow that press). The press charges C17 straight from V5 "
-                      "through the button; the 10 ms (R30*C17) is the release decay and "
-                      "the ~1 ms edge window is R31*C18.",
+                      f"through the button; the {rc_ms('R30', 'C17'):.2g} ms (R30*C17) is "
+                      f"the release decay and the {rc_ms('R31', 'C18'):.2g} ms edge window "
+                      "is R31*C18.",
          "consequence": "The press path is undebounced, so one contact bounce while READY "
                         "is indistinguishable from an operator press and clears the latch; "
-                        "only the release is filtered. Neither the 1 ms window nor the "
+                        "only the release is filtered. Neither the "
+                        f"{rc_ms('R31', 'C18'):.2g} ms window nor the "
                         "bounce sensitivity is qualified on hardware.",
          "source": f"{LOGIC}:50-61"},
         {"id": "PERMITS_USE_CURRENT_STATE_NOT_NEXT_STATE",
@@ -1205,7 +1257,7 @@ def observations() -> list[dict]:
          "consequence": "This board cannot demonstrate per-channel timing differences, "
                         "and it does not reproduce the UCC24624 gate outputs it would "
                         "eventually sit behind.",
-         "source": f"{DECK}:120-124"},
+         "source": f"{DECK}:{deck_line('Bgh')}-{deck_line('Bgl')}"},
         {"id": "NO_HARDWARE_HAS_BEEN_BUILT",
          "statement": "No board exists. The netlist and ERC pass are machine checks of "
                       "a generated schematic, not evidence that the circuit works.",
@@ -1250,13 +1302,15 @@ def check() -> None:
                    check=True)
     # --severity-all: the default report skips exclusions, and "0 violations"
     # has to mean every severity or it is not a sign-off.
+    # check=True catches only hard failures -- kicad-cli exits 0 when it *reports*
+    # violations -- so the report's own content is checked separately below.
     subprocess.run([str(cli), "sch", "erc", "--severity-all", str(sch), "-o", str(erc)],
-                   check=False)
+                   check=True)
     subprocess.run([str(cli), "sch", "erc", "--severity-all", "--format", "json",
-                    str(sch), "-o", str(OUT / "erc.json")], check=False)
+                    str(sch), "-o", str(OUT / "erc.json")], check=True)
     text = net.read_text(encoding="utf-8")
     print(f"netlist: {text.count('(net' + chr(10))} nets -> {net.name}")
-    violations = erc_violations()
+    violations = erc_violations(newer_than=sch)
     print(f"ERC: {len(violations)} violation(s) at every severity")
     if violations:
         for v in violations:

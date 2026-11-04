@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\d0_protection\\d0_protection.kicad_sch")
-		(date "2026-11-04T22:32:14")
+		(date "2026-11-04T23:03:27")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -1082,7 +1082,7 @@
 		)
 		(comp
 			(ref "C20")
-			(value "1uF/16V")
+			(value "1uF/25V")
 			(footprint "Capacitor_SMD:C_1206_3216Metric")
 			(description "U14 VDD bulk")
 			(fields
@@ -1190,7 +1190,7 @@
 		)
 		(comp
 			(ref "C22")
-			(value "1uF/16V")
+			(value "1uF/25V")
 			(footprint "Capacitor_SMD:C_1206_3216Metric")
 			(description "U15 VDD bulk")
 			(fields
@@ -1298,7 +1298,7 @@
 		)
 		(comp
 			(ref "C24")
-			(value "1uF/16V")
+			(value "1uF/25V")
 			(footprint "Capacitor_SMD:C_1206_3216Metric")
 			(description "U16 VDD bulk")
 			(fields
@@ -1406,7 +1406,7 @@
 		)
 		(comp
 			(ref "C26")
-			(value "1uF/16V")
+			(value "1uF/25V")
 			(footprint "Capacitor_SMD:C_1206_3216Metric")
 			(description "U17 VDD bulk")
 			(fields
@@ -5030,7 +5030,7 @@
 			(ref "R30")
 			(value "100k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "ACK pull-down, 10 ms with C17")
+			(description "ACK pull-down; release decay in ACK_TIMING_UNQUALIFIED")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -5038,7 +5038,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "ACK pull-down, 10 ms with C17")
+					(name "Description") "ACK pull-down; release decay in ACK_TIMING_UNQUALIFIED")
 			)
 			(libsource
 				(lib "Device")
@@ -5084,7 +5084,7 @@
 			(ref "R31")
 			(value "100k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "edge-detect lag, 1 ms with C18")
+			(description "edge-detect lag; window in ACK_TIMING_UNQUALIFIED")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -5092,7 +5092,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "edge-detect lag, 1 ms with C18")
+					(name "Description") "edge-detect lag; window in ACK_TIMING_UNQUALIFIED")
 			)
 			(libsource
 				(lib "Device")

@@ -28,15 +28,15 @@ R7,2k,Resistor_SMD:R_0603_1608Metric,,divider bottom,,DESIGN_PROPOSAL,DESIGN_PRO
 C10,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,threshold bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 J3,CT secondary,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,<=20 V peak,CT 24/35-turn secondary; this board IS the burden path,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 D5,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S1 -> cathode OCD (deck D1),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:112,1
-D6,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S2 -> cathode OCD (deck D2),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:112,1
-D7,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S1 (deck D3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113,1
-D8,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S2 (deck D4),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113,1
-R8,10R 1%,Resistor_SMD:R_0805_2012Metric,0.25 W,burden Rbur (main R3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:117,1
-R9,1k,Resistor_SMD:R_0603_1608Metric,,Rf (main R15),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118,1
-C11,47nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Cf (main C11),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:119,1
-R10,10k,Resistor_SMD:R_0603_1608Metric,,Rd1 (main R16),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120,1
-R11,24k,Resistor_SMD:R_0603_1608Metric,,Rd2: divider gain 24/35 = 0.6857 (main R17),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:121,1
-C12,10nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Coc (main C12),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:122,1
+D6,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S2 -> cathode OCD (deck D2),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113,1
+D7,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S1 (deck D3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:114,1
+D8,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S2 (deck D4),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:115,1
+R8,10R 1%,Resistor_SMD:R_0805_2012Metric,0.25 W,burden Rbur (main R3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118,1
+R9,1k,Resistor_SMD:R_0603_1608Metric,,Rf (main R15),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:119,1
+C11,47nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Cf (main C11),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120,1
+R10,10k,Resistor_SMD:R_0603_1608Metric,,Rd1 (main R16),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:121,1
+R11,24k,Resistor_SMD:R_0603_1608Metric,,Rd2: divider gain 24/35 = 0.6857 (main R17),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:122,1
+C12,10nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Coc (main C12),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:123,1
 R12,10k,Resistor_SMD:R_0603_1608Metric,,"fast-channel filter, 10 us with C13",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C13,1nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,fast-channel filter,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R13,0R,Resistor_SMD:R_0603_1608Metric,,single-point return tie; no isolation,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -73,9 +73,9 @@ R28,10k,Resistor_SMD:R_0603_1608Metric,,default unarmed,,DESIGN_PROPOSAL,DESIGN_
 J8,OPERATOR_RUN strap,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,operator run,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R29,10k,Resistor_SMD:R_0603_1608Metric,,default run low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 J9,ACK button,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,press = ACK high; release = low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R30,100k,Resistor_SMD:R_0603_1608Metric,,"ACK pull-down, 10 ms with C17",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R30,100k,Resistor_SMD:R_0603_1608Metric,,ACK pull-down; release decay in ACK_TIMING_UNQUALIFIED,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C17,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,contact debounce,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R31,100k,Resistor_SMD:R_0603_1608Metric,,"edge-detect lag, 1 ms with C18",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R31,100k,Resistor_SMD:R_0603_1608Metric,,edge-detect lag; window in ACK_TIMING_UNQUALIFIED,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C18,10nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,edge-detect lag,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R32,100k,Resistor_SMD:R_0603_1608Metric,,"power-on reset, 8 ms to VT+ with C19",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C19,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,power-on reset,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -127,22 +127,22 @@ R35,100k,Resistor_SMD:R_0603_1608Metric,,defines the rail low whenever the PMOS 
 U14,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R36,4.7k,Resistor_SMD:R_0603_1608Metric,,U14 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R37,4.7k,Resistor_SMD:R_0603_1608Metric,,U14 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-C20,1uF/16V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U14 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C20,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U14 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C21,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U14 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U15,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R38,4.7k,Resistor_SMD:R_0603_1608Metric,,U15 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R39,4.7k,Resistor_SMD:R_0603_1608Metric,,U15 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-C22,1uF/16V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U15 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C22,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U15 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C23,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U15 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U16,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R40,4.7k,Resistor_SMD:R_0603_1608Metric,,U16 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R41,4.7k,Resistor_SMD:R_0603_1608Metric,,U16 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-C24,1uF/16V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U16 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C24,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U16 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C25,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U16 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U17,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R42,4.7k,Resistor_SMD:R_0603_1608Metric,,U17 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R43,4.7k,Resistor_SMD:R_0603_1608Metric,,U17 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-C26,1uF/16V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U17 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C26,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U17 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C27,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U17 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U18,UCC27282DRCR,Package_SON:Texas_S-PVSON-N10,120 V,EN is pin 6 on the DRC 10-pin; the D 8-pin has no EN,,SOURCED,design/v1/pin_connections.csv:10-20,1
 R44,10k,Resistor_SMD:R_0603_1608Metric,,main board R7: EN default-off,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:native_primary,1

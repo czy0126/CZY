@@ -248,7 +248,7 @@
       "value": "BAT54",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:112"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113"
     },
     {
       "ref": "D7",
@@ -256,7 +256,7 @@
       "value": "BAT54",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:114"
     },
     {
       "ref": "D8",
@@ -264,7 +264,7 @@
       "value": "BAT54",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:115"
     },
     {
       "ref": "R8",
@@ -272,7 +272,7 @@
       "value": "10R 1%",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:117"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118"
     },
     {
       "ref": "R9",
@@ -280,7 +280,7 @@
       "value": "1k",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:119"
     },
     {
       "ref": "C11",
@@ -288,7 +288,7 @@
       "value": "47nF/16V",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:119"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120"
     },
     {
       "ref": "R10",
@@ -296,7 +296,7 @@
       "value": "10k",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:121"
     },
     {
       "ref": "R11",
@@ -304,7 +304,7 @@
       "value": "24k",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:121"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:122"
     },
     {
       "ref": "C12",
@@ -312,7 +312,7 @@
       "value": "10nF/16V",
       "dnp": false,
       "provenance": "SOURCED",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:122"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:123"
     },
     {
       "ref": "R12",
@@ -1037,7 +1037,7 @@
     {
       "ref": "C20",
       "unit": 1,
-      "value": "1uF/16V",
+      "value": "1uF/25V",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1077,7 +1077,7 @@
     {
       "ref": "C22",
       "unit": 1,
-      "value": "1uF/16V",
+      "value": "1uF/25V",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1117,7 +1117,7 @@
     {
       "ref": "C24",
       "unit": 1,
-      "value": "1uF/16V",
+      "value": "1uF/25V",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1157,7 +1157,7 @@
     {
       "ref": "C26",
       "unit": 1,
-      "value": "1uF/16V",
+      "value": "1uF/25V",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -2430,7 +2430,7 @@
       "id": "FAST_IS_LESS_SENSITIVE_THAN_HARD",
       "statement": "The 1.769 V fast threshold sits on the filtered burden node (divider gain 24/35), so it corresponds to a higher primary current than the 1.000 V hard trip: 42.9 A versus 24.2 A peak (1.77x).",
       "consequence": "The 'fast' channel is a confirmation channel, not a faster one. It cannot protect anything the hard trip does not already catch; it can only add a second opinion.",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118-122"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118-123"
     },
     {
       "id": "RAIL_GOOD_TRIP_IS_A_DIVIDER_RATIO",
@@ -2452,8 +2452,8 @@
     },
     {
       "id": "ACK_TIMING_UNQUALIFIED",
-      "statement": "The release token is a level latch, not an edge sampler: ACK_ARM = READY and the button not pressed sets it, and any fault or lost READY clears it, so the first press after power-up is the one that clears the fault latch (an edge sampler armed on release would swallow that press). The press charges C17 straight from V5 through the button; the 10 ms (R30*C17) is the release decay and the ~1 ms edge window is R31*C18.",
-      "consequence": "The press path is undebounced, so one contact bounce while READY is indistinguishable from an operator press and clears the latch; only the release is filtered. Neither the 1 ms window nor the bounce sensitivity is qualified on hardware.",
+      "statement": "The release token is a level latch, not an edge sampler: ACK_ARM = READY and the button not pressed sets it, and any fault or lost READY clears it, so the first press after power-up is the one that clears the fault latch (an edge sampler armed on release would swallow that press). The press charges C17 straight from V5 through the button; the 10.0 ms (R30*C17) is the release decay and the 1.00 ms edge window is R31*C18.",
+      "consequence": "The press path is undebounced, so one contact bounce while READY is indistinguishable from an operator press and clears the latch; only the release is filtered. Neither the 1.00 ms window nor the bounce sensitivity is qualified on hardware.",
       "source": "tools/two_tier_fault_logic.py:50-61"
     },
     {
@@ -2472,7 +2472,7 @@
       "id": "BENCH_DRIVE_IS_SHARED",
       "statement": "All eight SR channels are driven from one TG_SR input, matching the deck's in-phase drive.",
       "consequence": "This board cannot demonstrate per-channel timing differences, and it does not reproduce the UCC24624 gate outputs it would eventually sit behind.",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120-124"
+      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:128-129"
     },
     {
       "id": "NO_HARDWARE_HAS_BEEN_BUILT",
