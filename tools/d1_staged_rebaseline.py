@@ -76,9 +76,11 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         raise ValueError("modeled current below new stage thresholds")
     v100=float(o100["Vout_V"])
     v120=float(o120["vout_avg_v"])
-    if min(v100,v120)<min(p["stages"][1]["min_output_at_converter_v"],
-                         p["stages"][2]["min_output_at_converter_v"]):
-        raise ValueError("current model does not even support staged converter voltage")
+    # Compare each load point with *its own* acceptance requirement. Taking
+    # min(both thresholds) would silently waive a stricter D1 or D2 target.
+    if (v100<float(p["stages"][1]["min_output_at_converter_v"]) or
+        v120<float(p["stages"][2]["min_output_at_converter_v"])):
+        raise ValueError("current model does not support a stage-specific converter voltage")
     if any(r["three_turn_joint_pass"] for r in core["cores"]):
         raise ValueError("10mm core screen changed; rerun design review")
     base_b=float(high["magnetics"]["existing_three_turn_worst_b_t"])
