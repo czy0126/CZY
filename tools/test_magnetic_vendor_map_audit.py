@@ -229,3 +229,56 @@ def test_main_writes_both_the_input_and_contract_hashes(tmp_path):
     doc = json.loads(out.read_text(encoding="utf-8"))
     assert doc["input_sha256"] == hashlib.sha256(response.read_bytes()).hexdigest()
     assert doc["contract"]["sha256"] == hashlib.sha256(m.CONTRACT.read_bytes()).hexdigest()
+
+
+def test_a_contract_that_drifted_from_its_sources_is_refused():
+    # contract_entries() treats the JSON as frozen truth, so an edited golden
+    # net would otherwise make a wrong vendor map look model-correct.
+    drifted = json.loads(m.CONTRACT.read_text(encoding="utf-8"))
+    drifted["symbols"][0]["pins"][0]["golden_net"] = "EDITED_FOR_TEST"
+    with pytest.raises(ValueError, match="no longer matches"):
+        m.verify_contract_sources(drifted)
+
+
+def test_filling_in_physical_pads_is_not_contract_drift():
+    contract = copy.deepcopy(m.cad_contract.build())
+    for symbol in contract["symbols"]:
+        symbol["physical_pad_map_verified"] = True
+        symbol["native_symbol_present"] = True
+        for pin in symbol["pins"]:
+            pin["physical_pad"] = "PAD_FROM_VENDOR"
+    assert m.verify_contract_sources(contract) is None
+
+
+def test_main_rejects_a_drifted_contract_as_invalid_packet(tmp_path, monkeypatch):
+    drifted = json.loads(m.CONTRACT.read_text(encoding="utf-8"))
+    drifted["symbols"][0]["pins"][0]["golden_net"] = "EDITED_FOR_TEST"
+    bad = tmp_path / "contract.json"
+    bad.write_text(json.dumps(drifted), encoding="utf-8")
+    monkeypatch.setattr(m, "CONTRACT", bad)
+    response = tmp_path / "reply.csv"
+    with response.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=m.FIELDS)
+        writer.writeheader()
+        writer.writerows(synthetic_complete_rows())
+    out = tmp_path / "audit.json"
+    assert m.main(["--input", str(response), "--output", str(out)]) == 2
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    assert doc["status"] == "INVALID_PACKET"
+    assert any("no longer matches" in error for error in doc["errors"])
+    assert doc["contract"]["sha256"] == hashlib.sha256(bad.read_bytes()).hexdigest()
+
+
+def test_main_records_the_sources_the_contract_was_rebuilt_from(tmp_path):
+    response = tmp_path / "reply.csv"
+    with response.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=m.FIELDS)
+        writer.writeheader()
+        writer.writerows(synthetic_complete_rows())
+    out = tmp_path / "audit.json"
+    assert m.main(["--input", str(response), "--output", str(out)]) == 0
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    paths = {item["path"]: item["sha256"] for item in doc["contract_sources"]}
+    assert paths["design/v3/pcb/board_netlist.csv"]
+    assert paths["design/v3/magnetics/winding_polarity.json"]
+    assert all(len(value) == 64 for value in paths.values())

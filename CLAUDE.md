@@ -719,6 +719,12 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   `input_sha256` 与 `contract.sha256`（合同 5 只磁件 / 24 逻辑端）。合同一旦重生成或手改，
   旧报告里的 `REVIEW_PACKAGE_COMPLETE_NOT_APPROVED` 就失效，必须重跑；不要拿旧 JSON 配新合同。
   `contract_entries()` 对重复 `(ref, logical_pin)` 直接抛错——字典合并会让期望端子数悄悄小于 24。
+  **"合同冻结"本身也不再是信任前提**：审核前 `verify_contract_sources()` 用
+  `magnetics_cad_contract.build()` 从 `design/v3/pcb/board_netlist.csv` +
+  `design/v3/magnetics/winding_polarity.json` 重建合同，只逐端比对 `golden_net`/`polarity`；
+  不一致 → `INVALID_PACKET`（退出码 2），报告仍带 `contract.sha256`。比较**有意忽略**
+  `physical_pad`/`physical_pad_map_verified`/原生CAD字段——回件之后填真实焊盘是合法步骤，
+  用整份 JSON 相等会堵死这条路。输入文件哈希另存 `contract_sources`。
 - **17 个 BOM 外围在 `tools/main_board_schematic.py:PERIPHERALS`**，故意不进金网表：EN/RUN 默认电平、
   EN 滤波、每只 IC 的去耦在 SPICE 里不存在。网表比对把它们的 34 个焊盘记在
   `peripheral_pads_checked`，不混进 `pads_checked`（金网表 245）。新增/移动外围必须同时改 `SECTIONS`，

@@ -14,6 +14,8 @@ import math
 import re
 from pathlib import Path
 
+import magnetics_cad_contract as cad_contract
+
 ROOT = Path(__file__).resolve().parent.parent
 CONTRACT = ROOT / "hardware/dcx_main/magnetics_symbol_contract.json"
 DEFAULT_TEMPLATE = ROOT / "docs/D1_EXECUTION_KIT/templates/magnetic_vendor_response_24_TEMPLATE.csv"
@@ -62,19 +64,59 @@ def _display_path(path: Path) -> str:
         return path.resolve().as_posix()
 
 
-def contract_fingerprint(path: Path = CONTRACT) -> dict[str, str | int]:
+def contract_fingerprint(path: Path = CONTRACT, contract: dict | None = None) -> dict[str, str | int]:
     """Name the exact contract revision a vendor packet was judged against.
 
     The report is only meaningful for these bytes: after any edit to the
     contract the packet must be re-audited, never carried forward.
     """
-    doc = json.loads(path.read_text(encoding="utf-8"))
+    doc = json.loads(path.read_text(encoding="utf-8")) if contract is None else contract
     return {
         "path": _display_path(path),
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "symbols": len(doc["symbols"]),
         "logical_terminal_count": len(contract_entries(doc)),
     }
+
+
+def _frozen_projection(doc: dict) -> dict[str, dict[str, tuple[str, str]]]:
+    """Only the fields the audit treats as frozen truth, per logical terminal."""
+    return {
+        symbol["ref"]: {
+            pin["logical_pin"]: (pin["golden_net"], pin["polarity"])
+            for pin in symbol["pins"]
+        }
+        for symbol in doc["symbols"]
+    }
+
+
+def verify_contract_sources(contract: dict) -> None:
+    """The contract may only be authoritative while it still equals its sources.
+
+    ``contract_entries`` treats the submitted JSON as the frozen reference; an
+    edited ``golden_net`` or ``polarity`` would therefore make a wrong vendor
+    map look model-correct.  Physical pads and the native-CAD flags are
+    excluded on purpose: filling them in is the legitimate post-vendor step.
+    """
+    try:
+        rebuilt = cad_contract.build()
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise ValueError(
+            f"cannot rebuild the frozen contract from its sources: {error}") from error
+    if _frozen_projection(contract) != _frozen_projection(rebuilt):
+        raise ValueError(
+            "magnetics_symbol_contract.json no longer matches board_netlist.csv and "
+            "winding_polarity.json; regenerate the contract before auditing any packet")
+
+
+def contract_sources_fingerprint() -> list[dict[str, str]]:
+    """The repository inputs the frozen contract is expected to be derived from."""
+    paths = [cad_contract.GOLDEN, cad_contract.POLARITY]
+    if cad_contract.PROJECT_SYMBOLS.is_file():
+        paths.append(cad_contract.PROJECT_SYMBOLS)
+    return [{"path": _display_path(path),
+             "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            for path in paths]
 
 
 def blank_rows(contract=None):
@@ -269,17 +311,22 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if not opts.input:
         p.error("--input is required unless --write-template is specified")
+    fingerprint = None
     try:
         rows = load_rows(opts.input)
-        result = evaluate(rows)
+        contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+        fingerprint = contract_fingerprint(CONTRACT, contract=contract)
+        verify_contract_sources(contract)
+        result = evaluate(rows, contract)
         result["input_sha256"] = hashlib.sha256(opts.input.read_bytes()).hexdigest()
-        result["contract"] = contract_fingerprint()
+        result["contract"] = fingerprint
+        result["contract_sources"] = contract_sources_fingerprint()
         exit_code = (0 if result["status"] == "REVIEW_PACKAGE_COMPLETE_NOT_APPROVED"
                      else 2 if result["status"] == "CONTRACT_REJECTED" else 1)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         result = {"kind": "D1_MAGNETIC_VENDOR_TERMINAL_AUDIT",
                   "status": "INVALID_PACKET", "errors": [str(exc)],
-                  "contract": None,
+                  "contract": fingerprint,
                   "physical_pad_map_verified": False,
                   "fabrication_approved": False}
         exit_code = 2
