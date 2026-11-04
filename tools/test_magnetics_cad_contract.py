@@ -102,7 +102,7 @@ def test_a_cached_dot_report_cannot_hide_a_reversed_live_spice_inductor(monkeypa
     corrupted["checks"][0]["ok"] = False
     monkeypatch.setattr(mc.spice_board, "winding_layout", lambda: corrupted)
     with pytest.raises(ValueError, match="live SPICE winding polarity invalid"):
-        mc.verify_spice_polarity(pol, _frozen_refs())
+        mc.verify_spice_polarity(pol, refs)
 
 
 def test_wrong_sole_ctap_or_secondary_golden_net_is_rejected():
