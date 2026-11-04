@@ -540,13 +540,36 @@ def test_the_committed_board_has_no_unrouted_net():
 
     A board whose netlist never reached the copper has no ratsnest either --
     that is the guard the old backlog test carried.  The router's own count is
-    the other half: 119 connections attempted, 119 made.
+    the other half: 121 connections attempted, 121 made.
     """
     items = pcb.drc_items()
     assert items["unconnected_items"] == []
     routing = pcb.report()["routing"]
     assert routing["routed"] is True
     assert routing["connections_made"] == routing["connections_attempted"] > 0
+
+
+def test_the_reference_text_is_shifted_only_where_the_silk_would_touch():
+    """Four reference texts shared silkscreen with a neighbour: "Rg1"/"Rg2"
+    have a descender that reaches their own silk line, TP13 and TP17 sit 3.5 mm
+    from their pair while 1 mm text is wider than that.  The fix moves the text
+    on those instances only, so the control is R1 -- the same 0805 library
+    footprint, left at the offset the library gives it.
+    """
+    text = (OUT / "sr_fault_validation.kicad_pcb").read_text(encoding="utf-8")
+
+    def offset(ref: str) -> tuple[float, float]:
+        match = re.search(r'\(property "Reference" "' + re.escape(ref) +
+                          r'"\s*\(at (-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)', text)
+        assert match, ref
+        return float(match.group(1)), float(match.group(2))
+
+    assert offset("Rg1") == pytest.approx((0.0, -2.45))
+    assert offset("Rg2") == pytest.approx((0.0, -2.45))
+    assert offset("TP13") == pytest.approx((0.0, 1.452))
+    assert offset("TP17") == pytest.approx((0.0, 1.452))
+    assert offset("R1") == pytest.approx((0.0, -1.65))
+    assert set(pcb.REFERENCE_TEXT_SHIFT_MM) == {"Rg1", "Rg2", "TP13", "TP17"}
 
 
 def test_the_project_file_raises_missing_courtyard_to_error():

@@ -823,8 +823,12 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 
 原生 `.kicad_pcb`：71 只件各摆一次、每只焊盘带原理图网络、132×92 mm 外形、四个 M3 孔，
 **两层全部布通**（121/121 连接、112 个过孔、2270 段），`drc.json` 的
-`unconnected_items` 为 **0**、`schematic_parity` 为 0，只剩 4 条 `silk_overlap`
-（位号从未挪开，按欠账报）。五个电源网各有 zone 外形（PGND/VOUT 在 B.Cu，
+`unconnected_items` 为 **0**、`schematic_parity` 为 0、`silk_overlap` 也为 **0**。
+**最后四条丝印冲突是靠挪“实例的文字偏移”消掉的，不是改库封装**：`Rg1`/`Rg2` 的位号
+带 `g` 的下沉笔画压到自己的丝印线，TP13/TP17 距配对探针 3.5 mm 而 1 mm 文字更宽，
+`REFERENCE_TEXT_SHIFT_MM` 只改这四只实例的 `(property "Reference" … (at dx dy))`，
+因此同库的其它 0805 一个字节不动；`fill.json` 的填充面积与改前逐位相同（铜没变）。
+五个电源网各有 zone 外形（PGND/VOUT 在 B.Cu，
 SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
 `fabrication_approved`/`hardware_built` 仍 false、`manufacturing_package` 仍
 `NOT_RELEASED`：**铺铜实测只保留外形面积的 2.5 %–65.2 %**，电流路径仍是 0.8 mm

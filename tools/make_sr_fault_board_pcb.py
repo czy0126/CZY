@@ -87,6 +87,20 @@ BSC_LAND_JSON = ROOT / "design" / "v3" / "pcb" / "bsc010n04ls6_land.json"
 # check them against the schematic without reading the router.
 ROUTE_SIGNAL_MM = 0.25
 ROUTE_POWER_MM = 0.8
+
+# Per-instance reference-text offsets, in millimetres, added to the offset the
+# footprint already carries.  Silk only: the text is drawn by the footprint, so
+# a clash with a neighbour can only be fixed by moving that instance's text.
+# "Rg1"/"Rg2" have a descender in "g" that reaches their own silkscreen line;
+# TP13/TP17 sit 3.5 mm from their pair while 1 mm text is wider than that, so
+# they move to the other side of the probe row.  Both were the last four DRC
+# warnings, and neither changes copper, nets or the netlist.
+REFERENCE_TEXT_SHIFT_MM = {
+    "Rg1": (0.0, -0.8),
+    "Rg2": (0.0, -0.8),
+    "TP13": (0.0, 2.9),
+    "TP17": (0.0, 2.9),
+}
 # VSS is deliberately not here: on this board it is the UCC24624's source
 # reference, three pads (U1.5, R1.1, TP11.1) joined through a 0R Kelvin tap.
 # It carries the gate-drive return, not the SR current -- the return is PGND,
@@ -771,6 +785,14 @@ def _embed(text: str, lib_id: str, ref: str, value: str, nets: dict[str, int],
         f'(layer "F.Cu")\n\t(uuid "{uid("fp", ref)}")\n\t(at {x:g} {y:g} {rot:g})',
         1)
     text = text.replace('(property "Reference" "REF**"', f'(property "Reference" "{ref}"', 1)
+    shift = REFERENCE_TEXT_SHIFT_MM.get(ref)
+    if shift:
+        text = re.sub(
+            r'(\(property "Reference" "' + re.escape(ref) +
+            r'"\s*\(at )(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)',
+            lambda m: (f"{m.group(1)}{float(m.group(2)) + shift[0]:g} "
+                       f"{float(m.group(3)) + shift[1]:g}"),
+            text, count=1)
     text = re.sub(r'\(property "Value" "[^"]*"', f'(property "Value" "{value}"', text, count=1)
     text = re.sub(r'\(uuid "([^"]+)"\)', lambda m: f'(uuid "{uid(ref, m.group(1))}")', text)
     return "\t" + text.strip() + "\n"
@@ -1317,7 +1339,6 @@ def report(placed: list[Placed] | None = None,
             "inner plane; until then the current path is the escapes",
             "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what "
             "must not creep up to it, and that is a fill question, not a track question",
-            "move the reference designators off one another (the cosmetic silk backlog)",
             "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the "
             "IPC-2221 figures here are a chart, not a measurement",
             "export gerbers, drill and position only after the fills are measured and "
