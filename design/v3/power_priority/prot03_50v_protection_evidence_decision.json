@@ -4,7 +4,7 @@
   "A_2fF": {
     "base_full_320us": true,
     "candidate_full_320us": true,
-    "pre_fault_vout_delta_mv": 0,
+    "pre_fault_vout_delta_mv": 0.0,
     "trip_us": 215.023151,
     "base_ipri_peak_time_us": 209.94941,
     "trip_after_base_ipri_peak_us": 5.073741,
@@ -19,7 +19,7 @@
     "control_end_us": 254.980482,
     "control_full_320us": false,
     "candidate_full_320us": true,
-    "pre_fault_vout_delta_mv": 0,
+    "pre_fault_vout_delta_mv": 0.0,
     "comparison_full_window": false,
     "nominal_sr_peak_reduction_percent_prefix_only": 54.312,
     "conclusion": "PARTIAL_CONTROL_ONLY_NO_FULL_WINDOW_PEAK_CLAIM"
@@ -43,7 +43,7 @@
     "control_end_us": 235.889681,
     "control_full_320us": false,
     "candidate_full_320us": true,
-    "pre_fault_vout_delta_mv": 0,
+    "pre_fault_vout_delta_mv": 0.0,
     "comparison_full_window": false,
     "control_solver_timeout_reported_in_document": true,
     "numeric_vs_1ff_checks": {
@@ -54,14 +54,40 @@
     "conclusion": "CONTROL_EARLY_TIMEOUT_PREFIX_235P890US"
   },
   "B_cshunt_nonmonotone": true,
+  "B_2fF_agefix": {
+    "sources": {
+      "control": "design/v3/power_priority/prot03_bage_agefix_2f_B_CONTROL_vs_v3_3.json",
+      "candidate": "design/v3/power_priority/prot03_bage_agefix_2f_B_CANDIDATE_vs_v3_3.json",
+      "paired": "design/v3/power_priority/protection_candidate_50v_120a_prot_b_paired_agefix_2f.json"
+    },
+    "control_full_320us": true,
+    "candidate_full_320us": true,
+    "completed_matched_pair": true,
+    "pre_fault_vout_delta_mv": 0.0,
+    "shared_window_deltas_are_all_zero": true,
+    "trigger_us": 185.363356,
+    "latch_us": 185.432668,
+    "base_trip_us": 215.035892,
+    "trigger_lead_vs_base_us": 29.672537,
+    "ipri_peak_a_control": 101.06,
+    "ipri_peak_a_candidate": 45.704,
+    "sr_peak_a_control": 304.878,
+    "sr_peak_a_candidate": 139.109,
+    "ipri_peak_reduction_percent": 54.775,
+    "sr_peak_reduction_percent": 54.372,
+    "sr_total_i2t_reduction_percent": 95.436,
+    "vout_min_delta_mv": 2.163217,
+    "conclusion": "MATCHED_320US_WITH_1P8V_TRIGGER_29.67US_EARLY; SOA_REVIEW_STILL_REQUIRED"
+  },
   "numeric_solver_next_step": {
     "strategy": "ISOLATE_KNOWN_BAGE_10V_HARD_RAIL_BEFORE_WIDER_SWEEPS",
     "model": "models/sr_timing_v3_4_age_rail.lib",
     "command": "python tools/run_prot03_bage_diagnostic.py --variant shunt_2f --execute --run-id bage_2f_001 --ltspice D:/ADI/LTspice/LTspice.exe",
-    "status": "UNRUN",
+    "status": "COMPLETE_BOTH_320US",
     "requires_paired_320us": true,
     "requires_pre_fault_vout_delta_mv_max": 1,
-    "requires_model_vs_v3_3_220us_frozen_metrics": true
+    "requires_model_vs_v3_3_220us_frozen_metrics": true,
+    "still_open": "independent device SOA review; the runner manifest's both_320us_qualified stays false by design"
   },
   "hardware_gate_passed": false,
   "manufacture_approved": false

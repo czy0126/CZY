@@ -73,6 +73,26 @@ Rflt_hot flt_hot 0 1m
 """
 
 
+def test_the_post_window_scan_finds_the_first_differing_sample(tmp_path: Path):
+    base = {name: 0.0 for name in hot.NAMES}
+    base.update({"V(oc)": 0.5, "I(Lr)": -50.0, "V(out)": 1.89})
+    deviated = dict(base)
+    deviated["I(Lr)"] = -51.0
+    write_raw(tmp_path / "same_a.raw", 601, 0.5e-6, base, 1000.0, {})
+    write_raw(tmp_path / "same_b.raw", 601, 0.5e-6, base, 1000.0, {})
+    write_raw(tmp_path / "late.raw", 601, 0.5e-6, base, 250.0, deviated)
+    same = c.first_divergence(tmp_path / "same_a.raw", tmp_path / "same_b.raw",
+                              220e-6, 300e-6)
+    assert same["identical_over_common_prefix"]
+    assert same["first_difference_s"] is None
+    late = c.first_divergence(tmp_path / "same_a.raw", tmp_path / "late.raw",
+                              220e-6, 300e-6)
+    assert not late["identical_over_common_prefix"]
+    assert late["first_difference_s"] == pytest.approx(250e-6, abs=1e-12)
+    assert late["difference_kind"] == "value"
+    assert late["compared_samples"] > 0
+
+
 def test_the_shared_window_reports_the_model_induced_deltas(tmp_path: Path):
     base = {name: 0.0 for name in hot.NAMES}
     base.update({"V(oc)": 0.5, "I(Lr)": -50.0, "V(out)": 1.89,

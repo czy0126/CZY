@@ -1,0 +1,103 @@
+{
+  "kind": "prot03_bage_model_shared_window",
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "base_deck": "sim\\v3\\d1_prot03_shunt_2f_B_CONTROL.cir",
+  "variant_deck": "sim\\v3\\d1_prot03_agefix_shunt_2f_B_CONTROL.cir",
+  "window_s": [
+    0.0,
+    0.00021999999999999998
+  ],
+  "window_basis": "220 us: covers fault, trip and both headline peaks",
+  "results": {
+    "base": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199998684948574,
+      "samples": 1007575,
+      "trip_s": 0.0002150358924845205,
+      "delay_from_engage_us": 40.0358924845207,
+      "ipri_peak_a": 101.0603425129496,
+      "ipri_peak_ms": 0.2099495799337764,
+      "sr_forward_peak_a": 304.2227029938985,
+      "sr_reverse_peak_a": 13.36738678527865,
+      "oc_max_v": 1.089266086844383,
+      "vout_min_after_engage_v": 0.9387362914593309,
+      "pre_fault_vout_mean_v": 1.959345399664727,
+      "pre_fault_window_s": [
+        0.00014,
+        0.000175
+      ]
+    },
+    "variant": {
+      "t_first_s": 0.0,
+      "t_last_s": 0.0002199998684948574,
+      "samples": 1007575,
+      "trip_s": 0.0002150358924845205,
+      "delay_from_engage_us": 40.0358924845207,
+      "ipri_peak_a": 101.0603425129496,
+      "ipri_peak_ms": 0.2099495799337764,
+      "sr_forward_peak_a": 304.2227029938985,
+      "sr_reverse_peak_a": 13.36738678527865,
+      "oc_max_v": 1.089266086844383,
+      "vout_min_after_engage_v": 0.9387362914593309,
+      "pre_fault_vout_mean_v": 1.959345399664727,
+      "pre_fault_window_s": [
+        0.00014,
+        0.000175
+      ]
+    },
+    "delta": {
+      "trip_s": 0.0,
+      "ipri_peak_a": 0.0,
+      "sr_forward_peak_a": 0.0,
+      "sr_reverse_peak_a": 0.0,
+      "oc_max_v": 0.0,
+      "vout_min_after_engage_v": 0.0,
+      "pre_fault_vout_mean_v": 0.0
+    },
+    "relative": {
+      "trip_s": 0.0,
+      "ipri_peak_a": 0.0,
+      "sr_forward_peak_a": 0.0,
+      "sr_reverse_peak_a": 0.0,
+      "oc_max_v": 0.0,
+      "vout_min_after_engage_v": 0.0,
+      "pre_fault_vout_mean_v": 0.0
+    },
+    "coverage_tolerance_s": 5e-09,
+    "base_saved_stop_s": 0.00031999999999999997,
+    "variant_saved_stop_s": 0.00031999999999999997,
+    "base_reached_saved_stop": false,
+    "variant_reached_saved_stop": true,
+    "base_t_last_us": 264.5149464796637,
+    "variant_t_last_us": 320.0,
+    "post_window_scan": {
+      "window_s": [
+        0.00021999999999999998,
+        0.0002645149464796637
+      ],
+      "compared_samples": 95702,
+      "base_samples": 95702,
+      "variant_samples": 98769,
+      "first_difference_s": 0.0002288840004701651,
+      "first_difference_us": 228.88400047016512,
+      "difference_kind": "time",
+      "identical_over_common_prefix": false,
+      "status": "compared"
+    }
+  },
+  "checks": {
+    "the_pair_differs_only_by_the_declared_model_include": true,
+    "the_comparison_window_is_covered_by_both_raws": true,
+    "the_window_stays_inside_both_decks": true
+  },
+  "declared_difference": [
+    ".include ../../models/sr_timing_v3_3.lib -> .include ../../models/sr_timing_v3_4_age_rail.lib (model file: one Bage expression)"
+  ],
+  "limits": [
+    "a numerical-surrogate rail change bounds a solver artifact; it is not device behaviour",
+    "peaks are maxima over samples, so one step of sampling difference can move them",
+    "the shared window ends at 220 us; nothing after it has a parent counterpart",
+    "a completed run does not make the post-trip boundary (no UCC24624 standby, no SOA) safe",
+    "the post-window scan only reports where the two time axes first part; it measures no peak"
+  ]
+}

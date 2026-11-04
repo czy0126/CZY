@@ -9,7 +9,8 @@ declared model change and not to a stray circuit edit.
 
 The shared window ends at 220 us: it covers the fault, the trip and both
 headline peaks, and it is the only span the stalled 2 fF control and its
-replacement both contain.  Nothing after 220 us is covered by this tool.
+replacement both contain.  Beyond it the tool only scans for the first sample
+where the two trajectories part; no peak is measured there.
 
 This is a numerical-surrogate diagnostic.  It is not silicon behaviour, not an
 SOA or thermal proof, and a completed run does not make the post-trip model
@@ -64,6 +65,41 @@ def measure(raw: Path, deck_text: str, window_s: float) -> dict[str, object]:
     return peaks
 
 
+def first_divergence(base_raw: Path, variant_raw: Path, t0_s: float,
+                     t1_s: float) -> dict[str, object]:
+    """First sample in [t0, t1) where the two raws disagree, and how.
+
+    Both raws are read over the same span and compared element-wise.  Once the
+    trajectories part, the two solver time axes are independent, so the scan
+    stops at that sample.  ``None`` with equal sample counts means the two runs
+    were bit-identical over the whole scanned span -- the declared model change
+    was inert there, which is why exact-zero deltas are legitimate.
+    """
+    t1, d1 = read_window(base_raw, hot.NAMES, t0_s, t1_s)
+    t2, d2 = read_window(variant_raw, hot.NAMES, t0_s, t1_s)
+    n = min(len(t1), len(t2))
+    first: float | None = None
+    kind: str | None = None
+    for i in range(n):
+        if t1[i] != t2[i]:
+            first, kind = float(t1[i]), "time"
+            break
+        if any(d1[name][i] != d2[name][i] for name in hot.NAMES):
+            first, kind = float(t1[i]), "value"
+            break
+    return {
+        "window_s": [t0_s, t1_s],
+        "compared_samples": int(n),
+        "base_samples": int(len(t1)),
+        "variant_samples": int(len(t2)),
+        "first_difference_s": first,
+        "first_difference_us": None if first is None else first * 1e6,
+        "difference_kind": kind,
+        "identical_over_common_prefix": first is None and len(t1) == len(t2),
+        "status": "compared",
+    }
+
+
 def compare(base_raw: Path, variant_raw: Path, base_deck_text: str, variant_deck_text: str,
             *, window_us: float = COMPARE_WINDOW_US) -> dict[str, object]:
     window_s = window_us * 1e-6
@@ -87,11 +123,20 @@ def compare(base_raw: Path, variant_raw: Path, base_deck_text: str, variant_deck
     variant_t_last = last_time(variant_raw)
     base_done = reached_stop(base_t_last, base_stop)
     variant_done = reached_stop(variant_t_last, variant_stop)
+    scan_hi = min(base_stop, variant_stop, base_t_last, variant_t_last)
+    if scan_hi > window_s + _WINDOW_TOL_S:
+        post = first_divergence(base_raw, variant_raw, window_s, scan_hi)
+    else:
+        post = {"window_s": [window_s, scan_hi], "compared_samples": 0,
+                "first_difference_s": None, "first_difference_us": None,
+                "difference_kind": None, "identical_over_common_prefix": None,
+                "status": "no common post-window prefix"}
     limits = [
         "a numerical-surrogate rail change bounds a solver artifact; it is not device behaviour",
         "peaks are maxima over samples, so one step of sampling difference can move them",
         f"the shared window ends at {window_us:.0f} us; nothing after it has a parent counterpart",
         "a completed run does not make the post-trip boundary (no UCC24624 standby, no SOA) safe",
+        "the post-window scan only reports where the two time axes first part; it measures no peak",
     ]
     if not variant_done:
         limits.append("the variant stalled too; its post-stall samples are not evidence")
@@ -114,6 +159,7 @@ def compare(base_raw: Path, variant_raw: Path, base_deck_text: str, variant_deck
             "variant_reached_saved_stop": variant_done,
             "base_t_last_us": base_t_last * 1e6,
             "variant_t_last_us": variant_t_last * 1e6,
+            "post_window_scan": post,
         },
         "checks": {
             "the_pair_differs_only_by_the_declared_model_include": True,
