@@ -380,3 +380,19 @@ def test_duplicate_json_keys_are_refused(tmp_path):
     report = case.run()
     assert report["status"] == "CHAIN_INCONSISTENT"
     assert any("duplicate JSON key" in error for error in report["errors"])
+
+
+def test_relative_instrument_paths_resolve_against_the_manifest_directory(tmp_path):
+    # The availability pre-check must resolve paths exactly like the aligner;
+    # otherwise a valid package would be reported UNAVAILABLE.
+    case = Case(tmp_path)
+    manifest = json.loads(case.manifest.read_text(encoding="utf-8"))
+    for instrument in manifest["instruments"]:
+        instrument["csv"] = Path(instrument["csv"]).name
+    case.manifest.write_text(json.dumps(manifest), encoding="utf-8")
+    assert align.run(case.manifest, case.csv, case.alignment_path) in (0, 1)
+    case.audit_path.write_text(
+        json.dumps(audit.run(case.csv, case.config_path)), encoding="utf-8")
+    report = case.run()
+    assert report["reproduction"]["status"] == "MATCHED"
+    assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is True
