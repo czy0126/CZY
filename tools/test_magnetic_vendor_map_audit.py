@@ -38,6 +38,21 @@ def synthetic_complete_rows():
     return rows
 
 
+def test_legacy_terminal_sheet_is_full_24_rows_and_center_tap_net_fixed():
+    legacy=m.ROOT / "docs/D1_EXECUTION_KIT/templates/magnetic_terminal_map.csv"
+    with legacy.open(encoding="utf-8",newline="") as f:
+        rows=list(csv.DictReader(f))
+    frozen=m.contract_entries()
+    assert len(rows)==len(frozen)==24
+    assert set((r["ref"],r["logical_pin"]) for r in rows)==set(frozen)
+    for row in rows:
+        key=(row["ref"],row["logical_pin"])
+        assert row["logical_net"]==frozen[key]["golden_net"]
+        assert row["physical_terminal_number"]=="PENDING"
+        assert row["dot_or_non_dot"]=="PENDING"
+    assert next(r for r in rows if r["ref"]=="T1" and r["logical_pin"]=="CTAP")["logical_net"]=="VOUT"
+
+
 def test_template_covers_exactly_24_logical_pins_without_physical_claim():
     response = m.DEFAULT_TEMPLATE
     saved = m.load_rows(response)
