@@ -53,6 +53,7 @@ python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
+python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
 python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
 python tools/run_d1_50v_matched_cases.py --execute --run-id d1_50v_001 \
@@ -836,6 +837,22 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 **本机 `PostToolUse` 钩子会对编辑过的 `.py` 跑 `ruff check --fix`，它会删掉"暂时未使用"的 import**：
 先加 `import x`、下一次编辑才写用法的分步做法会被吃掉（`make_fast_oc_eco.py` 与它的测试都撞过）。
 要么一次写完 import + 用法，要么在用法落地后再补 import。
+
+## 磁件询价单（`hardware/dcx_main/rfq/`）
+
+`tools/magnetics_rfq_package.py` 生成 6 张独立询价单（T1–T4、Lr、CT），**放在
+`hardware/dcx_main/rfq/` 而不是 `design/v3/magnetics/`**：那个目录由
+`make_magnetics_manifest.py` 逐文件散列，加文件就要重跑 manifest，而询价单是
+对外工件、不是设计包的一部分。
+
+- **没有数据的字段写 `UNKNOWN` 并在该单第 11 节重列，不许填一个看起来合理的值**；
+  当前 37 处，其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
+- **气隙只给"按目标 AL 的工艺窗口"，不给固定值**：T 是 0.1211 mm（AL ±25 % →
+  0.112–0.126），Lr 是 1.4443 mm（1.0 µH / 3²）。路线明确禁止填未经计算的气隙。
+- **变压器的磁通不许用 `L·I/(N·Ae)`**：那是 Lr 的电感筛查。本包在每张 T 单的
+  波形表里写死"按各绕组实际电压积分"。
+- 询价单与 `vendor_terminal_request.json` 的 24 个逻辑端子**必须逐项相同**
+  （测试比对 `(terminal, net, dot)` 三元组），否则会出现第七个端子。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 

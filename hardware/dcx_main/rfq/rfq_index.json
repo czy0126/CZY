@@ -1,0 +1,110 @@
+{
+ "kind": "D1_MAGNETICS_SUPPLIER_RFQ_PACKAGE",
+ "status": "REQUEST_FOR_QUOTE_NOT_VERIFIED",
+ "rule": "one sheet per device; every field this repository cannot answer is UNKNOWN and listed in open_items",
+ "sections": [
+  "绕组极性与逻辑端子",
+  "电感、匝比与气隙",
+  "工作波形",
+  "额定电流与故障电流",
+  "温度",
+  "允许损耗",
+  "绝缘",
+  "完整高度",
+  "公差",
+  "物理端子图"
+ ],
+ "devices": [
+  {
+   "ref": "T1",
+   "kind": "TRANSFORMER_3_1_1_CENTRE_TAP",
+   "quantity": 1,
+   "sheet": "rfq/T1.md",
+   "unknown_count": 5,
+   "open_item_count": 5,
+   "sources": [
+    "design/v3/magnetics/magnetics_design.json",
+    "design/v3/magnetics/winding_polarity.csv",
+    "design/v3/magnetics/winding_polarity.json",
+    "design/v3/magnetics/磁件设计包_2026-10-31.md",
+    "design/v3/bom/lr_design.json",
+    "hardware/dcx_main/vendor_terminal_request.json"
+   ]
+  },
+  {
+   "ref": "T2",
+   "kind": "TRANSFORMER_3_1_1_CENTRE_TAP",
+   "quantity": 1,
+   "sheet": "rfq/T2.md",
+   "unknown_count": 5,
+   "open_item_count": 5,
+   "sources": [
+    "design/v3/magnetics/magnetics_design.json",
+    "design/v3/magnetics/winding_polarity.csv",
+    "design/v3/magnetics/winding_polarity.json",
+    "design/v3/magnetics/磁件设计包_2026-10-31.md",
+    "design/v3/bom/lr_design.json",
+    "hardware/dcx_main/vendor_terminal_request.json"
+   ]
+  },
+  {
+   "ref": "T3",
+   "kind": "TRANSFORMER_3_1_1_CENTRE_TAP",
+   "quantity": 1,
+   "sheet": "rfq/T3.md",
+   "unknown_count": 5,
+   "open_item_count": 5,
+   "sources": [
+    "design/v3/magnetics/magnetics_design.json",
+    "design/v3/magnetics/winding_polarity.csv",
+    "design/v3/magnetics/winding_polarity.json",
+    "design/v3/magnetics/磁件设计包_2026-10-31.md",
+    "design/v3/bom/lr_design.json",
+    "hardware/dcx_main/vendor_terminal_request.json"
+   ]
+  },
+  {
+   "ref": "T4",
+   "kind": "TRANSFORMER_3_1_1_CENTRE_TAP",
+   "quantity": 1,
+   "sheet": "rfq/T4.md",
+   "unknown_count": 5,
+   "open_item_count": 5,
+   "sources": [
+    "design/v3/magnetics/magnetics_design.json",
+    "design/v3/magnetics/winding_polarity.csv",
+    "design/v3/magnetics/winding_polarity.json",
+    "design/v3/magnetics/磁件设计包_2026-10-31.md",
+    "design/v3/bom/lr_design.json",
+    "hardware/dcx_main/vendor_terminal_request.json"
+   ]
+  },
+  {
+   "ref": "Lr",
+   "kind": "RESONANT_INDUCTOR",
+   "quantity": 1,
+   "sheet": "rfq/Lr.md",
+   "unknown_count": 9,
+   "open_item_count": 5,
+   "sources": [
+    "design/v3/bom/lr_design.json",
+    "design/v3/power_priority/lr_tdk_catalog_core_screen.json",
+    "docs/D1_EXECUTION_KIT/20_低矮磁件Lr原厂尺寸磁通双约束审核.md",
+    "design/v3/pcb/board_netlist.csv"
+   ]
+  },
+  {
+   "ref": "CT",
+   "kind": "CURRENT_TRANSFORMER_4_TERMINAL",
+   "quantity": 1,
+   "sheet": "rfq/CT.md",
+   "unknown_count": 8,
+   "open_item_count": 4,
+   "sources": [
+    "design/v3/bom/ct_design.json",
+    "design/v3/pcb/board_netlist.csv",
+    "hardware/dcx_main/vendor_terminal_request.json"
+   ]
+  }
+ ]
+}
