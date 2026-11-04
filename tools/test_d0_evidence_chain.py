@@ -396,3 +396,14 @@ def test_relative_instrument_paths_resolve_against_the_manifest_directory(tmp_pa
     report = case.run()
     assert report["reproduction"]["status"] == "MATCHED"
     assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is True
+
+
+def test_stripping_a_safety_limitation_from_the_alignment_report_is_detected(tmp_path):
+    # Limitations are deterministic report text; dropping one would otherwise
+    # let the submitted package look cleaner than the capture it describes.
+    case = Case(tmp_path)
+    case.rewrite(case.alignment_path, lambda doc: doc.update(limitations=[]))
+    report = case.run()
+    assert report["status"] == "CHAIN_INCONSISTENT"
+    assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is False
+    assert report["reproduction"]["status"] == "MISMATCHED"

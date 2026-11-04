@@ -284,25 +284,28 @@ def _gate_flags(doc: dict) -> dict:
 
 
 def _alignment_projection(report: dict) -> dict:
-    """Deterministic alignment fields; CLI paths are excluded by design."""
-    output = report.get("output") or {}
-    instruments = [{key: value for key, value in item.items() if key != "csv_path"}
-                   for item in report.get("instruments") or []]
-    return {
-        "status": report.get("status"),
-        "case_id": report.get("case_id"),
-        "columns": output.get("columns"),
-        "row_count": output.get("row_count"),
-        "grid": output.get("grid"),
-        "manifest_sha256": (report.get("source") or {}).get("manifest_sha256"),
-        "sync": report.get("sync"),
-        "instruments": instruments,
-        "channel_producers": report.get("channel_producers"),
-        "checks": report.get("checks"),
-        "origin_classification": report.get("origin_classification"),
-        "flags": {flag: report.get(flag) for flag in RELEASE_FLAGS},
-        "requires_independent_hardware_review": report.get("requires_independent_hardware_review"),
-    }
+    """Every deterministic field; only the CLI-supplied paths are excluded.
+
+    Taking the complement (drop the path-bearing fields) rather than listing
+    fields keeps a new report field inside the check instead of silently
+    escaping it.
+    """
+    projection = {key: value for key, value in report.items()
+                  if key not in ("source", "instruments", "output")}
+    source = dict(report.get("source") or {})
+    source.pop("manifest_path", None)
+    projection["source"] = source
+    # run() decorates the written output with its own path and digest; build()
+    # does not, and the digest is compared directly against the submitted CSV.
+    output = dict(report.get("output") or {})
+    output.pop("csv_path", None)
+    output.pop("csv_sha256", None)
+    projection["output"] = output
+    projection["instruments"] = [
+        {key: value for key, value in item.items() if key != "csv_path"}
+        for item in report.get("instruments") or []
+    ]
+    return projection
 
 
 def _instrument_paths(manifest: dict, base: Path) -> list[Path]:
