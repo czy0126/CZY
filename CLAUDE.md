@@ -176,6 +176,18 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   48 V 1.0814 V。**`--base-deck` 的默认值是候选声明的父 deck**；结构检查（生成器一致、
   故障网络不变）永远对声明父 deck 做，不对比较基准做。
   负对照 `prot_b_unarmed` 必须保留：它在启动冲击时就锁死，整窗记录的是停机变换器。
+- **2 fF 的 v3_4 软轨配对已跑完，资格只写在分析记录里**：`run_prot03_bage_diagnostic.py` 的
+  `run_manifest.json` 把 `both_320us_qualified`/`pre_fault_1mv_qualified`/`fabrication_approved`
+  **恒写 false**（设计使然），完成与否只看
+  `protection_candidate_50v_120a_prot_b_paired_agefix_2f.json`、
+  `prot03_bage_agefix_2f_B_{CONTROL,CANDIDATE}_vs_v3_3.json` 与
+  `tools/prot03_50v_evidence_decision.py --write` 生成的 `B_2fF_agefix` 段。
+  **软轨对候选完全惰性**：v3_3 与 v3_4 在候选 220–320 µs 的 23,540 个采样点逐位相同；
+  控制首个差异在 **228.884000 µs**（trip 215.0359 µs 之后，正是 v3_3 压步长的死区）。
+  0–220 µs 两侧七项指标差值恰好 0.0——模型改动在窗口内函数值不变时 LTspice 给逐位相同轨迹，
+  这不是缓存。`prot03_bage_model_check.py` 的 `post_window_scan` 只定位分岔时刻、**不测峰值**，
+  不要把这段写成 220 µs 之外的测量或硬件 SOA 证据。见
+  `docs/D1_EXECUTION_KIT/26_B组2fF软轨配对跑满320us与逐位比对.md`。
 - **PROT-03 的两条判据在 50 V 上不能同时成立**（2026-11-03 四份对照跑完，结论冻结）：
   要同时满足「故障前 35 µs 内 `V(out)` 配对 ≤1 mV」和「两个 320 µs 窗口都跑满」。
   `_thrmute_control.cir` 只把 `Bprot` 的触发常数（1.0/1.8 V → 100 V）改掉，**精确配对**
