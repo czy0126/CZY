@@ -72,9 +72,13 @@ python tools/d0_evidence_chain.py --manifest out/d0_scope/sync.json \
 
 **证据链绑定（`tools/d0_evidence_chain.py`）只证明四份工件是同一次采集**：对齐报告、CSV、限值配置、
 审计报告按 SHA-256 与 `case_id` 互绑，并把审计报告**重新算一遍**逐项比对。对齐报告自身不被任何哈希
-绑定，所以 CSV 的行数/等间隔/首末时刻必须与报告声明一致（`aligned_row_count_matches_report`、
-`aligned_grid_is_uniform_at_declared_dt`、`aligned_csv_span_matches_declared_grid`）——手改报告的
-`post_s` 这类操作只有这三项能抓到。**审计报告没有 `physical_simultaneity_proven` 字段**（它不建模
+绑定，所以工具也**重新运行第31章对齐**（`align.build` + 重写 CSV 比对字节），要求除路径外的确定性字段
+逐项相同——手改 `post_s`、`declared_max_remaining_skew_s` 或伪造 `manifest_sha256` 都靠这一项抓
+（`alignment_report_is_reproducible_from_the_manifest`）；CSV 的行数/等间隔/首末时刻三项仍然保留。
+**原始仪器 CSV 必须在 manifest 写的路径上**才能复算：`_load_state` 对缺失文件抛的是
+`InvalidAlignment` 而不是 `OSError`，所以可用性要先自己 `is_file()` 判断；缺失时记
+`reproduction.status=UNAVAILABLE` 并降为退出码 1（`CHAIN_CONSISTENT_PROVENANCE_INCOMPLETE`），
+不判伪造、也绝不放行。**审计报告没有 `physical_simultaneity_proven` 字段**（它不建模
 物理同时性），所以该旗只在对齐报告上强制，其余四面两边都强制为 false；
 `CHAIN_CONSISTENT_AUDIT_REJECTED`（退出码 1）是物理结论不通过，不是工具坏了，不要改配置让它变绿。
 

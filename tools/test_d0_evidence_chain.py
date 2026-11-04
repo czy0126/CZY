@@ -155,6 +155,8 @@ def test_a_reviewed_chain_ending_in_a_capture_pass_is_consistent(tmp_path):
     assert report["exit_code"] == 0
     assert report["errors"] == []
     assert report["checks"]["audit_report_is_reproducible_from_the_csv_and_config"] is True
+    assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is True
+    assert report["reproduction"]["status"] == "MATCHED"
     assert report["checks"]["permanent_release_flags_remain_false"] is True
 
 
@@ -196,6 +198,37 @@ def test_editing_the_audit_report_after_the_fact_is_detected(tmp_path):
     report = case.run()
     assert report["status"] == "CHAIN_INCONSISTENT"
     assert report["checks"]["audit_report_is_reproducible_from_the_csv_and_config"] is False
+
+
+def test_a_hand_edited_alignment_field_is_detected_by_the_rerun(tmp_path):
+    # No other check reads this field, so only re-running the aligner can catch it.
+    case = Case(tmp_path)
+    case.rewrite(case.alignment_path,
+                 lambda doc: doc["sync"].update(declared_max_remaining_skew_s=1e-9))
+    report = case.run()
+    assert report["status"] == "CHAIN_INCONSISTENT"
+    assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is False
+    assert report["reproduction"]["status"] == "MISMATCHED"
+
+
+def test_a_forged_alignment_manifest_hash_is_detected_by_the_rerun(tmp_path):
+    case = Case(tmp_path)
+    case.rewrite(case.alignment_path,
+                 lambda doc: doc["source"].update(manifest_sha256="0" * 64))
+    report = case.run()
+    assert report["checks"]["manifest_hash_matches_alignment_report"] is False
+    assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is False
+
+
+def test_a_missing_instrument_record_downgrades_the_chain_but_never_greens_it(tmp_path):
+    case = Case(tmp_path)
+    (tmp_path / "scope_b.csv").unlink()
+    report = case.run()
+    assert report["status"] == "CHAIN_CONSISTENT_PROVENANCE_INCOMPLETE"
+    assert report["exit_code"] == 1
+    assert report["errors"] == []
+    assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is False
+    assert report["reproduction"]["status"] == "UNAVAILABLE"
 
 
 def test_a_config_hash_mismatch_is_detected(tmp_path):

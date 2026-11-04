@@ -2,9 +2,9 @@
 
 This proves only that the supplied artifacts describe the *same* capture: matching
 SHA-256 hashes, one case id, a grid the reviewed limits can resolve, an
-unambiguous trip origin, and an audit report reproducible from the CSV+config.
-It cannot authenticate instrument origin, prove physical simultaneity, or approve
-hardware, SOA, or fabrication.
+unambiguous trip origin, and alignment/audit reports reproducible from the
+manifest, CSV and config. It cannot authenticate instrument origin, prove
+physical simultaneity, or approve hardware, SOA, or fabrication.
 """
 from __future__ import annotations
 
@@ -12,9 +12,11 @@ import argparse
 import hashlib
 import json
 import math
+import tempfile
 from pathlib import Path
 
 import d0_gate_capture_audit as audit
+import d0_scope_sync_align as align
 
 VERSION = 1
 RELEASE_FLAGS = (
@@ -281,6 +283,82 @@ def _gate_flags(doc: dict) -> dict:
     return {gate: (channels.get(gate) or {}).get("pass_waveform") for gate in audit.GATES}
 
 
+def _alignment_projection(report: dict) -> dict:
+    """Deterministic alignment fields; CLI paths are excluded by design."""
+    output = report.get("output") or {}
+    instruments = [{key: value for key, value in item.items() if key != "csv_path"}
+                   for item in report.get("instruments") or []]
+    return {
+        "status": report.get("status"),
+        "case_id": report.get("case_id"),
+        "columns": output.get("columns"),
+        "row_count": output.get("row_count"),
+        "grid": output.get("grid"),
+        "manifest_sha256": (report.get("source") or {}).get("manifest_sha256"),
+        "sync": report.get("sync"),
+        "instruments": instruments,
+        "channel_producers": report.get("channel_producers"),
+        "checks": report.get("checks"),
+        "origin_classification": report.get("origin_classification"),
+        "flags": {flag: report.get(flag) for flag in RELEASE_FLAGS},
+        "requires_independent_hardware_review": report.get("requires_independent_hardware_review"),
+    }
+
+
+def _instrument_paths(manifest: dict, base: Path) -> list[Path]:
+    paths = []
+    for instrument in manifest.get("instruments") or []:
+        raw = instrument.get("csv")
+        if not isinstance(raw, str) or not raw.strip():
+            raise ChainError(f"instrument {instrument.get('id')!r}: missing csv path")
+        path = Path(raw)
+        paths.append(path if path.is_absolute() else base / path)
+    return paths
+
+
+def _judge_unavailable(state: dict, reason: str) -> None:
+    state["checks"]["alignment_report_is_reproducible_from_the_manifest"] = False
+    state["reproduction"] = {"status": "UNAVAILABLE", "reason": reason}
+    state["reproduction_unavailable"] = True
+    state["warnings"].append(
+        "cannot re-run the aligner because an instrument record is unavailable; "
+        f"the chain is bound but not independently reproducible: {reason}")
+
+
+def _check_alignment_reproduction(state: dict, manifest_path: Path) -> None:
+    """Re-run chapter 31; the alignment report itself is bound by no hash."""
+    try:
+        paths = _instrument_paths(state["manifest"], manifest_path.parent)
+    except ChainError as error:
+        _check(state, "alignment_report_is_reproducible_from_the_manifest", False, str(error))
+        state["reproduction"] = {"status": "MISMATCHED", "reason": str(error)}
+        return
+    missing = [str(path) for path in paths if not path.is_file()]
+    if missing:
+        _judge_unavailable(state, "missing instrument record(s): " + ", ".join(missing))
+        return
+    try:
+        regenerated, rows = align.build(manifest_path)
+    except OSError as error:
+        _judge_unavailable(state, str(error))
+        return
+    except (align.InvalidAlignment, ValueError, TypeError, KeyError) as error:
+        _check(state, "alignment_report_is_reproducible_from_the_manifest", False,
+               f"the aligner rejects the supplied manifest: {error}")
+        state["reproduction"] = {"status": "MISMATCHED", "reason": str(error)}
+        return
+    with tempfile.TemporaryDirectory() as directory:
+        digest = align.write_aligned_csv(Path(directory) / "aligned.csv", rows)
+    same = (_alignment_projection(state["alignment"]) == _alignment_projection(regenerated)
+            and digest == state["inputs"]["csv"]["sha256"])
+    _check(state, "alignment_report_is_reproducible_from_the_manifest", same,
+           "submitted alignment fields differ from a fresh alignment of the same manifest")
+    state["reproduction"] = {
+        "status": "MATCHED" if same else "MISMATCHED",
+        "reason": "" if same else "regenerated report or CSV bytes differ",
+    }
+
+
 def _check_audit_reproduction(state: dict, csv_path: Path, config_path: Path) -> None:
     submitted = state["submitted"]
     status = submitted.get("status")
@@ -343,6 +421,8 @@ def _status(state: dict) -> tuple[str, int]:
         state["warnings"].append("the capture audit rejected this waveform; the chain is "
                                  "consistent but the evidence does not pass")
         return "CHAIN_CONSISTENT_AUDIT_REJECTED", 1
+    if state.get("reproduction_unavailable"):
+        return "CHAIN_CONSISTENT_PROVENANCE_INCOMPLETE", 1
     if state["alignment"].get("status") != "ALIGNED_FOR_CAPTURE_AUDIT":
         return "CHAIN_CONSISTENT_PROVENANCE_INCOMPLETE", 1
     return "CHAIN_CONSISTENT_CAPTURE_ONLY", 0
@@ -360,6 +440,7 @@ def _report(state: dict) -> dict:
         "checks": state["checks"],
         "errors": state["errors"],
         "warnings": state["warnings"],
+        "reproduction": state.get("reproduction", {"status": "NOT_RUN", "reason": ""}),
         "origin_classification": "CHAIN_BINDS_ARTIFACTS_ONLY_ORIGIN_UNVERIFIED",
         "physical_simultaneity_proven": False,
         "waveform_origin_authenticated": False,
@@ -385,6 +466,7 @@ def _invalid_report(error: Exception) -> dict:
         "checks": {},
         "errors": [str(error)],
         "warnings": [],
+        "reproduction": {"status": "NOT_RUN", "reason": str(error)},
         "physical_simultaneity_proven": False,
         "waveform_origin_authenticated": False,
         "all_ten_real_hardware_gates_verified": False,
@@ -405,6 +487,7 @@ def run(manifest_path: Path, alignment_path: Path, csv_path: Path,
     _check_alignment_status(state)
     _check_grid_against_limits(state)
     _check_trigger(state)
+    _check_alignment_reproduction(state, manifest_path)
     _check_audit_reproduction(state, csv_path, config_path)
     _check_release_flags(state)
     return _report(state)
