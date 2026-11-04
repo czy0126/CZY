@@ -904,8 +904,8 @@
   "routed": true,
   "routing": {
     "routed": true,
-    "segments": 2270,
-    "vias": 112,
+    "segments": 2944,
+    "vias": 169,
     "connections_made": 121,
     "connections_attempted": 121,
     "unrouted_nets": [],
@@ -1052,7 +1052,7 @@
       }
     ],
     "overlapping_pairs_at_equal_priority": [],
-    "island_removal": "mode 0 (prune fills that touch no pad of their net), stated explicitly so the fill does not follow a KiCad default that may change; the pours are slit by the signal tracks and vias crossing them, so the surviving copper is patches",
+    "island_removal": "mode 0 (prune fills that touch no pad of their net), stated explicitly so the fill does not follow a KiCad default that may change; this is what deletes the far side of a corridor once a foreign track has crossed it, so the route pressure that keeps those tracks out is what keeps the fill",
     "measured_in": "fill.json -- kicad-cli refills a throwaway copy with --refill-zones --save-board and the polygons are read back; the numbers there are a build product, not a design intent"
   },
   "power_path": {
@@ -1064,7 +1064,7 @@
       "SEC_B",
       "SR_SRC"
     ],
-    "note": "the tracks are the escape from each land.  The pours were added after the routing, so every track crossing an outline slits it: measured, they recover between a fortieth and two thirds of their own outline area (fill.json).  They are extra copper in parallel with the escapes, not a plane, and this layout should not be quoted as a 10 A conductor -- IPC-2221 at 1 oz and a 10 degC rise puts 10 A at about 7 mm of conductor.  Those ampacity numbers are a chart, quoted to say what the copper is not; they are not a measurement, a thermal model or a rating.  VSS is routed at signal width on purpose: it is the controller's source reference through the R1 Kelvin tap, not a current path."
+    "note": "the tracks are the escape from each land.  The pours are now kept as corridors by route pressure (keep_clear -> Router._zone_cost), and measured in fill.json they recover 79 %-94 % of their outline as one patch each.  That makes them copper in parallel with the escapes; it does not make them a quoted conductor.  IPC-2221 at 1 oz and a 10 degC rise puts 10 A at about 7 mm, the copper weight is undecided, and the Q1/Q2 gap at x 43-46.4 mm is still crossed by 0.8 mm tracks.  Those ampacity numbers are a chart, quoted to say what the copper is not; they are not a measurement, a thermal model or a rating.  VSS is routed at signal width on purpose: it is the controller's source reference through the R1 Kelvin tap, not a current path."
   },
   "manufacturing_package": "NOT_RELEASED",
   "hardware_built": false,
@@ -1079,9 +1079,9 @@
   },
   "remaining_work": [
     "check the digitised land against a vendor CAD model or an IPC-7351 calculation when one is available: it is measured from Fig. 2 of the datasheet (max residual 4.9 um) but is still a redrawing, and neither this repository nor the sheet's board-pads figure says whether the lands are to IPC density level A, B or C",
-    "route with the pours in mind: measured in fill.json, the fills recover between 2.5 % and 64 % of their own outline because the routing came first and every track crossing an outline slits it.  The secondary corridors show it worst: SEC_B keeps 2.5 % of 360 mm2 and contains one of the lands it serves (J3.3, whose centre sits on the outline edge), SEC_A keeps 10.7 % and contains no land centre at all -- it joins the net through the tracks the fill touches.  So each corridor is a strip beside a 0.8 mm escape, not a conductor.  Either re-route with the pour corridors kept clear of signal copper, or go to four layers and use an inner plane; until then the current path is the escapes",
+    "quote the corridor ampacity: the fills now retain 79 %-94 % of their outlines as one patch each (they kept 2.5 %-65 % when the routing crossed the corridors), so the corridors are conductors -- but the number still has to be derived from the copper weight and the IPC-2221 chart before any current is claimed, and the Q1/Q2 escape gap at x 43-46.4 mm is still crossed by 0.8 mm tracks rather than by fill",
     "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what must not creep up to it, and that is a fill question, not a track question",
     "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the IPC-2221 figures here are a chart, not a measurement",
-    "export gerbers, drill and position only after the fills are measured and DRC is clean with the zones refilled"
+    "export gerbers, drill and position: the two stated preconditions (fills measured, DRC clean with the zones refilled) now hold, and nothing is exported because the copper weight and the ampacity statement are still open -- a fabrication package is a claim about what may be built"
   ]
 }

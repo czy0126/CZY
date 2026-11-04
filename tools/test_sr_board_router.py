@@ -301,6 +301,22 @@ def test_the_pressure_counts_blocked_neighbours():
     assert rt._pressure(grid, nx, ny, 0, 0) == 0   # ignores the grid edge
 
 
+def test_a_pour_corridor_costs_every_net_but_its_owner():
+    """The corridor is charged, not blocked: the owner routes through it free,
+    every other net pays, and the charge lives only on the zone's layer."""
+    outline = [(0.0, 0.0), (4.0, 0.0), (4.0, 2.0), (0.0, 2.0)]
+    router = rt.Router([], 10.0, 10.0, [], keep_clear={0: [(outline, 5)]})
+
+    owner = router._zone_cost(5)
+    assert not any(owner[0]), "the pour's own net must not be charged"
+    foreign = router._zone_cost(7)
+    inside = router._index(16, 8)                  # (2.0, 1.0) is inside
+    outside = router._index(60, 8)                 # (7.5, 1.0) is outside
+    assert foreign[0][inside] == rt.ZONE_PRESSURE
+    assert foreign[0][outside] == 0
+    assert not any(foreign[1]), "the corridor is on F.Cu only"
+
+
 # ---------------------------------------------------------------- geometry
 def test_two_crossing_segments_are_zero_apart():
     assert rt._segment_segment_distance((0.0, 0.0, 10.0, 10.0),

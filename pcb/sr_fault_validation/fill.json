@@ -4,30 +4,29 @@
       "layer": "B.Cu",
       "priority": 0,
       "outline_area_mm2": 5336.0,
-      "patches": 2,
-      "area_mm2": 1930.578,
+      "patches": 1,
+      "area_mm2": 4530.163,
       "patch_areas_mm2": [
-        1803.9,
-        126.7
+        4530.2
       ],
       "pads_in_outline": 14,
       "pads_covered": [
-        "J2.2",
-        "J3.4",
-        "J4.2",
-        "Q41.2",
-        "Q42.2"
-      ],
-      "pads_uncovered": [
         "C6.2",
         "C7.2",
         "C40.2",
         "D40.2",
-        "Q40.2",
-        "Q43.2",
+        "J2.2",
+        "J3.4",
+        "J4.2",
+        "Q41.2",
+        "Q42.2",
         "R41.2",
         "R42.2",
         "Rsh1.2"
+      ],
+      "pads_uncovered": [
+        "Q40.2",
+        "Q43.2"
       ]
     },
     "VOUT": {
@@ -35,10 +34,10 @@
       "priority": 2,
       "outline_area_mm2": 561.0,
       "patches": 2,
-      "area_mm2": 68.428,
+      "area_mm2": 525.943,
       "patch_areas_mm2": [
-        22.8,
-        45.6
+        64.0,
+        462.0
       ],
       "pads_in_outline": 0,
       "pads_covered": [],
@@ -48,11 +47,10 @@
       "layer": "F.Cu",
       "priority": 1,
       "outline_area_mm2": 350.0,
-      "patches": 2,
-      "area_mm2": 37.441,
+      "patches": 1,
+      "area_mm2": 276.476,
       "patch_areas_mm2": [
-        26.8,
-        10.6
+        276.5
       ],
       "pads_in_outline": 0,
       "pads_covered": [],
@@ -63,9 +61,9 @@
       "priority": 1,
       "outline_area_mm2": 360.0,
       "patches": 1,
-      "area_mm2": 9.118,
+      "area_mm2": 337.314,
       "patch_areas_mm2": [
-        9.1
+        337.3
       ],
       "pads_in_outline": 1,
       "pads_covered": [
@@ -78,10 +76,10 @@
       "priority": 1,
       "outline_area_mm2": 284.0,
       "patches": 2,
-      "area_mm2": 185.105,
+      "area_mm2": 249.228,
       "patch_areas_mm2": [
-        167.9,
-        17.2
+        228.7,
+        20.6
       ],
       "pads_in_outline": 9,
       "pads_covered": [

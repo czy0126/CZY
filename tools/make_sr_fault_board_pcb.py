@@ -11,12 +11,15 @@ What it is not
 --------------
 **Not released.**  The five power nets in ``POURS`` carry a zone outline and
 the fills have been measured (``fill.json``, written by ``--check`` from a
-copy kicad-cli refilled): between 2.5 % and 64 % of each outline survives,
-because the routing came first and every track crossing an outline slits it.
-So the pours are extra copper in parallel with the 0.8 mm escapes, not a
-plane, and the series path from the centre tap through an SR to the shunt is
-still track-width.  That is the honest state of the copper and the first item
-of the leftover work.  The power path, the remaining work and the three false
+copy kicad-cli refilled): between 79 % and 94 % of each outline survives, as a
+single patch per corridor, because the router now charges every other net for
+crossing a corridor (``Router._zone_cost``).  Before that pressure existed the
+same board kept 2.5 %-65 %: a signal crossing the outline cuts the fill in two,
+and ``island_removal_mode 0`` deletes the half that reaches no pad, so the pour
+looked present and carried nothing.  What the corridors still are not is a
+*quoted* conductor: the ampacity depends on the copper weight, which is open,
+and the Q1/Q2 escape gap is still crossed by 0.8 mm tracks.  The power path,
+the remaining work and the three false
 flags (`routed` here means "every net connected", never "released") are all in
 ``sr_fault_validation_pcb.json``.  A manufacturing package (gerbers, drill,
 position) is deliberately *not* exported: a board whose copper has not been
@@ -206,12 +209,15 @@ class Pour:
 # about 3.7 mm.  The router's widest legal track is 0.8 mm, so no track width
 # this board can represent is a 10 A conductor.
 #
-# Adding the pours was necessary and it was not sufficient.  They were drawn
-# after the routing, so every track crossing an outline slits it: measured,
-# 2.5 % to 64 % of each outline survives (fill.json), and the two secondary
-# corridors do not even contain the lands they serve.  The pours are extra
-# copper in parallel with the escapes, not a plane -- see the note in
-# ``power_path`` and the first open item in ``remaining_work``.
+# Adding the pours was necessary and, on its own, not sufficient.  Drawn after
+# a routing that crossed them, every crossing track slit an outline and
+# ``island_removal_mode 0`` deleted the parts that reached no pad: measured,
+# 2.5 %-65 % of each outline survived (fill.json) and the two secondary
+# corridors did not even contain the lands they serve.  The fix is route
+# pressure, not more copper -- ``keep_clear()`` below hands the outlines to the
+# router, which charges every other net for crossing, and the fills went to
+# 79 %-94 % as one patch each.  Ampacity itself is still unquoted: see
+# ``power_path`` and ``remaining_work``.
 #
 # Shapes and layers, read off the placement:
 #
@@ -837,6 +843,24 @@ def route_plan(pads: list[router.Pad], names: list[str]) -> tuple[dict[int, floa
     return widths, order
 
 
+def keep_clear(names: list[str]) -> dict[int, list[tuple[list[tuple[float, float]], int]]]:
+    """The pour corridors, as route pressure: every other net pays to cross one.
+
+    Measured before this existed, the fills kept 2.5 %-65.2 % of their outlines
+    even though 67 %-87 % of the outline area was clear of foreign copper.  The
+    difference is island removal: ``island_removal_mode 0`` deletes any fill that
+    reaches no pad of its net, and a single 0.25 mm signal crossing a corridor
+    is enough to cut off the rest of it.  Routing the signals around, or onto the
+    other layer, is what turns the corridor back into a conductor.
+    """
+    index = {name: i for i, name in enumerate(names)}
+    out: dict[int, list[tuple[list[tuple[float, float]], int]]] = {0: [], 1: []}
+    for pour in POURS:
+        layer = 0 if pour.layer == "F.Cu" else 1
+        out[layer].append((list(pour.outline), index[pour.net]))
+    return out
+
+
 @functools.lru_cache(maxsize=4)
 def _route_cached(placed: tuple[Placed, ...]) -> router.RouteResult:
     """Routing takes about a minute; ``write()`` and ``report()`` both need it."""
@@ -844,7 +868,8 @@ def _route_cached(placed: tuple[Placed, ...]) -> router.RouteResult:
     names = net_table(list(_table().values()))
     widths, order = route_plan(pads, names)
     return router.route(pads, BOARD_W_MM, BOARD_D_MM, list(MOUNTING_HOLES),
-                        widths=widths, order=order)
+                        widths=widths, order=order,
+                        keep_clear=keep_clear(names))
 
 
 def route(placed: list[Placed] | None = None) -> router.RouteResult:
@@ -1278,8 +1303,9 @@ def report(placed: list[Placed] | None = None,
             "overlapping_pairs_at_equal_priority": pour_conflicts(),
             "island_removal": "mode 0 (prune fills that touch no pad of their net), stated "
                               "explicitly so the fill does not follow a KiCad default that "
-                              "may change; the pours are slit by the signal tracks and vias "
-                              "crossing them, so the surviving copper is patches",
+                              "may change; this is what deletes the far side of a corridor "
+                              "once a foreign track has crossed it, so the route pressure "
+                              "that keeps those tracks out is what keeps the fill",
             "measured_in": "fill.json -- kicad-cli refills a throwaway copy with "
                            "--refill-zones --save-board and the polygons are read back; "
                            "the numbers there are a build product, not a design intent",
@@ -1287,17 +1313,17 @@ def report(placed: list[Placed] | None = None,
         "power_path": {
             "track_width_mm": ROUTE_POWER_MM,
             "poured_nets": [p.net for p in POURS],
-            "note": "the tracks are the escape from each land.  The pours were added after "
-                    "the routing, so every track crossing an outline slits it: measured, "
-                    "they recover between a fortieth and two thirds of their own outline "
-                    "area (fill.json).  They are extra copper in parallel with the escapes, "
-                    "not a plane, and this layout should not be quoted as a 10 A "
-                    "conductor -- IPC-2221 at 1 oz and a 10 degC rise puts 10 A at about "
-                    "7 mm of conductor.  Those ampacity numbers are a chart, quoted to say "
-                    "what the copper is not; they are not a measurement, a thermal model or "
-                    "a rating.  VSS is routed at signal width on purpose: it is the "
-                    "controller's source reference through the R1 Kelvin tap, not a current "
-                    "path.",
+            "note": "the tracks are the escape from each land.  The pours are now kept as "
+                    "corridors by route pressure (keep_clear -> Router._zone_cost), and "
+                    "measured in fill.json they recover 79 %-94 % of their outline as one "
+                    "patch each.  That makes them copper in parallel with the escapes; it "
+                    "does not make them a quoted conductor.  IPC-2221 at 1 oz and a 10 degC "
+                    "rise puts 10 A at about 7 mm, the copper weight is undecided, and the "
+                    "Q1/Q2 gap at x 43-46.4 mm is still crossed by 0.8 mm tracks.  Those "
+                    "ampacity numbers are a chart, quoted to say what the copper is not; "
+                    "they are not a measurement, a thermal model or a rating.  VSS is "
+                    "routed at signal width on purpose: it is the controller's source "
+                    "reference through the R1 Kelvin tap, not a current path.",
         },
         "manufacturing_package": "NOT_RELEASED",
         "hardware_built": False,
@@ -1327,22 +1353,20 @@ def report(placed: list[Placed] | None = None,
             "datasheet (max residual 4.9 um) but is still a redrawing, and neither "
             "this repository nor the sheet's board-pads figure says whether the "
             "lands are to IPC density level A, B or C",
-            "route with the pours in mind: measured in fill.json, the fills recover "
-            "between 2.5 % and 64 % of their own outline because the routing came "
-            "first and every track crossing an outline slits it.  The secondary "
-            "corridors show it worst: SEC_B keeps 2.5 % of 360 mm2 and contains one "
-            "of the lands it serves (J3.3, whose centre sits on the outline edge), "
-            "SEC_A keeps 10.7 % and contains no land centre at all -- it joins the "
-            "net through the tracks the fill touches.  So each corridor is a strip "
-            "beside a 0.8 mm escape, not a conductor.  Either re-route with the pour "
-            "corridors kept clear of signal copper, or go to four layers and use an "
-            "inner plane; until then the current path is the escapes",
+            "quote the corridor ampacity: the fills now retain 79 %-94 % of their "
+            "outlines as one patch each (they kept 2.5 %-65 % when the routing "
+            "crossed the corridors), so the corridors are conductors -- but the "
+            "number still has to be derived from the copper weight and the IPC-2221 "
+            "chart before any current is claimed, and the Q1/Q2 escape gap at x 43-"
+            "46.4 mm is still crossed by 0.8 mm tracks rather than by fill",
             "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what "
             "must not creep up to it, and that is a fill question, not a track question",
             "decide the copper weight (1 oz or 2 oz) before quoting any ampacity; the "
             "IPC-2221 figures here are a chart, not a measurement",
-            "export gerbers, drill and position only after the fills are measured and "
-            "DRC is clean with the zones refilled",
+            "export gerbers, drill and position: the two stated preconditions (fills "
+            "measured, DRC clean with the zones refilled) now hold, and nothing is "
+            "exported because the copper weight and the ampacity statement are still "
+            "open -- a fabrication package is a claim about what may be built",
         ],
     }
 

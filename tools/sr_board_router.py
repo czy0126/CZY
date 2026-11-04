@@ -45,6 +45,11 @@ VIA_HOLE_SPACING_MM = 0.25  # KiCad's hole-to-hole minimum, edge to edge
 VIA_COST_MM = 6.0          # a via costs the same as 6 mm of track
 ESCAPE_MM = 0.40           # extra keep-out around a pad whose net is unrouted
 WALL_PRESSURE = 2          # cell costs added per blocked orthogonal neighbour
+ZONE_PRESSURE = 6          # cell costs for a foreign net inside a pour corridor
+# Extra obstacle margin, on top of the clearance.  Clearance is stamped at cell
+# centres, so between two cells it can read low by up to half a pitch; this is
+# what makes the emitted copper clear the rule instead of the grid.
+CLEARANCE_MARGIN_MM = PITCH_MM / 2.0
 RIP_UP_ROUNDS = 4          # how many times a failed net may displace its neighbours
 RIP_RADIUS_MM = 1.5        # how close an occupying track must be to be a candidate
 RIP_MAX_VICTIMS = 6        # cap so one rip-up stays cheap and local
@@ -277,6 +282,19 @@ def _rect_segment_distance(rect: tuple[float, float, float, float],
     return min(_segment_segment_distance(seg, edge) for edge in edges)
 
 
+def _point_in_polygon(poly: list[tuple[float, float]], x: float, y: float) -> bool:
+    """Ray-cast test; the pour outlines are simple polygons (rectangles and one L)."""
+    inside = False
+    n = len(poly)
+    for k in range(n):
+        x0, y0 = poly[k]
+        x1, y1 = poly[(k + 1) % n]
+        if (y0 > y) != (y1 > y):
+            if x < x0 + (y - y0) * (x1 - x0) / (y1 - y0):
+                inside = not inside
+    return inside
+
+
 def _pressure(grid: bytearray, nx: int, ny: int, i: int, j: int) -> int:
     """How many orthogonal neighbours of cell ``(i, j)`` are blocked.
 
@@ -351,12 +369,20 @@ class Router:
 
     def __init__(self, pads: list[Pad], width_mm: float, depth_mm: float,
                  holes: list[tuple[float, float]], *,
-                 pitch: float = PITCH_MM) -> None:
+                 pitch: float = PITCH_MM,
+                 keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None
+                 ) -> None:
         self.pads = pads
         self.width_mm = width_mm
         self.depth_mm = depth_mm
         self.holes = holes
         self.pitch = pitch
+        # ``keep_clear[layer]`` is ``(outline, net)`` pairs: cells inside the
+        # outline cost extra for every net but ``net``.  This is how a pour
+        # corridor stays a corridor -- a track that crosses it splits the fill,
+        # and a split fill is deleted as an island unless it touches a pad.
+        self.keep_clear = keep_clear or {}
+        self._zone_cache: dict[int, list[bytearray]] = {}
         self.nx = int(round(width_mm / pitch)) + 1
         self.ny = int(round(depth_mm / pitch)) + 1
         self.n = self.nx * self.ny
@@ -443,12 +469,21 @@ class Router:
         because stamping every path cell as via-capable closes corridors the
         board really has (a 0603 land gave zero free cells the first time).
         A layer change is then gated on the wide grid instead.
+
+        The margin carries an extra half pitch.  Clearance is stamped at cell
+        centres only, and the distance to a convex element is 1-Lipschitz, so a
+        segment passing between two sampled cells can dip up to ``pitch / 2``
+        below the stamped value.  Without the extra margin the search accepts
+        copper that KiCad then reports: a SEC_B/SR_SRC pair came out at 0.152 mm
+        against 0.20 mm -- inside the grid's own tolerance, outside the rule.
         """
         buf = [bytearray(self.n), bytearray(self.n)]
         for el in self.elements:
             if el.net >= 0 and el.net == net:
                 continue
             margin = CLEARANCE_MM + radius + el.radius
+            if el.kind != "pad":
+                margin += CLEARANCE_MARGIN_MM
             if el.kind == "pad" and el.net in self.pending:
                 margin += ESCAPE_MM
             for layer in el.layers:
@@ -479,6 +514,38 @@ class Router:
             if el.kind == "via":
                 self._stamp_disc(buf, el.point[0], el.point[1], spacing)
         return buf
+
+    def _zone_cost(self, net: int) -> list[bytearray]:
+        """Per-cell extra cost for routing ``net`` through a pour corridor.
+
+        Cells are charged, not blocked.  Blocking them would be the cleaner
+        statement, but every signal that crosses a corridor needs *some* way
+        across, and a hard wall would turn a routing detour into an unrouted
+        net.  Pressure buys the same geometry without that failure mode: a
+        12.5 mm crossing costs 100 steps, a detour around the corridor costs
+        the detour's length, and the search takes whichever is shorter.
+        """
+        cached = self._zone_cache.get(net)
+        if cached is not None:
+            return cached
+        cost = [bytearray(self.n), bytearray(self.n)]
+        for layer, zones in self.keep_clear.items():
+            for outline, owner in zones:
+                if owner == net:
+                    continue
+                xs = [p[0] for p in outline]
+                ys = [p[1] for p in outline]
+                i0 = max(0, int(math.floor(min(xs) / self.pitch)))
+                i1 = min(self.nx - 1, int(math.ceil(max(xs) / self.pitch)))
+                j0 = max(0, int(math.floor(min(ys) / self.pitch)))
+                j1 = min(self.ny - 1, int(math.ceil(max(ys) / self.pitch)))
+                for j in range(j0, j1 + 1):
+                    y = j * self.pitch
+                    for i in range(i0, i1 + 1):
+                        if _point_in_polygon(outline, i * self.pitch, y):
+                            cost[layer][self._index(i, j)] = ZONE_PRESSURE
+        self._zone_cache[net] = cost
+        return cost
 
     def _inside_board(self, i: int, j: int, radius: float) -> bool:
         margin = EDGE_CLEARANCE_MM + radius
@@ -518,7 +585,8 @@ class Router:
 
     def _search(self, blocked: list[bytearray], via_blocked: list[bytearray],
                 via_keepout: bytearray, radius: float, source: set[tuple[int, int]],
-                target: set[tuple[int, int]]) -> list[tuple[int, int]] | None:
+                target: set[tuple[int, int]],
+                zone: list[bytearray] | None = None) -> list[tuple[int, int]] | None:
         """A* from any source cell to any target cell, 4-neighbour + vias."""
         if not source or not target:
             return None
@@ -569,6 +637,8 @@ class Router:
                     continue
                 nnode = (layer, nidx)
                 ng = g + 1 + WALL_PRESSURE * _pressure(grid, self.nx, self.ny, ni, nj)
+                if zone is not None:
+                    ng += zone[layer][nidx]
                 if ng < best.get(nnode, math.inf):
                     best[nnode] = ng
                     came[nnode] = node
@@ -585,6 +655,9 @@ class Router:
                       or nnode in source)
             if via_ok and not via_keepout[idx]:
                 ng = g + via_steps
+                if zone is not None:
+                    # A barrel through a corridor cuts it exactly like a track.
+                    ng += zone[layer][idx]
                 if ng < best.get(nnode, math.inf):
                     best[nnode] = ng
                     came[nnode] = node
@@ -665,7 +738,7 @@ class Router:
             source = self._pad_cells(src_pad, radius)
             target = self._pad_cells(dst_pad, radius)
             path = self._search(blocked, via_blocked, self._via_keepout(),
-                                radius, source, target)
+                                radius, source, target, self._zone_cost(net))
             route.attempted += 1
             if path is None:
                 route.failures.append(
@@ -786,9 +859,15 @@ class Router:
 
 def route(pads: list[Pad], width_mm: float, depth_mm: float,
           holes: list[tuple[float, float]], *,
-          widths: dict[int, float], order: list[int]) -> RouteResult:
-    """Route ``order`` (net indices) with the given widths, then repair failures."""
-    router = Router(pads, width_mm, depth_mm, holes)
+          widths: dict[int, float], order: list[int],
+          keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None
+          ) -> RouteResult:
+    """Route ``order`` (net indices) with the given widths, then repair failures.
+
+    ``keep_clear`` discourages every net but the owner's from routing through a
+    pour corridor; see ``Router._zone_cost``.
+    """
+    router = Router(pads, width_mm, depth_mm, holes, keep_clear=keep_clear)
     for net in order:
         router.route_net(net, widths[net])
     router.rip_up(order, widths)

@@ -416,6 +416,23 @@ def test_the_committed_fill_report_covers_every_pour():
     assert data["checks"]["no_pour_patch_is_isolated"] is True
 
 
+@pytest.mark.skipif(not (OUT / "fill.json").exists(), reason="no fill.json in this checkout")
+def test_the_corridors_keep_their_copper():
+    """Route pressure is what makes the pours conductors, so the retention is the
+    thing to lock.  With signals routed across the corridors the fills kept
+    2.5 %-65 % of their outlines; with ``keep_clear`` they keep 79 %-94 % and the
+    two secondary corridors come out as a single patch each.  A threshold well
+    below the measured values leaves room for a KiCad fill-algorithm change
+    without letting the corridors quietly go back to being slits.
+    """
+    data = json.loads((OUT / "fill.json").read_text(encoding="utf-8"))
+    for net, pour in data["pours"].items():
+        share = pour["area_mm2"] / pour["outline_area_mm2"]
+        assert share >= 0.70, f"{net} keeps only {share:.1%} of its outline"
+    for net in ("SEC_A", "SEC_B"):
+        assert data["pours"][net]["patches"] == 1, net
+
+
 def test_the_fp_lib_table_points_only_at_vendored_or_generated_libraries():
     table = pcb.fp_lib_table()
     for uri in re.findall(r'\(uri "([^"]+)"\)', table):
