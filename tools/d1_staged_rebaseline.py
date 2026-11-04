@@ -45,6 +45,11 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         raise ValueError("cannot relax NOT_FOR_FAB through program target adjustments")
     if p["hardware_approved"] or p["production_approved"]:
         raise ValueError("rebaseline is not hardware approval")
+    # The program-level flags are not sufficient: a stage-local approval
+    # erroneously set true would otherwise be silently overwritten by the
+    # generated screen's constant False and pass CI.
+    if any(stage.get("fab_release") is not False for stage in p["stages"]):
+        raise ValueError("stage-local fabrication approval requires independent review")
     if gate["status"]!="NOT_FOR_FAB" or gate["release_approved"]:
         raise ValueError("the live D1 manufacture gate has changed; independent review required")
     if high["constraints"]["maximum_assembly_height_mm"]!=10:
