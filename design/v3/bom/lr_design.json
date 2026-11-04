@@ -134,6 +134,155 @@
       "loss_w": 0.3237602325869874
     }
   ],
+  "catalogue_cores": {
+    "rule": "gap from AL_ungapped via s = mu0*N^2*Ae*(1/L - 1/L_ungapped); flux at a measured peak paired with that peak's own L",
+    "inductance_h": 1e-06,
+    "cores": [
+      {
+        "id": "ELP32_I32",
+        "core": "ELP 32/6/20",
+        "plate": "I 32/3/20",
+        "ordering": "B66457G0000X",
+        "datasheet": "references/datasheets/elp32.pdf",
+        "datasheet_confidence": "TDK PRIMARY DATASHEET PRINTED VALUES; NOT A MANUFACTURER-VALIDATED ASSEMBLY",
+        "al_ungapped_nh": 6300,
+        "al_tolerance_pct": 25,
+        "le_mm": 35.1,
+        "ae_mm2": 130,
+        "amin_mm2": 128,
+        "bsat_mt_100c": 310,
+        "window_height_mm": 3.2,
+        "window_height_tolerance_mm": 0.15,
+        "window_width_per_side_mm": 5.7,
+        "gapping_validity_s_mm": [
+          0.1,
+          1.5
+        ],
+        "gapping_constants_published_for": [
+          "N87"
+        ],
+        "turns": [
+          {
+            "turns": 2,
+            "gap_mm": 0.6275,
+            "gap_inside_published_validity": true,
+            "isat_a_ae": 80.6,
+            "isat_a_amin": 79.4,
+            "paired_flux_t": {
+              "startup_phys": 0.086654,
+              "fault_phys_ride_through": 0.323154,
+              "fault_lrmin_ride_through": 0.350572
+            },
+            "worst_paired_flux_t": 0.350572,
+            "worst_paired_frac_bsat": 1.1309,
+            "passes_margin_at_paired_peaks": false
+          },
+          {
+            "turns": 3,
+            "gap_mm": 1.4443,
+            "gap_inside_published_validity": true,
+            "isat_a_ae": 120.9,
+            "isat_a_amin": 119.0,
+            "paired_flux_t": {
+              "startup_phys": 0.057769,
+              "fault_phys_ride_through": 0.215436,
+              "fault_lrmin_ride_through": 0.233715
+            },
+            "worst_paired_flux_t": 0.233715,
+            "worst_paired_frac_bsat": 0.7539,
+            "passes_margin_at_paired_peaks": true
+          },
+          {
+            "turns": 4,
+            "gap_mm": 2.5879,
+            "gap_inside_published_validity": false,
+            "isat_a_ae": 161.2,
+            "isat_a_amin": 158.7,
+            "paired_flux_t": {
+              "startup_phys": 0.043327,
+              "fault_phys_ride_through": 0.161577,
+              "fault_lrmin_ride_through": 0.175286
+            },
+            "worst_paired_flux_t": 0.175286,
+            "worst_paired_frac_bsat": 0.5654,
+            "passes_margin_at_paired_peaks": true
+          }
+        ]
+      },
+      {
+        "id": "ELP38_I38",
+        "core": "ELP 38/8/25",
+        "plate": "I 38/4/25",
+        "ordering": "B66459G0000X",
+        "datasheet": "references/datasheets/elp38.pdf",
+        "datasheet_confidence": "TDK PRIMARY DATASHEET PRINTED VALUES; NOT A MANUFACTURER-VALIDATED ASSEMBLY",
+        "al_ungapped_nh": 8400,
+        "al_tolerance_pct": 25,
+        "le_mm": 43.6,
+        "ae_mm2": 194,
+        "amin_mm2": 192,
+        "bsat_mt_100c": 310,
+        "window_height_mm": 4.45,
+        "window_height_tolerance_mm": 0.15,
+        "window_width_per_side_mm": 6.35,
+        "gapping_validity_s_mm": [
+          0.1,
+          2.0
+        ],
+        "gapping_constants_published_for": [
+          "N87"
+        ],
+        "turns": [
+          {
+            "turns": 2,
+            "gap_mm": 0.9461,
+            "gap_inside_published_validity": true,
+            "isat_a_ae": 120.3,
+            "isat_a_amin": 119.0,
+            "paired_flux_t": {
+              "startup_phys": 0.058067,
+              "fault_phys_ride_through": 0.216546,
+              "fault_lrmin_ride_through": 0.234919
+            },
+            "worst_paired_flux_t": 0.234919,
+            "worst_paired_frac_bsat": 0.7578,
+            "passes_margin_at_paired_peaks": true
+          },
+          {
+            "turns": 3,
+            "gap_mm": 2.1651,
+            "gap_inside_published_validity": false,
+            "isat_a_ae": 180.4,
+            "isat_a_amin": 178.6,
+            "paired_flux_t": {
+              "startup_phys": 0.038711,
+              "fault_phys_ride_through": 0.144364,
+              "fault_lrmin_ride_through": 0.156613
+            },
+            "worst_paired_flux_t": 0.156613,
+            "worst_paired_frac_bsat": 0.5052,
+            "passes_margin_at_paired_peaks": true
+          },
+          {
+            "turns": 4,
+            "gap_mm": 3.8716,
+            "gap_inside_published_validity": false,
+            "isat_a_ae": 240.6,
+            "isat_a_amin": 238.1,
+            "paired_flux_t": {
+              "startup_phys": 0.029034,
+              "fault_phys_ride_through": 0.108273,
+              "fault_lrmin_ride_through": 0.11746
+            },
+            "worst_paired_flux_t": 0.11746,
+            "worst_paired_frac_bsat": 0.3789,
+            "passes_margin_at_paired_peaks": true
+          }
+        ]
+      }
+    ],
+    "note": "A gap inside the published grinding range is still analytic: the datasheet prints gapping constants (K1/K2) for N87 only, and gives no 100 degC L(I) curve, so this is a quotation target for the vendor, not a verified design."
+  },
   "min_turns_fast_oc": 2,
   "min_turns_slow_oc": 3,
   "note": "Isat here is the current that reaches Bsat; ferrite loses permeability before that, so the 0.9 margin is the design point, not the limit"

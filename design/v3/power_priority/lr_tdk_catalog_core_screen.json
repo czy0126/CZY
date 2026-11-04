@@ -1,10 +1,9 @@
 {
   "kind": "D1_LR_TDK_CATALOG_DIMENSIONS_AND_FLUX_FILTER",
   "date": "2026-11-03",
-  "status": "NO_UNMODIFIED_STANDARD_SET_SATISFIES_THREE_OR_FOUR_TURN_AREA_AND_FULL_HEIGHT",
-  "manufacturer": "TDK Electronics",
   "manufacturer_reference_pdf": "https://www.tdk-electronics.tdk.com/download/2527774/1e429cb7ad3fd0be062bcfe03f8ed498/ferrites-planar-cores-pb.pdf",
   "manufacturer_document": "Planar Cores for Power Applications, EPCOS Product Brief 2019, pp.2-4",
+  "manufacturer": "TDK Electronics",
   "source_confidence": "TDK PRIMARY MANUFACTURER PRINTED DIMENSIONS AND MAGNETIC CHARACTERISTICS; NOT MANUFACTURER VALIDATED ASSEMBLY",
   "requirements": {
     "converter_max_total_height_mm": 10,
@@ -18,6 +17,8 @@
     "flux_screen_assumption": "Bpeak≈L*Ipk/(N*Amin) with existing Lmax and 1.2x peak RFQ. Flux estimate is not measured nonlinear BH nor vendor L(I). A_min used as conservative cross-section screen.",
     "area_conditions_are_nominal": true
   },
+  "status": "NO_UNMODIFIED_STANDARD_SET_SATISFIES_THREE_OR_FOUR_TURN_AREA_AND_FULL_HEIGHT",
+  "fab_release": false,
   "cores": [
     {
       "id": "ELP32_I32",
@@ -31,6 +32,31 @@
       "core_height_tolerance_mm": 0.15,
       "plate_height_nom_mm": 3.15,
       "plate_height_tolerance_mm": 0.15,
+      "datasheet": "references/datasheets/elp32.pdf",
+      "datasheet_document": "TDK ELP 32/6/20 with I 32/3/20, 2/23, pp.2-4",
+      "datasheet_confidence": "TDK PRIMARY DATASHEET PRINTED VALUES; NOT A MANUFACTURER-VALIDATED ASSEMBLY",
+      "le_mm": 35.1,
+      "ve_mm3": 4560,
+      "al_ungapped_nh": 6300,
+      "al_tolerance_pct": 25,
+      "mu_e": 1350,
+      "bsat_mt_100c": 310,
+      "pv_w_per_set": 2.2,
+      "window_height_nom_mm": 3.2,
+      "window_height_tolerance_mm": 0.15,
+      "outer_length_nom_mm": 31.75,
+      "outer_length_tolerance_mm": 0.65,
+      "centre_leg_width_nom_mm": 20.35,
+      "centre_leg_width_tolerance_mm": 0.4,
+      "core_depth_nom_mm": 25.4,
+      "core_depth_tolerance_mm": 0.5,
+      "gapping_validity_s_mm": [
+        0.1,
+        1.5
+      ],
+      "gapping_constants_published_for": [
+        "N87"
+      ],
       "core_plus_plate_height_min_mm": 9.2,
       "core_plus_plate_height_nom_mm": 9.5,
       "core_plus_plate_height_max_mm": 9.8,
@@ -59,6 +85,33 @@
       "core_height_tolerance_mm": 0.15,
       "plate_height_nom_mm": 3.8,
       "plate_height_tolerance_mm": 0.15,
+      "datasheet": "references/datasheets/elp38.pdf",
+      "datasheet_document": "TDK ELP 38/8/25 with I 38/4/25, 2/23, pp.6-8 (B66459, without clamp recess)",
+      "datasheet_confidence": "TDK PRIMARY DATASHEET PRINTED VALUES; NOT A MANUFACTURER-VALIDATED ASSEMBLY",
+      "le_mm": 43.6,
+      "ve_mm3": 8440,
+      "al_ungapped_nh": 8400,
+      "al_tolerance_pct": 25,
+      "mu_e": 1500,
+      "bsat_mt_100c": 310,
+      "pv_w_per_set": 4.4,
+      "window_height_nom_mm": 4.45,
+      "window_height_tolerance_mm": 0.15,
+      "outer_length_nom_mm": 38.1,
+      "outer_length_tolerance_mm": 0.8,
+      "centre_leg_width_nom_mm": 25.4,
+      "centre_leg_width_tolerance_mm": 0.55,
+      "core_depth_nom_mm": 30.8,
+      "core_depth_tolerance_mm": 0.6,
+      "centre_leg_thickness_nom_mm": 7.6,
+      "centre_leg_thickness_tolerance_mm": 0.2,
+      "gapping_validity_s_mm": [
+        0.1,
+        2.0
+      ],
+      "gapping_constants_published_for": [
+        "N87"
+      ],
       "core_plus_plate_height_min_mm": 11.75,
       "core_plus_plate_height_nom_mm": 12.05,
       "core_plus_plate_height_max_mm": 12.35,
@@ -143,7 +196,7 @@
       "core_height_tolerance_mm": 0.15,
       "plate_height_nom_mm": 5.1,
       "plate_height_tolerance_mm": 0.15,
-      "core_plus_plate_height_min_mm": 15,
+      "core_plus_plate_height_min_mm": 15.0,
       "core_plus_plate_height_nom_mm": 15.3,
       "core_plus_plate_height_max_mm": 15.6,
       "height_under_converter_limit_by_core_alone": false,
@@ -168,6 +221,5 @@
     "Actual L(I) and differential incremental L at 100C 0A through >=121.52A with full requested L and Bsat margin",
     "AL/gap tolerance, clamping, fringing and near-copper heating",
     "Real T1-T4 + CT mechanical 24 logical-terminal to pad map including DOT and CTAP/CT polarity"
-  ],
-  "fab_release": false
+  ]
 }

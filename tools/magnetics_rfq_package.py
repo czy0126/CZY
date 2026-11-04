@@ -315,6 +315,18 @@ def inductor() -> dict:
     stack = _json(MAG / "magnetics_design.json")["catalogue_core_stack"]
     reserve = stack["non_core_reserve_mm"]
     mag_core = _json(MAG / "magnetics_design.json")["core"]
+    # The ELP32 gap belongs to the ELP32 constants.  The preferred set has its
+    # own datasheet now, so its gap is recomputed rather than carried over; the
+    # first turn count that both stays inside the published grinding range and
+    # holds 0.9*Bsat at the measured peaks is the one to quote.
+    catalogue = {c["id"]: c for c in lr["catalogue_cores"]["cores"]}
+    preferred_design = catalogue[candidates["preferred"]]
+    usable = [t for t in preferred_design["turns"]
+              if t["passes_margin_at_paired_peaks"] and t["gap_inside_published_validity"]]
+    if not usable:
+        raise SystemExit(f"{candidates['preferred']}: no turn count both fits the grinding "
+                         f"range and holds 0.9*Bsat at the measured peaks")
+    preferred_turn = usable[0]
     return {
         "ref": "Lr",
         "kind": "RESONANT_INDUCTOR",
@@ -338,8 +350,21 @@ def inductor() -> dict:
             row("气隙口径", (f"上面这个气隙来自 {mag_core['name']} 的 AL_ungapped = "
                             f"{mag_core['AL_ungapped_nH']:.0f} nH、le = {mag_core['le_m']*1e3:.2f} mm；换套件就作废"),
                 "magnetics_design.json:core.AL_ungapped_nH / core.le_m"),
-            row("首选套件气隙", f"{UNKNOWN}（目录摘录没有 ELP38 的 AL_ungapped 与 le）",
-                "lr_tdk_catalog_core_source.json 只有 Amin/Ae/高度"),
+            row("首选套件气隙", preferred_turn["gap_mm"],
+                f"lr_design.json:catalogue_cores[{candidates['preferred']}].turns"
+                f"[{preferred_turn['turns']} 匝].gap_mm（AL_ungapped = "
+                f"{preferred_design['al_ungapped_nh']} nH，{preferred_design['datasheet']}）",
+                unit="mm", digits=4),
+            row("首选套件匝数", preferred_turn["turns"],
+                "lr_design.json:catalogue_cores（匝数由气隙工艺范围与 0.9*Bsat 同时卡出）",
+                digits=0),
+            row("首选套件窗口净高", preferred_design["window_height_mm"],
+                f"{preferred_design['datasheet']}:window_height_nom_mm", unit="mm", digits=2),
+            row("首选套件饱和电流（Amin）", preferred_turn["isat_a_amin"],
+                "lr_design.json:catalogue_cores：Isat = Bs*N*Amin/L", unit="A", digits=1),
+            row("首选套件最坏配对磁密", preferred_turn["worst_paired_flux_t"],
+                f"lr_design.json:catalogue_cores：{preferred_turn['worst_paired_frac_bsat']:.3f} x Bsat，"
+                f"用每个实测峰值自己的电感（不是把电流套到目标 L 上）", unit="T", digits=4),
             row("饱和电流 Isat", three["isat_a"], "lr_design.json:candidates[3 匝].isat_a", unit="A", digits=1),
             row("气隙公差窗口", UNKNOWN, "需要厂家的 L(I, T) 曲线才能定验收窗口"),
         ],
@@ -412,8 +437,11 @@ def inductor() -> dict:
             row("物理端子图 / 焊盘号", "NOT AVAILABLE —— 独立 Lr 的器件、引脚与机械定义尚未取得", "路线 §P1 磁件"),
         ],
         "open_items": [
-            "ELP38 的 AL_ungapped、le、Ve 与窗口净高：目录摘录只有 Amin/Ae/高度，"
-            "所以目标 AL 对应的中柱气隙现在算不出来——现有气隙是在 ELP32 的 AL 上算的，换套件即作废。",
+            "ELP38 的 AL_ungapped、le、Ve 与窗口净高已从厂家数据手册读到"
+            "（references/datasheets/elp38.pdf，B66459 无夹子槽版本，N97：8400 nH ±25 %、"
+            "le 43.6 mm、Ve 8440 mm³、窗口 4.45 ± 0.15 mm），所以首选套件的气隙是按它自己的 "
+            "AL 重算的，不是 ELP32 的 1.4443 mm；但厂家只公布 N87 的气隙计算常数 K1/K2，"
+            "N97 的气隙仍是解析值，需要厂家按 AL 公差确认。",
             "ELP38 + I 片在目标气隙下、0 - >=121.52 A、100 °C 的增量电感 L(I)；"
             "验收窗口沿用 1.0 uH ±10 %，即该电流范围内不得跌破 0.9 uH。",
             "外置件与变压器漏感的分配：外置 = 目标总电感 - 实测漏感，首件实测后才定。",
@@ -424,6 +452,7 @@ def inductor() -> dict:
         ],
         "sources": [
             "design/v3/bom/lr_design.json",
+            "references/datasheets/elp38.pdf",
             "design/v3/power_priority/lr_tdk_catalog_core_screen.json",
             "design/v3/power_priority/lr_tdk_catalog_core_source.json",
             "design/v3/power_priority/d1_staged_target_policy.json",

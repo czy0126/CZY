@@ -22,7 +22,11 @@
 | 目标 AL | 111.11 nH/T^2 | = 1.0 uH / 3^2 |
 | 气隙（由目标 AL 算） | 1.4443 mm | lr_design.json:candidates[3 匝].gap_mm |
 | 气隙口径 | 上面这个气隙来自 TDK EILP32 N97 B66287G0000X197 + B66287K0000X197 的 AL_ungapped = 6300 nH、le = 35.10 mm；换套件就作废 | magnetics_design.json:core.AL_ungapped_nH / core.le_m |
-| 首选套件气隙 | UNKNOWN（目录摘录没有 ELP38 的 AL_ungapped 与 le） | lr_tdk_catalog_core_source.json 只有 Amin/Ae/高度 |
+| 首选套件气隙 | 0.9461 mm | lr_design.json:catalogue_cores[ELP38_I38].turns[2 匝].gap_mm（AL_ungapped = 8400 nH，references/datasheets/elp38.pdf） |
+| 首选套件匝数 | 2 | lr_design.json:catalogue_cores（匝数由气隙工艺范围与 0.9*Bsat 同时卡出） |
+| 首选套件窗口净高 | 4.45 mm | references/datasheets/elp38.pdf:window_height_nom_mm |
+| 首选套件饱和电流（Amin） | 119.0 A | lr_design.json:catalogue_cores：Isat = Bs*N*Amin/L |
+| 首选套件最坏配对磁密 | 0.2349 T | lr_design.json:catalogue_cores：0.758 x Bsat，用每个实测峰值自己的电感（不是把电流套到目标 L 上） |
 | 饱和电流 Isat | 120.9 A | lr_design.json:candidates[3 匝].isat_a |
 | 气隙公差窗口 | UNKNOWN | 需要厂家的 L(I, T) 曲线才能定验收窗口 |
 
@@ -114,7 +118,7 @@
 
 ## 11. 未决项（本仓库没有数据，或需要决定）
 
-1. ELP38 的 AL_ungapped、le、Ve 与窗口净高：目录摘录只有 Amin/Ae/高度，所以目标 AL 对应的中柱气隙现在算不出来——现有气隙是在 ELP32 的 AL 上算的，换套件即作废。
+1. ELP38 的 AL_ungapped、le、Ve 与窗口净高已从厂家数据手册读到（references/datasheets/elp38.pdf，B66459 无夹子槽版本，N97：8400 nH ±25 %、le 43.6 mm、Ve 8440 mm³、窗口 4.45 ± 0.15 mm），所以首选套件的气隙是按它自己的 AL 重算的，不是 ELP32 的 1.4443 mm；但厂家只公布 N87 的气隙计算常数 K1/K2，N97 的气隙仍是解析值，需要厂家按 AL 公差确认。
 2. ELP38 + I 片在目标气隙下、0 - >=121.52 A、100 °C 的增量电感 L(I)；验收窗口沿用 1.0 uH ±10 %，即该电流范围内不得跌破 0.9 uH。
 3. 外置件与变压器漏感的分配：外置 = 目标总电感 - 实测漏感，首件实测后才定。
 4. 独立 Lr 的物理端子、焊盘与机械定义（器件定义目前只有电感/匝数/气隙）。
@@ -124,6 +128,7 @@
 ## 12. 出处
 
 - `design/v3/bom/lr_design.json`
+- `references/datasheets/elp38.pdf`
 - `design/v3/power_priority/lr_tdk_catalog_core_screen.json`
 - `design/v3/power_priority/lr_tdk_catalog_core_source.json`
 - `design/v3/power_priority/d1_staged_target_policy.json`

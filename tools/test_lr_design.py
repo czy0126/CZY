@@ -178,3 +178,56 @@ def test_three_turns_holds_at_the_worst_measured_peak():
     # ...and it is *worse* than the frozen-deck table says: 3 turns is fine, but
     # the 73.7 A rule under-predicted the flux by 14 %.
     assert worst["flux_t_at_3"] > three["worst_flux_t"]
+
+
+# ------------------------------------------------------- catalogue core design
+def _catalogue(core_id):
+    from lr_design import catalogue_core_design
+    return next(c for c in catalogue_core_design()["cores"] if c["id"] == core_id)
+
+
+def test_the_elp32_catalogue_row_reproduces_the_designed_gap():
+    """The catalogue table and ``candidate()`` are two paths through the same
+    AL; if they ever disagree, one of them is quoting a number nobody sized."""
+    row = _catalogue("ELP32_I32")
+    three = next(t for t in row["turns"] if t["turns"] == 3)
+    # the report rounds the gap to 4 decimals, so the tolerance is half a unit
+    # in the last place, not a relative epsilon
+    assert three["gap_mm"] == pytest.approx(candidate(LR_TARGET_H, 3)["gap_mm"], abs=5e-5)
+    assert three["gap_inside_published_validity"] is True
+
+
+def test_the_elp38_gap_is_recomputed_from_its_own_al_not_carried_over():
+    """8400 nH of ungapped AL is 33 % more than ELP32's 6300 nH, so the same
+    1.0 uH at 3 turns needs 2.1651 mm of grinding -- beyond TDK's published
+    0.10-2.00 mm range for the gap/AL relationship.  At 2 turns it is 0.9461 mm
+    and the measured peaks stay at 75.8 % of Bsat (0.2349 T / 0.310 T)."""
+    row = _catalogue("ELP38_I38")
+    three = next(t for t in row["turns"] if t["turns"] == 3)
+    two = next(t for t in row["turns"] if t["turns"] == 2)
+    assert three["gap_mm"] == pytest.approx(2.1651, abs=1e-4)
+    assert three["gap_inside_published_validity"] is False
+    assert two["gap_mm"] == pytest.approx(0.9461, abs=1e-4)
+    assert two["gap_inside_published_validity"] is True
+    assert two["passes_margin_at_paired_peaks"] is True
+    assert two["worst_paired_flux_t"] == pytest.approx(0.2349, abs=5e-5)
+
+
+def test_the_catalogue_flux_pairs_each_peak_with_its_own_inductance():
+    row = _catalogue("ELP38_I38")
+    three = next(t for t in row["turns"] if t["turns"] == 3)
+    case = PHYSICAL_PEAKS["fault_lrmin_ride_through"]
+    expected = peak_flux_t(case["external_lr_h"], case["current_a"], 3, 194e-6)
+    # 6-decimal rounding in the report, hence half a unit in the last place
+    assert three["paired_flux_t"]["fault_lrmin_ride_through"] == pytest.approx(expected, abs=5e-7)
+
+
+def test_every_catalogue_row_with_magnetics_names_its_datasheet():
+    elp32, elp38 = _catalogue("ELP32_I32"), _catalogue("ELP38_I38")
+    for row in (elp32, elp38):
+        assert row["datasheet"].startswith("references/datasheets/")
+        assert row["datasheet_confidence"].startswith("TDK PRIMARY DATASHEET")
+        assert row["gapping_constants_published_for"] == ["N87"]
+    assert elp32["window_height_mm"] == pytest.approx(3.2)
+    assert elp38["window_height_mm"] == pytest.approx(4.45)
+    assert elp38["window_width_per_side_mm"] == pytest.approx(6.35)

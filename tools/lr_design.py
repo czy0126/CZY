@@ -173,6 +173,81 @@ def physical_peak_report(ae_m2: float | None = None) -> dict[str, object]:
     }
 
 
+CATALOGUE_SOURCE = (Path(__file__).resolve().parent.parent
+                    / "design/v3/power_priority/lr_tdk_catalog_core_source.json")
+
+
+def catalogue_core_design(inductance_h: float = LR_TARGET_H,
+                          turns_options: tuple[int, ...] = (2, 3, 4)) -> dict[str, object]:
+    """The same Lr sizing on every catalogue set that carries datasheet values.
+
+    ``candidate()`` is fixed to the ELP32 constants this module was written
+    for.  Moving D1 to the ELP38 core changes AL_ungapped, Ae, Amin and the
+    allowed grinding range, so the gap cannot travel with the core -- it has
+    to be recomputed from the new datasheet.  Flux at a measured peak uses
+    that peak's own inductance (``paired_flux``); holding the current fixed
+    while substituting another L would overstate it.
+
+    A gap inside the published ``0.10 < s < 2.00 mm`` range is still only a
+    calculation: TDK prints gapping constants for N87, not for N97.
+    """
+    source = json.loads(CATALOGUE_SOURCE.read_text(encoding="utf-8"))
+    rows = []
+    for c in source["cores"]:
+        if "al_ungapped_nh" not in c:
+            continue
+        ae = float(c["ae_mm2"]) * 1e-6
+        amin = float(c["amin_mm2"]) * 1e-6
+        bsat = float(c["bsat_mt_100c"]) / 1e3
+        low, high = c["gapping_validity_s_mm"]
+        turns_rows = []
+        for n in turns_options:
+            gap_mm = core_gap_m(inductance_h, n, ae, float(c["al_ungapped_nh"])) * 1e3
+            paired = {name: paired_flux(case, n, ae) for name, case in PHYSICAL_PEAKS.items()}
+            worst = max(paired.values())
+            turns_rows.append({
+                "turns": n,
+                "gap_mm": round(gap_mm, 4),
+                "gap_inside_published_validity": low < gap_mm < high,
+                "isat_a_ae": round(saturation_current_a(inductance_h, n, ae, bsat), 1),
+                "isat_a_amin": round(saturation_current_a(inductance_h, n, amin, bsat), 1),
+                "paired_flux_t": {k: round(v, 6) for k, v in paired.items()},
+                "worst_paired_flux_t": round(worst, 6),
+                "worst_paired_frac_bsat": round(worst / bsat, 4),
+                "passes_margin_at_paired_peaks": worst <= SATURATION_MARGIN * bsat,
+            })
+        rows.append({
+            "id": c["id"],
+            "core": c["core"],
+            "plate": c["plate"],
+            "ordering": c["tdk_ordering_prefix"],
+            "datasheet": c["datasheet"],
+            "datasheet_confidence": c["datasheet_confidence"],
+            "al_ungapped_nh": c["al_ungapped_nh"],
+            "al_tolerance_pct": c["al_tolerance_pct"],
+            "le_mm": c["le_mm"],
+            "ae_mm2": c["ae_mm2"],
+            "amin_mm2": c["amin_mm2"],
+            "bsat_mt_100c": c["bsat_mt_100c"],
+            "window_height_mm": c["window_height_nom_mm"],
+            "window_height_tolerance_mm": c["window_height_tolerance_mm"],
+            "window_width_per_side_mm": round(
+                (c["outer_length_nom_mm"] - c["centre_leg_width_nom_mm"]) / 2.0, 3),
+            "gapping_validity_s_mm": [low, high],
+            "gapping_constants_published_for": c["gapping_constants_published_for"],
+            "turns": turns_rows,
+        })
+    return {
+        "rule": "gap from AL_ungapped via s = mu0*N^2*Ae*(1/L - 1/L_ungapped); "
+                "flux at a measured peak paired with that peak's own L",
+        "inductance_h": inductance_h,
+        "cores": rows,
+        "note": "A gap inside the published grinding range is still analytic: the datasheet "
+                "prints gapping constants (K1/K2) for N87 only, and gives no 100 degC L(I) "
+                "curve, so this is a quotation target for the vendor, not a verified design.",
+    }
+
+
 def report(inductance_h: float = LR_TARGET_H) -> dict[str, object]:
     rows = [candidate(inductance_h, n) for n in range(1, 5)]
     fast = [r for r in rows if r["passes_fast_oc"]]
@@ -196,6 +271,7 @@ def report(inductance_h: float = LR_TARGET_H) -> dict[str, object]:
                     "top of that window, not the value to wind.",
         },
         "candidates": rows,
+        "catalogue_cores": catalogue_core_design(inductance_h),
         "min_turns_fast_oc": None if not fast else fast[0]["turns"],
         "min_turns_slow_oc": None if not slow else slow[0]["turns"],
         "note": "Isat here is the current that reaches Bsat; ferrite loses permeability "

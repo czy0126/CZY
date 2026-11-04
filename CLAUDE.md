@@ -1027,7 +1027,7 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 对外工件、不是设计包的一部分。
 
 - **没有数据的字段写 `UNKNOWN` 并在该单第 11 节重列，不许填一个看起来合理的值**；
-  当前 38 处，其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
+  当前 37 处，其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
 - **高度限值从 `d1_staged_target_policy.json` 读，不许再写死**：本工具原先把
   `HEIGHT_LIMIT_MM = 10.0` 印在每张单上，而 policy（2026-11-04）把 D1 定为 16 mm、
   D2 16 mm、D3 10 mm，并把 D1 的首选磁芯直接写成 `ELP38_I38`。T1–T4 与 Lr 现在同时
@@ -1040,12 +1040,27 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   `REJECT_STANDARD_UNMODIFIED_AS_HEIGHT_EXCEEDS_TOTAL_LIMIT` 必须原样保留并注明失效原因
   ——删掉它等于抹掉基准变过这件事。ELP43 在旧表里 `preliminary_combined_16mm_candidate`
   为 true（剩 2.1 mm），补上胶/标签后只有 1.96 mm，所以新表里它是"不过"。
-- **ELP38 的气隙现在算不出来，不许沿用 ELP32 的 1.4443 mm**：目录摘录只有
-  Amin/Ae/高度，没有 AL_ungapped、le、Ve、窗口净高；`magnetics_design.json:core` 里
-  那套 `AL_ungapped_nH`/`le_m` 是 ELP32 的。Lr 单因此把"气隙口径"（ELP32，换套件即作废）
-  与"首选套件气隙 = UNKNOWN"分成两行，100 °C L(I) 写成第 11 节的询价项。
+- **ELP38 的原厂数据在 `references/datasheets/elp38.pdf`（2026-11-05 取得）**：
+  TDK "ELP 38/8/25 with I 38/4/25"，B66459 无夹子槽版本，N97；**第 7 页**是 EILP 图 + 磁性表
+  （第 4 页是 E910 EELP 表、第 6 页是 EELP 图，取数别拿错页）。这些值进了
+  `lr_tdk_catalog_core_source.json`（AL_ungapped 8400 nH ±25 %、le 43.6 mm、Ve 8440 mm³、
+  窗口净高 4.45 ± 0.15 mm），所以 ELP38 的气隙是**按它自己的 AL 重算的**，不是 ELP32 的 1.4443 mm。
+- **窗口净高 = 半芯总高 − I 片厚**（ELP38 8.25 − 3.8 = 4.45；ELP32 6.35 − 3.15 = 3.2），
+  数据手册不给单列的窗口尺寸。`magnetics_design.catalogue_core_stack()` 现在有一条守卫：
+  目录里 ELP32 的窗口必须逐位等于 `CORE["window_height_m"]`，改任一侧立刻 `SystemExit`。
+- **气隙有效性范围是每个套件各自的，而且 N97 的气隙常数 TDK 没公布**：ELP32 是
+  `0.10 < s < 1.50 mm`、ELP38 是 `0.10 < s < 2.00 mm`；K1/K2 只对 N87 印。
+  所以"落在范围内"仍是**解析值**，是询价目标不是签核值。实测后果：ELP38 上 3 匝 1.0 µH 要
+  **2.1651 mm**（出界），2 匝要 **0.9461 mm**（在界内、最坏配对磁密 0.2349 T），
+  Lr 单因此按 2 匝报价——`test_the_elp38_gap_is_recomputed_from_its_own_al_not_carried_over` 锁住。
+- **`lr_design.catalogue_core_design()` 是第二条算气隙的路径**：它读
+  `lr_tdk_catalog_core_source.json` 逐套件重算，`candidate()` 仍固定 ELP32 常量；
+  测试要求 ELP32 行与 `candidate()` 的 3 匝气隙相等（容差按报告 4 位小数的半个末位，
+  `abs=5e-5`，不是 `rel=1e-9`）。往 source JSON 加字段会经 `{**c}` 流进
+  `lr_tdk_catalog_core_screen.json`，那是**要重生成**的产物，不是手改。
 - **气隙只给"按目标 AL 的工艺窗口"，不给固定值**：T 是 0.1211 mm（AL ±25 % →
-  0.112–0.126），Lr 是 1.4443 mm（1.0 µH / 3²）。路线明确禁止填未经计算的气隙。
+  0.112–0.126），Lr 在 ELP32 上是 1.4443 mm（1.0 µH / 3²，**换套件即作废**）。
+  路线明确禁止填未经计算的气隙。
 - **变压器的磁通不许用 `L·I/(N·Ae)`**：那是 Lr 的电感筛查。本包在每张 T 单的
   波形表里写死"按各绕组实际电压积分"。
 - 询价单与 `vendor_terminal_request.json` 的 24 个逻辑端子**必须逐项相同**

@@ -215,14 +215,30 @@ def test_the_sheet_keeps_the_superseded_verdict_and_says_why_it_expired(devs):
 
 def test_the_elp32_gap_does_not_travel_with_the_core_change(devs):
     """1.4443 mm of grinding is computed on ELP32's AL_ungapped.  Carrying it
-    into an ELP38 quote would ask for a part nobody designed."""
+    into an ELP38 quote would ask for a part nobody designed, so the preferred
+    set's gap is recomputed from its own datasheet AL (8400 nH).  The 3-turn
+    gap on ELP38 is 2.1651 mm, outside TDK's published 0.10-2.00 mm grinding
+    range, which is why the sheet quotes the turn count that stays inside it."""
     assert "作废" in find(devs["Lr"], "inductance", "气隙口径")["value"]
-    assert find(devs["Lr"], "inductance", "首选套件气隙")["value"].startswith(pkg.UNKNOWN)
+    lr = json.loads((BOM / "lr_design.json").read_text(encoding="utf-8"))
+    elp38 = next(c for c in lr["catalogue_cores"]["cores"] if c["id"] == "ELP38_I38")
+    three = next(t for t in elp38["turns"] if t["turns"] == 3)
+    assert three["gap_inside_published_validity"] is False
+    value = find(devs["Lr"], "inductance", "首选套件气隙")["value"]
+    assert value != pytest.approx(1.4443)
+    low, high = elp38["gapping_validity_s_mm"]
+    assert low < value < high
 
 
-def test_the_open_items_ask_for_the_elp38_data_the_catalogue_lacks(devs):
+def test_the_preferred_core_window_height_comes_from_its_datasheet(devs):
+    assert find(devs["Lr"], "inductance", "首选套件窗口净高")["value"] == pytest.approx(4.45)
+
+
+def test_the_open_items_state_what_the_vendor_still_has_to_confirm(devs):
+    """The 2023 datasheet supplies AL_ungapped, le, Ve and the window; what it
+    does not supply is the N97 gapping constants and the 100 degC L(I)."""
     text = " ".join(devs["Lr"]["open_items"])
-    for needle in ("AL_ungapped", "le", "Ve", "窗口净高", "L(I)", "100 °C"):
+    for needle in ("AL_ungapped", "le", "Ve", "窗口净高", "L(I)", "100 °C", "N87"):
         assert needle in text, needle
 
 

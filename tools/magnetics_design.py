@@ -271,10 +271,18 @@ def catalogue_core_stack() -> dict[str, object]:
         if c["id"] not in screen_rows:
             raise SystemExit(f"{c['id']} is missing from d1_staged_target_screen.json")
         residual = pocketed["margin_m"] * 1e3
+        window = c.get("window_height_nom_mm")
+        width = None
+        if "outer_length_nom_mm" in c and "centre_leg_width_nom_mm" in c:
+            width = (c["outer_length_nom_mm"] - c["centre_leg_width_nom_mm"]) / 2.0
         rows.append({
             "id": c["id"], "core": c["core"], "plate": c["plate"],
             "material": c["material"], "tdk_ordering_prefix": c["tdk_ordering_prefix"],
             "Amin_mm2": c["amin_mm2"], "Ae_mm2": c["ae_mm2"],
+            "window_height_mm": window,
+            "window_height_tolerance_mm": c.get("window_height_tolerance_mm"),
+            "window_width_per_side_mm": None if width is None else round(width, 3),
+            "datasheet": c.get("datasheet"),
             "core_pack_nominal_mm": round(nom, 3),
             "core_pack_worst_mm": round(worst, 3),
             "stack_flat_no_clamp_worst_mm": round(flat["worst_case_m"] * 1e3, 3),
@@ -296,6 +304,10 @@ def catalogue_core_stack() -> dict[str, object]:
         raise SystemExit(
             f"catalogue ELP32 bare height {elp32['core_pack_worst_mm']} mm disagrees "
             f"with CORE['height_max_m'] {float(CORE['height_max_m']) * 1e3} mm")
+    if abs(elp32["window_height_mm"] - float(CORE["window_height_m"]) * 1e3) > 1e-9:
+        raise SystemExit(
+            f"catalogue ELP32 window height {elp32['window_height_mm']} mm disagrees "
+            f"with CORE['window_height_m'] {float(CORE['window_height_m']) * 1e3} mm")
 
     passing = [r["id"] for r in rows if r["d1_clears_the_non_core_reserve"]]
     optimistic = [
@@ -345,9 +357,13 @@ def catalogue_core_stack() -> dict[str, object]:
         "unknowns": [
             "胶、标签、压块的规格与公差（本仓库没有规格书，全部是假设）",
             "0.5 mm 沉槽能否由板厂实现、以及沉槽下 1.1 mm FR-4 的绝缘与回流铜",
-            "ELP38 的窗口高度与绕组构造（目录摘录没有窗口尺寸，平面绕组是否放得下未验证）",
+            "ELP38 的窗口尺寸已从厂家数据手册读到（净高 4.45±0.15 mm、每侧宽 6.35 mm、"
+            "深 25.4 mm），但绕组/PCB 铜厚在这个窗口里的叠层没有算过；ELP43/58/64 仍只有"
+            "目录摘录的 Amin/Ae/高度，没有窗口与 AL_ungapped",
             "TIM 厚度与压缩量、冷板离板高度、紧固件头部凸出、板弯",
             "100 degC 的实际 L(I)：面积/磁通筛选用的是 L*I/(N*Amin) 近似，不是厂家 L(I) 曲线",
+            "N97 的厂家气隙计算常数：数据手册只公布 N87 的 K1/K2/K3/K4，"
+            "所以任何 N97 气隙都是解析计算，不是厂家可核对的值",
         ],
         "gate": "NOT_A_STACK：这是已知项的预算，不是可制造高度。D1 的任何高度声明"
                 "都必须等厂家给出完整装配高度与 100 degC L(I) 之后才能成立。",
