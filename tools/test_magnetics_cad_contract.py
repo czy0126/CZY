@@ -134,3 +134,33 @@ def _frozen_refs_from_saved_contract():
         sym["ref"]: {pin["logical_pin"]: pin["golden_net"] for pin in sym["pins"]}
         for sym in document["symbols"]
     }
+
+
+def test_all_four_live_k_couplings_are_positive_and_frozen():
+    mc.verify_live_coupling_coefficients()
+
+
+def test_spice_k_sign_or_magnitude_change_cannot_pass_named_winding_check(monkeypatch):
+    original = mc.spice_board.deck_lines
+    for invalid in ("-.999", ".90", "1.001", "nan"):
+        def perturbed(path, invalid=invalid):
+            return [line.replace("K1 Lp1 Lsa1 Lsb1 .999",
+                                 f"K1 Lp1 Lsa1 Lsb1 {invalid}")
+                    for line in original(path)]
+        monkeypatch.setattr(mc.spice_board, "deck_lines", perturbed)
+        with pytest.raises(ValueError, match="differs from positive reviewed"):
+            mc.verify_live_coupling_coefficients()
+        # winding_layout still sees identical K membership and node order.
+        # Replacing the coefficient alone is precisely the old blind spot.
+        assert mc.spice_board.winding_layout()["ok"] is True
+    monkeypatch.setattr(mc.spice_board, "deck_lines", original)
+
+
+def test_duplicate_live_k_coefficient_is_rejected(monkeypatch):
+    original = mc.spice_board.deck_lines
+    def duplicated(path):
+        rows = original(path)
+        return rows + ["K1 Lp1 Lsa1 Lsb1 .999"]
+    monkeypatch.setattr(mc.spice_board, "deck_lines", duplicated)
+    with pytest.raises(ValueError, match="duplicate SPICE magnetic coupling"):
+        mc.verify_live_coupling_coefficients()
