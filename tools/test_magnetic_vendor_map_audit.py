@@ -166,3 +166,28 @@ def test_invalid_schema_and_legacy_nine_row_response_not_accepted(tmp_path):
     invalid.write_text("ref,logical_pin\nCT,PRI_A\n", encoding="utf-8")
     with pytest.raises(ValueError,match="unexpected response columns"):
         m.load_rows(invalid)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("mechanical_footprint_ref", "OTHER_TEST_FOOTPRINT"),
+    ("manufacturer_drawing", "OTHER_TEST_DRAWING"),
+    ("drawing_rev", "OTHER_TEST_REV"),
+    ("drawing_sha256", "c" * 64),
+    ("phase_test_record", "OTHER_TEST_PHASE_RECORD"),
+    ("phase_test_sha256", "d" * 64),
+])
+def test_terminals_of_one_part_must_cite_one_identity(field, value):
+    rows = synthetic_complete_rows()
+    assert rows[0]["ref"] == rows[1]["ref"] == "CT"
+    rows[1][field] = value
+    result = m.evaluate(rows)
+    assert result["status"] == "CONTRACT_REJECTED"
+    assert any(f"CT: terminals disagree on {field}" in p for p in result["errors"])
+
+
+def test_sha256_case_only_difference_is_not_an_identity_conflict():
+    rows = synthetic_complete_rows()
+    rows[1]["drawing_sha256"] = rows[1]["drawing_sha256"].upper()
+    result = m.evaluate(rows)
+    assert result["status"] == "REVIEW_PACKAGE_COMPLETE_NOT_APPROVED"
+    assert not any("terminals disagree" in p for p in result["errors"])

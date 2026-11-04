@@ -26,6 +26,13 @@ FIELDS = (
 )
 PENDING = {"", "PENDING", "UNKNOWN", "TBD", "N/A", "TO_SELECT", "UNVERIFIED"}
 HASH_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+# One physical part has one footprint, one drawing revision and one first-article
+# phasing test. Terminals of the same ref disagreeing on any of these means the
+# packet cannot be reviewed as a single part even when every row is filled in.
+PER_REF_IDENTITY_FIELDS = (
+    "mechanical_footprint_ref", "manufacturer_drawing", "drawing_rev",
+    "drawing_sha256", "phase_test_record", "phase_test_sha256",
+)
 
 
 def contract_entries(contract=None):
@@ -77,6 +84,11 @@ def supplied(value):
     return isinstance(value, str) and value.strip().upper() not in PENDING
 
 
+def _identity_value(field: str, raw: str) -> str:
+    text = raw.strip()
+    return text.lower() if field.endswith("_sha256") else text
+
+
 def _xy(raw):
     try:
         x, y = [float(v.strip()) for v in raw.split(",")]
@@ -111,6 +123,7 @@ def evaluate(rows, contract=None):
     used_pads = {}
     used_xy = {}
     observed_dot = {}
+    per_ref: dict[tuple[str, str], dict[str, str]] = {}
     reviewed_count = 0
     for key, row in provided.items():
         ref, logical = key
@@ -176,8 +189,16 @@ def evaluate(rows, contract=None):
             problems.append(f"{key}: measured phase is not MATCH")
         if supplied(row.get("status")) and row["status"] != "SUPPLIER_PROPOSED":
             problems.append(f"{key}: unexpected row status, use SUPPLIER_PROPOSED")
+        for field in PER_REF_IDENTITY_FIELDS:
+            value = row.get(field)
+            if supplied(value):
+                bucket = per_ref.setdefault((ref, field), {})
+                bucket.setdefault(_identity_value(field, value), logical)
         if all(supplied(row.get(field)) for field in FIELDS[4:]):
             reviewed_count += 1
+    for (ref, field), values in sorted(per_ref.items()):
+        if len(values) > 1:
+            problems.append(f"{ref}: terminals disagree on {field}: " + ", ".join(sorted(values)))
     # CT has no model-defined DOT relationship. The vendor drawing can be
     # internally self-consistent, but cannot "prove" relative sign without an
     # independently witnessed low-energy phasing test.
