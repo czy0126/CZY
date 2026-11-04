@@ -53,3 +53,28 @@ def test_legacy_10mm_criteria_remain_reference():
     hi=json.loads(m.HIGH.read_text(encoding="utf-8"))
     assert hi["constraints"]["maximum_assembly_height_mm"]==10
     assert m.evaluate()["legacy_10mm_goal"]=="D3_STRETCH_ONLY"
+
+
+def test_supplier_16mm_rfq_is_specific_and_not_fab_approved():
+    import csv
+    from pathlib import Path
+    path=m.ROOT/"docs/D1_EXECUTION_KIT/templates/staged_magnetics_16mm_rfq.csv"
+    with path.open(encoding="utf-8",newline="") as f:
+        rows=list(csv.DictReader(f))
+    assert len(rows)==3
+    assert rows[0]["core_geometry"]=="TDK ELP38 plus I38"
+    assert float(rows[0]["core_plus_plate_max_mm"])==12.35
+    assert float(rows[0]["remaining_under_16mm_for_other_layers_mm"])==3.65
+    assert float(rows[1]["core_plus_plate_max_mm"])==13.90
+    assert all(row["release_status"]=="NOT_FOR_FAB" for row in rows)
+    assert all("24" in row["physical_terminal_mapping"] for row in rows)
+
+def test_first_article_sequence_does_not_skip_protection_and_safe_current_ramp():
+    import csv
+    filename=m.ROOT/"docs/D1_EXECUTION_KIT/templates/staged_first_article_test_steps.csv"
+    with filename.open(encoding="utf-8",newline="") as f:
+        steps=list(csv.DictReader(f))
+    assert [s["stage"] for s in steps[:3]]==["D0"]*3
+    assert [int(float(s["load_target_a"])) for s in steps if s["stage"]=="D1"]==[25,50,75,100]
+    assert all(s["evidence_state"]=="NOT_RUN" for s in steps)
+    assert steps[-2]["stage"]=="D2" and steps[-1]["stage"]=="D3"
