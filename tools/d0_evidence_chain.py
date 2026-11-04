@@ -278,9 +278,11 @@ def _check_trigger(state: dict) -> None:
             "chapter 31 recommends equality so the origin sample is unambiguously high")
 
 
-def _gate_flags(doc: dict) -> dict:
-    channels = doc.get("channels") or {}
-    return {gate: (channels.get(gate) or {}).get("pass_waveform") for gate in audit.GATES}
+def _audit_projection(report: dict) -> dict:
+    """Every field except ``source``: its paths are CLI input, its digests are
+    already bound by the dedicated hash checks (and a fresh run names its own).
+    """
+    return {key: value for key, value in report.items() if key != "source"}
 
 
 def _alignment_projection(report: dict) -> dict:
@@ -380,16 +382,7 @@ def _check_audit_reproduction(state: dict, csv_path: Path, config_path: Path) ->
         _check(state, "audit_report_is_reproducible_from_the_csv_and_config", False,
                f"cannot reproduce the capture audit: {error}")
         return
-    same = (
-        submitted.get("status") == recomputed["status"]
-        and submitted.get("violations") == recomputed["violations"]
-        and submitted.get("limits") == recomputed["limits"]
-        and submitted.get("trip_time_s") == recomputed["trip_time_s"]
-        and submitted.get("max_sample_spacing_observed_s")
-        == recomputed["max_sample_spacing_observed_s"]
-        and submitted.get("pair_overlap_events") == recomputed["pair_overlap_events"]
-        and _gate_flags(submitted) == _gate_flags(recomputed)
-    )
+    same = _audit_projection(submitted) == _audit_projection(recomputed)
     _check(state, "audit_report_is_reproducible_from_the_csv_and_config", same,
            "submitted audit fields differ from a fresh audit of the same CSV and config")
 

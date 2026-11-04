@@ -407,3 +407,24 @@ def test_stripping_a_safety_limitation_from_the_alignment_report_is_detected(tmp
     assert report["status"] == "CHAIN_INCONSISTENT"
     assert report["checks"]["alignment_report_is_reproducible_from_the_manifest"] is False
     assert report["reproduction"]["status"] == "MISMATCHED"
+
+
+def test_editing_a_per_channel_measurement_in_the_audit_report_is_detected(tmp_path):
+    # pass_waveform is not the only physical result the reviewer reads: the
+    # measured disable bound and safe-from instant must also be reproducible.
+    case = Case(tmp_path)
+    case.rewrite(case.audit_path,
+                 lambda doc: doc["channels"]["P_HO"].update(deadline_s=0.5))
+    report = case.run()
+    assert report["status"] == "CHAIN_INCONSISTENT"
+    assert report["checks"]["audit_report_is_reproducible_from_the_csv_and_config"] is False
+
+
+def test_editing_the_echoed_capture_provenance_is_detected(tmp_path):
+    case = Case(tmp_path)
+    case.rewrite(case.audit_path,
+                 lambda doc: doc["capture_provenance"].update(
+                     hardware_revision="SOME_OTHER_BOARD"))
+    report = case.run()
+    assert report["status"] == "CHAIN_INCONSISTENT"
+    assert report["checks"]["audit_report_is_reproducible_from_the_csv_and_config"] is False

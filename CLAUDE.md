@@ -71,7 +71,9 @@ python tools/d0_evidence_chain.py --manifest out/d0_scope/sync.json \
 `basis_review_status` 不是 `ENGINEER_REVIEWED` 时仍会写 CSV，但退出码 1；物理同时性永远为 false。
 
 **证据链绑定（`tools/d0_evidence_chain.py`）只证明四份工件是同一次采集**：对齐报告、CSV、限值配置、
-审计报告按 SHA-256 与 `case_id` 互绑，并把审计报告**重新算一遍**逐项比对。对齐报告自身不被任何哈希
+审计报告按 SHA-256 与 `case_id` 互绑，并把审计报告**重新算一遍**逐项比对（`source` 之外的
+全部字段，含 `capture_provenance` 回显与每路 `deadline_s`/`permanently_safe_from_s`；`source`
+里的路径与摘要由哈希检查单独负责）。对齐报告自身不被任何哈希
 绑定，所以工具也**重新运行第31章对齐**（`align.build` + 重写 CSV 比对字节），要求除路径外的**全部字段**
 逐项相同——字段集取"全集减路径"而非白名单，所以 `limitations`/`warnings` 也在内，删掉"波形来源
 未认证"这类安全声明同样会被抓；`output` 里由 `run()` 追加的 `csv_path`/`csv_sha256` 除外（摘要本就
