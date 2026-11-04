@@ -1,0 +1,899 @@
+{
+  "status": "LAYOUT_PASS_1_PLACEMENT_ONLY_NOT_FABRICABLE",
+  "board": {
+    "width_mm": 132.0,
+    "depth_mm": 92.0,
+    "layers": 2,
+    "thickness_mm": 1.6,
+    "mounting_holes": [
+      {
+        "x_mm": 6.0,
+        "y_mm": 6.0
+      },
+      {
+        "x_mm": 126.0,
+        "y_mm": 6.0
+      },
+      {
+        "x_mm": 6.0,
+        "y_mm": 86.0
+      },
+      {
+        "x_mm": 126.0,
+        "y_mm": 86.0
+      }
+    ]
+  },
+  "counts": {
+    "parts_with_footprint": 71,
+    "named_nets": 30,
+    "test_points": 20,
+    "dnp": 10
+  },
+  "placement": [
+    {
+      "ref": "C1",
+      "value": "10uF/35V",
+      "footprint": "Capacitor_SMD:C_1210_3225Metric",
+      "block": "bias",
+      "x_mm": 58.3,
+      "y_mm": 5.6,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 4.6,
+      "courtyard_d_mm": 3.2
+    },
+    {
+      "ref": "C2",
+      "value": "1uF/35V",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "block": "bias",
+      "x_mm": 23.2,
+      "y_mm": 4.98,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.4,
+      "courtyard_d_mm": 1.96
+    },
+    {
+      "ref": "C3",
+      "value": "100nF/50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "bias",
+      "x_mm": 62.98,
+      "y_mm": 4.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "C4",
+      "value": "2.2uF/25V",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "block": "bias",
+      "x_mm": 12.8,
+      "y_mm": 5.15,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 4.6,
+      "courtyard_d_mm": 2.3
+    },
+    {
+      "ref": "C5",
+      "value": "100nF/50V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "bias",
+      "x_mm": 66.98,
+      "y_mm": 4.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "C6",
+      "value": "100uF/6.3V",
+      "footprint": "Capacitor_SMD:C_1210_3225Metric",
+      "block": "power",
+      "x_mm": 12.3,
+      "y_mm": 35.6,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 4.6,
+      "courtyard_d_mm": 3.2
+    },
+    {
+      "ref": "C7",
+      "value": "10uF/10V",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "block": "power",
+      "x_mm": 17.2,
+      "y_mm": 34.98,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.4,
+      "courtyard_d_mm": 1.96
+    },
+    {
+      "ref": "C40",
+      "value": "1nF/16V",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 119.98,
+      "y_mm": 39.23,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "CGL1",
+      "value": "6.8nF DNP",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "power",
+      "x_mm": 30.48,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "CGL2",
+      "value": "6.8nF DNP",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "power",
+      "x_mm": 34.48,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "Csn1",
+      "value": "1nF DNP",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "power",
+      "x_mm": 38.48,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "Csn2",
+      "value": "1nF DNP",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "block": "power",
+      "x_mm": 53.98,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "D1",
+      "value": "SMBJ15A",
+      "footprint": "Diode_SMD:D_SMB",
+      "block": "bias",
+      "x_mm": 38.65,
+      "y_mm": 6.25,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 7.3,
+      "courtyard_d_mm": 4.5
+    },
+    {
+      "ref": "D2",
+      "value": "SS34",
+      "footprint": "Diode_SMD:D_SMA",
+      "block": "bias",
+      "x_mm": 47.0,
+      "y_mm": 5.75,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 7.0,
+      "courtyard_d_mm": 3.5
+    },
+    {
+      "ref": "D40",
+      "value": "BZX84C5V1",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "block": "fault",
+      "x_mm": 105.93,
+      "y_mm": 35.7,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.86,
+      "courtyard_d_mm": 3.4
+    },
+    {
+      "ref": "F1",
+      "value": "0.5A",
+      "footprint": "Fuse:Fuse_1206_3216Metric",
+      "block": "bias",
+      "x_mm": 18.28,
+      "y_mm": 5.13,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 4.56,
+      "courtyard_d_mm": 2.26
+    },
+    {
+      "ref": "J1",
+      "value": "VBIAS 15V",
+      "footprint": "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm",
+      "block": "fixed",
+      "x_mm": 17.5,
+      "y_mm": 12.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 11.5,
+      "courtyard_d_mm": 8.81
+    },
+    {
+      "ref": "J2",
+      "value": "LOAD 0.2-2R",
+      "footprint": "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm",
+      "block": "fixed",
+      "x_mm": 121.0,
+      "y_mm": 46.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 11.5,
+      "courtyard_d_mm": 8.81
+    },
+    {
+      "ref": "J3",
+      "value": "SEC A/CT/B",
+      "footprint": "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm",
+      "block": "fixed",
+      "x_mm": 18.0,
+      "y_mm": 46.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 21.5,
+      "courtyard_d_mm": 8.81
+    },
+    {
+      "ref": "J4",
+      "value": "FAULT/STATUS",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
+      "block": "fixed",
+      "x_mm": 124.0,
+      "y_mm": 70.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.54,
+      "courtyard_d_mm": 8.62
+    },
+    {
+      "ref": "JP1",
+      "value": "VDD CUT",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "block": "bias",
+      "x_mm": 53.27,
+      "y_mm": 5.77,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.54,
+      "courtyard_d_mm": 6.09
+    },
+    {
+      "ref": "JP2",
+      "value": "FORCE1 low",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "block": "sense",
+      "x_mm": 91.77,
+      "y_mm": 5.77,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.54,
+      "courtyard_d_mm": 6.09
+    },
+    {
+      "ref": "JP3",
+      "value": "FORCE2 low",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+      "block": "sense",
+      "x_mm": 96.27,
+      "y_mm": 5.77,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.54,
+      "courtyard_d_mm": 6.09
+    },
+    {
+      "ref": "Q1",
+      "value": "BSC010N04LS6",
+      "footprint": "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm",
+      "block": "fixed",
+      "x_mm": 48.0,
+      "y_mm": 38.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 7.36,
+      "courtyard_d_mm": 5.64
+    },
+    {
+      "ref": "Q2",
+      "value": "BSC010N04LS6",
+      "footprint": "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm",
+      "block": "fixed",
+      "x_mm": 48.0,
+      "y_mm": 62.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 7.36,
+      "courtyard_d_mm": 5.64
+    },
+    {
+      "ref": "Q40",
+      "value": "2N7002",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "block": "fault",
+      "x_mm": 110.93,
+      "y_mm": 35.7,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.86,
+      "courtyard_d_mm": 3.4
+    },
+    {
+      "ref": "Q41",
+      "value": "NMOS 30V IDM>=3A",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "block": "fault",
+      "x_mm": 115.93,
+      "y_mm": 35.7,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.86,
+      "courtyard_d_mm": 3.4
+    },
+    {
+      "ref": "Q42",
+      "value": "NMOS clamp DNP",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "block": "fault",
+      "x_mm": 120.93,
+      "y_mm": 35.7,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.86,
+      "courtyard_d_mm": 3.4
+    },
+    {
+      "ref": "Q43",
+      "value": "NMOS clamp DNP",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "block": "fault",
+      "x_mm": 125.93,
+      "y_mm": 35.7,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.86,
+      "courtyard_d_mm": 3.4
+    },
+    {
+      "ref": "R1",
+      "value": "0R",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "block": "fixed",
+      "x_mm": 74.0,
+      "y_mm": 50.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.36,
+      "courtyard_d_mm": 1.9
+    },
+    {
+      "ref": "R2",
+      "value": "0R",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "sense",
+      "x_mm": 100.48,
+      "y_mm": 4.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R3",
+      "value": "0R",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "sense",
+      "x_mm": 104.48,
+      "y_mm": 4.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R5",
+      "value": "1k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "sense",
+      "x_mm": 108.48,
+      "y_mm": 4.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R6",
+      "value": "1k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "sense",
+      "x_mm": 112.48,
+      "y_mm": 4.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R40",
+      "value": "1k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 123.98,
+      "y_mm": 39.23,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R41",
+      "value": "10k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 110.98,
+      "y_mm": 42.23,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R42",
+      "value": "100k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 114.98,
+      "y_mm": 42.23,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R43",
+      "value": "100R",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 105.48,
+      "y_mm": 42.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R44",
+      "value": "4.7R 0.5W",
+      "footprint": "Resistor_SMD:R_1206_3216Metric",
+      "block": "fault",
+      "x_mm": 106.28,
+      "y_mm": 39.63,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 4.56,
+      "courtyard_d_mm": 2.26
+    },
+    {
+      "ref": "R45",
+      "value": "100R",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 109.48,
+      "y_mm": 44.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R46",
+      "value": "100R",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "fault",
+      "x_mm": 113.48,
+      "y_mm": 44.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "R47",
+      "value": "0R DNP",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "block": "fault",
+      "x_mm": 111.18,
+      "y_mm": 39.45,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.36,
+      "courtyard_d_mm": 1.9
+    },
+    {
+      "ref": "R48",
+      "value": "0R DNP",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "block": "fault",
+      "x_mm": 115.68,
+      "y_mm": 39.45,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.36,
+      "courtyard_d_mm": 1.9
+    },
+    {
+      "ref": "Rg1",
+      "value": "2.2R",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "block": "power",
+      "x_mm": 21.68,
+      "y_mm": 34.95,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.36,
+      "courtyard_d_mm": 1.9
+    },
+    {
+      "ref": "Rg2",
+      "value": "2.2R",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "block": "power",
+      "x_mm": 26.18,
+      "y_mm": 34.95,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 3.36,
+      "courtyard_d_mm": 1.9
+    },
+    {
+      "ref": "Rgs1",
+      "value": "10k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "power",
+      "x_mm": 57.98,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "Rgs2",
+      "value": "10k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "power",
+      "x_mm": 61.98,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "Rsh1",
+      "value": "1mR 1%",
+      "footprint": "Resistor_SMD:R_2512_6332Metric",
+      "block": "fixed",
+      "x_mm": 66.0,
+      "y_mm": 50.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 7.66,
+      "courtyard_d_mm": 3.86
+    },
+    {
+      "ref": "Rsn1",
+      "value": "10R DNP",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "power",
+      "x_mm": 65.98,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "Rsn2",
+      "value": "10R DNP",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "block": "power",
+      "x_mm": 69.98,
+      "y_mm": 34.73,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.96,
+      "courtyard_d_mm": 1.46
+    },
+    {
+      "ref": "TP1",
+      "value": "VDD_IN",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 11.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP2",
+      "value": "VDD",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 14.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP3",
+      "value": "REG",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 17.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP4",
+      "value": "REG_CROW",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 20.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP5",
+      "value": "VG1",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 23.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP6",
+      "value": "VG2",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 26.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP7",
+      "value": "G1",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 29.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP8",
+      "value": "G2",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 32.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP9",
+      "value": "VD1",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 35.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP10",
+      "value": "VD2",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 38.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP11",
+      "value": "VSS",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 41.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP12",
+      "value": "SR_SRC",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 44.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP13",
+      "value": "SEC_A",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 47.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP14",
+      "value": "SEC_B",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 50.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP15",
+      "value": "VOUT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 53.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP16",
+      "value": "FAULT_IN",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 56.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP17",
+      "value": "FAULT_G",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 59.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP18",
+      "value": "FAULT_N",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 62.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP19",
+      "value": "PGND",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 65.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "TP20",
+      "value": "PGND",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "block": "probe",
+      "x_mm": 68.5,
+      "y_mm": 81.0,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 2.0,
+      "courtyard_d_mm": 2.0
+    },
+    {
+      "ref": "U1",
+      "value": "UCC24624DR",
+      "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "block": "bias",
+      "x_mm": 30.2,
+      "y_mm": 6.7,
+      "rot_deg": 0.0,
+      "courtyard_w_mm": 7.4,
+      "courtyard_d_mm": 5.4
+    }
+  ],
+  "blocks": {
+    "bias": {
+      "rect_mm": [
+        10.0,
+        4.0,
+        86.0,
+        30.0
+      ]
+    },
+    "sense": {
+      "rect_mm": [
+        90.0,
+        4.0,
+        128.0,
+        30.0
+      ]
+    },
+    "power": {
+      "rect_mm": [
+        10.0,
+        34.0,
+        100.0,
+        78.0
+      ]
+    },
+    "fault": {
+      "rect_mm": [
+        104.0,
+        34.0,
+        128.0,
+        78.0
+      ]
+    },
+    "probe": {
+      "rect_mm": [
+        8.0,
+        80.0,
+        124.0,
+        88.0
+      ]
+    }
+  },
+  "pad_pin_mapping": {
+    "symbol_pins_without_a_pad": {
+      "Q1": [
+        "6",
+        "7",
+        "8"
+      ],
+      "Q2": [
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    "note": "the vendored Infineon PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain pins 6-8 have no pad of their own; every drain land still carries the drain net, so this is a missing device-specific land pattern, not a floating connection"
+  },
+  "checks": {
+    "every_footprinted_part_is_placed_exactly_once": true,
+    "no_two_courtyards_are_closer_than_the_gap": true,
+    "overlapping_pairs": [],
+    "every_part_is_inside_the_outline": true,
+    "no_track_or_via_is_emitted": true
+  },
+  "routed": false,
+  "routing_backlog_note": "the nets exist as a ratsnest; no copper is routed, so this board is a layout, not a manufacturing package",
+  "manufacturing_package": "NOT_RELEASED",
+  "hardware_built": false,
+  "fabrication_approved": false,
+  "evidence": {
+    "footprints": "vendored KiCad 10.0.6 stock footprints; see hardware/stock_footprints/PROVENANCE.md",
+    "placement": "block packing, not an optimised placement; the power-stage bodies are fixed to keep the commutation loop in one direction",
+    "nets": "same part table as the schematic generator, so the net names are the schematic's",
+    "drc": "kicad-cli output goes to drc.json; the report does not claim a clean board, because an unrouted board cannot be clean"
+  },
+  "remaining_work": [
+    "get a device-specific land pattern for BSC010N04LS6: the vendored PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain pins 6-8 have no pad of their own",
+    "route the high-current loop first: SEC_A -> Q1 -> SR_SRC -> Rsh1 -> PGND, then the mirror for SEC_B",
+    "keep the VSS Kelvin tap (R1) off the power return",
+    "fill copper for the power nets, then re-run DRC to zero unconnected items",
+    "move the reference designators off one another (29 cosmetic items at pass 1)",
+    "export gerbers, drill and position only after the DRC backlog is empty"
+  ]
+}

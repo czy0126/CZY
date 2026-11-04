@@ -52,6 +52,7 @@ python tools/make_control_board.py --check   # 控制验证板：重生成 + 网
 python tools/main_board_mechanical.py --check   # A5 机械摆放（1:1）：重生成 + SVG/PNG + DRC（需 KiCad 10.0）
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
+python tools/make_sr_fault_board_pcb.py --check   # 该板的布局 pass 1：重生成 + kicad-cli DRC（未布线，只判摆放）
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
 python tools/placeholder_eco.py --write          # 61 占位逐件责任清单（json + csv），只连表不造 MPN
@@ -810,6 +811,38 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 - **跳线两侧要各放一个 `PWR_FLAG`**：U1 的 VDD 是 `power_in`，被 JP1（被动引脚）与
   `VDD_IN` 隔开，只在 `VDD_IN` 上放旗子会报 `power_pin_not_driven`。ERC 的 0 违规
   必须用 `--severity-all` 且报告不比原理图旧，否则"干净"没有意义。
+
+### 布局 pass 1（`tools/make_sr_fault_board_pcb.py`）
+
+原生 `.kicad_pcb`：71 只件各摆一次、每只焊盘带原理图网络、132×92 mm 外形、四个 M3 孔，
+**未布线、不出制造包**（`routed`/`fabrication_approved`/`hardware_built` 恒 false）。
+`--check` 会重生成 + 跑 `kicad-cli pcb drc`，只对"摆错"失败，不对"没布线"失败。
+
+- **courtyard 不一定关于原点对称，必须整框平移**：MX126 02P 是 **−3.5…+8**（中心 +2.25）、
+  04P 是 **−3.5…+18**（中心 **+7.25**）。只存"宽×深"再按包围盒居中，会把 J1 往左挪 2.25 mm
+  （真报过 `courtyards_overlap` 对 U1），04P 会挪 7.25 mm——比 0.75 mm 的间隙大一个量级。
+  `Placed.bounds` 存本地整框、`Placed.rect` 做平移；`_first_fit` 扫的是**原点**，
+  用 `origin + local box` 判定。
+- **kicad-cli 10.0.6 把任何被旋转的封装报成 `lib_footprint_mismatch`**：把库里的封装
+  逐字节复制、只加一行 `(at x y 90)` 也会报。所以摆放全部 0°，`placement()` 里
+  非零角度直接 `SystemExit` 并写明原因——旋转一只件去"消警告"是拿真实布局换一条被压制的发现。
+- **DRC JSON 有三个顶层项目数组**：`violations`、`unconnected_items`、`schematic_parity`。
+  老鼠线在**第二个**里；只读 `violations` 会得到"未布线板子 0 个未连接"，于是
+  "未连接为 0 ⇒ 网表没进板子"这条守卫正好反着触发。当前 **111** = 布线欠账，
+  `schematic_parity` 0 条。真名是 `courtyards_overlap`（复数）。
+  29 条 `silk_*` 是位号没挪开，按**欠账**报、不当门——永远绿不了的门没人看。
+- **`missing_courtyard` 默认被忽略**（没 courtyard 的板子报"0 违规"），要靠
+  `sr_fault_validation.kicad_pro` 的 `board.design_settings.rule_severities` 提到 error；
+  该文件**只由 `python tools/make_sr_fault_board.py --check` 写**，改完 PCB 生成器不重跑它就不生效。
+  生效的判据是 `drc.json:ignored_checks` 里不再有它。
+- **TDSON-8 把五个漏极焊盘全编成 "5"**（`1,2,3,4` 之后 5 个 `"5"`），而符号按真实
+  BSC010N04LS6 引脚把漏极拆成 5–8 ⇒ **Q1/Q2 的符号 6/7/8 脚没有自己的焊盘**。
+  电气上不漏：五个焊盘都挂同一网络，KiCad 也把它们当一个节点（所以 SEC_A/SEC_B 的
+  老鼠线是 4 条不是 8 条）。但它是一条真实的缺件——报在
+  `pad_pin_mapping.symbol_pins_without_a_pad`，并列为待办"要器件专用 land pattern"，
+  **不要**靠改符号引脚号或改 vendor 封装去抹平。
+- SOT-23 封装配两脚稳压管（`D40`）会多出一个空焊盘：未命名的焊盘**必须保持无网络**，
+  `test_a_pad_the_schematic_never_names_stays_netless` 锁住"闲置铜箔"与"接到未声明网络"的区别。
 
 ## TLV3501 快速过流 ECO 模块（`pcb/fast_oc`）
 

@@ -678,8 +678,13 @@ def bom(parts_: list[Part]) -> None:
 
 
 def project_file() -> str:
+    # ``missing_courtyard`` is IGNORED by default, so a board with no courtyards
+    # at all reports "0 violations".  The PCB generator raises it to error; the
+    # setting has to live in the project file because that is the only place
+    # kicad-cli reads rule severities from.
+    board = {"design_settings": {"rule_severities": {"missing_courtyard": "error"}}}
     return json.dumps({
-        "board": {}, "boards": [], "cvpcb": {}, "erc": {},
+        "board": board, "boards": [], "cvpcb": {}, "erc": {},
         "libraries": {"pinned_footprint_libs": [], "pinned_symbol_libs": []},
         "meta": {"filename": "sr_fault_validation.kicad_pro", "version": 1},
         "net_settings": {}, "pcbnew": {},
