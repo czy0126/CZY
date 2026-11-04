@@ -22,7 +22,7 @@ SR = tuple(f"SR{i}{side}" for i in range(1, 5) for side in ("A", "B"))
 GATES = PRIMARY + SR
 VERSION = 1
 LIMIT_FIELDS = (
-    "gate_off_max_v", "gate_on_min_v", "trip_low_max_v",
+    "gate_off_max_v", "gate_on_min_v", "gate_overlap_forbidden_above_v", "trip_low_max_v",
     "trip_high_min_v", "max_disable_latency_s", "max_sample_spacing_s",
     "min_pretrip_s", "min_post_trip_hold_s",
 )
@@ -60,6 +60,7 @@ def config_limits(cfg: dict) -> dict[str, float]:
     limits = {k: require_finite(cfg.get(k), k) for k in LIMIT_FIELDS}
     if (limits["gate_off_max_v"] < 0 or
         limits["gate_on_min_v"] <= limits["gate_off_max_v"] or
+        not (0 < limits["gate_overlap_forbidden_above_v"] <= limits["gate_on_min_v"]) or
         limits["trip_low_max_v"] >= limits["trip_high_min_v"]):
         raise InvalidCapture("invalid input/gate voltage hysteresis limits")
     if any(limits[k] <= 0 for k in (
@@ -124,12 +125,30 @@ def evaluate(cfg: dict, t: list[float], samples: dict[str, list[float]]) -> dict
               if stimulus[i-1] <= l["trip_low_max_v"] and
               stimulus[i] >= l["trip_high_min_v"]]
     violations: list[str] = []
+    # A set of gates that *eventually* shuts down is still unsafe if
+    # complementary devices were ever simultaneously driven above the
+    # reviewed overlap threshold. This checks primary HO/LO and each
+    # center-tapped SR pair in the SAME synchronized acquisition.
+    pair_overlap_events = {}
+    pairs = [("P_HO", "P_LO", "PRIMARY")] + [
+        (f"SR{i}A", f"SR{i}B", f"SR{i}") for i in range(1, 5)
+    ]
+    for a, b, label in pairs:
+        bad = [i for i in range(len(t))
+               if samples[a][i] >= l["gate_overlap_forbidden_above_v"]
+               and samples[b][i] >= l["gate_overlap_forbidden_above_v"]]
+        if bad:
+            violations.append(f"{label}:GATE_OVERLAP")
+            pair_overlap_events[label] = {
+                "first_s": t[bad[0]], "last_s": t[bad[-1]],
+                "sample_count": len(bad),
+            }
     if stimulus[0] > l["trip_low_max_v"]:
         violations.append("TRIP_INITIAL_NOT_LOW")
     if len(rising) != 1:
         violations.append("TRIP_MUST_HAVE_EXACTLY_ONE_RISING_EDGE")
     if not rising:
-        return _report(cfg, t, l, spacing, violations, {}, None)
+        return _report(cfg, t, l, spacing, violations, {}, None, pair_overlap_events)
     k = rising[0]
     trip_time = t[k]
     # A latched trip must remain asserted throughout observation, not bounce.
@@ -173,10 +192,12 @@ def evaluate(cfg: dict, t: list[float], samples: dict[str, list[float]]) -> dict
                 wave[i] > l["gate_off_max_v"] for i in range(k, len(t))
                 if t[i] >= deadline),
         }
-    return _report(cfg, t, l, spacing, violations, channels, trip_time)
+    return _report(cfg, t, l, spacing, violations, channels, trip_time,
+                   pair_overlap_events)
 
 
-def _report(cfg, t, limits, spacing, violations, channels, trip_time):
+def _report(cfg, t, limits, spacing, violations, channels, trip_time,
+            pair_overlap_events):
     # Even a capture-only PASS can NEVER clear hardware design or release.
     reviewed = cfg.get("limits_review_status") == "ENGINEER_REVIEWED"
     provenance = all(
@@ -201,6 +222,7 @@ def _report(cfg, t, limits, spacing, violations, channels, trip_time):
         "max_sample_spacing_observed_s": spacing,
         "limits": limits,
         "channels": channels,
+        "pair_overlap_events": pair_overlap_events,
         "violations": violations,
         "origin_classification": "UNVERIFIED_CSV_MAY_BE_SYNTHETIC",
         "waveform_origin_authenticated": False,
