@@ -84,11 +84,14 @@
    "kind": "RESONANT_INDUCTOR",
    "quantity": 1,
    "sheet": "rfq/Lr.md",
-   "unknown_count": 9,
-   "open_item_count": 5,
+   "unknown_count": 10,
+   "open_item_count": 6,
    "sources": [
     "design/v3/bom/lr_design.json",
     "design/v3/power_priority/lr_tdk_catalog_core_screen.json",
+    "design/v3/power_priority/lr_tdk_catalog_core_source.json",
+    "design/v3/power_priority/d1_staged_target_policy.json",
+    "design/v3/magnetics/magnetics_design.json (catalogue_core_stack)",
     "docs/D1_EXECUTION_KIT/20_低矮磁件Lr原厂尺寸磁通双约束审核.md",
     "design/v3/pcb/board_netlist.csv"
    ]

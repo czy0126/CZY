@@ -41,10 +41,10 @@
       "manufacturer_bare_core_plus_plate_worst_height_mm": 9.8,
       "remaining_16mm_for_ALL_other_layers_mm": 6.2,
       "bare_core_fits_16mm": true,
+      "planning_noncore_allowance_2mm_screen_pass": true,
       "preliminary_combined_16mm_candidate": false,
       "full_stack_and_100c_LI_verified": false,
-      "fab_approved": false,
-      "planning_noncore_allowance_2mm_screen_pass": true
+      "fab_approved": false
     },
     {
       "core_id": "ELP38_I38",
@@ -54,10 +54,10 @@
       "manufacturer_bare_core_plus_plate_worst_height_mm": 12.35,
       "remaining_16mm_for_ALL_other_layers_mm": 3.65,
       "bare_core_fits_16mm": true,
+      "planning_noncore_allowance_2mm_screen_pass": true,
       "preliminary_combined_16mm_candidate": true,
       "full_stack_and_100c_LI_verified": false,
-      "fab_approved": false,
-      "planning_noncore_allowance_2mm_screen_pass": true
+      "fab_approved": false
     },
     {
       "core_id": "ELP43_I43",
@@ -67,10 +67,10 @@
       "manufacturer_bare_core_plus_plate_worst_height_mm": 13.9,
       "remaining_16mm_for_ALL_other_layers_mm": 2.1,
       "bare_core_fits_16mm": true,
+      "planning_noncore_allowance_2mm_screen_pass": true,
       "preliminary_combined_16mm_candidate": true,
       "full_stack_and_100c_LI_verified": false,
-      "fab_approved": false,
-      "planning_noncore_allowance_2mm_screen_pass": true
+      "fab_approved": false
     },
     {
       "core_id": "ELP58_I58",
@@ -80,10 +80,10 @@
       "manufacturer_bare_core_plus_plate_worst_height_mm": 14.9,
       "remaining_16mm_for_ALL_other_layers_mm": 1.1,
       "bare_core_fits_16mm": true,
+      "planning_noncore_allowance_2mm_screen_pass": false,
       "preliminary_combined_16mm_candidate": false,
       "full_stack_and_100c_LI_verified": false,
-      "fab_approved": false,
-      "planning_noncore_allowance_2mm_screen_pass": false
+      "fab_approved": false
     },
     {
       "core_id": "ELP64_I64",
@@ -93,13 +93,30 @@
       "manufacturer_bare_core_plus_plate_worst_height_mm": 15.6,
       "remaining_16mm_for_ALL_other_layers_mm": 0.4,
       "bare_core_fits_16mm": true,
+      "planning_noncore_allowance_2mm_screen_pass": false,
       "preliminary_combined_16mm_candidate": false,
       "full_stack_and_100c_LI_verified": false,
-      "fab_approved": false,
-      "planning_noncore_allowance_2mm_screen_pass": false
+      "fab_approved": false
     }
   ],
-  "elp38_initial_16mm_feasibility": "CORE_PLUS_PLATE_ONLY_WITH_3P65MM_LEFT_NOT_A_FULL_STACK",
+  "temporary_noncore_package_reserve_mm": 2.0,
+  "elp38_initial_16mm_feasibility": "CORE_PLUS_PLATE_SCREEN_SUPERSEDED_BY_KNOWN_TERMS_FULL_STACK",
+  "elp38_full_stack_budget": {
+    "core_plus_plate_worst_mm": 12.35,
+    "known_non_core_mm": 0.14,
+    "full_stack_worst_mm": 12.49,
+    "left_for_tim_cold_plate_fasteners_mm": 3.51,
+    "reserve_mm": 2.0,
+    "clears_reserve": true,
+    "source": "design/v3/magnetics/magnetics_design.json:catalogue_core_stack",
+    "still_unknown": [
+      "TIM / thermal interface",
+      "cold plate",
+      "clamp and fastener heads",
+      "100 C L(I)",
+      "physical terminals and DOT"
+    ]
+  },
   "numerical_Bage_pair_320us_qualified": true,
   "physical_SR_inhibit_done": false,
   "magnetic_100c_LI_and_real_pads_done": false,
@@ -109,6 +126,5 @@
     "D0 ten-gate real inhibit demonstrator",
     "ELP38 preliminary 16mm full-stack dimensioned RFQ and 100C L(I)",
     "D1 nominal 48V/100A actual load voltage and thermal benchmark"
-  ],
-  "temporary_noncore_package_reserve_mm": 2
+  ]
 }

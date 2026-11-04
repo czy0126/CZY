@@ -155,10 +155,75 @@ def test_the_inductor_fault_current_is_above_the_rated_peak(devs):
     assert rfq == pytest.approx(101.26 * 1.20, rel=1e-4)
 
 
-def test_the_inductor_is_the_one_device_whose_height_rule_fails(devs):
-    """Standard ELP32 reaches 9.8 mm bare; the sheet must not call that compliant."""
-    conclusion = find(devs["Lr"], "mechanical", "结论")["value"]
-    assert "必超" in conclusion
+def _policy() -> dict:
+    path = pkg.POWER / "d1_staged_target_policy.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _stage(stage_id: str) -> dict:
+    return next(s for s in _policy()["stages"] if s["id"] == stage_id)
+
+
+def test_the_height_limits_come_from_the_policy_and_not_from_a_literal(devs):
+    """The sheet used to print 10 mm for every device while noting that D1 was
+    16 mm.  A quoted limit that disagrees with the policy asks the supplier for
+    a part the project no longer wants."""
+    d1 = _stage("D1_100A")["height_limit_mm"]
+    d3 = _stage("D3_THIN")["height_limit_mm"]
+    assert d1 != d3            # the two stages really do differ
+    for ref in ("T1", "Lr"):
+        assert find(devs[ref], "mechanical", "整机限值（D1_100A）")["value"] == pytest.approx(d1)
+        assert find(devs[ref], "mechanical", "整机限值（D3_THIN）")["value"] == pytest.approx(d3)
+    assert find(devs["CT"], "mechanical", "整机限值（D1_100A）")["value"] == pytest.approx(d1)
+
+
+def test_the_preferred_core_is_the_one_the_policy_names(devs):
+    assert pkg.preferred_core(pkg.D1) == _stage("D1_100A")["preferred_magnetic_core"]
+    assert find(devs["Lr"], "mechanical", "现行首选套件")["value"] == pkg.preferred_core(pkg.D1)
+
+
+def test_only_the_preferred_core_passes_both_screens():
+    """Height alone picks two sets and flux alone picks four; the intersection
+    is what the policy is buying, and it must be exactly one set."""
+    candidates = pkg.lr_core_candidates()
+    assert candidates["passing_both_screens"] == [pkg.preferred_core(pkg.D1)]
+    elp32 = next(r for r in candidates["rows"] if r["id"] == "ELP32_I32")
+    assert elp32["area_ok"] is False and elp32["height_ok"] is True
+    elp43 = next(r for r in candidates["rows"] if r["id"] == "ELP43_I43")
+    assert elp43["area_ok"] is True and elp43["height_ok"] is False
+
+
+def test_the_candidate_rows_are_recomputed_from_the_design_package():
+    stack = json.loads((MAG / "magnetics_design.json").read_text(encoding="utf-8"))["catalogue_core_stack"]
+    by_id = {r["id"]: r for r in pkg.lr_core_candidates()["rows"]}
+    assert set(by_id) == {r["id"] for r in stack["cores"]}
+    for core in stack["cores"]:
+        row = by_id[core["id"]]
+        assert row["b3_t"] == pytest.approx(core["three_turn_fault_flux_t"])
+        assert row["stack_worst_mm"] == pytest.approx(core["stack_flat_no_clamp_worst_mm"])
+        assert row["left_mm"] == pytest.approx(core["d1_budget_left_for_tim_cold_plate_fasteners_mm"])
+
+
+def test_the_sheet_keeps_the_superseded_verdict_and_says_why_it_expired(devs):
+    """The 2026-11-03 screen rejected ELP38 for height against a 10 mm box.
+    Deleting that line would erase the evidence that the basis moved."""
+    row = find(devs["Lr"], "mechanical", "旧筛选表的口径")["value"]
+    assert "10 mm" in row and "16 mm" in row
+    assert "REJECT" in row and "高度" in row
+    assert "0.23206" in row
+
+
+def test_the_elp32_gap_does_not_travel_with_the_core_change(devs):
+    """1.4443 mm of grinding is computed on ELP32's AL_ungapped.  Carrying it
+    into an ELP38 quote would ask for a part nobody designed."""
+    assert "作废" in find(devs["Lr"], "inductance", "气隙口径")["value"]
+    assert find(devs["Lr"], "inductance", "首选套件气隙")["value"].startswith(pkg.UNKNOWN)
+
+
+def test_the_open_items_ask_for_the_elp38_data_the_catalogue_lacks(devs):
+    text = " ".join(devs["Lr"]["open_items"])
+    for needle in ("AL_ungapped", "le", "Ve", "窗口净高", "L(I)", "100 °C"):
+        assert needle in text, needle
 
 
 def test_the_ct_secondary_current_is_the_primary_divided_by_the_turns_ratio(devs):

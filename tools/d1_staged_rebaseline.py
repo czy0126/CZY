@@ -30,6 +30,28 @@ PROTECTION=PP/"prot03_50v_protection_evidence_decision.json"
 def read(path:Path)->dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
+def elp38_stack_budget(mag:dict,reserve_mm:float,core_id:str)->dict:
+    """The D1 preferred core's Z budget as the magnetics package computes it.
+
+    The core-plus-plate screen in this file stops at 12.35 mm and says nothing
+    about adhesive, label or pocket -- that omission is why the 2026-11-03
+    entry read ``NOT_A_FULL_STACK``.  The full stack is a different file's
+    result; this function carries it, and refuses to if the two disagree.
+    """
+    stack=mag["catalogue_core_stack"]
+    row=next(r for r in stack["cores"] if r["id"]==core_id)
+    return {
+        "core_plus_plate_worst_mm":row["core_pack_worst_mm"],
+        "known_non_core_mm":round(row["stack_flat_no_clamp_worst_mm"]-row["core_pack_worst_mm"],2),
+        "full_stack_worst_mm":row["stack_flat_no_clamp_worst_mm"],
+        "left_for_tim_cold_plate_fasteners_mm":row["d1_budget_left_for_tim_cold_plate_fasteners_mm"],
+        "reserve_mm":reserve_mm,
+        "clears_reserve":row["d1_clears_the_non_core_reserve"],
+        "source":"design/v3/magnetics/magnetics_design.json:catalogue_core_stack",
+        "still_unknown":["TIM / thermal interface","cold plate","clamp and fastener heads",
+                         "100 C L(I)","physical terminals and DOT"],
+    }
+
 def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,protect=None)->dict:
     p=read(POLICY) if policy is None else policy
     m=read(MODELED_100) if mag is None else mag
@@ -108,6 +130,9 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
     elp38=next(x for x in candidates if x["core_id"]=="ELP38_I38")
     if not elp38["preliminary_combined_16mm_candidate"]:
         raise ValueError("ELP38 stage candidate no longer clears preliminary flux and core-only height")
+    budget=elp38_stack_budget(m,reserve_mm,p["stages"][1]["preferred_magnetic_core"])
+    if abs(budget["core_plus_plate_worst_mm"]-elp38["manufacturer_bare_core_plus_plate_worst_height_mm"])>1e-9:
+        raise ValueError("magnetics package and staged screen disagree on the preferred core's bare height")
     i2r_factor=round((p["stages"][2]["load_current_class_a"]/
                       p["stages"][1]["load_current_class_a"])**2,4)
     stage_summary={
@@ -137,7 +162,8 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         "ohmic_loss_factor_120_over_100_at_equal_path":i2r_factor,
         "elp_core_candidates":candidates,
         "temporary_noncore_package_reserve_mm":reserve_mm,
-        "elp38_initial_16mm_feasibility":"CORE_PLUS_PLATE_ONLY_WITH_3P65MM_LEFT_NOT_A_FULL_STACK",
+        "elp38_initial_16mm_feasibility":"CORE_PLUS_PLATE_SCREEN_SUPERSEDED_BY_KNOWN_TERMS_FULL_STACK",
+        "elp38_full_stack_budget":budget,
         "numerical_Bage_pair_320us_qualified":True,
         "physical_SR_inhibit_done":False,
         "magnetic_100c_LI_and_real_pads_done":False,
@@ -162,7 +188,9 @@ def main():
         a.json.parent.mkdir(parents=True,exist_ok=True)
         a.json.write_text(text,encoding="utf-8",newline="\n")
     print("Stages D0 -> D1 100A <=16mm -> D2 120A <=16mm -> D3 10mm stretch.")
-    print("ELP38 core-only 16mm screen: preliminary yes; full hardware NOT approved.")
+    b=res["elp38_full_stack_budget"]
+    print(f"ELP38 full stack with known terms: {b['full_stack_worst_mm']:.2f} mm, "
+          f"{b['left_for_tim_cold_plate_fasteners_mm']:.2f} mm left of 16 mm; full hardware NOT approved.")
     return 0
 if __name__=="__main__":
     raise SystemExit(main())

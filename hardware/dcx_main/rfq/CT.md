@@ -72,7 +72,7 @@
 | 项目 | 值 | 出处 |
 |---|---|---|
 | 高度 | UNKNOWN | ct_design.json 只有 Ae 与 Bsat，没有磁芯型号与机械尺寸 |
-| 整机限值 | 10.00 mm | D3 严格目标 |
+| 整机限值（D1_100A） | 16.0 mm | d1_staged_target_policy.json:stages[D1_100A].height_limit_mm；要同时供 D3 则收紧到 10 mm |
 | 现行封装 | 2 pad —— 无效，必须换成 4 个独立端子 | vendor_terminal_request.json:requirements |
 
 ## 9. 公差

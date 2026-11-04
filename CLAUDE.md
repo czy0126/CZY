@@ -905,13 +905,35 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 对外工件、不是设计包的一部分。
 
 - **没有数据的字段写 `UNKNOWN` 并在该单第 11 节重列，不许填一个看起来合理的值**；
-  当前 37 处，其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
+  当前 38 处，其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
+- **高度限值从 `d1_staged_target_policy.json` 读，不许再写死**：本工具原先把
+  `HEIGHT_LIMIT_MM = 10.0` 印在每张单上，而 policy（2026-11-04）把 D1 定为 16 mm、
+  D2 16 mm、D3 10 mm，并把 D1 的首选磁芯直接写成 `ELP38_I38`。T1–T4 与 Lr 现在同时
+  列 D1/D3 两个限值与各自的余量（`height_limit_mm(D1)`/`height_limit_mm(D3)`），
+  CT 只列 D1 并注明要供 D3 得收紧。改 policy 后必须 `--write` 重生成，测试
+  `test_the_height_limits_come_from_the_policy_and_not_from_a_literal` 锁住。
+- **Lr 单里的 ELP38 候选表是"旧结论为什么过期"的证据，不是新结论**：五个目录套件
+  按当前 D1 16 mm 重算后，同时过"高度余量"与"三匝面积"的只有 ELP38_I38，但
+  `lr_tdk_catalog_core_screen.json` 是按 10 mm 判的，它给 ELP38 的
+  `REJECT_STANDARD_UNMODIFIED_AS_HEIGHT_EXCEEDS_TOTAL_LIMIT` 必须原样保留并注明失效原因
+  ——删掉它等于抹掉基准变过这件事。ELP43 在旧表里 `preliminary_combined_16mm_candidate`
+  为 true（剩 2.1 mm），补上胶/标签后只有 1.96 mm，所以新表里它是"不过"。
+- **ELP38 的气隙现在算不出来，不许沿用 ELP32 的 1.4443 mm**：目录摘录只有
+  Amin/Ae/高度，没有 AL_ungapped、le、Ve、窗口净高；`magnetics_design.json:core` 里
+  那套 `AL_ungapped_nH`/`le_m` 是 ELP32 的。Lr 单因此把"气隙口径"（ELP32，换套件即作废）
+  与"首选套件气隙 = UNKNOWN"分成两行，100 °C L(I) 写成第 11 节的询价项。
 - **气隙只给"按目标 AL 的工艺窗口"，不给固定值**：T 是 0.1211 mm（AL ±25 % →
   0.112–0.126），Lr 是 1.4443 mm（1.0 µH / 3²）。路线明确禁止填未经计算的气隙。
 - **变压器的磁通不许用 `L·I/(N·Ae)`**：那是 Lr 的电感筛查。本包在每张 T 单的
   波形表里写死"按各绕组实际电压积分"。
 - 询价单与 `vendor_terminal_request.json` 的 24 个逻辑端子**必须逐项相同**
   （测试比对 `(terminal, net, dot)` 三元组），否则会出现第七个端子。
+- **`templates/staged_magnetics_16mm_rfq.csv` 的 3.65 mm 与设计包的 3.51 mm 是两个口径**：
+  前者 `source_status=MANUFACTURER_CATALOG_CORE_ONLY`，只减裸芯+I 片；后者补上胶/标签/压块/沉槽
+  （净 +0.14 mm）才是全叠层。两个数都对，**不许互改**——模板是"目录件本身还剩多少"，
+  `d1_staged_target_screen.json:elp38_full_stack_budget` 是"已知层都算上还剩多少"。
+  `d1_staged_rebaseline.elp38_stack_budget()` 同时校验两者的裸芯高度一致（差 1e-9 即 `ValueError`），
+  但有意不校验余量——它们的定义不同。
 
 ## 61 占位责任清单（`hardware/dcx_main/placeholder_eco.{json,csv}`）
 

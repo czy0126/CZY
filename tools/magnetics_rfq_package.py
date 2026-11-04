@@ -26,7 +26,6 @@ Run:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from functools import lru_cache
 from pathlib import Path
@@ -34,13 +33,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MAG = ROOT / "design/v3/magnetics"
 BOM = ROOT / "design/v3/bom"
+POWER = ROOT / "design/v3/power_priority"
 HW = ROOT / "hardware/dcx_main"
 PCB = ROOT / "design/v3/pcb"
 OUT = HW / "rfq"
 
 UNKNOWN = "UNKNOWN"
 STATUS = "REQUEST_FOR_QUOTE_NOT_VERIFIED"
-HEIGHT_LIMIT_MM = 10.0
+D1 = "D1_100A"
+D3 = "D3_THIN"
 
 SECTIONS = (
     ("terminals", "绕组极性与逻辑端子"),
@@ -59,6 +60,32 @@ SECTIONS = (
 @lru_cache(maxsize=None)
 def _json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def staged_target(stage_id: str) -> dict:
+    """One stage of the staged height target, as the policy states it.
+
+    The sheet used to carry ``HEIGHT_LIMIT_MM = 10.0``.  That literal outlived
+    its requirement: the 2026-11-04 policy moved D1 to 16 mm and named ELP38 as
+    the preferred core.  A sheet that keeps printing 10 is not conservative, it
+    is asking the supplier for a part the project no longer wants.
+    """
+    policy = _json(POWER / "d1_staged_target_policy.json")
+    return next(s for s in policy["stages"] if s["id"] == stage_id)
+
+
+def height_limit_mm(stage_id: str) -> float:
+    limit = staged_target(stage_id)["height_limit_mm"]
+    if limit is None:
+        raise SystemExit(f"stage {stage_id} declares no height limit")
+    return float(limit)
+
+
+def preferred_core(stage_id: str) -> str:
+    core = staged_target(stage_id).get("preferred_magnetic_core")
+    if not core:
+        raise SystemExit(f"stage {stage_id} names no preferred magnetic core")
+    return core
 
 
 def row(label: str, value: object, source: str, unit: str = "", digits: int = 3) -> dict:
@@ -156,12 +183,21 @@ def transformer(ref: str) -> dict:
                 "magnetics_design.json:height.flat_no_pocket"),
             row("0.5 mm 沉槽总高", f"{pocket['nominal_m']*1e3:.2f} 标称 / {pocket['worst_case_m']*1e3:.2f} 最坏",
                 "magnetics_design.json:height.pocket_0.5mm_no_clamp"),
-            row("整机限值", HEIGHT_LIMIT_MM, "路线：D1 首样目标 16 mm，严格 10 mm 只作 D3 目标", unit="mm", digits=2),
-            row("平铺余量", flat["margin_m"] * 1e3, "0.06 mm 不可量产（PCB 翘曲与焊膏波动同量级）", unit="mm", digits=3),
-            row("沉槽余量", pocket["margin_m"] * 1e3, "推荐方案", unit="mm", digits=3),
+            row("整机限值（D1_100A）", height_limit_mm(D1),
+                "d1_staged_target_policy.json:stages[D1_100A].height_limit_mm", unit="mm", digits=1),
+            row("整机限值（D3_THIN）", height_limit_mm(D3),
+                "d1_staged_target_policy.json:stages[D3_THIN].height_limit_mm", unit="mm", digits=1),
+            row("平铺余量（对 D1）", height_limit_mm(D1) - flat["worst_case_m"] * 1e3,
+                "= D1 限值 - 平铺最坏高", unit="mm", digits=2),
+            row("平铺余量（对 D3）", flat["margin_m"] * 1e3,
+                "magnetics_design.json:height.flat_no_pocket.margin_m", unit="mm", digits=3),
+            row("沉槽余量（对 D3）", pocket["margin_m"] * 1e3,
+                "magnetics_design.json:height.pocket_0.5mm_no_clamp.margin_m（推荐方案）", unit="mm", digits=3),
             row("平面尺寸", f"{core['outer_length_m']*1e3:.2f} × {core['core_depth_m']*1e3:.2f}",
                 "magnetics_design.json:core", unit="mm"),
-            row("跨顶金属夹", "不可用：0.5 mm 夹子把最坏高度推到 10.44 mm", "磁件设计包 §8"),
+            row("跨顶金属夹", (f"对 D3 不可用：0.5 mm 夹子把最坏高度推到 "
+                             f"{mag['height']['with_0.5mm_clamp']['worst_case_m']*1e3:.2f} mm"),
+                "magnetics_design.json:height.with_0.5mm_clamp"),
         ],
         "tolerances": [
             row("磁芯高度公差", "±0.15 mm", "磁件设计包 §8 / ELP32 原厂尺寸"),
@@ -174,7 +210,7 @@ def transformer(ref: str) -> dict:
             row("逻辑端子图（可发）", "design/v3/magnetics/winding_connections.svg", "winding_polarity.py 生成"),
             row("绕组叠层（可发）", "design/v3/magnetics/winding_cross_section.svg", "draw_magnetics.py 生成"),
             row("高度堆叠（可发）", "design/v3/magnetics/height_stackup.svg", "make_magnetics_manifest.py 收录"),
-            row("物理端子图 / 焊盘号", f"NOT AVAILABLE —— 这正是询价要的；本仓库没有厂商端子图",
+            row("物理端子图 / 焊盘号", "NOT AVAILABLE —— 这正是询价要的；本仓库没有厂商端子图",
                 "magnetic_vendor_map_audit：physical_pad 全为 null"),
         ],
         "open_items": [
@@ -195,11 +231,90 @@ def transformer(ref: str) -> dict:
     }
 
 
+def lr_core_candidates(stage_id: str = D1) -> dict:
+    """Every catalogue core set, against the *current* stage targets.
+
+    The 2026-11-03 screen judged the five sets against a 10 mm total height and
+    rejected ELP38 for being too tall.  The 2026-11-04 policy sets D1 to 16 mm
+    and names ELP38 as the preferred core, so that rejection no longer applies
+    while the flux screen it also ran still passes.  Both verdicts are carried:
+    the old one is dated evidence, not an error to be erased.
+    """
+    stack = _json(MAG / "magnetics_design.json")["catalogue_core_stack"]
+    screen = _json(POWER / "lr_tdk_catalog_core_screen.json")
+    preferred = preferred_core(stage_id)
+    rows = []
+    for core in stack["cores"]:
+        rows.append({
+            "id": core["id"],
+            "core_set": f"{core['core']} + {core['plate']}",
+            "ordering": core["tdk_ordering_prefix"],
+            "amin_mm2": core["Amin_mm2"],
+            "ae_mm2": core["Ae_mm2"],
+            "b3_t": core["three_turn_fault_flux_t"],
+            "area_ok": core["three_turn_area_screen_pass"],
+            "core_worst_mm": core["core_pack_worst_mm"],
+            "stack_worst_mm": core["stack_flat_no_clamp_worst_mm"],
+            "left_mm": core["d1_budget_left_for_tim_cold_plate_fasteners_mm"],
+            "height_ok": core["d1_clears_the_non_core_reserve"],
+            "screened": core["disposition_as_previously_screened"],
+            "passes_both": core["d1_clears_the_non_core_reserve"] and core["three_turn_area_screen_pass"],
+        })
+    both = [r["id"] for r in rows if r["passes_both"]]
+    if both == [preferred]:
+        finding = (f"在 {stage_id} 的 {height_limit_mm(stage_id):.0f} mm 下，同时通过高度余量与三匝面积筛选的"
+                   f"目录套件只有 {preferred}；旧筛选表按 "
+                   f"{screen['requirements']['converter_max_total_height_mm']:.0f} mm 判定，"
+                   f"所以它给 {preferred} 的 REJECT 理由是高度，不是磁通。")
+    else:
+        finding = (f"在 {stage_id} 的 {height_limit_mm(stage_id):.0f} mm 下，通过两项筛选的套件是 "
+                   f"{'、'.join(both) if both else '无'}，与 policy 指定的首选 {preferred} "
+                   f"{'一致' if preferred in both else '不一致——policy 与筛选表已经分叉'}。")
+    return {
+        "stage": stage_id,
+        "limit_mm": height_limit_mm(stage_id),
+        "preferred": preferred,
+        "rows": rows,
+        "passing_both_screens": both,
+        "superseded_screen_limit_mm": screen["requirements"]["converter_max_total_height_mm"],
+        "b_limit_t": screen["requirements"]["magnetic_b_limit_t"],
+        "screened_on": screen.get("date", "日期未记录"),
+        "finding": finding,
+    }
+
+
+def core_candidate_table(candidates: dict) -> list[str]:
+    """Markdown for the candidate block, emitted under the mechanical section."""
+    lines = [
+        "",
+        f"**磁芯套件候选（{candidates['stage']}，限值 {candidates['limit_mm']:.0f} mm，"
+        f"磁密判据 {candidates['b_limit_t']:.3f} T）：**",
+        "",
+        f"| 套件 | 订货前缀 | Amin mm^2 | 3 匝磁密 T | 面积 | 裸芯最坏 mm | 全叠层最坏 mm | 余量 mm | 高度 "
+        f"| {candidates['screened_on']} 结论 |",
+        "|---|---|---|---|---|---|---|---|---|---|",
+    ]
+    for r in candidates["rows"]:
+        mark = "**首选**" if r["id"] == candidates["preferred"] else ""
+        name = f"{r['core_set']} {mark}".strip()
+        lines.append(
+            f"| {name} | {r['ordering']} | {r['amin_mm2']:.0f} | {r['b3_t']:.5f} | "
+            f"{'过' if r['area_ok'] else '不过'} | {r['core_worst_mm']:.2f} | {r['stack_worst_mm']:.2f} | "
+            f"{r['left_mm']:.2f} | {'过' if r['height_ok'] else '不过'} | {r['screened']} |")
+    lines += ["", candidates["finding"], ""]
+    return lines
+
+
 def inductor() -> dict:
     lr = _json(BOM / "lr_design.json")
     tank = lr["tank"]
     three = next(c for c in lr["candidates"] if c["turns"] == 3)
     al_target_nh = tank["total_target_h"] / three["turns"] ** 2 * 1e9
+    candidates = lr_core_candidates()
+    preferred_row = next(r for r in candidates["rows"] if r["id"] == candidates["preferred"])
+    stack = _json(MAG / "magnetics_design.json")["catalogue_core_stack"]
+    reserve = stack["non_core_reserve_mm"]
+    mag_core = _json(MAG / "magnetics_design.json")["core"]
     return {
         "ref": "Lr",
         "kind": "RESONANT_INDUCTOR",
@@ -220,6 +335,11 @@ def inductor() -> dict:
             row("匝数", three["turns"], "lr_design.json:physical_peaks.min_turns_all", digits=0),
             row("目标 AL", al_target_nh, "= 1.0 uH / 3^2", unit="nH/T^2", digits=2),
             row("气隙（由目标 AL 算）", three["gap_mm"], "lr_design.json:candidates[3 匝].gap_mm", unit="mm", digits=4),
+            row("气隙口径", (f"上面这个气隙来自 {mag_core['name']} 的 AL_ungapped = "
+                            f"{mag_core['AL_ungapped_nH']:.0f} nH、le = {mag_core['le_m']*1e3:.2f} mm；换套件就作废"),
+                "magnetics_design.json:core.AL_ungapped_nH / core.le_m"),
+            row("首选套件气隙", f"{UNKNOWN}（目录摘录没有 ELP38 的 AL_ungapped 与 le）",
+                "lr_tdk_catalog_core_source.json 只有 Amin/Ae/高度"),
             row("饱和电流 Isat", three["isat_a"], "lr_design.json:candidates[3 匝].isat_a", unit="A", digits=1),
             row("气隙公差窗口", UNKNOWN, "需要厂家的 L(I, T) 曲线才能定验收窗口"),
         ],
@@ -255,12 +375,33 @@ def inductor() -> dict:
             row("无原副边隔离", "Lr 是单绕组件，不承担隔离", "磁件设计包"),
         ],
         "mechanical": [
-            row("标准 ELP32 裸芯高度", "9.20 - 9.80 mm（不含 PCB / 焊料 / 铜箔 / 引出端）", "第20章 TDK 原厂尺寸"),
-            row("整机限值", HEIGHT_LIMIT_MM, "D1 首样目标 16 mm；严格 10 mm 是 D3 目标", unit="mm", digits=2),
-            row("结论", "标准 ELP32 装进整机必超 10 mm", "第20章"),
-            row("首选询价结构", "整机叠层（含板、绕组、胶、沉槽）计入 10 mm；裸芯 <= 8-9 mm 作为谈判起点",
+            row("整机限值（D1_100A）", candidates["limit_mm"],
+                "d1_staged_target_policy.json:stages[D1_100A].height_limit_mm", unit="mm", digits=1),
+            row("整机限值（D3_THIN）", height_limit_mm(D3),
+                "d1_staged_target_policy.json:stages[D3_THIN].height_limit_mm", unit="mm", digits=1),
+            row("现行首选套件", candidates["preferred"],
+                "d1_staged_target_policy.json:stages[D1_100A].preferred_magnetic_core"),
+            row("首选套件全叠层最坏高", preferred_row["stack_worst_mm"],
+                "magnetics_design.json:catalogue_core_stack（含胶/标签/沉槽，不含夹子）", unit="mm", digits=2),
+            row("留给 TIM / 冷板 / 紧固件", preferred_row["left_mm"],
+                "magnetics_design.json:catalogue_core_stack", unit="mm", digits=2),
+            row("高度结论", (
+                f"{candidates['preferred']} 在 D1 内余 {preferred_row['left_mm']:.2f} mm，"
+                f"高于 policy 的 {reserve:.1f} mm 非磁芯预留；但 TIM、冷板与紧固件厚度本仓库没有数据，"
+                f"所以这是预算不是签核高度"
+                if preferred_row["height_ok"] else
+                f"{candidates['preferred']} 只剩 {preferred_row['left_mm']:.2f} mm，"
+                f"低于 policy 的 {reserve:.1f} mm 非磁芯预留——首选套件与 policy 已经分叉"),
+                "由上三行算出，不是引文"),
+            row("旧筛选表的口径", (
+                f"2026-11-03 按 {candidates['superseded_screen_limit_mm']:.0f} mm 判定，ELP38 的 REJECT 理由是高度；"
+                f"policy 2026-11-04 把 D1 改为 {candidates['limit_mm']:.0f} mm 后该条不再适用，"
+                f"当时同时通过的磁通筛选（{preferred_row['b3_t']:.5f} T < {candidates['b_limit_t']:.3f} T）仍然成立"),
+                "lr_tdk_catalog_core_screen.json:requirements"),
+            row("首选询价结构", "整机叠层（含板、绕组、胶、沉槽）按 policy 限值核算；裸芯 <= 8-9 mm 作为谈判起点",
                 "第20章（谈判起点，不是设计结论）"),
         ],
+        "core_candidates": candidates,
         "tolerances": [
             row("气隙 / AL 公差", UNKNOWN, "须由厂家给出 L(I, T) 后定义"),
             row("电感验收窗口", UNKNOWN, "同上"),
@@ -271,15 +412,22 @@ def inductor() -> dict:
             row("物理端子图 / 焊盘号", "NOT AVAILABLE —— 独立 Lr 的器件、引脚与机械定义尚未取得", "路线 §P1 磁件"),
         ],
         "open_items": [
-            "三匝 Amin >= 200 mm^2 的定制低矮磁路；标准 ELP32 在 121.52 A 下不满足磁通筛选。",
-            "0 - >=121.52 A、100 °C 的增量电感 L(I) 与直流偏磁曲线。",
+            "ELP38 的 AL_ungapped、le、Ve 与窗口净高：目录摘录只有 Amin/Ae/高度，"
+            "所以目标 AL 对应的中柱气隙现在算不出来——现有气隙是在 ELP32 的 AL 上算的，换套件即作废。",
+            "ELP38 + I 片在目标气隙下、0 - >=121.52 A、100 °C 的增量电感 L(I)；"
+            "验收窗口沿用 1.0 uH ±10 %，即该电流范围内不得跌破 0.9 uH。",
             "外置件与变压器漏感的分配：外置 = 目标总电感 - 实测漏感，首件实测后才定。",
             "独立 Lr 的物理端子、焊盘与机械定义（器件定义目前只有电感/匝数/气隙）。",
             "气隙公差与 AL 验收窗口。",
+            "止损路径：若 ELP38 的气隙窗口或 100 °C L(I) 不成立，才回到定制低矮磁路"
+            "（三匝 Amin >= 200 mm^2）——标准 ELP32 在 121.52 A 下不满足磁通筛选，不能作为退路。",
         ],
         "sources": [
             "design/v3/bom/lr_design.json",
             "design/v3/power_priority/lr_tdk_catalog_core_screen.json",
+            "design/v3/power_priority/lr_tdk_catalog_core_source.json",
+            "design/v3/power_priority/d1_staged_target_policy.json",
+            "design/v3/magnetics/magnetics_design.json (catalogue_core_stack)",
             "docs/D1_EXECUTION_KIT/20_低矮磁件Lr原厂尺寸磁通双约束审核.md",
             "design/v3/pcb/board_netlist.csv",
         ],
@@ -336,7 +484,9 @@ def current_transformer() -> dict:
         ],
         "mechanical": [
             row("高度", UNKNOWN, "ct_design.json 只有 Ae 与 Bsat，没有磁芯型号与机械尺寸"),
-            row("整机限值", HEIGHT_LIMIT_MM, "D3 严格目标", unit="mm", digits=2),
+            row("整机限值（D1_100A）", height_limit_mm(D1),
+                "d1_staged_target_policy.json:stages[D1_100A].height_limit_mm；"
+                f"要同时供 D3 则收紧到 {height_limit_mm(D3):.0f} mm", unit="mm", digits=1),
             row("现行封装", "2 pad —— 无效，必须换成 4 个独立端子", "vendor_terminal_request.json:requirements"),
         ],
         "tolerances": [
@@ -386,6 +536,8 @@ def render(dev: dict) -> str:
             for item in dev[key]:
                 lines.append(f"| {item['label']} | {_fmt(item)} | {item['source']} |")
         lines.append("")
+        if key == "mechanical" and dev.get("core_candidates"):
+            lines += core_candidate_table(dev["core_candidates"])
     lines += ["## 11. 未决项（本仓库没有数据，或需要决定）", ""]
     lines += [f"{i}. {item}" for i, item in enumerate(dev["open_items"], start=1)]
     lines += ["", "## 12. 出处", ""]

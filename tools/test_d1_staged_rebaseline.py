@@ -1,5 +1,4 @@
 """A staged target does not waive protection, 24 physical magnetic pins or real SOA."""
-from copy import deepcopy
 import json
 import pytest
 import d1_staged_rebaseline as m
@@ -88,7 +87,6 @@ def test_legacy_10mm_criteria_remain_reference():
 
 def test_supplier_16mm_rfq_is_specific_and_not_fab_approved():
     import csv
-    from pathlib import Path
     path=m.ROOT/"docs/D1_EXECUTION_KIT/templates/staged_magnetics_16mm_rfq.csv"
     with path.open(encoding="utf-8",newline="") as f:
         rows=list(csv.DictReader(f))
@@ -99,6 +97,34 @@ def test_supplier_16mm_rfq_is_specific_and_not_fab_approved():
     assert float(rows[1]["core_plus_plate_max_mm"])==13.90
     assert all(row["release_status"]=="NOT_FOR_FAB" for row in rows)
     assert all("24" in row["physical_terminal_mapping"] for row in rows)
+
+def test_the_elp38_budget_now_carries_the_full_stack_and_still_refuses_to_approve():
+    """The 2026-11-03 entry said "core plus plate only, not a full stack".  The
+    glue, label and pocket are now counted, so the entry must say what changed
+    -- and the answer is 3.51 mm, not the 3.65 mm the bare core leaves."""
+    r=m.evaluate()
+    b=r["elp38_full_stack_budget"]
+    assert b["core_plus_plate_worst_mm"]==pytest.approx(12.35,abs=1e-9)
+    assert b["known_non_core_mm"]==pytest.approx(0.14,abs=1e-9)
+    assert b["full_stack_worst_mm"]==pytest.approx(12.49,abs=1e-9)
+    assert b["left_for_tim_cold_plate_fasteners_mm"]==pytest.approx(3.51,abs=1e-9)
+    assert b["left_for_tim_cold_plate_fasteners_mm"]<next(
+        x["remaining_16mm_for_ALL_other_layers_mm"] for x in r["elp_core_candidates"]
+        if x["core_id"]=="ELP38_I38")
+    assert b["clears_reserve"] and b["reserve_mm"]==pytest.approx(2.0)
+    assert "NOT_A_FULL_STACK" not in r["elp38_initial_16mm_feasibility"]
+    for item in ("TIM","cold plate","100 C L(I)"):
+        assert item in " ".join(b["still_unknown"])
+    assert not r["fabrication_approved"]
+
+
+def test_a_bare_height_that_disagrees_between_the_two_packages_is_refused():
+    mag=json.loads(m.MODELED_100.read_text(encoding="utf-8"))
+    row=next(r for r in mag["catalogue_core_stack"]["cores"] if r["id"]=="ELP38_I38")
+    row["core_pack_worst_mm"]+=0.3
+    with pytest.raises(ValueError,match="disagree on the preferred core"):
+        m.evaluate(mag=mag)
+
 
 def test_first_article_sequence_does_not_skip_protection_and_safe_current_ramp():
     import csv
