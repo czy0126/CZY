@@ -2,9 +2,11 @@
 
 `connector_budget.py` sizes the busbar and the bolted joints *off* the board.
 This tool covers the part between the SR drains and the busbar -- the plane --
-which none of the existing tools looked at, and which the placement study makes
-awkward: the four SR groups sit at x = 14..145 mm while the 80 mm busbar covers
-x = 60..140 mm.  Group 1 has no busbar above it at all.
+which none of the existing tools looked at.  The four SR groups sit at
+x = 19/57/95/133 mm and the 80 mm busbar is centred on that row, so it covers
+x = 36..116 mm: groups 2 and 3 are directly underneath, groups 1 and 4 are 17 mm
+outside.  That offset is a placement decision (see ``main_board_mechanical``);
+this tool measures what it costs.
 
 The model is sheet resistance:
 
@@ -30,6 +32,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import connector_budget as cb  # noqa: E402
 import main_board_mechanical as mbm  # noqa: E402
 
 COPPER_RHO_20 = 1.724e-8      # ohm*m, annealed copper
@@ -67,6 +70,20 @@ def _geometry() -> dict:
             "refs": [p["ref"] for p in members],
         })
     return {"groups": groups, "parts": parts, "report": report}
+
+
+def _busbar_ohm(bar: dict, temp_c: float = T_C) -> float:
+    """Resistance of the bar *as placed*, in ``connector_budget``'s cross-section.
+
+    The length comes from the footprint (``w_mm``, the bar's long axis), not from
+    ``connector_budget.BUS_LENGTH_M``.  Reading the constant made the remedy
+    table charge an 80 mm bar for a 134 mm footprint, so the "widen it" option
+    looked about 0.03 mohm better than it can be -- the extra bar has to carry
+    current too.  ``connector_budget`` still owns width, thickness and the
+    temperature basis; only the geometry moves with the layout.
+    """
+    return cb.busbar_resistance(bar["w_mm"] * 1e-3, cb.BUS_WIDTH_M,
+                                cb.BUS_THICKNESS_M, temp_c)
 
 
 def _neck_mm(x_mm: float, bar: dict) -> float:
@@ -149,8 +166,7 @@ def budget(thickness_m: float = 2 * OZ_M, temp_c: float = T_C) -> dict:
     plane_r = sum(row["r_mohm"] for row in rows) * 1e-3 / 16.0
     r_sq = sheet_ohm_square(thickness_m, temp_c)
 
-    import connector_budget as cb
-    bar = cb.busbar_resistance(cb.BUS_LENGTH_M, cb.BUS_WIDTH_M, cb.BUS_THICKNESS_M, temp_c)
+    bar = _busbar_ohm(geom["parts"]["J_OUT"], temp_c)
     joints = cb.CONTACTS_PER_PATH * cb.CONTACT_OHM_PLACEHOLDER
     total_r = plane_r + bar + joints
 
@@ -224,26 +240,33 @@ def remedy(thickness_m: float, temp_c: float = T_C) -> dict:
     wide_mm = span_mm + 20.0
     wide_bar = dict(bar, x_mm=(min(xs) + max(xs)) / 2.0, w_mm=wide_mm)
 
-    def worst_for(thick_m: float, b: dict | None) -> float:
-        return max(r["r_mohm"] for r in per_group(geom, thick_m, temp_c, b))
-
-    import connector_budget as cb
-    fixed = (cb.busbar_resistance(cb.BUS_LENGTH_M, cb.BUS_WIDTH_M, cb.BUS_THICKNESS_M, temp_c)
-             + cb.CONTACTS_PER_PATH * cb.CONTACT_OHM_PLACEHOLDER)
+    joints = cb.CONTACTS_PER_PATH * cb.CONTACT_OHM_PLACEHOLDER
+    joint_placeholder_ohm = cb.CONTACT_OHM_PLACEHOLDER
     options = []
     for oz in (2, 4):
-        for name, b in (("现状（80 mm，居中于板）", None),
+        for name, b in (("现状（80 mm，居中于四组中心）", bar),
                         (f"加宽到 {wide_mm:.0f} mm 覆盖四组", wide_bar)):
             rows = per_group(geom, oz * OZ_M, temp_c, b)
             worst = max(r["r_mohm"] for r in rows) * 1e-3
             plane_eq = sum(r["r_mohm"] for r in rows) * 1e-3 / 16.0
+            # The bar's own length is part of the option, not a constant: a
+            # 134 mm bar carries current over 134 mm whatever the plane does.
+            r_bar = _busbar_ohm(b, temp_c)
+            # Widening is not free.  It is paid for out of the per-joint budget
+            # `connector_budget.joint_limit()` publishes as the first-article
+            # acceptance number, so each option quotes what it would still allow.
+            limit = cb.joint_limit(length_m=b["w_mm"] * 1e-3)["per_joint_ohm"]
             options.append({
                 "copper_oz": oz, "busbar": name,
+                "busbar_length_mm": round(b["w_mm"], 1),
+                "busbar_mohm": round(r_bar * 1e3, 3),
                 "worst_group_mohm": round(worst * 1e3, 3),
                 "spread_ratio": round(
                     max(r["r_mohm"] for r in rows) / min(r["r_mohm"] for r in rows), 2),
-                "path_total_mohm": round((plane_eq + fixed) * 1e3, 3),
-                "feasible_on_design_basis": plane_eq + fixed <= DESIGN_BASIS_OHM,
+                "path_total_mohm": round((plane_eq + r_bar + joints) * 1e3, 3),
+                "joint_limit_ohm": round(limit, 9),
+                "the_50_uohm_placeholder_still_fits": joint_placeholder_ohm <= limit,
+                "feasible_on_design_basis": plane_eq + r_bar + joints <= DESIGN_BASIS_OHM,
             })
     return {
         "groups_outside_the_busbar": outside,
@@ -252,7 +275,8 @@ def remedy(thickness_m: float, temp_c: float = T_C) -> dict:
         "busbar_widening_needed_mm": round(wide_mm - bar["w_mm"], 1),
         "options": options,
         "note": "path_total = ΣR_group/16 + R_bar + R_joint，假设每组等分 25 A。"
-                "加宽铜排有利于减小路径不均衡；接点仍按未经实测的 2×50 µΩ。"
+                "每个选项按自己的铜排长度计 R_bar（加宽不是免费的：多出的 54 mm 也要导电），"
+                "并列出它给接点留下的四线法上限。接点仍按未经实测的 2×50 µΩ。"
                 "这不是几何不可能性证明：均流与电阻需 PCB 提取和实测。",
     }
 

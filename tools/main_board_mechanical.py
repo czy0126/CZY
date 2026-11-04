@@ -104,6 +104,16 @@ def _load(rel: str) -> dict:
 # disagree and there would be no way to say which one the board believed.
 BANK_PREFIX = "Cout"
 
+# Row 3's two FETs per transformer start here; SR{i}A sits at x0 and SR{i}B at
+# x0 + SR_PAIR_MM, so each group's centre is x0 + SR_PAIR_MM / 2.  The busbar
+# reads the same tuple: it used to sit at x = 100, which was centre-ish for an
+# 80 mm bar but put group 1 41 mm outside it and group 3/4 underneath.  Placing
+# it on the centre of the row it serves is what makes the two outer groups pay
+# the same, and it costs no copper.
+SR_X0 = (14.0, 52.0, 90.0, 128.0)
+SR_PAIR_MM = 10.0
+SR_ROW_Y = 82.0
+
 
 def review_rows() -> list[dict]:
     with REVIEW.open(encoding="utf-8", newline="") as f:
@@ -190,6 +200,16 @@ def _bar() -> dict:
     return _load("bom/connector_budget.json")["output"]["bar"]
 
 
+def _sr_row_centre() -> float:
+    """Mean centre of the four SR groups.
+
+    Derived from ``SR_X0`` rather than written as 76.0 so that moving a group
+    moves the busbar with it -- the two are one decision, and a literal here
+    would silently reintroduce the offset this function exists to remove.
+    """
+    return sum(x0 + SR_PAIR_MM / 2.0 for x0 in SR_X0) / len(SR_X0)
+
+
 def parts() -> tuple[Part, ...]:
     """The placement table.  Order is the reading order of the board, top to
     bottom, and every coordinate is the part *centre* in mm from the top-left."""
@@ -236,11 +256,11 @@ def parts() -> tuple[Part, ...]:
     # Row 3 -- the eight SR FETs, two per transformer, directly under their own
     # secondary.  Each pair spans one transformer's width so the secondary loop
     # stays local.
-    for i, x0 in enumerate((14.0, 52.0, 90.0, 128.0), start=1):
-        out.append(Part(f"SR{i}A", "BSC010N04LS6", 7.36, 5.64, 1.0, x0, 82.0,
+    for i, x0 in enumerate(SR_X0, start=1):
+        out.append(Part(f"SR{i}A", "BSC010N04LS6", 7.36, 5.64, 1.0, x0, SR_ROW_Y,
                         "kicad-library", tds))
-        out.append(Part(f"SR{i}B", "BSC010N04LS6", 7.36, 5.64, 1.0, x0 + 10.0, 82.0,
-                        "kicad-library", tds))
+        out.append(Part(f"SR{i}B", "BSC010N04LS6", 7.36, 5.64, 1.0, x0 + SR_PAIR_MM,
+                        SR_ROW_Y, "kicad-library", tds))
     # Row 4 -- the output bank, one row between the SRs and the busbar.  The
     # refs are Cout1..Cout15, *not* C100..: the schematic already spends
     # C101-C112 on the twelve IC decoupling capacitors, so reusing those names
@@ -253,8 +273,12 @@ def parts() -> tuple[Part, ...]:
                         note="height from cout_bank.json; case size assumed; "
                              "the schematic models this whole bank as one lumped Cout"))
     # Row 5 -- the output busbar, last so the 100 A leaves at the board edge.
+    # Centred on the SR row it collects from: `output_path_budget.py` measures
+    # each group's sideways run to the nearest bar edge, so the bar's x is a
+    # design parameter, not a leftover.  At x = 100 group 1 had to travel 41 mm
+    # (3.67 squares, 1.19 mohm) while groups 3 and 4 sat underneath it.
     out.append(Part("J_OUT", "20x2 mm bar", bar["length_mm"], bar["width_mm"],
-                    bar["thickness_mm"], 100.0, 116.0, "generated-json",
+                    bar["thickness_mm"], _sr_row_centre(), 116.0, "generated-json",
                     "dcx:Busbar_20x2",
                     note="contact resistance UNVERIFIED; four-wire at first article"))
     return tuple(out)
