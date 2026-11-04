@@ -95,6 +95,7 @@ def test_mutating_the_saved_polarity_report_to_reverse_a_secondary_is_caught():
 
 def test_a_cached_dot_report_cannot_hide_a_reversed_live_spice_inductor(monkeypatch):
     pol = json.loads(mc.POLARITY.read_text(encoding="utf-8"))
+    refs = _frozen_refs()
     original_live = mc.spice_board.winding_layout
     live = original_live()
     corrupted = copy.deepcopy(live)
