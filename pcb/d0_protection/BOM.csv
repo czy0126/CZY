@@ -45,16 +45,16 @@ U3,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,
 U3,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R14,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R15,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-U4,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,36 V,rail-good: output high only while the divider exceeds 2.5 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U4,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,36 V,rail-good: output high only while the divider exceeds 1.000 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U4,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U4,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R16,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R17,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R20,100k,Resistor_SMD:R_0603_1608Metric,,UVLO divider: trip at 7.82 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R21,47k,Resistor_SMD:R_0603_1608Metric,,2.5 V * 147/47 = 7.82 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R20,100k,Resistor_SMD:R_0603_1608Metric,,"UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R21,14.7k,Resistor_SMD:R_0603_1608Metric,,1.000 V * 114.7/14.7 = 7.80 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C14,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,divider bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R22,100k,Resistor_SMD:R_0603_1608Metric,,UVLO divider: trip at 7.82 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R23,47k,Resistor_SMD:R_0603_1608Metric,,divider bottom,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R22,100k,Resistor_SMD:R_0603_1608Metric,,"UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R23,14.7k,Resistor_SMD:R_0603_1608Metric,,"divider bottom, 1.000 V * 114.7/14.7",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C15,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,divider bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U5,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,36 V,V5_OK is also comparator_bias_good; U5B watches the gate sum,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U5,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -97,7 +97,7 @@ U8,CD4081BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,RST_EFF also ANDs LATCHED: the model's reset_valid term,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,edge detect: ACK_RISE high only while the RC lags the press,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,"ACK_ARM: the low level is observed while READY, exactly the model's fresh_release term (a release edge alone is not enough)",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U10,CD4071BE,Package_DIP:DIP-14_W7.62mm,,fault = hard trip OR armed fast trip OR any supervisor down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U10,CD4071BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -112,7 +112,7 @@ U11,CD4069UBE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U11,CD4069UBE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U11,CD4069UBE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U12,CD4013BE,Package_DIP:DIP-14_W7.62mm,,"FF1: SET=FLT, RESET=RST_EFF, clock static; ~Q is the permit term",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-U12,CD4013BE,Package_DIP:DIP-14_W7.62mm,,FF2: samples READY on each ACK falling edge,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U12,CD4013BE,Package_DIP:DIP-14_W7.62mm,,"FF2: set-dominant level latch, not an edge sampler; SET=ACK_ARM, RESET=any fault or lost READY, clock and D tied off",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U12,CD4013BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U13,HEF4093BT,Package_DIP:DIP-14_W7.62mm,,Schmitt on the RC node: the delayed copy for edge detection,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U13,HEF4093BT,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -122,7 +122,7 @@ U13,HEF4093BT,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R33,10k,Resistor_SMD:R_0603_1608Metric,,Q1 base resistor,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 Q1,MMBT3904,Package_TO_SOT_SMD:SOT-23,40 V,opens PDRV only while PERMIT is high,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R34,100k,Resistor_SMD:R_0603_1608Metric,,PDRV pull-up: default high = PMOS off,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-Q2,BSS84,Package_TO_SOT_SMD:SOT-23,50 V,high-side PMOS; gate high = off,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+Q2,BSS84,Package_TO_SOT_SMD:SOT-23,50 V,"high-side PMOS: pin 2 is the source, so source=V5 and drain=rail keep the body diode reverse-biased while off",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R35,100k,Resistor_SMD:R_0603_1608Metric,,defines the rail low whenever the PMOS is off,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U14,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R36,4.7k,Resistor_SMD:R_0603_1608Metric,,U14 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -156,42 +156,44 @@ R47,2.2R,Resistor_SMD:R_0603_1608Metric,,primary low-side gate resistor,,DESIGN_
 R48,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R56,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C32,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R66,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R66,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R49,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R57,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C33,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R67,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R67,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R50,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R58,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C34,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R68,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R68,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R51,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R59,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C35,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R69,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R69,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R52,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R60,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C36,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R70,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R70,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R53,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R61,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C37,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R71,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R71,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R54,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R62,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C38,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R72,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R72,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R55,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R63,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C39,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
-R73,10k,Resistor_SMD:R_0603_1608Metric,,gate-sum: one gate at 10 V gives 0.909 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R73,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R64,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C40,4nF,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = 4 nF,,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:Cgh,1
 R74,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R65,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C41,4nF,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = 4 nF,,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:Cgh,1
 R75,10k,Resistor_SMD:R_0603_1608Metric,,"gate-sum, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-R76,1k,Resistor_SMD:R_0603_1608Metric,,gate-sum load: 1k/(10k+1k) = 0.0909 per gate,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R76,1k,Resistor_SMD:R_0603_1608Metric,,"gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other nine branches load the node too",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R77,10k,Resistor_SMD:R_0603_1608Metric,,"series into the comparator: all ten gates at 10 V put GSUM at 5 V, above the LM393's VCC-1.5 V common-mode limit",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D9,BZX84C3V0,Package_TO_SOT_SMD:SOT-23,,clamps the sum at 3.0 V so ANY_ON never reads a gate state from an input outside the comparator's common-mode range,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 J4,TG_HI/TG_LO/TG_SR,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm,,bench gate drive; all eight SR channels share TG_SR as in the deck,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP1,V12P,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP2,V12S,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1

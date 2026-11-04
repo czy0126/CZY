@@ -29,6 +29,8 @@ import itertools
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import make_d0_protection_board as board  # noqa: E402
@@ -249,9 +251,17 @@ def test_the_two_flip_flops_are_wired_as_set_dominant_latches():
     assert ff1.nets[FF_PINS[1]["CLK"]] == "PGND"
     ff2 = units()[("U12", 2)]
     assert ff2.nets[FF_PINS[2]["RST"]] == "FF2_RESET"
-    assert ff2.nets[FF_PINS[2]["SET"]] == "PGND"
-    assert ff2.nets[FF_PINS[2]["D"]] == "READY"
-    assert ff2.nets[FF_PINS[2]["CLK"]] == "ACK_N"
+    assert ff2.nets[FF_PINS[2]["SET"]] == "ACK_ARM"
+    assert ff2.nets[FF_PINS[2]["Q"]] == "ACK_LOW_OK"
+    # Clock and D tied off: an edge sampler on ACK_N only armed the token on the
+    # *release*, so the first press after power-up was swallowed.
+    assert ff2.nets[FF_PINS[2]["D"]] == "PGND"
+    assert ff2.nets[FF_PINS[2]["CLK"]] == "PGND"
+    # ACK_ARM is a gate output, not a strap: the low level must be observed
+    # while READY, which is the reference's fresh_release term.
+    arm = units()[("U9", 4)]
+    assert arm.nets["11"] == "ACK_ARM"
+    assert {arm.nets["12"], arm.nets["13"]} == {"READY", "ACK_N"}
 
 
 # ------------------------------------------- the table vs the python mirror
@@ -358,12 +368,38 @@ def test_a_held_high_ack_is_not_a_rising_edge():
             assert step_from_env(env)["latched_next"] is True
 
 
-def test_the_token_only_survives_while_the_rail_is_good():
-    for ff2_reset, ack_low_ok, ready in itertools.product((False, True), repeat=3):
-        token = board.token_after_edge(ff2_reset=ff2_reset,
-                                       ack_low_ok=ack_low_ok, ready=ready)
-        if ff2_reset:
-            assert token is False
+def test_the_token_is_a_set_dominant_level_latch():
+    """ACK_ARM = READY and not ACK_RAW sets it, any fault or lost READY clears
+    it, and SET wins -- the CD4013's behaviour, not an edge sampler's."""
+    for ff2_reset, ready, ack_raw, token in itertools.product((False, True), repeat=4):
+        nxt = board.token_next(ff2_reset=ff2_reset, ready=ready,
+                               ack_raw=ack_raw, token=token)
+        assert nxt == ((ready and not ack_raw) or (token and not ff2_reset))
+        if ff2_reset and not (ready and not ack_raw):
+            assert nxt is False
+
+
+def test_the_first_press_after_power_up_clears_the_latch():
+    """End to end: healthy with the button idle-low arms the token with no press
+    at all, so the *first* press is the one that releases the latch.  An edge
+    sampler armed on the release needed press-release-press."""
+    env = dict(CONSTANTS)
+    env.update(dict.fromkeys(free_inputs(), False))
+    env.update({"V12P_OK": True, "V12S_OK": True, "V5_OK": True, "CT_OK": True,
+                "SS_READY": True, "OPERATOR_RUN": True, "POR_RC": True,
+                "LATCHED": True, "LATCHED_N": False, "ACK_LOW_OK": False,
+                "ACK_RAW": False, "ACK_RC": False})
+    step = step_from_env(env)
+    assert step["ready"] is True
+    token = board.token_next(ff2_reset=not step["ready"], ready=step["ready"],
+                             ack_raw=env["ACK_RAW"], token=False)
+    assert token is True, "the ACK-low level while READY must arm the token"
+    # The operator presses: ACK_RAW is high while the 1 ms RC still reads low.
+    env.update({"ACK_LOW_OK": token, "ACK_RAW": True, "ACK_RC": False})
+    step = step_from_env(env)
+    assert step["ack_rise"] is True
+    assert step["rst_eff"] is True
+    assert step["latched_next"] is False
 
 
 # ------------------------------------------------------ board-level features
@@ -406,6 +442,64 @@ def test_every_driver_enable_is_pulled_down_to_the_default_off_rail():
             assert part.nets == {"1": "PERMIT_RAIL", "2": "PGND"}, ref_
         unit = next(p for p in parts if p.ref == driver and p.unit == 1)
         assert unit.nets["1"] == "PERMIT_RAIL" and unit.nets["8"] == "PERMIT_RAIL"
+
+
+def test_the_permit_transistor_is_oriented_so_the_rail_follows_permit():
+    """Q2's source is pin 2 of Q_PMOS_GSD.  Source on V5 and drain on the rail
+    keeps the body diode reverse-biased while the gate is high.  With the pins
+    swapped the diode conducts V5 -> PERMIT_RAIL, R35 only sets a level, and the
+    ten drivers stay enabled at POR: the opposite of default-off."""
+    q2 = next(p for p in board.parts() if p.ref == "Q2")
+    assert q2.lib == "Transistor_FET:Q_PMOS_GSD"
+    assert q2.nets == {"1": "PCOLL", "2": "V5", "3": "PERMIT_RAIL"}
+    r35 = next(p for p in board.parts() if p.ref == "R35")
+    assert r35.nets == {"1": "PERMIT_RAIL", "2": "PGND"}
+
+
+def test_the_gate_sum_numbers_are_computed_not_guessed():
+    """Ten 10k into a 1k load: the other nine branches load the node too, so one
+    gate at 10 V gives 0.500 V -- not the 1k/(10k+1k) = 0.909 V first written."""
+    assert board.gate_sum_per_gate(drivers_low=True) == pytest.approx(0.0500, abs=1e-4)
+    assert board.gate_sum_per_gate(drivers_low=False) == pytest.approx(0.0645, abs=1e-4)
+    threshold = board.divider_output("R6", "R7")
+    assert threshold == pytest.approx(0.200, abs=1e-3)
+    assert threshold / board.gate_sum_per_gate(drivers_low=True) == pytest.approx(4.00, abs=0.02)
+    assert threshold / board.gate_sum_per_gate(drivers_low=False) == pytest.approx(3.10, abs=0.02)
+
+
+def test_the_gate_sum_cannot_leave_the_comparator_common_mode_range():
+    """All ten gates high put the raw sum at 5 V, above the LM393's VCC-1.5 V =
+    3.5 V.  Out of range the output is undefined, and if it reads low then
+    ANY_ON is false -- 'all off' while every gate is driven."""
+    parts = board.parts()
+    r77 = next(p for p in parts if p.ref == "R77")
+    d9 = next(p for p in parts if p.ref == "D9")
+    assert r77.nets == {"1": "GSUM", "2": "GSUM_SNS"}
+    assert d9.nets == {"1": "GSUM_SNS", "2": "PGND"}  # zener cathode at the input
+    assert d9.value == "BZX84C3V0"
+    u5 = next(p for p in parts if p.ref == "U5" and p.unit == 2)
+    assert u5.nets["5"] == "GSUM_SNS"
+    r_sum = board.resistance(board.part_value("R66"))
+    r_load = board.resistance(board.part_value("R76"))
+    raw_all_on = 10 * (r_sum / 10) / (r_sum / 10 + r_load)
+    assert raw_all_on == pytest.approx(5.0, abs=0.01)
+    assert raw_all_on > 5.0 - 1.5, "the clamp only matters because the raw sum leaves the range"
+
+
+def test_the_rail_good_dividers_stay_inside_the_comparator_common_mode_range():
+    """LM393 inputs are specified 0 to VCC-1.5 = 3.5 V at V5 = 5 V.  A divider
+    that reaches the 2.5 V reference at 12 V sits at 3.84 V there -- above the
+    limit -- so the trip is based on the 1.000 V reference instead."""
+    assert board.rail_good_node(12.0) == pytest.approx(1.54, abs=0.01)
+    assert board.rail_good_node(11.5) < 3.5
+    assert board.rail_good_node(12.0) < 3.5
+    assert board.rail_good_trip() == pytest.approx(7.80, abs=0.02)
+    parts = board.parts()
+    for ref_ in ("R20", "R21", "R22", "R23"):
+        assert next(p for p in parts if p.ref == ref_).value in ("100k", "14.7k")
+    u4 = {p.unit: p for p in parts if p.ref == "U4"}
+    assert u4[1].nets["2"] == "REF_1V0"
+    assert u4[2].nets["6"] == "REF_1V0"
 
 
 def test_the_always_on_strap_is_dnp():

@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\d0_protection\\d0_protection.kicad_sch")
-		(date "2026-11-04T21:48:17")
+		(date "2026-11-04T22:32:14")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -2701,6 +2701,60 @@
 			)
 		)
 		(comp
+			(ref "D9")
+			(value "BZX84C3V0")
+			(footprint "Package_TO_SOT_SMD:SOT-23")
+			(description "clamps the sum at 3.0 V so ANY_ON never reads a gate state from an input outside the comparator's common-mode range")
+			(fields
+				(field
+					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "clamps the sum at 3.0 V so ANY_ON never reads a gate state from an input outside the comparator's common-mode range")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Zener")
+				(description "Zener diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d3848132-74d1-5e11-9a92-d65cbaf091f5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
 			(ref "F1")
 			(value "0.5A")
 			(footprint "Fuse:Fuse_1206_3216Metric")
@@ -3357,7 +3411,7 @@
 			(ref "Q2")
 			(value "BSS84")
 			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "high-side PMOS; gate high = off")
+			(description "high-side PMOS: pin 2 is the source, so source=V5 and drain=rail keep the body diode reverse-biased while off")
 			(fields
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
@@ -3365,7 +3419,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "high-side PMOS; gate high = off")
+					(name "Description") "high-side PMOS: pin 2 is the source, so source=V5 and drain=rail keep the body diode reverse-biased while off")
 			)
 			(libsource
 				(lib "Transistor_FET")
@@ -4436,7 +4490,7 @@
 			(ref "R20")
 			(value "100k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "UVLO divider: trip at 7.82 V")
+			(description "UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -4444,7 +4498,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "UVLO divider: trip at 7.82 V")
+					(name "Description") "UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)")
 			)
 			(libsource
 				(lib "Device")
@@ -4488,9 +4542,9 @@
 		)
 		(comp
 			(ref "R21")
-			(value "47k")
+			(value "14.7k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "2.5 V * 147/47 = 7.82 V")
+			(description "1.000 V * 114.7/14.7 = 7.80 V")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -4498,7 +4552,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "2.5 V * 147/47 = 7.82 V")
+					(name "Description") "1.000 V * 114.7/14.7 = 7.80 V")
 			)
 			(libsource
 				(lib "Device")
@@ -4544,7 +4598,7 @@
 			(ref "R22")
 			(value "100k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "UVLO divider: trip at 7.82 V")
+			(description "UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -4552,7 +4606,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "UVLO divider: trip at 7.82 V")
+					(name "Description") "UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)")
 			)
 			(libsource
 				(lib "Device")
@@ -4596,9 +4650,9 @@
 		)
 		(comp
 			(ref "R23")
-			(value "47k")
+			(value "14.7k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "divider bottom")
+			(description "divider bottom, 1.000 V * 114.7/14.7")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -4606,7 +4660,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "divider bottom")
+					(name "Description") "divider bottom, 1.000 V * 114.7/14.7")
 			)
 			(libsource
 				(lib "Device")
@@ -6923,7 +6977,7 @@
 			(ref "R66")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -6931,7 +6985,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -6977,7 +7031,7 @@
 			(ref "R67")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -6985,7 +7039,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7031,7 +7085,7 @@
 			(ref "R68")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7039,7 +7093,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7085,7 +7139,7 @@
 			(ref "R69")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7093,7 +7147,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7139,7 +7193,7 @@
 			(ref "R70")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7147,7 +7201,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7193,7 +7247,7 @@
 			(ref "R71")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7201,7 +7255,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7247,7 +7301,7 @@
 			(ref "R72")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7255,7 +7309,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7301,7 +7355,7 @@
 			(ref "R73")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum: one gate at 10 V gives 0.909 V")
+			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7309,7 +7363,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum: one gate at 10 V gives 0.909 V")
+					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
 			)
 			(libsource
 				(lib "Device")
@@ -7463,7 +7517,7 @@
 			(ref "R76")
 			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum load: 1k/(10k+1k) = 0.0909 per gate")
+			(description "gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other nine branches load the node too")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7471,7 +7525,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum load: 1k/(10k+1k) = 0.0909 per gate")
+					(name "Description") "gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other nine branches load the node too")
 			)
 			(libsource
 				(lib "Device")
@@ -7499,6 +7553,60 @@
 				(tstamps "/")
 			)
 			(tstamps "f1150bc3-2842-5202-ae5b-63e7b818cdd7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R77")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(description "series into the comparator: all ten gates at 10 V put GSUM at 5 V, above the LM393's VCC-1.5 V common-mode limit")
+			(fields
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "series into the comparator: all ten gates at 10 V put GSUM at 5 V, above the LM393's VCC-1.5 V common-mode limit")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "506b2ed8-1073-5f67-b2da-793828c089a9")
 			(units
 				(unit
 					(name "A")
@@ -8633,7 +8741,7 @@
 			(ref "U4")
 			(value "LM393")
 			(footprint "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
-			(description "rail-good: output high only while the divider exceeds 2.5 V")
+			(description "rail-good: output high only while the divider exceeds 1.000 V")
 			(fields
 				(field
 					(name "Footprint") "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
@@ -8641,7 +8749,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "rail-good: output high only while the divider exceeds 2.5 V")
+					(name "Description") "rail-good: output high only while the divider exceeds 1.000 V")
 			)
 			(libsource
 				(lib "Comparator")
@@ -9062,8 +9170,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "587549f9-34aa-583b-bbf6-35d888eaa831" "ccc668c9-68eb-5393-b561-d3210c5f4066"
-				"b25a06ff-8643-5e2e-94f8-0d7cabd779e8" "be743360-9b37-5e8b-a2dd-828c30b6a4ad"
+			(tstamps "ccc668c9-68eb-5393-b561-d3210c5f4066" "be743360-9b37-5e8b-a2dd-828c30b6a4ad"
+				"b25a06ff-8643-5e2e-94f8-0d7cabd779e8" "587549f9-34aa-583b-bbf6-35d888eaa831"
 				"3da08ae2-abfa-5a97-85ca-e65908440ee2"
 			)
 			(units
@@ -9175,7 +9283,7 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "447490eb-35b4-530c-a661-47a4e87b2d51" "aa1da750-20b9-5d25-856b-c70491f41c88"
+			(tstamps "aa1da750-20b9-5d25-856b-c70491f41c88" "447490eb-35b4-530c-a661-47a4e87b2d51"
 				"dc729988-3054-5509-99c8-b83443a13162" "8fa430fa-296f-5058-ab90-8596efd40eee"
 				"1b887ba5-b332-5dbd-874c-99a779c949cf"
 			)
@@ -9288,8 +9396,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "e7eae156-61e3-5de8-b486-6ef878b64ac6" "cf5fee76-b016-5c3c-b8c6-7fbd767e0c1d"
-				"a3a6cb01-d8b4-5be5-a96f-6b9fd8f65f94" "6c47f4d8-7a33-5753-bdaf-7fda380e6362"
+			(tstamps "a3a6cb01-d8b4-5be5-a96f-6b9fd8f65f94" "e7eae156-61e3-5de8-b486-6ef878b64ac6"
+				"6c47f4d8-7a33-5753-bdaf-7fda380e6362" "cf5fee76-b016-5c3c-b8c6-7fbd767e0c1d"
 				"4e98c779-d8a7-5de3-beab-ec7c2d3bb8c1"
 			)
 			(units
@@ -9401,8 +9509,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "7941e115-8983-53f6-b72d-c72368241da0" "c7ede7ec-976f-54ae-8e13-448670b28487"
-				"f59c518e-260d-5ce0-9ea6-3dc63f39248c" "3f9eff89-e889-5745-b872-a8a5043e62cb"
+			(tstamps "f59c518e-260d-5ce0-9ea6-3dc63f39248c" "7941e115-8983-53f6-b72d-c72368241da0"
+				"c7ede7ec-976f-54ae-8e13-448670b28487" "3f9eff89-e889-5745-b872-a8a5043e62cb"
 				"7ace20c9-34eb-5b57-9f4c-86279e7f5d7e" "d2e4e4a3-53de-512d-b62a-d909be32876e"
 				"2d87b759-fa79-5bfd-9958-0a7488ee0c95"
 			)
@@ -9490,7 +9598,7 @@
 			(ref "U12")
 			(value "CD4013BE")
 			(footprint "Package_DIP:DIP-14_W7.62mm")
-			(description "FF2: samples READY on each ACK falling edge")
+			(description "FF2: set-dominant level latch, not an edge sampler; SET=ACK_ARM, RESET=any fault or lost READY, clock and D tied off")
 			(fields
 				(field
 					(name "Footprint") "Package_DIP:DIP-14_W7.62mm")
@@ -9498,7 +9606,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "FF2: samples READY on each ACK falling edge")
+					(name "Description") "FF2: set-dominant level latch, not an edge sampler; SET=ACK_ARM, RESET=any fault or lost READY, clock and D tied off")
 			)
 			(libsource
 				(lib "4xxx")
@@ -9627,8 +9735,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "ba80ca73-f0a2-5244-bbb6-96ee774c8b8a" "5fe90ea4-ee60-52c7-8d36-22bd3726d6c4"
-				"832e2304-ccd9-5f78-91a6-c7c12c58aa42" "d672dce1-5077-5188-9aee-f231d68a0c85"
+			(tstamps "5fe90ea4-ee60-52c7-8d36-22bd3726d6c4" "832e2304-ccd9-5f78-91a6-c7c12c58aa42"
+				"d672dce1-5077-5188-9aee-f231d68a0c85" "ba80ca73-f0a2-5244-bbb6-96ee774c8b8a"
 				"07c93dcd-b24f-53e4-b890-3acd0c442f15"
 			)
 			(units
@@ -10792,6 +10900,43 @@
 		)
 		(libpart
 			(lib "Device")
+			(part "D_Zener")
+			(description "Zener diode")
+			(footprints
+				(fp "TO-???*")
+				(fp "*_Diode_*")
+				(fp "*SingleDiode*")
+				(fp "D_*")
+			)
+			(fields
+				(field
+					(name "Reference") "D")
+				(field
+					(name "Value") "D_Zener")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Zener diode")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "K")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "A")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
 			(part "Fuse")
 			(description "Fuse")
 			(footprints
@@ -11198,6 +11343,22 @@
 	(nets
 		(net
 			(code "1")
+			(name "/ACK_ARM")
+			(class "Default")
+			(node
+				(ref "U12")
+				(pin "8")
+				(pinfunction "S_8")
+				(pintype "input")
+			)
+			(node
+				(ref "U9")
+				(pin "11")
+				(pintype "output")
+			)
+		)
+		(net
+			(code "2")
 			(name "/ACK_DLY_N")
 			(class "Default")
 			(node
@@ -11212,7 +11373,7 @@
 			)
 		)
 		(net
-			(code "2")
+			(code "3")
 			(name "/ACK_LOW_OK")
 			(class "Default")
 			(node
@@ -11234,23 +11395,22 @@
 			)
 		)
 		(net
-			(code "3")
+			(code "4")
 			(name "/ACK_N")
 			(class "Default")
-			(node
-				(ref "U12")
-				(pin "11")
-				(pinfunction "C_11")
-				(pintype "input")
-			)
 			(node
 				(ref "U13")
 				(pin "11")
 				(pintype "output")
 			)
+			(node
+				(ref "U9")
+				(pin "13")
+				(pintype "input")
+			)
 		)
 		(net
-			(code "4")
+			(code "5")
 			(name "/ACK_RAW")
 			(class "Default")
 			(node
@@ -11291,7 +11451,7 @@
 			)
 		)
 		(net
-			(code "5")
+			(code "6")
 			(name "/ACK_RC")
 			(class "Default")
 			(node
@@ -11316,7 +11476,7 @@
 			)
 		)
 		(net
-			(code "6")
+			(code "7")
 			(name "/ACK_RISE")
 			(class "Default")
 			(node
@@ -11337,7 +11497,7 @@
 			)
 		)
 		(net
-			(code "7")
+			(code "8")
 			(name "/ALL_OFF")
 			(class "Default")
 			(node
@@ -11352,7 +11512,7 @@
 			)
 		)
 		(net
-			(code "8")
+			(code "9")
 			(name "/ANY_ON")
 			(class "Default")
 			(node
@@ -11378,7 +11538,7 @@
 			)
 		)
 		(net
-			(code "9")
+			(code "10")
 			(name "/CT_OK")
 			(class "Default")
 			(node
@@ -11399,7 +11559,7 @@
 			)
 		)
 		(net
-			(code "10")
+			(code "11")
 			(name "/CT_S1")
 			(class "Default")
 			(node
@@ -11422,7 +11582,7 @@
 			)
 		)
 		(net
-			(code "11")
+			(code "12")
 			(name "/CT_S2")
 			(class "Default")
 			(node
@@ -11445,7 +11605,7 @@
 			)
 		)
 		(net
-			(code "12")
+			(code "13")
 			(name "/FAST_ARMED")
 			(class "Default")
 			(node
@@ -11460,7 +11620,7 @@
 			)
 		)
 		(net
-			(code "13")
+			(code "14")
 			(name "/FAST_ARMED_IN")
 			(class "Default")
 			(node
@@ -11481,7 +11641,7 @@
 			)
 		)
 		(net
-			(code "14")
+			(code "15")
 			(name "/FAST_TRIP")
 			(class "Default")
 			(node
@@ -11507,7 +11667,7 @@
 			)
 		)
 		(net
-			(code "15")
+			(code "16")
 			(name "/FAULT_A")
 			(class "Default")
 			(node
@@ -11522,7 +11682,7 @@
 			)
 		)
 		(net
-			(code "16")
+			(code "17")
 			(name "/FAULT_B")
 			(class "Default")
 			(node
@@ -11537,7 +11697,7 @@
 			)
 		)
 		(net
-			(code "17")
+			(code "18")
 			(name "/FF2_RESET")
 			(class "Default")
 			(node
@@ -11553,7 +11713,7 @@
 			)
 		)
 		(net
-			(code "18")
+			(code "19")
 			(name "/FLT")
 			(class "Default")
 			(node
@@ -11585,7 +11745,7 @@
 			)
 		)
 		(net
-			(code "19")
+			(code "20")
 			(name "/GA1")
 			(class "Default")
 			(node
@@ -11610,7 +11770,7 @@
 			)
 		)
 		(net
-			(code "20")
+			(code "21")
 			(name "/GA2")
 			(class "Default")
 			(node
@@ -11635,7 +11795,7 @@
 			)
 		)
 		(net
-			(code "21")
+			(code "22")
 			(name "/GA3")
 			(class "Default")
 			(node
@@ -11660,7 +11820,7 @@
 			)
 		)
 		(net
-			(code "22")
+			(code "23")
 			(name "/GA4")
 			(class "Default")
 			(node
@@ -11685,7 +11845,7 @@
 			)
 		)
 		(net
-			(code "23")
+			(code "24")
 			(name "/GA5")
 			(class "Default")
 			(node
@@ -11710,7 +11870,7 @@
 			)
 		)
 		(net
-			(code "24")
+			(code "25")
 			(name "/GA6")
 			(class "Default")
 			(node
@@ -11735,7 +11895,7 @@
 			)
 		)
 		(net
-			(code "25")
+			(code "26")
 			(name "/GA7")
 			(class "Default")
 			(node
@@ -11760,7 +11920,7 @@
 			)
 		)
 		(net
-			(code "26")
+			(code "27")
 			(name "/GA8")
 			(class "Default")
 			(node
@@ -11785,7 +11945,7 @@
 			)
 		)
 		(net
-			(code "27")
+			(code "28")
 			(name "/GH1")
 			(class "Default")
 			(node
@@ -11810,7 +11970,7 @@
 			)
 		)
 		(net
-			(code "28")
+			(code "29")
 			(name "/GL1")
 			(class "Default")
 			(node
@@ -11835,7 +11995,7 @@
 			)
 		)
 		(net
-			(code "29")
+			(code "30")
 			(name "/GSUM")
 			(class "Default")
 			(node
@@ -11894,9 +12054,30 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "R77")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "TP17")
 				(pin "1")
 				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "31")
+			(name "/GSUM_SNS")
+			(class "Default")
+			(node
+				(ref "D9")
+				(pin "1")
+				(pinfunction "K_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R77")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -11907,7 +12088,7 @@
 			)
 		)
 		(net
-			(code "30")
+			(code "32")
 			(name "/HARD_TRIP")
 			(class "Default")
 			(node
@@ -11938,7 +12119,7 @@
 			)
 		)
 		(net
-			(code "31")
+			(code "33")
 			(name "/HB")
 			(class "Default")
 			(node
@@ -11954,7 +12135,7 @@
 			)
 		)
 		(net
-			(code "32")
+			(code "34")
 			(name "/HEALTHY")
 			(class "Default")
 			(node
@@ -11980,7 +12161,7 @@
 			)
 		)
 		(net
-			(code "33")
+			(code "35")
 			(name "/HO")
 			(class "Default")
 			(node
@@ -11996,7 +12177,7 @@
 			)
 		)
 		(net
-			(code "34")
+			(code "36")
 			(name "/H_OK_A")
 			(class "Default")
 			(node
@@ -12011,7 +12192,7 @@
 			)
 		)
 		(net
-			(code "35")
+			(code "37")
 			(name "/H_OK_B")
 			(class "Default")
 			(node
@@ -12026,7 +12207,7 @@
 			)
 		)
 		(net
-			(code "36")
+			(code "38")
 			(name "/LATCHED")
 			(class "Default")
 			(node
@@ -12048,7 +12229,7 @@
 			)
 		)
 		(net
-			(code "37")
+			(code "39")
 			(name "/LATCHED_N")
 			(class "Default")
 			(node
@@ -12064,7 +12245,7 @@
 			)
 		)
 		(net
-			(code "38")
+			(code "40")
 			(name "/LO")
 			(class "Default")
 			(node
@@ -12080,7 +12261,7 @@
 			)
 		)
 		(net
-			(code "39")
+			(code "41")
 			(name "/NOT_FLT")
 			(class "Default")
 			(node
@@ -12095,7 +12276,7 @@
 			)
 		)
 		(net
-			(code "40")
+			(code "42")
 			(name "/NOT_HARD_TRIP")
 			(class "Default")
 			(node
@@ -12110,7 +12291,7 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "43")
 			(name "/NOT_HEALTHY")
 			(class "Default")
 			(node
@@ -12125,7 +12306,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "44")
 			(name "/NOT_READY")
 			(class "Default")
 			(node
@@ -12140,7 +12321,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "45")
 			(name "/OC")
 			(class "Default")
 			(node
@@ -12177,7 +12358,7 @@
 			)
 		)
 		(net
-			(code "44")
+			(code "46")
 			(name "/OCD")
 			(class "Default")
 			(node
@@ -12204,7 +12385,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "47")
 			(name "/OCF")
 			(class "Default")
 			(node
@@ -12224,7 +12405,7 @@
 			)
 		)
 		(net
-			(code "46")
+			(code "48")
 			(name "/OCM")
 			(class "Default")
 			(node
@@ -12266,7 +12447,7 @@
 			)
 		)
 		(net
-			(code "47")
+			(code "49")
 			(name "/OC_FILT")
 			(class "Default")
 			(node
@@ -12293,7 +12474,7 @@
 			)
 		)
 		(net
-			(code "48")
+			(code "50")
 			(name "/OPERATOR_RUN")
 			(class "Default")
 			(node
@@ -12314,7 +12495,7 @@
 			)
 		)
 		(net
-			(code "49")
+			(code "51")
 			(name "/PCOLL")
 			(class "Default")
 			(node
@@ -12336,7 +12517,7 @@
 			)
 		)
 		(net
-			(code "50")
+			(code "52")
 			(name "/PDRV")
 			(class "Default")
 			(node
@@ -12352,7 +12533,7 @@
 			)
 		)
 		(net
-			(code "51")
+			(code "53")
 			(name "/PERMIT")
 			(class "Default")
 			(node
@@ -12373,7 +12554,7 @@
 			)
 		)
 		(net
-			(code "52")
+			(code "54")
 			(name "/PERMIT_RAIL")
 			(class "Default")
 			(node
@@ -12383,8 +12564,8 @@
 			)
 			(node
 				(ref "Q2")
-				(pin "2")
-				(pinfunction "S_2")
+				(pin "3")
+				(pinfunction "D_3")
 				(pintype "passive")
 			)
 			(node
@@ -12504,7 +12685,7 @@
 			)
 		)
 		(net
-			(code "53")
+			(code "55")
 			(name "/PGND")
 			(class "Default")
 			(node
@@ -12712,6 +12893,12 @@
 				(ref "D4")
 				(pin "2")
 				(pinfunction "A2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "D9")
+				(pin "2")
+				(pinfunction "A_2")
 				(pintype "passive")
 			)
 			(node
@@ -12928,6 +13115,12 @@
 			)
 			(node
 				(ref "U12")
+				(pin "11")
+				(pinfunction "C_11")
+				(pintype "input")
+			)
+			(node
+				(ref "U12")
 				(pin "3")
 				(pinfunction "C_3")
 				(pintype "input")
@@ -12940,8 +13133,8 @@
 			)
 			(node
 				(ref "U12")
-				(pin "8")
-				(pinfunction "S_8")
+				(pin "9")
+				(pinfunction "D_9")
 				(pintype "input")
 			)
 			(node
@@ -13046,23 +13239,13 @@
 			)
 			(node
 				(ref "U9")
-				(pin "12")
-				(pintype "input")
-			)
-			(node
-				(ref "U9")
-				(pin "13")
-				(pintype "input")
-			)
-			(node
-				(ref "U9")
 				(pin "7")
 				(pinfunction "VSS_7")
 				(pintype "power_in")
 			)
 		)
 		(net
-			(code "54")
+			(code "56")
 			(name "/POR")
 			(class "Default")
 			(node
@@ -13077,7 +13260,7 @@
 			)
 		)
 		(net
-			(code "55")
+			(code "57")
 			(name "/POR_RC")
 			(class "Default")
 			(node
@@ -13102,7 +13285,7 @@
 			)
 		)
 		(net
-			(code "56")
+			(code "58")
 			(name "/P_A")
 			(class "Default")
 			(node
@@ -13117,7 +13300,7 @@
 			)
 		)
 		(net
-			(code "57")
+			(code "59")
 			(name "/P_B")
 			(class "Default")
 			(node
@@ -13132,7 +13315,7 @@
 			)
 		)
 		(net
-			(code "58")
+			(code "60")
 			(name "/P_C")
 			(class "Default")
 			(node
@@ -13147,7 +13330,7 @@
 			)
 		)
 		(net
-			(code "59")
+			(code "61")
 			(name "/READY")
 			(class "Default")
 			(node
@@ -13162,15 +13345,14 @@
 				(pintype "input")
 			)
 			(node
-				(ref "U12")
-				(pin "9")
-				(pinfunction "D_9")
-				(pintype "input")
-			)
-			(node
 				(ref "U7")
 				(pin "10")
 				(pintype "output")
+			)
+			(node
+				(ref "U9")
+				(pin "12")
+				(pintype "input")
 			)
 			(node
 				(ref "U9")
@@ -13179,7 +13361,7 @@
 			)
 		)
 		(net
-			(code "60")
+			(code "62")
 			(name "/READY_A")
 			(class "Default")
 			(node
@@ -13199,7 +13381,7 @@
 			)
 		)
 		(net
-			(code "61")
+			(code "63")
 			(name "/READY_B")
 			(class "Default")
 			(node
@@ -13214,7 +13396,7 @@
 			)
 		)
 		(net
-			(code "62")
+			(code "64")
 			(name "/REF_0V2")
 			(class "Default")
 			(node
@@ -13240,7 +13422,7 @@
 			)
 		)
 		(net
-			(code "63")
+			(code "65")
 			(name "/REF_1V0")
 			(class "Default")
 			(node
@@ -13265,6 +13447,18 @@
 				(pintype "input")
 			)
 			(node
+				(ref "U4")
+				(pin "2")
+				(pinfunction "-_2")
+				(pintype "input")
+			)
+			(node
+				(ref "U4")
+				(pin "6")
+				(pinfunction "-_6")
+				(pintype "input")
+			)
+			(node
 				(ref "U5")
 				(pin "2")
 				(pinfunction "-_2")
@@ -13272,7 +13466,7 @@
 			)
 		)
 		(net
-			(code "64")
+			(code "66")
 			(name "/REF_1V8")
 			(class "Default")
 			(node
@@ -13298,7 +13492,7 @@
 			)
 		)
 		(net
-			(code "65")
+			(code "67")
 			(name "/REF_2V5")
 			(class "Default")
 			(node
@@ -13344,21 +13538,9 @@
 				(pinfunction "K_3")
 				(pintype "passive")
 			)
-			(node
-				(ref "U4")
-				(pin "2")
-				(pinfunction "-_2")
-				(pintype "input")
-			)
-			(node
-				(ref "U4")
-				(pin "6")
-				(pinfunction "-_6")
-				(pintype "input")
-			)
 		)
 		(net
-			(code "66")
+			(code "68")
 			(name "/RESET_OK")
 			(class "Default")
 			(node
@@ -13373,7 +13555,7 @@
 			)
 		)
 		(net
-			(code "67")
+			(code "69")
 			(name "/RST_A")
 			(class "Default")
 			(node
@@ -13388,7 +13570,7 @@
 			)
 		)
 		(net
-			(code "68")
+			(code "70")
 			(name "/RST_EFF")
 			(class "Default")
 			(node
@@ -13404,7 +13586,7 @@
 			)
 		)
 		(net
-			(code "69")
+			(code "71")
 			(name "/SOA0")
 			(class "Default")
 			(node
@@ -13420,7 +13602,7 @@
 			)
 		)
 		(net
-			(code "70")
+			(code "72")
 			(name "/SOA1")
 			(class "Default")
 			(node
@@ -13436,7 +13618,7 @@
 			)
 		)
 		(net
-			(code "71")
+			(code "73")
 			(name "/SOA2")
 			(class "Default")
 			(node
@@ -13452,7 +13634,7 @@
 			)
 		)
 		(net
-			(code "72")
+			(code "74")
 			(name "/SOA3")
 			(class "Default")
 			(node
@@ -13468,7 +13650,7 @@
 			)
 		)
 		(net
-			(code "73")
+			(code "75")
 			(name "/SOB0")
 			(class "Default")
 			(node
@@ -13484,7 +13666,7 @@
 			)
 		)
 		(net
-			(code "74")
+			(code "76")
 			(name "/SOB1")
 			(class "Default")
 			(node
@@ -13500,7 +13682,7 @@
 			)
 		)
 		(net
-			(code "75")
+			(code "77")
 			(name "/SOB2")
 			(class "Default")
 			(node
@@ -13516,7 +13698,7 @@
 			)
 		)
 		(net
-			(code "76")
+			(code "78")
 			(name "/SOB3")
 			(class "Default")
 			(node
@@ -13532,7 +13714,7 @@
 			)
 		)
 		(net
-			(code "77")
+			(code "79")
 			(name "/SS_READY")
 			(class "Default")
 			(node
@@ -13558,7 +13740,7 @@
 			)
 		)
 		(net
-			(code "78")
+			(code "80")
 			(name "/TG_HI")
 			(class "Default")
 			(node
@@ -13575,7 +13757,7 @@
 			)
 		)
 		(net
-			(code "79")
+			(code "81")
 			(name "/TG_LO")
 			(class "Default")
 			(node
@@ -13592,7 +13774,7 @@
 			)
 		)
 		(net
-			(code "80")
+			(code "82")
 			(name "/TG_SR")
 			(class "Default")
 			(node
@@ -13651,7 +13833,7 @@
 			)
 		)
 		(net
-			(code "81")
+			(code "83")
 			(name "/V5")
 			(class "Default")
 			(node
@@ -13696,8 +13878,8 @@
 			)
 			(node
 				(ref "Q2")
-				(pin "3")
-				(pinfunction "D_3")
+				(pin "2")
+				(pinfunction "S_2")
 				(pintype "passive")
 			)
 			(node
@@ -13836,7 +14018,7 @@
 			)
 		)
 		(net
-			(code "82")
+			(code "84")
 			(name "/V5_OK")
 			(class "Default")
 			(node
@@ -13856,7 +14038,7 @@
 			)
 		)
 		(net
-			(code "83")
+			(code "85")
 			(name "/V5_SNS")
 			(class "Default")
 			(node
@@ -13882,7 +14064,7 @@
 			)
 		)
 		(net
-			(code "84")
+			(code "86")
 			(name "/V12P")
 			(class "Default")
 			(node
@@ -13947,7 +14129,7 @@
 			)
 		)
 		(net
-			(code "85")
+			(code "87")
 			(name "/V12P_F")
 			(class "Default")
 			(node
@@ -13963,7 +14145,7 @@
 			)
 		)
 		(net
-			(code "86")
+			(code "88")
 			(name "/V12P_IN")
 			(class "Default")
 			(node
@@ -13979,7 +14161,7 @@
 			)
 		)
 		(net
-			(code "87")
+			(code "89")
 			(name "/V12P_OK")
 			(class "Default")
 			(node
@@ -13999,7 +14181,7 @@
 			)
 		)
 		(net
-			(code "88")
+			(code "90")
 			(name "/V12P_SNS")
 			(class "Default")
 			(node
@@ -14025,7 +14207,7 @@
 			)
 		)
 		(net
-			(code "89")
+			(code "91")
 			(name "/V12S")
 			(class "Default")
 			(node
@@ -14127,7 +14309,7 @@
 			)
 		)
 		(net
-			(code "90")
+			(code "92")
 			(name "/V12S_F")
 			(class "Default")
 			(node
@@ -14143,7 +14325,7 @@
 			)
 		)
 		(net
-			(code "91")
+			(code "93")
 			(name "/V12S_IN")
 			(class "Default")
 			(node
@@ -14159,7 +14341,7 @@
 			)
 		)
 		(net
-			(code "92")
+			(code "94")
 			(name "/V12S_OK")
 			(class "Default")
 			(node
@@ -14179,7 +14361,7 @@
 			)
 		)
 		(net
-			(code "93")
+			(code "95")
 			(name "/V12S_SNS")
 			(class "Default")
 			(node
@@ -14205,17 +14387,7 @@
 			)
 		)
 		(net
-			(code "94")
-			(name "unconnected-(U9-Pad11)")
-			(class "Default")
-			(node
-				(ref "U9")
-				(pin "11")
-				(pintype "output+no_connect")
-			)
-		)
-		(net
-			(code "95")
+			(code "96")
 			(name "unconnected-(U11-Pad12)")
 			(class "Default")
 			(node
@@ -14225,7 +14397,7 @@
 			)
 		)
 		(net
-			(code "96")
+			(code "97")
 			(name "unconnected-(U12B-~{Q}-Pad12)")
 			(class "Default")
 			(node
@@ -14236,7 +14408,7 @@
 			)
 		)
 		(net
-			(code "97")
+			(code "98")
 			(name "unconnected-(U13-Pad4)")
 			(class "Default")
 			(node
@@ -14246,7 +14418,7 @@
 			)
 		)
 		(net
-			(code "98")
+			(code "99")
 			(name "unconnected-(U18-NC-Pad2)")
 			(class "Default")
 			(node

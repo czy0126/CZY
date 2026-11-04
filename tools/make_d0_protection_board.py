@@ -14,7 +14,7 @@ about what the file is -- a machine-checked netlist with a human-readable layout
 Why the boolean network is duplicated here in Python (``hardware_step``): the
 safety claim is "no hardware state can ever enable the converter when the
 reference model forbids it".  Writing that network as an executable function lets
-the test enumerate all 16384 input/state combinations against
+the test enumerate all 32768 input/state combinations against
 ``tools/two_tier_fault_logic.transition()`` instead of asserting it in prose.
 The schematic table below and ``hardware_step`` must stay in step; the test
 cross-checks the gate list against the part table.
@@ -67,6 +67,7 @@ LIB = "models/sr_timing_v3.lib"
 CTRL = "hardware/dcx_main/protection_interface_candidate.json"
 PINS = "design/v1/pin_connections.csv"
 BOM = "design/v3/bom/bom_draft.csv"
+CT_DESIGN = "design/v3/bom/ct_design.json"
 LOGIC = "tools/two_tier_fault_logic.py"
 
 
@@ -235,6 +236,7 @@ STANDARD = {
     "Device:R": ("Device.kicad_sym", "R"),
     "Device:C": ("Device.kicad_sym", "C"),
     "Device:D_Schottky": ("Device.kicad_sym", "D_Schottky"),
+    "Device:D_Zener": ("Device.kicad_sym", "D_Zener"),
     "Device:D_TVS": ("Device.kicad_sym", "D_TVS"),
     "Device:Fuse": ("Device.kicad_sym", "Fuse"),
     "Regulator_Linear:L7805": ("Regulator_Linear.kicad_sym", "L7805"),
@@ -445,11 +447,11 @@ def comparator_parts() -> list[Part]:
         Part("R15", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 226, 120,
              {"1": "V5", "2": "FAST_TRIP"}, note="open-collector pull-up"),
         Part("U4", "Comparator:LM2903", "LM393", soic, 250, 120,
-             {"1": "V12P_OK", "2": "REF_2V5", "3": "V12P_SNS"},
+             {"1": "V12P_OK", "2": "REF_1V0", "3": "V12P_SNS"},
              unit=1, rating="36 V",
-             note="rail-good: output high only while the divider exceeds 2.5 V"),
+             note="rail-good: output high only while the divider exceeds 1.000 V"),
         Part("U4", "Comparator:LM2903", "LM393", soic, 250, 120,
-             {"5": "V12S_SNS", "6": "REF_2V5", "7": "V12S_OK"}, unit=2),
+             {"5": "V12S_SNS", "6": "REF_1V0", "7": "V12S_OK"}, unit=2),
         Part("U4", "Comparator:LM2903", "LM393", soic, 250, 120,
              {"4": "PGND", "8": "V5"}, unit=3),
         Part("R16", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 266, 108,
@@ -457,15 +459,17 @@ def comparator_parts() -> list[Part]:
         Part("R17", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 266, 120,
              {"1": "V5", "2": "V12S_OK"}, note="open-collector pull-up"),
         Part("R20", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 238, 96,
-             {"1": "V12P", "2": "V12P_SNS"}, note="UVLO divider: trip at 7.82 V"),
-        Part("R21", "Device:R", "47k", "Resistor_SMD:R_0603_1608Metric", 238, 104,
-             {"1": "V12P_SNS", "2": "PGND"}, note="2.5 V * 147/47 = 7.82 V"),
+             {"1": "V12P", "2": "V12P_SNS"},
+             note="UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)"),
+        Part("R21", "Device:R", "14.7k", "Resistor_SMD:R_0603_1608Metric", 238, 104,
+             {"1": "V12P_SNS", "2": "PGND"}, note="1.000 V * 114.7/14.7 = 7.80 V"),
         Part("C14", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 238, 116,
              {"1": "V12P_SNS", "2": "PGND"}, rating="16 V X7R", note="divider bypass"),
         Part("R22", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 278, 96,
-             {"1": "V12S", "2": "V12S_SNS"}, note="UVLO divider: trip at 7.82 V"),
-        Part("R23", "Device:R", "47k", "Resistor_SMD:R_0603_1608Metric", 278, 104,
-             {"1": "V12S_SNS", "2": "PGND"}, note="divider bottom"),
+             {"1": "V12S", "2": "V12S_SNS"},
+             note="UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)"),
+        Part("R23", "Device:R", "14.7k", "Resistor_SMD:R_0603_1608Metric", 278, 104,
+             {"1": "V12S_SNS", "2": "PGND"}, note="divider bottom, 1.000 V * 114.7/14.7"),
         Part("C15", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 278, 116,
              {"1": "V12S_SNS", "2": "PGND"}, rating="16 V X7R", note="divider bypass"),
         Part("U5", "Comparator:LM2903", "LM393", soic, 300, 120,
@@ -473,7 +477,7 @@ def comparator_parts() -> list[Part]:
              unit=1, rating="36 V",
              note="V5_OK is also comparator_bias_good; U5B watches the gate sum"),
         Part("U5", "Comparator:LM2903", "LM393", soic, 300, 120,
-             {"5": "GSUM", "6": "REF_0V2", "7": "ANY_ON"}, unit=2),
+             {"5": "GSUM_SNS", "6": "REF_0V2", "7": "ANY_ON"}, unit=2),
         Part("U5", "Comparator:LM2903", "LM393", soic, 300, 120,
              {"4": "PGND", "8": "V5"}, unit=3),
         Part("R18", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 316, 108,
@@ -573,7 +577,9 @@ def logic_parts() -> list[Part]:
              {"8": "ACK_RAW", "9": "ACK_DLY_N", "10": "ACK_RISE"}, unit=3,
              note="edge detect: ACK_RISE high only while the RC lags the press"),
         Part("U9", "4xxx:4081", "CD4081BE", dip, 190, 250,
-             {"11": NC, "12": "PGND", "13": "PGND"}, unit=4),
+             {"11": "ACK_ARM", "12": "READY", "13": "ACK_N"}, unit=4,
+             note="ACK_ARM: the low level is observed while READY, exactly the model's "
+                  "fresh_release term (a release edge alone is not enough)"),
         Part("U9", "4xxx:4081", "CD4081BE", dip, 190, 250, {"7": "PGND", "14": "V5"}, unit=5),
         # U10 -- 4071 OR
         Part("U10", "4xxx:4071", "CD4071BE", dip, 240, 250,
@@ -608,9 +614,10 @@ def logic_parts() -> list[Part]:
               "5": "V5", "6": "FLT"}, unit=1,
              note="FF1: SET=FLT, RESET=RST_EFF, clock static; ~Q is the permit term"),
         Part("U12", "4xxx:4013", "CD4013BE", dip, 340, 250,
-             {"8": "PGND", "9": "READY", "10": "FF2_RESET", "11": "ACK_N",
+             {"8": "ACK_ARM", "9": "PGND", "10": "FF2_RESET", "11": "PGND",
               "12": NC, "13": "ACK_LOW_OK"}, unit=2,
-             note="FF2: samples READY on each ACK falling edge"),
+             note="FF2: set-dominant level latch, not an edge sampler; SET=ACK_ARM, "
+                  "RESET=any fault or lost READY, clock and D tied off"),
         Part("U12", "4xxx:4013", "CD4013BE", dip, 340, 250, {"7": "PGND", "14": "V5"}, unit=3),
         # U13 -- 4093 Schmitt
         Part("U13", "4xxx:HEF4093B", "HEF4093BT", dip, 390, 250,
@@ -639,8 +646,9 @@ def permit_parts() -> list[Part]:
         Part("R34", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 458, 188,
              {"1": "V5", "2": "PCOLL"}, note="PDRV pull-up: default high = PMOS off"),
         Part("Q2", "Transistor_FET:Q_PMOS_GSD", "BSS84", "Package_TO_SOT_SMD:SOT-23",
-             472, 200, {"1": "PCOLL", "2": "PERMIT_RAIL", "3": "V5"}, rating="50 V",
-             note="high-side PMOS; gate high = off"),
+             472, 200, {"1": "PCOLL", "2": "V5", "3": "PERMIT_RAIL"}, rating="50 V",
+             note="high-side PMOS: pin 2 is the source, so source=V5 and drain=rail "
+                  "keep the body diode reverse-biased while off"),
         Part("R35", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 472, 216,
              {"1": "PERMIT_RAIL", "2": "PGND"},
              note="defines the rail low whenever the PMOS is off"),
@@ -723,7 +731,8 @@ def gate_load_parts() -> list[Part]:
                  source=f"{LIB}:106", note="dummy gate load = Cgate 6.7 nF"),
             Part(f"R{66 + index}", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric",
                  402, 292 + 9 * index, {"1": gate, "2": "GSUM"},
-                 note="gate-sum: one gate at 10 V gives 0.909 V"),
+                 note="gate-sum star: 10 V on this gate alone gives 0.500 V while the "
+                      "other nine are held low, 0.645 V while they float on their pulldowns"),
         ]
     for index, (gate, load) in enumerate((("GH1", "4nF"), ("GL1", "4nF"))):
         out += [
@@ -739,7 +748,18 @@ def gate_load_parts() -> list[Part]:
         ]
     out.append(Part("R76", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric", 450, 280,
                     {"1": "GSUM", "2": "PGND"},
-                    note="gate-sum load: 1k/(10k+1k) = 0.0909 per gate"))
+                    note="gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other "
+                         "nine branches load the node too"))
+    out += [
+        Part("R77", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 456, 280,
+             {"1": "GSUM", "2": "GSUM_SNS"},
+             note="series into the comparator: all ten gates at 10 V put GSUM at 5 V, "
+                  "above the LM393's VCC-1.5 V common-mode limit"),
+        Part("D9", "Device:D_Zener", "BZX84C3V0", "Package_TO_SOT_SMD:SOT-23", 464, 288,
+             {"1": "GSUM_SNS", "2": "PGND"},
+             note="clamps the sum at 3.0 V so ANY_ON never reads a gate state from an "
+                  "input outside the comparator's common-mode range"),
+    ]
     return out
 
 
@@ -809,9 +829,9 @@ def hardware_step(*, hard_trip: bool, fast_trip: bool, fast_armed_in: bool,
     rst_a = reset_ok and ready
     rst_eff = rst_a and latched
     latched_next = flt or (latched and not rst_eff)
-    # FF2: asynchronous reset, samples READY on each ACK falling edge.  The
-    # clock edge is modelled as a caller-supplied event, so this pass only
-    # carries the reset/hold half; ``token_after_edge`` adds the set half.
+    # FF2: asynchronous reset plus a level-sensitive set (SET dominates).  This
+    # pass carries the hold/reset half of Q; ``token_next`` adds the set term
+    # ``ACK_ARM = READY and not ACK_RAW``.
     token_held = (not ff2_reset) and ack_low_ok
     return {
         "healthy": healthy, "fast_armed": fast_armed, "fault": fault_a or not_healthy,
@@ -820,9 +840,16 @@ def hardware_step(*, hard_trip: bool, fast_trip: bool, fast_armed_in: bool,
     }
 
 
-def token_after_edge(*, ff2_reset: bool, ack_low_ok: bool, ready: bool) -> bool:
-    """FF2 after one ACK falling edge: D = READY, asynchronous reset wins."""
-    return False if ff2_reset else (ack_low_ok or ready)
+def token_next(*, ff2_reset: bool, ready: bool, ack_raw: bool, token: bool) -> bool:
+    """FF2 next state: ACK_ARM sets the token, any fault or lost READY clears it.
+
+    ``ACK_ARM`` is a *level* (READY and the button not pressed), so the token is
+    armed before the operator presses: the first press after power-up clears the
+    latch.  An edge-triggered FF2 armed only on release, which swallowed that
+    first press.  SET dominates RESET, as on the CD4013.
+    """
+    ack_arm = ready and not ack_raw
+    return ack_arm or (token and not ff2_reset)
 
 
 # ---------------------------------------------------------------- structural
@@ -1029,17 +1056,98 @@ def erc_violations(path: Path | None = None) -> list[dict]:
     return [v for sheet in data.get("sheets", []) for v in sheet.get("violations", [])]
 
 
+def resistance(text: str) -> float:
+    """Parse the part-table resistor spelling: '10k', '14.7k', '2.2R'."""
+    suffix = text[-1]
+    if suffix == "k":
+        return float(text[:-1]) * 1e3
+    if suffix == "R":
+        return float(text[:-1])
+    return float(text)
+
+
+def part_value(ref: str) -> str:
+    for part in parts():
+        if part.ref == ref:
+            return part.value
+    raise KeyError(f"no part {ref} in the part table")
+
+
+def divider_output(ref_top: str, ref_bottom: str) -> float:
+    """Voltage at the tap of a two-resistor divider across the 2.500 V reference."""
+    top, bottom = resistance(part_value(ref_top)), resistance(part_value(ref_bottom))
+    return 2.5 * bottom / (top + bottom)
+
+
+def rail_good_node(vin: float = 12.0) -> float:
+    """Voltage the 12 V supervisor sees at ``vin`` (must stay under VCC-1.5 V)."""
+    top, bottom = resistance(part_value("R20")), resistance(part_value("R21"))
+    return vin * bottom / (top + bottom)
+
+
+def rail_good_trip() -> float:
+    """Input voltage at which the supervisor divider reaches the reference."""
+    top, bottom = resistance(part_value("R20")), resistance(part_value("R21"))
+    return divider_output("R2", "R3") * (top + bottom) / bottom
+
+
+def burden_numbers() -> tuple[float, float]:
+    """The published CT slope (V per amp at the OC node) and its hard-trip current."""
+    data = json.loads((ROOT / CT_DESIGN).read_text(encoding="utf-8"))["as_built"]
+    return float(data["slope_v_per_a_peak"]), float(data["trip_peak_a"])
+
+
+def gate_sum_per_gate(*, drivers_low: bool) -> float:
+    """V(GSUM) per 10 V on one gate, with the other nine at 0 V.
+
+    ``drivers_low`` selects the nine quiet gates' impedance: a powered driver
+    holds them at 0 V, an unpowered one leaves them on their 10k pulldowns.  The
+    other nine branches load the node through their own 10k resistors, which is
+    why the old 1k/(10k+1k) = 0.0909 estimate was 1.4-1.8x too generous.
+    """
+    r_sum = resistance(part_value("R66"))
+    r_load = resistance(part_value("R76"))
+    r_quiet = 0.0 if drivers_low else resistance(part_value("R56"))
+    g_sum = 1 / r_sum
+    return g_sum / (9 / (r_sum + r_quiet) + 1 / r_load + g_sum)
+
+
 def observations() -> list[dict]:
-    """Facts a reader must know before treating this board as evidence."""
+    """Facts a reader must know before treating this board as evidence.
+
+    Every threshold is derived from the part table (or from ``ct_design.json``)
+    rather than restated: the previous hand-written numbers survived a change in
+    the reference base and were wrong by 1.4-1.8x on the gate sum.
+    """
+    slope, hard_a = burden_numbers()
+    fast_v = divider_output("R4", "R5")
+    fast_a = fast_v / slope
+    ref_0v2 = divider_output("R6", "R7")
+    per_gate_low = gate_sum_per_gate(drivers_low=True)
+    per_gate_float = gate_sum_per_gate(drivers_low=False)
+    trip_low, trip_float = ref_0v2 / per_gate_low, ref_0v2 / per_gate_float
     return [
         {"id": "FAST_IS_LESS_SENSITIVE_THAN_HARD",
-         "statement": "The 1.769 V fast threshold sits on the filtered burden node "
-                      "(divider gain 24/35), so it corresponds to a higher primary "
-                      "current than the 1.000 V hard trip: about 30 A versus 24.2 A peak.",
+         "statement": f"The {fast_v:.3f} V fast threshold sits on the filtered burden "
+                      f"node (divider gain 24/35), so it corresponds to a higher primary "
+                      f"current than the {divider_output('R2', 'R3'):.3f} V hard trip: "
+                      f"{fast_a:.1f} A versus {hard_a:.1f} A peak ({fast_a / hard_a:.2f}x).",
          "consequence": "The 'fast' channel is a confirmation channel, not a faster "
                         "one. It cannot protect anything the hard trip does not already "
                         "catch; it can only add a second opinion.",
          "source": f"{DECK}:118-122"},
+        {"id": "RAIL_GOOD_TRIP_IS_A_DIVIDER_RATIO",
+         "statement": f"Both 12 V supervisors compare a 100k/14.7k divider against the "
+                      f"{divider_output('R2', 'R3'):.3f} V reference: trip "
+                      f"{rail_good_trip():.2f} V, {rail_good_node():.2f} V at 12 V. The "
+                      f"base has to stay low -- with the 2.5 V reference the first draft "
+                      f"read 3.84 V at 12 V, above the LM393's VCC-1.5 V = 3.5 V "
+                      f"common-mode limit, where the output is undefined.",
+         "consequence": "Rail-good is a 7.8 V threshold on a 12 V rail, so the drivers are "
+                        "declared healthy down to 7.8 V and run with reduced gate drive in "
+                        "that band. The trip is set by resistor choice and is not adjusted "
+                        "at first article.",
+         "source": f"{CTRL}:proposed_sr_channels"},
         {"id": "EN_THRESHOLD_NOT_VERIFIED",
          "statement": "UCC27524ADR ENA/ENB thresholds at VDD = 12 V are not checked "
                       "against a datasheet: no vendor datasheet is vendored in this repo.",
@@ -1048,19 +1156,32 @@ def observations() -> list[dict]:
                         "permit stage can be called qualified.",
          "source": f"{CTRL}:proposed_sr_channels"},
         {"id": "ALL_TEN_OFF_IS_A_SUM_NOT_A_PER_GATE_COMPARATOR",
-         "statement": "The ten gates are summed through 10k/1k into GSUM and compared "
-                      "against 0.200 V. One gate at 10 V reads 0.909 V.",
-         "consequence": "The threshold trips at about 2.2 V on any single gate, so a "
-                        "gate parked at 1 V is reported as 'off'. It also cannot name "
-                        "which gate is on.",
+         "statement": f"The ten gates are summed through ten 10k resistors into GSUM "
+                      f"with a 1k load and compared against {ref_0v2:.3f} V. One gate at "
+                      f"10 V reads {10 * per_gate_low:.3f} V while the other nine drivers "
+                      f"hold their gates low, or {10 * per_gate_float:.3f} V while they "
+                      f"float on their pulldowns. All ten high would drive GSUM to 5 V, so "
+                      f"R77/D9 clamp the comparator input at 3.0 V: the sum is kept inside "
+                      f"the LM393's VCC-1.5 V = 3.5 V common-mode limit, where an "
+                      f"out-of-range input could otherwise read low, i.e. 'all off'.",
+         "consequence": f"The threshold therefore trips at {trip_float:.1f} V to "
+                        f"{trip_low:.1f} V on any single gate, so a gate parked at 3 V is "
+                        f"reported as 'off' -- 1.4-1.8x worse than the 2.2 V this note "
+                        f"claimed before the sums were computed. It also cannot name which "
+                        f"gate is on.",
          "source": "DESIGN_PROPOSAL"},
         {"id": "ACK_TIMING_UNQUALIFIED",
-         "statement": "The ACK release requires a low-to-high edge after a falling edge "
-                      "observed while READY. The token is sampled by a CD4013 on the "
-                      "Schmitt-cleaned falling edge.",
-         "consequence": "Debounce is 10 ms and the edge window about 1 ms; neither is "
-                        "qualified against contact bounce or operator timing. A press "
-                        "shorter than the debounce is invisible.",
+         "statement": "The release token is a level latch, not an edge sampler: "
+                      "ACK_ARM = READY and the button not pressed sets it, and any fault "
+                      "or lost READY clears it, so the first press after power-up is the "
+                      "one that clears the fault latch (an edge sampler armed on release "
+                      "would swallow that press). The press charges C17 straight from V5 "
+                      "through the button; the 10 ms (R30*C17) is the release decay and "
+                      "the ~1 ms edge window is R31*C18.",
+         "consequence": "The press path is undebounced, so one contact bounce while READY "
+                        "is indistinguishable from an operator press and clears the latch; "
+                        "only the release is filtered. Neither the 1 ms window nor the "
+                        "bounce sensitivity is qualified on hardware.",
          "source": f"{LOGIC}:50-61"},
         {"id": "PERMITS_USE_CURRENT_STATE_NOT_NEXT_STATE",
          "statement": "The reference model computes permits from next_latched; the "
@@ -1142,8 +1263,8 @@ def check() -> None:
             print(f"  {v['severity']} {v['type']}: {v['description']}")
         raise SystemExit("ERC is not clean -- fix the circuit or record why each one is accepted")
     required = ["V12P", "V12S", "V5", "PGND", "OC", "HARD_TRIP", "FAST_TRIP",
-                "HEALTHY", "READY", "LATCHED", "ACK_LOW_OK", "FLT", "PERMIT",
-                "PERMIT_RAIL", "GSUM"]
+                "HEALTHY", "READY", "LATCHED", "ACK_LOW_OK", "ACK_ARM", "FLT",
+                "PERMIT", "PERMIT_RAIL", "GSUM", "GSUM_SNS"]
     # Nets are named "/<label>" on a single sheet, so a substring match on the bare
     # label never finds them -- parse the name field instead.
     net_names = set(re.findall(r'\(name "/([^"]+)"\)', text))
