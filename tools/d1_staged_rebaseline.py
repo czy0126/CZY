@@ -60,6 +60,8 @@ def evaluate(policy=None,mag=None,op120=None,cores=None,high=None,gate=None,prot
         raise ValueError("behavioural Bage fix is not physical protection proof")
     if not 90<=p["stages"][1]["load_current_class_a"]<=100:
         raise ValueError("D1 must retain a meaningful 100A-class demonstration")
+    if p["stages"][2]["load_current_class_a"]!=120:
+        raise ValueError("D2 is labelled 120A; changing its target requires a program review")
     if p["stages"][1]["height_limit_mm"]!=16 or p["stages"][2]["height_limit_mm"]!=16:
         raise ValueError("D1/D2 mechanical target changed; needs fresh program decision")
     if p["stages"][3]["height_limit_mm"]!=10:
