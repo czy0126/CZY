@@ -141,98 +141,98 @@
     {
       "ref": "SR1A",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 14.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "land pattern digitised from the BSC010N04LS6 datasheet Fig. 2 (design/v3/pcb/bsc010n04ls6_land.json); drain 5-8 on a common base.  Not vendor CAD, not IPC-7351 checked"
     },
     {
       "ref": "SR1B",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 24.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "same land pattern as SR1A"
     },
     {
       "ref": "SR2A",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 52.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "land pattern digitised from the BSC010N04LS6 datasheet Fig. 2 (design/v3/pcb/bsc010n04ls6_land.json); drain 5-8 on a common base.  Not vendor CAD, not IPC-7351 checked"
     },
     {
       "ref": "SR2B",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 62.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "same land pattern as SR2A"
     },
     {
       "ref": "SR3A",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 90.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "land pattern digitised from the BSC010N04LS6 datasheet Fig. 2 (design/v3/pcb/bsc010n04ls6_land.json); drain 5-8 on a common base.  Not vendor CAD, not IPC-7351 checked"
     },
     {
       "ref": "SR3B",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 100.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "same land pattern as SR3A"
     },
     {
       "ref": "SR4A",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 128.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "land pattern digitised from the BSC010N04LS6 datasheet Fig. 2 (design/v3/pcb/bsc010n04ls6_land.json); drain 5-8 on a common base.  Not vendor CAD, not IPC-7351 checked"
     },
     {
       "ref": "SR4B",
       "value": "BSC010N04LS6",
-      "evidence": "kicad-library",
+      "evidence": "digitised-datasheet",
       "w_mm": 7.36,
       "d_mm": 5.64,
       "h_mm_worst": 1.0,
       "x_mm": 138.0,
       "y_mm": 82.0,
       "rot_deg": 0.0,
-      "note": ""
+      "note": "same land pattern as SR4A"
     },
     {
       "ref": "Cout1",
@@ -581,9 +581,9 @@
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
     "net_count": 30,
-    "pads_landed": 120,
-    "physical_pads_netted": 152,
-    "pads_landed_note": "pad names with a net; physical pads are higher where a footprint repeats a name (the TDSON-8 drain).  KiCad treats same-numbered pads of one footprint as a single connected pad, so the ratsnest count follows this number, not physical_pads_netted",
+    "pads_landed": 144,
+    "physical_pads_netted": 160,
+    "pads_landed_note": "pad names with a net; physical pads are higher where a footprint splits one pin across several lands (the SR FET drain: a common base plus four fingers, two of which share the name 5).  KiCad merges same-numbered pads, and also same-net lands whose copper overlaps, so the ratsnest is shorter than pads_landed - net_count",
     "nets": [
       {
         "net": "PGND",
@@ -617,7 +617,7 @@
           "SR4B",
           "T4"
         ],
-        "straight_line_mst_mm": 346.369
+        "straight_line_mst_mm": 340.491
       },
       {
         "net": "VOUT",
@@ -657,39 +657,39 @@
       },
       {
         "net": "SEC1_A",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR1A",
           "T1"
         ],
-        "straight_line_mst_mm": 68.73
+        "straight_line_mst_mm": 71.204
       },
       {
         "net": "SEC2_A",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR2A",
           "T2"
         ],
-        "straight_line_mst_mm": 68.73
+        "straight_line_mst_mm": 71.204
       },
       {
         "net": "SEC3_A",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR3A",
           "T3"
         ],
-        "straight_line_mst_mm": 68.73
+        "straight_line_mst_mm": 71.204
       },
       {
         "net": "SEC4_A",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR4A",
           "T4"
         ],
-        "straight_line_mst_mm": 68.73
+        "straight_line_mst_mm": 71.204
       },
       {
         "net": "VIN_P",
@@ -702,39 +702,39 @@
       },
       {
         "net": "SEC1_B",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR1B",
           "T1"
         ],
-        "straight_line_mst_mm": 57.248
+        "straight_line_mst_mm": 59.98
       },
       {
         "net": "SEC2_B",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR2B",
           "T2"
         ],
-        "straight_line_mst_mm": 57.248
+        "straight_line_mst_mm": 59.98
       },
       {
         "net": "SEC3_B",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR3B",
           "T3"
         ],
-        "straight_line_mst_mm": 57.248
+        "straight_line_mst_mm": 59.98
       },
       {
         "net": "SEC4_B",
-        "pads": 2,
+        "pads": 5,
         "refs": [
           "SR4B",
           "T4"
         ],
-        "straight_line_mst_mm": 57.248
+        "straight_line_mst_mm": 59.98
       },
       {
         "net": "PRI_T1",
@@ -922,32 +922,6 @@
         "U2.5",
         "U2.1",
         "U2.11"
-      ],
-      "the vendored footprint names pad 5 more than once, so the other pins of that group have no pad of their own": [
-        "SR1A.6",
-        "SR1A.7",
-        "SR1A.8",
-        "SR1B.6",
-        "SR1B.7",
-        "SR1B.8",
-        "SR2A.6",
-        "SR2A.7",
-        "SR2A.8",
-        "SR2B.6",
-        "SR2B.7",
-        "SR2B.8",
-        "SR3A.6",
-        "SR3A.7",
-        "SR3A.8",
-        "SR3B.6",
-        "SR3B.7",
-        "SR3B.8",
-        "SR4A.6",
-        "SR4A.7",
-        "SR4A.8",
-        "SR4B.6",
-        "SR4B.7",
-        "SR4B.8"
       ]
     },
     "netlist_pins_without_a_physical_pad_note": "grouped by why, because the two causes are different defects: a repeated pad name is a land-pattern gap, a padless outline is a placeholder",
@@ -1047,11 +1021,6 @@
     "generator": "tools/main_board_mechanical.py",
     "kicad_needed_for": "DRC and drawings only; the board file needs no KiCad",
     "kicad_version_source": "hardware/dcx_mech/drc.json:kicad_version",
-    "stock_footprints": [
-      {
-        "lib_id": "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm",
-        "sha256": "7ca4fe5be0d2737af7dd600a5a6fb16ca5ef3c6f460981b98ba0a4093075bcbb"
-      }
-    ]
+    "stock_footprints": []
   }
 }

@@ -971,7 +971,8 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   BSC010N04LS6 引脚把漏极拆成 5–8 ⇒ 6/7/8 脚没有自己的焊盘（`pad_pin_mapping.symbol_pins_without_a_pad`）。
   本板已由数据手册量出的 land pattern 关闭（见上），这条留在这里是因为它说明了
   **为什么不能靠改符号引脚号或改 vendor 封装去抹平**——那种改法会把缺件藏起来；
-  器件专用 land pattern 才是正解。A5 主功率板仍在用 vendored 件，同一个问题在那边还有。
+  器件专用 land pattern 才是正解。A5 主功率板也已换用同一份 land pattern（见"A5 带网摆放"），
+  那边不再有 6/7/8 脚无焊盘的问题。
 - SOT-23 封装配两脚稳压管（`D40`）会多出一个空焊盘：未命名的焊盘**必须保持无网络**，
   `test_a_pad_the_schematic_never_names_stays_netless` 锁住"闲置铜箔"与"接到未声明网络"的区别。
 - **装配审核是拿板子和 `BOM.csv` 对，不是拿板子和自己的件表对**：`assembly_review()` 从
@@ -1220,16 +1221,27 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 `main_board_mechanical.py` 已从"无网摆件"改成**带网摆放**（网从
 `hardware/dcx_main/pin_footprint_review.csv` 读，按**焊盘名**落户）。板仍然是**未布线**的。
 
-- **三个数不是同一个量**：`pads_landed` **120**（带网的焊盘**名**）、`physical_pads_netted`
-  **152**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **90**（= 120 − 30 条网）。
-  差额 32 = 8 只 SR × 4，因为 vendored TDSON-8 把五个漏极焊盘全编号 `"5"`。
+- **三个数不是同一个量**：`pads_landed` **144**（带网的焊盘**名**）、`physical_pads_netted`
+  **160**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **74**（**不是** 144 − 30）。
+  差额 16 = 8 只 SR × 2（漏极基座与一根指都叫 `5`，源极条与一根指都叫 `1`）。
   **KiCad 把同一封装里同号焊盘当一只连接实体**，所以老鼠线条数跟着焊盘**名**数走，
   不跟物理铜走——这正是厂家用同号漏极焊盘表达"这五个是一个引脚"的原因。两个数都报，
-  报一个会让另一个看起来像丢了的连接。
+  报一个会让另一个看起来像丢了的连接。**74 比两个计数都短**，因为 KiCad 还会把**铜重叠的
+  同网焊盘**并成一个节点（四根漏极指压进基座 0.125 mm），所以"老鼠线 = 焊盘名 − 网数"这个
+  等式不成立，不要写死。
+- **A5 的 SR 已换成按数据手册量出的 land pattern**（`dcx:BSC010N04LS6`，来自
+  `design/v3/pcb/bsc010n04ls6_land.json`，`make_sr_fault_board_pcb.bsc_source()` 生成），
+  所以 `netlist_pins_without_a_physical_pad` 里不再有 SR 脚（旧 vendored TDSON-8 把五个漏极
+  焊盘全编 `"5"`，6/7/8 脚没有焊盘）。A5 用**惰性 import** 调它，因为
+  `make_sr_fault_board_pcb` 反向 import 本模块的 `find_kicad_cli()`。
+  `land_pattern_provisional` 现在按**证据等级**判定（`datasheet` = 只有体尺寸），
+  **不再按注释里出现"land pattern"**——换封装后那句注释把八只 SR 全误判成占位。
+  `test_the_sr_drain_pins_now_have_pads_of_their_own` 与
+  `test_the_sr_fet_land_is_generated_from_the_datasheet_measurement` 锁住。
 - **`unconnected_items` 是第二个顶层数组**，不在 `violations` 里。只读 `violations` 会在
   一块一条线都没画的板上读出"0 个未连接"。`check()` 现在打印两个数，并带一条**反向守卫**：
   声明了网却报 0 条老鼠线 ⇒ `SystemExit`（要么真布完了，要么 `(net …)` 没落到焊盘上）。
-  **90 条是欠账，不是失败门**——`check()` 不为未连接失败。
+  **74 条是欠账，不是失败门**——`check()` 不为未连接失败。
 - **焊盘名就是身份**：Lr 用审查表的 `1`/`2`，**不是**原理图的 `N1`/`N2`（第一版按 N1/N2 建
   封装，Lr 一条网都没落上）；U2 的占位外形**没有焊盘**，所以它的十一条网表行一条都不该上板
   ——`part_nets()` 必须先按 `_pad_positions()` 过滤，否则 U2 会出现在 `PGND` 里。

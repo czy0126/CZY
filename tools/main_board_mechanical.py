@@ -34,8 +34,15 @@ Every outline carries an evidence class, and the report prints it:
 
 ``generated-json``  read from a tool's JSON in this repo (ELP32 core, Cout
                     height, busbar section).
-``kicad-library``   the stock footprint's own dimensions (the SR FET).
-``datasheet``       a package size the BOM marks VERIFIED.
+``digitised-datasheet``  a land pattern measured off the datasheet's board-pads
+                    figure (the SR FET).  Better than a borrowed library part,
+                    still not vendor CAD and not checked against IPC-7351.
+``kicad-library``   the stock footprint's own dimensions.  No part uses this
+                    class any more; the machinery is kept because the vendored
+                    library and its PROVENANCE guard are still exercised.
+``datasheet``       a package size the BOM marks VERIFIED.  Body only: the
+                    part's pads on this board are still placeholders, which is
+                    why the report lists it under ``land_pattern_provisional``.
 ``PROVISIONAL``     nobody has selected the part.  CT, Cr, J_IN and the
                     control area are placeholders with a stated size, and the
                     report lists them so a reader cannot mistake the drawing
@@ -220,7 +227,7 @@ def parts() -> tuple[Part, ...]:
     mag_d = core["core_depth_m"] * 1e3
     mag_h = core["height_max_m"] * 1e3
     COUT_FP = "dcx:Placeholder_Cout"
-    tds = "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm"
+    tds = "dcx:BSC010N04LS6"
 
     out: list[Part] = []
     # Row 1 -- the four transformers, one per 3:1:1 set, evenly spaced so the
@@ -258,9 +265,13 @@ def parts() -> tuple[Part, ...]:
     # stays local.
     for i, x0 in enumerate(SR_X0, start=1):
         out.append(Part(f"SR{i}A", "BSC010N04LS6", 7.36, 5.64, 1.0, x0, SR_ROW_Y,
-                        "kicad-library", tds))
+                        "digitised-datasheet", tds,
+                        note="land pattern digitised from the BSC010N04LS6 datasheet "
+                             "Fig. 2 (design/v3/pcb/bsc010n04ls6_land.json); drain 5-8 "
+                             "on a common base.  Not vendor CAD, not IPC-7351 checked"))
         out.append(Part(f"SR{i}B", "BSC010N04LS6", 7.36, 5.64, 1.0, x0 + SR_PAIR_MM,
-                        SR_ROW_Y, "kicad-library", tds))
+                        SR_ROW_Y, "digitised-datasheet", tds,
+                        note=f"same land pattern as SR{i}A"))
     # Row 4 -- the output bank, one row between the SRs and the busbar.  The
     # refs are Cout1..Cout15, *not* C100..: the schematic already spends
     # C101-C112 on the twelve IC decoupling capacitors, so reusing those names
@@ -345,6 +356,19 @@ def _ceil_half(v: float) -> float:
 
 
 # ---------------------------------------------------------------- report
+def _bsc_source() -> str:
+    """The SR FET land pattern, built by the module that digitised it.
+
+    Imported lazily because ``make_sr_fault_board_pcb`` imports *this* module
+    for ``find_kicad_cli()``; a top-level import would close the cycle.  The
+    footprint is generated from ``design/v3/pcb/bsc010n04ls6_land.json``, whose
+    own ``checks`` must all pass or that builder exits -- so this board cannot
+    silently inherit a land pattern the measurement has already rejected.
+    """
+    import make_sr_fault_board_pcb as srpcb
+    return srpcb.bsc_source()
+
+
 def _footprint_text(lib_id: str) -> str:
     name = lib_id.split(":", 1)[1]
     libs = footprint_library()
@@ -470,10 +494,11 @@ def nets_report() -> dict:
         "pads_landed": landed,
         "physical_pads_netted": physical,
         "pads_landed_note": "pad names with a net; physical pads are higher where a "
-                            "footprint repeats a name (the TDSON-8 drain).  KiCad "
-                            "treats same-numbered pads of one footprint as a single "
-                            "connected pad, so the ratsnest count follows this number, "
-                            "not physical_pads_netted",
+                            "footprint splits one pin across several lands (the SR FET "
+                            "drain: a common base plus four fingers, two of which share "
+                            "the name 5).  KiCad merges same-numbered pads, and also "
+                            "same-net lands whose copper overlaps, so the ratsnest is "
+                            "shorter than pads_landed - net_count",
         "nets": rows,
         "single_pad_nets": [n["net"] for n in rows if n["pads"] == 1],
         "single_pad_nets_note": "a net with one pad here draws no ratsnest line and "
@@ -544,8 +569,12 @@ def report() -> dict:
         "pocket": pocket_requirements(),
         "provisional": sorted(p.ref for p in PARTS if p.evidence == "PROVISIONAL"),
         "land_pattern_provisional": sorted(
-            p.ref for p in PARTS
-            if p.evidence == "datasheet" or "land pattern" in p.note.lower()),
+            # Class, not prose: ``datasheet`` means body dimensions only, so the
+            # pads are placeholders.  ``digitised-datasheet`` is the class that
+            # carries a measured land pattern and must not appear here -- the
+            # old substring test caught the SR FETs the moment their note
+            # started describing the new pad geometry.
+            p.ref for p in PARTS if p.evidence == "datasheet"),
         "nets": nets_report(),
         # Named explicitly so a consumer never has to guess the reference
         # scheme.  ``cout_bank_path.py`` used to select the bank by ``C1xx``;
@@ -691,6 +720,10 @@ def footprint_library() -> dict[str, str]:
             "Bulk output capacitor: max height 2.1 mm from YAGEO OEM; the "
             "7.3x4.3 outline fixed by OEM; PCB land pads are PROVISIONAL",
             [("1", -2.0, 0.0), ("2", 2.0, 0.0)]),
+        # The one real land pattern on this board.  The vendored TDSON-8 named
+        # all five drain lands "5", so the schematic's drain pins 6-8 had no
+        # pad; the datasheet figure has four drain fingers on a common base.
+        "BSC010N04LS6.kicad_mod": _bsc_source(),
     }
     return files
 
