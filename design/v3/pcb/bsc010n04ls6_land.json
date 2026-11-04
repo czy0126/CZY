@@ -1,0 +1,1037 @@
+{
+ "source": {
+  "pdf": "references/datasheets/bsc010n04ls6.pdf",
+  "sha256": "c868cf67712a0f5f8d1834adf0a810475e3ee88037ae9aadd2761a2f956d8b63",
+  "page_index": 10,
+  "figure": "Outline Boardpads (PG-TDSON-8-FL), dimensions in mm",
+  "revision": "2.3, 2022-07-21"
+ },
+ "pinout": {
+  "drain_pins": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "gate_pin": 4,
+  "source_pins": [
+   1,
+   2,
+   3
+  ],
+  "package": "PG-TDSON-8-FL",
+  "quoted": {
+   "drain": "Drain Pin 5-8",
+   "gate": "Gate Pin 4",
+   "source": "Source Pin 1-3"
+  }
+ },
+ "datum_pt": {
+  "left": [
+   191.8683,
+   255.6867
+  ],
+  "detail": [
+   416.2983,
+   255.6867
+  ]
+ },
+ "scale": {
+  "mm_per_pt": 0.0566437,
+  "spread": 0.011759,
+  "excluded_below_pt": 3.0,
+  "anchors": [
+   {
+    "name": "finger_pitch",
+    "pt": 22.44421132405599,
+    "mm": 1.27,
+    "pt_per_mm": 17.6726,
+    "usable": true
+   },
+   {
+    "name": "finger_width",
+    "pt": 8.835647583007812,
+    "mm": 0.5,
+    "pt_per_mm": 17.6713,
+    "usable": true
+   },
+   {
+    "name": "drain_half_width",
+    "pt": 38.96770477294922,
+    "mm": 2.205,
+    "pt_per_mm": 17.6724,
+    "usable": true
+   },
+   {
+    "name": "land_tip",
+    "pt": 58.696676025390616,
+    "mm": 3.325,
+    "pt_per_mm": 17.6531,
+    "usable": true
+   },
+   {
+    "name": "drain_shoulder",
+    "pt": 44.57667602539061,
+    "mm": 2.5250000000000004,
+    "pt_per_mm": 17.6541,
+    "usable": true
+   },
+   {
+    "name": "drain_outer",
+    "pt": 19.94732397460939,
+    "mm": 1.13,
+    "pt_per_mm": 17.6525,
+    "usable": true
+   },
+   {
+    "name": "drain_lead_len",
+    "pt": 14.120000000000005,
+    "mm": 0.8,
+    "pt_per_mm": 17.65,
+    "usable": true
+   },
+   {
+    "name": "source_land_width",
+    "pt": 56.36643981933594,
+    "mm": 3.19,
+    "pt_per_mm": 17.6697,
+    "usable": true
+   },
+   {
+    "name": "source_lead_len",
+    "pt": 9.620000000000005,
+    "mm": 0.55,
+    "pt_per_mm": 17.4909,
+    "usable": true
+   },
+   {
+    "name": "source_bar_inner",
+    "pt": 40.075323974609375,
+    "mm": 2.27,
+    "pt_per_mm": 17.6543,
+    "usable": true
+   },
+   {
+    "name": "gate_length",
+    "pt": 18.62188720703125,
+    "mm": 1.055,
+    "pt_per_mm": 17.6511,
+    "usable": true
+   },
+   {
+    "name": "gate_width",
+    "pt": 8.849273681640625,
+    "mm": 0.5,
+    "pt_per_mm": 17.6985,
+    "usable": true
+   },
+   {
+    "name": "base_to_finger_step",
+    "pt": 0.8722076416015625,
+    "mm": 0.05,
+    "pt_per_mm": 17.4442,
+    "usable": false
+   }
+  ]
+ },
+ "copper": {
+  "drain_base": [
+   -1.13,
+   -2.205,
+   2.525,
+   2.205
+  ],
+  "drain_fingers": [
+   {
+    "pin": "5",
+    "rect": [
+     2.525,
+     1.655,
+     3.325,
+     2.155
+    ]
+   },
+   {
+    "pin": "6",
+    "rect": [
+     2.525,
+     0.385,
+     3.325,
+     0.885
+    ]
+   },
+   {
+    "pin": "7",
+    "rect": [
+     2.525,
+     -0.885,
+     3.325,
+     -0.385
+    ]
+   },
+   {
+    "pin": "8",
+    "rect": [
+     2.525,
+     -2.155,
+     3.325,
+     -1.655
+    ]
+   }
+  ],
+  "source_bar": [
+   -2.775,
+   -2.305,
+   -2.27,
+   0.885
+  ],
+  "source_fingers": [
+   {
+    "pin": "1",
+    "rect": [
+     -3.325,
+     -2.155,
+     -2.775,
+     -1.655
+    ]
+   },
+   {
+    "pin": "2",
+    "rect": [
+     -3.325,
+     -0.885,
+     -2.775,
+     -0.385
+    ]
+   },
+   {
+    "pin": "3",
+    "rect": [
+     -3.325,
+     0.385,
+     -2.775,
+     0.885
+    ]
+   }
+  ],
+  "gate": [
+   -3.325,
+   1.655,
+   -2.27,
+   2.155
+  ]
+ },
+ "mask": {
+  "drain": [
+   -1.18,
+   -2.255,
+   3.375,
+   2.255
+  ],
+  "source": [
+   -3.375,
+   -2.355,
+   -2.22,
+   0.935
+  ],
+  "gate": [
+   -3.375,
+   1.605,
+   -2.22,
+   2.205
+  ]
+ },
+ "paste": [
+  {
+   "kind": "drain_lead",
+   "rect": [
+    2.475,
+    1.705,
+    3.275,
+    2.105
+   ]
+  },
+  {
+   "kind": "drain_lead",
+   "rect": [
+    2.475,
+    0.435,
+    3.275,
+    0.835
+   ]
+  },
+  {
+   "kind": "drain_lead",
+   "rect": [
+    2.475,
+    -0.835,
+    3.275,
+    -0.435
+   ]
+  },
+  {
+   "kind": "drain_lead",
+   "rect": [
+    2.475,
+    -2.105,
+    3.275,
+    -1.705
+   ]
+  },
+  {
+   "kind": "block_right",
+   "rect": [
+    0.72,
+    0.1,
+    2.12,
+    1.8
+   ]
+  },
+  {
+   "kind": "block_left",
+   "rect": [
+    0.72,
+    -1.8,
+    2.12,
+    -0.1
+   ]
+  },
+  {
+   "kind": "block_right",
+   "rect": [
+    -0.88,
+    0.1,
+    0.52,
+    1.8
+   ]
+  },
+  {
+   "kind": "block_left",
+   "rect": [
+    -0.88,
+    -1.8,
+    0.52,
+    -0.1
+   ]
+  },
+  {
+   "kind": "source_bar",
+   "rect": [
+    -2.7225,
+    -2.265,
+    -2.3225,
+    -1.365
+   ]
+  },
+  {
+   "kind": "source_bar",
+   "rect": [
+    -2.7225,
+    -1.165,
+    -2.3225,
+    -0.265
+   ]
+  },
+  {
+   "kind": "source_bar",
+   "rect": [
+    -2.7225,
+    -0.065,
+    -2.3225,
+    0.835
+   ]
+  },
+  {
+   "kind": "source_lead",
+   "rect": [
+    -3.275,
+    -2.105,
+    -2.925,
+    -1.705
+   ]
+  },
+  {
+   "kind": "source_lead",
+   "rect": [
+    -3.275,
+    -0.835,
+    -2.925,
+    -0.435
+   ]
+  },
+  {
+   "kind": "source_lead",
+   "rect": [
+    -3.275,
+    0.435,
+    -2.925,
+    0.835
+   ]
+  },
+  {
+   "kind": "gate",
+   "rect": [
+    -3.275,
+    1.705,
+    -2.475,
+    2.105
+   ]
+  }
+ ],
+ "pads": [
+  {
+   "number": "5",
+   "kind": "drain_base",
+   "rect": [
+    -1.13,
+    -2.205,
+    2.525,
+    2.205
+   ],
+   "layers": [
+    "F.Cu"
+   ]
+  },
+  {
+   "number": "5",
+   "kind": "drain_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4,
+    1.655,
+    3.325,
+    2.155
+   ]
+  },
+  {
+   "number": "6",
+   "kind": "drain_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4,
+    0.385,
+    3.325,
+    0.885
+   ]
+  },
+  {
+   "number": "7",
+   "kind": "drain_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4,
+    -0.885,
+    3.325,
+    -0.385
+   ]
+  },
+  {
+   "number": "8",
+   "kind": "drain_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4,
+    -2.155,
+    3.325,
+    -1.655
+   ]
+  },
+  {
+   "number": "1",
+   "kind": "source_bar",
+   "rect": [
+    -2.775,
+    -2.305,
+    -2.27,
+    0.885
+   ],
+   "layers": [
+    "F.Cu"
+   ]
+  },
+  {
+   "number": "1",
+   "kind": "source_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.325,
+    -2.155,
+    -2.65,
+    -1.655
+   ]
+  },
+  {
+   "number": "2",
+   "kind": "source_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.325,
+    -0.885,
+    -2.65,
+    -0.385
+   ]
+  },
+  {
+   "number": "3",
+   "kind": "source_lead",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.325,
+    0.385,
+    -2.65,
+    0.885
+   ]
+  },
+  {
+   "number": "4",
+   "kind": "gate",
+   "rect": [
+    -3.325,
+    1.655,
+    -2.27,
+    2.155
+   ],
+   "layers": [
+    "F.Cu"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask:drain",
+   "rect": [
+    -1.18,
+    -2.255,
+    3.375,
+    2.255
+   ],
+   "layers": [
+    "F.Mask"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask:source",
+   "rect": [
+    -3.375,
+    -2.355,
+    -2.22,
+    0.935
+   ],
+   "layers": [
+    "F.Mask"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask:gate",
+   "rect": [
+    -3.375,
+    1.605,
+    -2.22,
+    2.205
+   ],
+   "layers": [
+    "F.Mask"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:drain_lead",
+   "rect": [
+    2.475,
+    1.705,
+    3.275,
+    2.105
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:drain_lead",
+   "rect": [
+    2.475,
+    0.435,
+    3.275,
+    0.835
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:drain_lead",
+   "rect": [
+    2.475,
+    -0.835,
+    3.275,
+    -0.435
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:drain_lead",
+   "rect": [
+    2.475,
+    -2.105,
+    3.275,
+    -1.705
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:block_right",
+   "rect": [
+    0.72,
+    0.1,
+    2.12,
+    1.8
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:block_left",
+   "rect": [
+    0.72,
+    -1.8,
+    2.12,
+    -0.1
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:block_right",
+   "rect": [
+    -0.88,
+    0.1,
+    0.52,
+    1.8
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:block_left",
+   "rect": [
+    -0.88,
+    -1.8,
+    0.52,
+    -0.1
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:source_bar",
+   "rect": [
+    -2.7225,
+    -2.265,
+    -2.3225,
+    -1.365
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:source_bar",
+   "rect": [
+    -2.7225,
+    -1.165,
+    -2.3225,
+    -0.265
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:source_bar",
+   "rect": [
+    -2.7225,
+    -0.065,
+    -2.3225,
+    0.835
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:source_lead",
+   "rect": [
+    -3.275,
+    -2.105,
+    -2.925,
+    -1.705
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:source_lead",
+   "rect": [
+    -3.275,
+    -0.835,
+    -2.925,
+    -0.435
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:source_lead",
+   "rect": [
+    -3.275,
+    0.435,
+    -2.925,
+    0.835
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste:gate",
+   "rect": [
+    -3.275,
+    1.705,
+    -2.475,
+    2.105
+   ],
+   "layers": [
+    "F.Paste"
+   ]
+  }
+ ],
+ "courtyard": [
+  -3.575,
+  -2.825,
+  3.575,
+  2.825
+ ],
+ "body": {
+  "w": 6.15,
+  "d": 5.15
+ },
+ "pad_overlap_mm": 0.125,
+ "mask_expansion_mm": 0.05,
+ "results": {
+  "residuals_mm": {
+   "drain_base": 0.0028,
+   "source_bar": 0.0049,
+   "gate": 0.0024,
+   "drain_fingers": 0.0024,
+   "source_fingers": 0.0049,
+   "paste": 0.0025,
+   "mask": 0.0006,
+   "paste_bar_span": 0.0033
+  },
+  "drawn_paste": [
+   {
+    "kind": "drain_lead",
+    "drawn": [
+     2.4746,
+     -2.1069,
+     3.2744,
+     -1.7065
+    ],
+    "residual_mm": 0.0019
+   },
+   {
+    "kind": "drain_lead",
+    "drawn": [
+     2.4746,
+     -0.8358,
+     3.2744,
+     -0.4354
+    ],
+    "residual_mm": 0.0008
+   },
+   {
+    "kind": "drain_lead",
+    "drawn": [
+     2.4746,
+     0.4354,
+     3.2744,
+     0.8358
+    ],
+    "residual_mm": 0.0008
+   },
+   {
+    "kind": "drain_lead",
+    "drawn": [
+     2.4746,
+     1.7065,
+     3.2744,
+     2.1069
+    ],
+    "residual_mm": 0.0019
+   },
+   {
+    "kind": "block_left",
+    "drawn": [
+     0.7197,
+     -1.8023,
+     2.1199,
+     -0.0998
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "block_right",
+    "drawn": [
+     0.7197,
+     0.0998,
+     2.1199,
+     1.8023
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "block_left",
+    "drawn": [
+     -0.88,
+     -1.8023,
+     0.5202,
+     -0.0998
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "block_right",
+    "drawn": [
+     -0.88,
+     0.0998,
+     0.5202,
+     1.8023
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "source_bar",
+    "drawn": [
+     -2.7244,
+     -2.2675,
+     -2.3245,
+     -1.3658
+    ],
+    "residual_mm": 0.0025
+   },
+   {
+    "kind": "source_bar",
+    "drawn": [
+     -2.7244,
+     -1.1662,
+     -2.3245,
+     -0.2656
+    ],
+    "residual_mm": 0.002
+   },
+   {
+    "kind": "source_bar",
+    "drawn": [
+     -2.7244,
+     -0.0648,
+     -2.3245,
+     0.8358
+    ],
+    "residual_mm": 0.002
+   },
+   {
+    "kind": "gate",
+    "drawn": [
+     -3.2744,
+     1.7065,
+     -2.4746,
+     2.1069
+    ],
+    "residual_mm": 0.0019
+   },
+   {
+    "kind": "source_lead",
+    "drawn": [
+     -3.2744,
+     -2.1069,
+     -2.9249,
+     -1.7065
+    ],
+    "residual_mm": 0.0019
+   },
+   {
+    "kind": "source_lead",
+    "drawn": [
+     -3.2744,
+     -0.8358,
+     -2.9249,
+     -0.4354
+    ],
+    "residual_mm": 0.0008
+   },
+   {
+    "kind": "source_lead",
+    "drawn": [
+     -3.2744,
+     0.4354,
+     -2.9249,
+     0.8358
+    ],
+    "residual_mm": 0.0008
+   }
+  ],
+  "drawn_mask": [
+   {
+    "kind": "source",
+    "drawn": [
+     -3.3742,
+     -2.358,
+     -2.2197,
+     0.9356
+    ],
+    "residual_mm": 0.0006
+   },
+   {
+    "kind": "drain",
+    "drawn": [
+     -1.1802,
+     -2.2572,
+     3.3742,
+     2.2572
+    ],
+    "residual_mm": 0.0006
+   },
+   {
+    "kind": "gate",
+    "drawn": [
+     -3.3742,
+     1.6067,
+     -2.2197,
+     2.2068
+    ],
+    "residual_mm": 0.0006
+   }
+  ],
+  "copper_area_mm2": 20.682,
+  "paste_area_mm2": 12.62,
+  "paste_fraction": 0.6102,
+  "hatch_clusters": 15,
+  "hatch_vs_quad_max_mm": 0.0001
+ },
+ "callouts": {
+  "printed": [
+   0.05,
+   0.15,
+   0.18,
+   0.35,
+   0.4,
+   0.5,
+   0.55,
+   0.8,
+   0.9,
+   0.95,
+   1.055,
+   1.1,
+   1.13,
+   1.27,
+   1.4,
+   1.42,
+   1.7,
+   1.815,
+   1.905,
+   2.205,
+   2.27,
+   2.525,
+   2.798,
+   2.875,
+   3.1,
+   3.19,
+   3.325
+  ],
+  "used": [
+   0.05,
+   0.15,
+   0.18,
+   0.35,
+   0.4,
+   0.5,
+   0.55,
+   0.8,
+   0.9,
+   0.95,
+   1.055,
+   1.1,
+   1.13,
+   1.27,
+   1.4,
+   1.42,
+   1.7,
+   1.815,
+   1.905,
+   2.205,
+   2.27,
+   2.525,
+   2.798,
+   2.875,
+   3.1,
+   3.19,
+   3.325
+  ],
+  "unassigned": []
+ },
+ "checks": {
+  "the_page_is_figure_2": true,
+  "every_scale_anchor_agrees": true,
+  "every_model_dimension_matches_the_drawing": true,
+  "the_stencil_quads_and_the_hatch_agree": true,
+  "every_modelled_aperture_is_drawn": true,
+  "the_stencil_is_smaller_than_the_land": true,
+  "every_pad_number_is_a_symbol_pin": true
+ },
+ "limitations": [
+  "The finger-to-pin assignment follows SO-8 numbering, not a printed marker: pins 5-8 are one electrical node, so a wrong assignment is invisible electrically and only relabels copper.",
+  "The stencil inset from the land tip is 0.05 by inference; the drawing measures 0.055 and the 0.05 callout is used elsewhere.",
+  "The legend's 'copper' swatch is a grey fill, while every dimension on the sheet measures the thick black outline and the stencil clears it by exactly 0.05.  The black outline is read as copper and the grey as the mask opening grown by 0.05; the swatch is the contrary evidence.",
+  "No 3D model of this land; the vendored footprint's model is for the same body, not for these lands.",
+  "Silkscreen and F.Fab outlines are not on the drawing and are carried over from the vendored footprint unchanged."
+ ]
+}

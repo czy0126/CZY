@@ -187,22 +187,24 @@ def test_every_pad_carries_the_schematic_net(board_text, placed):
     assert seen == set(table)
 
 
-def test_the_drain_lands_share_one_pad_number_and_that_is_reported(placed):
-    """The vendored TDSON-8 numbers all five drain lands "5"; the symbol models
-    the real device, whose drain is pins 5-8.  All five lands still carry the
-    drain net, so nothing floats -- but the gap is stated, not rounded off."""
+def test_each_drain_pin_owns_a_land(placed):
+    """The vendored TDSON-8 numbered all five drain lands "5", so the symbol's
+    pins 6-8 had no copper of their own.  The digitised land pattern gives the
+    four drain fingers pads 5-8 on a common base, which closes the gap -- and
+    this test is what stops a future edit from quietly reverting to a generic
+    footprint and re-opening it."""
     data = pcb.report(placed)
-    assert data["pad_pin_mapping"]["symbol_pins_without_a_pad"] == {
-        "Q1": ["6", "7", "8"], "Q2": ["6", "7", "8"]}
-    pads = pcb.pad_numbers("Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
-    assert pads.count("5") == 5
-    assert {"6", "7", "8"}.isdisjoint(pads)
+    assert data["pad_pin_mapping"]["symbol_pins_without_a_pad"] == {}
+    pads = pcb.pad_numbers(pcb.BSC_LIB_ID)
+    assert pads.count("5") == 2                  # the base and drain finger 5
+    assert {"6", "7", "8"} <= set(pads)
     text = (OUT / pcb.BOARD).read_text(encoding="utf-8")
     for ref, _, _, _, ps in _footprints(text):
         if ref not in ("Q1", "Q2"):
             continue
-        drain = [p for p in ps if p["number"] == "5"]
+        drain = [p for p in ps if p["number"] in ("5", "6", "7", "8")]
         assert len(drain) == 5
+        assert {p["number"] for p in drain} == {"5", "6", "7", "8"}
         assert {p["net"] for p in drain} == {"SEC_A" if ref == "Q1" else "SEC_B"}
 
 
@@ -574,14 +576,43 @@ def test_the_mounting_hole_library_is_generated(placed):
     assert lib.read_text(encoding="utf-8") == pcb.mounting_hole_source()
 
 
+def test_the_bsc_land_library_is_generated_from_the_digitised_page():
+    """The footprint is a consumer of the measurement, not a second copy of it.
+
+    ``tools/bsc010n04ls6_land.py`` refuses to write unless every printed callout
+    matches its model; this asserts the emitted library is that model, so a
+    hand-edit of either file shows up as a failure rather than as two files that
+    disagree about the same copper.
+    """
+    lib = OUT / "dcx.pretty" / "BSC010N04LS6.kicad_mod"
+    assert lib.read_text(encoding="utf-8") == pcb.bsc_source()
+    land = pcb.bsc_land()
+    assert len(pcb.pad_numbers(pcb.BSC_LIB_ID)) == sum(
+        1 for pad in land["pads"] if pad["number"])
+
+
+def test_the_mask_and_stencil_are_their_own_pads():
+    """Three layers of the drawing, three kinds of pad.
+
+    Letting a copper pad imply its mask opening would replace the drawn 0.05 mm
+    expansion with the land outline, and imply a stencil as large as the land.
+    """
+    land = pcb.bsc_land()
+    assert {"mask", "paste"} <= {pad["kind"].split(":")[0] for pad in land["pads"]}
+    assert all(pad["number"] == "" for pad in land["pads"]
+               if pad["layers"] in (["F.Mask"], ["F.Paste"]))
+    assert all(pad["layers"] == ["F.Cu"] for pad in land["pads"]
+               if pad["number"])
+
+
 def test_the_honesty_flags_keep_the_board_unreleased():
     """``routed`` is a fact about connectivity, not a release.
 
-    Every net is connected and DRC is clean of placement defects, and the
-    power nets now carry pours -- but those pours are outlines whose fill has
-    not been measured, the BSC010N04LS6 has no device-specific land, and
-    nothing has been built.  Those are the flags that keep the board out of a
-    fabrication order.
+    Every net is connected, DRC is clean of placement defects, the pours have
+    been refilled and measured, and BSC010N04LS6 now carries a land pattern
+    digitised from its datasheet -- and nothing has been built.  The fills
+    retain 2.5-64 % of their outlines, so the current path is still a 0.8 mm
+    escape: ``routed`` is a fact about connectivity, never a release.
     """
     data = pcb.report()
     assert data["routed"] is True

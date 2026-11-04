@@ -287,24 +287,24 @@
     {
       "ref": "Q1",
       "value": "BSC010N04LS6",
-      "footprint": "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm",
+      "footprint": "dcx:BSC010N04LS6",
       "block": "fixed",
       "x_mm": 48.0,
       "y_mm": 38.0,
       "rot_deg": 0.0,
-      "courtyard_w_mm": 7.36,
-      "courtyard_d_mm": 5.64
+      "courtyard_w_mm": 7.15,
+      "courtyard_d_mm": 5.65
     },
     {
       "ref": "Q2",
       "value": "BSC010N04LS6",
-      "footprint": "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm",
+      "footprint": "dcx:BSC010N04LS6",
       "block": "fixed",
       "x_mm": 48.0,
       "y_mm": 62.0,
       "rot_deg": 0.0,
-      "courtyard_w_mm": 7.36,
-      "courtyard_d_mm": 5.64
+      "courtyard_w_mm": 7.15,
+      "courtyard_d_mm": 5.65
     },
     {
       "ref": "Q40",
@@ -856,19 +856,8 @@
     }
   },
   "pad_pin_mapping": {
-    "symbol_pins_without_a_pad": {
-      "Q1": [
-        "6",
-        "7",
-        "8"
-      ],
-      "Q2": [
-        "6",
-        "7",
-        "8"
-      ]
-    },
-    "note": "the vendored Infineon PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain pins 6-8 have no pad of their own; every drain land still carries the drain net, so this is a missing device-specific land pattern, not a floating connection"
+    "symbol_pins_without_a_pad": {},
+    "note": "Q1/Q2 use dcx:BSC010N04LS6, digitised from the datasheet's board-pads figure (design/v3/pcb/bsc010n04ls6_land.json): the four drain fingers are pads 5-8 on a common base and the source bar repeats 1-3, so every symbol pin owns a land.  The vendored Infineon PG-TDSON-8 this replaced numbered all five drain lands '5' and left pins 6-8 without copper."
   },
   "checks": {
     "every_footprinted_part_is_placed_exactly_once": true,
@@ -915,10 +904,10 @@
   "routed": true,
   "routing": {
     "routed": true,
-    "segments": 2326,
-    "vias": 106,
-    "connections_made": 119,
-    "connections_attempted": 119,
+    "segments": 2270,
+    "vias": 112,
+    "connections_made": 121,
+    "connections_attempted": 121,
     "unrouted_nets": [],
     "failures": [],
     "clearance_violations": [],
@@ -1081,7 +1070,7 @@
   "hardware_built": false,
   "fabrication_approved": false,
   "evidence": {
-    "footprints": "vendored KiCad 10.0.6 stock footprints; see hardware/stock_footprints/PROVENANCE.md",
+    "footprints": "vendored KiCad 10.0.6 stock footprints (see hardware/stock_footprints/PROVENANCE.md), plus two generated ones in dcx.pretty: the mounting hole, and BSC010N04LS6 whose lands come from design/v3/pcb/bsc010n04ls6_land.json",
     "placement": "block packing, not an optimised placement; the power-stage bodies are fixed to keep the commutation loop in one direction",
     "nets": "same part table as the schematic generator, so the net names are the schematic's",
     "drc": "kicad-cli output goes to drc.json; the router's own clearance check runs in CI, where kicad-cli is absent",
@@ -1089,7 +1078,7 @@
     "pours": "zone outlines in POURS, filled only at DRC time; the fill is a build product and its patchiness is reported, not assumed away"
   },
   "remaining_work": [
-    "get a device-specific land pattern for BSC010N04LS6: the vendored PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain pins 6-8 have no pad of their own",
+    "check the digitised land against a vendor CAD model or an IPC-7351 calculation when one is available: it is measured from Fig. 2 of the datasheet (max residual 4.9 um) but is still a redrawing, and neither this repository nor the sheet's board-pads figure says whether the lands are to IPC density level A, B or C",
     "route with the pours in mind: measured in fill.json, the fills recover between 2.5 % and 64 % of their own outline because the routing came first and every track crossing an outline slits it.  The secondary corridors show it worst: SEC_B keeps 2.5 % of 360 mm2 and contains one of the lands it serves (J3.3, whose centre sits on the outline edge), SEC_A keeps 10.7 % and contains no land centre at all -- it joins the net through the tracks the fill touches.  So each corridor is a strip beside a 0.8 mm escape, not a conductor.  Either re-route with the pour corridors kept clear of signal copper, or go to four layers and use an inner plane; until then the current path is the escapes",
     "keep the VSS Kelvin tap (R1) off the power return -- the PGND pour is what must not creep up to it, and that is a fill question, not a track question",
     "move the reference designators off one another (the cosmetic silk backlog)",

@@ -248,6 +248,11 @@ V3_SOURCES = {
         # across Rbur, which the srprobe family already saves.
         "tools/oc_burden_pulse.py",
         "tools/test_oc_burden_pulse.py",
+        # The SR validation board's land pattern: measured from Fig. 2 of the
+        # BSC010N04LS6 sheet, because the vendored PG-TDSON-8 leaves symbol
+        # drain pins 6-8 without a pad.
+        "tools/bsc010n04ls6_land.py",
+        "tools/test_bsc010n04ls6_land.py",
     ],
     "result": [
         "design/v3/magnetics/magnetics_design.json",
@@ -273,6 +278,7 @@ V3_SOURCES = {
         "design/v3/bom/bom_draft.csv",
         "design/v3/pcb/board_netlist.csv",
         "design/v3/pcb/board_netlist.json",
+        "design/v3/pcb/bsc010n04ls6_land.json",
         "design/v3/stage_f/powerup_checklist.json",
         "design/v3/stage_f/上电检查表.md",
         "design/v3/stage_f/energy_ledger_100a.json",

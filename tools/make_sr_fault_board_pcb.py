@@ -73,6 +73,11 @@ GAP_MM = 1.25          # courtyard-to-courtyard; see the breakout note below
 GRID_MM = 0.5
 HOLE_COURTYARD_R_MM = 3.7
 HOLE_LIB_ID = "dcx:MountingHole_3.2mm_M3"
+BSC_LIB_ID = "dcx:BSC010N04LS6"
+# The land pattern is a measurement of the datasheet, not a literal in this
+# file: tools/bsc010n04ls6_land.py digitises Figure 2 and refuses to write
+# unless every printed callout matches its model to within 10 um.
+BSC_LAND_JSON = ROOT / "design" / "v3" / "pcb" / "bsc010n04ls6_land.json"
 
 # Track widths.  0.25 mm is a signal track; 0.8 mm is the widest that still
 # fits between a fine-pitch land and its neighbours on a two-layer board with
@@ -300,11 +305,11 @@ def pad_numbers(lib_id: str) -> list[str]:
 def pad_pin_mapping(table: dict) -> dict:
     """Symbol pins that have no pad of their own, per part.
 
-    The vendored ``Infineon_PG-TDSON-8`` numbers all five drain lands "5", while
-    the schematic symbol models the real BSC010N04LS6 pinout, whose drain is
-    pins 5-8.  Every drain land still carries the right net, so nothing is
-    floating; what is missing is a device-specific land pattern, and this field
-    is where that stays visible instead of being rounded to "mapping complete".
+    A vendored generic footprint can carry the right nets and still leave a
+    symbol pin without a land -- the ``Infineon_PG-TDSON-8`` numbers all five
+    drain lands "5", so pins 6-8 of the real BSC010N04LS6 pinout had none.  This
+    field makes that gap visible rather than rounding it to "mapping complete";
+    it is empty only while every part's footprint really covers all its pins.
     """
     out: dict[str, list[str]] = {}
     for ref, part in sorted(table.items(), key=lambda kv: _natural(kv[0])):
@@ -410,8 +415,126 @@ def mounting_hole_source() -> str:
     )
 
 
+def bsc_land() -> dict:
+    """The digitised BSC010N04LS6 land pattern, checked before it is trusted.
+
+    Reading the committed JSON rather than transcribing numbers into this
+    module is what keeps a re-digitisation and its consumer from drifting
+    apart, and it keeps the provenance (page, fitted scale, residuals) attached
+    to the copper that came out of it.
+    """
+    if not BSC_LAND_JSON.is_file():
+        raise SystemExit(f"{BSC_LAND_JSON} is missing: run "
+                         f"tools/bsc010n04ls6_land.py --write")
+    with BSC_LAND_JSON.open(encoding="utf-8") as fh:
+        data = json.load(fh)
+    failed = sorted(k for k, ok in data["checks"].items() if not ok)
+    if failed:
+        raise SystemExit(f"{BSC_LAND_JSON} fails its own checks: {failed}")
+    return data
+
+
+def bsc_source() -> str:
+    """BSC010N04LS6 lands as a library footprint without a gap in the pin map.
+
+    The vendored ``Infineon_PG-TDSON-8`` numbers all five drain lands "5", while
+    the schematic models the real pinout, whose drain is pins 5-8: three symbol
+    pins therefore had no pad.  Here the datasheet's four drain fingers are pads
+    5/6/7/8 on a common base, each overlapping the base by 0.125 mm so KiCad sees
+    one continuous land, and the source bar repeats 1/2/3 the same way.
+
+    Copper, mask and stencil are three separate layers of the drawing, so they
+    are three separate kinds of pad: copper pads carry only ``F.Cu``, mask pads
+    only ``F.Mask``, stencil openings only ``F.Paste``.  Letting a copper pad
+    imply its own mask opening would replace the drawn 0.05 mm expansion with
+    the land outline, and imply a stencil equal to the land.
+
+    Silkscreen, the F.Fab body outline and the 3D model are carried over from
+    the vendored footprint unchanged -- they are not on the board-pads figure,
+    and the model belongs to the same body rather than to these lands.
+    """
+    land = bsc_land()
+    worst_um = max(land["results"]["residuals_mm"].values()) * 1000
+    out = [
+        '(footprint "BSC010N04LS6"\n'
+        '\t(version 20260206)\n\t(generator "make_sr_fault_board_pcb")\n'
+        '\t(generator_version "10.0")\n\t(layer "F.Cu")\n'
+        f'\t(descr "Infineon PG-TDSON-8-FL, 6.15x5.15 mm.  Lands digitised from the '
+        f'BSC010N04LS6 datasheet Fig. 2 (scale {land["scale"]["mm_per_pt"]:.6f} mm/pt, '
+        f'max residual {worst_um:.1f} um, source sha256 {land["source"]["sha256"]}).  '
+        f'Drain 5-8 on a common base, source 1-3 on a common bar.")\n'
+        '\t(attr smd)\n'
+        '\t(duplicate_pad_numbers_are_jumpers no)\n'
+        '\t(property "Reference" "REF**"\n'
+        '\t\t(at 0 -3.9 0)\n\t\t(layer "F.SilkS")\n'
+        f'\t\t(uuid "{uid("bsc", "ref")}")\n'
+        '\t\t(effects (font (size 1 1) (thickness 0.15)))\n\t)\n'
+        '\t(property "Value" "BSC010N04LS6"\n'
+        '\t\t(at 0 3.9 0)\n\t\t(layer "F.Fab")\n'
+        f'\t\t(uuid "{uid("bsc", "val")}")\n'
+        '\t\t(effects (font (size 1 1) (thickness 0.15)))\n\t)\n'
+    ]
+    # Silkscreen: body edges and the pin-1 wedge, untouched from the vendored
+    # footprint because the board-pads figure does not draw them.
+    for i, (start, end) in enumerate((
+            ((3.005, -2.685), (-2.995, -2.685)),
+            ((3.005, 2.64), (-2.995, 2.64)))):
+        out.append(f'\t(fp_line\n\t\t(start {start[0]:g} {start[1]:g})\n'
+                   f'\t\t(end {end[0]:g} {end[1]:g})\n'
+                   '\t\t(stroke (width 0.12) (type solid))\n'
+                   f'\t\t(layer "F.SilkS")\n\t\t(uuid "{uid("bsc", "silk", str(i))}")\n\t)\n')
+    out.append('\t(fp_poly\n\t\t(pts (xy -3.681827 -1.91) (xy -4.011827 -1.67) '
+               '(xy -4.011827 -2.15) (xy -3.681827 -1.91))\n'
+               '\t\t(stroke (width 0.12) (type solid))\n\t\t(fill yes)\n'
+               f'\t\t(layer "F.SilkS")\n\t\t(uuid "{uid("bsc", "pin1")}")\n\t)\n')
+    # F.Fab: the body with its chamfered pin-1 corner, also carried over.
+    for i, (start, end) in enumerate((
+            ((-3.035, -1.57), (-3.04, 2.56)),
+            ((-2.045, -2.575), (-3.045, -1.575)),
+            ((-2.04, -2.58), (3.11, -2.58)),
+            ((3.11, -2.58), (3.11, 2.57)),
+            ((3.11, 2.57), (-3.04, 2.57)))):
+        out.append(f'\t(fp_line\n\t\t(start {start[0]:g} {start[1]:g})\n'
+                   f'\t\t(end {end[0]:g} {end[1]:g})\n'
+                   f'\t\t(stroke (width 0.1) (type solid))\n'
+                   f'\t\t(layer "F.Fab")\n\t\t(uuid "{uid("bsc", "fab", str(i))}")\n\t)\n')
+    out.append('\t(fp_text user "${REFERENCE}"\n\t\t(at -1.9 0.05 90)\n'
+               '\t\t(layer "F.Fab")\n'
+               f'\t\t(uuid "{uid("bsc", "fabref")}")\n'
+               '\t\t(effects (font (size 1 1) (thickness 0.15)))\n\t)\n')
+    # Courtyard: the digitised box, closed.  A courtyard that is not closed is
+    # the same as no courtyard, and DRC would then exempt the part.
+    x0, y0, x1, y1 = land["courtyard"]
+    for i, (start, end) in enumerate((
+            ((x0, y0), (x1, y0)), ((x0, y0), (x0, y1)),
+            ((x1, y0), (x1, y1)), ((x1, y1), (x0, y1)))):
+        out.append(f'\t(fp_line\n\t\t(start {start[0]:g} {start[1]:g})\n'
+                   f'\t\t(end {end[0]:g} {end[1]:g})\n'
+                   f'\t\t(stroke (width 0.05) (type solid))\n'
+                   f'\t\t(layer "F.CrtYd")\n\t\t(uuid "{uid("bsc", "crt", str(i))}")\n\t)\n')
+    # Pads, straight out of the measurement: number, layers and rectangle.
+    for i, pad in enumerate(land["pads"]):
+        px0, py0, px1, py1 = pad["rect"]
+        layers = " ".join(f'"{name}"' for name in pad["layers"])
+        out.append(f'\t(pad "{pad["number"]}" smd rect\n'
+                   f'\t\t(at {(px0 + px1) / 2:.4f} {(py0 + py1) / 2:.4f})\n'
+                   f'\t\t(size {px1 - px0:.4f} {py1 - py0:.4f})\n'
+                   f'\t\t(layers {layers})\n'
+                   f'\t\t(uuid "{uid("bsc", "pad", str(i))}")\n\t)\n')
+    out.append('\t(model "${KICAD10_3DMODEL_DIR}/Package_SON.3dshapes/'
+               'Infineon_PG-TDSON-8_6.15x5.15mm.step"\n'
+               '\t\t(offset (xyz 0 0 0))\n\t\t(scale (xyz 1 1 1))\n'
+               '\t\t(rotate (xyz 0 0 0))\n\t)\n'
+               '\t(embedded_fonts no)\n)\n')
+    return "".join(out)
+
+
 def _source(lib_id: str) -> str:
-    return mounting_hole_source() if lib_id == HOLE_LIB_ID else stock_text(lib_id)
+    if lib_id == HOLE_LIB_ID:
+        return mounting_hole_source()
+    if lib_id == BSC_LIB_ID:
+        return bsc_source()
+    return stock_text(lib_id)
 
 
 def bounds(lib_id: str) -> tuple[float, float, float, float]:
@@ -827,7 +950,8 @@ def fp_lib_table() -> str:
         f'(options "")(descr "vendored KiCad 10.0.6 footprint"))\n'
         for lib in libs)
     rows += ('  (lib (name "dcx")(type "KiCad")(uri "${KIPRJMOD}/dcx.pretty")'
-             '(options "")(descr "generated footprints: mounting holes"))\n')
+             '(options "")(descr "generated footprints: mounting holes, and the '
+             'BSC010N04LS6 land digitised from its datasheet"))\n')
     return f'(fp_lib_table\n  (version 7)\n{rows})\n'
 
 
@@ -1098,10 +1222,12 @@ def report(placed: list[Placed] | None = None,
         "blocks": {name: {"rect_mm": list(rect)} for name, rect in BLOCKS.items()},
         "pad_pin_mapping": {
             "symbol_pins_without_a_pad": pad_pin_mapping(table),
-            "note": "the vendored Infineon PG-TDSON-8 numbers all five drain lands "
-                    "'5', so Q1/Q2's symbol drain pins 6-8 have no pad of their own; "
-                    "every drain land still carries the drain net, so this is a missing "
-                    "device-specific land pattern, not a floating connection",
+            "note": "Q1/Q2 use dcx:BSC010N04LS6, digitised from the datasheet's "
+                    "board-pads figure (design/v3/pcb/bsc010n04ls6_land.json): the four "
+                    "drain fingers are pads 5-8 on a common base and the source bar "
+                    "repeats 1-3, so every symbol pin owns a land.  The vendored "
+                    "Infineon PG-TDSON-8 this replaced numbered all five drain lands "
+                    "'5' and left pins 6-8 without copper.",
         },
         "checks": {
             "every_footprinted_part_is_placed_exactly_once":
@@ -1155,8 +1281,11 @@ def report(placed: list[Placed] | None = None,
         "hardware_built": False,
         "fabrication_approved": False,
         "evidence": {
-            "footprints": "vendored KiCad 10.0.6 stock footprints; see "
-                          "hardware/stock_footprints/PROVENANCE.md",
+            "footprints": "vendored KiCad 10.0.6 stock footprints (see "
+                          "hardware/stock_footprints/PROVENANCE.md), plus two "
+                          "generated ones in dcx.pretty: the mounting hole, and "
+                          "BSC010N04LS6 whose lands come from "
+                          "design/v3/pcb/bsc010n04ls6_land.json",
             "placement": "block packing, not an optimised placement; the power-stage "
                          "bodies are fixed to keep the commutation loop in one direction",
             "nets": "same part table as the schematic generator, so the net names are "
@@ -1171,9 +1300,11 @@ def report(placed: list[Placed] | None = None,
                      "product and its patchiness is reported, not assumed away",
         },
         "remaining_work": [
-            "get a device-specific land pattern for BSC010N04LS6: the vendored "
-            "PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain "
-            "pins 6-8 have no pad of their own",
+            "check the digitised land against a vendor CAD model or an IPC-7351 "
+            "calculation when one is available: it is measured from Fig. 2 of the "
+            "datasheet (max residual 4.9 um) but is still a redrawing, and neither "
+            "this repository nor the sheet's board-pads figure says whether the "
+            "lands are to IPC density level A, B or C",
             "route with the pours in mind: measured in fill.json, the fills recover "
             "between 2.5 % and 64 % of their own outline because the routing came "
             "first and every track crossing an outline slits it.  The secondary "
@@ -1209,6 +1340,8 @@ def write() -> dict:
     (OUT / "dcx.pretty").mkdir(exist_ok=True)
     (OUT / "dcx.pretty" / "MountingHole_3.2mm_M3.kicad_mod").write_text(
         mounting_hole_source(), encoding="utf-8", newline="\n")
+    (OUT / "dcx.pretty" / "BSC010N04LS6.kicad_mod").write_text(
+        bsc_source(), encoding="utf-8", newline="\n")
     data = report(placed, result)
     (OUT / REPORT).write_text(_report_text(data), encoding="utf-8", newline="\n")
     return data

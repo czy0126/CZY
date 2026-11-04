@@ -103,6 +103,12 @@ IVS_OFFSET_TYP = 330e-6    # A, VSS offset current for threshold adjustment
 VGUV_TYP = 0.020           # V, VG low when VDD is low (at 25 mA)
 
 # BSC010N04LS6, Infineon datasheet in references/datasheets.
+# The land pattern is device-specific: tools/bsc010n04ls6_land.py digitises
+# Fig. 2 of this sheet (drain fingers as pads 5-8 on a common base), and
+# tools/make_sr_fault_board_pcb.py turns it into dcx.pretty/BSC010N04LS6.
+# The vendored Package_SON footprint numbers all five drain lands "5", which
+# leaves pins 6-8 of this symbol with no pad of their own.
+BSC_FOOTPRINT = "dcx:BSC010N04LS6"
 VGS_TH_MIN = 1.3           # V, gate threshold (min) -- the off guarantee
 VGS_TH_MAX = 2.3
 CISS_TYP = 4.6e-9          # F, input capacitance
@@ -309,8 +315,7 @@ def build_symbols() -> dict[str, str]:
         Pin("8", "D", 0, 7.62, 270, "passive"),
     ]
     symbols["SR:BSC010N04LS6"] = custom_symbol(
-        "SR:BSC010N04LS6", bsc, 7.62, 10.16, "Q",
-        "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
+        "SR:BSC010N04LS6", bsc, 7.62, 10.16, "Q", BSC_FOOTPRINT)
     return symbols
 
 
@@ -377,12 +382,12 @@ def power_parts() -> list[Part]:
     load = "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
     return [
         Part("Q1", "SR:BSC010N04LS6", "BSC010N04LS6",
-             "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm", 260, 78,
+             BSC_FOOTPRINT, 260, 78,
              {"1": "SR_SRC", "2": "SR_SRC", "3": "SR_SRC", "4": "G1",
               "5": "SEC_A", "6": "SEC_A", "7": "SEC_A", "8": "SEC_A"},
              "40 V 1.0 mR", "SR1; source Kelvin to VSS"),
         Part("Q2", "SR:BSC010N04LS6", "BSC010N04LS6",
-             "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm", 260, 138,
+             BSC_FOOTPRINT, 260, 138,
              {"1": "SR_SRC", "2": "SR_SRC", "3": "SR_SRC", "4": "G2",
               "5": "SEC_B", "6": "SEC_B", "7": "SEC_B", "8": "SEC_B"},
              "40 V 1.0 mR", "SR2; source Kelvin to VSS"),

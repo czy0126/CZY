@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\sr_fault_validation\\sr_fault_validation.kicad_sch")
-		(date "2026-11-05T00:25:05")
+		(date "2026-11-05T04:18:01")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -1320,11 +1320,11 @@
 		(comp
 			(ref "Q1")
 			(value "BSC010N04LS6")
-			(footprint "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
+			(footprint "dcx:BSC010N04LS6")
 			(description "SR1; source Kelvin to VSS")
 			(fields
 				(field
-					(name "Footprint") "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
+					(name "Footprint") "dcx:BSC010N04LS6")
 				(field
 					(name "Datasheet")
 				)
@@ -1384,11 +1384,11 @@
 		(comp
 			(ref "Q2")
 			(value "BSC010N04LS6")
-			(footprint "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
+			(footprint "dcx:BSC010N04LS6")
 			(description "SR2; source Kelvin to VSS")
 			(fields
 				(field
-					(name "Footprint") "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
+					(name "Footprint") "dcx:BSC010N04LS6")
 				(field
 					(name "Datasheet")
 				)
@@ -4266,7 +4266,7 @@
 				(field
 					(name "Value") "BSC010N04LS6")
 				(field
-					(name "Footprint") "Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm")
+					(name "Footprint") "dcx:BSC010N04LS6")
 				(field
 					(name "Datasheet")
 				)

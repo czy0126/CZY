@@ -822,18 +822,34 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 ### 布局 pass 3：布线 + 铺铜（`tools/make_sr_fault_board_pcb.py` + `tools/sr_board_router.py`）
 
 原生 `.kicad_pcb`：71 只件各摆一次、每只焊盘带原理图网络、132×92 mm 外形、四个 M3 孔，
-**两层全部布通**（119/119 连接、106 个过孔、约 2300 段），`drc.json` 的
+**两层全部布通**（121/121 连接、112 个过孔、2270 段），`drc.json` 的
 `unconnected_items` 为 **0**、`schematic_parity` 为 0，只剩 4 条 `silk_overlap`
 （位号从未挪开，按欠账报）。五个电源网各有 zone 外形（PGND/VOUT 在 B.Cu，
 SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
 `fabrication_approved`/`hardware_built` 仍 false、`manufacturing_package` 仍
-`NOT_RELEASED`：BSC010N04LS6 仍缺器件专用 land pattern，**铺铜实测只保留外形面积的
-2.5 %–64.5 %**，电流路径仍是 0.8 mm 逃逸走线。不导出 gerber/drill/position。
+`NOT_RELEASED`：**铺铜实测只保留外形面积的 2.5 %–65.2 %**，电流路径仍是 0.8 mm
+逃逸走线。不导出 gerber/drill/position。
 `--check` 会重生成 + 跑 `kicad-cli pcb drc` + 实测填充写 `fill.json`。
 
-**铺铜是布线之后加的，所以每条穿过外形的走线都会把它剪开**：实测 PGND 1925.6/5336.0 mm²
-（36.1 %，2 块）、VOUT 62.7/561.0（11.2 %）、SEC_A 37.4/350.0（10.7 %）、
-SEC_B 9.1/360.0（**2.5 %**，1 块）、SR_SRC 183.1/284.0（64.5 %）。**两条副边走廊几乎没有
+**Q1/Q2 的封装现在是从数据手册量出来的，不是厂商 vendored 件**：
+`tools/bsc010n04ls6_land.py` 数字化 `references/datasheets/bsc010n04ls6.pdf` 第 10 页的
+Board Pads 图（rev 2.3，8 个印刷标注全部 ≤10 µm，实测最大残差 4.9 µm），写
+`design/v3/pcb/bsc010n04ls6_land.json`；`make_sr_fault_board_pcb.bsc_source()` 读它生成
+`dcx.pretty/BSC010N04LS6.kicad_mod`，任一项 `checks` 为 false 就 `SystemExit`。
+**28 个焊盘分三类**：10 个带号铜焊盘（漏极基座 `5` + 四根指 `5/6/7/8`，源极条 `1` +
+`1/2/3`，栅 `4`）、3 个 `F.Mask`、15 个 `F.Paste`。同名号多块铜只有在相接时才是同一块
+焊盘，所以每根指压进基座 **0.125 mm**——图纸上边对边相接，CAD 里一个舍入就会把 6–8 脚
+留成孤立铜。掩膜（并集外扩 0.05 mm）与钢网（面积比 0.6102）作为独立焊盘画出，
+`sr_board_router._copper_layers()` 对无 `*.Cu` 的焊盘返回空元组，所以它们对布线不可见。
+原来 vendor 件把五块漏极铜全编号 `"5"`、6–8 脚无焊盘的问题由此关闭
+（`pad_pin_mapping.symbol_pins_without_a_pad` 变成 `{}`），**但这是照图重画，不是厂家
+CAD、也没按 IPC-7351 校核——`remaining_work[0]` 就写着这条**。
+封装测试 `tools/test_bsc010n04ls6_land.py`（9 项）在无 PyMuPDF 时跳过重生成，
+只校验提交 JSON 的不变量，与 `vendor_soa.py` 同一个模式。
+
+**铺铜是布线之后加的，所以每条穿过外形的走线都会把它剪开**：实测 PGND 1930.6/5336.0 mm²
+（36.2 %，2 块）、VOUT 68.4/561.0（12.2 %）、SEC_A 37.4/350.0（10.7 %）、
+SEC_B 9.1/360.0（**2.5 %**，1 块）、SR_SRC 185.1/284.0（65.2 %，2 块，9/9 焊盘）。**两条副边走廊几乎没有
 本网焊盘**：SEC_B 只含 J3.3（中心恰在外形边界 y=46 上），SEC_A 的外形里一个焊盘中心都没有
 （J3.1 在 y=46 而外形到 45.5、Q1 漏极从 x=46.4 起而外形到 43），
 填充靠走线连回网络，所以"中心抽头 → SR → 分流电阻"这条串联路径**仍只有 0.8 mm**。

@@ -13,8 +13,8 @@ C5,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,REG HF bypass,,,,1
 R1,0R,Resistor_SMD:R_0805_2012Metric,<=212 R option,Roffset: VTHOFF = 10.5 mV + 330 uA * R; 0R keeps the datasheet value,,,,1
 R2,0R,Resistor_SMD:R_0603_1608Metric,100 R option,VD1 series link; 100R only if drain ringing demands it,,,,1
 R3,0R,Resistor_SMD:R_0603_1608Metric,100 R option,VD2 series link,,,,1
-Q1,BSC010N04LS6,Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm,40 V 1.0 mR,SR1; source Kelvin to VSS,,,,1
-Q2,BSC010N04LS6,Package_SON:Infineon_PG-TDSON-8_6.15x5.15mm,40 V 1.0 mR,SR2; source Kelvin to VSS,,,,1
+Q1,BSC010N04LS6,dcx:BSC010N04LS6,40 V 1.0 mR,SR1; source Kelvin to VSS,,,,1
+Q2,BSC010N04LS6,dcx:BSC010N04LS6,40 V 1.0 mR,SR2; source Kelvin to VSS,,,,1
 Rg1,2.2R,Resistor_SMD:R_0805_2012Metric,1/8 W,"gate resistor, main-board value",,,,1
 Rg2,2.2R,Resistor_SMD:R_0805_2012Metric,1/8 W,"gate resistor, main-board value",,,,1
 Rgs1,10k,Resistor_SMD:R_0603_1608Metric,1/10 W,gate-source pulldown,,,,1
