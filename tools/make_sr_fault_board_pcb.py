@@ -1,20 +1,21 @@
-"""Layout pass 1 of the single-pair SR validation board: footprints and nets.
+"""Layout pass 2 of the single-pair SR validation board: placement and routing.
 
 What this is
 ------------
 A *native* KiCad board for the same part table the schematic generator
 (`tools/make_sr_fault_board.py`) already produces: every part placed once, every
-pad carrying its schematic net, a real outline and mounting holes, and DRC run
-over the result.  The board opens in the editor with a complete ratsnest, so
-routing is the only remaining mechanical step.
+pad carrying its schematic net, a real outline and mounting holes, every
+multi-pad net routed on two layers, and DRC run over the result.
 
 What it is not
 --------------
-**Not routed and not fabricable.**  No track or via is emitted, the DRC's
-`unconnected_items` count is reported as the routing backlog rather than
-suppressed, and the report says so in three separate fields.  A manufacturing
-package (gerbers, drill, position) is deliberately *not* exported: an unrouted
-board that carries a drill file looks orderable and is not.
+**Not fabricable.**  The tracks are signal-width copper, not the current path:
+at 0.8 mm they are a routing compromise and the power nets need pours before
+this board can be ordered.  The power path, the remaining work and the three
+false flags (`routed` here means "every net connected", never "released") are
+all in ``sr_fault_validation_pcb.json``.  A manufacturing package (gerbers,
+drill, position) is deliberately *not* exported: a board whose power path is a
+0.8 mm trace that carries a drill file looks orderable and is not.
 
 Why placement is worth doing before routing
 -------------------------------------------
@@ -27,7 +28,8 @@ placement fixes two things the schematic cannot:
   return -- the board is only useful if that separation survives layout.
 
 The evidence classes, the honest flags and the leftover work are all in
-``sr_fault_validation_pcb.json``; nothing here claims a routed or approved board.
+``sr_fault_validation_pcb.json``; nothing here claims a released or
+fabrication-approved board.
 
 Usage:
     python tools/make_sr_fault_board_pcb.py --write
@@ -39,7 +41,9 @@ from __future__ import annotations
 import argparse
 import collections
 import csv
+import functools
 import json
+import math
 import re
 import subprocess
 import uuid
@@ -47,6 +51,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import make_sr_fault_board as sch
+import sr_board_router as router
 from main_board_mechanical import find_kicad_cli
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -59,12 +64,48 @@ NS = uuid.UUID("c7e2a4f1-5b3d-4a8e-9f60-2d1c8b7a4e53")
 BOARD_W_MM = 132.0
 BOARD_D_MM = 92.0
 THICKNESS_MM = 1.6
-GAP_MM = 0.75          # courtyard-to-courtyard, stricter than the 0.25 mm default
+GAP_MM = 1.25          # courtyard-to-courtyard; see the breakout note below
 GRID_MM = 0.5
 HOLE_COURTYARD_R_MM = 3.7
 HOLE_LIB_ID = "dcx:MountingHole_3.2mm_M3"
 
-STATUS = "LAYOUT_PASS_1_PLACEMENT_ONLY_NOT_FABRICABLE"
+# Track widths.  0.25 mm is a signal track; 0.8 mm is the widest that still
+# fits between a fine-pitch land and its neighbours on a two-layer board with
+# 0.2 mm clearance.  Neither is a current rating: at 1 oz the power loop needs
+# pours, not tracks, for the board's 10 A ceiling -- see the report's
+# ``power_path`` note.  Widths are per net class, not per net, so a reviewer can
+# check them against the schematic without reading the router.
+ROUTE_SIGNAL_MM = 0.25
+ROUTE_POWER_MM = 0.8
+# VSS is deliberately not here: on this board it is the UCC24624's source
+# reference, three pads (U1.5, R1.1, TP11.1) joined through a 0R Kelvin tap.
+# It carries the gate-drive return, not the SR current -- the return is PGND,
+# and the SR source is SR_SRC.  Routing it at power width would be a statement
+# about current that the schematic does not make, and it cannot escape between
+# UCC24624 lands anyway: 0.8 mm plus 0.2 mm clearance needs 1.0 mm, the pitch
+# leaves 0.67 mm.
+POWER_NETS = frozenset({"SEC_A", "SEC_B", "SR_SRC", "PGND", "VOUT"})
+
+STATUS = "LAYOUT_PASS_2_ROUTED_NOT_RELEASED"
+
+# Why 1.25 mm and not the 0.75 mm the placement study used.  Two facts, one
+# geometric and one measured:
+#
+# A part's own pads are an obstacle for every *other* net, so a land cannot be
+# escaped through the gap to its neighbour.  The SOIC-8 land here is 1.95 x
+# 0.6 mm on a 1.27 mm pitch, which leaves 0.67 mm of copper-free space between
+# neighbouring lands.  A 0.25 mm track with 0.2 mm clearance needs 0.65 mm, and
+# the 0.02 mm that remain are a sixth of the router's 0.125 mm grid step, so an
+# escape between two lands is not representable at all; 0.8 mm needs 1.2 mm and
+# cannot fit by any margin.  Every U1 pin therefore has to leave the package,
+# and how much room that needs depends on how close its neighbours sit.
+#
+# Measured, with the same router and the same order: at 0.75 mm the board stops
+# at 117/119 (VG1 at U1.1 and VC2_D at R48/Q43 both fail to escape, after 383 s
+# of rip-up churn); at 1.25 mm it reaches 119/119 in 65 s.  This is a routing
+# requirement, not a preference, and it is recorded as a measurement rather than
+# derived because the escape corridor is decided by the neighbours that land
+# there, not by the package outline alone.
 
 # The board is one part table and one report.  Placement intent is expressed as
 # blocks, not as a flat coordinate list: a block is a region of the board that a
@@ -106,6 +147,16 @@ BLOCK_ORDER: dict[str, list[str]] = {
               "R45", "Q42", "R47", "R46", "Q43", "R48"],
     "probe": [f"TP{i}" for i in range(1, 21)],
 }
+
+# Parts that must stay next to each other, because they form one loop rather
+# than two nodes.  A snubber is the loop the two parts and their leads make, so
+# the resistor and its capacitor are placed by proximity to each other instead
+# of by the row-major fill that packs the rest of the block.  Each cluster is
+# packed as one unit, largest part first.
+CLUSTERS: tuple[tuple[str, ...], ...] = (
+    ("Csn1", "Rsn1"),
+    ("Csn2", "Rsn2"),
+)
 
 MOUNTING_HOLES = ((6.0, 6.0), (126.0, 6.0), (6.0, 86.0), (126.0, 86.0))
 
@@ -316,6 +367,56 @@ def _first_fit(block: tuple[float, float, float, float],
                      f"is the point ({lx0:.2f}, {ly0:.2f}) inside it")
 
 
+def _first_fit_near(anchor: tuple[float, float, float, float],
+                    box: tuple[float, float, float, float],
+                    obstacles: list[tuple[float, float, float, float]],
+                    reach: float = 6.0) -> tuple[float, float]:
+    """The nearest free origin whose courtyard clears everything, near ``anchor``.
+
+    Parts in one loop have to land next to each other.  A snubber capacitor
+    twenty-eight millimetres from its resistor is not a snubber: the loop it
+    is meant to damp is the one the lead length adds.  Row-major first-fit
+    cannot express that -- it fills the row it is on -- so clustered parts are
+    placed by proximity instead, and the cluster is the unit that gets packed.
+    """
+    lx0, ly0, lx1, ly1 = box
+    ax = (anchor[0] + anchor[2]) / 2.0
+    ay = (anchor[1] + anchor[3]) / 2.0
+    best: tuple[float, float, float] | None = None
+    y = ay - reach - ly1
+    while y + ly1 <= ay + reach:
+        x = ax - reach - lx1
+        while x + lx1 <= ax + reach:
+            if not any(_overlaps((x + lx0, y + ly0, x + lx1, y + ly1), o, GAP_MM)
+                       for o in obstacles):
+                d = math.hypot((x + lx0 + x + lx1) / 2.0 - ax,
+                               (y + ly0 + y + ly1) / 2.0 - ay)
+                if best is None or d < best[0]:
+                    best = (d, x, y)
+            x += GRID_MM
+        y += GRID_MM
+    if best is None:
+        raise SystemExit(f"no room within {reach:g} mm of {anchor} for a "
+                         f"{lx1 - lx0:.2f} x {ly1 - ly0:.2f} mm courtyard")
+    return best[1], best[2]
+
+
+def _units(block: str, refs: list[str]) -> list[list[str]]:
+    """``refs`` grouped into placement units: each declared cluster, then singletons."""
+    grouped: set[str] = set()
+    units: list[list[str]] = []
+    for cluster in CLUSTERS:
+        inside = [r for r in cluster if r in refs]
+        if not inside:
+            continue
+        if len(inside) != len(cluster):
+            raise SystemExit(f"cluster {cluster} is split across blocks")
+        units.append(inside)
+        grouped.update(inside)
+    units.extend([r] for r in refs if r not in grouped)
+    return units
+
+
 def _assignment(table: list) -> dict[str, str]:
     """ref -> block, and a guard that every part lands in exactly one block."""
     seen: dict[str, str] = {}
@@ -373,14 +474,21 @@ def placement() -> list[Placed]:
         return (x1 - x0) * (y1 - y0)
 
     for block, refs in BLOCK_ORDER.items():
-        ordered = sorted(refs, key=lambda r: (-area(r), _natural(r)))
-        for ref in ordered:
-            part = by_ref[ref]
-            box = bounds(part.footprint)
-            x, y = _first_fit(BLOCKS[block], box, obstacles)
-            item = Placed(ref, part.value, part.footprint, block, x, y, 0.0, box)
-            placed.append(item)
-            obstacles.append(item.rect)
+        units = sorted(_units(block, refs),
+                       key=lambda u: (-sum(area(r) for r in u), min(_natural(r) for r in u)))
+        for unit in units:
+            anchor: tuple[float, float, float, float] | None = None
+            for ref in sorted(unit, key=lambda r: (-area(r), _natural(r))):
+                part = by_ref[ref]
+                box = bounds(part.footprint)
+                if anchor is None:
+                    x, y = _first_fit(BLOCKS[block], box, obstacles)
+                else:
+                    x, y = _first_fit_near(anchor, box, obstacles)
+                item = Placed(ref, part.value, part.footprint, block, x, y, 0.0, box)
+                placed.append(item)
+                obstacles.append(item.rect)
+                anchor = item.rect
 
     refs = [p.ref for p in placed]
     if len(refs) != len(set(refs)):
@@ -450,8 +558,85 @@ def _embed(text: str, lib_id: str, ref: str, value: str, nets: dict[str, int],
     return "\t" + text.strip() + "\n"
 
 
-def board_file(placed: list[Placed] | None = None) -> str:
+# ---------------------------------------------------------------- routing
+def _table() -> dict:
+    return {p.ref: p for p in sch.parts() if p.footprint}
+
+
+def pads_of(placed: list[Placed]) -> list[router.Pad]:
+    """Every copper pad, carrying the same net index the board file will give it."""
+    table = _table()
+    index = {name: i for i, name in enumerate(net_table(list(table.values())))}
+    pads: list[router.Pad] = []
+    for p in placed:
+        nets = {num: index[name] for num, name in table[p.ref].nets.items()
+                if name != sch.NC}
+        pads.extend(router.extract_pads(
+            _source(p.footprint), p.ref, p.x, p.y,
+            lambda ref, number, m=nets: m.get(number, -1)))
+    return pads
+
+
+def route_plan(pads: list[router.Pad], names: list[str]) -> tuple[dict[int, float], list[int]]:
+    """Per-net widths and the order nets are routed in.
+
+    Power first, then the nets with the most pads.  The order is a design
+    choice and a load-bearing one: a net routed late can only be blocked by
+    what came before, so the nets with no alternative path take the shortest
+    routes available.
+    """
+    groups: dict[int, list[router.Pad]] = {}
+    for pad in pads:
+        if pad.net >= 0:
+            groups.setdefault(pad.net, []).append(pad)
+    widths = {net: ROUTE_POWER_MM if names[net] in POWER_NETS else ROUTE_SIGNAL_MM
+              for net in groups}
+    order = sorted((net for net, g in groups.items() if len(g) > 1),
+                   key=lambda net: (names[net] not in POWER_NETS, -len(groups[net]),
+                                    names[net]))
+    return widths, order
+
+
+@functools.lru_cache(maxsize=4)
+def _route_cached(placed: tuple[Placed, ...]) -> router.RouteResult:
+    """Routing takes about a minute; ``write()`` and ``report()`` both need it."""
+    pads = pads_of(list(placed))
+    names = net_table(list(_table().values()))
+    widths, order = route_plan(pads, names)
+    return router.route(pads, BOARD_W_MM, BOARD_D_MM, list(MOUNTING_HOLES),
+                        widths=widths, order=order)
+
+
+def route(placed: list[Placed] | None = None) -> router.RouteResult:
+    return _route_cached(tuple(placed or placement()))
+
+
+_LAYER_NAME = {0: "F.Cu", 1: "B.Cu"}
+
+
+def copper_lines(result: router.RouteResult) -> list[str]:
+    """The ``(segment ...)`` and ``(via ...)`` records, in route order.
+
+    UUIDs are positional, like every other uuid in this file: they are derived
+    from the record's index in a deterministic route, so regenerating from the
+    same placement produces the same board byte for byte.
+    """
+    out = []
+    for k, s in enumerate(result.segments):
+        out.append(f'\t(segment (start {s.x0:g} {s.y0:g}) (end {s.x1:g} {s.y1:g})'
+                   f' (width {s.width:g}) (layer "{_LAYER_NAME[s.layer]}")'
+                   f' (net {s.net}) (uuid "{uid("segment", str(k))}"))\n')
+    for k, v in enumerate(result.vias):
+        out.append(f'\t(via (at {v.x:g} {v.y:g}) (size {v.radius * 2:g})'
+                   f' (drill {router.VIA_DRILL_MM:g}) (layers "F.Cu" "B.Cu")'
+                   f' (net {v.net}) (uuid "{uid("via", str(k))}"))\n')
+    return out
+
+
+def board_file(placed: list[Placed] | None = None,
+               result: router.RouteResult | None = None) -> str:
     placed = placed or placement()
+    result = result if result is not None else route(placed)
     table = {p.ref: p for p in sch.parts() if p.footprint}
     names = net_table(list(table.values()))
     index = {name: i for i, name in enumerate(names)}
@@ -462,7 +647,7 @@ def board_file(placed: list[Placed] | None = None) -> str:
         f"\t(general (thickness {THICKNESS_MM:g}))\n"
         "\t(paper \"A4\")\n\t(title_block\n"
         "\t\t(title \"DCX 48V-2V - single-pair UCC24624 SR fault-shutdown validation board\")\n"
-        "\t\t(comment 1 \"LAYOUT PASS 1 - footprints and nets only, NO ROUTING\")\n"
+        "\t\t(comment 1 \"LAYOUT PASS 2 - routed tracks on two layers; power nets NOT poured\")\n"
         "\t\t(comment 2 \"not a manufacturing package; hardware not built\")\n"
         "\t)\n"
         "\t(layers\n"
@@ -490,6 +675,7 @@ def board_file(placed: list[Placed] | None = None) -> str:
         nets = {num: index[name] for num, name in part.nets.items() if name != sch.NC}
         out.append(_embed(_source(p.footprint), p.footprint, p.ref, p.value,
                           nets, names, p.x, p.y, p.rot))
+    out.extend(copper_lines(result))
     out.append(")\n")
     return "".join(out)
 
@@ -559,14 +745,40 @@ def assembly_review(placed: list[Placed], table: dict) -> dict:
                                    key=_natural),
         "through_hole_refs": through_hole,
         "position_file_note": "no position file is exported: it would look orderable "
-                              "next to an unrouted board",
+                              "next to a board whose power nets are still tracks",
     }
 
 
-def report(placed: list[Placed] | None = None) -> dict:
+def routing_report(placed: list[Placed], result: router.RouteResult | None = None) -> dict:
+    """What was routed, what was not, and whether the copper it emitted is legal."""
+    result = result if result is not None else route(placed)
+    pads = pads_of(placed)
+    names = net_table(list(_table().values()))
+    widths, order = route_plan(pads, names)
+    clashes = router.clearance_violations(pads, result.segments, result.vias)
+    return {
+        "routed": not result.unrouted,
+        "segments": len(result.segments),
+        "vias": len(result.vias),
+        "connections_made": result.connections_made,
+        "connections_attempted": result.connections_attempted,
+        "unrouted_nets": [names[int(n)] if n.isdigit() else n for n in result.unrouted],
+        "failures": [[f[0], f[1], f[2]] for f in result.failures],
+        "clearance_violations": clashes,
+        "width_mm": {"signal": ROUTE_SIGNAL_MM, "power": ROUTE_POWER_MM},
+        "power_nets": sorted(POWER_NETS),
+        "route_order": [names[n] for n in order],
+        "net_width_mm": {names[n]: w for n, w in widths.items()},
+    }
+
+
+def report(placed: list[Placed] | None = None,
+           result: router.RouteResult | None = None) -> dict:
     placed = placed or placement()
+    result = result if result is not None else route(placed)
     table = {p.ref: p for p in sch.parts() if p.footprint}
     names = net_table(list(table.values()))
+    routing = routing_report(placed, result)
     rects = [(p.ref, p.rect) for p in placed]
     overlaps: list[list[str]] = []
     for i, (ra, a) in enumerate(rects):
@@ -614,7 +826,8 @@ def report(placed: list[Placed] | None = None) -> dict:
             "no_two_courtyards_are_closer_than_the_gap": not overlaps,
             "overlapping_pairs": overlaps,
             "every_part_is_inside_the_outline": inside,
-            "no_track_or_via_is_emitted": True,
+            "every_pad_net_is_fully_connected": routing["routed"],
+            "no_copper_is_closer_than_the_clearance": not routing["clearance_violations"],
             "the_bom_and_the_board_are_the_same_parts": not (
                 assembly["on_the_board_but_not_in_the_bom"]
                 or assembly["in_bom_but_not_on_the_board"]
@@ -622,9 +835,17 @@ def report(placed: list[Placed] | None = None) -> dict:
                 or assembly["duplicate_bom_rows"]),
         },
         "assembly_review": assembly,
-        "routed": False,
-        "routing_backlog_note": "the nets exist as a ratsnest; no copper is routed, so this "
-                                "board is a layout, not a manufacturing package",
+        "routed": routing["routed"],
+        "routing": routing,
+        "power_path": {
+            "track_width_mm": ROUTE_POWER_MM,
+            "note": "the widths are a routing compromise, not a current rating.  At 1 oz "
+                    "copper a 0.8 mm track carries roughly 5 A at a 10 degC rise, and this "
+                    "board's ceiling is 10 A, so SEC_A/SEC_B/SR_SRC/PGND/VOUT have to become "
+                    "pours before the board is released.  VSS is routed at signal width on "
+                    "purpose: it is the controller's source reference through the R1 Kelvin "
+                    "tap, not a current path.  Nothing here is a thermal model.",
+        },
         "manufacturing_package": "NOT_RELEASED",
         "hardware_built": False,
         "fabrication_approved": False,
@@ -635,19 +856,23 @@ def report(placed: list[Placed] | None = None) -> dict:
                          "bodies are fixed to keep the commutation loop in one direction",
             "nets": "same part table as the schematic generator, so the net names are "
                     "the schematic's",
-            "drc": "kicad-cli output goes to drc.json; the report does not claim a clean "
-                   "board, because an unrouted board cannot be clean",
+            "drc": "kicad-cli output goes to drc.json; the router's own clearance check "
+                   "runs in CI, where kicad-cli is absent",
+            "routing": "deterministic Manhattan grid router (tools/sr_board_router.py) on "
+                       "two layers; the widths and the net order are in this file, and the "
+                       "copper it emits is re-checked against the same clearance by "
+                       "clearance_violations()",
         },
         "remaining_work": [
             "get a device-specific land pattern for BSC010N04LS6: the vendored "
             "PG-TDSON-8 numbers all five drain lands '5', so Q1/Q2's symbol drain "
             "pins 6-8 have no pad of their own",
-            "route the high-current loop first: SEC_A -> Q1 -> SR_SRC -> Rsh1 -> PGND, "
-            "then the mirror for SEC_B",
-            "keep the VSS Kelvin tap (R1) off the power return",
-            "fill copper for the power nets, then re-run DRC to zero unconnected items",
-            "move the reference designators off one another (29 cosmetic items at pass 1)",
-            "export gerbers, drill and position only after the DRC backlog is empty",
+            "fill copper for the power nets (SEC_A, SEC_B, SR_SRC, PGND, VOUT): a "
+            "0.8 mm track is a routing compromise, not a 10 A conductor",
+            "keep the VSS Kelvin tap (R1) off the power return -- the router's VSS track "
+            "does not establish the split, the pour has to",
+            "move the reference designators off one another (the cosmetic silk backlog)",
+            "export gerbers, drill and position only after DRC is clean and the pours land",
         ],
     }
 
@@ -660,12 +885,13 @@ def _report_text(data: dict) -> str:
 def write() -> dict:
     OUT.mkdir(parents=True, exist_ok=True)
     placed = placement()
-    (OUT / BOARD).write_text(board_file(placed), encoding="utf-8", newline="\n")
+    result = route(placed)                 # cached; the report asks for it again
+    (OUT / BOARD).write_text(board_file(placed, result), encoding="utf-8", newline="\n")
     (OUT / "fp-lib-table").write_text(fp_lib_table(), encoding="utf-8", newline="\n")
     (OUT / "dcx.pretty").mkdir(exist_ok=True)
     (OUT / "dcx.pretty" / "MountingHole_3.2mm_M3.kicad_mod").write_text(
         mounting_hole_source(), encoding="utf-8", newline="\n")
-    data = report(placed)
+    data = report(placed, result)
     (OUT / REPORT).write_text(_report_text(data), encoding="utf-8", newline="\n")
     return data
 
@@ -696,9 +922,9 @@ PLACEMENT_ERRORS = {"lib_footprint_issues", "lib_footprint_mismatch", "missing_c
                     "courtyards_overlap", "clearance", "shorting_items", "hole_clearance",
                     "hole_to_hole", "edge_clearance", "copper_edge_clearance"}
 
-# Cosmetic only, and expected at pass 1: the reference designators were not yet
-# moved off one another.  Reported as backlog, not as a gate -- a gate that can
-# never go green stops being read.
+# Cosmetic only: the reference designators have never been moved off one
+# another, so a few still overlap.  Reported as backlog, not as a gate -- a
+# gate that can never go green stops being read.
 COSMETIC_TYPES = {"silk_overlap", "silk_over_copper", "text_over_copper",
                   "text_thickness", "text_height"}
 
@@ -737,14 +963,19 @@ def check() -> None:
     for v in real[:8]:
         print(f"  {v['severity']} {v['type']}: {v['description']}")
     print(f"routing backlog: {len(unconnected)} unconnected items")
-    print(f"cosmetic backlog: {len(cosmetic)} silkscreen/text items (not a gate at pass 1)")
+    print(f"cosmetic backlog: {len(cosmetic)} silkscreen/text items (not a gate)")
     print(f"schematic parity: {len(parity)} items")
     if real or parity or other:
         raise SystemExit(
             f"DRC found a placement defect -- {len(real)} courtyard/clearance/footprint "
-            f"items, {len(parity)} parity items, {len(other)} unclassified -- not just "
-            f"the expected unrouted nets")
-    if not unconnected:
+            f"items, {len(parity)} parity items, {len(other)} unclassified")
+    routed = data["routing"]["routed"]
+    if routed and unconnected:
+        raise SystemExit(
+            f"the router reports every net connected but kicad-cli still sees "
+            f"{len(unconnected)} unconnected items: the copper did not land on the pads "
+            f"the netlist names")
+    if not routed and not unconnected:
         raise SystemExit("no unconnected items on an unrouted board: the netlist did not "
                          "reach the board, so the DRC result means nothing")
 

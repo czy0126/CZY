@@ -819,11 +819,40 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
   `VDD_IN` 隔开，只在 `VDD_IN` 上放旗子会报 `power_pin_not_driven`。ERC 的 0 违规
   必须用 `--severity-all` 且报告不比原理图旧，否则"干净"没有意义。
 
-### 布局 pass 1（`tools/make_sr_fault_board_pcb.py`）
+### 布局 pass 2：布线（`tools/make_sr_fault_board_pcb.py` + `tools/sr_board_router.py`）
 
 原生 `.kicad_pcb`：71 只件各摆一次、每只焊盘带原理图网络、132×92 mm 外形、四个 M3 孔，
-**未布线、不出制造包**（`routed`/`fabrication_approved`/`hardware_built` 恒 false）。
-`--check` 会重生成 + 跑 `kicad-cli pcb drc`，只对"摆错"失败，不对"没布线"失败。
+**两层全部布通**（119/119 连接、106 个过孔、约 2300 段），`drc.json` 的
+`unconnected_items` 为 **0**，只剩 4 条 `silk_overlap`（位号从未挪开，按欠账报）。
+`routed` 因此是 true，但 `fabrication_approved`/`hardware_built` 仍 false、
+`manufacturing_package` 仍 `NOT_RELEASED`：**电源网（SEC_A/SEC_B/SR_SRC/PGND/VOUT）
+还是 0.8 mm 走线、没有铺铜**，1 oz 下约 5 A 而板子上限 10 A；BSC010N04LS6 仍缺器件专用
+land pattern。不导出 gerber/drill/position——一块"布通了但电源没铺铜"的板配上坐标文件，
+看起来就能下单。`--check` 会重生成 + 跑 `kicad-cli pcb drc`。
+
+生成器的 `check()` 有两条**互相反向**的守卫，缺一条就会被净空表骗过：
+router 说全连而 kicad-cli 还报未连接 ⇒ SystemExit（铜没落到网表点名的焊盘上）；
+router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）。当前走的是第一条的反面。
+
+**栅格路由器有三个已经踩过的坑，都写在 `test_sr_board_router.py` 里**：
+
+- **焊盘不是它的包围盒**：本板 114 个 `roundrect`、30 个 `circle`。1 mm 圆焊盘的
+  bbox 角点离铜 **0.207 mm**，走线端点落在那儿，router 数的是"连上了"，kicad-cli
+  报 `track_dangling`（第一版 94 条违规里 78 个是这类，另一批 22 个是圆焊盘）。
+  `_pad_cells` 现在用 `_pad_distance()` 按 shape（circle/oval/roundrect+`rratio`）算到**铜**
+  的距离，第一个候选层是"格心在铜内"，退路是"距铜 ≤ 半个线宽"。**半格步长的容差是错的**，
+  它够得着线端帽盖不到的格子。
+- **rip-up 的选择顺序 ≠ 重布顺序**：`_rip_victims()` 按距离挑（"谁的铜挡路"），但如果
+  照这个顺序重布，主通路上排第一的 PGND 会被五个信号网挤掉一条连接 ⇒ 118/119，
+  单调判据把整次修复回滚。改成按主通路 `order` 重布同一批受害者 ⇒ 119/119。
+- **同网铜可以共用，同网钻孔不行**：`_blocked` 豁免本网铜，于是搜索能把过孔叠在自己的
+  过孔上（`holes_co_located` 2 条）或放到 0.25 mm 外（`hole_to_hole` 2 条）。
+  `_via_keepout()` 按 `drill + 0.25 mm` 圆心距封掉所有已有钻孔，且**不接受本网豁免**。
+
+**间距常量的来历**：`GAP_MM = 1.25` 是量出来的，不是审美——SOIC-8 焊盘 1.95×0.6 / 1.27 间距
+在相邻焊盘间只剩 0.67 mm 无铜，0.25 mm 走线加 0.2 mm 净空要 0.65 mm，剩下 0.02 mm
+是栅格步长 0.125 的六分之一，**根本表示不出来**。同一路由器同一顺序实测：0.75 mm 停在
+117/119（383 s），1.25 mm 65 s 到 119/119。
 
 - **courtyard 不一定关于原点对称，必须整框平移**：MX126 02P 是 **−3.5…+8**（中心 +2.25）、
   04P 是 **−3.5…+18**（中心 **+7.25**）。只存"宽×深"再按包围盒居中，会把 J1 往左挪 2.25 mm

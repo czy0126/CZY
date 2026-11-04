@@ -232,10 +232,15 @@ def test_every_pad_net_index_points_at_the_right_name(board_text):
                 assert names[pad["index"]] == pad["net"]
 
 
-def test_the_board_has_no_tracks_or_vias(board_text):
-    assert "(segment " not in board_text
-    assert "(via " not in board_text
-    assert "(zone " not in board_text
+def test_the_board_carries_routed_copper(board_text):
+    """Pass 2 routes every net; what it does not do is pour the power nets.
+
+    A ``(zone ...)`` here would claim a current path the router never sized,
+    so its absence is checked as deliberately as the tracks' presence.
+    """
+    assert "(segment " in board_text
+    assert "(via " in board_text
+    assert "(zone " not in board_text, "power nets are not poured yet"
 
 
 def test_the_fp_lib_table_points_only_at_vendored_or_generated_libraries():
@@ -330,29 +335,18 @@ def test_the_committed_drc_found_no_placement_defect():
 
 
 @pytest.mark.skipif(not DRC.exists(), reason="no drc.json in this checkout")
-def test_the_routing_backlog_covers_every_multi_pad_net():
-    """The 111 unconnected items are the routing work, not a defect.
+def test_the_committed_board_has_no_unrouted_net():
+    """An empty ratsnest alone proves nothing, so both halves are asserted.
 
-    Two nets show fewer items than they have pads: the TDSON-8 splits its drain
-    into five pad instances all numbered 5, and KiCad counts touching copper as
-    one node.  That is why the invariant is "every net with at least two pads
-    appears" and not "items == pads - nets".
+    A board whose netlist never reached the copper has no ratsnest either --
+    that is the guard the old backlog test carried.  The router's own count is
+    the other half: 119 connections attempted, 119 made.
     """
-    items = pcb.drc_items()["unconnected_items"]
-    assert items, "an unrouted board must have a non-empty ratsnest"
-    backlog: set[str] = set()
-    for item in items:
-        nets = {re.search(r"\[([^\]]+)\]$", i["description"]).group(1) for i in item["items"]}
-        assert len(nets) == 1, item["description"]
-        backlog |= nets
-    pads_per_net: dict[str, int] = {}
-    for _, _, _, _, ps in _footprints((OUT / pcb.BOARD).read_text(encoding="utf-8")):
-        for pad in ps:
-            if pad["net"]:
-                pads_per_net[pad["net"]] = pads_per_net.get(pad["net"], 0) + 1
-    for name, pads in pads_per_net.items():
-        if pads >= 2:
-            assert name in backlog, name
+    items = pcb.drc_items()
+    assert items["unconnected_items"] == []
+    routing = pcb.report()["routing"]
+    assert routing["routed"] is True
+    assert routing["connections_made"] == routing["connections_attempted"] > 0
 
 
 def test_the_project_file_raises_missing_courtyard_to_error():
@@ -382,18 +376,25 @@ def test_the_mounting_hole_library_is_generated(placed):
     assert lib.read_text(encoding="utf-8") == pcb.mounting_hole_source()
 
 
-def test_the_honesty_flags_stay_false():
+def test_the_honesty_flags_keep_the_board_unreleased():
+    """``routed`` is a fact about connectivity, not a release.
+
+    Every net is connected and DRC is clean of placement defects, yet the
+    power nets are still 0.8 mm tracks rather than pours, the BSC010N04LS6
+    has no device-specific land, and nothing has been built.  Those are the
+    flags that keep the board out of a fabrication order.
+    """
     data = pcb.report()
-    assert data["routed"] is False
+    assert data["routed"] is True
     assert data["hardware_built"] is False
     assert data["fabrication_approved"] is False
     assert data["manufacturing_package"] == "NOT_RELEASED"
-    assert data["status"].endswith("NOT_FABRICABLE")
-    assert (OUT / pcb.BOARD).read_text(encoding="utf-8").count("(segment ") == 0
+    assert data["status"].endswith("NOT_RELEASED")
+    assert (OUT / pcb.BOARD).read_text(encoding="utf-8").count("(segment ") > 0
 
 
 def test_no_manufacturing_files_were_exported():
-    """An unrouted board with a drill file looks orderable and is not."""
+    """A routed board with a drill file still looks orderable, and is not."""
     for pattern in ("*.gbr", "*.drl", "*.g*", "*.pos", "*.csv.tmp"):
         assert not list(OUT.glob(pattern)), pattern
 
