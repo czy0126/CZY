@@ -222,8 +222,9 @@ def test_prepare_lanes_rejects_traversal_nonexistent_and_invalid_counts(tmp_path
     source = tmp_path / "sim" / "v3"
     source.mkdir(parents=True)
     (source / "deck.cir").write_text("*test")
-    for deck in ("../sim/v3/deck.cir", "sim/v3/../deck.cir", "/tmp/sim/v3/deck.cir",
-                 "sim/v3/missing.cir", "sim/v3/deck.raw"):
+    for deck in ("../sim/v3/deck.cir", "sim/v3/../deck.cir",
+                 r"sim\v3\..\deck.cir", r"sim\..\v3\deck.cir",
+                 "/tmp/sim/v3/deck.cir", "sim/v3/missing.cir", "sim/v3/deck.raw"):
         with pytest.raises(ValueError):
             prepare_lanes(str(tmp_path), deck, 1)
     for count in (0, -1, 999):
