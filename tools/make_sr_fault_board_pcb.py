@@ -425,13 +425,20 @@ def courtyard_bounds(text: str) -> tuple[float, float, float, float]:
     return min(xs), min(ys), max(xs), max(ys)
 
 
-def mounting_hole_source() -> str:
+def mounting_hole_source(hide_reference: bool = False) -> str:
     """The M3 hole as a library footprint, so the board can reference it by name.
 
     Keeping it in a real ``dcx.pretty`` is what lets KiCad's DRC resolve the
     footprint; an inline definition is reported as an unknown library.
+
+    ``hide_reference`` matches what the official KiCad mounting holes do.  The
+    label sits 4.9 mm above the hole, so on a board whose holes are 5 mm from
+    the edge it lands outside the outline and DRC reports
+    ``silk_edge_clearance``.  It stays visible by default because the SR board
+    has the room and its committed board must not change.
     """
     r = HOLE_COURTYARD_R_MM
+    hide = "\t\t(hide yes)\n" if hide_reference else ""
     return (
         f'(footprint "MountingHole_3.2mm_M3"\n'
         f'\t(version 20260206)\n\t(generator "make_sr_fault_board_pcb")\n'
@@ -440,6 +447,7 @@ def mounting_hole_source() -> str:
         f'\t(attr exclude_from_pos_files exclude_from_bom)\n'
         f'\t(property "Reference" "REF**"\n'
         f'\t\t(at 0 -{r + 1.2:g} 0)\n\t\t(layer "F.SilkS")\n'
+        f'{hide}'
         f'\t\t(uuid "{uid("h", "ref")}")\n'
         f'\t\t(effects (font (size 1 1) (thickness 0.15)))\n\t)\n'
         f'\t(property "Value" "MountingHole_3.2mm_M3"\n'
@@ -1989,6 +1997,12 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
         if proc.returncode != 0:
             raise SystemExit(f"kicad-cli {name} export failed (exit {proc.returncode}): "
                              f"{(proc.stderr or proc.stdout).strip()}")
+    # The assembly drawing is built from the placement table, not plotted from
+    # the board: kicad-cli draws the silkscreen, which has the references
+    # wherever layout left them and cannot mark a part "DNP".  Imported here
+    # because ``assembly_drawing`` imports this module for that same table.
+    import assembly_drawing
+    assembly_drawing.write(FAB / "assembly.svg")
     files = sorted(p for p in FAB.iterdir() if p.is_file() and p.name != FAB_MANIFEST.name)
     if not files:
         raise SystemExit("the fabrication export wrote no files")
@@ -2009,9 +2023,9 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
                   for p in files],
         "current_rating": rating,
         "process_requirements": data["process_requirements"],
-        "what_this_is": "gerbers, drill and a position file for a fault-response "
-                        "validation board: two UCC24624, two BSC010N04LS6, and the "
-                        "fault interface.  The escapes are rated in current_rating.",
+        "what_this_is": "gerbers, drill, a position file and an assembly/DNP drawing for a "
+                        "fault-response validation board: two UCC24624, two BSC010N04LS6, and "
+                        "the fault interface.  The escapes are rated in current_rating.",
         "what_this_is_not": [
             "an approval to build: hardware_built and fabrication_approved are false",
             "a 100 A power stage -- the board is for one fault event of a few tens of "
@@ -2019,7 +2033,9 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
             "The 10 A in the board document is a pulse, not a continuous rating",
             "a thermal model: current_rating has no cooling term and no junction "
             "temperature, and IPC-2221 has no via-barrel term at all",
-            "a released assembly drawing: the DNP parts have lands and no placement",
+            "a checked drawing: assembly.svg is generated from the same placement table "
+            "as the copper, so the two cannot disagree -- but it has not been compared "
+            "with a physical first article",
         ],
         "flags": {"hardware_built": False, "fabrication_approved": False},
     }

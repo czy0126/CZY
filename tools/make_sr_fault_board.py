@@ -14,7 +14,9 @@ not with a behavioural model:
    The UCC24624 has no enable pin.  Its gate outputs are only guaranteed low
    in standby (which needs 7.5 ms of detection) or after REG UVLO.  The board
    provides a REG crowbar as the primary shutdown and leaves the VG clamp as a
-   DNP option so its contention can be measured instead of assumed.
+   DNP option so its contention can be measured instead of assumed.  The
+   crowbar delay is quoted at the 3.63 V turn-off threshold (the slow end) and
+   is labelled an estimate: the regulator keeps sourcing and no part is chosen.
 
 2. Is cutting VDD sufficient?
    JP1 removes VDD while the bias supply stays alive.  The board's JSON puts
@@ -86,8 +88,18 @@ BSC = "references/datasheets/bsc010n04ls6.txt"
 VREG_TYP = 11.0            # V, REG regulation level
 VREG_MIN = 9.9
 VREG_MAX = 11.9
-VREGOFF_MAX = 4.25         # V, REG UVLO turn-off threshold (max)
+# REG UVLO turn-off threshold: 3.63 / 4.0 / 4.25 V (min/typ/max).
+# The design delay has to cover a part that lets go at the *lowest* threshold,
+# which is the slowest discharge; using VREGOFF_MAX made the crowbar look
+# ~1.5 us faster than a low-threshold device can deliver (2026-11-05 review).
+VREGOFF_MIN = 3.63
+VREGOFF_TYP = 4.0
+VREGOFF_MAX = 4.25
 VREGON_MAX = 4.8           # V, REG UVLO turn-on threshold (max)
+# REG current limit: 41 / 60 / 95 mA at VVDD = 12 V, VREG = 8 V.  It is not a
+# guaranteed upper bound over the whole discharge, so it is used only as a
+# constant-current sensitivity, never as the design delay.
+IREGLIM_MAX_A = 95e-3
 RVG_PU_TYP = 6.5           # ohm, VG pull-up resistance
 RVG_PD_TYP = 0.9           # ohm, VG pull-down resistance
 IVG_SRC_TYP = 1.5          # A, VG maximum source current
@@ -121,6 +133,7 @@ RG_INT = 1.0               # ohm, internal gate resistance
 R_GATE = 2.2               # ohm, same as the main board's external gate resistor
 R_GS = 10e3                # ohm, gate-source pulldown
 R_CROWBAR = 4.7            # ohm, series resistor in the REG crowbar
+RDS_BOM_TARGET = 0.1       # ohm, what the Q41 BOM line asks for (no MPN yet)
 C_REG_BYPASS = 2.2e-6      # F, C4
 C_REG_HF = 100e-9          # F, C5
 C1_F = 10e-6               # C1
@@ -130,9 +143,13 @@ C_VDD_TOTAL = C1_F + C2_F + C3_F
 VDD_NOM = 15.0             # V, bench bias
 RDS_ON_CROWBAR = 1.5       # ohm, placeholder for a 2N7002-class NMOS
 RDS_CLAMP_TABLE = (0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 1.5)
-FAULT_RC_R = 10e3          # ohm, input pull-down
-FAULT_RC_C = 1e-9          # F, input filter
+R_FAULT_PULLDOWN = 10e3    # ohm, R41 from the fault gate to PGND
+FAULT_RC_R = R_FAULT_PULLDOWN
+FAULT_RC_C = 1e-9          # F, input filter (C40)
 FAULT_RC_S = FAULT_RC_R * FAULT_RC_C
+R_FAULT_SERIES = 1e3       # ohm, R40 into the clamp
+R_STATUS_PULLDOWN = 100e3  # ohm, R42 on the open-drain status output
+EXTERNAL_PULLUP_V = 3.3    # V, assumed status pull-up level on the harness
 
 # A net tied to this is emitted as a no-connect marker, not a label.
 NC = "#NC"
@@ -163,6 +180,12 @@ class Part:
     dnp: bool = False
     unit: int = 1
     source: str = "DESIGN_PROPOSAL"
+    # An orderable code is only written when a datasheet this repository holds
+    # carries it; ``mpn_source`` says which file.  Everything else stays
+    # TO_SELECT, because a blank cell reads as "someone will fill it in" while
+    # a fabricated MPN reads as a part that exists.
+    mpn: str = ""
+    mpn_source: str = "TO_SELECT"
 
 
 def uid(*parts: str) -> str:
@@ -360,7 +383,9 @@ def controller_parts() -> list[Part]:
              "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", 170, 95,
              {"1": "VG1", "2": "PGND", "3": "REG", "4": "VD1", "5": "VSS",
               "6": "VD2", "7": "VDD", "8": "VG2"}, "230 V VD pins",
-             "SR controller, SOIC-8"),
+             "SR controller, SOIC-8",
+             mpn="UCC24624DR",
+             mpn_source="references/datasheets/ucc24624.txt"),
         Part("C4", "Device:C", "2.2uF/25V", "Capacitor_SMD:C_1206_3216Metric",
              170, 70, {"1": "REG", "2": "PGND"}, "25 V X7R",
              "REG bypass, <=1 cm from pin 3"),
@@ -385,12 +410,16 @@ def power_parts() -> list[Part]:
              BSC_FOOTPRINT, 260, 78,
              {"1": "SR_SRC", "2": "SR_SRC", "3": "SR_SRC", "4": "G1",
               "5": "SEC_A", "6": "SEC_A", "7": "SEC_A", "8": "SEC_A"},
-             "40 V 1.0 mR", "SR1; source Kelvin to VSS"),
+             "40 V 1.0 mR", "SR1; source Kelvin to VSS",
+             mpn="BSC010N04LS6",
+             mpn_source="references/datasheets/bsc010n04ls6.txt"),
         Part("Q2", "SR:BSC010N04LS6", "BSC010N04LS6",
              BSC_FOOTPRINT, 260, 138,
              {"1": "SR_SRC", "2": "SR_SRC", "3": "SR_SRC", "4": "G2",
               "5": "SEC_B", "6": "SEC_B", "7": "SEC_B", "8": "SEC_B"},
-             "40 V 1.0 mR", "SR2; source Kelvin to VSS"),
+             "40 V 1.0 mR", "SR2; source Kelvin to VSS",
+             mpn="BSC010N04LS6",
+             mpn_source="references/datasheets/bsc010n04ls6.txt"),
         Part("Rg1", "Device:R", "2.2R", "Resistor_SMD:R_0805_2012Metric",
              232, 68, {"1": "VG1", "2": "G1"}, "1/8 W", "gate resistor, main-board value"),
         Part("Rg2", "Device:R", "2.2R", "Resistor_SMD:R_0805_2012Metric",
@@ -452,32 +481,35 @@ def fault_parts() -> list[Part]:
              {"1": "FAULT_IN", "2": "PGND", "3": "FAULT_N"},
              "3.3/5 V CMOS or open-drain, active high",
              "pin 1 = fault request, pin 3 = open-drain status"),
-        Part("R40", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric",
+        Part("R40", "Device:R", f"{R_FAULT_SERIES / 1e3:g}k", "Resistor_SMD:R_0603_1608Metric",
              58, 250, {"1": "FAULT_IN", "2": "FAULT_G"}, "1/10 W",
              "series limit into the clamp"),
         Part("D40", "Device:D_Zener", "BZX84C5V1", "Package_TO_SOT_SMD:SOT-23",
              58, 272, {"1": "FAULT_G", "2": "PGND"}, "5.1 V",
              "input clamp; cathode on FAULT_G"),
-        Part("R41", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric",
+        Part("R41", "Device:R", f"{R_FAULT_PULLDOWN / 1e3:g}k", "Resistor_SMD:R_0603_1608Metric",
              74, 272, {"1": "FAULT_G", "2": "PGND"}, "1/10 W",
-             "default = no fault; 10k * 1nF = 10 us input filter"),
+             "default = no fault (fail-open input); 10k * 1nF = 10 us input filter"),
         Part("C40", "Device:C", "1nF/16V", "Capacitor_SMD:C_0603_1608Metric",
              90, 272, {"1": "FAULT_G", "2": "PGND"}, "16 V X7R",
              "10 us; a 1 ms debounce would dominate every other delay"),
         Part("Q40", "Transistor_FET:Q_NMOS_GSD", "2N7002",
              "Package_TO_SOT_SMD:SOT-23", 74, 250, {"1": "FAULT_G", "2": "PGND", "3": "FAULT_N"},
              "60 V", "open-drain status: low while the fault is asserted"),
-        Part("R42", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric",
+        Part("R42", "Device:R", f"{R_STATUS_PULLDOWN / 1e3:g}k", "Resistor_SMD:R_0603_1608Metric",
              90, 250, {"1": "FAULT_N", "2": "PGND"}, "1/10 W",
-             "status default low; pull up externally to the logic rail"),
+             "status default low; the external pull-up sees this 100k to PGND"),
         Part("R43", "Device:R", "100R", "Resistor_SMD:R_0603_1608Metric",
              58, 292, {"1": "FAULT_G", "2": "RC_G"}, "1/10 W", "crowbar gate resistor"),
         Part("Q41", "Transistor_FET:Q_NMOS_GSD", "NMOS 30V IDM>=3A",
              "Package_TO_SOT_SMD:SOT-23", 74, 292, {"1": "RC_G", "2": "PGND", "3": "REG_CROW"},
-             "30 V, IDM >= 3 A", "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm"),
+             "30 V, IDM >= 3 A", f"REG crowbar; MPN TO SELECT, Rds(on) <= {RDS_BOM_TARGET:g} ohm "
+             f"at 3.0 V VGS; absorbs {crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event"),
         Part("R44", "Device:R", "4.7R 0.5W", "Resistor_SMD:R_1206_3216Metric",
              92, 292, {"1": "REG", "2": "REG_CROW"}, "0.5 W pulse",
-             "limits the crowbar to ~1.5 A and sets tau ~14 us"),
+             f"sets the discharge tau with Q41; {crowbar_pulse()['r44_energy_j'] * 1e3:.3f} mJ / "
+             f"{crowbar_pulse()['r44_peak_power_w']:.1f} W peak per event at the "
+             f"{RDS_ON_CROWBAR:g} ohm placeholder, single-pulse rating UNVERIFIED"),
         Part("R45", "Device:R", "100R", "Resistor_SMD:R_0603_1608Metric",
              58, 312, {"1": "FAULT_G", "2": "VC1_G"}, "1/10 W", "VG1 clamp gate resistor"),
         Part("Q42", "Transistor_FET:Q_NMOS_GSD", "NMOS clamp DNP",
@@ -673,12 +705,12 @@ def bom(parts_: list[Part]) -> None:
     with path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["Reference", "Value", "Footprint", "Rating", "Note", "DNP",
-                    "MPN", "LCSC", "Qty"])
+                    "MPN", "MPN_Source", "LCSC", "Qty"])
         for part in parts_:
             if part.ref.startswith("#"):
                 continue
             w.writerow([part.ref, part.value, part.footprint, part.rating, part.note,
-                        "yes" if part.dnp else "", "", "", 1])
+                        "yes" if part.dnp else "", part.mpn, part.mpn_source, "", 1])
     print(f"wrote {path}")
 
 
@@ -711,25 +743,162 @@ def erc_violations(path: Path | None = None, *, newer_than: Path | None = None) 
 
 
 # ------------------------------------------------------------------ physics
+def discharge_time(r_total: float, v_threshold: float) -> float:
+    """RC discharge from VREG_TYP through ``r_total`` down to ``v_threshold``."""
+    return (r_total * (C_REG_BYPASS + C_REG_HF)
+            * math.log(VREG_TYP / v_threshold))
+
+
+def discharge_time_with_injection(r_total: float, i_inject: float,
+                                  v_threshold: float) -> float:
+    """Same discharge against a constant current source feeding REG.
+
+    ``t = RC ln[(V0 - IR)/(Vth - IR)]``; only valid while ``I*R < Vth``, and the
+    datasheet's 95 mA is an 8 V condition, so this is a sensitivity bound.
+    """
+    ir = i_inject * r_total
+    if ir >= v_threshold:
+        raise ValueError(f"I*R = {ir:.3f} V does not leave the node below {v_threshold} V")
+    return (r_total * (C_REG_BYPASS + C_REG_HF)
+            * math.log((VREG_TYP - ir) / (v_threshold - ir)))
+
+
 def crowbar() -> dict:
-    """REG crowbar: stored energy, peak current, time constant, UVLO time."""
+    """REG crowbar: stored energy, peak current, time constant, UVLO time.
+
+    The delay is quoted at ``VREGOFF_MIN`` (3.63 V): a device that turns off at
+    the lowest threshold is the slowest one, so that is the number the design
+    has to cover.  None of these is a hardware worst case -- see ``worst_case``.
+    """
     c = C_REG_BYPASS + C_REG_HF
     r = R_CROWBAR + RDS_ON_CROWBAR
     energy = 0.5 * c * VREG_TYP ** 2
+    released = 0.5 * c * (VREG_TYP ** 2 - VREGOFF_MIN ** 2)
     tau = r * c
-    t_uvlo = tau * math.log(VREG_TYP / VREGOFF_MAX)
+    t_uvlo = discharge_time(r, VREGOFF_MIN)
+    scenarios = [
+        {
+            "label": label,
+            "rds_on_ohm": rds,
+            "r_total_ohm": R_CROWBAR + rds,
+            "time_to_uvlo_s": discharge_time(R_CROWBAR + rds, VREGOFF_MIN),
+            "time_to_uvlo_at_max_threshold_s": discharge_time(R_CROWBAR + rds, VREGOFF_MAX),
+        }
+        for label, rds in (
+            ("R44 only, ideal clamp", 0.0),
+            ("Q41 at the BOM target", RDS_BOM_TARGET),
+            ("Q41 placeholder (2N7002 class)", RDS_ON_CROWBAR),
+        )
+    ]
     return {
         "c_reg_f": c,
         "r_total_ohm": r,
         "stored_energy_j": energy,
+        "energy_released_to_uvlo_j": released,
         "peak_current_a": VREG_TYP / r,
         "tau_s": tau,
         "time_to_uvlo_s": t_uvlo,
-        "resistor_share_j": energy * R_CROWBAR / r,
-        "fet_share_j": energy * RDS_ON_CROWBAR / r,
+        "time_to_uvlo_at_max_threshold_s": discharge_time(r, VREGOFF_MAX),
+        "time_to_uvlo_with_reg_current_limit_s":
+            discharge_time_with_injection(r, IREGLIM_MAX_A, VREGOFF_MIN),
+        "threshold_basis": {
+            "turn_off_min_v": VREGOFF_MIN,
+            "turn_off_typ_v": VREGOFF_TYP,
+            "turn_off_max_v": VREGOFF_MAX,
+            "design_uses": "turn_off_min_v: the lowest threshold is the slowest to reach",
+        },
+        "scenarios": scenarios,
+        "resistor_share_j": released * R_CROWBAR / r,
+        "fet_share_j": released * RDS_ON_CROWBAR / r,
         "fet_peak_a": VREG_TYP / r,
+        "worst_case": {
+            "is_worst_case": False,
+            "reasons": [
+                "the UCC24624 linear regulator keeps sourcing into REG while the "
+                "crowbar pulls it down; the constant-current column is a "
+                "sensitivity, not a guaranteed bound",
+                "no component tolerance band is applied to R44 or the REG capacitors",
+                "Q41 has no selected MPN, so its Rds(on) at the actual gate voltage "
+                "is a placeholder",
+                "turn-on propagation of Q41 and the UVLO-to-VG transient are not modelled",
+            ],
+        },
         "note": "Rds(on) is a placeholder for a 2N7002-class part; the BOM asks "
-                "for <=0.1 ohm and IDM>=3 A, which only shortens tau",
+                "for <=0.1 ohm and IDM>=3 A at an unspecified gate voltage",
+    }
+
+
+def crowbar_pulse() -> dict:
+    """Energy and power the crowbar puts into R44 and Q41, per event and per rate.
+
+    The 1206's 0.5 W rating is a *continuous* rating.  At any plausible
+    repetition rate the thermal average is microwatts, so the binding limit is
+    the single-pulse surge -- and this repository has no vendor pulse curve and
+    no Q41 thermal model, so that limit is reported as unverified rather than
+    assumed.
+    """
+    c = crowbar()
+    released = c["energy_released_to_uvlo_j"]
+    duration = c["time_to_uvlo_s"]
+    peak_current = VREG_TYP / c["r_total_ohm"]
+    r44_energy = released * R_CROWBAR / c["r_total_ohm"]
+    fet_energy = released * RDS_ON_CROWBAR / c["r_total_ohm"]
+    return {
+        "duration_s": duration,
+        "r44_energy_j": r44_energy,
+        "fet_energy_j": fet_energy,
+        "r44_peak_power_w": peak_current ** 2 * R_CROWBAR,
+        "r44_mean_power_w": r44_energy / duration,
+        "fet_peak_power_w": peak_current ** 2 * RDS_ON_CROWBAR,
+        "fet_mean_power_w": fet_energy / duration,
+        "repetition": {
+            "1_per_s_w": r44_energy * 1,
+            "10_per_s_w": r44_energy * 10,
+            "100_per_s_w": r44_energy * 100,
+            "basis": "thermal average = released energy x rate; the single-pulse "
+                     "surge, not this average, is the binding limit",
+        },
+        "r44_pulse_rating_j": None,
+        "q41_thermal": None,
+        "temperature_note": "no vendor pulse curve for the 1206 and no Q41 thermal "
+                            "model in this repository: single-pulse capability and "
+                            "temperature rise are UNVERIFIED, not assumed",
+    }
+
+
+def input_default() -> dict:
+    """What the board does when nobody drives it.
+
+    FAULT_IN falls back to no-fault, so a disconnected or unpowered fault
+    source does not shut anything down.  The status output is open drain with
+    an on-board 100k to PGND, so its high level is a divider against whatever
+    the harness pulls up with.
+    """
+    # The open-drain pin sits at the bottom of a divider: external pull-up on
+    # top, R42 (100 k) to PGND below, so the high level is the pulldown's share.
+    high_10k = EXTERNAL_PULLUP_V * R_STATUS_PULLDOWN / (10e3 + R_STATUS_PULLDOWN)
+    return {
+        "fault_input_pulldown_ohm": R_FAULT_PULLDOWN,
+        "fault_input_default": "no crowbar",
+        "limitation": "a disconnected or unpowered fault source leaves the board "
+                      "in no-fault; the harness must drive FAULT_IN and a "
+                      "lost-source case belongs in the bench plan",
+        "status_output": {
+            "pulldown_ohm": R_STATUS_PULLDOWN,
+            "external_pullup_v": EXTERNAL_PULLUP_V,
+            "high_level_v_with_10k_pullup": high_10k,
+            "note": "open drain; without an external pull-up the status pin reads "
+                    "low in both states",
+        },
+        "gate_drive": {
+            "fault_g_v_at_3v3": 3.3 * R_FAULT_PULLDOWN / (R_FAULT_SERIES + R_FAULT_PULLDOWN),
+            "fault_g_v_at_5v0": 5.0 * R_FAULT_PULLDOWN / (R_FAULT_SERIES + R_FAULT_PULLDOWN),
+            "series_ohm": R_FAULT_SERIES,
+            "note": "D40 clamps at 5.1 V and does not conduct at either harness level",
+            "rds_claim": "Q41 must be specified for Rds(on) <= 0.1 ohm at the 3.0 V "
+                         "gate the 3.3 V harness produces (or the harness must drive "
+                         "5 V); a 2N7002-class part at 3.0 V does not meet it",
+        },
     }
 
 
@@ -804,13 +973,15 @@ def states() -> list[dict]:
         {
             "state": "FAULT_REG_CROWBAR",
             "entry": "FAULT_IN high, JP1 fitted",
-            "vg_high_driver": "U1 still sources until REG crosses VREGOFF 4 V",
+            "vg_high_driver": "U1 still sources until REG crosses VREGOFF (3.63 V min)",
             "vg_low_driver": "U1 UVLO sink (4 A) after REG crosses VREGOFF; "
                              "Q41 only collapses REG, it does not touch VG",
-            "reg_owner": "Q41 + R44 pull REG to PGND against the U1 regulator",
+            "reg_owner": "Q41 + R44 pull REG to PGND against the U1 regulator, "
+                         "which keeps sourcing while it can",
             "vdd_owner": "still connected; this is the point of the test",
             "gate_pulldown": "Rgs 10k in parallel with the U1 sink",
-            "expected": f"REG reaches UVLO in {crowbar()['time_to_uvlo_s'] * 1e6:.1f} us, "
+            "expected": f"REG reaches UVLO in {crowbar()['time_to_uvlo_s'] * 1e6:.1f} us "
+                        "at the 3.63 V threshold (estimate, not a worst case), "
                         "then VG is actively low",
         },
         {
@@ -880,6 +1051,9 @@ def delay_budget() -> dict:
             "input_rc_s": FAULT_RC_S,
             "crowbar_fet_turn_on_s": 50e-9,
             "reg_to_uvlo_s": c["time_to_uvlo_s"],
+            "reg_to_uvlo_basis": "3.63 V turn-off threshold, 1.5 ohm Q41 placeholder",
+            "reg_to_uvlo_with_reg_current_limit_s":
+                c["time_to_uvlo_with_reg_current_limit_s"],
             "vg_active_low_s": gd["active_sink_time_s"],
             "total_s": sr,
             "dominant_term": "reg_to_uvlo_s",
@@ -895,6 +1069,13 @@ def delay_budget() -> dict:
         },
         "max_branch_s": max(sr, primary),
         "slowest_branch": "sr" if sr > primary else "primary",
+        "is_worst_case": False,
+        "not_worst_case_reasons": [
+            "reg_to_uvlo_s is an RC estimate at the 3.63 V threshold; the "
+            "regulator keeps sourcing, and the current-limit column is a sensitivity",
+            "component tolerances on R44 and the REG capacitors are not applied",
+            "Q41 turn-on and its gate threshold are not measured (no MPN)",
+        ],
         "rule": "t_stop = t_common + max(t_primary, t_SR); do not add the two "
                 "branches in series",
     }
@@ -916,10 +1097,13 @@ def observations() -> list[dict]:
         },
         {
             "id": "SR-02",
-            "finding": f"REG holds {c['stored_energy_j'] * 1e6:.0f} uJ at 11 V; the "
-                       f"{c['r_total_ohm']:.1f} ohm crowbar reaches UVLO in "
-                       f"{c['time_to_uvlo_s'] * 1e6:.1f} us.",
-            "evidence": f"computed from C4+C5 and {UCC} VREG/VREGOFF",
+            "finding": f"REG holds {c['stored_energy_j'] * 1e6:.0f} uJ at 11 V "
+                       f"({c['energy_released_to_uvlo_j'] * 1e6:.0f} uJ down to the "
+                       f"3.63 V threshold); the {c['r_total_ohm']:.1f} ohm crowbar "
+                       f"reaches UVLO in {c['time_to_uvlo_s'] * 1e6:.1f} us. That is an "
+                       "estimate covering a low-threshold part, not a fast hard "
+                       "shutdown and not a hardware worst case.",
+            "evidence": f"computed from C4+C5 and {UCC} VREGOFF min/max",
             "status": "DESIGN_ESTIMATE",
         },
         {
@@ -960,6 +1144,23 @@ def observations() -> list[dict]:
             "evidence": "scope of the board",
             "status": "BOUNDARY",
         },
+        {
+            "id": "SR-08",
+            "finding": "FAULT_IN defaults to no crowbar. A lost or unpowered fault "
+                       "source therefore does not shut the board down; the bench "
+                       "plan has to drive it and test the lost-source case.",
+            "evidence": "R41 10k to PGND on the fault input",
+            "status": "BOUNDARY",
+        },
+        {
+            "id": "SR-09",
+            "finding": f"A 3.3 V harness gives Q41 only "
+                       f"{input_default()['gate_drive']['fault_g_v_at_3v3']:.1f} V of "
+                       "gate drive, so the BOM's Rds(on) <= 0.1 ohm has to be quoted "
+                       "at that voltage or the harness has to drive 5 V.",
+            "evidence": "R40/R41 divider into the Q41 gate; Q41 MPN not selected",
+            "status": "DESIGN_DECISION",
+        },
     ]
 
 
@@ -976,6 +1177,8 @@ def report(ps: list[Part]) -> dict:
         "net_map": nets,
         "states": states(),
         "crowbar": crowbar(),
+        "crowbar_pulse": crowbar_pulse(),
+        "input_default": input_default(),
         "vdd_cut": vdd_cut(),
         "vg_clamp_table": vg_clamp_table(),
         "gate_discharge": gate_discharge(),
@@ -984,6 +1187,11 @@ def report(ps: list[Part]) -> dict:
         "limits": [
             "low-energy validation board, <=10 A and <=5 V output",
             "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
+            "Q41 has no selected MPN; its Rds(on) is a placeholder, so the crowbar "
+            "delay is a scenario table, not a single guaranteed number",
+            "no vendor pulse curve for R44 and no Q41 thermal model; pulse "
+            "capability and temperature rise are unverified",
+            "FAULT_IN defaults to no crowbar: a lost fault source is not a shutdown",
             "a clean ERC only says the drawing agrees with itself",
         ],
     }

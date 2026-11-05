@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\sr_fault_validation\\sr_fault_validation.kicad_sch")
-		(date "2026-11-05T04:18:01")
+		(date "2026-11-05T10:24:59")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -1502,7 +1502,7 @@
 			(ref "Q41")
 			(value "NMOS 30V IDM>=3A")
 			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm")
+			(description "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event")
 			(fields
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
@@ -1510,7 +1510,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm")
+					(name "Description") "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event")
 			)
 			(libsource
 				(lib "Transistor_FET")
@@ -1991,7 +1991,7 @@
 			(ref "R41")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "default = no fault; 10k * 1nF = 10 us input filter")
+			(description "default = no fault (fail-open input); 10k * 1nF = 10 us input filter")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -1999,7 +1999,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "default = no fault; 10k * 1nF = 10 us input filter")
+					(name "Description") "default = no fault (fail-open input); 10k * 1nF = 10 us input filter")
 			)
 			(libsource
 				(lib "Device")
@@ -2045,7 +2045,7 @@
 			(ref "R42")
 			(value "100k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "status default low; pull up externally to the logic rail")
+			(description "status default low; the external pull-up sees this 100k to PGND")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -2053,7 +2053,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "status default low; pull up externally to the logic rail")
+					(name "Description") "status default low; the external pull-up sees this 100k to PGND")
 			)
 			(libsource
 				(lib "Device")
@@ -2153,7 +2153,7 @@
 			(ref "R44")
 			(value "4.7R 0.5W")
 			(footprint "Resistor_SMD:R_1206_3216Metric")
-			(description "limits the crowbar to ~1.5 A and sets tau ~14 us")
+			(description "sets the discharge tau with Q41; 0.094 mJ / 14.8 W peak per event at the 1.5 ohm placeholder, single-pulse rating UNVERIFIED")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
@@ -2161,7 +2161,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "limits the crowbar to ~1.5 A and sets tau ~14 us")
+					(name "Description") "sets the discharge tau with Q41; 0.094 mJ / 14.8 W peak per event at the 1.5 ohm placeholder, single-pulse rating UNVERIFIED")
 			)
 			(libsource
 				(lib "Device")

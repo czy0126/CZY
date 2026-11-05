@@ -39,54 +39,59 @@
   ],
   "files": [
     {
+      "name": "assembly.svg",
+      "bytes": 37356,
+      "sha256": "2d0c6a8c4a58167e6e1491bf8975260dcbb0b2dc3e5fb73c3145cc8b7db02fbe"
+    },
+    {
       "name": "sr_fault_validation-B_Cu.gbl",
       "bytes": 163193,
-      "sha256": "a82a5a94fea649bee40fe5559b647946cdb60e6cd170e1838cd0dfe266cc1b7e"
+      "sha256": "ab779a788bbf4498f3a395065fb9781f03cd8d226c8c7d5626125db87f0ab746"
     },
     {
       "name": "sr_fault_validation-B_Mask.gbs",
       "bytes": 2066,
-      "sha256": "b2168698c9490acaed37d6446773fe977e20f5d33f6ebfb673355f6bb60e0308"
+      "sha256": "7e77f638fe135ce3a5ae3f588a40cf1ea88ee3aad7e5ecbd6c9566e8ed59f1f1"
     },
     {
       "name": "sr_fault_validation-B_Paste.gbp",
       "bytes": 479,
-      "sha256": "990e147ef4a2e4fa02177212e6f38a408a62b68be4ffb23e73e2af1f16b42b84"
+      "sha256": "c98fa0c2c50a33facfebac7154dc825d1f64e84a61139ecd70f5b6fbd048e70b"
     },
     {
       "name": "sr_fault_validation-B_Silkscreen.gbo",
       "bytes": 480,
-      "sha256": "de39e8945feec8261c269fc4633044d4cce119e53bf5e731fef110d179634469"
+      "sha256": "db86b7170ec6f6806c1f3a9aae163f9d85e8db4429401bf9a52c9158edf64849"
     },
     {
       "name": "sr_fault_validation-Edge_Cuts.gm1",
       "bytes": 656,
-      "sha256": "ae5508d49fb9dc561cc864576f6e497956baf477d5e3b55d47d2b7e4bfaaa4b1"
+      "sha256": "4c0a0af02f48db1c31a8fc93968cf9d2253ca3a450be7af919e926bb6df4d196"
     },
     {
       "name": "sr_fault_validation-F_Cu.gtl",
       "bytes": 158457,
-      "sha256": "28d50f364f123c6611eb2a791be715457bc92c26a5aa3e6f9092fb4350ee1e8a"
+      "sha256": "917bb196f42c88056c2e797c45c138953de32368c9078f7ac0ad55ce3ae018d1"
     },
     {
       "name": "sr_fault_validation-F_Mask.gts",
       "bytes": 8043,
-      "sha256": "9ae7e0e77a04879d78e038107da7db2acdf197ebc07017b3a726eb672e3a7c79"
+      "sha256": "87bf62cf25e2bce3ffdbeb8a0dff7f0adf610c12bed2f4b9ce05b409cdec5f20"
     },
     {
       "name": "sr_fault_validation-F_Paste.gtp",
       "bytes": 6729,
-      "sha256": "39c90103845f0392dd727f71c1f85f7bd1cf2346626531ab287ebfab664d8fb0"
+      "sha256": "e831d9025bcf7ceee4c1db60737f29d473032f13632051ba531e7ff9c986eb74"
     },
     {
       "name": "sr_fault_validation-F_Silkscreen.gto",
       "bytes": 121172,
-      "sha256": "d28056c27fb8eae69be40e2d62fda450d3536567bcfdc92e6863ba9c986caba0"
+      "sha256": "d00479b60ee625859d9d82ec8d52770a656b14bfe7a3f14cc54da5ee94e1bfb2"
     },
     {
       "name": "sr_fault_validation-job.gbrjob",
       "bytes": 2925,
-      "sha256": "745d77712f9051e5bb5a34e132e1e7282952adbe0e8b036523b3b22513609e26"
+      "sha256": "53d900c67ea8fb8810e4fd98536c171c4658089a4decd84e1fe2b4b44f2220cd"
     },
     {
       "name": "sr_fault_validation-pos.csv",
@@ -96,7 +101,7 @@
     {
       "name": "sr_fault_validation.drl",
       "bytes": 3462,
-      "sha256": "4c945fe53b9c3176bc13655ee1fcad46b50ece77bed068273c9a05d55dd6ebe5"
+      "sha256": "6a3f3c019a5b1f482bd266c43ba211a5b0aa55e2f10383caf2fce1cdc1fdaaec"
     }
   ],
   "current_rating": {
@@ -323,12 +328,12 @@
       "mask_and_silk_colour"
     ]
   },
-  "what_this_is": "gerbers, drill and a position file for a fault-response validation board: two UCC24624, two BSC010N04LS6, and the fault interface.  The escapes are rated in current_rating.",
+  "what_this_is": "gerbers, drill, a position file and an assembly/DNP drawing for a fault-response validation board: two UCC24624, two BSC010N04LS6, and the fault interface.  The escapes are rated in current_rating.",
   "what_this_is_not": [
     "an approval to build: hardware_built and fabrication_approved are false",
     "a 100 A power stage -- the board is for one fault event of a few tens of microseconds, and the continuous figure in current_rating is a chart. The 10 A in the board document is a pulse, not a continuous rating",
     "a thermal model: current_rating has no cooling term and no junction temperature, and IPC-2221 has no via-barrel term at all",
-    "a released assembly drawing: the DNP parts have lands and no placement"
+    "a checked drawing: assembly.svg is generated from the same placement table as the copper, so the two cannot disagree -- but it has not been compared with a physical first article"
   ],
   "flags": {
     "hardware_built": false,

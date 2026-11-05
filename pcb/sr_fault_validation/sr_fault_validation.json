@@ -233,12 +233,12 @@
     {
       "state": "FAULT_REG_CROWBAR",
       "entry": "FAULT_IN high, JP1 fitted",
-      "vg_high_driver": "U1 still sources until REG crosses VREGOFF 4 V",
+      "vg_high_driver": "U1 still sources until REG crosses VREGOFF (3.63 V min)",
       "vg_low_driver": "U1 UVLO sink (4 A) after REG crosses VREGOFF; Q41 only collapses REG, it does not touch VG",
-      "reg_owner": "Q41 + R44 pull REG to PGND against the U1 regulator",
+      "reg_owner": "Q41 + R44 pull REG to PGND against the U1 regulator, which keeps sourcing while it can",
       "vdd_owner": "still connected; this is the point of the test",
       "gate_pulldown": "Rgs 10k in parallel with the U1 sink",
-      "expected": "REG reaches UVLO in 13.6 us, then VG is actively low"
+      "expected": "REG reaches UVLO in 15.8 us at the 3.63 V threshold (estimate, not a worst case), then VG is actively low"
     },
     {
       "state": "FAULT_VDD_CUT",
@@ -285,13 +285,90 @@
     "c_reg_f": 2.3e-06,
     "r_total_ohm": 6.2,
     "stored_energy_j": 0.00013915,
+    "energy_released_to_uvlo_j": 0.000123996565,
     "peak_current_a": 1.7741935483870968,
     "tau_s": 1.426e-05,
-    "time_to_uvlo_s": 1.3560921893432765e-05,
-    "resistor_share_j": 0.00010548467741935485,
-    "fet_share_j": 3.3665322580645156e-05,
+    "time_to_uvlo_s": 1.5809529025678174e-05,
+    "time_to_uvlo_at_max_threshold_s": 1.3560921893432765e-05,
+    "time_to_uvlo_with_reg_current_limit_s": 1.7549447329170756e-05,
+    "threshold_basis": {
+      "turn_off_min_v": 3.63,
+      "turn_off_typ_v": 4.0,
+      "turn_off_max_v": 4.25,
+      "design_uses": "turn_off_min_v: the lowest threshold is the slowest to reach"
+    },
+    "scenarios": [
+      {
+        "label": "R44 only, ideal clamp",
+        "rds_on_ohm": 0.0,
+        "r_total_ohm": 4.7,
+        "time_to_uvlo_s": 1.1984642971078615e-05,
+        "time_to_uvlo_at_max_threshold_s": 1.028005369340871e-05
+      },
+      {
+        "label": "Q41 at the BOM target",
+        "rds_on_ohm": 0.1,
+        "r_total_ohm": 4.8,
+        "time_to_uvlo_s": 1.2239635374718587e-05,
+        "time_to_uvlo_at_max_threshold_s": 1.0498778240076978e-05
+      },
+      {
+        "label": "Q41 placeholder (2N7002 class)",
+        "rds_on_ohm": 1.5,
+        "r_total_ohm": 6.2,
+        "time_to_uvlo_s": 1.5809529025678174e-05,
+        "time_to_uvlo_at_max_threshold_s": 1.3560921893432765e-05
+      }
+    ],
+    "resistor_share_j": 9.39973960483871e-05,
+    "fet_share_j": 2.9999168951612898e-05,
     "fet_peak_a": 1.7741935483870968,
-    "note": "Rds(on) is a placeholder for a 2N7002-class part; the BOM asks for <=0.1 ohm and IDM>=3 A, which only shortens tau"
+    "worst_case": {
+      "is_worst_case": false,
+      "reasons": [
+        "the UCC24624 linear regulator keeps sourcing into REG while the crowbar pulls it down; the constant-current column is a sensitivity, not a guaranteed bound",
+        "no component tolerance band is applied to R44 or the REG capacitors",
+        "Q41 has no selected MPN, so its Rds(on) at the actual gate voltage is a placeholder",
+        "turn-on propagation of Q41 and the UVLO-to-VG transient are not modelled"
+      ]
+    },
+    "note": "Rds(on) is a placeholder for a 2N7002-class part; the BOM asks for <=0.1 ohm and IDM>=3 A at an unspecified gate voltage"
+  },
+  "crowbar_pulse": {
+    "duration_s": 1.5809529025678174e-05,
+    "r44_energy_j": 9.39973960483871e-05,
+    "fet_energy_j": 2.9999168951612898e-05,
+    "r44_peak_power_w": 14.79448491155047,
+    "r44_mean_power_w": 5.9456164630656945,
+    "fet_peak_power_w": 4.721644120707596,
+    "fet_mean_power_w": 1.8975371690635192,
+    "repetition": {
+      "1_per_s_w": 9.39973960483871e-05,
+      "10_per_s_w": 0.0009399739604838709,
+      "100_per_s_w": 0.00939973960483871,
+      "basis": "thermal average = released energy x rate; the single-pulse surge, not this average, is the binding limit"
+    },
+    "r44_pulse_rating_j": null,
+    "q41_thermal": null,
+    "temperature_note": "no vendor pulse curve for the 1206 and no Q41 thermal model in this repository: single-pulse capability and temperature rise are UNVERIFIED, not assumed"
+  },
+  "input_default": {
+    "fault_input_pulldown_ohm": 10000.0,
+    "fault_input_default": "no crowbar",
+    "limitation": "a disconnected or unpowered fault source leaves the board in no-fault; the harness must drive FAULT_IN and a lost-source case belongs in the bench plan",
+    "status_output": {
+      "pulldown_ohm": 100000.0,
+      "external_pullup_v": 3.3,
+      "high_level_v_with_10k_pullup": 3.0,
+      "note": "open drain; without an external pull-up the status pin reads low in both states"
+    },
+    "gate_drive": {
+      "fault_g_v_at_3v3": 3.0,
+      "fault_g_v_at_5v0": 4.545454545454546,
+      "series_ohm": 1000.0,
+      "note": "D40 clamps at 5.1 V and does not conduct at either harness level",
+      "rds_claim": "Q41 must be specified for Rds(on) <= 0.1 ohm at the 3.0 V gate the 3.3 V harness produces (or the harness must drive 5 V); a 2N7002-class part at 3.0 V does not meet it"
+    }
   },
   "vdd_cut": {
     "c_vdd_f": 1.1100000000000002e-05,
@@ -383,9 +460,11 @@
     "sr_branch": {
       "input_rc_s": 1e-05,
       "crowbar_fet_turn_on_s": 5e-08,
-      "reg_to_uvlo_s": 1.3560921893432765e-05,
+      "reg_to_uvlo_s": 1.5809529025678174e-05,
+      "reg_to_uvlo_basis": "3.63 V turn-off threshold, 1.5 ohm Q41 placeholder",
+      "reg_to_uvlo_with_reg_current_limit_s": 1.7549447329170756e-05,
       "vg_active_low_s": 1.635e-08,
-      "total_s": 2.3627271893432766e-05,
+      "total_s": 2.5875879025678173e-05,
       "dominant_term": "reg_to_uvlo_s"
     },
     "primary_branch_reference": {
@@ -396,8 +475,14 @@
       "ucc27282_fall_time_1n8_s": 1e-08,
       "total_s": 1.2899999999999997e-06
     },
-    "max_branch_s": 2.3627271893432766e-05,
+    "max_branch_s": 2.5875879025678173e-05,
     "slowest_branch": "sr",
+    "is_worst_case": false,
+    "not_worst_case_reasons": [
+      "reg_to_uvlo_s is an RC estimate at the 3.63 V threshold; the regulator keeps sourcing, and the current-limit column is a sensitivity",
+      "component tolerances on R44 and the REG capacitors are not applied",
+      "Q41 turn-on and its gate threshold are not measured (no MPN)"
+    ],
     "rule": "t_stop = t_common + max(t_primary, t_SR); do not add the two branches in series"
   },
   "observations": [
@@ -409,8 +494,8 @@
     },
     {
       "id": "SR-02",
-      "finding": "REG holds 139 uJ at 11 V; the 6.2 ohm crowbar reaches UVLO in 13.6 us.",
-      "evidence": "computed from C4+C5 and references/datasheets/ucc24624.txt VREG/VREGOFF",
+      "finding": "REG holds 139 uJ at 11 V (124 uJ down to the 3.63 V threshold); the 6.2 ohm crowbar reaches UVLO in 15.8 us. That is an estimate covering a low-threshold part, not a fast hard shutdown and not a hardware worst case.",
+      "evidence": "computed from C4+C5 and references/datasheets/ucc24624.txt VREGOFF min/max",
       "status": "DESIGN_ESTIMATE"
     },
     {
@@ -442,11 +527,26 @@
       "finding": "This board is not a 100 A power stage and has no thermal model; it validates the shutdown interface only.",
       "evidence": "scope of the board",
       "status": "BOUNDARY"
+    },
+    {
+      "id": "SR-08",
+      "finding": "FAULT_IN defaults to no crowbar. A lost or unpowered fault source therefore does not shut the board down; the bench plan has to drive it and test the lost-source case.",
+      "evidence": "R41 10k to PGND on the fault input",
+      "status": "BOUNDARY"
+    },
+    {
+      "id": "SR-09",
+      "finding": "A 3.3 V harness gives Q41 only 3.0 V of gate drive, so the BOM's Rds(on) <= 0.1 ohm has to be quoted at that voltage or the harness has to drive 5 V.",
+      "evidence": "R40/R41 divider into the Q41 gate; Q41 MPN not selected",
+      "status": "DESIGN_DECISION"
     }
   ],
   "limits": [
     "low-energy validation board, <=10 A and <=5 V output",
     "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
+    "Q41 has no selected MPN; its Rds(on) is a placeholder, so the crowbar delay is a scenario table, not a single guaranteed number",
+    "no vendor pulse curve for R44 and no Q41 thermal model; pulse capability and temperature rise are unverified",
+    "FAULT_IN defaults to no crowbar: a lost fault source is not a shutdown",
     "a clean ERC only says the drawing agrees with itself"
   ]
 }

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
+  <title>SR fault validation board -- assembly and DNP drawing</title>
+  <style>
+    text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#1a1a1a}
+    .page{fill:#ffffff} .outline{fill:none;stroke:#111;stroke-width:0.35}
+    .body{fill:#f2f2f2;stroke:#444;stroke-width:0.15}
+    .part.dnp .body{fill:#f7c6c6;stroke:#b00020;stroke-width:0.25;stroke-dasharray:0.6 0.4}
+    .callout-bubble{fill:#fff;stroke:#444;stroke-width:0.12}
+    .part.dnp .callout-bubble{stroke:#b00020}
+    .callout{font-size:1.1px;text-anchor:middle}
+    .dnp-mark{font-size:0.9px;text-anchor:middle;fill:#b00020;font-weight:bold}
+    .title{font-size:4px;font-weight:bold} .note{font-size:2.1px}
+    .hdr{font-size:2px;font-weight:bold;fill:#333}
+    .row,.idx,.val,.fp{font-size:1.9px}
+    .row.dnp{fill:#b00020;font-weight:bold} .idx{fill:#666;text-anchor:end}
+  </style>
+  <rect class="page" x="0" y="0" width="210" height="297"/>
+  <text class="title" x="22" y="9">SR fault validation board (PCB-FAB-01) -- assembly and DNP drawing, 1:1 top side</text>
+  <rect class="outline" x="39" y="14" width="132" height="92"/>
+  <g class="part" data-ref="C1">
+    <rect class="body" x="97.5" y="18" width="4.6" height="3.2"/>
+    <circle class="callout-bubble" cx="99.8" cy="19.6" r="1"/>
+    <text class="callout" x="99.8" y="20.15">1</text>
+  </g>
+  <g class="part" data-ref="C2">
+    <rect class="body" x="50" y="18" width="3.4" height="1.96"/>
+    <circle class="callout-bubble" cx="51.7" cy="18.98" r="1"/>
+    <text class="callout" x="51.7" y="19.53">2</text>
+  </g>
+  <g class="part" data-ref="C3">
+    <rect class="body" x="55" y="18" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="56.48" cy="18.73" r="1"/>
+    <text class="callout" x="56.48" y="19.28">3</text>
+  </g>
+  <g class="part" data-ref="C4">
+    <rect class="body" x="103.5" y="18" width="4.6" height="2.3"/>
+    <circle class="callout-bubble" cx="105.8" cy="19.15" r="1"/>
+    <text class="callout" x="105.8" y="19.7">4</text>
+  </g>
+  <g class="part" data-ref="C5">
+    <rect class="body" x="59.5" y="18" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="60.98" cy="18.73" r="1"/>
+    <text class="callout" x="60.98" y="19.28">5</text>
+  </g>
+  <g class="part" data-ref="C6">
+    <rect class="body" x="49" y="48" width="4.6" height="3.2"/>
+    <circle class="callout-bubble" cx="51.3" cy="49.6" r="1"/>
+    <text class="callout" x="51.3" y="50.15">6</text>
+  </g>
+  <g class="part" data-ref="C7">
+    <rect class="body" x="64" y="48" width="3.4" height="1.96"/>
+    <circle class="callout-bubble" cx="65.7" cy="48.98" r="1"/>
+    <text class="callout" x="65.7" y="49.53">7</text>
+  </g>
+  <g class="part" data-ref="C40">
+    <rect class="body" x="148" y="60.5" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="149.48" cy="61.23" r="1"/>
+    <text class="callout" x="149.48" y="61.78">8</text>
+  </g>
+  <g class="part dnp" data-ref="CGL1">
+    <rect class="body" x="79" y="48" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="80.48" cy="48.73" r="1"/>
+    <text class="callout" x="80.48" y="49.28">9</text>
+    <text class="dnp-mark" x="80.48" y="50.96">DNP</text>
+  </g>
+  <g class="part dnp" data-ref="CGL2">
+    <rect class="body" x="92" y="48" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="93.48" cy="48.73" r="1"/>
+    <text class="callout" x="93.48" y="49.28">10</text>
+    <text class="dnp-mark" x="93.48" y="50.96">DNP</text>
+  </g>
+  <g class="part dnp" data-ref="Csn1">
+    <rect class="body" x="55" y="48" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="56.48" cy="48.73" r="1"/>
+    <text class="callout" x="56.48" y="49.28">11</text>
+    <text class="dnp-mark" x="56.48" y="50.96">DNP</text>
+  </g>
+  <g class="part dnp" data-ref="Csn2">
+    <rect class="body" x="59.5" y="48" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="60.98" cy="48.73" r="1"/>
+    <text class="callout" x="60.98" y="49.28">12</text>
+    <text class="dnp-mark" x="60.98" y="50.96">DNP</text>
+  </g>
+  <g class="part" data-ref="D1">
+    <rect class="body" x="75" y="18" width="7.3" height="4.5"/>
+    <circle class="callout-bubble" cx="78.65" cy="20.25" r="1"/>
+    <text class="callout" x="78.65" y="20.8">13</text>
+  </g>
+  <g class="part" data-ref="D2">
+    <rect class="body" x="84" y="18" width="7" height="3.5"/>
+    <circle class="callout-bubble" cx="87.5" cy="19.75" r="1"/>
+    <text class="callout" x="87.5" y="20.3">14</text>
+  </g>
+  <g class="part" data-ref="D40">
+    <rect class="body" x="143" y="48" width="3.86" height="3.4"/>
+    <circle class="callout-bubble" cx="144.93" cy="49.7" r="1"/>
+    <text class="callout" x="144.93" y="50.25">15</text>
+  </g>
+  <g class="part" data-ref="F1">
+    <rect class="body" x="109.5" y="18" width="4.56" height="2.26"/>
+    <circle class="callout-bubble" cx="111.78" cy="19.13" r="1"/>
+    <text class="callout" x="111.78" y="19.68">16</text>
+  </g>
+  <g class="part" data-ref="J1">
+    <rect class="body" x="53" y="21.5" width="11.5" height="8.81"/>
+    <circle class="callout-bubble" cx="58.75" cy="25.905" r="1"/>
+    <text class="callout" x="58.75" y="26.455">17</text>
+  </g>
+  <g class="part" data-ref="J2">
+    <rect class="body" x="156.5" y="55.5" width="11.5" height="8.81"/>
+    <circle class="callout-bubble" cx="162.25" cy="59.905" r="1"/>
+    <text class="callout" x="162.25" y="60.455">18</text>
+  </g>
+  <g class="part" data-ref="J3">
+    <rect class="body" x="53.5" y="55.5" width="21.5" height="8.81"/>
+    <circle class="callout-bubble" cx="64.25" cy="59.905" r="1"/>
+    <text class="callout" x="64.25" y="60.455">19</text>
+  </g>
+  <g class="part" data-ref="J4">
+    <rect class="body" x="161.23" y="82.23" width="3.54" height="8.62"/>
+    <circle class="callout-bubble" cx="163" cy="86.54" r="1"/>
+    <text class="callout" x="163" y="87.09">20</text>
+  </g>
+  <g class="part" data-ref="JP1">
+    <rect class="body" x="92.5" y="18" width="3.54" height="6.09"/>
+    <circle class="callout-bubble" cx="94.27" cy="21.045" r="1"/>
+    <text class="callout" x="94.27" y="21.595">21</text>
+  </g>
+  <g class="part" data-ref="JP2">
+    <rect class="body" x="129" y="18" width="3.54" height="6.09"/>
+    <circle class="callout-bubble" cx="130.77" cy="21.045" r="1"/>
+    <text class="callout" x="130.77" y="21.595">22</text>
+  </g>
+  <g class="part" data-ref="JP3">
+    <rect class="body" x="134" y="18" width="3.54" height="6.09"/>
+    <circle class="callout-bubble" cx="135.77" cy="21.045" r="1"/>
+    <text class="callout" x="135.77" y="21.595">23</text>
+  </g>
+  <g class="part" data-ref="Q1">
+    <rect class="body" x="83.425" y="49.175" width="7.15" height="5.65"/>
+    <circle class="callout-bubble" cx="87" cy="52" r="1"/>
+    <text class="callout" x="87" y="52.55">24</text>
+  </g>
+  <g class="part" data-ref="Q2">
+    <rect class="body" x="83.425" y="73.175" width="7.15" height="5.65"/>
+    <circle class="callout-bubble" cx="87" cy="76" r="1"/>
+    <text class="callout" x="87" y="76.55">25</text>
+  </g>
+  <g class="part" data-ref="Q40">
+    <rect class="body" x="148.5" y="48" width="3.86" height="3.4"/>
+    <circle class="callout-bubble" cx="150.43" cy="49.7" r="1"/>
+    <text class="callout" x="150.43" y="50.25">26</text>
+  </g>
+  <g class="part" data-ref="Q41">
+    <rect class="body" x="154" y="48" width="3.86" height="3.4"/>
+    <circle class="callout-bubble" cx="155.93" cy="49.7" r="1"/>
+    <text class="callout" x="155.93" y="50.25">27</text>
+  </g>
+  <g class="part dnp" data-ref="Q42">
+    <rect class="body" x="159.5" y="48" width="3.86" height="3.4"/>
+    <circle class="callout-bubble" cx="161.43" cy="49.7" r="1"/>
+    <text class="callout" x="161.43" y="50.25">28</text>
+    <text class="dnp-mark" x="161.43" y="52.9">DNP</text>
+  </g>
+  <g class="part dnp" data-ref="Q43">
+    <rect class="body" x="143" y="53" width="3.86" height="3.4"/>
+    <circle class="callout-bubble" cx="144.93" cy="54.7" r="1"/>
+    <text class="callout" x="144.93" y="55.25">29</text>
+    <text class="dnp-mark" x="144.93" y="57.9">DNP</text>
+  </g>
+  <g class="part" data-ref="R1">
+    <rect class="body" x="111.32" y="63.05" width="3.36" height="1.9"/>
+    <circle class="callout-bubble" cx="113" cy="64" r="1"/>
+    <text class="callout" x="113" y="64.55">30</text>
+  </g>
+  <g class="part" data-ref="R2">
+    <rect class="body" x="139" y="18" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="140.48" cy="18.73" r="1"/>
+    <text class="callout" x="140.48" y="19.28">31</text>
+  </g>
+  <g class="part" data-ref="R3">
+    <rect class="body" x="143.5" y="18" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="144.98" cy="18.73" r="1"/>
+    <text class="callout" x="144.98" y="19.28">32</text>
+  </g>
+  <g class="part" data-ref="R5">
+    <rect class="body" x="148" y="18" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="149.48" cy="18.73" r="1"/>
+    <text class="callout" x="149.48" y="19.28">33</text>
+  </g>
+  <g class="part" data-ref="R6">
+    <rect class="body" x="152.5" y="18" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="153.98" cy="18.73" r="1"/>
+    <text class="callout" x="153.98" y="19.28">34</text>
+  </g>
+  <g class="part" data-ref="R40">
+    <rect class="body" x="143" y="61.5" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="144.48" cy="62.23" r="1"/>
+    <text class="callout" x="144.48" y="62.78">35</text>
+  </g>
+  <g class="part" data-ref="R41">
+    <rect class="body" x="147.5" y="63.5" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="148.98" cy="64.23" r="1"/>
+    <text class="callout" x="148.98" y="64.78">36</text>
+  </g>
+  <g class="part" data-ref="R42">
+    <rect class="body" x="152" y="63.5" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="153.48" cy="64.23" r="1"/>
+    <text class="callout" x="153.48" y="64.78">37</text>
+  </g>
+  <g class="part" data-ref="R43">
+    <rect class="body" x="143" y="64.5" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="144.48" cy="65.23" r="1"/>
+    <text class="callout" x="144.48" y="65.78">38</text>
+  </g>
+  <g class="part" data-ref="R44">
+    <rect class="body" x="148.5" y="53" width="4.56" height="2.26"/>
+    <circle class="callout-bubble" cx="150.78" cy="54.13" r="1"/>
+    <text class="callout" x="150.78" y="54.68">39</text>
+  </g>
+  <g class="part" data-ref="R45">
+    <rect class="body" x="156.5" y="66" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="157.98" cy="66.73" r="1"/>
+    <text class="callout" x="157.98" y="67.28">40</text>
+  </g>
+  <g class="part" data-ref="R46">
+    <rect class="body" x="161" y="66" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="162.48" cy="66.73" r="1"/>
+    <text class="callout" x="162.48" y="67.28">41</text>
+  </g>
+  <g class="part dnp" data-ref="R47">
+    <rect class="body" x="148.5" y="57" width="3.36" height="1.9"/>
+    <circle class="callout-bubble" cx="150.18" cy="57.95" r="1"/>
+    <text class="callout" x="150.18" y="58.5">42</text>
+    <text class="dnp-mark" x="150.18" y="60.4">DNP</text>
+  </g>
+  <g class="part dnp" data-ref="R48">
+    <rect class="body" x="143" y="58" width="3.36" height="1.9"/>
+    <circle class="callout-bubble" cx="144.68" cy="58.95" r="1"/>
+    <text class="callout" x="144.68" y="59.5">43</text>
+    <text class="dnp-mark" x="144.68" y="61.4">DNP</text>
+  </g>
+  <g class="part" data-ref="Rg1">
+    <rect class="body" x="69" y="48" width="3.36" height="1.9"/>
+    <circle class="callout-bubble" cx="70.68" cy="48.95" r="1"/>
+    <text class="callout" x="70.68" y="49.5">44</text>
+  </g>
+  <g class="part" data-ref="Rg2">
+    <rect class="body" x="74" y="48" width="3.36" height="1.9"/>
+    <circle class="callout-bubble" cx="75.68" cy="48.95" r="1"/>
+    <text class="callout" x="75.68" y="49.5">45</text>
+  </g>
+  <g class="part" data-ref="Rgs1">
+    <rect class="body" x="96.5" y="48" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="97.98" cy="48.73" r="1"/>
+    <text class="callout" x="97.98" y="49.28">46</text>
+  </g>
+  <g class="part" data-ref="Rgs2">
+    <rect class="body" x="101" y="48" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="102.48" cy="48.73" r="1"/>
+    <text class="callout" x="102.48" y="49.28">47</text>
+  </g>
+  <g class="part" data-ref="Rsh1">
+    <rect class="body" x="101.17" y="62.07" width="7.66" height="3.86"/>
+    <circle class="callout-bubble" cx="105" cy="64" r="1"/>
+    <text class="callout" x="105" y="64.55">48</text>
+  </g>
+  <g class="part dnp" data-ref="Rsn1">
+    <rect class="body" x="55.02" y="45.27" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="56.5" cy="46" r="1"/>
+    <text class="callout" x="56.5" y="46.55">49</text>
+    <text class="dnp-mark" x="56.5" y="48.23">DNP</text>
+  </g>
+  <g class="part dnp" data-ref="Rsn2">
+    <rect class="body" x="59.52" y="45.27" width="2.96" height="1.46"/>
+    <circle class="callout-bubble" cx="61" cy="46" r="1"/>
+    <text class="callout" x="61" y="46.55">50</text>
+    <text class="dnp-mark" x="61" y="48.23">DNP</text>
+  </g>
+  <g class="part" data-ref="TP1">
+    <rect class="body" x="50" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="51" cy="95" r="1"/>
+    <text class="callout" x="51" y="95.55">51</text>
+  </g>
+  <g class="part" data-ref="TP2">
+    <rect class="body" x="53.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="54.5" cy="95" r="1"/>
+    <text class="callout" x="54.5" y="95.55">52</text>
+  </g>
+  <g class="part" data-ref="TP3">
+    <rect class="body" x="57" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="58" cy="95" r="1"/>
+    <text class="callout" x="58" y="95.55">53</text>
+  </g>
+  <g class="part" data-ref="TP4">
+    <rect class="body" x="60.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="61.5" cy="95" r="1"/>
+    <text class="callout" x="61.5" y="95.55">54</text>
+  </g>
+  <g class="part" data-ref="TP5">
+    <rect class="body" x="64" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="65" cy="95" r="1"/>
+    <text class="callout" x="65" y="95.55">55</text>
+  </g>
+  <g class="part" data-ref="TP6">
+    <rect class="body" x="67.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="68.5" cy="95" r="1"/>
+    <text class="callout" x="68.5" y="95.55">56</text>
+  </g>
+  <g class="part" data-ref="TP7">
+    <rect class="body" x="71" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="72" cy="95" r="1"/>
+    <text class="callout" x="72" y="95.55">57</text>
+  </g>
+  <g class="part" data-ref="TP8">
+    <rect class="body" x="74.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="75.5" cy="95" r="1"/>
+    <text class="callout" x="75.5" y="95.55">58</text>
+  </g>
+  <g class="part" data-ref="TP9">
+    <rect class="body" x="78" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="79" cy="95" r="1"/>
+    <text class="callout" x="79" y="95.55">59</text>
+  </g>
+  <g class="part" data-ref="TP10">
+    <rect class="body" x="81.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="82.5" cy="95" r="1"/>
+    <text class="callout" x="82.5" y="95.55">60</text>
+  </g>
+  <g class="part" data-ref="TP11">
+    <rect class="body" x="85" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="86" cy="95" r="1"/>
+    <text class="callout" x="86" y="95.55">61</text>
+  </g>
+  <g class="part" data-ref="TP12">
+    <rect class="body" x="88.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="89.5" cy="95" r="1"/>
+    <text class="callout" x="89.5" y="95.55">62</text>
+  </g>
+  <g class="part" data-ref="TP13">
+    <rect class="body" x="92" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="93" cy="95" r="1"/>
+    <text class="callout" x="93" y="95.55">63</text>
+  </g>
+  <g class="part" data-ref="TP14">
+    <rect class="body" x="95.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="96.5" cy="95" r="1"/>
+    <text class="callout" x="96.5" y="95.55">64</text>
+  </g>
+  <g class="part" data-ref="TP15">
+    <rect class="body" x="99" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="100" cy="95" r="1"/>
+    <text class="callout" x="100" y="95.55">65</text>
+  </g>
+  <g class="part" data-ref="TP16">
+    <rect class="body" x="102.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="103.5" cy="95" r="1"/>
+    <text class="callout" x="103.5" y="95.55">66</text>
+  </g>
+  <g class="part" data-ref="TP17">
+    <rect class="body" x="106" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="107" cy="95" r="1"/>
+    <text class="callout" x="107" y="95.55">67</text>
+  </g>
+  <g class="part" data-ref="TP18">
+    <rect class="body" x="109.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="110.5" cy="95" r="1"/>
+    <text class="callout" x="110.5" y="95.55">68</text>
+  </g>
+  <g class="part" data-ref="TP19">
+    <rect class="body" x="113" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="114" cy="95" r="1"/>
+    <text class="callout" x="114" y="95.55">69</text>
+  </g>
+  <g class="part" data-ref="TP20">
+    <rect class="body" x="116.5" y="94" width="2" height="2"/>
+    <circle class="callout-bubble" cx="117.5" cy="95" r="1"/>
+    <text class="callout" x="117.5" y="95.55">70</text>
+  </g>
+  <g class="part" data-ref="U1">
+    <rect class="body" x="66" y="18" width="7.4" height="5.4"/>
+    <circle class="callout-bubble" cx="69.7" cy="20.7" r="1"/>
+    <text class="callout" x="69.7" y="21.25">71</text>
+  </g>
+  <text class="note" x="22" y="114">Scale 1:1 at A4. All 71 placements are on F.Cu (top side); the board is single-sided assembly.</text>
+  <text class="note" x="22" y="119">10 parts are DNP -- hatched red, marked on the board and listed in red below. Their lands stay bare; they are excluded from the position file.</text>
+  <text class="note" x="22" y="124">Not an approval: hardware_built and fabrication_approved are false. DRC covers copper only -- no thermal, EMC or first-article review has been done.</text>
+  <text class="note" x="22" y="129">Footprints are vendored from hardware/stock_footprints (sha256 in PROVENANCE.md) except dcx:BSC010N04LS6, which is drawn from the datasheet land pattern.</text>
+  <text class="hdr" x="22" y="140">Ref</text>
+  <text class="hdr" x="40" y="140">Value</text>
+  <text class="hdr" x="70" y="140">Footprint</text>
+  <text class="hdr" x="96" y="140">Status</text>
+  <text class="hdr" x="110" y="140">Ref</text>
+  <text class="hdr" x="128" y="140">Value</text>
+  <text class="hdr" x="158" y="140">Footprint</text>
+  <g class="row"><text class="idx" x="18" y="144">1</text><text class="row" x="22" y="144">C1</text><text class="val" x="40" y="144">10uF/35V</text><text class="fp" x="70" y="144">C_1210_3225Metric</text><text class="row" x="96" y="144">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="148">2</text><text class="row" x="22" y="148">C2</text><text class="val" x="40" y="148">1uF/35V</text><text class="fp" x="70" y="148">C_0805_2012Metric</text><text class="row" x="96" y="148">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="152">3</text><text class="row" x="22" y="152">C3</text><text class="val" x="40" y="152">100nF/50V</text><text class="fp" x="70" y="152">C_0603_1608Metric</text><text class="row" x="96" y="152">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="156">4</text><text class="row" x="22" y="156">C4</text><text class="val" x="40" y="156">2.2uF/25V</text><text class="fp" x="70" y="156">C_1206_3216Metric</text><text class="row" x="96" y="156">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="160">5</text><text class="row" x="22" y="160">C5</text><text class="val" x="40" y="160">100nF/50V</text><text class="fp" x="70" y="160">C_0603_1608Metric</text><text class="row" x="96" y="160">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="164">6</text><text class="row" x="22" y="164">C6</text><text class="val" x="40" y="164">100uF/6.3V</text><text class="fp" x="70" y="164">C_1210_3225Metric</text><text class="row" x="96" y="164">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="168">7</text><text class="row" x="22" y="168">C7</text><text class="val" x="40" y="168">10uF/10V</text><text class="fp" x="70" y="168">C_0805_2012Metric</text><text class="row" x="96" y="168">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="172">8</text><text class="row" x="22" y="172">C40</text><text class="val" x="40" y="172">1nF/16V</text><text class="fp" x="70" y="172">C_0603_1608Metric</text><text class="row" x="96" y="172">PLACE</text></g>
+  <g class="row dnp"><text class="idx" x="18" y="176">9</text><text class="row" x="22" y="176">CGL1</text><text class="val" x="40" y="176">6.8nF DNP</text><text class="fp" x="70" y="176">C_0603_1608Metric</text><text class="row dnp" x="96" y="176">CGL1</text></g>
+  <g class="row dnp"><text class="idx" x="18" y="180">10</text><text class="row" x="22" y="180">CGL2</text><text class="val" x="40" y="180">6.8nF DNP</text><text class="fp" x="70" y="180">C_0603_1608Metric</text><text class="row dnp" x="96" y="180">CGL2</text></g>
+  <g class="row dnp"><text class="idx" x="18" y="184">11</text><text class="row" x="22" y="184">Csn1</text><text class="val" x="40" y="184">1nF DNP</text><text class="fp" x="70" y="184">C_0603_1608Metric</text><text class="row dnp" x="96" y="184">Csn1</text></g>
+  <g class="row dnp"><text class="idx" x="18" y="188">12</text><text class="row" x="22" y="188">Csn2</text><text class="val" x="40" y="188">1nF DNP</text><text class="fp" x="70" y="188">C_0603_1608Metric</text><text class="row dnp" x="96" y="188">Csn2</text></g>
+  <g class="row"><text class="idx" x="18" y="192">13</text><text class="row" x="22" y="192">D1</text><text class="val" x="40" y="192">SMBJ15A</text><text class="fp" x="70" y="192">D_SMB</text><text class="row" x="96" y="192">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="196">14</text><text class="row" x="22" y="196">D2</text><text class="val" x="40" y="196">SS34</text><text class="fp" x="70" y="196">D_SMA</text><text class="row" x="96" y="196">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="200">15</text><text class="row" x="22" y="200">D40</text><text class="val" x="40" y="200">BZX84C5V1</text><text class="fp" x="70" y="200">SOT-23</text><text class="row" x="96" y="200">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="204">16</text><text class="row" x="22" y="204">F1</text><text class="val" x="40" y="204">0.5A</text><text class="fp" x="70" y="204">Fuse_1206_3216Metric</text><text class="row" x="96" y="204">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="208">17</text><text class="row" x="22" y="208">J1</text><text class="val" x="40" y="208">VBIAS 15V</text><text class="fp" x="70" y="208">TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm</text><text class="row" x="96" y="208">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="212">18</text><text class="row" x="22" y="212">J2</text><text class="val" x="40" y="212">LOAD 0.2-2R</text><text class="fp" x="70" y="212">TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm</text><text class="row" x="96" y="212">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="216">19</text><text class="row" x="22" y="216">J3</text><text class="val" x="40" y="216">SEC A/CT/B</text><text class="fp" x="70" y="216">TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm</text><text class="row" x="96" y="216">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="220">20</text><text class="row" x="22" y="220">J4</text><text class="val" x="40" y="220">FAULT/STATUS</text><text class="fp" x="70" y="220">PinHeader_1x03_P2.54mm_Vertical</text><text class="row" x="96" y="220">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="224">21</text><text class="row" x="22" y="224">JP1</text><text class="val" x="40" y="224">VDD CUT</text><text class="fp" x="70" y="224">PinHeader_1x02_P2.54mm_Vertical</text><text class="row" x="96" y="224">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="228">22</text><text class="row" x="22" y="228">JP2</text><text class="val" x="40" y="228">FORCE1 low</text><text class="fp" x="70" y="228">PinHeader_1x02_P2.54mm_Vertical</text><text class="row" x="96" y="228">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="232">23</text><text class="row" x="22" y="232">JP3</text><text class="val" x="40" y="232">FORCE2 low</text><text class="fp" x="70" y="232">PinHeader_1x02_P2.54mm_Vertical</text><text class="row" x="96" y="232">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="236">24</text><text class="row" x="22" y="236">Q1</text><text class="val" x="40" y="236">BSC010N04LS6</text><text class="fp" x="70" y="236">BSC010N04LS6</text><text class="row" x="96" y="236">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="240">25</text><text class="row" x="22" y="240">Q2</text><text class="val" x="40" y="240">BSC010N04LS6</text><text class="fp" x="70" y="240">BSC010N04LS6</text><text class="row" x="96" y="240">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="244">26</text><text class="row" x="22" y="244">Q40</text><text class="val" x="40" y="244">2N7002</text><text class="fp" x="70" y="244">SOT-23</text><text class="row" x="96" y="244">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="248">27</text><text class="row" x="22" y="248">Q41</text><text class="val" x="40" y="248">NMOS 30V IDM&gt;=3A</text><text class="fp" x="70" y="248">SOT-23</text><text class="row" x="96" y="248">PLACE</text></g>
+  <g class="row dnp"><text class="idx" x="18" y="252">28</text><text class="row" x="22" y="252">Q42</text><text class="val" x="40" y="252">NMOS clamp DNP</text><text class="fp" x="70" y="252">SOT-23</text><text class="row dnp" x="96" y="252">Q42</text></g>
+  <g class="row dnp"><text class="idx" x="18" y="256">29</text><text class="row" x="22" y="256">Q43</text><text class="val" x="40" y="256">NMOS clamp DNP</text><text class="fp" x="70" y="256">SOT-23</text><text class="row dnp" x="96" y="256">Q43</text></g>
+  <g class="row"><text class="idx" x="18" y="260">30</text><text class="row" x="22" y="260">R1</text><text class="val" x="40" y="260">0R</text><text class="fp" x="70" y="260">R_0805_2012Metric</text><text class="row" x="96" y="260">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="264">31</text><text class="row" x="22" y="264">R2</text><text class="val" x="40" y="264">0R</text><text class="fp" x="70" y="264">R_0603_1608Metric</text><text class="row" x="96" y="264">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="268">32</text><text class="row" x="22" y="268">R3</text><text class="val" x="40" y="268">0R</text><text class="fp" x="70" y="268">R_0603_1608Metric</text><text class="row" x="96" y="268">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="272">33</text><text class="row" x="22" y="272">R5</text><text class="val" x="40" y="272">1k</text><text class="fp" x="70" y="272">R_0603_1608Metric</text><text class="row" x="96" y="272">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="276">34</text><text class="row" x="22" y="276">R6</text><text class="val" x="40" y="276">1k</text><text class="fp" x="70" y="276">R_0603_1608Metric</text><text class="row" x="96" y="276">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="280">35</text><text class="row" x="22" y="280">R40</text><text class="val" x="40" y="280">1k</text><text class="fp" x="70" y="280">R_0603_1608Metric</text><text class="row" x="96" y="280">PLACE</text></g>
+  <g class="row"><text class="idx" x="18" y="284">36</text><text class="row" x="22" y="284">R41</text><text class="val" x="40" y="284">10k</text><text class="fp" x="70" y="284">R_0603_1608Metric</text><text class="row" x="96" y="284">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="144">37</text><text class="row" x="110" y="144">R42</text><text class="val" x="128" y="144">100k</text><text class="fp" x="158" y="144">R_0603_1608Metric</text><text class="row" x="184" y="144">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="148">38</text><text class="row" x="110" y="148">R43</text><text class="val" x="128" y="148">100R</text><text class="fp" x="158" y="148">R_0603_1608Metric</text><text class="row" x="184" y="148">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="152">39</text><text class="row" x="110" y="152">R44</text><text class="val" x="128" y="152">4.7R 0.5W</text><text class="fp" x="158" y="152">R_1206_3216Metric</text><text class="row" x="184" y="152">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="156">40</text><text class="row" x="110" y="156">R45</text><text class="val" x="128" y="156">100R</text><text class="fp" x="158" y="156">R_0603_1608Metric</text><text class="row" x="184" y="156">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="160">41</text><text class="row" x="110" y="160">R46</text><text class="val" x="128" y="160">100R</text><text class="fp" x="158" y="160">R_0603_1608Metric</text><text class="row" x="184" y="160">PLACE</text></g>
+  <g class="row dnp"><text class="idx" x="106" y="164">42</text><text class="row" x="110" y="164">R47</text><text class="val" x="128" y="164">0R DNP</text><text class="fp" x="158" y="164">R_0805_2012Metric</text><text class="row dnp" x="184" y="164">R47</text></g>
+  <g class="row dnp"><text class="idx" x="106" y="168">43</text><text class="row" x="110" y="168">R48</text><text class="val" x="128" y="168">0R DNP</text><text class="fp" x="158" y="168">R_0805_2012Metric</text><text class="row dnp" x="184" y="168">R48</text></g>
+  <g class="row"><text class="idx" x="106" y="172">44</text><text class="row" x="110" y="172">Rg1</text><text class="val" x="128" y="172">2.2R</text><text class="fp" x="158" y="172">R_0805_2012Metric</text><text class="row" x="184" y="172">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="176">45</text><text class="row" x="110" y="176">Rg2</text><text class="val" x="128" y="176">2.2R</text><text class="fp" x="158" y="176">R_0805_2012Metric</text><text class="row" x="184" y="176">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="180">46</text><text class="row" x="110" y="180">Rgs1</text><text class="val" x="128" y="180">10k</text><text class="fp" x="158" y="180">R_0603_1608Metric</text><text class="row" x="184" y="180">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="184">47</text><text class="row" x="110" y="184">Rgs2</text><text class="val" x="128" y="184">10k</text><text class="fp" x="158" y="184">R_0603_1608Metric</text><text class="row" x="184" y="184">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="188">48</text><text class="row" x="110" y="188">Rsh1</text><text class="val" x="128" y="188">1mR 1%</text><text class="fp" x="158" y="188">R_2512_6332Metric</text><text class="row" x="184" y="188">PLACE</text></g>
+  <g class="row dnp"><text class="idx" x="106" y="192">49</text><text class="row" x="110" y="192">Rsn1</text><text class="val" x="128" y="192">10R DNP</text><text class="fp" x="158" y="192">R_0603_1608Metric</text><text class="row dnp" x="184" y="192">Rsn1</text></g>
+  <g class="row dnp"><text class="idx" x="106" y="196">50</text><text class="row" x="110" y="196">Rsn2</text><text class="val" x="128" y="196">10R DNP</text><text class="fp" x="158" y="196">R_0603_1608Metric</text><text class="row dnp" x="184" y="196">Rsn2</text></g>
+  <g class="row"><text class="idx" x="106" y="200">51</text><text class="row" x="110" y="200">TP1</text><text class="val" x="128" y="200">VDD_IN</text><text class="fp" x="158" y="200">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="200">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="204">52</text><text class="row" x="110" y="204">TP2</text><text class="val" x="128" y="204">VDD</text><text class="fp" x="158" y="204">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="204">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="208">53</text><text class="row" x="110" y="208">TP3</text><text class="val" x="128" y="208">REG</text><text class="fp" x="158" y="208">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="208">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="212">54</text><text class="row" x="110" y="212">TP4</text><text class="val" x="128" y="212">REG_CROW</text><text class="fp" x="158" y="212">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="212">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="216">55</text><text class="row" x="110" y="216">TP5</text><text class="val" x="128" y="216">VG1</text><text class="fp" x="158" y="216">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="216">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="220">56</text><text class="row" x="110" y="220">TP6</text><text class="val" x="128" y="220">VG2</text><text class="fp" x="158" y="220">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="220">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="224">57</text><text class="row" x="110" y="224">TP7</text><text class="val" x="128" y="224">G1</text><text class="fp" x="158" y="224">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="224">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="228">58</text><text class="row" x="110" y="228">TP8</text><text class="val" x="128" y="228">G2</text><text class="fp" x="158" y="228">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="228">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="232">59</text><text class="row" x="110" y="232">TP9</text><text class="val" x="128" y="232">VD1</text><text class="fp" x="158" y="232">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="232">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="236">60</text><text class="row" x="110" y="236">TP10</text><text class="val" x="128" y="236">VD2</text><text class="fp" x="158" y="236">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="236">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="240">61</text><text class="row" x="110" y="240">TP11</text><text class="val" x="128" y="240">VSS</text><text class="fp" x="158" y="240">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="240">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="244">62</text><text class="row" x="110" y="244">TP12</text><text class="val" x="128" y="244">SR_SRC</text><text class="fp" x="158" y="244">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="244">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="248">63</text><text class="row" x="110" y="248">TP13</text><text class="val" x="128" y="248">SEC_A</text><text class="fp" x="158" y="248">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="248">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="252">64</text><text class="row" x="110" y="252">TP14</text><text class="val" x="128" y="252">SEC_B</text><text class="fp" x="158" y="252">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="252">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="256">65</text><text class="row" x="110" y="256">TP15</text><text class="val" x="128" y="256">VOUT</text><text class="fp" x="158" y="256">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="256">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="260">66</text><text class="row" x="110" y="260">TP16</text><text class="val" x="128" y="260">FAULT_IN</text><text class="fp" x="158" y="260">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="260">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="264">67</text><text class="row" x="110" y="264">TP17</text><text class="val" x="128" y="264">FAULT_G</text><text class="fp" x="158" y="264">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="264">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="268">68</text><text class="row" x="110" y="268">TP18</text><text class="val" x="128" y="268">FAULT_N</text><text class="fp" x="158" y="268">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="268">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="272">69</text><text class="row" x="110" y="272">TP19</text><text class="val" x="128" y="272">PGND</text><text class="fp" x="158" y="272">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="272">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="276">70</text><text class="row" x="110" y="276">TP20</text><text class="val" x="128" y="276">PGND</text><text class="fp" x="158" y="276">TestPoint_Pad_D1.0mm</text><text class="row" x="184" y="276">PLACE</text></g>
+  <g class="row"><text class="idx" x="106" y="280">71</text><text class="row" x="110" y="280">U1</text><text class="val" x="128" y="280">UCC24624DR</text><text class="fp" x="158" y="280">SOIC-8_3.9x4.9mm_P1.27mm</text><text class="row" x="184" y="280">PLACE</text></g>
+</svg>

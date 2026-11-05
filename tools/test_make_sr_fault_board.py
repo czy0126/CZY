@@ -5,8 +5,10 @@ claims the roadmap makes about SR shutdown are enforced by the *artefacts*:
 
 * in NORMAL operation exactly one entity can pull VG high, and the optional
   clamp cannot do anything until somebody populates two DNP links;
-* the REG crowbar is the fast path and a VDD cut is not, by a factor that is
-  recomputed from the datasheet constants rather than copied from the report.
+* the REG crowbar is the *faster* path and a VDD cut is not, by a factor that is
+  recomputed from the datasheet constants rather than copied from the report --
+  but its delay is quoted at the 3.63 V turn-off threshold and is explicitly
+  labelled an estimate, not a hardware worst case.
 
 Run:
     python -m pytest tools/test_make_sr_fault_board.py -q
@@ -118,8 +120,176 @@ def test_crowbar_numbers_match_the_closed_form(report):
     assert report["crowbar"]["c_reg_f"] == pytest.approx(c)
     assert report["crowbar"]["stored_energy_j"] == pytest.approx(0.5 * c * board.VREG_TYP ** 2)
     assert report["crowbar"]["tau_s"] == pytest.approx(r * c)
+
+
+def test_the_uvlo_time_is_the_late_turn_off_threshold(report):
+    """The delay must cover a part that turns off at 3.63 V, not the 4.25 V typ/max.
+
+    Using the high threshold makes the crowbar look ~1.5 us faster than a
+    low-threshold device can deliver.  The 2026-11-05 review called that out;
+    this test keeps the number on the slow side.
+    """
+    c = board.C_REG_BYPASS + board.C_REG_HF
+    r = board.R_CROWBAR + board.RDS_ON_CROWBAR
     assert report["crowbar"]["time_to_uvlo_s"] == pytest.approx(
+        r * c * math.log(board.VREG_TYP / board.VREGOFF_MIN))
+    assert report["crowbar"]["time_to_uvlo_at_max_threshold_s"] == pytest.approx(
         r * c * math.log(board.VREG_TYP / board.VREGOFF_MAX))
+    assert report["crowbar"]["time_to_uvlo_s"] > report["crowbar"]["time_to_uvlo_at_max_threshold_s"]
+    assert board.VREGOFF_MIN == pytest.approx(3.63)
+
+
+def test_the_crowbar_is_reported_as_an_estimate_not_a_worst_case(report):
+    """The review's finding: none of these numbers is a hardware worst case."""
+    band = report["crowbar"]["worst_case"]
+    assert band["is_worst_case"] is False
+    assert band["reasons"], "an estimate without reasons is a claim"
+    joined = " ".join(band["reasons"]).lower()
+    assert "reg" in joined or "regulator" in joined
+
+
+def test_the_released_energy_is_the_11v_to_3p63v_difference(report):
+    c = board.C_REG_BYPASS + board.C_REG_HF
+    crow = report["crowbar"]
+    released = 0.5 * c * (board.VREG_TYP ** 2 - board.VREGOFF_MIN ** 2)
+    assert crow["energy_released_to_uvlo_j"] == pytest.approx(released)
+    assert crow["resistor_share_j"] + crow["fet_share_j"] == pytest.approx(released)
+
+
+def test_the_reg_current_limit_lengthens_the_discharge(report):
+    """A constant REG injection is the sensitivity the review asked for.
+
+    ``t = RC ln[(V0 - IR)/(Vth - IR)]`` only holds while I*R < Vth; the 95 mA
+    figure is a 8 V condition, so this is a sensitivity, not a guarantee.
+    """
+    c = board.C_REG_BYPASS + board.C_REG_HF
+    r = board.R_CROWBAR + board.RDS_ON_CROWBAR
+    ir = board.IREGLIM_MAX_A * r
+    expected = r * c * math.log((board.VREG_TYP - ir) / (board.VREGOFF_MIN - ir))
+    assert report["crowbar"]["time_to_uvlo_with_reg_current_limit_s"] == pytest.approx(expected)
+    assert report["crowbar"]["time_to_uvlo_with_reg_current_limit_s"] > report["crowbar"]["time_to_uvlo_s"]
+    assert ir < board.VREGOFF_MIN
+
+
+def test_the_crowbar_scenarios_name_both_the_placeholder_and_the_bom_target(report):
+    rows = report["crowbar"]["scenarios"]
+    rds = [row["rds_on_ohm"] for row in rows]
+    assert rds == sorted(rds)
+    assert board.RDS_ON_CROWBAR in rds
+    assert board.RDS_BOM_TARGET in rds
+    assert 0.0 in rds, "the R44-only ideal clamp is the review's 11.98 us figure"
+    times = [row["time_to_uvlo_s"] for row in rows]
+    assert all(a < b for a, b in zip(times, times[1:])), times
+
+
+def test_the_pulse_table_splits_the_energy_between_r44_and_q41(report):
+    pulse = report["crowbar_pulse"]
+    crow = report["crowbar"]
+    assert pulse["r44_energy_j"] == pytest.approx(crow["resistor_share_j"])
+    assert pulse["fet_energy_j"] == pytest.approx(crow["fet_share_j"])
+    assert pulse["r44_peak_power_w"] == pytest.approx(
+        (board.VREG_TYP / crow["r_total_ohm"]) ** 2 * board.R_CROWBAR)
+    assert pulse["r44_mean_power_w"] == pytest.approx(
+        pulse["r44_energy_j"] / crow["time_to_uvlo_s"])
+    assert pulse["repetition"]["1_per_s_w"] == pytest.approx(pulse["r44_energy_j"] * 1)
+    assert pulse["repetition"]["10_per_s_w"] == pytest.approx(pulse["r44_energy_j"] * 10)
+
+
+def test_the_pulse_rating_and_temperature_are_reported_as_unverified(report):
+    """No 1206 pulse curve and no Q41 thermal model exist in this repository."""
+    pulse = report["crowbar_pulse"]
+    assert pulse["r44_pulse_rating_j"] is None
+    assert pulse["q41_thermal"] is None
+    note = pulse["temperature_note"].lower()
+    assert "unverified" in note or "no vendor" in note
+
+
+def test_every_mpn_in_the_bom_is_traced_to_a_datasheet_in_the_repository(parts):
+    """An MPN with no source is an invented part number.
+
+    The BOM carried an empty MPN column, which reads as "not filled in yet"
+    rather than "not sourced" -- and the difference matters, because a
+    fabricator quotes whatever is written there.  Now a row either names an
+    orderable code whose string appears in a datasheet this repository holds,
+    or says TO_SELECT in the source column.
+    """
+    for part in parts:
+        if not part.mpn:
+            assert part.mpn_source == "TO_SELECT", part.ref
+            continue
+        path = board.ROOT / part.mpn_source
+        assert path.is_file(), f"{part.ref}: {part.mpn_source} does not exist"
+        assert part.mpn in path.read_text(encoding="utf-8", errors="replace"), part.ref
+
+
+def test_the_two_silicon_parts_have_their_orderable_code(parts):
+    """The datasheets in references/ carry the ordering tables, so these two
+    are the only rows that can be sourced without a vendor enquiry."""
+    assert by_ref(parts, "U1").mpn == "UCC24624DR"          # TI ordering table
+    assert by_ref(parts, "Q1").mpn == "BSC010N04LS6"        # Infineon ordering code
+    assert by_ref(parts, "Q2").mpn == "BSC010N04LS6"
+    assert by_ref(parts, "C4").mpn_source == "TO_SELECT"
+
+
+def test_the_bom_file_says_the_same_thing_as_the_part_table(parts):
+    """Read the CSV, not the generator's list: the fabricator gets the file.
+
+    A column added to ``bom()`` but never written, or written under a different
+    header, passes a test that asks the part table instead.
+    """
+    import csv
+
+    rows = list(csv.DictReader((OUT / "BOM.csv").open(encoding="utf-8")))
+    assert {r["Reference"] for r in rows} == {p.ref for p in parts if not p.ref.startswith("#")}
+    by = {r["Reference"]: r for r in rows}
+    assert by["U1"]["MPN"] == "UCC24624DR"
+    assert by["U1"]["MPN_Source"].startswith("references/datasheets/")
+    assert by["Q1"]["MPN"] == "BSC010N04LS6"
+    assert by["C4"]["MPN"] == "" and by["C4"]["MPN_Source"] == "TO_SELECT"
+
+
+def test_the_bom_carries_the_same_stress_the_report_computes(parts, report):
+    """The ECO's acceptance is formula = schematic = BOM.
+
+    A BOM line that still says "Rds <= 0.1 ohm" without naming the gate
+    voltage, or a resistor note quoting no energy, would let the assembler
+    pick a part the arithmetic never covered.
+    """
+    pulse = report["crowbar_pulse"]
+    q41 = by_ref(parts, "Q41")
+    r44 = by_ref(parts, "R44")
+    assert "3.0 V" in q41.note
+    assert f"{pulse['fet_energy_j'] * 1e3:.3f} mJ" in q41.note
+    assert f"{pulse['r44_energy_j'] * 1e3:.3f} mJ" in r44.note
+    assert "UNVERIFIED" in r44.note
+
+
+def test_the_fault_input_defaults_to_no_crowbar_and_says_so(report):
+    """FAULT_IN is pulled down, so a lost fault source means no shutdown."""
+    default = report["input_default"]
+    assert default["fault_input_default"] == "no crowbar"
+    assert "lost" in default["limitation"].lower() or "disconnected" in default["limitation"].lower()
+    assert default["fault_input_pulldown_ohm"] == pytest.approx(10e3)
+
+
+def test_the_status_output_needs_an_external_pull_up(report):
+    """FAULT_N is open drain with a 100k pulldown, so 'high' is a divider."""
+    status = report["input_default"]["status_output"]
+    assert status["pulldown_ohm"] == pytest.approx(100e3)
+    assert status["external_pullup_v"] == pytest.approx(3.3)
+    # The pull-up and the on-board pulldown form a divider and the pin sits at
+    # the pulldown end: 3.3 V * 100k / (10k + 100k) = 3.0 V.  Quoting the
+    # pull-up's own share (0.3 V) inverts the divider.
+    assert status["high_level_v_with_10k_pullup"] == pytest.approx(3.3 * 100e3 / 110e3)
+    assert status["high_level_v_with_10k_pullup"] > 2.7
+
+
+def test_the_fault_gate_voltage_is_reported_for_both_harness_levels(report):
+    """The BOM's 'Rds <= 0.1 ohm' has to be quoted at the gate voltage we have."""
+    drive = report["input_default"]["gate_drive"]
+    assert drive["fault_g_v_at_3v3"] == pytest.approx(3.3 * 10e3 / 11e3)
+    assert drive["fault_g_v_at_5v0"] == pytest.approx(5.0 * 10e3 / 11e3)
+    assert "3.0 V" in drive["rds_claim"] or "3 V" in drive["rds_claim"]
 
 
 def test_a_vdd_cut_is_orders_of_magnitude_slower_than_the_crowbar(report):
@@ -176,8 +346,8 @@ def test_the_state_list_covers_the_roadmap_cases(report):
 def test_the_delay_budget_takes_the_slowest_branch_not_the_sum(report):
     """The roadmap's rule: t_stop = t_common + max(t_primary, t_SR).
 
-    On this board the SR branch is the slow one, because REG UVLO (~14 us)
-    dominates the 4 A gate sink (~16 ns).  A test that assumed the primary
+    On this board the SR branch is the slow one, because REG UVLO (~16 us at
+    the 3.63 V threshold) dominates the 4 A gate sink (~16 ns).  A test that assumed the primary
     branch was slower would hide the very trade-off the board exists to show.
     """
     budget = report["delay_budget"]

@@ -673,6 +673,26 @@ def test_the_fab_files_live_under_fab_and_nowhere_else():
     assert (pcb.FAB / "manifest.json").is_file()
 
 
+def test_the_package_ships_the_assembly_drawing_and_lists_every_file():
+    """Two separate risks.
+
+    A file in ``fab/`` that the manifest does not list is a file nobody hashed
+    -- it could change without the package noticing.  And the drawing is the
+    only artefact a person reads to learn that ten parts stay empty on purpose,
+    so it has to be in the package, not in a directory beside it.
+    """
+    manifest = json.loads((pcb.FAB / "manifest.json").read_text(encoding="utf-8"))
+    listed = {row["name"] for row in manifest["files"]}
+    on_disk = {p.name for p in pcb.FAB.iterdir()
+               if p.is_file() and p.name != pcb.FAB_MANIFEST.name}
+    assert on_disk == listed, sorted(on_disk ^ listed)
+    assert "assembly.svg" in listed
+    assert "assembly" in manifest["what_this_is"]
+    drawing = (pcb.FAB / "assembly.svg").read_text(encoding="utf-8")
+    for ref in pcb._dnp_refs():
+        assert f'data-ref="{ref}"' in drawing, ref
+
+
 def test_the_fab_manifest_binds_the_files_to_the_board():
     manifest = json.loads((pcb.FAB / "manifest.json").read_text(encoding="utf-8"))
     board = OUT / pcb.BOARD
