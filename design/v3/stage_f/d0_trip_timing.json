@@ -1,0 +1,79 @@
+{
+  "kind": "D0_TRIP_TIMING",
+  "measured_from": {
+    "hard": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
+    "fast": "sim\\v3\\sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.raw"
+  },
+  "fault": {
+    "absolute_us": 2175.0,
+    "saved_us": 175.0,
+    "source": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.cir:Vfltctl_hot"
+  },
+  "threshold": {
+    "hard_v": 1.0,
+    "hard_node": "OC: Rf/Cf then Rd1/Rd2/Coc, two cascaded sections",
+    "fast_v": 1.7688679245283019,
+    "fast_node": "V(ocdf): one 1k/10n pole on the burden",
+    "reference_divider": {
+      "R2/R3": [
+        "R2",
+        "R3"
+      ],
+      "R4/R5": [
+        "R4",
+        "R5"
+      ]
+    },
+    "divider_gain_oc": 0.6857142857142857,
+    "burden_node_v_per_a_peak": 0.060193456886943865,
+    "filter_poles_us": {
+      "oc_stage_1": 47.0,
+      "oc_stage_2": 75.42857142857143,
+      "fast": 10.0
+    }
+  },
+  "results": {
+    "hard_delay_us": 40.0966648764153,
+    "fast_delay_us": 10.2143373297001,
+    "fast_is_earlier_us": 29.882327546715203,
+    "hard_pre_fault_node_v": {
+      "mean_v": 0.6965295859834416,
+      "peak_v": 0.6965535451673995,
+      "min_v": 0.6965062136539282
+    },
+    "fast_pre_fault_node_v": {
+      "mean_v": 1.0177120054713378,
+      "peak_v": 1.040904925744547,
+      "min_v": 0.9904804687577411
+    },
+    "hard_pre_fault_node_on_fast_run_v": {
+      "mean_v": 0.6964970586769141,
+      "peak_v": 0.6965193242182551,
+      "min_v": 0.6964756861246507
+    },
+    "hard_pre_fault_fraction_of_threshold": 0.6965295859834416,
+    "fast_pre_fault_fraction_of_threshold": 0.575346520426463,
+    "hard_threshold_margin_x": 1.4356891941468408,
+    "fast_threshold_margin_x": 1.73808298911545,
+    "hard_threshold_current_a": 24.227439471907946,
+    "fast_threshold_current_a": 29.38638210878323,
+    "fast_threshold_is_higher_by_a": 5.158942636875285,
+    "pre_trip_node_delta_v": 3.036226268737785e-05,
+    "note": "fast_is_earlier_us is measured on two runs that share their trajectory up to the fast trip; the fast channel is earlier at a higher equivalent peak current, so 'faster' and 'less sensitive' are both true and neither implies the other"
+  },
+  "checks": {
+    "both_raws_present": true,
+    "fault_injected_at_the_same_instant": true,
+    "hard_crossing_found": true,
+    "fast_crossing_found": true,
+    "pre_trip_samples_compared_on_both_runs": true,
+    "pre_trip_trajectories_agree_within_1e-3_v": true
+  },
+  "limitations": [
+    "The deck models no comparator, logic or driver delay: these are front-end times, and the board's total response is larger by whatever those stages add.",
+    "The fault is a resistive short on the output, applied by an ideal switch; it is not a device failure and it does not reproduce a 50 V or an inductive fault.",
+    "The raw is the 4 mF frozen deck, not the 7.05 mF physical bank.",
+    "A hardware response time requires the oscilloscope records listed as PENDING in issue #36; nothing here substitutes for them.",
+    "The current equivalence of both thresholds uses ct_design's linear slope_v_per_a_peak, which is calibrated on the rated-current waveform (peak/mean = 1.660).  A fault current is peakier, so both amp figures are lower bounds on the peak that trips them, not equalities."
+  ]
+}
