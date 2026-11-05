@@ -492,9 +492,11 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
             "failures": [{"net": n, "from": a, "to": b} for n, a, b in result.failures],
             "segments": len(result.segments), "vias": len(result.vias),
             "track_width_mm": TRACK_WIDTH_MM,
-            "width_basis": "every routable net here is a power net: the twelve "
-                           "single-pad nets are the eight SR gate returns and the "
-                           "four CT secondaries, which leave this board",
+            "width_basis": "every routable net here is a power net: the twenty "
+                           "single-pad nets are the driver-side ends of the ten gate "
+                           "resistors and eight drain Kelvin links (GH_DRV, GL_DRV, "
+                           "VG*_A/B, VD*_A/B) plus CS1/CS2, all of which leave this "
+                           "board -- the gate-side pads are now real two-pad nets",
             "router": "tools/sr_board_router.py (deterministic grid router, "
                       "0.125 mm pitch, 0.20 mm clearance)",
         },

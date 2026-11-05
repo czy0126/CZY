@@ -649,20 +649,84 @@ def test_the_four_secondary_groups_are_drawn_the_same_length():
     for suffix in ("_A", "_B"):
         lengths = [rows[f"SEC{i}{suffix}"]["straight_line_mst_mm"] for i in range(1, 5)]
         assert len({round(x, 6) for x in lengths}) == 1, (suffix, lengths)
-        # five pads: the transformer terminal plus the four drain fingers
-        # (suffix _A) or the source bar and its three fingers (_B)
+        # six pads: the transformer terminal, the four drain fingers (suffix _A)
+        # or the source bar and its three fingers (_B), plus the Kelvin link's
+        # SEC pad since package C placed R28-R35 (pad names, so the repeated
+        # "5" counts once -- see physical_pads_netted)
         pad_counts = {rows[f"SEC{i}{suffix}"]["pads"] for i in range(1, 5)}
-        assert pad_counts == {5}
+        assert pad_counts == {6}
 
 
 def test_a_one_pad_net_is_listed_rather_than_read_as_routed():
-    """CS1, GA1 and friends leave this board towards parts that are not placed.
-    They draw no ratsnest line, so nothing would ever flag them."""
+    """Twenty nets still end in exactly one pad, and each for a stated reason.
+
+    Package C turned GH/GL/GA*/GB* into two-pad nets by placing the gate
+    resistors, but the driver *side* of each of those resistors is now the
+    single-pad end (VG*_A/B, GH_DRV, GL_DRV) -- the driver lives on the control
+    board.  The Kelvin links add VD*_A/B the same way.  CS1/CS2 stay because
+    their rectifier sits in the padless U2 outline.  A net with one pad draws no
+    ratsnest line, so nothing else would ever flag them.
+    """
     nets = mbm.nets_report()
     single = set(nets["single_pad_nets"])
-    assert {"GH", "GL"} <= single
-    assert all(n.startswith(("GA", "GB", "CS")) for n in single - {"GH", "GL"})
+    assert single == {"CS1", "CS2", "GH_DRV", "GL_DRV"} | {
+        f"{kind}{i}_{side}"
+        for kind in ("VD", "VG") for i in range(1, 5) for side in ("A", "B")}
+    assert len(single) == 20
     assert "owes no track" in nets["single_pad_nets_note"]
+
+
+def test_every_gate_resistor_lands_directly_under_the_gate_it_serves():
+    """Doc 34, package C: the gate resistors and Kelvin links go on this board.
+
+    The point of deriving their centres from the FET land patterns is that each
+    tap is one straight vertical track into the pad it serves.  That is also why
+    the rows sit *below* the FETs: from above, the gate tap has to pass the
+    source strip (0.10 mm of overlap at this x) and the inter-pad channel is
+    0.615 mm against the 0.775 mm a 0.25 mm track needs with clearance and the
+    half-pitch margin.
+    """
+    by_ref = {p.ref: p for p in mbm.PARTS}
+    res = mbm._pad_positions(mbm.R0603_FP)
+    sr = mbm._pad_positions("dcx:BSC010N04LS6")
+    q5 = mbm._pad_positions("dcx:CSD19531Q5A")
+    checked = 0
+    for ref, fet, pads, fet_pad, res_pad in (
+            [(f"R{20 + 2 * (i - 1)}", f"SR{i}A", sr, "4", "2") for i in range(1, 5)]
+            + [(f"R{21 + 2 * (i - 1)}", f"SR{i}B", sr, "4", "2") for i in range(1, 5)]
+            + [(f"R{28 + 2 * (i - 1)}", f"SR{i}A", sr, "5", "1") for i in range(1, 5)]
+            + [(f"R{29 + 2 * (i - 1)}", f"SR{i}B", sr, "5", "1") for i in range(1, 5)]
+            + [("R4", "QH", q5, "4", "2"), ("R5", "QL", q5, "4", "2")]):
+        part, transistor = by_ref[ref], by_ref[fet]
+        assert part.footprint == mbm.R0603_FP, ref
+        assert part.rot == 0, (ref, "extract_pads ignores rotation; only 0 works")
+        want = transistor.x + pads[fet_pad][0]
+        got = part.x + res[res_pad][0]
+        assert abs(got - want) < 1e-9, (ref, fet, got, want)
+        assert part.y > transistor.y + transistor.d_mm / 2, (
+            ref, "the resistor must sit below the FET, not above it")
+        checked += 1
+    assert checked == 18
+
+
+def test_the_resistor_values_come_from_the_register_not_the_review_table():
+    """The review table still calls all eighteen "PLACEHOLDER 0603 10k".
+
+    A 10 k gate resistor would slow a real SR edge by an order of magnitude and a
+    10 k Kelvin link would not sense anything, so the value has to come from the
+    register that owns it -- and that has to be checked against the file, not
+    against a constant in the test.
+    """
+    eco = json.loads(mbm.ECO.read_text(encoding="utf-8"))["rows"]
+    stated = {r["ref"]: r["existing_value_or_rating"] for r in eco}
+    plate = {p.ref: p.value for p in mbm.PARTS if p.footprint == mbm.R0603_FP}
+    assert sorted(plate) == sorted([f"R{i}" for i in (4, 5)] + [f"R{i}" for i in range(20, 36)])
+    for ref, value in plate.items():
+        assert value.split()[0] in stated[ref], (ref, value)
+        assert value == " ".join(stated[ref].split(";")[0].split()[:2])
+    assert {plate[f"R{i}"] for i in range(20, 28)} == {"2.2 ohm"}
+    assert {plate[f"R{i}"] for i in range(28, 36)} == {"0 ohm"}
+    assert {plate["R4"], plate["R5"]} == {"2.2 ohm"}
 
 
 def test_the_lumped_cout_is_disclosed_rather_than_counted_as_fifteen_parts():

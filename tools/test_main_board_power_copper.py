@@ -53,21 +53,27 @@ def test_every_routable_net_is_connected(routed):
     assert result.unrouted == []
     assert result.failures == []
     # one pad per net is not a connection to make; it is a net that leaves the board
-    assert len(single) == 12
+    assert len(single) == 20
 
 
-def test_the_twelve_single_pad_nets_are_the_gate_returns_and_ct_secondaries(routed):
-    """These leave the board for the gate resistors and the CT bridge.
+def test_the_twenty_single_pad_nets_are_the_off_board_ends_of_the_taps(routed):
+    """These leave the board for the controllers and the CT bridge.
 
     They are reported rather than dropped: a net with one pad draws no ratsnest
     line, so silence would read as "already connected" -- the same trap A5's
     ``single_pad_nets`` exists for.
+
+    The set changed when the ten gate resistors and eight drain Kelvin links
+    were placed (doc 34, package C): GA*/GB*/GH/GL used to end at the FET gate
+    pad and now end at the resistor's driver-side pad, while VD*/VG* appear for
+    the first time.  The *count* staying meaningful is the point -- asserting
+    only a number would not have noticed which nets moved.
     """
     _, _, _, single = routed
     assert sorted(single) == sorted(
-        ["CS1", "CS2", "GH", "GL"]
-        + [f"GA{i}" for i in range(1, 5)]
-        + [f"GB{i}" for i in range(1, 5)])
+        ["CS1", "CS2", "GH_DRV", "GL_DRV"]
+        + [f"{kind}{i}_{side}" for kind in ("VD", "VG")
+           for i in range(1, 5) for side in ("A", "B")])
 
 
 def test_the_route_is_deterministic(routed):

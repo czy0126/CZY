@@ -847,6 +847,9 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
 - **按路径打开时用文件主干做身份**：保存过的副本连开两次在本轮给出**同一个** `session_uuid`，
   而两份不同字节的副本给了不同的 —— 所以 uuid 随内容而变、不能当稳定身份；
   闸门仍是"文件主干 `dcx_main_board`" **或** 存储的 `14837d10…`，`identified_by` 记下来源。
+- **关掉的/headless 的 session 会占着工程文件**：客户端进程没退干净时，仓库里那份
+  `.eprj2` 对 `cp`/`git` 都是 `WinError 32`（另一个程序正在使用此文件）。这不是文件坏了，
+  等后端进程退出即可；**不要为此去删工程或重启编辑器之外的进程**。
 
 ### 原生主板的取值 ECO（`tools/native_value_eco.py`）
 
@@ -1578,14 +1581,16 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 `main_board_mechanical.py` 已从"无网摆件"改成**带网摆放**（网从
 `hardware/dcx_main/pin_footprint_review.csv` 读，按**焊盘名**落户）。板仍然是**未布线**的。
 
-- **三个数不是同一个量**：`pads_landed` **144**（带网的焊盘**名**）、`physical_pads_netted`
-  **160**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **74**（**不是** 144 − 30）。
+- **三个数不是同一个量**：`pads_landed` **180**（带网的焊盘**名**）、`physical_pads_netted`
+  **196**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **84**（**不是** 180 − 48）。
   差额 16 = 8 只 SR × 2（漏极基座与一根指都叫 `5`，源极条与一根指都叫 `1`）。
   **KiCad 把同一封装里同号焊盘当一只连接实体**，所以老鼠线条数跟着焊盘**名**数走，
   不跟物理铜走——这正是厂家用同号漏极焊盘表达"这五个是一个引脚"的原因。两个数都报，
-  报一个会让另一个看起来像丢了的连接。**74 比两个计数都短**，因为 KiCad 还会把**铜重叠的
+  报一个会让另一个看起来像丢了的连接。**84 比两个计数都短**，因为 KiCad 还会把**铜重叠的
   同网焊盘**并成一个节点（四根漏极指压进基座 0.125 mm），所以"老鼠线 = 焊盘名 − 网数"这个
-  等式不成立，不要写死。
+  等式不成立，不要写死。**这两个数字随摆放改变，别当板子的属性**：144/160/74 是 35 件时的
+  读数，66 是 QH/QL 换 comb land 后的读数，180/196/84 是 2026-11-06 放上 18 只门极/Kelvin
+  电阻后的读数——引用必须带"哪一版"，相减没有意义。
 - **A5 的 SR 已换成按数据手册量出的 land pattern**（`dcx:BSC010N04LS6`，来自
   `design/v3/pcb/bsc010n04ls6_land.json`，`make_sr_fault_board_pcb.bsc_source()` 生成），
   所以 `netlist_pins_without_a_physical_pad` 里不再有 SR 脚（旧 vendored TDSON-8 把五个漏极
@@ -1610,7 +1615,7 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 - **`unconnected_items` 是第二个顶层数组**，不在 `violations` 里。只读 `violations` 会在
   一块一条线都没画的板上读出"0 个未连接"。`check()` 现在打印两个数，并带一条**反向守卫**：
   声明了网却报 0 条老鼠线 ⇒ `SystemExit`（要么真布完了，要么 `(net …)` 没落到焊盘上）。
-  **74 条是欠账，不是失败门**——`check()` 不为未连接失败。
+  **84 条是欠账，不是失败门**——`check()` 不为未连接失败。
 - **焊盘名就是身份**：Lr 用审查表的 `1`/`2`，**不是**原理图的 `N1`/`N2`（第一版按 N1/N2 建
   封装，Lr 一条网都没落上）；U2 的占位外形**没有焊盘**，所以它的十一条网表行一条都不该上板
   ——`part_nets()` 必须先按 `_pad_positions()` 过滤，否则 U2 会出现在 `PGND` 里。
@@ -1621,13 +1626,42 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   "a bank row needs at least two units"，看不出是找不到电容。
 - **原理图把整组输出电容画成一只集总 `Cout`**：十五颗物理电容没有自己的网表行，借那只符号的
   两条网。BOM 必须展开成十五行，`nets_report()` 的 `lumped_from_one_netlist_element` 明写。
-- **12 条网只有一只焊盘**（`CS1`/`CS2`、`GA1`–`GB4`、`GH`/`GL`）：另一头是门极电阻和 CT 副边
-  整流桥，不在这块板上。**一焊盘的网画不出老鼠线**，所以欠账里看不见，必须单列
-  （`single_pad_nets`），否则会被读成"已经连好了"。
+- **20 条网只有一只焊盘**：`VG1–4_A/B`、`GH_DRV`、`GL_DRV`（已放电阻靠**驱动器**那一侧，
+  驱动器在控制板上）与 `CS1`/`CS2`（CT 副边两端，整流桥在没有焊盘的 U2 外形里）。
+  **一焊盘的网画不出老鼠线**，所以欠账里看不见，必须单列（`single_pad_nets`），
+  否则会被读成"已经连好了"。这组名字变过：原先 12 条含 `GA1`–`GB4`、`GH`/`GL`
+  （FET 栅极就是终点）；电阻放上板后它们是**两焊盘网**，"另一端不在板上"跟着搬到电阻的
+  驱动器侧。`test_the_twenty_single_pad_nets_are_the_off_board_ends_of_the_taps` 比的是
+  **名字集合**——只断个数的话，网搬家看不出来。
 - `nets_report().nets[*].straight_line_mst_mm` 是**直线生成树下界**，不是走线上界；
-  `PGND` 346.5 mm / `VOUT` 325.2 mm 这两个是要铺铜的面，别拿它当长度预算。
-  四条 `SEC*_A`（2 焊盘各 68.73 mm）与四条 `SEC*_B`（57.248 mm）**逐位相同**，
-  `test_the_four_secondary_groups_are_drawn_the_same_length` 锁的是布线前那一半。
+  `PGND` 341.124 mm / `VOUT` 325.209 mm 这两个是要铺铜的面，别拿它当长度预算。
+  四条 `SEC*_A`（6 焊盘各 **76.989 mm**，含 `R28`/`R30`/`R32`/`R34`）与四条 `SEC*_B`
+  （**65.766 mm**）**逐位相同**，`test_the_four_secondary_groups_are_drawn_the_same_length`
+  锁的是布线前那一半。加电阻前后这些长度不变——电阻压在自己那只 FET 的焊盘正下方。
+- **`parts()` 必须不 import 任何交叉模块**（2026-11-06）：`python tools/main_board_mechanical.py`
+  把本文件当 `__main__` 执行，而两个 land 生成器（`make_sr_fault_board_pcb` → `make_sr_fault_board`）
+  会 `from main_board_mechanical import find_kicad_cli`，于是本文件**被再执行一次**成模块
+  `main_board_mechanical`，拿到的是半初始化的 `make_sr_fault_board_pcb`——现象是
+  模块底部 `PARTS = parts()` 抛 `AttributeError: module 'make_sr_fault_board_pcb' has no
+  attribute 'bsc_source'`。所以 `parts()` 读**数据**：两只 FET 的 land 从
+  `LAND`（`design/v3/pcb/*_land.json`，只看 `"F.Cu"` 那几项，矩形中心 = 封装里的 `(at x y)`，
+  首次出现优先，与 `_pad_positions` 的 `setdefault` 同义）经 `_land_pads()` 取，
+  0603 从 vendored 封装文本经 `_text_pad_positions()` 取；**不调 `_pad_positions()`**，
+  因为它会建整个封装库。两个来源的一致性由测试比对，不靠"看起来一样"。
+- **vendored KiCad 封装的焊盘可以完全没有 `(uuid …)`**（`R_0603_1608Metric` 就是）：
+  `_inject_pad_nets` 原先在 `(uuid ` 前插网行，于是 18 只新电阻的焊盘一个 `(net …)` 都没落上
+  （`208 − 48 = 160` 对断言 196 时才发现）。现在没有 uuid 时退回到**焊盘块最后一个 `)` 之前**插，
+  且缩进必须是**比焊盘深一层**（取块里第一行内层的缩进），否则 `\t(net …)` 会被
+  "板级网声明"计数器 `^\t\(net \d+ "` 数进去（84 = 48 + 36 那次就是这么来的）。
+- **`sr_board_router.extract_pads` 不应用封装旋转**：所以 A5 所有件必须摆 **0°**，
+  电阻靠"FET 焊盘 x − 电阻焊盘相对偏移"（`under()`）贴到栅极/漏极基座正下方，
+  不靠转 90°。行位：SR 那批 y = **88.0**，QH/QL 那两只 y = **57.5**。
+- **电阻带落在 SR→铜排的输出通道里**（y = 88 在 SR 行 y ≈ 82 与 Cout 行 y ≈ 98 之间），
+  铺铜必须绕开它们，`routed_copper.json:pours.series_mohm` 现在是 1 oz **3.1742** /
+  2 oz **1.5871** / 4 oz **0.7937 mΩ**；派生布线板 `power_stage_routed.kicad_pcb`
+  **28 条网、148/148 连接、959 段、17 过孔、DRC 三个顶层数组全空**，但最差一组
+  2 oz **122.153 mΩ** 对 0.15 mΩ 基准 ⇒ 状态串 `ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET`
+  说的是"走线扛不了 100 A"，不是布线没做完。摆放板一个字节没动。
 - **提交的 `drc.json` 逐次重跑会大改**（带 `date`、每条未连接项带 uuid 与坐标），
   重跑后看到两千行 diff 是正常的；没有测试逐字节比对它，只比对**板子本身**
   （`test_the_committed_board_is_what_the_table_produces`）。

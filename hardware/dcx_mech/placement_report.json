@@ -235,6 +235,222 @@
       "note": "same land pattern as SR4A"
     },
     {
+      "ref": "R20",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 10.378,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR1A gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R28",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 15.522,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR1A drain Kelvin link; pad 1 lands under the drain base pad 5, so VD1_A senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R21",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 20.378,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR1B gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R29",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 25.523,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR1B drain Kelvin link; pad 1 lands under the drain base pad 5, so VD1_B senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R22",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 48.377,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR2A gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R30",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 53.523,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR2A drain Kelvin link; pad 1 lands under the drain base pad 5, so VD2_A senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R23",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 58.377,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR2B gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R31",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 63.523,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR2B drain Kelvin link; pad 1 lands under the drain base pad 5, so VD2_B senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R24",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 86.377,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR3A gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R32",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 91.523,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR3A drain Kelvin link; pad 1 lands under the drain base pad 5, so VD3_A senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R25",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 96.377,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR3B gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R33",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 101.523,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR3B drain Kelvin link; pad 1 lands under the drain base pad 5, so VD3_B senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R26",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 124.377,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR4A gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R34",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 129.522,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR4A drain Kelvin link; pad 1 lands under the drain base pad 5, so VD4_A senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R27",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 134.377,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR4B gate resistor; pad 2 lands directly under the FET gate pad so the tap is one straight track. Value from placeholder_eco.json"
+    },
+    {
+      "ref": "R35",
+      "value": "0 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 139.522,
+      "y_mm": 88.0,
+      "rot_deg": 0.0,
+      "note": "SR4B drain Kelvin link; pad 1 lands under the drain base pad 5, so VD4_B senses at the drain rather than at the copper. 0 ohm from placeholder_eco.json"
+    },
+    {
+      "ref": "R4",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 49.927,
+      "y_mm": 57.5,
+      "rot_deg": 0.0,
+      "note": "QH/QL gate resistor; pad 2 lands under the Q5A gate pad (4). 2.2 ohm external, the deck's 3.2 ohm is the lumped value -- different quantity, not a conflict"
+    },
+    {
+      "ref": "R5",
+      "value": "2.2 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 58.927,
+      "y_mm": 57.5,
+      "rot_deg": 0.0,
+      "note": "QH/QL gate resistor; pad 2 lands under the Q5A gate pad (4). 2.2 ohm external, the deck's 3.2 ohm is the lumped value -- different quantity, not a conflict"
+    },
+    {
       "ref": "Cout1",
       "value": "470 uF 2.5 V",
       "evidence": "generated-json",
@@ -546,6 +762,49 @@
       82.0,
       116.0
     ],
+    "output_channel_occupants": [
+      "Cout1",
+      "Cout10",
+      "Cout11",
+      "Cout12",
+      "Cout13",
+      "Cout14",
+      "Cout15",
+      "Cout2",
+      "Cout3",
+      "Cout4",
+      "Cout5",
+      "Cout6",
+      "Cout7",
+      "Cout8",
+      "Cout9",
+      "J_OUT",
+      "R20",
+      "R21",
+      "R22",
+      "R23",
+      "R24",
+      "R25",
+      "R26",
+      "R27",
+      "R28",
+      "R29",
+      "R30",
+      "R31",
+      "R32",
+      "R33",
+      "R34",
+      "R35",
+      "SR1A",
+      "SR1B",
+      "SR2A",
+      "SR2B",
+      "SR3A",
+      "SR3B",
+      "SR4A",
+      "SR4B"
+    ],
+    "output_channel_occupants_note": "parts whose outline reaches into the SR-to-busbar channel; every one of them is a keep-out in the output pour, so the channel is not empty copper",
     "pocket_overlaps_output_plane": false,
     "checked_non_issues": [
       "沉槽不占用 100 A 输出平面（磁芯 y ≤ 65 mm，通道 y = 82..116 mm）"
@@ -577,9 +836,9 @@
   "nets": {
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
-    "net_count": 30,
-    "pads_landed": 144,
-    "physical_pads_netted": 160,
+    "net_count": 48,
+    "pads_landed": 180,
+    "physical_pads_netted": 196,
     "pads_landed_note": "pad names with a net; physical pads are higher where a footprint splits one pin across several lands (the SR FET drain: a common base plus four fingers, two of which share the name 5).  KiCad merges same-numbered pads, and also same-net lands whose copper overlaps, so the ratsnest is shorter than pads_landed - net_count",
     "nets": [
       {
@@ -644,6 +903,46 @@
         "straight_line_mst_mm": 325.209
       },
       {
+        "net": "SEC1_A",
+        "pads": 6,
+        "refs": [
+          "R28",
+          "SR1A",
+          "T1"
+        ],
+        "straight_line_mst_mm": 76.989
+      },
+      {
+        "net": "SEC2_A",
+        "pads": 6,
+        "refs": [
+          "R30",
+          "SR2A",
+          "T2"
+        ],
+        "straight_line_mst_mm": 76.989
+      },
+      {
+        "net": "SEC3_A",
+        "pads": 6,
+        "refs": [
+          "R32",
+          "SR3A",
+          "T3"
+        ],
+        "straight_line_mst_mm": 76.989
+      },
+      {
+        "net": "SEC4_A",
+        "pads": 6,
+        "refs": [
+          "R34",
+          "SR4A",
+          "T4"
+        ],
+        "straight_line_mst_mm": 76.989
+      },
+      {
         "net": "CT_LR",
         "pads": 2,
         "refs": [
@@ -651,42 +950,6 @@
           "Lr"
         ],
         "straight_line_mst_mm": 74.061
-      },
-      {
-        "net": "SEC1_A",
-        "pads": 5,
-        "refs": [
-          "SR1A",
-          "T1"
-        ],
-        "straight_line_mst_mm": 71.204
-      },
-      {
-        "net": "SEC2_A",
-        "pads": 5,
-        "refs": [
-          "SR2A",
-          "T2"
-        ],
-        "straight_line_mst_mm": 71.204
-      },
-      {
-        "net": "SEC3_A",
-        "pads": 5,
-        "refs": [
-          "SR3A",
-          "T3"
-        ],
-        "straight_line_mst_mm": 71.204
-      },
-      {
-        "net": "SEC4_A",
-        "pads": 5,
-        "refs": [
-          "SR4A",
-          "T4"
-        ],
-        "straight_line_mst_mm": 71.204
       },
       {
         "net": "VIN_P",
@@ -699,39 +962,43 @@
       },
       {
         "net": "SEC1_B",
-        "pads": 5,
+        "pads": 6,
         "refs": [
+          "R29",
           "SR1B",
           "T1"
         ],
-        "straight_line_mst_mm": 59.98
+        "straight_line_mst_mm": 65.766
       },
       {
         "net": "SEC2_B",
-        "pads": 5,
+        "pads": 6,
         "refs": [
+          "R31",
           "SR2B",
           "T2"
         ],
-        "straight_line_mst_mm": 59.98
+        "straight_line_mst_mm": 65.766
       },
       {
         "net": "SEC3_B",
-        "pads": 5,
+        "pads": 6,
         "refs": [
+          "R33",
           "SR3B",
           "T3"
         ],
-        "straight_line_mst_mm": 59.98
+        "straight_line_mst_mm": 65.766
       },
       {
         "net": "SEC4_B",
-        "pads": 5,
+        "pads": 6,
         "refs": [
+          "R35",
           "SR4B",
           "T4"
         ],
-        "straight_line_mst_mm": 59.98
+        "straight_line_mst_mm": 65.766
       },
       {
         "net": "PRI_T1",
@@ -789,6 +1056,96 @@
         "straight_line_mst_mm": 5.831
       },
       {
+        "net": "GH",
+        "pads": 2,
+        "refs": [
+          "QH",
+          "R4"
+        ],
+        "straight_line_mst_mm": 5.595
+      },
+      {
+        "net": "GL",
+        "pads": 2,
+        "refs": [
+          "QL",
+          "R5"
+        ],
+        "straight_line_mst_mm": 5.595
+      },
+      {
+        "net": "GA1",
+        "pads": 2,
+        "refs": [
+          "R20",
+          "SR1A"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GA2",
+        "pads": 2,
+        "refs": [
+          "R22",
+          "SR2A"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GA3",
+        "pads": 2,
+        "refs": [
+          "R24",
+          "SR3A"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GA4",
+        "pads": 2,
+        "refs": [
+          "R26",
+          "SR4A"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GB1",
+        "pads": 2,
+        "refs": [
+          "R21",
+          "SR1B"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GB2",
+        "pads": 2,
+        "refs": [
+          "R23",
+          "SR2B"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GB3",
+        "pads": 2,
+        "refs": [
+          "R25",
+          "SR3B"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
+        "net": "GB4",
+        "pads": 2,
+        "refs": [
+          "R27",
+          "SR4B"
+        ],
+        "straight_line_mst_mm": 4.095
+      },
+      {
         "net": "CS1",
         "pads": 1,
         "refs": [
@@ -805,82 +1162,146 @@
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GA1",
+        "net": "GH_DRV",
         "pads": 1,
         "refs": [
-          "SR1A"
+          "R4"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GA2",
+        "net": "GL_DRV",
         "pads": 1,
         "refs": [
-          "SR2A"
+          "R5"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GA3",
+        "net": "VD1_A",
         "pads": 1,
         "refs": [
-          "SR3A"
+          "R28"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GA4",
+        "net": "VD1_B",
         "pads": 1,
         "refs": [
-          "SR4A"
+          "R29"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GB1",
+        "net": "VD2_A",
         "pads": 1,
         "refs": [
-          "SR1B"
+          "R30"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GB2",
+        "net": "VD2_B",
         "pads": 1,
         "refs": [
-          "SR2B"
+          "R31"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GB3",
+        "net": "VD3_A",
         "pads": 1,
         "refs": [
-          "SR3B"
+          "R32"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GB4",
+        "net": "VD3_B",
         "pads": 1,
         "refs": [
-          "SR4B"
+          "R33"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GH",
+        "net": "VD4_A",
         "pads": 1,
         "refs": [
-          "QH"
+          "R34"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "GL",
+        "net": "VD4_B",
         "pads": 1,
         "refs": [
-          "QL"
+          "R35"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG1_A",
+        "pads": 1,
+        "refs": [
+          "R20"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG1_B",
+        "pads": 1,
+        "refs": [
+          "R21"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG2_A",
+        "pads": 1,
+        "refs": [
+          "R22"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG2_B",
+        "pads": 1,
+        "refs": [
+          "R23"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG3_A",
+        "pads": 1,
+        "refs": [
+          "R24"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG3_B",
+        "pads": 1,
+        "refs": [
+          "R25"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG4_A",
+        "pads": 1,
+        "refs": [
+          "R26"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
+        "net": "VG4_B",
+        "pads": 1,
+        "refs": [
+          "R27"
         ],
         "straight_line_mst_mm": 0.0
       }
@@ -888,18 +1309,26 @@
     "single_pad_nets": [
       "CS1",
       "CS2",
-      "GA1",
-      "GA2",
-      "GA3",
-      "GA4",
-      "GB1",
-      "GB2",
-      "GB3",
-      "GB4",
-      "GH",
-      "GL"
+      "GH_DRV",
+      "GL_DRV",
+      "VD1_A",
+      "VD1_B",
+      "VD2_A",
+      "VD2_B",
+      "VD3_A",
+      "VD3_B",
+      "VD4_A",
+      "VD4_B",
+      "VG1_A",
+      "VG1_B",
+      "VG2_A",
+      "VG2_B",
+      "VG3_A",
+      "VG3_B",
+      "VG4_A",
+      "VG4_B"
     ],
-    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track: its other members (gate resistors, the CT secondary rectifiers) are off this board. Listed so they are not read as routed",
+    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track.  Two kinds remain: the far end of a resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV -- the driver side, which lives on the control board), and the CT secondary terminals CS1/CS2, whose rectifier sits in the padless U2 outline. Listed so none is read as routed",
     "lumped_from_one_netlist_element": {
       "Cout1..Cout15": "the schematic models the whole bank as one lumped Cout; these fifteen borrow its two nets and the BOM must expand it into fifteen lines"
     },
@@ -966,25 +1395,7 @@
       "R18",
       "R19",
       "R2",
-      "R20",
-      "R21",
-      "R22",
-      "R23",
-      "R24",
-      "R25",
-      "R26",
-      "R27",
-      "R28",
-      "R29",
       "R3",
-      "R30",
-      "R31",
-      "R32",
-      "R33",
-      "R34",
-      "R35",
-      "R4",
-      "R5",
       "R7",
       "R8",
       "R9",
@@ -1018,6 +1429,11 @@
     "generator": "tools/main_board_mechanical.py",
     "kicad_needed_for": "DRC and drawings only; the board file needs no KiCad",
     "kicad_version_source": "hardware/dcx_mech/drc.json:kicad_version",
-    "stock_footprints": []
+    "stock_footprints": [
+      {
+        "lib_id": "Resistor_SMD:R_0603_1608Metric",
+        "sha256": "7190ac4a00125b807e54129ef0d87d87f2a658eeb74d025a7028203419b09f23"
+      }
+    ]
   }
 }

@@ -97,6 +97,21 @@ CORE_FOOTPRINTS = (XFMR_FP, LR_FP)
 EDGE_MARGIN_MM = 5.0
 BOARD_T = 1.6
 REVIEW = ROOT / "hardware" / "dcx_main" / "pin_footprint_review.csv"
+# The 61-row placeholder register.  It, not the review table, owns values: the
+# review table's note column still calls every gate resistor a "PLACEHOLDER 0603
+# 10k", which would put 10 k on a 2.2 ohm gate and 10 k on a 0 ohm Kelvin link.
+ECO = ROOT / "hardware" / "dcx_main" / "placeholder_eco.json"
+# Vendored (hardware/stock_footprints/PROVENANCE.md): courtyard 2.96 x 1.46,
+# pads at +-0.825 x 0.8 x 0.95, reference text 1.43 mm above centre.
+R0603_FP = "Resistor_SMD:R_0603_1608Metric"
+R0603_W, R0603_D, R0603_H = 2.96, 1.46, 0.55
+# The two FET lands are digitised into JSON and generated from it.  ``parts()``
+# runs while this module is still executing, and the builders import this module
+# back, so it reads these files instead of calling them -- see ``_land_pads``.
+LAND = {
+    "dcx:BSC010N04LS6": DESIGN / "pcb" / "bsc010n04ls6_land.json",
+    "dcx:CSD19531Q5A": DESIGN / "pcb" / "csd19531q5a_land.json",
+}
 
 
 def uid(*parts: str) -> str:
@@ -123,6 +138,13 @@ BANK_PREFIX = "Cout"
 SR_X0 = (14.0, 52.0, 90.0, 128.0)
 SR_PAIR_MM = 10.0
 SR_ROW_Y = 82.0
+# The two resistor rows.  Both sit *below* the FET they serve, because the FET
+# gate pad is on the part's lower edge: a tap from above has to squeeze past the
+# source strip (0.10 mm of overlap at this x) and the inter-pad channel is
+# 0.615 mm wide against the 0.775 mm a 0.25 mm track needs.  From below it is one
+# straight vertical run into the gate pad's bottom edge.
+SR_GATE_ROW_Y = 88.0
+PRIMARY_GATE_ROW_Y = 57.5
 
 
 def review_rows() -> list[dict]:
@@ -206,6 +228,29 @@ def _cout() -> dict:
     return _load("bom/cout_bank.json")["banks"][0]
 
 
+def _eco_rows() -> dict[str, dict]:
+    return {row["ref"]: row for row in
+            json.loads(ECO.read_text(encoding="utf-8"))["rows"]}
+
+
+def placeholder_value(ref: str) -> str:
+    """A placed part's value, from the register that owns it.
+
+    ``existing_value_or_rating`` reads "<value> <unit> [<qualifier>]; <why>".  The
+    first two words are the value -- the qualifier after them ("external" for
+    the primary pair) says where the number comes from, not what to place, and
+    the clause after the semicolon is the argument for it.  Reading the register
+    rather than restating "2.2 ohm" in this table means the board cannot drift
+    from the document a reviewer signs off -- and it is the only source that is
+    right: the review table's own note still says "PLACEHOLDER 0603 10k".
+    """
+    row = _eco_rows().get(ref)
+    if row is None:
+        raise SystemExit(f"{ref}: no row in {ECO.name}; cannot place a value "
+                         f"that nothing in the repository states")
+    return " ".join(row["existing_value_or_rating"].split(";")[0].split()[:2])
+
+
 def _bar() -> dict:
     return _load("bom/connector_budget.json")["output"]["bar"]
 
@@ -280,6 +325,60 @@ def parts() -> tuple[Part, ...]:
         out.append(Part(f"SR{i}B", "BSC010N04LS6", 7.36, 5.64, 1.0, x0 + SR_PAIR_MM,
                         SR_ROW_Y, "digitised-datasheet", tds,
                         note=f"same land pattern as SR{i}A"))
+    # Row 3b -- the ten gate resistors and eight drain Kelvin links (doc 34,
+    # package C: "按 8 SR Kelvin 栅极逐脚引脚展开").  Without them every GA*,
+    # GB*, GH and GL net ends at a FET gate pad and there is nothing on the
+    # board to route to, which is why they were single-pad nets.
+    #
+    # Coordinates are derived from the FET land patterns, not typed: the pad a
+    # tap must meet is the pad the board carries, so a change to either land
+    # pattern moves the resistor with it.  ``parts()`` runs while this module is
+    # still executing, so it reads the *JSON the lands are generated from* and
+    # the vendored 0603 file -- it may not call ``_pad_positions``, whose
+    # ``_footprint_text`` builds the whole library and imports the two land
+    # builders back into this half-initialised module.  The two sources are
+    # compared by ``test_every_gate_resistor_lands_directly_under_the_gate_it_serves``.
+    sr_pads = _land_pads(tds)
+    q5_pads = _land_pads("dcx:CSD19531Q5A")
+    r_pad = _text_pad_positions(_stock_footprint(R0603_FP))  # "1" at -0.825, "2" at +0.825
+
+    def under(pads: dict[str, tuple[float, float]], x_fet: float,
+              fet_pad: str, res_pad: str) -> float:
+        """Resistor centre whose ``res_pad`` sits at the same x as ``fet_pad``.
+
+        ``pads`` is the FET's own pad table -- the two FET types both name a pad
+        ``4`` and ``5`` at different offsets, so the table has to be passed in
+        rather than looked up by name alone.
+        """
+        return x_fet + pads[fet_pad][0] - r_pad[res_pad][0]
+
+    for i, x0 in enumerate(SR_X0, start=1):
+        for side, x_fet, gate_no, kelvin_no in (
+                ("A", x0, 20 + 2 * (i - 1), 28 + 2 * (i - 1)),
+                ("B", x0 + SR_PAIR_MM, 21 + 2 * (i - 1), 29 + 2 * (i - 1))):
+            gate = f"R{gate_no}"
+            out.append(Part(gate, placeholder_value(gate), R0603_W, R0603_D, R0603_H,
+                            under(sr_pads, x_fet, "4", "2"), SR_GATE_ROW_Y,
+                            "kicad-library", R0603_FP,
+                            note=f"SR{i}{side} gate resistor; pad 2 lands directly "
+                                 f"under the FET gate pad so the tap is one straight "
+                                 f"track. Value from placeholder_eco.json"))
+            kelvin = f"R{kelvin_no}"
+            out.append(Part(kelvin, placeholder_value(kelvin), R0603_W, R0603_D, R0603_H,
+                            under(sr_pads, x_fet, "5", "1"), SR_GATE_ROW_Y,
+                            "kicad-library", R0603_FP,
+                            note=f"SR{i}{side} drain Kelvin link; pad 1 lands under "
+                                 f"the drain base pad 5, so VD{i}_{side} senses at the "
+                                 f"drain rather than at the copper. 0 ohm from "
+                                 f"placeholder_eco.json"))
+    # The primary pair's gate resistors, under their own FET for the same reason.
+    for ref, x_fet in (("R4", 48.0), ("R5", 57.0)):
+        out.append(Part(ref, placeholder_value(ref), R0603_W, R0603_D, R0603_H,
+                        under(q5_pads, x_fet, "4", "2"), PRIMARY_GATE_ROW_Y,
+                        "kicad-library", R0603_FP,
+                        note="QH/QL gate resistor; pad 2 lands under the Q5A gate pad "
+                             "(4). 2.2 ohm external, the deck's 3.2 ohm is the lumped "
+                             "value -- different quantity, not a conflict"))
     # Row 4 -- the output bank, one row between the SRs and the busbar.  The
     # refs are Cout1..Cout15, *not* C100..: the schematic already spends
     # C101-C112 on the twelve IC decoupling capacitors, so reusing those names
@@ -303,7 +402,9 @@ def parts() -> tuple[Part, ...]:
     return tuple(out)
 
 
-PARTS = parts()
+# ``PARTS`` is built at the bottom of this module, after the footprint helpers:
+# the resistor rows are placed from pad positions read back out of the FET land
+# patterns, and that reader is defined further down.
 
 
 # ---------------------------------------------------------------- geometry
@@ -336,9 +437,15 @@ def overlaps(prts: tuple[Part, ...] | list[Part]) -> list[tuple[str, str, float]
     return found
 
 
-def min_gap_mm(prts: tuple[Part, ...] | list[Part] = PARTS) -> tuple[float, str, str]:
+def min_gap_mm(prts: tuple[Part, ...] | list[Part] | None = None) -> tuple[float, str, str]:
     """Smallest edge-to-edge distance in either axis, and the pair that owns it.
-    Reported because 'nothing overlaps' is satisfied by 1 um of clearance too."""
+    Reported because 'nothing overlaps' is satisfied by 1 um of clearance too.
+
+    ``prts`` defaults to ``PARTS`` at call time, not at def time: the table is
+    built after every helper it derives from exists (it reads pad positions back
+    out of the footprint text), so it cannot be a default argument.
+    """
+    prts = PARTS if prts is None else prts
     best, who = float("inf"), ("", "")
     for i, a in enumerate(prts):
         ax0, ay0, ax1, ay1 = bbox(a)
@@ -352,8 +459,9 @@ def min_gap_mm(prts: tuple[Part, ...] | list[Part] = PARTS) -> tuple[float, str,
     return best, who[0], who[1]
 
 
-def board_rect(prts: tuple[Part, ...] | list[Part] = PARTS) -> tuple[float, float]:
+def board_rect(prts: tuple[Part, ...] | list[Part] | None = None) -> tuple[float, float]:
     """Board size in mm, rounded up to 0.5 mm so the Edge.Cuts is a round number."""
+    prts = PARTS if prts is None else prts
     x1 = max(bbox(p)[2] for p in prts)
     y1 = max(bbox(p)[3] for p in prts)
     return _ceil_half(x1 + EDGE_MARGIN_MM), _ceil_half(y1 + EDGE_MARGIN_MM)
@@ -410,16 +518,49 @@ def _pad_blocks(lib_id: str) -> list[str]:
             re.finditer(r'\(pad "([^"]*)"', _footprint_text(lib_id)) if m.group(1)]
 
 
-def _pad_positions(lib_id: str) -> dict[str, tuple[float, float]]:
-    """Pad name -> (x, y) in the footprint's own frame, read back out of the
-    footprint text.  Reading it back rather than restating the table means the
-    distances below cannot drift from the pads the board actually carries."""
-    text = _footprint_text(lib_id)
+def _text_pad_positions(text: str) -> dict[str, tuple[float, float]]:
+    """Pad name -> (x, y) in the footprint's own frame, first occurrence wins.
+
+    Split out from ``_pad_positions`` so a caller that already holds the text --
+    or a stock library file -- can parse it without building the whole library.
+    """
     out: dict[str, tuple[float, float]] = {}
     for match in re.finditer(r'\(pad "([^"]*)"[^(]*\(at (-?[\d.]+) (-?[\d.]+)', text):
         name, px, py = match.group(1), float(match.group(2)), float(match.group(3))
         if name:
             out.setdefault(name, (px, py))
+    return out
+
+
+def _pad_positions(lib_id: str) -> dict[str, tuple[float, float]]:
+    """Pad name -> (x, y) in the footprint's own frame, read back out of the
+    footprint text.  Reading it back rather than restating the table means the
+    distances below cannot drift from the pads the board actually carries."""
+    return _text_pad_positions(_footprint_text(lib_id))
+
+
+def _land_pads(lib_id: str) -> dict[str, tuple[float, float]]:
+    """Copper pad name -> centre, from the digitised land-pattern JSON.
+
+    The only caller is ``parts()``, which runs while this module is still
+    executing: the two land builders import this module back for
+    ``find_kicad_cli()``, so asking them for the footprint there hands back a
+    half-built module (``AttributeError: no attribute 'bsc_source'``).  The JSON
+    is what those builders generate the footprint *from*, so it is the same
+    number one step upstream -- and ``_pad_positions`` on the generated text is
+    compared against it by the placement test.
+
+    Mask and paste openings live in the same list and can share a pad's number,
+    so only the ``F.Cu`` entries are copper.  First occurrence wins, as in
+    ``_text_pad_positions``: a pad name may cover several blocks (a drain base
+    and its first finger are both ``5``).
+    """
+    out: dict[str, tuple[float, float]] = {}
+    for pad in json.loads(LAND[lib_id].read_text(encoding="utf-8"))["pads"]:
+        if "F.Cu" not in pad["layers"]:
+            continue
+        x0, y0, x1, y1 = pad["rect"]
+        out.setdefault(pad["number"], ((x0 + x1) / 2, (y0 + y1) / 2))
     return out
 
 
@@ -524,9 +665,12 @@ def nets_report() -> dict:
         "nets": rows,
         "single_pad_nets": [n["net"] for n in rows if n["pads"] == 1],
         "single_pad_nets_note": "a net with one pad here draws no ratsnest line and "
-                                "owes no track: its other members (gate resistors, the "
-                                "CT secondary rectifiers) are off this board. Listed so "
-                                "they are not read as routed",
+                                "owes no track.  Two kinds remain: the far end of a "
+                                "resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV "
+                                "-- the driver side, which lives on the control board), "
+                                "and the CT secondary terminals CS1/CS2, whose "
+                                "rectifier sits in the padless U2 outline. Listed so "
+                                "none is read as routed",
         "lumped_from_one_netlist_element": {
             f"{BANK_PREFIX}1..{BANK_PREFIX}{_cout()['n']}":
                 "the schematic models the whole bank as one lumped Cout; these "
@@ -804,8 +948,23 @@ def _inject_pad_nets(text: str, nets: dict[str, str], ids: dict[str, int]) -> st
             if pos > 0:
                 line = block.rfind("\n", 0, pos) + 1
                 indent = block[line:pos]
-                block = (block[:line] + indent + f'(net {ids[net]} "{net}")\n'
-                         + block[line:])
+            else:
+                # A vendored KiCad footprint may ship pads with no uuids at all
+                # -- the 0603 here does -- and then "after layers, before uuid"
+                # has no anchor.  Put the net on its own line just before the
+                # pad's closing paren instead; KiCad reads ``(net ...)`` at any
+                # position inside the pad.  Without this fallback the resistor
+                # pads land on the board with no net, and the pads_landed /
+                # physical_pads_netted counts describe copper that is not there.
+                line = block.rfind("\n", 0, len(block) - 1) + 1
+                inner = re.search(r"\n([ \t]+)\S", block)
+                # One level *inside* the pad, not level with it: a net line at
+                # the pad's own indent reads as a board-level declaration to
+                # anything that counts ``^\t(net `` (it did, and the board
+                # appeared to declare 84 nets).
+                indent = inner.group(1) if inner else block[line:].split(")")[0] + "\t"
+            block = (block[:line] + indent + f'(net {ids[net]} "{net}")\n'
+                     + block[line:])
         out.append(block)
         i = end + 1
 
@@ -1004,9 +1163,16 @@ def pocket_requirements() -> dict:
     total = per_core * len(cores)
     bw, bd = board_rect()
     board_area = bw * bd
-    channel = (82.0, 116.0)                 # SR row to J_OUT, the output plane
+    channel = (SR_ROW_Y, next(p for p in PARTS if p.ref == "J_OUT").y)
     core_top = max(part.y + part.d_mm / 2 for part in cores)
     core_bottom = min(part.y - part.d_mm / 2 for part in cores)
+    # What the output plane has to route *around*.  Until package C this list was
+    # the bank and the busbar; the resistor rows now sit in it, and a pour that
+    # is measured on this placement will show their keep-outs.  Recording the
+    # occupants is the difference between "the channel is clear" (it no longer
+    # is) and "the pockets do not reach it" (they still do not).
+    occupants = sorted(p.ref for p in PARTS
+                       if p.y + p.d_mm / 2 > channel[0] and p.y - p.d_mm / 2 < channel[1])
     return {
         "cores": len(cores),
         "pocket_per_core_mm2": round(per_core, 1),
@@ -1019,7 +1185,12 @@ def pocket_requirements() -> dict:
         "remaining_dielectric_range_mm": [round(BOARD_T - POCKET_MM - 0.1, 2),
                                           round(BOARD_T - POCKET_MM + 0.1, 2)],
         "core_footprint_y_mm": [round(core_bottom, 1), round(core_top, 1)],
-        "output_channel_y_mm": list(channel),
+        "output_channel_y_mm": [round(channel[0], 1), round(channel[1], 1)],
+        "output_channel_occupants": occupants,
+        "output_channel_occupants_note": "parts whose outline reaches into the "
+                                         "SR-to-busbar channel; every one of them is a "
+                                         "keep-out in the output pour, so the channel is "
+                                         "not empty copper",
         "pocket_overlaps_output_plane": core_top > channel[0],
         "checked_non_issues": [
             "沉槽不占用 100 A 输出平面（磁芯 y ≤ "
@@ -1214,6 +1385,9 @@ def check() -> None:
         raise SystemExit("DRC is not clean -- a placement study may leave pads unconnected, "
                          "but a courtyard collision, a footprint without a courtyard, or an "
                          "unresolved library is a real defect")
+
+
+PARTS = parts()
 
 
 def main() -> None:
