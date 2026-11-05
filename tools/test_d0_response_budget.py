@@ -397,6 +397,145 @@ def test_weakening_the_sr_pulldowns_parks_the_rail_in_the_hysteresis_band(monkey
         budget.build()
 
 
+# ------------------------------------ the external fast path's two new gates
+def _tokens_near(lines: list[str], needle: str, span: int = 12) -> list[str]:
+    start = next(i for i, line in enumerate(lines) if needle in line)
+    tokens: list[str] = []
+    for line in lines[start:start + span]:
+        tokens.extend(line.replace(",", " ").split())
+    return tokens
+
+
+def test_the_external_fast_path_prices_the_two_new_gates():
+    """The review asks for the real delay of the added inverter and OR.  Both
+    datasheets publish a maximum, so this is the one stretch of the external
+    path that is a number rather than a floor -- 110 ns plus 250 ns."""
+    result = budget.build()
+    logic = result["stages"]["external_fast_logic"]
+    assert logic["us"] == pytest.approx(0.36)
+    assert logic["typ_us"] == pytest.approx(0.18)
+    by_ref = {stage["ref"]: stage for stage in logic["stages"]}
+    assert by_ref["U11"]["max_ns"] == pytest.approx(budget.CD4069UB_TPD_MAX_NS)
+    assert by_ref["U19"]["max_ns"] == pytest.approx(budget.CD4071B_TPD_MAX_NS)
+    assert result["external_fast_path"]["logic_us"] == pytest.approx(logic["us"])
+    assert result["external_fast_path"]["logic_typ_us"] == pytest.approx(logic["typ_us"])
+
+
+def test_the_two_logic_stages_read_their_wiring_back_from_the_part_table():
+    """Same rule as the comparator fault directions: the chain in the JSON has
+    to be the chain on the board.  A unit re-numbered or a gate replaced breaks
+    the tool rather than being re-priced on the old wiring."""
+    logic = budget.build()["stages"]["external_fast_logic"]
+    assert [stage["input_net"] for stage in logic["stages"]] == ["FAST_EXT_N", "FAST_EXT_H"]
+    assert [stage["output_net"] for stage in logic["stages"]] == ["FAST_EXT_H", "FAST_COMBINED"]
+    parts = {(p.ref, p.unit): p for p in board.parts()}
+    inverter, gate = parts[("U11", 6)], parts[("U19", 1)]
+    assert inverter.nets["12"] == gate.nets["2"]
+    assert inverter.nets["13"] == "FAST_EXT_N"
+    assert gate.nets["1"] == "FAST_TRIP"
+    assert gate.nets["3"] == "FAST_COMBINED"
+
+
+def test_the_two_gates_run_from_the_five_volt_rail_the_budget_assumes():
+    """The 55/110 and 125/250 ns rows are the VDD = 5 V rows.  Reading the 10 V
+    row (30/60 and 60/120 ns) would halve the price for stages that sit on V5."""
+    logic = budget.build()["stages"]["external_fast_logic"]
+    assert logic["supply"] == {"U11": "V5", "U19": "V5", "v": 5.0}
+    # Keyed on the DIP-14 power pins (7 and 14) rather than on pin count: a
+    # signal unit that happens to use two pins would otherwise pass for the
+    # supply unit and the check would stop meaning anything.
+    powered = [p for p in board.parts()
+               if p.ref in ("U11", "U19") and set(p.nets) == {"7", "14"}]
+    assert len(powered) == 2
+    for part in powered:
+        assert set(part.nets.values()) == {"PGND", "V5"}
+
+
+def test_the_logic_delays_are_readable_in_the_vendored_datasheets():
+    """A fabricated nanosecond is the failure this locks out: the number has to
+    appear in the text that ships beside the PDF.  CD4071B's table pages are
+    scanned images, so its text file carries a marked transcription block."""
+    root = Path(__file__).resolve().parent.parent / "references/datasheets"
+    inverter = (root / "cd4069ub.txt").read_text(encoding="utf-8").splitlines()
+    tokens = _tokens_near(inverter, "Propagation delay time")
+    assert "55" in tokens and "110" in tokens
+    gate = (root / "cd4071b.txt").read_text(encoding="utf-8").splitlines()
+    tokens = _tokens_near(gate, "Propagation Delay Time")
+    assert "125" in tokens and "250" in tokens
+    assert "APPENDED TRANSCRIPTION" in "\n".join(gate)
+    assert (root / "cd4071b_p2.png").is_file()
+
+
+def test_the_logic_maximum_is_a_25_degree_maximum_and_says_so():
+    """Both tables print TA = 25 C in their header, so "max" bounds one
+    temperature.  The budget must not let that read as a guarantee over the
+    board's range."""
+    result = budget.build()
+    logic = result["stages"]["external_fast_logic"]
+    assert logic["max_is_at_25c_only"] is True
+    assert logic["max_over_temperature_us"] is None
+    assert "TA = 25 C" in logic["cited_conditions"]
+    assert "25 C maxima" in " ".join(result["not_worst_case_because"])
+
+
+def test_the_cited_load_and_edge_bound_only_the_asserting_direction():
+    """The 50 pF / 20 ns conditions are the datasheet's, not the layout's.  The
+    load is heavier than the real one (one CD4071B input), which errs long; the
+    edge is met by the Q1 fall but not by the R7 rise -- and a slow release
+    holds the OR output at the fault level, so that direction is not a
+    protection hole."""
+    logic = budget.build()["stages"]["external_fast_logic"]
+    assert logic["cited_load_f"] == pytest.approx(50e-12)
+    assert logic["actual_load_upper_bound_f"] < logic["cited_load_f"]
+    assert logic["asserting_edge_meets_the_cited_20ns"] is True
+    assert "R7 10 k" in logic["releasing_edge_condition"]
+
+
+def test_the_new_logic_is_priced_but_stays_out_of_the_legacy_totals():
+    """The external path starts at the TLV3501 and skips the LM393 and the
+    127.6 us of filtering, so its 360 ns cannot be folded into a legacy total;
+    the shared stage stays what it always was."""
+    result = budget.build()
+    stages, totals = result["stages"], result["totals"]
+    assert totals["shared_after_detection_us"] == pytest.approx(
+        stages["comparator"]["us"] + stages["latch"]["us"] + totals["driver_branch_us"])
+    external = result["external_fast_path"]
+    assert external["status"] == "PARTIALLY_PRICED_NOT_INCLUDED_IN_TOTALS"
+    assert "U11F and U19 delay" not in external["missing"]
+    assert "the U6.4 AND and U10 stages after FAST_COMBINED" in external["missing"]
+
+
+def test_a_gate_moved_off_the_chain_is_not_silently_repriced(monkeypatch):
+    original = board.parts()
+
+    def rewired():
+        out = []
+        for part in original:
+            if part.ref == "U19" and part.unit == 1:
+                nets = dict(part.nets)
+                nets["2"] = "FAST_EXT_N"
+                part = replace(part, nets=nets)
+            out.append(part)
+        return out
+
+    monkeypatch.setattr(board, "parts", rewired)
+    with pytest.raises(SystemExit, match="no longer in series"):
+        budget.build()
+
+
+def test_a_gate_swapped_for_another_part_is_not_repriced(monkeypatch):
+    original = board.parts()
+
+    def swapped():
+        return [replace(part, value="CD4081BE")
+                if (part.ref, part.unit) == ("U19", 1) else part
+                for part in original]
+
+    monkeypatch.setattr(board, "parts", swapped)
+    with pytest.raises(SystemExit, match="not the CD4071B"):
+        budget.build()
+
+
 RECORD = Path(__file__).resolve().parent.parent / "design/v3/stage_f/d0_response_budget.json"
 
 

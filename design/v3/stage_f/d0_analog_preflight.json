@@ -76,7 +76,7 @@
     "detector diode drop over -40..+125 C and its spread (no vendored datasheet), which moves the trip between the ideal 0.942 V and VGS(th) min 1.3 V",
     "the LM393's common-mode limit is now a cited number (§5.8: 3.5 V at 25 C, 3.0 V over the full range), but the 15 V standoff puts the all-ten sense node 0.29 V above the full-range row; it is permitted because the 0.200 V reference on the other input is in range, and that reading needs bench confirmation at the temperature extremes rather than at 25 C",
     "ten-step bring-up sweep plus all-three-rails startup/collapse records; a sum or a maximum cannot show which channel is open",
-    "the response budget is a floor, not a worst case: tools/d0_response_budget.py now settles the permit rail, both driver datasheets' disable delays, the LM393 typical response and the CD4013 set-to-output max, but the LM393 publishes no maximum at all, the UCC27524A's own switching numbers are not production-tested, and the 48/50-V 120-A fault cases are not swept",
+    "the response budget is a floor, not a worst case: tools/d0_response_budget.py now settles the permit rail, both driver datasheets' disable delays, the LM393 typical response, the CD4013 set-to-output max and the external fast path's CD4069UB/CD4071B pair (25 C maxima only), but the LM393 publishes no maximum at all, the UCC27524A's own switching numbers are not production-tested, and the 48/50-V 120-A fault cases are not swept",
     "TL431 reference stability with C7 and min/max shunt current",
     "power-on reset/ACK debounce and rail sequencing on actual hardware",
     "real connected VGS probe records for all ten gates; ERC is not that evidence"

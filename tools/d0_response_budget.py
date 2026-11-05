@@ -16,6 +16,11 @@ What is left after detection is short and mostly arithmetic:
   when its enable goes low;
 * the gate falling from the driver supply to VGS(th).
 
+The external fast path added by the interface ECO has its own two stages -- the
+U11F inverter and the U19 OR -- and those datasheets *do* publish a maximum, at
+25 C.  They are priced here and kept out of the legacy totals, because that path
+starts at a different detector and skips the filtering.
+
 The result is a **floor**, not a worst case, and the tool says so in the JSON
 rather than leaving a reader to assume otherwise.
 
@@ -137,6 +142,36 @@ COMPARATOR_FAULT_DIRECTION = {
 # d0_trip_timing.json reads V(oc) and V(ocdf)), so their output edge is the one
 # the comparator stage pays for.  The other four sit outside this budget.
 PRICED_COMPARATORS = (("U3", 1), ("U3", 2))
+
+# ---- the two gates the external fast path added (2026-11-05) ----------------
+# U11F (pins 13 in / 12 out) inverts FAST_EXT_N into FAST_EXT_H, and U19's first
+# gate ORs that with the legacy FAST_TRIP.  Both are 4000B parts on the 5 V rail
+# and both datasheets publish a MAX column for tPLH/tPHL -- unlike the LM393 --
+# but each table header pins that max to TA = 25 C, CL = 50 pF, RL = 200 k and
+# a 20 ns input edge.  So these are 25 C maxima, not maxima over the board's
+# temperature range, and the JSON says so rather than letting "max" read as a
+# guarantee.  The cited 50 pF load is heavier than the real one (the inverter
+# drives one CD4071B input, 7.5 pF max), so that condition errs long, not short.
+CD4069UB_VDD_V = 5.0
+CD4069UB_TPD_TYP_NS = 55.0
+CD4069UB_TPD_MAX_NS = 110.0
+CD4069UB_CIN_MAX_F = 15e-12
+CD4069UB_SOURCE = ("references/datasheets/cd4069ub.txt (SCHS054E, revised "
+                   "January 2019; section 6.5 Electrical Characteristics - "
+                   "Dynamic, VDD = 5 V)")
+CD4071B_VDD_V = 5.0
+CD4071B_TPD_TYP_NS = 125.0
+CD4071B_TPD_MAX_NS = 250.0
+CD4071B_CIN_MAX_F = 7.5e-12
+CD4071B_SOURCE = ("references/datasheets/cd4071b.txt (SCHS056D, revised August "
+                  "2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)")
+# Both tables are measured through the same input edge.  Only one of the two
+# directions on FAST_EXT_N is a protection edge, so the budget says which.
+LOGIC_CITED_EDGE_NS = 20.0
+# Symbol pin numbers for the two used units, kept next to the nets they must
+# carry so a swapped pin breaks the tool instead of being silently re-priced.
+INVERTER_PIN_IN, INVERTER_PIN_OUT = "13", "12"
+OR_PIN_A, OR_PIN_B, OR_PIN_OUT = "2", "1", "3"
 
 
 def _parallel(*resistances: float) -> float:
@@ -421,6 +456,110 @@ def comparator_pull_up(parts: list) -> dict:
     }
 
 
+def _unit(part_list, ref: str, unit: int):
+    matches = [p for p in part_list if p.ref == ref and p.unit == unit]
+    if len(matches) != 1:
+        raise SystemExit(f"{ref} unit {unit} must appear exactly once in the part "
+                         f"table, found {len(matches)}")
+    return matches[0]
+
+
+def _supply_net(part_list, ref: str) -> str:
+    """The rail a multi-unit 4000B part's power unit sits on.
+
+    Found by shape, not by unit number: the power unit is the one with exactly
+    two pins, one of them PGND.  Re-numbering the units must not change the
+    supply the budget assumes.
+    """
+    for p in part_list:
+        if p.ref == ref and len(p.nets) == 2 and "PGND" in p.nets.values():
+            return next(n for n in p.nets.values() if n != "PGND")
+    raise SystemExit(f"{ref} has no power unit in the part table")
+
+
+def external_fast_logic(part_list) -> dict:
+    """Price the two gates the external fast path added.
+
+    The review asks for "the real delay of the new inverter and OR"; both parts
+    publish a maximum, so this is the one place on the external path where a
+    number exists instead of a floor.  What it is *not*: a maximum over
+    temperature.  Both tables say TA = 25 C, and the edge condition is the one
+    the asserting transition meets but the release transition does not -- a slow
+    release leaves the OR output low, which is the fault level, so the
+    un-priced direction errs toward "still tripped".
+
+    The wiring is read back from the part table rather than repeated here: a
+    unit moved to another net, or a gate swapped out for a different part, has
+    to break the tool instead of being re-priced on the old chain.
+    """
+    inverter = _unit(part_list, "U11", 6)
+    or_gate = _unit(part_list, "U19", 1)
+    if inverter.value != "CD4069UBE":
+        raise SystemExit(f"U11F is {inverter.value}, not the CD4069UB the "
+                         "110 ns maximum belongs to")
+    if or_gate.value != "CD4071BE":
+        raise SystemExit(f"U19A is {or_gate.value}, not the CD4071B the "
+                         "250 ns maximum belongs to")
+    chain = {INVERTER_PIN_IN: "FAST_EXT_N", INVERTER_PIN_OUT: "FAST_EXT_H",
+             OR_PIN_OUT: "FAST_COMBINED", OR_PIN_B: "FAST_TRIP"}
+    if inverter.nets.get(INVERTER_PIN_IN) != chain[INVERTER_PIN_IN]:
+        raise SystemExit(f"U11F pin {INVERTER_PIN_IN} reads "
+                         f"{inverter.nets.get(INVERTER_PIN_IN)!r}, not FAST_EXT_N")
+    if inverter.nets.get(INVERTER_PIN_OUT) != chain[INVERTER_PIN_OUT]:
+        raise SystemExit(f"U11F pin {INVERTER_PIN_OUT} reads "
+                         f"{inverter.nets.get(INVERTER_PIN_OUT)!r}, not FAST_EXT_H")
+    if or_gate.nets.get(OR_PIN_A) != inverter.nets.get(INVERTER_PIN_OUT):
+        raise SystemExit(f"U19A pin {OR_PIN_A} does not sit on the inverter's "
+                         "output net: the two stages are no longer in series")
+    if or_gate.nets.get(OR_PIN_B) != chain[OR_PIN_B]:
+        raise SystemExit(f"U19A pin {OR_PIN_B} reads "
+                         f"{or_gate.nets.get(OR_PIN_B)!r}, not FAST_TRIP")
+    if or_gate.nets.get(OR_PIN_OUT) != chain[OR_PIN_OUT]:
+        raise SystemExit(f"U19A pin {OR_PIN_OUT} reads "
+                         f"{or_gate.nets.get(OR_PIN_OUT)!r}, not FAST_COMBINED")
+    rails = {"U11": _supply_net(part_list, "U11"),
+             "U19": _supply_net(part_list, "U19")}
+    if set(rails.values()) != {RAIL_SOURCE_NET}:
+        raise SystemExit(f"the two logic stages are powered from {rails}, but "
+                         f"the budget's 5 V figures assume {RAIL_SOURCE_NET}")
+    stages = [
+        {"ref": "U11", "unit": 6, "part": inverter.value, "role": "inverter",
+         "input_net": chain[INVERTER_PIN_IN], "output_net": chain[INVERTER_PIN_OUT],
+         "typ_ns": CD4069UB_TPD_TYP_NS, "max_ns": CD4069UB_TPD_MAX_NS,
+         "vdd_v": CD4069UB_VDD_V, "input_capacitance_max_f": CD4069UB_CIN_MAX_F,
+         "source": CD4069UB_SOURCE},
+        {"ref": "U19", "unit": 1, "part": or_gate.value, "role": "or",
+         "input_net": chain[INVERTER_PIN_OUT], "other_input_net": chain[OR_PIN_B],
+         "output_net": chain[OR_PIN_OUT],
+         "typ_ns": CD4071B_TPD_TYP_NS, "max_ns": CD4071B_TPD_MAX_NS,
+         "vdd_v": CD4071B_VDD_V, "input_capacitance_max_f": CD4071B_CIN_MAX_F,
+         "source": CD4071B_SOURCE},
+    ]
+    typ_us = sum(s["typ_ns"] for s in stages) / 1e3
+    max_us = sum(s["max_ns"] for s in stages) / 1e3
+    return {
+        "us": max_us,
+        "typ_us": typ_us,
+        "stages": stages,
+        "supply": {"U11": rails["U11"], "U19": rails["U19"], "v": V5_RAIL_V},
+        "max_is_at_25c_only": True,
+        "max_over_temperature_us": None,
+        "cited_conditions": (f"TA = 25 C, CL = 50 pF, RL = 200 k, input "
+                             f"tr/tf = {LOGIC_CITED_EDGE_NS:.0f} ns"),
+        "cited_load_f": 50e-12,
+        "actual_load_upper_bound_f": CD4071B_CIN_MAX_F,
+        "asserting_edge": ("FAST_EXT_N falls (Q1 plus R5 100 ohm) -> FAST_EXT_H "
+                           "rises -> FAST_COMBINED rises"),
+        "asserting_edge_meets_the_cited_20ns": True,
+        "releasing_edge_condition": (
+            "FAST_EXT_N rises through R7 10 k and an unmeasured line capacitance, "
+            "so it is slower than the cited 20 ns input edge; a slow release "
+            "holds FAST_COMBINED low, which is the fault level"),
+        "not_priced_after_this": ["the U6.4 AND and U10 stages between "
+                                  "FAST_COMBINED and the U12 latch"],
+    }
+
+
 def build() -> dict:
     part_list = board.parts()
     by_ref = {p.ref: p for p in part_list}
@@ -459,6 +598,11 @@ def build() -> dict:
     comparator_us = LM393_RESPONSE_TYP_US
     latch_us = CD4013B_SET_TO_OUTPUT_MAX_NS / 1e3
     shared_us = comparator_us + latch_us + driver_branch_us
+    # Priced separately and deliberately *not* summed into the totals: this path
+    # starts at a different detector (the TLV3501 at OCD) and skips the LM393
+    # and the 127.6 us of filtering, so adding it to a legacy figure would mix
+    # two different measurements.
+    logic = external_fast_logic(part_list)
     totals = {
         "hard_channel_floor_us": measured["hard_delay_us"] + shared_us,
         "fast_channel_floor_us": measured["fast_delay_us"] + shared_us,
@@ -474,11 +618,19 @@ def build() -> dict:
         "status": "RESPONSE_BUDGET_INCOMPLETE",
         "is_worst_case": False,
         "external_fast_path": {
-            "status": "UNPRICED_NOT_INCLUDED_IN_TOTALS",
+            "status": "PARTIALLY_PRICED_NOT_INCLUDED_IN_TOTALS",
             "path": "TLV3501/Q1 -> FAST_EXT_N -> U11F -> U19 -> U6/U10 -> U12",
-            "missing": ["loaded Q1 edge and wiring capacitance", "U11F and U19 delay",
-                        "real UCC24624 REG discharge and last SR gate turn-off"],
-            "note": "Legacy totals cannot be used as the new external fast path latency.",
+            "logic_us": logic["us"],
+            "logic_typ_us": logic["typ_us"],
+            "logic_stages": [f"{s['ref']} {s['role']}" for s in logic["stages"]],
+            "logic_is_a_25c_max": logic["max_is_at_25c_only"],
+            "missing": ["loaded Q1 edge and wiring capacitance",
+                        "real UCC24624 REG discharge and last SR gate turn-off",
+                        "the U6.4 AND and U10 stages after FAST_COMBINED"],
+            "note": ("The new inverter and OR are now priced from their vendored "
+                     "datasheets; the legacy totals still cannot be used as the "
+                     "external fast path latency, and the stages before and after "
+                     "the two gates are still unpriced."),
         },
         "not_worst_case_because": [
             "the LM393 publishes no maximum response time at all -- 1.3 us is a "
@@ -500,6 +652,9 @@ def build() -> dict:
             "datasheet's own C_L produces, not what this layout produces",
             "no temperature or device spread is applied: every value is a nominal "
             "part-table arithmetic, not a worst-case-over-temperature figure",
+            "the external fast path's two gates are 25 C maxima -- CD4069UB and "
+            "CD4071B publish their dynamic table at TA = 25 C only -- so 360 ns "
+            "bounds the pair at one temperature, not over the board's range",
         ],
         "stages": {
             "detection": {
@@ -540,6 +695,7 @@ def build() -> dict:
                 "conditions": ("VDD = 5 V, TA = 25 C, CL = 50 pF, RL = 20 k, input "
                                "tr/tf = 20 ns"),
             },
+            "external_fast_logic": logic,
             "permit_release": release,
             "driver_disable": {
                 "ucc27282_tdis_us": UCC27282_TDIS_US,

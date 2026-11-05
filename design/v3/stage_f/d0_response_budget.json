@@ -3,14 +3,21 @@
   "status": "RESPONSE_BUDGET_INCOMPLETE",
   "is_worst_case": false,
   "external_fast_path": {
-    "status": "UNPRICED_NOT_INCLUDED_IN_TOTALS",
+    "status": "PARTIALLY_PRICED_NOT_INCLUDED_IN_TOTALS",
     "path": "TLV3501/Q1 -> FAST_EXT_N -> U11F -> U19 -> U6/U10 -> U12",
+    "logic_us": 0.36,
+    "logic_typ_us": 0.18,
+    "logic_stages": [
+      "U11 inverter",
+      "U19 or"
+    ],
+    "logic_is_a_25c_max": true,
     "missing": [
       "loaded Q1 edge and wiring capacitance",
-      "U11F and U19 delay",
-      "real UCC24624 REG discharge and last SR gate turn-off"
+      "real UCC24624 REG discharge and last SR gate turn-off",
+      "the U6.4 AND and U10 stages after FAST_COMBINED"
     ],
-    "note": "Legacy totals cannot be used as the new external fast path latency."
+    "note": "The new inverter and OR are now priced from their vendored datasheets; the legacy totals still cannot be used as the external fast path latency, and the stages before and after the two gates are still unpriced."
   },
   "not_worst_case_because": [
     "the LM393 publishes no maximum response time at all -- 1.3 us is a typical at 5 mV overdrive, and the datasheet itself shows the figure rising as overdrive falls, so a slow part lengthens every total",
@@ -19,7 +26,8 @@
     "the eight 200 k pull-ups that set the permit rail's ceiling are a typical with no published min or max, so the 0.26 V ceiling is a nominal figure rather than a guaranteed bound",
     "the gate fall omits the driver's internal sink resistance, which adds time",
     "the comparator's 1.3 us was measured through a 5.1 k pull-up and 15 pF; this board uses 10 k, and the added time constant scales with the load capacitance, which is not measured -- the priced 73.5 ns is what the datasheet's own C_L produces, not what this layout produces",
-    "no temperature or device spread is applied: every value is a nominal part-table arithmetic, not a worst-case-over-temperature figure"
+    "no temperature or device spread is applied: every value is a nominal part-table arithmetic, not a worst-case-over-temperature figure",
+    "the external fast path's two gates are 25 C maxima -- CD4069UB and CD4071B publish their dynamic table at TA = 25 C only -- so 360 ns bounds the pair at one temperature, not over the board's range"
   ],
   "stages": {
     "detection": {
@@ -83,6 +91,55 @@
       "source": "references/datasheets/cd4013b.txt (SCHS023E, revised September 2016; section 6.6 Electrical Characteristics: Dynamic, VDD = 5 V)",
       "wiring": "FF1 on this board: SET = FLT, RESET = RST_EFF, clock and D tied off, and ~Q is the permit term",
       "conditions": "VDD = 5 V, TA = 25 C, CL = 50 pF, RL = 20 k, input tr/tf = 20 ns"
+    },
+    "external_fast_logic": {
+      "us": 0.36,
+      "typ_us": 0.18,
+      "stages": [
+        {
+          "ref": "U11",
+          "unit": 6,
+          "part": "CD4069UBE",
+          "role": "inverter",
+          "input_net": "FAST_EXT_N",
+          "output_net": "FAST_EXT_H",
+          "typ_ns": 55.0,
+          "max_ns": 110.0,
+          "vdd_v": 5.0,
+          "input_capacitance_max_f": 1.5e-11,
+          "source": "references/datasheets/cd4069ub.txt (SCHS054E, revised January 2019; section 6.5 Electrical Characteristics - Dynamic, VDD = 5 V)"
+        },
+        {
+          "ref": "U19",
+          "unit": 1,
+          "part": "CD4071BE",
+          "role": "or",
+          "input_net": "FAST_EXT_H",
+          "other_input_net": "FAST_TRIP",
+          "output_net": "FAST_COMBINED",
+          "typ_ns": 125.0,
+          "max_ns": 250.0,
+          "vdd_v": 5.0,
+          "input_capacitance_max_f": 7.5e-12,
+          "source": "references/datasheets/cd4071b.txt (SCHS056D, revised August 2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)"
+        }
+      ],
+      "supply": {
+        "U11": "V5",
+        "U19": "V5",
+        "v": 5.0
+      },
+      "max_is_at_25c_only": true,
+      "max_over_temperature_us": null,
+      "cited_conditions": "TA = 25 C, CL = 50 pF, RL = 200 k, input tr/tf = 20 ns",
+      "cited_load_f": 5e-11,
+      "actual_load_upper_bound_f": 7.5e-12,
+      "asserting_edge": "FAST_EXT_N falls (Q1 plus R5 100 ohm) -> FAST_EXT_H rises -> FAST_COMBINED rises",
+      "asserting_edge_meets_the_cited_20ns": true,
+      "releasing_edge_condition": "FAST_EXT_N rises through R7 10 k and an unmeasured line capacitance, so it is slower than the cited 20 ns input edge; a slow release holds FAST_COMBINED low, which is the fault level",
+      "not_priced_after_this": [
+        "the U6.4 AND and U10 stages between FAST_COMBINED and the U12 latch"
+      ]
     },
     "permit_release": {
       "enable_rail_v": 5.0,

@@ -203,7 +203,8 @@ def build() -> dict:
             "sum or a maximum cannot show which channel is open",
             "the response budget is a floor, not a worst case: tools/d0_response_budget.py "
             "now settles the permit rail, both driver datasheets' disable delays, the "
-            "LM393 typical response and the CD4013 set-to-output max, but the LM393 "
+            "LM393 typical response, the CD4013 set-to-output max and the external fast "
+            "path's CD4069UB/CD4071B pair (25 C maxima only), but the LM393 "
             "publishes no maximum at all, the UCC27524A's own switching numbers are not "
             "production-tested, and the 48/50-V 120-A fault cases are not swept",
             "TL431 reference stability with C7 and min/max shunt current",

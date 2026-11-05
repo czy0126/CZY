@@ -1,0 +1,2455 @@
+
+--- PAGE 1 ---
+A
+1
+2
+VDD = Pin 14
+VSS = Pin 7
+F
+G = A
+B
+H = B
+C
+I = C
+L = F
+E
+K = E
+D
+J = D
+3
+4
+5
+6
+9
+8
+11
+10
+13
+12
+Product
+Folder
+Order
+Now
+Technical
+Documents
+Tools &
+Software
+Support &
+Community
+An IMPORTANT NOTICE at the end of this data sheet addresses availability, warranty, changes, use in safety-critical applications,
+intellectual property matters and other important disclaimers. PRODUCTION DATA.
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+CD4069UB CMOS hex inverter
+1
+1
+Features
+1•
+Standardized symmetrical output characteristics
+•
+Medium speed operation: tPHL, tPLH = 30 ns at 10
+V (Typical)
+•
+100% Tested for quiescent current at 20 V
+•
+Maximum input current of 1 µA at 18 V over full
+package-temperature range, 100 nA at 18 V and
+25°C
+•
+Meets all requirements of JEDEC tentative
+standard No. 13B, Standard Specifications for
+Description of B Series CMOS Devices
+2
+Applications
+•
+Logic inversion
+•
+Pulse shaping
+•
+Oscillators
+•
+High-input-impedance amplifiers
+3
+Description
+The CD4069UB device consist of six CMOS inverter
+circuits. These devices are intended for all general-
+purpose inverter applications where the medium-
+power
+TTL-drive
+and
+logic-level-conversion
+capabilities of circuits such as the CD4009 and
+CD4049 hex inverter and buffers are not required.
+Device Information(1)
+PART NUMBER
+PACKAGE
+(PINS)
+BODY SIZE (NOM)
+CD4069UBE
+PDIP (14)
+19.30 mm × 6.35 mm
+CD4069UBF
+CDIP (14)
+19.56 mm × 6.67 mm
+CD4069UBM
+SOIC (14)
+8.65 mm × 3.91 mm
+CD4069UBNSR
+SO (14)
+10.30 mm × 5.30 mm
+CD4069UBPW
+TSSOP (14)
+5.00 mm × 4.40 mm
+(1) For all available packages, see the orderable addendum at
+the end of the data sheet.
+CD4069UB Functional Diagram
+
+--- PAGE 2 ---
+2
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Table of Contents
+1
+Features.................................................................. 1
+2
+Applications ........................................................... 1
+3
+Description ............................................................. 1
+4
+Revision History..................................................... 2
+5
+Pin Configuration and Functions......................... 3
+6
+Specifications......................................................... 4
+6.1
+Absolute Maximum Ratings ...................................... 4
+6.2
+ESD Ratings ............................................................ 4
+6.3
+Recommended Operating Conditions....................... 4
+6.4
+Thermal Information ................................................. 4
+6.5
+Electrical Characteristics – Dynamic......................... 5
+6.6
+Electrical Characteristics – Static.............................. 5
+6.7
+Typical Characteristics.............................................. 8
+7
+Parameter Measurement Information .................. 9
+8
+Detailed Description ............................................ 13
+8.1
+Overview ................................................................ 13
+8.2
+Functional Block Diagram ....................................... 13
+8.3
+Feature Description ................................................ 13
+8.4
+Device Functional Modes ....................................... 13
+9
+Application and Implementation ........................ 14
+9.1
+Application Information .......................................... 14
+9.2
+Typical Application ................................................. 14
+10
+Power Supply Recommendations ..................... 16
+11
+Layout................................................................... 16
+11.1
+Layout Guidelines ................................................ 16
+11.2
+Layout Example ................................................... 16
+12
+Device and Documentation Support ................. 17
+12.1
+Device Support...................................................... 17
+12.2
+Documentation Support ........................................ 17
+12.3
+Community Resource............................................ 17
+12.4
+Trademarks........................................................... 17
+12.5
+Electrostatic Discharge Caution............................ 17
+12.6
+Glossary................................................................ 17
+13
+Mechanical, Packaging, and Orderable
+Information ........................................................... 17
+4
+Revision History
+NOTE: Page numbers for previous revisions may differ from page numbers in the current version.
+Changes from Revision D (February 2016) to Revision E
+Page
+•
+Removed artifact "–" at tPHLterm on the second Features bullet ........................................................................................... 1
+•
+Corrected VI spec MIN/MAX values in the Abs Max Ratings table ....................................................................................... 4
+•
+Corrected parameter IDD max term to IDD in the Elec Characteristics table ........................................................................... 5
+•
+Corrected parameter IOL min term to IOL in the Elec Characteristics table ............................................................................ 5
+•
+Corrected parameter VOL max term to VOL in the Elec Characteristics table ......................................................................... 6
+•
+Corrected parameter VIL max term to VIL in the Elec Characteristics table ........................................................................... 6
+•
+Corrected parameter VIH min term to VIH in the Elec Characteristics table ........................................................................... 6
+•
+Corrected parameter IIN max term to IIN in the Elec Characteristics table ............................................................................. 7
+•
+Added Y-axis label to Figure 1 image object ......................................................................................................................... 8
+•
+Changed text string from " –tPHL" to "of tPHL" in the Feature Description paragraph. ........................................................... 13
+Changes from Revision C (August 2003) to Revision D
+Page
+•
+Added ESD Ratings table, Feature Description section, Device Functional Modes, Application and Implementation
+section, Power Supply Recommendations section, Layout section, Device and Documentation Support section, and
+Mechanical, Packaging, and Orderable Information section .................................................................................................. 1
+
+--- PAGE 3 ---
+1
+2
+3
+4 
+5
+6
+7
+14
+13
+12
+11
+10
+9
+8
+VSS
+VDD
+F
+G = A
+A
+B
+H = B
+C
+I = C
+L = F
+E
+K = E
+D
+J = D
+3
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+5
+Pin Configuration and Functions
+D, J, N, NS, and PW Packages
+14-Pin PDIP, CDIP, SOIC, SO, and TSSOP
+Top View
+Pin Functions
+PIN
+I/O
+DESCRIPTION
+NAME
+NO.
+A
+1
+I
+A input
+B
+3
+I
+B input
+C
+5
+I
+C input
+D
+9
+I
+D input
+E
+11
+I
+E input
+F
+13
+I
+F input
+G = A
+2
+O
+G output
+H = B
+4
+O
+H output
+I = C
+6
+O
+I output
+J = D
+8
+O
+J output
+K = E
+10
+O
+K output
+L = F
+12
+O
+L output
+VDD
+14
+—
+Positive supply
+VSS
+7
+—
+Negative supply
+
+--- PAGE 4 ---
+4
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+(1)
+Stresses beyond those listed under Absolute Maximum Ratings may cause permanent damage to the device. These are stress ratings
+only, which do not imply functional operation of the device at these or any other conditions beyond those indicated under Recommended
+Operating Conditions. Exposure to absolute-maximum-rated conditions for extended periods may affect device reliability.
+(2)
+During soldering at distance 1/16 inch ± 1/32 inch (1.59 mm ± 0.79 mm) from case for 10 s maximum
+6
+Specifications
+6.1
+Absolute Maximum Ratings
+over operating free-air temperature range (unless otherwise noted)(1)
+MIN
+MAX
+UNIT
+VDD
+DC supply-voltage (voltages referenced to VSS terminal)
+–0.5
+20
+V
+VI
+Input voltage, all inputs
+–0.5
+VDD + 0.5
+V
+IIK
+DC input current, any one input
+–10
+10
+mA
+PD
+Power dissipation per package
+–55°C to 100°C
+500
+mW
+100°C to 125°C
+12
+200
+Device dissipation per output transistor
+Full range (all package types)
+100
+mW
+Lead temperature(2)
+265
+°C
+TJ
+Junction temperature
+150
+°C
+Tstg
+Storage temperature
+–65
+150
+°C
+(1)
+JEDEC document JEP155 states that 500-V HBM allows safe manufacturing with a standard ESD control process.
+(2)
+JEDEC document JEP157 states that 250-V CDM allows safe manufacturing with a standard ESD control process.
+6.2
+ESD Ratings
+VALUE
+UNIT
+V(ESD)
+Electrostatic discharge
+Human-body model (HBM), per ANSI/ESDA/JEDEC JS-001(1)
+±500
+V
+Charged-device model (CDM), per JEDEC specification JESD22-C101(2)
+±200
+6.3
+Recommended Operating Conditions
+over operating free-air temperature range (unless otherwise noted)
+MIN
+MAX
+UNIT
+VDD
+Supply voltage
+3
+18
+V
+TA
+Operating temperature
+–55
+125
+°C
+(1)
+For more information about traditional and new thermal metrics, see the Semiconductor and IC Package Thermal Metrics application
+report, SPRA953.
+6.4
+Thermal Information
+THERMAL METRIC(1)
+CD4069UB
+UNIT
+D (SOIC)
+J (CDIP)
+N (PDIP)
+NS (SO)
+PW (TSSOP)
+14 PINS
+14 PINS
+14 PINS
+14 PINS
+14 PINS
+RθJA
+Junction-to-ambient thermal resistance
+94.9
+—
+57.9
+91.2
+122.1
+°C/W
+RθJC(top)
+Junction-to-case (top) thermal resistance
+56.4
+28.5
+45.5
+48.8
+50.8
+°C/W
+RθJB
+Junction-to-board thermal resistance
+49.2
+—
+37.7
+50
+63.8
+°C/W
+ψJT
+Junction-to-top characterization parameter
+21.1
+—
+30.6
+15
+6.3
+°C/W
+ψJB
+Junction-to-board characterization parameter
+48.9
+—
+37.6
+49.6
+63.3
+°C/W
+RθJC(bot)
+Junction-to-case (bottom) thermal resistance
+N/A
+N/A
+N/A
+N/A
+N/A
+°C/W
+
+--- PAGE 5 ---
+5
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+6.5
+Electrical Characteristics – Dynamic
+TA = 25°C; input tr, tf = 20 ns; CL = 50 pF; RL = 200 kΩ (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+tPLH, tPHL
+Propagation delay time
+VDD (V) = 5
+55
+110
+ns
+VDD (V) = 10
+30
+60
+VDD (V) = 15
+25
+50
+tTHL, tTLH
+Transition time
+VDD (V) = 5
+100
+200
+ns
+VDD (V) = 10
+50
+100
+VDD (V) = 15
+40
+80
+CIN
+Input capacitance
+Any input
+10
+15
+pF
+6.6
+Electrical Characteristics – Static
+TA = 25°C; input tr, tf = 20 ns; CL = 50 pF; RL = 200 kΩ (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+IDD
+Quiescent device current
+VIN = 0V or 5 V , VDD = 5 V
+TA = –55°C
+0.25
+µA
+TA = –40°C
+0.25
+TA = 25°C
+0.01
+0.25
+TA = 85°C
+7.5
+TA = 125°C
+7.5
+VIN = 0 or 10 V, VDD = 10 V
+TA = –55°C
+0.5
+TA = –40°C
+0.5
+TA = 25°C
+0.01
+0.5
+TA = 85°C
+15
+TA = 125°C
+15
+VIN = 0 or 15 V, VDD = 15 V
+TA = –55°C
+1
+TA = –40°C
+1
+TA = 25°C
+0.01
+1
+TA = 85°C
+30
+TA = 125°C
+30
+VIN = 0 or 20 V, VDD = 20 V
+TA = –55°C
+5
+TA = –40°C
+5
+TA = 25°C
+0.02
+5
+TA = 85°C
+150
+TA = 125°C
+150
+IOL
+Output low (sink) current
+VO = 0.4 V, VIN = 5 V,
+VDD = 5 V
+TA = –55°C
+0.64
+mA
+TA = –40°C
+0.61
+TA = 25°C
+0.51
+1
+TA = 85°C
+0.42
+TA = 125°C
+0.36
+VO = 0.5 V, VIN = 10 V,
+VDD = 10 V
+TA = –55°C
+1.6
+TA = –40°C
+1.5
+TA = 25°C
+1.3
+2.6
+TA = 85°C
+1.1
+TA = 125°C
+0.9
+VO = 1.5 V, VIN = 15 V,
+VDD = 15 V
+TA = –55°C
+4.2
+TA = –40°C
+4
+TA = 25°C
+3.4
+6.8
+TA = 85°C
+2.8
+TA = 125°C
+2.4
+
+--- PAGE 6 ---
+6
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Electrical Characteristics – Static (continued)
+TA = 25°C; input tr, tf = 20 ns; CL = 50 pF; RL = 200 kΩ (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+IOH
+Output high (source) current
+VO = 4.6 V, VIN = 0 V,
+VDD = 5 V
+TA = –55°C
+–0.64
+mA
+TA = –40°C
+–0.61
+TA = 25°C
+–0.51
+–1
+TA = 85°C
+–0.42
+TA = 125°C
+–0..36
+VO = 2.5 V, VIN = 0 V,
+VDD = 5 V
+TA = –55°C
+–2
+TA = –40°C
+–1.8
+TA = 25°C
+–1.6
+–3.2
+TA = 85°C
+–1.3
+TA = 125°C
+–1.15
+VO = 9.5 V, VIN = 0 V,
+VDD = 10 V
+TA = –55°C
+–1.6
+TA = –40°C
+–1.5
+TA = 25°C
+–1.3
+–2.6
+TA = 85°C
+–1.1
+TA = 125°C
+–0.9
+VO = 13.5 V, VIN = 0 V,
+VDD = 15 V
+TA = –55°C
+–4.2
+TA = –40°C
+–4
+TA = 25°C
+–3.4
+–6.8
+TA = 85°C
+–2.8
+TA = 125°C
+–2.4
+VOL
+Low-level output voltage
+VIN = 5 V, VDD = 5 V
+TA = 25°C
+0
+0.05
+V
+All other
+temperatures
+0.05
+VIN = 10 V, VDD = 10 V
+TA = 25°C
+0
+0.05
+All other
+temperatures
+0.05
+VIN = 15 V, VDD = 15 V
+TA = 25°C
+0
+0.05
+All other
+temperatures
+0.05
+VOH
+High-level output voltage
+VIN = 0 V, VDD = 5 V
+TA = 25°C
+4.95
+5
+V
+All other
+temperatures
+4.95
+VIN = 0 V, VDD = 10 V
+TA = 25°C
+9.95
+10
+All other
+temperatures
+9.95
+VIN = 0 V, VDD = 15 V
+TA = 25°C
+14.95
+15
+All other
+temperatures
+14.95
+VIL
+Input low voltage
+VO = 4.5 V, VDD = 5 V, all temperatures
+1
+V
+VO = 9 V, VDD = 10 V, all temperatures
+2
+VO = 13.5 V, VDD = 15 V, all temperatures
+2.5
+VIH
+Input high voltage
+VO = 0.5 V, VDD = 5 V, all temperatures
+4
+V
+VO = 1 V, VDD = 10 V, all temperatures
+8
+VO = 1.5 V, VDD = 15 V, all temperatures
+12.5
+
+--- PAGE 7 ---
+7
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Electrical Characteristics – Static (continued)
+TA = 25°C; input tr, tf = 20 ns; CL = 50 pF; RL = 200 kΩ (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+IIN
+Input current
+VIN = 0 V to 18 V, VDD = 18 V
+TA = –55°C
+±01
+µA
+TA = –40°C
+±01
+TA = 25°C
+±10–5
+±1
+TA = 85°C
+±1
+TA = 125°C
+±1
+
+--- PAGE 8 ---
+Drain-to-Source Voltage (V)
+Output Low (Sink) Current (mA)
+0
+5
+10
+15
+20
+25
+0
+2.5
+5
+7.5
+10
+12.5
+15
+17.5
+20
+D002
+Gate-to-Source Voltage = 5 V
+Gate-to-Source Voltage = 10 V
+Gate-to-Source Voltage = 15 V
+Drain-to-Source Voltage (V)
+Output High (Source) Current (mA)
+-25
+-20
+-15
+-10
+-5
+0
+-40
+-35
+-30
+-25
+-20
+-15
+-10
+-5
+0
+D003
+Gate-to-Source Voltage = -5 V
+Gate-to-Source Voltage = -10 V
+Gate-to-Source Voltage = -15 V
+Input Voltage (V)
+Output Voltage (V)
+Supply Current (mA)
+0
+2.5
+5
+7.5
+10
+12.5
+15
+17.5
+0
+0
+2.5
+2.5
+5
+5
+7.5
+7.5
+10
+10
+12.5
+12.5
+15
+15
+17.5
+17.5
+D035
+VDD = 5 V
+VDD = 10 V
+VDD = 15 V
+IO at 5 V
+IO at 10 V
+IO at 15 V
+Drain-to-Source Voltage (V)
+Output Low (Sink) Current (mA)
+0
+5
+10
+15
+20
+25
+0
+5
+10
+15
+20
+25
+30
+35
+40
+D001
+Gate-to-Source Voltage = 5 V
+Gate-to-Source Voltage = 10 V
+Gate-to-Source Voltage = 15 V
+Input Voltage (V)
+Output Voltage (V)
+0
+2.5
+5
+7.5
+10
+12.5
+15
+17.5
+20
+22.5
+25
+0
+2.5
+5
+7.5
+10
+12.5
+15
+17.5
+20
+D033
+5-V Min VDD
+5-V Max VDD
+10-V Min VDD
+10-V Max VDD
+15-V Min VDD
+15-V Max VDD
+VIN
+VO
+Input Voltage (V)
+Output Voltage (V)
+0
+2.5
+5
+7.5
+10
+12.5
+15
+17.5
+0
+2.5
+5
+7.5
+10
+12.5
+15
+17.5
+D034
+5 V at -55qC
+5 V at 125qC
+10 V at -55qC
+10 V at 125qC
+15 V at -55qC
+15 V at 125qC
+8
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+6.7
+Typical Characteristics
+Figure 1. Minimum and Maximum Voltage Transfer
+Characteristics
+Figure 2. Typical Voltage Transfer Characteristics as a
+Function of Temperature
+Figure 3. Typical Current and Voltage Transfer
+Characteristics
+Figure 4. Typical Output Low (Sink) Current Characteristics
+Figure 5. Minimum Output Low (Sink) Current
+Characteristics
+Figure 6. Typical Output High (Source) Current
+Characteristics
+
+--- PAGE 9 ---
+VDD
+p
+n
+VDD
+VSS
+1 (3, 5, 9, 11, 13)
+A
+2 (4, 6, 8, 10, 12)
+G
+G = A
+Supply Voltage (V)
+Propagation Delay Time (ns)
+0
+5
+10
+15
+20
+25
+0
+20
+40
+60
+80
+100
+120
+140
+D037
+CL = 15 pF
+CL = 50 pF
+Drain-to-Source Voltage (V)
+Output High (Source) Current (mA)
+-25
+-20
+-15
+-10
+-5
+0
+-20
+-15
+-10
+-5
+0
+D004
+Gate-to-Source Voltage = -5 V
+Gate-to-Source Voltage = -10 V
+Gate-to-Source Voltage = -15 V
+Load Capacitance (pF)
+Propagation Delay Time (ns)
+0
+20
+40
+60
+80
+100
+120
+140150
+0
+20
+40
+60
+80
+100
+120
+D036
+VDD = 5 V
+VDD = 10 V
+VDD = 15 V
+9
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Typical Characteristics (continued)
+Figure 7. Minimum Output High (Source) Current
+Characteristics
+Figure 8. Typical Propagation Delay Time vs Load
+Capacitance
+Figure 9. Typical Propagation Delay Time vs Supply Voltage
+7
+Parameter Measurement Information
+Figure 10. Schematic Diagram of One of Six Identical Inverters
+
+--- PAGE 10 ---
+INPUTS
+VDD
+VSS
+VDD
+VSS
+I
+INPUTS
+OUTPUTS
+VIH
+VIL
+VDD
+VSS
+DVM
++
+±
+INPUTS
+VDD
+VSS
+VDD
+VSS
+IDD
+10
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Figure 11. Quiescent Device Current Test Circuit
+Figure 12. Noise Immunity Test Circuit
+Figure 13. Input Leakage Current Test Circuit
+
+--- PAGE 11 ---
+CT
+1/3 CD4069
+RS
+RT
+1/6 CD4069
+Rf § 10 M
+OUT
+IN
+CS
+Rf
+CT
+1/6 CD4069
+XTAL
+RS
+1
+2
+3
+4 
+5
+6
+7
+14
+13
+12
+11
+10
+9
+8
+VDD
+CL = 50 pF
+10 
+OUT
+200 k
+Pulse Generator
+tr = tf = 20 ns
+IN
+50%
+tr
+Input
+Inverting
+Output
+10%
+90%
+VDD
+tTLH
+tTHL
+tPLH
+tPHL
+tf
+50%
+10%
+90%
+VDD
+11
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Figure 14. Dynamic Electrical Characteristics Test Circuit and Waveform
+Figure 15. Typical Crystal Oscillator Circuit
+Figure 16. High-Input Impedance Amplifier
+Figure 17. Typical RC Oscillator Circuit
+
+--- PAGE 12 ---
+1
+2
+3
+4 
+5
+6
+7
+14
+13
+12
+11
+10
+9
+8
+VDD
+500 F
+CL
+I
+0.1 F
+10 kHz
+100 kHz, 1 MHz
+CD4069UB
+1/3 CD4069
+Rf
+OUT
+IN
+S
+f
+DD
+P
+f
+Upper Switching Point :
+R
+R
+V
+V
+R
+2
+
+ 
+u
+f
+S
+DD
+N
+f
+f
+S
+Lower Switching Point :
+R
+R
+V
+V
+R
+2
+R
+R
+
+ 
+u
+!
+RS
+12
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Figure 18. Input Pulse Shaping Circuit
+Figure 19. Dynamic Power Dissipation Test Circuit
+
+--- PAGE 13 ---
+A
+1
+2
+VDD = Pin 14
+VSS = Pin 7
+F
+G = A
+B
+H = B
+C
+I = C
+L = F
+E
+K = E
+D
+J = D
+3
+4
+5
+6
+9
+8
+11
+10
+13
+12
+13
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+8
+Detailed Description
+8.1
+Overview
+The CD4069UB device has six inverter circuits. The recommended operating range is from 3 V to
+18 V. The CD4069UB-series types are supplied in 14-pin hermetic dual-in-line ceramic packages (F3A suffix),
+14-pin dual-in-line plastic packages (E suffix), 14-pin small-outline packages (M, MT, M96, and NSR suffixes),
+and 14-pin thin shrink small-outline packages (PW and PWR suffixes).
+8.2
+Functional Block Diagram
+8.3
+Feature Description
+CD4069UB has standardized symmetrical output characteristics and a wide operating voltage range from 3 V to
+18 V with quiescent current tested at 20 V. This has a medium operation speed of tPHL, tPLH = 30 ns (typical) at
+10 V. The operating temperature is from –55°C to 125°C. CB4069B meets all requirements of JEDEC tentative
+standard No. 13B, Standard Specifications for Description of B Series CMOS Devices.
+8.4
+Device Functional Modes
+Table 1 shows the functional modes for CD4069UB.
+Table 1. Function Table
+INPUT
+A, B, C, D, E, F
+OUTPUT
+G, H, I, J, K, L
+H
+L
+L
+H
+
+--- PAGE 14 ---
+C
+VCC
+Logic signal
+R
+LED
+Copyright © 2016,
+Texas Instruments Incorporated
+14
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+9
+Application and Implementation
+NOTE
+Information in the following applications sections is not part of the TI component
+specification, and TI does not warrant its accuracy or completeness. TI’s customers are
+responsible for determining suitability of components for their purposes. Customers should
+validate and test their design implementation to confirm system functionality.
+9.1
+Application Information
+The CD4069UB device has a low input current of 1 µA at 18 V over full package-temperature range and 100 nA
+at 18 V, 25°C. This device has a wide operating voltage range from 3 V to 18 V and used in high voltage
+applications.
+9.2
+Typical Application
+Figure 20. CD4069UB Application
+9.2.1
+Design Requirements
+The CD4069UB device is the industry's highest logic inverter operating at 18 V under recommended conditions.
+The lower drive capabilities makes it suitable for driving light loads like LED and greatly reduces chances of
+overshoots and undershoots.
+9.2.2
+Detailed Design Procedure
+The recommended input conditions for Figure 20 includes rise time and fall time specifications (see Δt/ΔV in
+Recommended Operating Conditions) and specified high and low levels (see VIH and VIL in Recommended
+Operating Conditions). Inputs are not overvoltage tolerant and must be below VCC level because of the presence
+of input clamp diodes to VCC.
+The recommended output condition for the CD4069UB application includes specific load currents. Load currents
+must be limited so as to not exceed the total power (continuous current through VCC or GND) for the device.
+These limits are located in the Absolute Maximum Ratings. Outputs must not be pulled above VCC.
+
+--- PAGE 15 ---
+Supply Voltage (V)
+Normalized Propagation Delay Time (ns)
+2
+4
+6
+8
+10
+12
+14
+16
+0
+1
+2
+3
+4
+5
+D039
+Load Capacitance (pF)
+Transition Time (ns)
+0
+20
+40
+60
+80
+100
+120
+140
+0
+50
+100
+150
+200
+250
+300
+D010
+Supply Voltage = 5 V
+Supply Voltage = 10 V
+Supply Voltage = 15 V
+Input Frequency (kHz)
+Power Dissipation Per Inverter(PW)
+10
+100
+1k
+10k
+100k
+10
+100
+1k
+10k
+100k
+D038
+VDD = 5 V (CL = 50 pF)
+VDD = 10 V (CL = 15 pF)
+VDD = 10 V (CL = 50 pF)
+VDD = 15 V (CL = 50 pF)
+15
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+Typical Application (continued)
+9.2.3
+Application Curves
+Figure 21. Typical Transition Time vs Load Capacitance
+Figure 22. Typical Dynamic Power Dissipation vs
+Frequency
+Figure 23. Variation of Normalized Propagation Delay Time (tPHL and tPLH) With Supply Voltage
+
+--- PAGE 16 ---
+VCC
+Unused Input
+Input
+Output
+Output
+Input
+Unused Input
+16
+CD4069UB
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+www.ti.com
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+10
+Power Supply Recommendations
+The power supply can be any voltage between the minimum and maximum supply voltage rating located in
+Recommended Operating Conditions.
+Each VCC pin must have a good bypass capacitor to prevent power disturbance. For devices with a single supply,
+TI recommends a 0.1-μF capacitor. If there are multiple VCC pins, then TI recommends a 0.01-μF or 0.022-μF
+capacitor for each power pin. It is acceptable to parallel multiple bypass capacitors to reject different frequencies
+of noise. 0.1-μF and 1-μF capacitors are commonly used in parallel. The bypass capacitor must be installed as
+close to the power pin as possible for best results.
+11
+Layout
+11.1
+Layout Guidelines
+When using multiple bit logic devices, inputs must never float.
+In many cases, digital logic device functions or parts of these functions are unused (for example, when only two
+inputs of a triple-input and gate are used, or only 3 of the 4 buffer gates are used). Such input pins must not be
+left unconnected because the undefined voltages at the outside connections result in undefined operational
+states. This rule must be observed under all circumstances specified in the next paragraph.
+All unused inputs of digital logic devices must be connected to a high or low bias to prevent them from floating.
+See the application note, Implications of Slow or Floating CMOS Inputs (SCBA004), for more information on the
+effects of floating inputs. The logic level must apply to any particular unused input depending on the function of
+the device. Generally, they are tied to GND or VCC (whichever is convenient).
+11.2
+Layout Example
+
+--- PAGE 17 ---
+17
+CD4069UB
+www.ti.com
+SCHS054E –NOVEMBER 1998–REVISED JANUARY 2019
+Product Folder Links: CD4069UB
+Submit Documentation Feedback
+Copyright © 1998–2019, Texas Instruments Incorporated
+12
+Device and Documentation Support
+12.1
+Device Support
+12.1.1
+Third-Party Products Disclaimer
+TI'S PUBLICATION OF INFORMATION REGARDING THIRD-PARTY PRODUCTS OR SERVICES DOES NOT
+CONSTITUTE AN ENDORSEMENT REGARDING THE SUITABILITY OF SUCH PRODUCTS OR SERVICES
+OR A WARRANTY, REPRESENTATION OR ENDORSEMENT OF SUCH PRODUCTS OR SERVICES, EITHER
+ALONE OR IN COMBINATION WITH ANY TI PRODUCT OR SERVICE.
+12.2
+Documentation Support
+12.2.1
+Related Documentation
+For related documentation see the following:
+•
+Implications of Slow or Floating CMOS Inputs, SCBA004
+12.3
+Community Resource
+The following links connect to TI community resources. Linked contents are provided "AS IS" by the respective
+contributors. They do not constitute TI specifications and do not necessarily reflect TI's views; see TI's Terms of
+Use.
+TI E2E™Online Community TI's Engineer-to-Engineer (E2E) Community. Created to foster collaboration
+among engineers. At e2e.ti.com, you can ask questions, share knowledge, explore ideas and help
+solve problems with fellow engineers.
+Design Support TI's Design Support Quickly find helpful E2E forums along with design support tools and
+contact information for technical support.
+12.4
+Trademarks
+E2E is a trademark of Texas Instruments.
+All other trademarks are the property of their respective owners.
+12.5
+Electrostatic Discharge Caution
+These devices have limited built-in ESD protection. The leads should be shorted together or the device placed in conductive foam
+during storage or handling to prevent electrostatic damage to the MOS gates.
+12.6
+Glossary
+SLYZ022 — TI Glossary.
+This glossary lists and explains terms, acronyms, and definitions.
+13
+Mechanical, Packaging, and Orderable Information
+The following pages include mechanical, packaging, and orderable information. This information is the most
+current data available for the designated devices. This data is subject to change without notice and revision of
+this document. For browser-based versions of this data sheet, refer to the left-hand navigation.
+
+--- PAGE 18 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+18-Sep-2026
+PACKAGING INFORMATION
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+CD4069UBE
+Active
+Production
+PDIP (N) | 14
+25 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-55 to 125
+CD4069UBE
+CD4069UBE.A
+Active
+Production
+PDIP (N) | 14
+25 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-55 to 125
+CD4069UBE
+CD4069UBEE4
+Active
+Production
+PDIP (N) | 14
+25 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-55 to 125
+CD4069UBE
+CD4069UBF
+Active
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+CD4069UBF
+CD4069UBF.A
+Active
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+CD4069UBF
+CD4069UBF3A
+NRND
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+CD4069UBF3A
+CD4069UBF3A.A
+NRND
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+CD4069UBF3A
+CD4069UBM
+Active
+Production
+SOIC (D) | 14
+50 | TUBE
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CD4069UBM
+CD4069UBM.A
+Active
+Production
+SOIC (D) | 14
+50 | TUBE
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CD4069UBM
+CD4069UBM96
+Active
+Production
+SOIC (D) | 14
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CD4069UBM
+CD4069UBM96.A
+Active
+Production
+SOIC (D) | 14
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CD4069UBM
+CD4069UBMT
+Obsolete
+Production
+SOIC (D) | 14
+-
+-
+Call TI
+Call TI
+-55 to 125
+CD4069UBM
+CD4069UBNSR
+Active
+Production
+SOP (NS) | 14
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CD4069UB
+CD4069UBNSR.A
+Active
+Production
+SOP (NS) | 14
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CD4069UB
+CD4069UBPW
+Obsolete
+Production
+TSSOP (PW) | 14
+-
+-
+Call TI
+Call TI
+-55 to 125
+CM069UB
+CD4069UBPWR
+Active
+Production
+TSSOP (PW) | 14
+2000 | LARGE T&R
+Yes
+NIPDAU | SN
+Level-1-260C-UNLIM
+-55 to 125
+CM069UB
+CD4069UBPWR.A
+Active
+Production
+TSSOP (PW) | 14
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CM069UB
+CD4069UBPWRG4.A
+Active
+Production
+TSSOP (PW) | 14
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+CM069UB
+JM38510/17401BCA
+NRND
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+JM38510/
+17401BCA
+JM38510/17401BCA.A
+NRND
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+JM38510/
+17401BCA
+M38510/17401BCA
+NRND
+Production
+CDIP (J) | 14
+25 | TUBE
+No
+SNPB
+N/A for Pkg Type
+-55 to 125
+JM38510/
+17401BCA
+ 
+(1) Status:  For more details on status, see our product life cycle.
+ 
+(2) Material type:  When designated, preproduction parts are prototypes/experimental devices, and are not yet approved or released for full production. Testing and final process, including without limitation quality assurance,
+reliability performance testing, and/or process qualification, may not yet be complete, and this item is subject to further changes or possible discontinuation. If available for ordering, purchases will be subject to an additional
+waiver at checkout, and are intended for early internal evaluation purposes only. These items are sold without warranties of any kind.
+ 
+Addendum-Page 1
+
+--- PAGE 19 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+18-Sep-2026
+(3) RoHS values:  Yes, No, RoHS Exempt. See the TI RoHS Statement for additional information and value definition.
+ 
+(4) Lead finish/Ball material:  Parts may have multiple material finish options. Finish options are separated by a vertical ruled line. Lead finish/Ball material values may wrap to two lines if the finish value exceeds the maximum
+column width.
+ 
+(5) MSL rating/Peak reflow:  The moisture sensitivity level ratings and peak solder (reflow) temperatures. In the event that a part has multiple moisture sensitivity ratings, only the lowest level per JEDEC standards is shown.
+Refer to the shipping label for the actual reflow temperature that will be used to mount the part to the printed circuit board.
+ 
+(6) Part marking:  There may be an additional marking, which relates to the logo, the lot trace code information, or the environmental category of the part.
+ 
+Multiple part markings will be inside parentheses. Only one part marking contained in parentheses and separated by a "~" will appear on a part. If a line is indented then it is a continuation of the previous line and the two
+combined represent the entire part marking for that device.
+ 
+Important Information and Disclaimer:The information provided on this page represents TI's knowledge and belief as of the date that it is provided. TI bases its knowledge and belief on information provided by third parties, and
+makes no representation or warranty as to the accuracy of such information. Efforts are underway to better integrate information from third parties. TI has taken and continues to take reasonable steps to provide representative
+and accurate information but may not have conducted destructive testing or chemical analysis on incoming materials and chemicals. TI and TI suppliers consider certain information to be proprietary, and thus CAS numbers
+and other limited information may not be available for release.
+ 
+In no event shall TI's liability arising out of such information exceed the total purchase price of the TI part(s) at issue in this document sold by TI to Customer on an annual basis.
+ 
+ OTHER QUALIFIED VERSIONS OF CD4069UB, CD4069UB-MIL :
+• Catalog : CD4069UB
+• Military : CD4069UB-MIL
+ NOTE: Qualified Version Definitions:
+• Catalog - TI's standard catalog product
+• Military - QML certified for Military and Defense Applications
+Addendum-Page 2
+
+--- PAGE 20 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+4-Oct-2026
+TAPE AND REEL INFORMATION
+Reel Width (W1)
+REEL DIMENSIONS
+A0
+B0
+K0
+W
+Dimension designed to accommodate the component length
+Dimension designed to accommodate the component thickness
+Overall width of the carrier tape
+Pitch between successive cavity centers
+Dimension designed to accommodate the component width
+TAPE DIMENSIONS
+K0
+ P1
+B0 W
+A0
+Cavity
+QUADRANT ASSIGNMENTS FOR PIN 1 ORIENTATION IN TAPE
+Pocket Quadrants
+Sprocket Holes
+Q1
+Q1
+Q2
+Q2
+Q3
+Q3
+Q4
+Q4
+User Direction of Feed
+P1
+Reel
+Diameter
+ 
+*All dimensions are nominal
+Device
+Package
+Type
+Package
+Drawing
+Pins
+SPQ
+Reel
+Diameter
+(mm)
+Reel
+Width
+W1 (mm)
+A0
+(mm)
+B0
+(mm)
+K0
+(mm)
+P1
+(mm)
+W
+(mm)
+Pin1
+Quadrant
+CD4069UBM96
+SOIC
+D
+14
+2500
+330.0
+16.4
+6.5
+9.0
+2.1
+8.0
+16.0
+Q1
+CD4069UBNSR
+SOP
+NS
+14
+2000
+330.0
+16.4
+8.1
+10.4
+2.5
+12.0
+16.0
+Q1
+CD4069UBPWR
+TSSOP
+PW
+14
+2000
+330.0
+12.4
+6.9
+5.6
+1.6
+8.0
+12.0
+Q1
+CD4069UBPWR
+TSSOP
+PW
+14
+2000
+330.0
+12.4
+6.9
+5.6
+1.6
+8.0
+12.0
+Q1
+Pack Materials-Page 1
+
+--- PAGE 21 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+4-Oct-2026
+TAPE AND REEL BOX DIMENSIONS
+Width (mm)
+W
+L
+H
+ 
+*All dimensions are nominal
+Device
+Package Type
+Package Drawing
+Pins
+SPQ
+Length (mm)
+Width (mm)
+Height (mm)
+CD4069UBM96
+SOIC
+D
+14
+2500
+353.0
+353.0
+32.0
+CD4069UBNSR
+SOP
+NS
+14
+2000
+353.0
+353.0
+32.0
+CD4069UBPWR
+TSSOP
+PW
+14
+2000
+353.0
+353.0
+32.0
+CD4069UBPWR
+TSSOP
+PW
+14
+2000
+356.0
+356.0
+35.0
+Pack Materials-Page 2
+
+--- PAGE 22 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+4-Oct-2026
+TUBE
+ 
+ 
+L - Tube length
+T - Tube  
+height
+W - Tube  
+width
+B - Alignment groove width
+ 
+ 
+*All dimensions are nominal
+Device
+Package Name
+Package Type
+Pins
+SPQ
+L (mm)
+W (mm)
+T (µm)
+B (mm)
+CD4069UBE
+N
+PDIP
+14
+25
+506
+13.97
+11230
+4.32
+CD4069UBE.A
+N
+PDIP
+14
+25
+506
+13.97
+11230
+4.32
+CD4069UBEE4
+N
+PDIP
+14
+25
+506
+13.97
+11230
+4.32
+CD4069UBM
+D
+SOIC
+14
+50
+506.6
+8
+3940
+4.32
+CD4069UBM.A
+D
+SOIC
+14
+50
+506.6
+8
+3940
+4.32
+Pack Materials-Page 3
+
+--- PAGE 23 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+ TYP
+6.2
+5.8
+1.75 MAX
+12X 1.27
+14X 0.51
+0.31
+2X
+7.62
+ TYP
+0.25
+0.13
+0 - 8
+0.25
+0.10
+0.25
+GAGE PLANE
+1.27
+0.40
+A
+NOTE 3
+8.75
+8.55
+B
+NOTE 4
+4.0
+3.8
+4220718/A   09/2016
+SOIC - 1.75 mm max height
+D0014A
+SMALL OUTLINE INTEGRATED CIRCUIT
+NOTES: 
+ 
+1. All linear dimensions are in millimeters. Dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed 0.15 mm, per side. 
+4. This dimension does not include interlead flash. Interlead flash shall not exceed 0.43 mm, per side.
+5. Reference JEDEC registration MS-012, variation AB.
+ 
+1
+14
+0.25
+C A B
+8
+7
+PIN 1 ID
+AREA
+SEATING PLANE
+0.1 C
+ SEE DETAIL A
+DETAIL A
+TYPICAL
+SCALE  1.800
+
+--- PAGE 24 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+(5.4)
+0.07 MAX
+ALL AROUND
+0.07 MIN
+ALL AROUND
+14X (1.55)
+14X (0.6)
+12X (1.27)
+(R0.05)
+TYP
+4220718/A   09/2016
+SOIC - 1.75 mm max height
+D0014A
+SMALL OUTLINE INTEGRATED CIRCUIT
+SYMM
+SYMM
+LAND PATTERN EXAMPLE
+SCALE:8X
+1
+7
+8
+14
+NOTES: (continued)
+ 
+6. Publication IPC-7351 may have alternate designs. 
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+METAL
+SOLDER MASK
+OPENING
+NON SOLDER MASK
+DEFINED
+SOLDER MASK DETAILS
+SOLDER MASK
+OPENING
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+DEFINED
+
+--- PAGE 25 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+(5.4)
+12X (1.27)
+14X (0.6)
+14X (1.55)
+4220718/A   09/2016
+SOIC - 1.75 mm max height
+D0014A
+SMALL OUTLINE INTEGRATED CIRCUIT
+NOTES: (continued)
+ 
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+9. Board assembly site may have different recommendations for stencil design.
+ 
+SYMM
+SYMM
+1
+7
+8
+14
+SOLDER PASTE EXAMPLE
+BASED ON 0.125 mm THICK STENCIL
+SCALE:8X
+
+--- PAGE 26 ---
+
+--- PAGE 27 ---
+
+--- PAGE 28 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+14X .008-.014
+       [0.2-0.36]
+TYP
+-15
+0
+AT GAGE PLANE
+-.314
+.308
+-7.97
+7.83
+[
+]
+14X 
+-.026
+.014
+-0.66
+0.36
+[
+]
+14X 
+-.065
+.045
+-1.65
+1.15
+[
+]
+.2 MAX TYP
+[5.08]
+.13 MIN TYP
+[3.3]
+ TYP
+-.060
+.015
+-1.52
+0.38
+[
+]
+4X .005 MIN
+[0.13]
+12X .100
+[2.54]
+.015
+ GAGE PLANE
+[0.38]
+A
+-.785
+.754
+-19.94
+19.15
+[
+]
+B
+-.283
+.245
+-7.19
+6.22
+[
+]
+CDIP - 5.08 mm max height
+J0014A
+CERAMIC DUAL IN LINE PACKAGE
+4214771/A   05/2017
+ NOTES: 
+ 
+1. All controlling linear dimensions are in inches. Dimensions in brackets are in millimeters. Any dimension in brackets or parenthesis are for
+    reference only. Dimensioning and tolerancing per ASME Y14.5M.
+2. This drawing is subject to change without notice. 
+3. This package is hermitically sealed with a ceramic lid using glass frit.
+4. Index point is provided on cap for terminal identification only and on press ceramic glass frit seal only.
+5. Falls within MIL-STD-1835 and GDIP1-T14.
+7
+8
+14
+1
+PIN 1 ID
+(OPTIONAL)
+SCALE  0.900
+SEATING PLANE
+.010 [0.25] C A B
+
+--- PAGE 29 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+ALL AROUND
+[0.05]
+ MAX
+.002
+.002 MAX
+[0.05]
+ALL AROUND
+SOLDER MASK
+OPENING
+METAL
+(.063)
+[1.6]
+(R.002 ) TYP
+[0.05]
+14X (
+.039)
+[1]
+(
+.063)
+[1.6]
+12X (.100 )
+[2.54]
+(.300 ) TYP
+[7.62]
+CDIP - 5.08 mm max height
+J0014A
+CERAMIC DUAL IN LINE PACKAGE
+4214771/A   05/2017
+LAND PATTERN EXAMPLE
+NON-SOLDER MASK DEFINED
+SCALE: 5X
+SEE DETAIL  A
+SEE DETAIL  B
+SYMM
+SYMM
+1
+7
+8
+14
+DETAIL  A
+SCALE: 15X
+SOLDER MASK
+OPENING
+METAL
+DETAIL  B
+13X, SCALE: 15X
+
+--- PAGE 30 ---
+
+--- PAGE 31 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+12X 0.65
+2X
+3.9
+14X 0.30
+0.17
+6.6
+6.2 TYP
+1.2 MAX
+0.15
+0.05
+0.25
+GAGE PLANE
+0 -8
+4X (0 -12 )
+B
+4.5
+4.3
+NOTE 4
+A
+5.1
+4.9
+NOTE 3
+0.75
+0.50
+(0.15) TYP
+TSSOP - 1.2 mm max height
+PW0014A
+SMALL OUTLINE PACKAGE
+4220202/B   12/2023
+1
+7
+8
+14
+0.1
+C A B
+PIN 1 INDEX AREA
+SEE DETAIL  A
+0.1 C
+NOTES: 
+ 
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed 0.15 mm per side. 
+4. This dimension does not include interlead flash. Interlead flash shall not exceed 0.25 mm per side.
+5. Reference JEDEC registration MO-153.
+ 
+SEATING
+PLANE
+A  20
+DETAIL A
+TYPICAL
+SCALE  2.500
+
+--- PAGE 32 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+0.05 MAX
+ALL AROUND
+0.05 MIN
+ALL AROUND
+14X (1.5)
+14X (0.45)
+12X (0.65)
+(5.8)
+(R0.05) TYP
+TSSOP - 1.2 mm max height
+PW0014A
+SMALL OUTLINE PACKAGE
+4220202/B   12/2023
+NOTES: (continued)
+ 
+6. Publication IPC-7351 may have alternate designs. 
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+LAND PATTERN EXAMPLE
+EXPOSED METAL SHOWN
+SCALE: 10X
+SYMM
+SYMM
+1
+7
+8
+14
+15.000
+METAL
+SOLDER MASK
+OPENING
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+OPENING
+EXPOSED METAL
+EXPOSED METAL
+SOLDER MASK DETAILS
+NON-SOLDER MASK
+DEFINED
+(PREFERRED)
+SOLDER MASK
+DEFINED
+
+--- PAGE 33 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+14X (1.5)
+14X (0.45)
+12X (0.65)
+(5.8)
+(R0.05) TYP
+TSSOP - 1.2 mm max height
+PW0014A
+SMALL OUTLINE PACKAGE
+4220202/B   12/2023
+NOTES: (continued)
+ 
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+9. Board assembly site may have different recommendations for stencil design.
+ 
+SOLDER PASTE EXAMPLE
+BASED ON 0.125 mm THICK STENCIL
+SCALE: 10X
+SYMM
+SYMM
+1
+7
+8
+14
+
+--- PAGE 34 ---
+IMPORTANT NOTICE AND DISCLAIMER
+TI PROVIDES TECHNICAL AND RELIABILITY DATA (INCLUDING DATASHEETS), DESIGN RESOURCES (INCLUDING REFERENCE 
+DESIGNS), APPLICATION OR OTHER DESIGN ADVICE, WEB TOOLS, SAFETY INFORMATION, AND OTHER RESOURCES “AS IS” 
+AND WITH ALL FAULTS, AND DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION ANY 
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD 
+PARTY INTELLECTUAL PROPERTY RIGHTS.
+These resources are intended for skilled developers designing with TI products. You are solely responsible for (1) selecting the appropriate 
+TI products for your application, (2) designing, validating and testing your application, and (3) ensuring your application meets applicable 
+standards, and any other safety, security, regulatory or other requirements.
+These resources are subject to change without notice. TI grants you permission to use these resources only for development of an 
+application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited. No license 
+is granted to any other TI intellectual property right or to any third party intellectual property right. TI disclaims responsibility for, and you fully 
+indemnify TI and its representatives against any claims, damages, costs, losses, and liabilities arising out of your use of these resources.
+TI’s products are provided subject to TI’s Terms of Sale, TI’s General Quality Guidelines, or other applicable terms available either on 
+ti.com or provided in conjunction with such TI products. TI’s provision of these resources does not expand or otherwise alter TI’s applicable 
+warranties or warranty disclaimers for TI products. Unless TI explicitly designates a product as custom or customer-specified, TI products 
+are standard, catalog, general purpose devices.
+TI objects to and rejects any additional or different terms you may propose.
+IMPORTANT NOTICE
+Copyright © 2026, Texas Instruments Incorporated
+Last updated 10/2025
