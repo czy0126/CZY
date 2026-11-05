@@ -62,9 +62,13 @@ def test_no_two_different_parts_share_a_pin_tip(parts, symbols):
 
 
 def test_the_comparator_and_the_open_drain_stage_are_present(parts):
-    assert by_ref(parts, "U1").value == "TLV3501AIDBV"
-    assert by_ref(parts, "U2").value == "LM4040DBZ-2.5"
+    assert by_ref(parts, "U1").value == "TLV3501AIDBVR"
+    assert by_ref(parts, "U2").value == "LM4040D25IDBZR"
     assert by_ref(parts, "Q1").value == "2N7002"
+    assert by_ref(parts, "D1").value == "BAT54ZFILM"
+    assert by_ref(parts, "D2").value == "BAT54ZFILM"
+    assert all(by_ref(parts, ref).footprint == "Diode_SMD:D_SOD-123"
+               for ref in ("D1", "D2"))
 
 
 def _pads_in(footprint: str) -> int:
