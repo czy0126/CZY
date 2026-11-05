@@ -161,6 +161,93 @@ def test_the_comparator_stage_is_typ_only_and_says_so():
     assert "5.11" in comparator["source"]
 
 
+def test_the_two_priced_comparators_assert_on_the_rising_edge():
+    """LM393 section 7.2.2.1: the output goes high impedance when IN+ exceeds
+    IN-, and sinks when it does not.  Both trip comparators put the
+    burden-derived node on IN+, so a trip *lifts* the output -- and section
+    7.2.2.4 makes the rise the edge the pull-up sets.  The budget prices these
+    two because the measured detection term ends at their inputs."""
+    c = budget.build()["stages"]["comparator"]
+    assert c["priced_channels"] == ["U3A", "U3B"]
+    assert c["fault_output_edges"]["U3A"] == "rising"
+    assert c["fault_output_edges"]["U3B"] == "rising"
+    assert c["priced_channels_all_assert_by_a_rise"] is True
+    assert c["the_cited_figure_covers_the_edge_the_priced_channels_use"] is True
+
+
+def test_the_rail_supervisors_assert_on_the_falling_edge_the_pull_up_cannot_slow():
+    """The other three channels put a healthy-rail divider on IN+, so a fault
+    *lowers* the output.  Section 7.2.2.4 gives that edge as R_CE * CL: it is
+    set by the output transistor, not by the resistor to 5 V, which is why the
+    board's 10 k pull-ups cannot be charged against those three."""
+    c = budget.build()["stages"]["comparator"]
+    assert {k: v for k, v in c["fault_output_edges"].items()
+            if k != "U5B"} == {"U3A": "rising", "U3B": "rising",
+                               "U4A": "falling", "U4B": "falling",
+                               "U5A": "falling"}
+    assert c["pull_up_independent_channels"] == ["U4A", "U4B", "U5A"]
+
+
+def test_the_board_pull_up_is_not_the_one_the_typical_was_measured_with():
+    """Section 5.11 measured 1.3 us through 5.1 k and 15 pF.  Every LM393
+    output here rides a 10 k, i.e. 1.96x, and the extra time constant that adds
+    to the priced (rising) edge is dR * CL = 73.5 ns -- 5.7 % of the cited
+    typical.  It is stated as a time constant, not as a delay: the interval to
+    the 1.4 V crossing is a fraction of it, so this over-states rather than
+    under-states, and it is exact only in the CL the datasheet assumed."""
+    c = budget.build()["stages"]["comparator"]
+    assert c["output_pull_up_ohm"] == pytest.approx(10e3)
+    assert c["cited_test_pull_up_ohm"] == pytest.approx(5.1e3)
+    assert c["pull_up_is_larger_than_the_cited_condition"] is True
+    assert c["pull_up_added_time_constant_us"] == pytest.approx(0.0735, abs=1e-6)
+    assert c["pull_up_added_time_constant_fraction_of_the_cited_typical"] == pytest.approx(
+        0.0565, abs=1e-3)
+    assert c["added_term_is_proportional_to_load_capacitance"] is True
+    assert c["load_capacitance_measured"] is False
+
+
+def test_a_changed_pull_up_moves_the_added_term(monkeypatch):
+    """The 73.5 ns has to be arithmetic on the part table, not a sentence
+    copied next to the number: doubling all six pull-ups has to double it."""
+    original = board.parts()
+    outputs = {"HARD_TRIP", "FAST_TRIP", "ANY_ON", "V5_OK", "V12P_OK", "V12S_OK"}
+
+    def doubled():
+        return [replace(part, value="20k")
+                if part.lib == "Device:R" and part.value == "10k"
+                and part.nets.get("1") == "V5"
+                and part.nets.get("2") in outputs
+                else part for part in original]
+
+    monkeypatch.setattr(board, "parts", doubled)
+    c = budget.build()["stages"]["comparator"]
+    assert c["output_pull_up_ohm"] == pytest.approx(20e3)
+    assert c["pull_up_added_time_constant_us"] == pytest.approx(
+        (20e3 - 5.1e3) * 15e-12 * 1e6, abs=1e-6)
+
+
+def test_a_rewired_comparator_input_is_not_silently_repriced(monkeypatch):
+    """The fault direction is declared per channel and the net is checked, the
+    same way the eight enable pull-downs are named by reference: swapping a
+    comparator's inputs has to break the tool, not quietly keep the old
+    edge."""
+    original = board.parts()
+
+    def swapped():
+        out = []
+        for part in original:
+            if part.ref == "U3" and part.unit == 1:
+                nets = dict(part.nets)
+                nets["2"], nets["3"] = nets["3"], nets["2"]
+                part = replace(part, nets=nets)
+            out.append(part)
+        return out
+
+    monkeypatch.setattr(board, "parts", swapped)
+    with pytest.raises(SystemExit):
+        budget.build()
+
+
 def test_the_latch_delay_is_the_set_to_output_falling_edge():
     """FF1 has SET = FLT and its ~Q is the permit term, so setting the flip-flop
     drives ~Q *down*: the applicable row is set-to-output tPHL, 200 typ /

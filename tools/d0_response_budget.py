@@ -110,6 +110,34 @@ CD4013B_SET_TO_OUTPUT_MAX_NS = 400.0
 CD4013B_SOURCE = ("references/datasheets/cd4013b.txt (SCHS023E, revised September "
                   "2016; section 6.6 Electrical Characteristics: Dynamic, VDD = 5 V)")
 
+# Section 7.2.2.4 splits the two output edges: the rise is R_PULLUP * C_L, the
+# fall is R_CE * C_L.  Only the rise can be moved by the resistor to 5 V, so
+# the 1.3 us above -- measured through a 5.1 k -- constrains this board's 10 k
+# pull-ups only on the channels whose fault makes the output rise.  The two
+# comparators the measured detection stops at are among them (their sense node
+# is IN+, so a trip lifts the output), which is why the mismatch is priced here
+# rather than written off.
+LM393_CITED_PULLUP_OHM = 5.1e3
+LM393_CITED_LOAD_F = 15e-12
+# Which way a fault moves each comparator's sense node.  The three threshold
+# comparators read the burden or the gate maximum, so a fault raises the node;
+# the three rail supervisors read a healthy-rail divider, so a fault lowers it.
+# Named explicitly and checked against the part table for the same reason the
+# eight enable pull-downs are: a swapped pin has to break the tool rather than
+# be silently re-priced on the old edge.
+COMPARATOR_FAULT_DIRECTION = {
+    ("U3", 1): ("OC", "rising"),
+    ("U3", 2): ("OC_FILT", "rising"),
+    ("U4", 1): ("V12P_SNS", "falling"),
+    ("U4", 2): ("V12S_SNS", "falling"),
+    ("U5", 1): ("V5_SNS", "falling"),
+    ("U5", 2): ("GATE_SENSE", "rising"),
+}
+# The measured detection term ends at these two inputs (design/v3/stage_f/
+# d0_trip_timing.json reads V(oc) and V(ocdf)), so their output edge is the one
+# the comparator stage pays for.  The other four sit outside this budget.
+PRICED_COMPARATORS = (("U3", 1), ("U3", 2))
+
 
 def _parallel(*resistances: float) -> float:
     return 1.0 / sum(1.0 / r for r in resistances if r)
@@ -316,8 +344,86 @@ def gate_discharge(parts: dict, gate_net: str) -> dict:
     }
 
 
+def comparator_pull_up(parts: list) -> dict:
+    """Which output edge the cited 1.3 us covers, and what this board changes.
+
+    Section 5.11 measured it through a 5.1 k pull-up with 15 pF; every LM393
+    output here rides a 10 k.  Section 7.2.2.4 is what makes that a priced
+    difference instead of a shrug: the rise is R_PULLUP * C_L and the fall is
+    R_CE * C_L, so only a channel that asserts by rising can be slowed by the
+    resistor.  Per section 7.2.2.1 the output sinks while IN+ is below IN-, so
+    with the sense node on IN+ a rising fault lifts the output.
+
+    The added term is a time constant, not a delay: the interval ends when the
+    output crosses 1.4 V, which is a fraction of the way through the rise, so
+    quoting the whole constant over-states rather than under-states.  It is
+    exact in the datasheet's C_L and linear in the real one, which is not
+    measured here.
+    """
+    channels = {}
+    for part in parts:
+        if part.lib == "Comparator:LM2903" and ("1" in part.nets or "7" in part.nets):
+            channels[(part.ref, part.unit)] = part
+
+    edges = {}
+    pull_ups = {}
+    for key, (sense_net, direction) in COMPARATOR_FAULT_DIRECTION.items():
+        part = channels.get(key)
+        if part is None:
+            raise SystemExit(f"{key[0]} unit {key[1]} is gone: the comparator "
+                             "topology changed and the edge table no longer applies")
+        letter = "A" if key[1] == 1 else "B"
+        name = f"{key[0]}{letter}"
+        out_pin = "1" if "1" in part.nets else "7"
+        in_plus = part.nets["3" if out_pin == "1" else "5"]
+        if in_plus != sense_net:
+            raise SystemExit(
+                f"{name}'s non-inverting input is {in_plus}, not the declared sense "
+                f"node {sense_net}: the outputs invert, so the fault edge is the "
+                "other one and the cited typical does not cover it")
+        # Sense on IN+ and the output high when IN+ is higher (7.2.2.1), so the
+        # fault's own direction is the output's.
+        edges[name] = direction
+        out_net = part.nets[out_pin]
+        resistors = [p for p in parts if p.lib == "Device:R"
+                     and set(p.nets.values()) == {"V5", out_net}]
+        if len(resistors) != 1:
+            raise SystemExit(f"{out_net} has {len(resistors)} pull-ups to V5, "
+                             "expected exactly one")
+        pull_ups[name] = board.resistance(resistors[0].value)
+
+    if len(set(pull_ups.values())) != 1:
+        raise SystemExit(f"the comparator pull-ups differ ({pull_ups}); price the "
+                         "channels this budget covers instead of one average")
+    r_pull = next(iter(pull_ups.values()))
+    added_tau_s = max(0.0, r_pull - LM393_CITED_PULLUP_OHM) * LM393_CITED_LOAD_F
+    priced = [f"{ref}{'A' if unit == 1 else 'B'}" for ref, unit in PRICED_COMPARATORS]
+    return {
+        "output_pull_up_ohm": r_pull,
+        "cited_test_pull_up_ohm": LM393_CITED_PULLUP_OHM,
+        "cited_test_load_capacitance_f": LM393_CITED_LOAD_F,
+        "pull_up_is_larger_than_the_cited_condition": r_pull > LM393_CITED_PULLUP_OHM,
+        "fault_output_edges": edges,
+        "priced_channels": priced,
+        "priced_channels_all_assert_by_a_rise": all(
+            edges[name] == "rising" for name in priced),
+        "pull_up_independent_channels": sorted(
+            name for name, edge in edges.items() if edge == "falling"),
+        "the_cited_figure_covers_the_edge_the_priced_channels_use": all(
+            edges[name] == "rising" for name in priced),
+        "pull_up_added_time_constant_s": added_tau_s,
+        "pull_up_added_time_constant_us": added_tau_s * 1e6,
+        "pull_up_added_time_constant_fraction_of_the_cited_typical": (
+            added_tau_s * 1e6 / LM393_RESPONSE_TYP_US),
+        "added_term_is_proportional_to_load_capacitance": True,
+        "added_term_is_a_time_constant_not_a_delay": True,
+        "load_capacitance_measured": False,
+    }
+
+
 def build() -> dict:
-    by_ref = {p.ref: p for p in board.parts()}
+    part_list = board.parts()
+    by_ref = {p.ref: p for p in part_list}
     measured = board.trip_timing_record()
     if measured is None:
         raise SystemExit("design/v3/stage_f/d0_trip_timing.json is missing: the "
@@ -381,6 +487,10 @@ def build() -> dict:
             "typical with no published min or max, so the 0.26 V ceiling is a "
             "nominal figure rather than a guaranteed bound",
             "the gate fall omits the driver's internal sink resistance, which adds time",
+            "the comparator's 1.3 us was measured through a 5.1 k pull-up and 15 pF; "
+            "this board uses 10 k, and the added time constant scales with the load "
+            "capacitance, which is not measured -- the priced 73.5 ns is what the "
+            "datasheet's own C_L produces, not what this layout produces",
             "no temperature or device spread is applied: every value is a nominal "
             "part-table arithmetic, not a worst-case-over-temperature figure",
         ],
@@ -410,6 +520,7 @@ def build() -> dict:
                 "reason_typ_only": ("section 5.11 has a TYP column and no MAX for the "
                                     "non-B part, so a slower comparator makes every "
                                     "total longer than this floor"),
+                **comparator_pull_up(part_list),
             },
             "latch": {
                 "us": latch_us,

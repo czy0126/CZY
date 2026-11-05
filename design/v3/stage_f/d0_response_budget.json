@@ -8,6 +8,7 @@
     "the UCC27524A's switching parameters are not tested in production (the datasheet says so itself), and its 13/23 ns are specified at VDD = 12 V, CLOAD = 1.8 nF and 125 C, not over the part-to-part spread",
     "the eight 200 k pull-ups that set the permit rail's ceiling are a typical with no published min or max, so the 0.26 V ceiling is a nominal figure rather than a guaranteed bound",
     "the gate fall omits the driver's internal sink resistance, which adds time",
+    "the comparator's 1.3 us was measured through a 5.1 k pull-up and 15 pF; this board uses 10 k, and the added time constant scales with the load capacitance, which is not measured -- the priced 73.5 ns is what the datasheet's own C_L produces, not what this layout produces",
     "no temperature or device spread is applied: every value is a nominal part-table arithmetic, not a worst-case-over-temperature figure"
   ],
   "stages": {
@@ -33,7 +34,36 @@
       "source": "references/datasheets/lm393.txt (SLCS005AH, revised April 2025; section 5.11 Switching Characteristics)",
       "conditions": "VCC = 5 V, TA = 25 C, RL 5.1 k to 5 V, CL = 15 pF; the cited value is the 100 mV step with 5 mV overdrive, and the interval ends when the output crosses 1.4 V",
       "overdrive_at_the_threshold_crossing": "unknown",
-      "reason_typ_only": "section 5.11 has a TYP column and no MAX for the non-B part, so a slower comparator makes every total longer than this floor"
+      "reason_typ_only": "section 5.11 has a TYP column and no MAX for the non-B part, so a slower comparator makes every total longer than this floor",
+      "output_pull_up_ohm": 10000.0,
+      "cited_test_pull_up_ohm": 5100.0,
+      "cited_test_load_capacitance_f": 1.5e-11,
+      "pull_up_is_larger_than_the_cited_condition": true,
+      "fault_output_edges": {
+        "U3A": "rising",
+        "U3B": "rising",
+        "U4A": "falling",
+        "U4B": "falling",
+        "U5A": "falling",
+        "U5B": "rising"
+      },
+      "priced_channels": [
+        "U3A",
+        "U3B"
+      ],
+      "priced_channels_all_assert_by_a_rise": true,
+      "pull_up_independent_channels": [
+        "U4A",
+        "U4B",
+        "U5A"
+      ],
+      "the_cited_figure_covers_the_edge_the_priced_channels_use": true,
+      "pull_up_added_time_constant_s": 7.35e-08,
+      "pull_up_added_time_constant_us": 0.07350000000000001,
+      "pull_up_added_time_constant_fraction_of_the_cited_typical": 0.056538461538461544,
+      "added_term_is_proportional_to_load_capacitance": true,
+      "added_term_is_a_time_constant_not_a_delay": true,
+      "load_capacitance_measured": false
     },
     "latch": {
       "us": 0.4,

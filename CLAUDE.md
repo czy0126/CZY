@@ -1427,6 +1427,13 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   同表 TTL 阶跃 0.3 µs，取较慢者）——**只有 TYP 列、没有 MAX**，过驱越小越慢，所以它只让总时间变长；
   CD4013B 取 §6.6 的 SET→~Q **`tPHL` 0.4 µs max**（200 typ，VDD = 5 V、25 °C、20 ns 沿）。
   **边缘按接线选**：FF1 的 SET = `FLT`、~Q 是许可项，所以是 SET→输出下降沿那一行，不是时钟行。
+  **1.3 µs 的测试条件是 5.1 kΩ / 15 pF，本板六个 LM393 输出全是 10 kΩ，但差值只落在上升沿上**：
+  §7.2.2.4 把两沿分开（`τ_R ≈ R_PULLUP·C_L`、`τ_F ≈ R_CE·C_L`），§7.2.2.1 定极性
+  （`IN+ > IN−` 输出高阻、否则灌电流）⇒ **U3A/U3B/U5B 的传感节点在 IN+，故障抬输出；U4A/U4B/U5A 是供电良好分压，故障拉低输出**。
+  预算付费的 U3A/U3B 正是上升沿，所以进账，量是**多一个时间常数** 4.9 kΩ × 15 pF = **73.5 ns（1.3 µs 的 5.7 %）**；
+  写成时间常数而非延迟（到 1.4 V 只走完上升的一部分，故偏高），且对真实 C_L **线性**、本板 C_L 未测。
+  **总时间不加这个数**——给只有 TYP 的数字加增量会显得比实测更准。三个供电监控器的下降沿与上拉无关，
+  别把 10 k 记到它们头上。锁存在 `test_d0_response_budget.py` 的 `test_the_two_priced_comparators_assert_on_the_rising_edge` 等五条。
   两处出处是 `references/datasheets/{lm393,cd4013b}.txt`。
   UCC27524A 的 EN→输出 **23 ns max / 13 ns typ** 来自仓库内的
   `references/datasheets/ucc27524a.txt`（SLUSBP4C，D 版列；DGN 版是 17/27 ns，别混），
