@@ -184,8 +184,10 @@ def build() -> dict:
             "carried-over assumption, not a cited limit" % board.LM393_COMMON_MODE_LIMIT_V,
             "ten-step bring-up sweep plus all-three-rails startup/collapse records; a "
             "sum or a maximum cannot show which channel is open",
-            "full analog propagation-delay and CT filtering/phase tolerance budget "
-            "with worst-case 48/50-V and 120-A faults",
+            "the response budget is a floor, not a worst case: tools/d0_response_budget.py "
+            "settles the permit rail, the UCC27282 TDIS and the gate fall, but the LM393, "
+            "CD4013 and UCC27524A stages have no vendored datasheet and the 48/50-V 120-A "
+            "fault cases are not swept",
             "TL431 reference stability with C7 and min/max shunt current",
             "power-on reset/ACK debounce and rail sequencing on actual hardware",
             "real connected VGS probe records for all ten gates; ERC is not that evidence",

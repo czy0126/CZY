@@ -1,0 +1,102 @@
+{
+  "kind": "D0_RESPONSE_TIME_BUDGET",
+  "status": "RESPONSE_BUDGET_INCOMPLETE",
+  "is_worst_case": false,
+  "not_worst_case_because": [
+    "the comparator stage is unknown: no LM393 datasheet is vendored, so its response time is neither cited nor guessed",
+    "the latch stage is unknown: no CD4013 datasheet is vendored",
+    "the UCC27524A disable time is unknown: its datasheet is not vendored, and the EN pin capacitance behind PERMIT_RAIL is unpublished, so the rail fall time above is a floor that extra pin capacitance only lengthens",
+    "the gate fall omits the driver's internal sink resistance, which adds time",
+    "no temperature or device spread is applied: every value is a nominal part-table arithmetic, not a worst-case-over-temperature figure"
+  ],
+  "stages": {
+    "detection": {
+      "hard_us": 40.0966648764153,
+      "fast_us": 10.2143373297001,
+      "source": "measured",
+      "measured_by": "design/v3/stage_f/d0_trip_timing.json",
+      "contains_the_rc_poles": true,
+      "contains": [
+        "burden",
+        "oc_stage_1",
+        "oc_stage_2",
+        "fast_filter"
+      ],
+      "note": "the deck runs the real RC network, so the pole constants are already inside these two numbers; adding them again would double-count 47 us and 75 us"
+    },
+    "comparator": {
+      "us": null,
+      "reason": "no LM393 (LM2903) datasheet is vendored; a response time quoted from memory would be a fabrication"
+    },
+    "latch": {
+      "us": null,
+      "reason": "no CD4013 datasheet is vendored; the latch is unmodelled"
+    },
+    "permit_release": {
+      "enable_rail_v": 5.0,
+      "rail_source_net": "V5",
+      "discharge_ohm": 550.6220858033225,
+      "specified_capacitance_f": 1e-09,
+      "tau_us": 0.5506220858033226,
+      "vd_is_max_v": 1.21,
+      "vd_is_min_v": 0.7,
+      "fastest_us": 0.7812322803111156,
+      "guaranteed_us": 1.0825851619007374,
+      "fastest_uses_vd_is_max": true,
+      "guaranteed_uses_vd_is_min": true,
+      "sr_pulldown_count": 8,
+      "sr_pulldowns_carry_most_of_the_discharge": true,
+      "sr_pulldown_conductance_share": 0.9372290822184213,
+      "release_without_sr_pulldowns_us": 12.445768007240794,
+      "filter_to_tdis_ratio": 0.5208215202074103,
+      "pin_capacitance_unknown_so_this_is_a_floor": true,
+      "sr_pin_capacitance_known": false,
+      "sr_driver_release_us": null,
+      "sr_driver_release_reason": "the UCC27524A's EN pin capacitance and thresholds are not in the repository (no vendored datasheet); PERMIT_RAIL reaches the eight EN pins directly, so that branch is only bounded by the rail fall above"
+    },
+    "driver_disable": {
+      "ucc27282_tdis_us": 1.5,
+      "ucc27282_ten_us": 18.0,
+      "ucc27282_source": "references/datasheets/ucc27282.txt (SNVSAQ5B, ENABLE table)",
+      "ucc27524a_us": null,
+      "ucc27524a_reason": "the UCC27524A datasheet is not vendored; the eight SR drivers' disable time is unknown"
+    },
+    "gate_discharge": {
+      "sr": {
+        "gate_net": "GA1",
+        "gate_load_nf": 6.7,
+        "gate_resistor_ohm": 2.2,
+        "pulldown_ohm": 7382.349707608461,
+        "gate_high_v": 12.0,
+        "to_vgs_th_min_v": 1.3,
+        "with_driver_ns": 32.76027475962431,
+        "with_driver_ns_is_a_floor": true,
+        "with_driver_omits": "the driver's internal sink resistance: the vendored UCC27282 text names RHOL/RLOL but publishes no value",
+        "pulldown_only_us": 109.93082036040244,
+        "pulldown_only_omits": "nothing but the detector branch, which is a DC path to ground as well; the diode drop only shortens the exponent's effective start"
+      },
+      "primary": {
+        "gate_net": "GH1",
+        "gate_load_nf": 4.0,
+        "gate_resistor_ohm": 2.2,
+        "pulldown_ohm": 7382.349707608461,
+        "gate_high_v": 12.0,
+        "to_vgs_th_min_v": 1.3,
+        "with_driver_ns": 19.55837299082048,
+        "with_driver_ns_is_a_floor": true,
+        "with_driver_omits": "the driver's internal sink resistance: the vendored UCC27282 text names RHOL/RLOL but publishes no value",
+        "pulldown_only_us": 65.63034051367309,
+        "pulldown_only_omits": "nothing but the detector branch, which is a DC path to ground as well; the diode drop only shortens the exponent's effective start"
+      }
+    }
+  },
+  "totals": {
+    "hard_channel_floor_us": 42.410657431486044,
+    "fast_channel_floor_us": 12.52832988477084,
+    "shared_after_detection_us": 2.3139925550707403,
+    "detection_advantage_us": 29.882327546715203
+  },
+  "hardware_protection_approved": false,
+  "power_stage_fabrication_approved": false,
+  "requires_bench_measurement": true
+}
