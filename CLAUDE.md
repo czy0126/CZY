@@ -807,6 +807,47 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   （U2.6=EN 叫 `RUN`，HI/LI 叫 `GD1`/`GD2`，`12V_P` 叫 `VCC12`），
   `test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses` 锁住这一点。
 
+### 装配排除 ECO（R8，`hardware/dcx_main/gen/eco_r8_bom_pcb_inhibit.js`）
+
+第一份**可执行的**原生 ECO（不是计划文件）：把 EN 上拉 R8 的 `addIntoBom` / `addIntoPcb`
+置 false。实跑记录在 `hardware/dcx_main/gen/r8_eco_run_2026-11-06.json`，
+`tools/test_r8_eco_run_record.py` 八条锁住它（含"原生文件 sha 前后相同"与"交付文件里只有一条排除"）。
+
+- **invoke 体共享 render 的全局作用域**：体里 `let info` 会留下来，同一 session 的下一次
+  invoke 再声明就 `SYNTAX_ERROR: Identifier 'info' has already been declared`
+  （第一次撞在 `tools/lceda_place_main_board.py` 的 `NETLIST_READY` 上）。而且**体的 `return`
+  是整次 invoke 的返回值**，所以把两段脚本拼在一起时，前一段的 `return { injected }`
+  会让后一段根本不执行（第二段静默不跑，看起来像"导出没结果"）。规矩：**每一段脚本各包一层
+  `return await (async () => { … })();`**，操作者开关用 `globalThis.CZY_*` 读，不用新声明。
+- **导出需要注入后"落定"一下**：五只磁件封装在内存里注入完**立刻**调
+  `getNetlistFile()` 返回 undefined（实测两次，报的是 `NO FILE`）；等 **2.5 s** 再调就给出
+  83 个器件的网表。这一步的失败长得像"封装没注入"，其实注入列表是齐的（`injected` 五项）。
+- **守卫与保存互斥，所以分两相**：导出要五只空白磁件封装**在内存里**注入；注入之后文档
+  不能再序列化，`save()` 返回 false。于是
+  **phase 1 注入 + 校验引脚 + 绝不保存**（`CZY_R8_VERIFY_ONLY=true`，返回
+  `PIN_MAP_VERIFIED_NO_SAVE` 与 attestation），
+  **phase 2 干净 session + 凭 attestation 应用**（`CZY_APPLY_R8_DNP=true` +
+  `CZY_R8_PIN_MAP_VERIFIED=<attestation>`）。
+  **相位必须是声明的旗，不能从"导出成功"反推**：注入过的 session 在 CT/T1–T4 上同样能看到
+  封装 uuid，等厂家端子图到位、封装是真的那天，"导出成功 ⇒ 这一相被注入过"就整个反了。
+- **attestation 是 FNV-1a 32 位指纹 + 器件数**（`fnv1a32:69b8252c:n83`），绑住位号集合；
+  改任一 `parts`/`inventory_fingerprint`/`r8_designator` 都会被拒，clean session 无法自证引脚
+  （`pins_reverifiable_here: false`）。
+- **导出会把被排除的件重新编号**：R8 在网表里出现为 **R6**，引脚原样（1=VCC12、2=RUN），
+  `Add into BOM=no` / `Convert to PCB=no`，R7 不动。**rename 不是第二个缺陷**，别去"修"它；
+  对回原件的键是**导出的 uid**（`gge67`），不是位号。
+- **引脚只能从导出读，形状是 `components[*].pinInfoMap[pin].net`**，属性在
+  `components[*].props`（`Designator`/`Add into BOM`/`Convert to PCB`）；顶层**没有** `nets` 表。
+- **`save()` 约 14 ms 返回，文件约 20 s 后才变**：phase 2 的副本 2 355 200 → 2 363 392 字节
+  （+8192），sha 换成 `e6732ca9…`；原生文件 2 355 200 / `11b444eb…` 前后一致（全部改动落在副本）。
+  重开副本再跑得到 `ALREADY_DNP`，原语 id `c36641dcb5f791fe` 跨重开稳定。
+- **冷启动楔子会复发**：`destroy` 全部 session、睡 8 s、开副本、再睡 15 s，仍可能撞上
+  `REQUEST_TIMEOUT … 59750ms`（同一段体在别的 session 4–7 s 就返回）。只读的导出**在同一
+  session 里重试**是有效的（第 1 次超时、第 2–3 次成功）；写相位不要靠重试，靠"改没改"的读回。
+- **按路径打开时用文件主干做身份**：保存过的副本连开两次在本轮给出**同一个** `session_uuid`，
+  而两份不同字节的副本给了不同的 —— 所以 uuid 随内容而变、不能当稳定身份；
+  闸门仍是"文件主干 `dcx_main_board`" **或** 存储的 `14837d10…`，`identified_by` 记下来源。
+
 ### 原生主板的取值 ECO（`tools/native_value_eco.py`）
 
 `hardware/dcx_main/placeholder_eco.json` 把 61 个占位按"主板能对它做什么"分类，

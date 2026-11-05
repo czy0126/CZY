@@ -1,0 +1,179 @@
+{
+ "generated": "2026-11-06",
+ "subject": "R8 native assembly exclusion (BOM + PCB) -- first executable native ECO",
+ "toolchain": {
+  "easyeda_pro": "4.1.60.198f38ab",
+  "driver": "D:/workshop/_eco_flow.py (throwaway; not committed)",
+  "eco": "hardware/dcx_main/gen/eco_r8_bom_pcb_inhibit.js",
+  "invoke_budget_ms": 60000
+ },
+ "real_project": {
+  "path": "hardware/dcx_main/dcx_main_board.eprj2",
+  "before": {
+   "size": 2355200,
+   "sha256": "11b444eb8b8945752a6dc85cf412cfe7ba3940d75431b6dc0a19c18d79a1726e"
+  },
+  "after": {
+   "size": 2355200,
+   "sha256": "11b444eb8b8945752a6dc85cf412cfe7ba3940d75431b6dc0a19c18d79a1726e"
+  },
+  "unchanged": true,
+  "note": "All mutation happened on copies. The native file is byte-identical because the run was not authorised to write it."
+ },
+ "phase_1_verify": {
+  "contract": "inject the five blank magnetic footprints, verify the pin map, never save",
+  "session": {
+   "name": "dcx_main_board",
+   "session_uuid": "4c0d08f5e75554caf570f0affeb6184d9e18661819623e8887d6ed6e1b37ede4",
+   "stored_uuid": "14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46",
+   "identified_by": "path_name"
+  },
+  "copy_before": {
+   "size": 2355200,
+   "sha256": "11b444eb8b8945752a6dc85cf412cfe7ba3940d75431b6dc0a19c18d79a1726e"
+  },
+  "copy_after": {
+   "size": 2355200,
+   "sha256": "11b444eb8b8945752a6dc85cf412cfe7ba3940d75431b6dc0a19c18d79a1726e"
+  },
+  "copy_unchanged": true,
+  "invoke_ms": 6995,
+  "status": "PIN_MAP_VERIFIED_NO_SAVE",
+  "applied": false,
+  "inventory": {
+   "parts": 83,
+   "fingerprint": "fnv1a32:69b8252c:n83"
+  },
+  "netlist_components": 83,
+  "pin_map": {
+   "pullup": {
+    "designator": "R8",
+    "pads": {
+     "1": "VCC12",
+     "2": "RUN"
+    }
+   },
+   "R7": {
+    "1": "RUN",
+    "2": "PGND"
+   },
+   "U2.6": "RUN"
+  },
+  "expected_pads": {
+   "1": "VCC12",
+   "2": "RUN"
+  },
+  "attestation": {
+   "parts": 83,
+   "inventory_fingerprint": "fnv1a32:69b8252c:n83",
+   "r8_designator": "R8",
+   "pins": {
+    "pullup": {
+     "designator": "R8",
+     "pads": {
+      "1": "VCC12",
+      "2": "RUN"
+     }
+    },
+    "R7": {
+     "1": "RUN",
+     "2": "PGND"
+    },
+    "U2.6": "RUN"
+   }
+  },
+  "release": "NOT_FOR_FAB"
+ },
+ "phase_2_apply": {
+  "contract": "clean session, no injection, gated on the phase-1 attestation",
+  "session": {
+   "name": "dcx_main_board",
+   "session_uuid": "5f805a4a7c1d48c481da5d1cfd8e1b2957555d04dd938bef5fbf53dd84f93fee",
+   "stored_uuid": "14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46",
+   "identified_by": "path_name"
+  },
+  "copy_before": {
+   "size": 2355200,
+   "sha256": "11b444eb8b8945752a6dc85cf412cfe7ba3940d75431b6dc0a19c18d79a1726e"
+  },
+  "copy_after": {
+   "size": 2363392,
+   "sha256": "e6732ca9491662fe14003a850f0a9ada81fb1463edbbc18821189a8ff4920634",
+   "mtime": 1793900437.0073338
+  },
+  "invoke_ms": 4161,
+  "primitive_id": "c36641dcb5f791fe",
+  "before": {
+   "addIntoBom": true,
+   "addIntoPcb": true
+  },
+  "after": {
+   "addIntoBom": false,
+   "addIntoPcb": false
+  },
+  "status": "R8_ASSEMBLY_EXCLUSION_SAVED_NOT_VERIFIED",
+  "applied": true,
+  "attestation_fingerprint": "fnv1a32:69b8252c:n83",
+  "pins_verified_in_a_different_session": true,
+  "pins_reverifiable_here": false,
+  "size_growth_bytes": 8192,
+  "release": "NOT_FOR_FAB"
+ },
+ "phase_3_reopen": {
+  "contract": "reopen the saved copy and rerun: the edit must survive and be idempotent",
+  "status": "ALREADY_DNP",
+  "applied": false,
+  "primitive_id": "c36641dcb5f791fe",
+  "primitive_id_stable": true,
+  "before": {
+   "addIntoBom": false,
+   "addIntoPcb": false
+  },
+  "blocking_parts": [
+   "CT",
+   "T1",
+   "T2",
+   "T3",
+   "T4"
+  ]
+ },
+ "readback_export": {
+  "contract": "export from the saved copy itself -- the delivered file, not the session that wrote it -- and read the exclusion back out",
+  "copy": {
+   "size": 2363392,
+   "sha256": "e6732ca9491662fe14003a850f0a9ada81fb1463edbbc18821189a8ff4920634"
+  },
+  "components": 83,
+  "excluded_count": 1,
+  "excluded_row": {
+   "uid": "gge67",
+   "designator": "R6",
+   "pads": {
+    "1": "VCC12",
+    "2": "RUN"
+   },
+   "bom": "no",
+   "pcb": "no"
+  },
+  "renumbered_from": "R8",
+  "renumbered_to": "R6",
+  "pins_unchanged_by_renumbering": true,
+  "neighbour_untouched": {
+   "uid": "gge66",
+   "designator": "R7",
+   "pads": {
+    "1": "RUN",
+    "2": "PGND"
+   },
+   "bom": "yes",
+   "pcb": "yes"
+  },
+  "attempts": 1
+ },
+ "not_verified": [
+  "The native file hardware/dcx_main/dcx_main_board.eprj2 was NOT written: this run required the operator's CZY_APPLY_R8_DNP authorisation plus a GUI BOM/PCB export of the real file.",
+  "R8 keeps its schematic net; only the assembly flags changed. The netlist still carries the part (designator R6, pins VCC12/RUN) with Add into BOM=no / Convert to PCB=no.",
+  "The other 12 NATIVE_DEVICE_CHANGE rows (C5, Cin, Cout, Cr, D_BT, Lr, CT, R3, T1-T4) need a GUI device/footprint change; this ECO does not reach them.",
+  "No fabrication approval: release stays NOT_FOR_FAB."
+ ]
+}

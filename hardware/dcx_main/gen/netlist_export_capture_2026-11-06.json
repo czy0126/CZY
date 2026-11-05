@@ -1,0 +1,142 @@
+{
+ "provenance": {
+  "source": ".probe_live_netlist.json (live eda.sch_ManufactureData.getNetlistFile(...) capture, session D:/workshop/_eco_probe3.eprj2)",
+  "captured": "2026-11-06",
+  "captured_chars": 252408,
+  "captured_components": 83,
+  "captured_top_level_keys": [
+   "version",
+   "projectId",
+   "components",
+   "designRule",
+   "differentialPair",
+   "netClass",
+   "equalLengthNetGroup",
+   "differentialPairGroups"
+  ],
+  "trimmed_to": [
+   "gge67",
+   "gge66",
+   "gge62"
+  ],
+  "trimmed_note": "Only the three components this ECO reads are kept, and only the props/pin fields it reads. Every value below is copied from the capture; nothing was retyped. The Chinese LCSC/manufacturer strings in the full capture are U+FFFD-mangled by the CLI text channel and are the reason they are dropped here."
+ },
+ "version": "2.0.0",
+ "projectId": "f7433cc355c5f70b249844e3f3d9ad03d4de720eade3465d75c5a7b49ed79829",
+ "components": {
+  "gge67": {
+   "props": {
+    "Designator": "R8",
+    "Add into BOM": "yes",
+    "Convert to PCB": "yes",
+    "Footprint": "54d0eff80ecd1bb3",
+    "Symbol": "da6d50e6f110b377",
+    "Device": "2f9826c5108e64ae",
+    "Unique ID": "gge67"
+   },
+   "pinInfoMap": {
+    "1": {
+     "name": "1",
+     "number": "1",
+     "net": "VCC12"
+    },
+    "2": {
+     "name": "2",
+     "number": "2",
+     "net": "RUN"
+    }
+   }
+  },
+  "gge66": {
+   "props": {
+    "Designator": "R7",
+    "Add into BOM": "yes",
+    "Convert to PCB": "yes",
+    "Footprint": "54d0eff80ecd1bb3",
+    "Symbol": "da6d50e6f110b377",
+    "Device": "2f9826c5108e64ae",
+    "Unique ID": "gge66"
+   },
+   "pinInfoMap": {
+    "1": {
+     "name": "1",
+     "number": "1",
+     "net": "RUN"
+    },
+    "2": {
+     "name": "2",
+     "number": "2",
+     "net": "PGND"
+    }
+   }
+  },
+  "gge62": {
+   "props": {
+    "Designator": "U2",
+    "Add into BOM": "yes",
+    "Convert to PCB": "yes",
+    "Footprint": "0ee1698a7ecac368",
+    "Symbol": "963633608cb2db21",
+    "Device": "1bafe5d50410c009",
+    "Unique ID": "gge62"
+   },
+   "pinInfoMap": {
+    "1": {
+     "name": "VDD",
+     "number": "1",
+     "net": "VCC12"
+    },
+    "2": {
+     "name": "NC",
+     "number": "2",
+     "net": ""
+    },
+    "3": {
+     "name": "HB",
+     "number": "3",
+     "net": "HB"
+    },
+    "4": {
+     "name": "HO",
+     "number": "4",
+     "net": "GH_DRV"
+    },
+    "5": {
+     "name": "HS",
+     "number": "5",
+     "net": "SW"
+    },
+    "6": {
+     "name": "EN",
+     "number": "6",
+     "net": "RUN"
+    },
+    "7": {
+     "name": "HI",
+     "number": "7",
+     "net": "GD1"
+    },
+    "8": {
+     "name": "LI",
+     "number": "8",
+     "net": "GD2"
+    },
+    "9": {
+     "name": "VSS",
+     "number": "9",
+     "net": "PGND"
+    },
+    "10": {
+     "name": "LO",
+     "number": "10",
+     "net": "GL_DRV"
+    },
+    "11": {
+     "name": "EP",
+     "number": "11",
+     "net": "PGND"
+    }
+   }
+  }
+ }
+}
