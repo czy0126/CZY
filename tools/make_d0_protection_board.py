@@ -549,6 +549,7 @@ def bench_input_parts() -> list[Part]:
 def logic_parts() -> list[Part]:
     """The gate network, one Part per instantiated unit; ``hardware_step`` mirrors it."""
     dip = "Package_DIP:DIP-14_W7.62mm"
+    so14 = "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm"  # HEF4093BT, Nexperia SO14 SOT108-1
     return [
         # U6 -- 4081 #1
         Part("U6", "4xxx:4081", "CD4081BE", dip, 40, 250,
@@ -636,18 +637,18 @@ def logic_parts() -> list[Part]:
                   "RESET=any fault or lost READY, clock and D tied off"),
         Part("U12", "4xxx:4013", "CD4013BE", dip, 340, 250, {"7": "PGND", "14": "V5"}, unit=3),
         # U13 -- 4093 Schmitt
-        Part("U13", "4xxx:HEF4093B", "HEF4093BT", dip, 390, 250,
+        Part("U13", "4xxx:HEF4093B", "HEF4093BT", so14, 390, 250,
              {"1": "ACK_RC", "2": "ACK_RC", "3": "ACK_DLY_N"}, unit=1,
              note="Schmitt on the RC node: the delayed copy for edge detection"),
-        Part("U13", "4xxx:HEF4093B", "HEF4093BT", dip, 390, 250,
+        Part("U13", "4xxx:HEF4093B", "HEF4093BT", so14, 390, 250,
              {"4": NC, "5": "PGND", "6": "PGND"}, unit=2),
-        Part("U13", "4xxx:HEF4093B", "HEF4093BT", dip, 390, 250,
+        Part("U13", "4xxx:HEF4093B", "HEF4093BT", so14, 390, 250,
              {"8": "POR_RC", "9": "POR_RC", "10": "POR"}, unit=3,
              note="power-on reset: holds FLT until V5 has been up ~8 ms"),
-        Part("U13", "4xxx:HEF4093B", "HEF4093BT", dip, 390, 250,
+        Part("U13", "4xxx:HEF4093B", "HEF4093BT", so14, 390, 250,
              {"11": "ACK_N", "12": "ACK_RAW", "13": "ACK_RAW"}, unit=4,
              note="Schmitt inverter: ACK_N = NOT(ACK_RAW), the token clock"),
-        Part("U13", "4xxx:HEF4093B", "HEF4093BT", dip, 390, 250, {"7": "PGND", "14": "V5"}, unit=5),
+        Part("U13", "4xxx:HEF4093B", "HEF4093BT", so14, 390, 250, {"7": "PGND", "14": "V5"}, unit=5),
     ]
 
 
