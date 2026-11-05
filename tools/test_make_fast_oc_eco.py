@@ -113,7 +113,7 @@ def test_the_push_pull_output_reaches_fast_trip_only_through_the_nmos(parts, rep
 
 def test_the_input_protection_is_two_diodes_and_a_series_divider(parts):
     assert by_ref(parts, "D1").nets == {"1": "INP", "2": "PGND"}
-    assert by_ref(parts, "D2").nets == {"1": "V5", "2": "INP"}
+    assert by_ref(parts, "D2").nets == {"1": "V5I", "2": "INP"}
     assert by_ref(parts, "R2").nets == {"1": "OCD", "2": "INP"}
 
 
@@ -133,8 +133,8 @@ def test_every_mpn_in_the_bom_is_traced_to_a_datasheet_in_the_repository(parts):
         assert part.mpn in path.read_text(encoding="utf-8", errors="replace"), part.ref
 
 
-def test_the_two_input_diodes_name_the_sod_123_part_not_the_short_name(parts):
-    for ref in ("D1", "D2"):
+def test_the_input_diodes_name_the_sod_123_part_not_the_short_name(parts):
+    for ref in ("D1", "D2", "D3"):
         part = by_ref(parts, ref)
         assert part.mpn == "BAT54W-E3-08"
         assert part.mpn_source == "references/datasheets/bat54w.txt"
@@ -187,12 +187,87 @@ def test_q1_is_off_when_the_comparator_has_no_supply(parts):
     assert by_ref(parts, "R6").nets == {"1": "Q1G", "2": "PGND"}
 
 
+# ------------------------------------------------------- rail isolation
+def test_the_only_pull_up_on_the_output_is_referenced_to_the_connector(parts, report):
+    """The healthy level must not depend on a rail that D2 can backfeed.
+
+    With the pull-up on V5I, an open J1.1 left R7 fed by whatever the OCD
+    divider could push through D2 -- an unspecified band below the
+    comparator's 2.7 V minimum.  R7's top is now the connector net and Q1 can
+    only pull down, so a lost J1.1 holds FAST_EXT_N low by construction.
+    """
+    assert report["net_map"]["FAST_EXT_N"] == ["J1.4", "Q1.3", "R7.2", "TP5.1"]
+    assert by_ref(parts, "R7").nets == {"1": "V5", "2": "FAST_EXT_N"}
+    assert by_ref(parts, "Q1").nets["3"] == "FAST_EXT_N"
+    v5, v5i = set(report["net_map"]["V5"]), set(report["net_map"]["V5I"])
+    # J1.1 is the only external source, and R7 is the only load on it.
+    assert "J1.1" in v5
+    assert {r for r in v5 if r.endswith(".1")} >= {"J1.1", "R7.1"}
+    assert "R7.1" not in v5i, "the pull-up must not sit on the backfeedable rail"
+
+
+def test_d3_is_the_only_element_between_the_connector_and_the_module_rail(parts):
+    """Anything else bridging V5 and V5I would reopen the backfeed path."""
+    bridges = [(p.ref, p.nets) for p in parts
+               if not p.ref.startswith("#")
+               and {"V5", "V5I"} <= set(p.nets.values())]
+    assert bridges == [("D3", {"1": "V5I", "2": "V5"})]
+    # Cathode (pin 1) on the module side, anode on the connector: current can
+    # only flow inward.
+    assert by_ref(parts, "D3").nets["1"] == "V5I"
+    assert by_ref(parts, "D3").nets["2"] == "V5"
+
+
+def test_every_part_that_needs_power_is_behind_d3(parts):
+    """The comparator, the reference and their decoupling sit on V5I."""
+    assert by_ref(parts, "U1").nets["4"] == "V5I"
+    assert by_ref(parts, "R1").nets == {"1": "V5I", "2": "REF"}
+    for ref in ("C1", "C2"):
+        assert by_ref(parts, ref).nets == {"1": "V5I", "2": "PGND"}, ref
+
+
+def test_the_backfeed_current_is_far_below_the_comparator_quiescent(report):
+    """Recomputed from the divider, not copied from the report.
+
+    The available current peaks with the rail at 0 V; it is the divider
+    current left after the lower leg has taken its share.
+    """
+    bf = report["backfeed"]
+    expected = (bf["common_mode_burden_v"] / board.R_TOP
+                - board.VF_D3 * (1 / board.R_TOP + 1 / board.R_BOT))
+    assert bf["available_current_at_design_max_a"] == pytest.approx(expected, rel=1e-3)
+    assert bf["shortfall_factor"] > 10
+    assert bf["ocd_needed_to_hold_rail_minimum_a"] > 10 * max(board.KNOWN_PEAKS_A.values())
+    assert "UNSPECIFIED" in bf["rail_state_below_minimum"]
+
+
+def test_the_verification_matrix_is_unexecuted_and_covers_the_review_cases(report):
+    """The review asks for V5-open at low and high OCD, an open signal wire,
+    and a whole-domain decay and recovery -- with no pass claim attached."""
+    v = report["backfeed_verification"]
+    assert v["status"] == "UNEXECUTED"
+    ids = [c["id"] for c in v["cases"]]
+    assert ids == [f"BF-{n:02d}" for n in range(1, 9)]
+    for case in v["cases"]:
+        assert case["executed"] is False
+        assert case["result"] is None
+        assert case["pass_criteria"].strip()
+    names = " ".join(c["name"] for c in v["cases"]).lower()
+    assert "ocd low" in names and "ocd high" in names
+    assert "signal wire open" in names
+    assert "decay" in names and "recovery" in names
+    joined = " ".join(v["signals"])
+    for signal in ("FAST_EXT_N", "FAST_COMBINED", "PERMIT"):
+        assert signal in joined
+    assert "current" in joined
+
+
 # ---------------------------------------------------------------- arithmetic
 def test_trip_and_release_match_the_three_resistor_network(report):
     d = report["threshold"]
     g = 1.0 / (1.0 / board.R_TOP + 1.0 / board.R_BOT + 1.0 / board.R_HYST)
     up = (board.VREF / g) * board.R_TOP
-    down = (board.VREF / g - board.V5 / board.R_HYST) * board.R_TOP
+    down = (board.VREF / g - board.V5I / board.R_HYST) * board.R_TOP
     assert d["trip_burden_v"] == pytest.approx(up)
     assert d["release_burden_v"] == pytest.approx(down)
     assert d["trip_current_a"] == pytest.approx(up / board.BURDEN_V_PER_A)
@@ -303,7 +378,7 @@ def test_every_published_fault_peak_stays_inside_the_common_mode_range(report):
 
 def test_the_common_mode_limit_is_recomputed_not_quoted(report):
     cm = report["common_mode"]
-    expected = (board.V5 - board.CM_HIGH_MARGIN) * (board.R_TOP + board.R_BOT) / board.R_BOT \
+    expected = (board.V5I - board.CM_HIGH_MARGIN) * (board.R_TOP + board.R_BOT) / board.R_BOT \
         / board.BURDEN_V_PER_A
     assert cm["current_at_common_mode_limit_a"] == pytest.approx(expected)
     assert cm["current_at_common_mode_limit_a"] > max(board.KNOWN_PEAKS_A.values())
@@ -323,8 +398,11 @@ def test_the_threshold_sits_above_the_frozen_short_circuit_and_below_the_severe_
 
 def test_the_reference_bias_is_about_a_milliamp(report):
     assert report["supply"]["bias_current_a"] == pytest.approx(
-        (board.V5 - board.VREF) / board.R_BIAS)
-    assert 1e-3 < report["supply"]["bias_current_a"] < 2e-3
+        (board.V5I - board.VREF) / board.R_BIAS)
+    # D3's drop moved this from 1.04 mA to 0.88 mA; the range only guards
+    # against a decade error, because the reference's minimum operating
+    # current is still unverified.
+    assert 0.7e-3 < report["supply"]["bias_current_a"] < 2e-3
 
 
 def test_the_unverified_corner_is_named_as_unverified(report):
@@ -351,7 +429,7 @@ def test_the_erc_report_is_clean_and_not_stale():
 
 def test_the_netlist_contains_every_module_net():
     text = (OUT / "fast_oc.net").read_text(encoding="utf-8")
-    for net in ("V5", "PGND", "OCD", "INP", "REF", "OUT", "Q1G",
+    for net in ("V5", "V5I", "PGND", "OCD", "INP", "REF", "OUT", "Q1G",
                 "SHDN", "FAST_EXT_N"):
         assert f'(name "/{net}")' in text, net
 

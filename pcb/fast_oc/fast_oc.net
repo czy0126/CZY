@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\fast_oc\\fast_oc.kicad_sch")
-		(date "2026-11-05T22:13:24")
+		(date "2026-11-05T22:33:09")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -58,7 +58,7 @@
 			(ref "C1")
 			(value "1uF/16V")
 			(footprint "Capacitor_SMD:C_0603_1608Metric")
-			(description "supply bulk")
+			(description "supply bulk, module side of D3")
 			(fields
 				(field
 					(name "Footprint") "Capacitor_SMD:C_0603_1608Metric")
@@ -66,7 +66,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "supply bulk")
+					(name "Description") "supply bulk, module side of D3")
 			)
 			(libsource
 				(lib "Device")
@@ -328,7 +328,7 @@
 			(ref "D2")
 			(value "BAT54W")
 			(footprint "Diode_SMD:D_SOD-123")
-			(description "cathode at V5: starts conducting above 5.3 V; the backfeed path this diode creates is measured in the bench plan, not modelled")
+			(description "cathode at V5I: clamps IN+ above the module rail; with the rail dead this path would otherwise power it, which is why D3 exists")
 			(fields
 				(field
 					(name "Footprint") "Diode_SMD:D_SOD-123")
@@ -336,7 +336,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "cathode at V5: starts conducting above 5.3 V; the backfeed path this diode creates is measured in the bench plan, not modelled")
+					(name "Description") "cathode at V5I: clamps IN+ above the module rail; with the rail dead this path would otherwise power it, which is why D3 exists")
 			)
 			(libsource
 				(lib "Device")
@@ -364,6 +364,60 @@
 				(tstamps "/")
 			)
 			(tstamps "1e5d6179-50fa-5f04-8f1d-83f7a42751f3")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D3")
+			(value "BAT54W")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "rail isolation: feeds V5I from J1.1 and blocks any backfeed from reaching the connector")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "rail isolation: feeds V5I from J1.1 and blocks any backfeed from reaching the connector")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "fast_oc")
+			)
+			(property
+				(name "Sheetfile")
+				(value "fast_oc.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ff3e335d-3a57-554e-a3a4-39fa594af26b")
 			(units
 				(unit
 					(name "A")
@@ -495,7 +549,7 @@
 			(ref "R1")
 			(value "2.4k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "reference bias, (5-2.5)/2.4k = 1.04 mA")
+			(description "reference bias, (4.6-2.5)/2.4k = 0.88 mA")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -503,7 +557,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "reference bias, (5-2.5)/2.4k = 1.04 mA")
+					(name "Description") "reference bias, (4.6-2.5)/2.4k = 0.88 mA")
 			)
 			(libsource
 				(lib "Device")
@@ -819,7 +873,7 @@
 			(ref "R7")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "local pull-up; D0 J10.4 has 100k pull-down, NOT R15")
+			(description "pull-up from the connector rail, not V5I: losing J1.1 must leave FAST_EXT_N low; D0 J10.4 has 100k pull-down, NOT R15")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -827,7 +881,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "local pull-up; D0 J10.4 has 100k pull-down, NOT R15")
+					(name "Description") "pull-up from the connector rail, not V5I: losing J1.1 must leave FAST_EXT_N low; D0 J10.4 has 100k pull-down, NOT R15")
 			)
 			(libsource
 				(lib "Device")
@@ -2055,6 +2109,34 @@
 			(name "/V5")
 			(class "Default")
 			(node
+				(ref "D3")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J1")
+				(pin "1")
+				(pinfunction "Pin_1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R7")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP7")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "10")
+			(name "/V5I")
+			(class "Default")
+			(node
 				(ref "C1")
 				(pin "1")
 				(pintype "passive")
@@ -2071,25 +2153,14 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "J1")
+				(ref "D3")
 				(pin "1")
-				(pinfunction "Pin_1_1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R1")
 				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R7")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "TP7")
-				(pin "1")
-				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node

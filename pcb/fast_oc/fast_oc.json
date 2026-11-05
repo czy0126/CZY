@@ -3,9 +3,9 @@
   "evidence_level": "GENERATED_SCHEMATIC_AND_NETLIST_NOT_HARDWARE",
   "hardware_built": false,
   "fabrication_approved": false,
-  "part_instances": 28,
-  "physical_parts": 26,
-  "nets": 9,
+  "part_instances": 30,
+  "physical_parts": 27,
+  "nets": 10,
   "net_map": {
     "FAST_EXT_N": [
       "J1.4",
@@ -69,13 +69,18 @@
     ],
     "V5": [
       "#FLG1.1",
+      "D3.2",
+      "J1.1",
+      "R7.1",
+      "TP7.1"
+    ],
+    "V5I": [
+      "#FLG3.1",
       "C1.1",
       "C2.1",
       "D2.1",
-      "J1.1",
+      "D3.1",
       "R1.1",
-      "R7.1",
-      "TP7.1",
       "U1.4"
     ]
   },
@@ -83,25 +88,25 @@
     "divider_ratio": 0.3333333333333333,
     "nominal_trip_current_a": 75.0,
     "trip_burden_v": 7.659574468085108,
-    "release_burden_v": 7.340425531914894,
+    "release_burden_v": 7.365957446808513,
     "trip_current_a": 76.59574468085107,
-    "release_current_a": 73.40425531914893,
-    "hysteresis_v": 0.31914893617021356,
-    "hysteresis_a": 3.1914893617021356,
+    "release_current_a": 73.65957446808513,
+    "hysteresis_v": 0.29361702127659495,
+    "hysteresis_a": 2.9361702127659495,
     "thevenin_ohm": 10000.0,
     "input_tau_s": 1e-06
   },
   "common_mode": {
     "common_mode_range_v": [
       -0.2,
-      4.8
+      4.3999999999999995
     ],
     "absolute_max_range_v": [
       -0.5,
-      5.3
+      4.8999999999999995
     ],
-    "current_at_common_mode_limit_a": 143.99999999999997,
-    "current_at_clamp_conduction_a": 158.99999999999997,
+    "current_at_common_mode_limit_a": 131.99999999999997,
+    "current_at_clamp_conduction_a": 146.99999999999997,
     "rows": [
       {
         "case": "steady_state_rated",
@@ -200,18 +205,146 @@
     "note": "the 121x module figure is a detection-only comparison; against the whole machine the comparator change is worth the ratio below, because the REG crowbar sets the stop time"
   },
   "supply": {
-    "bias_current_a": 0.0010416666666666667,
+    "connector_rail_v": 5.0,
+    "internal_rail_v": 4.6,
+    "isolation": "D3 BAT54W between J1.1 V5 and V5I; VF <= 0.40 V at the module's load current",
+    "bias_current_a": 0.0008749999999999998,
     "reference_holds_down_to_v": 2.5,
-    "shutdown_enable_threshold_v": 3.3,
+    "shutdown_enable_threshold_v": 2.8999999999999995,
     "shutdown_logic": "SHDN low enables; within 0.9 V of V+ disables",
     "quiescent_current_max_a": 0.005,
-    "loss_of_5v": "without backfeed Q1 releases and D0 R100 pulls FAST_EXT_N low (fault when armed); OCD/D2 backfeed and whole-domain UVLO remain unverified on hardware",
+    "loss_of_5v": "D3 keeps the backfeed off the connector and R7 is the only element that can raise FAST_EXT_N; with J1.1 at 0 V the receiver's 100k holds the line low through Q1 or R7's open top. The rail itself can still be backfed through D2, so the state is proved by the bench matrix, not by this note",
     "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum operating current is not in this repository"
+  },
+  "backfeed": {
+    "problem": "with J1.1 open, D2 turns the OCD divider into a supply for the dead rail; R7 was referenced to that rail, so the healthy level depended on the backfeed",
+    "common_mode_current_a": 131.99999999999997,
+    "common_mode_burden_v": 13.199999999999998,
+    "available_current_at_design_max_a": 0.0003999999999999999,
+    "available_current_basis": "132.0 A common-mode limit (13.2 V burden), rail at 0 V",
+    "comparator_quiescent_max_a": 0.005,
+    "shortfall_factor": 12.500000000000004,
+    "rail_minimum_v": 2.7,
+    "ocd_needed_to_hold_rail_minimum_a": 1593.0,
+    "rail_state_below_minimum": "UNSPECIFIED - the TLV3501 datasheet stops at 2.7 V, so neither the output level nor the supply current is bounded there",
+    "mitigation": "D3 feeds V5I from J1.1 and blocks the connector from being backfed; R7 stays on the connector net, so a lost J1.1 leaves FAST_EXT_N low whatever D2 does to V5I",
+    "structural_invariant": "FAST_EXT_N can only be raised by R7, and R7's top is the V5 connector net; Q1 only pulls down",
+    "residual": "an open D3, or a comparator whose supply pin is open while J1.1 is live, still leaves R7 able to raise the line; a pull-up cannot detect its own load disappearing"
+  },
+  "backfeed_verification": {
+    "status": "UNEXECUTED",
+    "hardware": "none - the module has no built board",
+    "fixture": {
+      "supply": "isolated, current-limited 5.0 V on J1.1 (limit <= 100 mA)",
+      "ocd_source": "isolated, current-limited 0-15 V on J1.3; set the limit to 20 mA (the divider draws at most OCD/30k)",
+      "v5_open": "break the J1.1 wire at the module end; do not remove PGND",
+      "signal_open": "break J1.4 at the module end; the receiver keeps its 100k",
+      "receiver": "D0 J10.4 / U11F / U19 (or an equivalent 4000B inverter and OR on the bench); D0 has a schematic but no PCB",
+      "loads": "10k from FAST_EXT_N to PGND models the module's own R7 return path; 100k to PGND models D0's pull-down (the receiver input)",
+      "instruments": ">= 4 channels, 100 MHz; differential probe for VGS if the SR path is connected; series ammeter on J1.1 (uA range for the open-wire cases)"
+    },
+    "signals": [
+      "FAST_EXT_N",
+      "FAST_COMBINED",
+      "PERMIT",
+      "I(V5) module supply current",
+      "V(V5I)",
+      "V(INP)",
+      "V(OUT)"
+    ],
+    "cases": [
+      {
+        "id": "BF-01",
+        "name": "healthy baseline",
+        "setup": "J1.1 5.0 V, OCD 0 V, all wires intact",
+        "stimulus": "none",
+        "expected": "FAST_EXT_N = 5 V x 100k/110k = 4.55 V; FAST_COMBINED low; PERMIT high; I(V5) = bias + quiescent + R7",
+        "pass_criteria": "4.2 V <= FAST_EXT_N <= 4.8 V and PERMIT high",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-02",
+        "name": "trip baseline",
+        "setup": "J1.1 5.0 V, OCD 7.5 V (75 A), all wires intact",
+        "stimulus": "step OCD from 0 to 7.5 V",
+        "expected": "FAST_EXT_N < 0.4 V; FAST_COMBINED high; PERMIT low",
+        "pass_criteria": "Q1 pulls the line below 0.4 V within 1.1 us",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-03",
+        "name": "J1.1 open, OCD low",
+        "setup": "J1.1 wire open, OCD 0 V",
+        "stimulus": "none",
+        "expected": "FAST_EXT_N <= 0.3 V (100k), FAST_COMBINED high, PERMIT low, I(V5) = 0",
+        "pass_criteria": "line <= 0.3 V and PERMIT low",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-04",
+        "name": "J1.1 open, OCD high (the backfeed case)",
+        "setup": "J1.1 wire open, OCD 15 V (150 A), the design absolute maximum; C1 discharged before the step",
+        "stimulus": "step OCD 0 -> 15 V, hold 10 s",
+        "expected": "FAST_EXT_N <= 0.3 V because R7's top is the connector net; V5I may rise through D2 but must not reach the connector (measure J1.1 = 0 V)",
+        "pass_criteria": "line <= 0.3 V, PERMIT low, I into J1.1 = 0, and V(V5I) recorded (any value is a result, not a pass)",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-05",
+        "name": "signal wire open, module powered",
+        "setup": "J1.4 open at the module end, J1.1 5.0 V",
+        "stimulus": "OCD 0 V, then 7.5 V",
+        "expected": "receiver input is pulled to 0 V by its 100k in both states: FAST_COMBINED high, PERMIT low",
+        "pass_criteria": "fault asserted for both OCD levels",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-06",
+        "name": "whole V5 domain slow decay",
+        "setup": "J1.1 5.0 -> 0 V over 100 ms, wires intact",
+        "stimulus": "linear decay at OCD 0 V, repeat at OCD 7.5 V",
+        "expected": "FAST_EXT_N follows R7 down; the receiver must read fault before V5I falls below 2.7 V; PERMIT releases",
+        "pass_criteria": "no sample with FAST_EXT_N > 3.5 V while V(V5I) < 2.7 V; record the crossing and t(PERMIT)",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-07",
+        "name": "recovery",
+        "setup": "J1.1 0 -> 5.0 V over 100 ms after BF-06",
+        "stimulus": "same ramp, then hold 10 s",
+        "expected": "FAST_EXT_N returns high only after V5I > 2.7 V; PERMIT stays low until D0's latch is reset by the operator",
+        "pass_criteria": "record t(FAST_EXT_N high), t(V5I > 2.7 V) and whether PERMIT re-arms without a reset (it must not)",
+        "executed": false,
+        "result": null
+      },
+      {
+        "id": "BF-08",
+        "name": "rail collapse with OCD live",
+        "setup": "J1.1 falls 5.0 -> 0 V in < 1 ms while OCD = 15 V",
+        "stimulus": "abrupt open, C1 hold-up is the only supply",
+        "expected": "FAST_EXT_N stays low throughout; the module may latch Q1 on or off but never high",
+        "pass_criteria": "record the line at 100 us and 1 ms; any excursion above 0.4 V fails",
+        "executed": false,
+        "result": null
+      }
+    ],
+    "notes": [
+      "expected values are computed from the schematic, not measured; each case is a prediction until the raw trace is attached",
+      "PERMIT and FAST_COMBINED are D0 nodes; D0 has no PCB, so BF-05/06/07 need either a D0 prototype or an equivalent receiver on the bench",
+      "the V5 current in BF-04 must be measured with a uA meter: the whole point is that the connector carries nothing once D3 is in place"
+    ]
   },
   "d12_selection": {
     "refs": [
       "D1",
-      "D2"
+      "D2",
+      "D3"
     ],
     "mpn": "BAT54W-E3-08",
     "mpn_source": "references/datasheets/bat54w.txt",
@@ -221,6 +354,7 @@
       "1": "K",
       "2": "A"
     },
+    "rail_isolation_ref": "D3, cathode on V5I / anode on J1.1 V5",
     "datasheet": {
       "vrr_v": 30.0,
       "if_ma": 200.0,
@@ -250,14 +384,14 @@
       "first_article_check": "measure the solder joint on the first built board; the pad is 0.35 mm taller and 0.05 mm wider than the recommendation"
     },
     "worst_case_current": {
-      "path": "D2 from V5 into IN+ if the module loses V5 while OCD is live",
+      "path": "D2 from OCD via IN+ into the internal rail V5I while J1.1 is open; D3 blocks the same current from reaching the connector",
       "ifsm_rating_a": 0.6,
-      "note": "surge, not continuous; the continuous path is bounded by the divider, so the diode current is not the stress — the backfeed into V5 is (see the bench plan)"
+      "note": "surge, not continuous; the continuous path is bounded by the divider (~0.44 mA at the design maximum), so the diode current is not the stress -- the rail state below 2.7 V is (see backfeed)"
     },
     "qualified": false,
     "open_items": [
       "the SOD-123 vendor land is not the footprint in use; the difference is inside 0.1 mm on centres but the pads are larger",
-      "D2's backfeed path from OCD into a dead V5 rail is not characterised",
+      "the backfed rail V5I is not characterised in hardware: D3 keeps it away from the connector and from R7, but the state below 2.7 V is unspecified, so the bench matrix (BF-03..BF-08) is unexecuted",
       "no temperature derating is applied to the 230 mW total dissipation"
     ]
   },
@@ -276,7 +410,7 @@
     },
     {
       "id": "OC-02",
-      "finding": "The module trips at 76.6 A peak (7.66 V burden) and releases at 73.4 A; the nominal divider crossing is 75.0 A.",
+      "finding": "The module trips at 76.6 A peak (7.66 V burden) and releases at 73.7 A; the nominal divider crossing is 75.0 A.",
       "evidence": "divider arithmetic against the references/datasheets/tlv3501.txt reference and the project CT transfer 0.1 V/A",
       "status": "DESIGN_ESTIMATE"
     },
@@ -294,7 +428,7 @@
     },
     {
       "id": "OC-04",
-      "finding": "The input pin stays inside the common-mode range up to 144 A peak. Above that the comparator is out of range but still inside its absolute maximum, so it is already tripped and the output state no longer matters.",
+      "finding": "The input pin stays inside the common-mode range up to 132 A peak. Above that the comparator is out of range but still inside its absolute maximum, so it is already tripped and the output state no longer matters.",
       "evidence": "references/datasheets/tlv3501.txt common-mode range (V-)-0.2 V to (V+)-0.2 V, absolute maximum (V-)-0.3 V to (V+)+0.3 V",
       "status": "BOUNDARY"
     },
@@ -321,7 +455,7 @@
     "module only; the CT, rectifier and burden stay on D0",
     "the system stop is NOT set by this comparator: the SR branch waits for REG to fall through UVLO, so the whole-machine floor is quoted in system_delay",
     "D0's CD4013 latch propagation is not modelled, so system_delay totals are floors",
-    "no latch, no isolation, no reverse-supply protection beyond D2",
+    "the module rail is isolated by D3, but the isolated rail can still be backfed through D2; its state below 2.7 V is unspecified and the bench matrix that would pin it down is UNEXECUTED",
     "the LM4040DBZ-2.5 minimum operating current is unverified, so the low-supply corner is not characterised",
     "a clean ERC only says the drawing agrees with itself"
   ]

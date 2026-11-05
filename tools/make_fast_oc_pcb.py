@@ -73,7 +73,7 @@ BLOCKS = {
     "probe": (1.0, 32.0, 51.0, 36.5),
 }
 BLOCK_OF = {
-    "connector": ["J1"],
+    "connector": ["J1", "D3"],
     "reference": ["U2", "R1", "C3"],
     "comparator": ["U1", "C2"],
     "divider": ["D2", "D1", "R2", "R3", "C4"],
