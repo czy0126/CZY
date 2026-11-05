@@ -142,21 +142,44 @@ def test_the_budget_names_what_it_cannot_know():
     assert stages["permit_release"]["sr_pin_capacitance_known"] is False
 
 
-def test_the_sr_drivers_have_a_published_disable_delay_but_no_output_state():
-    """Doc 15 transcribes the UCC27524A D datasheet's EN-to-output 13 ns typ /
-    23 ns max, so the delay is no longer a blank -- but the same material never
-    says whether a low EN pulls OUT low or tri-states it.  If it tri-states, the
-    SR gate has only the 10k pull-down and the same millisecond that applies to
-    a dead driver applies here.  That is a D0a measurement, not an assumption."""
+def test_the_sr_drivers_have_a_published_disable_delay_and_drive_low():
+    """The UCC27524A datasheet is now vendored, so both halves of this question
+    come from it rather than from a transcription.  Switching Characteristics
+    gives the D package's EN-to-output 13 ns typ / 23 ns max, and Device Logic
+    Table 6-2 (``L L Any Any -> L L``) says a low EN *drives* the output low --
+    it does not tri-state.  That is what keeps the SR gate on its 2.2 ohm path
+    instead of falling back to the 110 us dead-driver figure."""
     disable = budget.build()["stages"]["driver_disable"]
     assert disable["ucc27524a_us"] == pytest.approx(0.023)
     assert disable["ucc27524a_typ_us"] == pytest.approx(0.013)
-    assert "15_" in disable["ucc27524a_source"]
-    assert disable["ucc27524a_datasheet_vendored"] is False
-    assert disable["ucc27524a_output_state_on_disable"] is None
-    assert "tri-state" in disable["ucc27524a_output_state_reason"]
-    sr = budget.build()["stages"]["gate_discharge"]["sr"]
-    assert sr["pulldown_only_us"] > 100.0  # what tri-stating would cost
+    assert "references/datasheets/ucc27524a.txt" in disable["ucc27524a_source"]
+    assert disable["ucc27524a_datasheet_vendored"] is True
+    assert disable["ucc27524a_package"].startswith("D ")
+    assert disable["ucc27524a_output_state_on_disable"] == "low"
+    assert "Table 6-2" in disable["ucc27524a_output_state_reason"]
+    assert disable["ucc27524a_ven_l_max_v"] == pytest.approx(1.35)
+    assert disable["ucc27524a_ven_h_min_v"] == pytest.approx(1.90)
+    # The datasheet says so itself -- the guard against quoting 23 ns as a
+    # guaranteed max over part-to-part spread.
+    assert disable["ucc27524a_switching_params_not_production_tested"] is True
+
+
+def test_the_sr_drivers_drop_out_before_the_primary_driver_does():
+    """Both driver families ride the same permit rail, so the crossing order is
+    decided by their thresholds alone: the UCC27524A's latest-still-enabled
+    point is VEN_L max 1.35 V, the UCC27282's is VDIS max 1.21 V.  Reading the
+    SR release off the 1.21 V crossing would charge the eight SR drivers for
+    0.07 us they do not owe."""
+    release = budget.build()["stages"]["permit_release"]
+    assert release["sr_driver_ven_l_max_v"] == pytest.approx(1.35)
+    # A falling exponential crosses the *higher* threshold first, so the eight
+    # SR drivers read disabled 74 ns before the primary pair does.
+    assert release["sr_driver_release_us"] < release["fastest_us"]
+    assert release["sr_driver_release_precedes_ucc27282"] is True
+    # And 0.79 us is well inside the 1.5 us TDIS the primary then waits out,
+    # which is the whole point: the SR branch is not the slow one.
+    tdis = budget.build()["stages"]["driver_disable"]["ucc27282_tdis_us"]
+    assert release["sr_driver_release_us"] < tdis
 
 
 def test_the_primary_branch_not_the_sr_branch_sets_the_all_ten_low_time():

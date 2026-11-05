@@ -9,7 +9,9 @@ pole list on top of it would turn the 10.21 us fast channel into a 130 us one.
 What is left after detection is short and mostly arithmetic:
 
 * the permit rail, discharged by whatever sits between it and ground;
-* the driver's own disable time, which the vendored UCC27282 text publishes;
+* the driver's own disable time, which both vendored datasheets publish --
+  and, for the UCC27524A, the logic table that settles what the output does
+  when its enable goes low;
 * the gate falling from the driver supply to VGS(th);
 * and two stages the repository has no datasheet for -- the LM393 comparator
   and the CD4013 latch -- which stay ``None`` with the reason attached.
@@ -59,18 +61,32 @@ UCC27282_SOURCE = "references/datasheets/ucc27282.txt (SNVSAQ5B, ENABLE table)"
 
 # The eight SR drivers pull the other way.  Each UCC27524A ENA/ENB has an
 # internal ~200 k pull-up to its own VDD, i.e. to 12 V, and that is the reason
-# the 4.7 k pull-downs exist at all (doc 15 section 0.3).  The figure is a
-# *typical* transcribed from that document -- no UCC27524A datasheet is vendored
-# here -- so the ceiling it produces carries the same caveat.
+# the 4.7 k pull-downs exist at all (doc 15 section 0.3).  The new part table
+# carries UCC27524ADR, the D package, so the numbers below are that package's
+# columns in SLUSBP4C: the DGN part publishes 17/27 ns for the same parameter.
+# RENx is given as a single typical -- no min/max -- so the ceiling it produces
+# carries the same caveat.
 SR_CHANNELS = 8
 # The eight EN pull-downs are R36..R43 in the generator's part table.
 SR_EN_PULLDOWN_REFS = tuple(f"R{n}" for n in range(36, 36 + SR_CHANNELS))
+UCC27524A_PACKAGE = "D (SOIC-8), the UCC27524ADR on this board"
 UCC27524A_EN_PULLUP_TYP_OHM = 200e3
 UCC27524A_EN_TO_OUT_MAX_NS = 23.0
 UCC27524A_EN_TO_OUT_TYP_NS = 13.0
-UCC27524A_SOURCE = ("docs/D1_EXECUTION_KIT/15_十路硬件故障关断接口及实施验收.md "
-                    "section 0.5, transcribing the UCC27524A D datasheet; that "
-                    "datasheet is not vendored in this repository")
+# D-package ENABLE table: VEN_L 0.95/1.15/1.35 V, VEN_H 1.9/2.1/2.3 V, and the
+# hysteresis column 0.7/0.95/1.1 V.  A pin still reading enabled at 1.35 V is
+# the *latest* it can be, so that is the threshold the rail has to cross for the
+# SR branch -- and it is crossed before the UCC27282's 1.21 V, not after.
+UCC27524A_VEN_L_MAX_V = 1.35
+UCC27524A_VEN_H_MIN_V = 1.90
+# Table 6-2 (Device Logic Table): ENA=L, ENB=L gives OUTA=L, OUTB=L, and the
+# single-low rows leave the enabled channel following its input -- the disabled
+# output is driven low, not tri-stated.  The tD4 test condition says the same
+# thing operationally: "VENx_L of the enable fall to 90% of output fall".
+UCC27524A_OUTPUT_STATE_ON_DISABLE = "low"
+UCC27524A_SOURCE = ("references/datasheets/ucc27524a.txt (SLUSBP4C, revised June 2024; "
+                    "ENABLE and Switching Characteristics tables, Device Logic "
+                    "Table 6-2)")
 
 
 def _parallel(*resistances: float) -> float:
@@ -154,6 +170,12 @@ def permit_rail_release(parts: dict) -> dict:
 
     fastest = cross(UCC27282_VDIS_MAX_V)
     guaranteed = cross(UCC27282_VDIS_MIN_V)
+    # The rail feeds both driver families, and each one disables on its own pin
+    # threshold.  UCC27282's latest-still-enabled point is 1.21 V; the
+    # UCC27524A's is 1.35 V (D package).  Both ride the same RC, so the crossing
+    # order follows from the thresholds alone: the eight SR drivers stop reading
+    # enabled *before* the primary pair does, not after.
+    sr_release = cross(UCC27524A_VEN_L_MAX_V)
     conductance_share = sum(1.0 / r for r in r_known) / sum(
         1.0 / r for r in r_known + r_others + [UCC27282_REN_OHM])
     return {
@@ -188,7 +210,10 @@ def permit_rail_release(parts: dict) -> dict:
                                  else fastest / UCC27282_TDIS_US),
         "pin_capacitance_unknown_so_this_is_a_floor": True,
         "sr_pin_capacitance_known": False,
-        "sr_driver_release_us": None,
+        "sr_driver_ven_l_max_v": UCC27524A_VEN_L_MAX_V,
+        "sr_driver_release_us": sr_release,
+        "sr_driver_release_precedes_ucc27282": (
+            None if sr_release is None or fastest is None else sr_release < fastest),
         "sr_driver_release_reason": (
             "the UCC27524A's EN pin capacitance is unpublished, so the 1 nF "
             "counted here is C28 only and extra pin capacitance only lengthens "
@@ -289,9 +314,11 @@ def build() -> dict:
     sr_gate = gate_discharge(by_ref, "GA1")
     primary_gate = gate_discharge(by_ref, "GH1")
     # Both driver branches hang off the same rail and run in parallel, so "all
-    # ten gates low" is the slower of the two, never their sum.  The primary is
-    # slower by three orders of magnitude at the driver and by 1.5 us at TDIS.
-    sr_branch_us = (release["fastest_us"] + UCC27524A_EN_TO_OUT_MAX_NS / 1e3
+    # ten gates low" is the slower of the two, never their sum.  Each branch
+    # waits for *its own* pin threshold to be crossed, and the primary is slower
+    # both at the rail (1.21 V vs 1.35 V) and at TDIS (1.5 us vs 23 ns).
+    sr_branch_us = (release["sr_driver_release_us"]
+                    + UCC27524A_EN_TO_OUT_MAX_NS / 1e3
                     + sr_gate["with_driver_ns"] / 1e3)
     primary_branch_us = (release["fastest_us"] + UCC27282_TDIS_US
                          + primary_gate["with_driver_ns"] / 1e3)
@@ -313,13 +340,12 @@ def build() -> dict:
             "the comparator stage is unknown: no LM393 datasheet is vendored, so its "
             "response time is neither cited nor guessed",
             "the latch stage is unknown: no CD4013 datasheet is vendored",
-            "the UCC27524A disable delay comes from doc 15's transcription of a "
-            "datasheet this repository does not hold, and whether disabling pulls "
-            "the output low or tri-states it is unstated -- tri-stating would put "
-            "the SR gate on the 10k pull-down alone",
+            "the UCC27524A's switching parameters are not tested in production (the "
+            "datasheet says so itself), and its 13/23 ns are specified at VDD = 12 V, "
+            "CLOAD = 1.8 nF and 125 C, not over the part-to-part spread",
             "the eight 200 k pull-ups that set the permit rail's ceiling are a "
-            "typical transcribed from doc 15, not a guaranteed minimum, so the "
-            "0.26 V ceiling is a nominal figure",
+            "typical with no published min or max, so the 0.26 V ceiling is a "
+            "nominal figure rather than a guaranteed bound",
             "the gate fall omits the driver's internal sink resistance, which adds time",
             "no temperature or device spread is applied: every value is a nominal "
             "part-table arithmetic, not a worst-case-over-temperature figure",
@@ -353,13 +379,19 @@ def build() -> dict:
                 "ucc27524a_us": UCC27524A_EN_TO_OUT_MAX_NS / 1000.0,
                 "ucc27524a_typ_us": UCC27524A_EN_TO_OUT_TYP_NS / 1000.0,
                 "ucc27524a_source": UCC27524A_SOURCE,
-                "ucc27524a_datasheet_vendored": False,
-                "ucc27524a_output_state_on_disable": None,
+                "ucc27524a_package": UCC27524A_PACKAGE,
+                "ucc27524a_datasheet_vendored": True,
+                "ucc27524a_output_state_on_disable": UCC27524A_OUTPUT_STATE_ON_DISABLE,
                 "ucc27524a_output_state_reason": (
-                    "the transcribed material gives the EN-to-output delay but not "
-                    "whether a low EN pulls OUT low or tri-states it; if it "
-                    "tri-states, the SR gate falls on the 10k pull-down alone and "
-                    "takes the gate_discharge.sr.pulldown_only_us figure instead"),
+                    "Device Logic Table 6-2 drives OUTA/OUTB low whenever the "
+                    "matching ENx is low, and the tD4x condition -- VENx_L of the "
+                    "enable fall to 90% of output fall -- describes a driven edge, "
+                    "not a floating pin; so the SR gate keeps its 2.2 ohm path and "
+                    "the 110.9 us dead-driver figure does not apply to a released "
+                    "permit rail"),
+                "ucc27524a_ven_l_max_v": UCC27524A_VEN_L_MAX_V,
+                "ucc27524a_ven_h_min_v": UCC27524A_VEN_H_MIN_V,
+                "ucc27524a_switching_params_not_production_tested": True,
             },
             "gate_discharge": {"sr": sr_gate, "primary": primary_gate},
         },
