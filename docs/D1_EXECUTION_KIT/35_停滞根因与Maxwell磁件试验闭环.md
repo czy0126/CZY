@@ -29,7 +29,7 @@
 
 ## 三、Maxwell 3D 两阶段、两条线
 
-第一阶段 Lr（立即筛选2匝/3匝）：需要准确ELP38与I38 STEP几何（含气隙）、实际绕组形状和端面、100°C非线性N97 B-H 曲线及来源。Maxwell Magnetostatic求不同 I 下磁链/增量 L(I)、局部 B、气隙边缘磁通与边柱饱和。检查0.5 /13.881/22.53/84.02/104.17/121.515 A六点，至少三个网格等级，电感差异拟控制在2%以内（计划阈值，尚无结果）。需要区分L_secant与L_incremental。
+第一阶段 Lr（立即筛选2匝/3匝）：可先由工程师按原厂目录自行建立可追溯的ELP38与I38概念 STEP（含气隙、绕组形状和端面），**无需等供应商STEP**；但必须记录CAD与真实几何的差异，不可用于最终制造签核。100°C非线性N97 B-H 曲线优先采用原厂或实测，初期亦可采用带明确误差与出处的插值概念曲线，只用于方案排除而不对高电流性能签核。Maxwell Magnetostatic求不同 I 下磁链/增量 L(I)、局部 B、气隙边缘磁通与边柱饱和。检查0.5 /13.881/22.53/84.02/104.17/121.515 A六点，至少三个网格等级，电感差异拟控制在2%以内（计划阈值，尚无结果）。需要区分L_secant与L_incremental。
 
 第二阶段交流损耗：使用 Eddy Current / AC Magnetic，依据真实0.1mm铜箔、引出端形状及约200.622kHz与其关键谐波，分析J分布、邻近效应、气隙边缘铜损。第一阶段stranded近似不能计算该铜损。磁芯损耗还需要实际N97的B-f-T损耗数据，不能从磁静态B-H直接推出。
 
@@ -38,8 +38,8 @@
 ## 四、本次已经放入代码的执行入口
 
 - tools/maxwell_magnetics_prescreen.py：读取真实lr_design.json源参数，计算四个备选，不伪称已执行Maxwell。
-- design/v3/maxwell/elp38_lr_maxwell_contract.json：四套独立CAD案例，明确STEP、100°C B-H、部件名称和必须完成的审核；目前缺项保持null/false。
-- tools/maxwell_lr_from_step.py：--check 仅列阻塞；在有效STEP、真实材料与审核输入齐备后，--build通过PyAEDT导入Maxwell 3D，设置非线性静磁场模型、线圈、矩阵并保存工程；--solve逐电流点调用求解器，但不伪造L/B结果。
+- design/v3/maxwell/elp38_lr_maxwell_contract.json：四套独立CAD案例，明确STEP、B-H、部件名称和必须完成的审核；概念 CAD 允许设计组自行重建，供应商几何最终确认与概念建模分离。
+- tools/maxwell_lr_from_step.py：--check 仅列阻塞；在经过审阅的概念STEP、带来源的非线性材料与审核输入齐备后，--build通过PyAEDT导入Maxwell 3D，设置非线性静磁场模型、线圈、矩阵并保存工程；--solve逐电流点调用求解器，但不伪造L/B结果。
 - tools/test_maxwell_magnetics_prescreen.py：自动回归两匝/三匝真实冲突及预防假签核。
 
 可执行命令：
@@ -66,6 +66,6 @@ python tools/maxwell_lr_from_step.py --solve --case ELP38_Lr_2turn_0920uH --aedt
 | 磁件询样 | 先给两家供应商询ELP38/43或定制结构 | 真实端子/DOT与制造公差、报价、首件测量 |
 | 主功率100A上电 | 不等D3 10mm和末尾0.09W账本 | 完整保护、SOA、铜路及磁件验证后逐级安全上电 |
 
-**限制**：当前可访问的执行环境没有Ansys Maxwell授权程序、真实磁件STEP或已核准的100°C非线性B-H，所以本次完成的是参数复核和可执行入口，而不是声称已求解出磁场云图。厂商回件仍须继续，但不得因此停止PCB和D0a进度。
+**限制**：当前可访问的执行环境没有Ansys Maxwell授权程序、可执行的模型STEP或有来源的100°C非线性B-H数据，所以本次完成的是参数复核和可执行入口，而不是声称已求解出磁场云图。厂商回件仍须继续，但不得因此停止PCB和D0a进度。
 
 最终原则：每次迭代必须回答一个可以结束的技术分歧，并产出CAD/求解结果/样品或原始波形；不继续用新的规划文档替代这些工件。
