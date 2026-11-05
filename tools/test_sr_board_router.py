@@ -12,6 +12,7 @@ only statement about shorts that can run without KiCad installed.
 
 from __future__ import annotations
 
+import inspect
 import sys
 from pathlib import Path
 
@@ -315,6 +316,54 @@ def test_a_pour_corridor_costs_every_net_but_its_owner():
     assert foreign[0][inside] == rt.ZONE_PRESSURE
     assert foreign[0][outside] == 0
     assert not any(foreign[1]), "the corridor is on F.Cu only"
+
+
+# ---------------------------------------------------------------- escape reserve
+def _blocked_at(escape_mm: float, x: float, y: float) -> bool:
+    """Is the centreline of net 1 free at (x, y) while net 2 is unrouted?"""
+    pads = [
+        pad("A", "1", 1, 5.0, 5.0),
+        pad("B", "1", 1, 15.0, 5.0),
+        pad("C", "1", 2, 10.0, 5.0, w=1.0, h=1.0),
+        pad("D", "1", 2, 20.0, 5.0, w=1.0, h=1.0),
+    ]
+    router = rt.Router(pads, 20.0, 10.0, [], escape_mm=escape_mm)
+    i, j = router._cell_of(x, y)
+    return bool(router._blocked(1, 0.125)[0][router._index(i, j)])
+
+
+def test_the_escape_reserve_holds_room_for_a_pad_that_is_not_routed_yet():
+    """An unrouted pad reserves 0.40 mm so a later net cannot seal its exit.
+
+    Cell (8.875, 5.0) is 0.6 mm from the pending pad's edge: outside the
+    0.3875 mm track margin (clearance + radius + half pitch), inside the
+    0.7875 mm reserved margin.
+    """
+    assert not _blocked_at(0.0, 8.875, 5.0)
+    assert _blocked_at(rt.ESCAPE_MM, 8.875, 5.0)
+
+
+def test_the_escape_reserve_is_a_parameter_because_it_can_seal_a_land_itself():
+    """On a 0.95 mm-pitch land the reserve is wider than the gap it guards.
+
+    The fast-OC module's inner SOT-23-6 pins sit 1.375 mm from the opposite
+    pad row, which fits a 0.25 mm track (0.775 mm of margin) but not the
+    reserve on both sides (1.575 mm).  Six deterministic net orders left it
+    at 40/42 or 41/42 with the reserve on, and 42/42 with it off -- so the
+    default has to stay for the SR board, and the caller has to be able to
+    say otherwise.  The board's own value is recorded in its report.
+    """
+    pads = [
+        pad("A", "1", 1, 5.0, 5.0),
+        pad("B", "1", 1, 15.0, 5.0),
+        pad("C", "1", 2, 10.0, 5.0, w=1.0, h=1.0),
+        pad("D", "1", 2, 20.0, 5.0, w=1.0, h=1.0),
+    ]
+    default = rt.Router(pads, 20.0, 10.0, [])._blocked(1, 0.125)
+    explicit = rt.Router(pads, 20.0, 10.0, [], escape_mm=rt.ESCAPE_MM)._blocked(1, 0.125)
+    assert default == explicit, "the parameter must default to the old constant"
+    sig = inspect.signature(rt.Router.__init__)
+    assert sig.parameters["escape_mm"].default == rt.ESCAPE_MM
 
 
 # ---------------------------------------------------------------- geometry

@@ -184,19 +184,19 @@
     "detection_module_s": 1.062e-06,
     "common_logic_s": null,
     "common_logic_note": "the D0 CD4013 latch and its gating are not modelled here, so every total below is a floor, not a worst case",
-    "sr_branch_s": 1.3627271893432765e-05,
+    "sr_branch_s": 1.5875879025678174e-05,
     "sr_branch_terms": {
       "crowbar_fet_turn_on_s": 5e-08,
-      "reg_to_uvlo_s": 1.3560921893432765e-05,
+      "reg_to_uvlo_s": 1.5809529025678174e-05,
       "vg_active_low_s": 1.635e-08,
       "excluded_input_rc_s": 1e-05,
       "excluded_input_rc_reason": "the 10 us RC is the validation board's front end, not the main board's fault path"
     },
     "primary_branch_s": 1.2899999999999997e-06,
     "slowest_branch": "sr",
-    "system_floor_s": 1.4689271893432764e-05,
-    "existing_system_floor_s": 0.0001425155071875504,
-    "system_improvement_factor": 9.702013021575686,
+    "system_floor_s": 1.6937879025678175e-05,
+    "existing_system_floor_s": 0.00014476411431979582,
+    "system_improvement_factor": 8.546767520321193,
     "note": "the 121x module figure is a detection-only comparison; against the whole machine the comparator change is worth the ratio below, because the REG crowbar sets the stop time"
   },
   "supply": {
@@ -235,7 +235,7 @@
     },
     {
       "id": "OC-03b",
-      "finding": "That 121x is detection only. With the SR board's shutdown branch added, the whole-machine stop goes from ~142.5 us to ~14.7 us -- 9.7x -- because the sr branch sets it. D0's latch is not modelled, so both are floors.",
+      "finding": "That 121x is detection only. With the SR board's shutdown branch added, the whole-machine stop goes from ~144.8 us to ~16.9 us -- 8.5x -- because the sr branch sets it. D0's latch is not modelled, so both are floors.",
       "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget",
       "status": "DESIGN_ESTIMATE"
     },

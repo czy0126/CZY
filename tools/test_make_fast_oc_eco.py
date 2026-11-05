@@ -17,6 +17,7 @@ Run:
 from __future__ import annotations
 
 import json
+import re
 
 import pytest
 
@@ -64,6 +65,27 @@ def test_the_comparator_and_the_open_drain_stage_are_present(parts):
     assert by_ref(parts, "U1").value == "TLV3501AIDBV"
     assert by_ref(parts, "U2").value == "LM4040DBZ-2.5"
     assert by_ref(parts, "Q1").value == "2N7002"
+
+
+def _pads_in(footprint: str) -> int:
+    lib, name = footprint.split(":", 1)
+    path = board.ROOT / "hardware" / "stock_footprints" / f"{lib}.pretty" / f"{name}.kicad_mod"
+    return len(set(re.findall(r'\(pad "([^"]+)"', path.read_text(encoding="utf-8"))))
+
+
+def test_every_symbol_pin_has_a_pad_in_its_footprint(parts):
+    """A six-pin comparator on a three-pad SOT-23 is not assembleable.
+
+    U1 shares nothing with U2 but a package family; the DBV package of the
+    TLV3501 has six pins and the schematic table gave it the three-pad SOT-23
+    that the two-pin shunt reference legitimately uses.  ERC cannot see this
+    -- it never looks at footprints -- so the check has to read the land.
+    """
+    for part in parts:
+        if not part.footprint:
+            continue
+        pads = _pads_in(part.footprint)
+        assert pads >= len(part.nets), f"{part.ref}: {len(part.nets)} pins on {pads} pads"
 
 
 def test_shutdown_is_pulled_low_because_high_disables_the_comparator(parts, report):

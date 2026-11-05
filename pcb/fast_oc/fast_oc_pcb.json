@@ -1,0 +1,33 @@
+{
+  "kind": "TLV3501_FAST_OC_MODULE_PCB",
+  "evidence_level": "GENERATED_BOARD_AND_DRC_NOT_HARDWARE",
+  "hardware_built": false,
+  "fabrication_approved": false,
+  "board_mm": [
+    52.0,
+    38.0
+  ],
+  "layers": 2,
+  "parts_placed": 26,
+  "nets": 9,
+  "pads": 52,
+  "segments": 504,
+  "vias": 35,
+  "escape_reserve_mm": 0.0,
+  "escape_reserve_note": "0.0 on this board: the 0.40 mm reserve is wider than the 1.375 mm gap between the SOT-23-6 pad rows, so it sealed the inner pins",
+  "connections_attempted": 42,
+  "connections_made": 42,
+  "unrouted": [],
+  "longest_single_net_span_mm": 44.01,
+  "drc": {
+    "violations": 0,
+    "unconnected_items": 0,
+    "schematic_parity": 0
+  },
+  "limits": [
+    "a routed, DRC-clean board says the netlist reached copper; it does not say the module works",
+    "no latch, no isolation and no reverse-supply protection beyond D2",
+    "the 5 V rail and the OCD node come from the harness; this board does not generate or measure them",
+    "single-pad nets (the test points) cannot show a ratsnest line, so their connectivity is not proven by an unconnected count of zero"
+  ]
+}

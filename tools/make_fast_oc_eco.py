@@ -175,6 +175,10 @@ def build_symbols() -> dict[str, str]:
 
 
 # ------------------------------------------------------------------ parts
+# SOT-23 is a three-pad land: it fits the two-pin shunt reference (pin 3 is NC)
+# and the 2N7002.  The TLV3501AIDBV is the six-pin DBV package and must NOT
+# share this constant -- a shared constant is how a six-pin part ended up with
+# a three-pad land while ERC (which ignores footprints) stayed green.
 SMD = "Package_TO_SOT_SMD:SOT-23"
 
 
@@ -189,7 +193,8 @@ def parts() -> list[Part]:
              {"1": "V5", "2": "PGND"}, rating="16 V X7R", note="supply bulk"),
         Part("C2", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 74, 48,
              {"1": "V5", "2": "PGND"}, rating="16 V X7R", note="at U1 pin 4"),
-        Part("U1", "Comparator:TLV3501AIDBV", "TLV3501AIDBV", SMD, 90, 80,
+        Part("U1", "Comparator:TLV3501AIDBV", "TLV3501AIDBV",
+             "Package_TO_SOT_SMD:SOT-23-6", 90, 80,
              {"1": "REF", "2": "PGND", "3": "INP", "4": "V5",
               "5": "OUT", "6": "SHDN"},
              rating="2.7-5.5 V",
@@ -607,8 +612,17 @@ def bom(parts_: list[Part]) -> None:
 
 
 def project_file() -> str:
+    """The one project file this directory has, shared by the schematic and the board.
+
+    Both generators live beside one ``fast_oc.kicad_pro``; if each wrote its own
+    version, whichever ran last would decide whether DRC enforces
+    ``missing_courtyard`` (KiCad ignores that check by default, so a board with
+    no courtyards at all would report "0 violations").  The board generator
+    therefore reuses this function rather than emitting a second copy.
+    """
     return json.dumps({
-        "board": {}, "boards": [], "cvpcb": {}, "erc": {},
+        "board": {"design_settings": {"rule_severities": {"missing_courtyard": "error"}}},
+        "boards": [], "cvpcb": {}, "erc": {},
         "libraries": {"pinned_footprint_libs": [], "pinned_symbol_libs": []},
         "meta": {"filename": "fast_oc.kicad_pro", "version": 1},
         "net_settings": {}, "pcbnew": {},

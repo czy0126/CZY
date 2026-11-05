@@ -370,13 +370,20 @@ class Router:
     def __init__(self, pads: list[Pad], width_mm: float, depth_mm: float,
                  holes: list[tuple[float, float]], *,
                  pitch: float = PITCH_MM,
-                 keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None
+                 keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None,
+                 escape_mm: float = ESCAPE_MM
                  ) -> None:
         self.pads = pads
         self.width_mm = width_mm
         self.depth_mm = depth_mm
         self.holes = holes
         self.pitch = pitch
+        # Room kept around a pad whose net is not routed yet, so the pads that
+        # come later cannot seal its last exit.  It is a parameter because on a
+        # fine-pitch land the reserve is wider than the gap it is guarding: the
+        # fast-OC module's inner SOT-23-6 pins sit 1.375 mm from the opposite
+        # row, which fits a 0.25 mm track (0.775 mm) but not this on both sides.
+        self.escape_mm = escape_mm
         # ``keep_clear[layer]`` is ``(outline, net)`` pairs: cells inside the
         # outline cost extra for every net but ``net``.  This is how a pour
         # corridor stays a corridor -- a track that crosses it splits the fill,
@@ -485,7 +492,7 @@ class Router:
             if el.kind != "pad":
                 margin += CLEARANCE_MARGIN_MM
             if el.kind == "pad" and el.net in self.pending:
-                margin += ESCAPE_MM
+                margin += self.escape_mm
             for layer in el.layers:
                 if el.kind == "pad":
                     self._stamp_rect(buf[layer], el.rect, margin)
@@ -860,14 +867,17 @@ class Router:
 def route(pads: list[Pad], width_mm: float, depth_mm: float,
           holes: list[tuple[float, float]], *,
           widths: dict[int, float], order: list[int],
-          keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None
+          keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None,
+          escape_mm: float = ESCAPE_MM
           ) -> RouteResult:
     """Route ``order`` (net indices) with the given widths, then repair failures.
 
     ``keep_clear`` discourages every net but the owner's from routing through a
-    pour corridor; see ``Router._zone_cost``.
+    pour corridor; see ``Router._zone_cost``.  ``escape_mm`` is the room kept
+    around a pad whose net is still unrouted; see ``Router.__init__``.
     """
-    router = Router(pads, width_mm, depth_mm, holes, keep_clear=keep_clear)
+    router = Router(pads, width_mm, depth_mm, holes, keep_clear=keep_clear,
+                    escape_mm=escape_mm)
     for net in order:
         router.route_net(net, widths[net])
     router.rip_up(order, widths)

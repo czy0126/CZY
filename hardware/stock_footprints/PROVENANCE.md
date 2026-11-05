@@ -12,6 +12,7 @@
 |--------|----------|
 | `tools/main_board_mechanical.py`（A5 1:1 摆放） | `Package_SON` |
 | `tools/make_sr_fault_board_pcb.py`（单对 SR 验证板布局 pass 1） | 全部 |
+| `tools/make_fast_oc_pcb.py`（TLV3501 快速过流 ECO 模块 PCB） | `Package_TO_SOT_SMD`、`Diode_SMD`、`Connector_PinHeader_2.54mm`、`Resistor_SMD`、`Capacitor_SMD`、`TestPoint` |
 
 ## 清单
 
@@ -40,6 +41,9 @@
 | `Diode_SMD:D_SMB` | 4551 | `e25e9f4acef5b55585afebc48c685e151fd0d2f33a5c3c61f9fdf0389e19ae67` |
 | `Diode_SMD:D_SMA` | 4551 | `f7cba3b52ed8b34dce89170722de58324eac04e9e61a095e0eab37b9ca93cb7f` |
 | `Package_SO:SOIC-8_3.9x4.9mm_P1.27mm` | 4582 | `074ecb2092b24fa4b4b9cdd7c926fc587b0d7d6d21e7341e57935fd42d36894f` |
+| `Package_TO_SOT_SMD:SOT-23-6` | 4280 | `f341c73aac9dcb553456f68bf3fee3d26eb14acf6d8a1cae82b50418fe1d71ca` |
+| `Diode_SMD:D_SOD-123` | 4584 | `fd16785935b01254e1076f490e12f0f096da73cf087adefce51225585c62557a` |
+| `Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical` | 3051 | `571d2d16b49795f8f9a91f96cc83fd2adf49890cd66c377189c44204ebd03c29` |
 
 许可：KiCad Libraries，CC-BY-SA 4.0 + 设计使用例外（用库做板子不算衍生作品）。
 此处未改内容，无新增义务。

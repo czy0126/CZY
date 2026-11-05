@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\fast_oc\\fast_oc.kicad_sch")
-		(date "2026-11-05T00:10:17")
+		(date "2026-11-05T10:14:22")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -1334,11 +1334,11 @@
 		(comp
 			(ref "U1")
 			(value "TLV3501AIDBV")
-			(footprint "Package_TO_SOT_SMD:SOT-23")
+			(footprint "Package_TO_SOT_SMD:SOT-23-6")
 			(description "pin 1 = IN-, pin 3 = IN+, pin 6 = SHDN tied LOW to enable")
 			(fields
 				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-6")
 				(field
 					(name "Datasheet")
 				)
