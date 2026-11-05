@@ -31,7 +31,7 @@ def test_reg_crowbar_candidate_is_sourced_and_existing_footprint_matches():
     assert q41.footprint == "Package_TO_SOT_SMD:SOT-23"
     assert q41.nets == {"1": "RC_G", "2": "PGND", "3": "REG_CROW"}
     assert q41.mpn == "AO3400A"
-    assert q41.mpn_source == str(EVIDENCE.relative_to(board.ROOT))
+    assert q41.mpn_source == EVIDENCE.relative_to(board.ROOT).as_posix()
     source = EVIDENCE.read_text(encoding="utf-8")
     assert OEM_URL in source
     assert "30 V" in source
@@ -45,7 +45,7 @@ def test_physical_bom_has_exactly_one_q41_row_and_real_vendor_code():
     q41 = [row for row in rows if row["Reference"] == "Q41"]
     assert len(q41) == 1
     assert q41[0]["MPN"] == "AO3400A"
-    assert q41[0]["MPN_Source"] == str(EVIDENCE.relative_to(board.ROOT))
+    assert q41[0]["MPN_Source"] == EVIDENCE.relative_to(board.ROOT).as_posix()
     assert q41[0]["Footprint"] == "Package_TO_SOT_SMD:SOT-23"
     assert q41[0]["Qty"] == "1"
     assert q41[0]["DNP"] == ""
