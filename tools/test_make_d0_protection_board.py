@@ -423,8 +423,9 @@ def test_every_sr_gate_has_a_pull_down_a_series_resistor_and_a_dummy_load():
                   and p.value == "2.2R"]
         assert series, f"{gate} has no 2.2R series resistor"
         sum_res = [p for p in parts
-                   if p.nets.get("1") == gate and p.nets.get("2") == "GSUM"]
-        assert sum_res, f"{gate} is not measured by the gate sum"
+                   if p.nets.get("1") == gate and p.lib == "Device:R"
+                   and p.value == "1k" and p.nets.get("2", "").startswith("GK")]
+        assert sum_res, f"{gate} has no 1k into its own detector diode"
 
 
 def test_the_dummy_loads_match_the_deck():
@@ -459,34 +460,112 @@ def test_the_permit_transistor_is_oriented_so_the_rail_follows_permit():
     assert r35.nets == {"1": "PERMIT_RAIL", "2": "PGND"}
 
 
-def test_the_gate_sum_numbers_are_computed_not_guessed():
-    """Ten 10k into a 1k load: the other nine branches load the node too, so one
-    gate at 10 V gives 0.500 V -- not the 1k/(10k+1k) = 0.909 V first written."""
-    assert board.gate_sum_per_gate(drivers_low=True) == pytest.approx(0.0500, abs=1e-4)
-    assert board.gate_sum_per_gate(drivers_low=False) == pytest.approx(0.0645, abs=1e-4)
+def test_the_gate_max_detector_numbers_are_computed_not_guessed():
+    """Ten 1k branches, one diode each, into a 22k/6.2k divider.
+
+    The branch resistor loads the divider, so one gate at 10 V gives
+    10*6.2/29.2 = 2.123 V -- not the 10*6.2/(22+6.2) = 2.199 V you get by
+    forgetting the 1k.  All ten conducting make the ten 1k resistors a 100 ohm
+    series element, which is what sets the all-on figure.
+    """
+    assert board.gate_sense_v(10.0, conducting=1) == pytest.approx(2.1233, abs=1e-4)
+    assert board.gate_sense_v(12.0, conducting=10) == pytest.approx(2.6290, abs=1e-4)
     threshold = board.divider_output("R6", "R7")
     assert threshold == pytest.approx(0.200, abs=1e-3)
-    assert threshold / board.gate_sum_per_gate(drivers_low=True) == pytest.approx(4.00, abs=0.02)
-    assert threshold / board.gate_sum_per_gate(drivers_low=False) == pytest.approx(3.10, abs=0.02)
+    assert board.gate_sense_v(board.gate_trip_v()) == pytest.approx(threshold, abs=1e-9)
 
 
-def test_the_gate_sum_cannot_leave_the_comparator_common_mode_range():
-    """All ten gates high put the raw sum at 5 V, above the LM393's VCC-1.5 V =
-    3.5 V.  Out of range the output is undefined, and if it reads low then
-    ANY_ON is false -- 'all off' while every gate is driven."""
+def test_one_gate_at_three_volts_is_detected_whatever_the_others_do():
+    """The P0-1 defect, as an inequality rather than a claim.
+
+    The old ten-resistor sum read 0.150 V for a gate parked at 3 V while the
+    other nine were held low -- under the 0.200 V reference, i.e. "all off".
+    A diode-OR passes the highest gate, so the other nine cannot pull it down:
+    the 3 V gate reads 0.637 V, and the answer is the same whether they are
+    driven low or left floating.
+    """
+    three = board.gate_sense_v(3.0, conducting=1)
+    assert three > 3 * board.divider_output("R6", "R7")
+    assert three > 0.200
+    # The old ten-resistor sum put this gate at 0.150 V -- below the 0.200 V
+    # reference.  The detector reads more than four times that.
+    assert three > 4 * 0.150
+
+
+def test_the_detector_trips_below_the_fet_threshold_not_above_it():
+    """A gate the FET would conduct on must read "on", so the trip has to sit
+    under VGS(th) min = 1.3 V.  The old sum tripped at 3.1-4.0 V, above the
+    region where the FET is barely conducting and blind where it is fully on."""
+    assert board.gate_trip_v() < 1.3
+    assert board.gate_trip_v() == pytest.approx(0.9419, abs=1e-4)
+    assert board.gate_sense_v(1.3) > board.divider_output("R6", "R7")
+
+
+def test_every_gate_has_its_own_diode_and_the_cathodes_share_one_node():
+    """Ten diodes, ten distinct series nodes, one cathode net.  A shared series
+    node or a missing diode is how a reverse-biased branch silently stops
+    reporting its gate."""
     parts = board.parts()
-    r77 = next(p for p in parts if p.ref == "R77")
+    gates = [f"GA{i}" for i in range(1, 9)] + ["GH1", "GL1"]
+    diodes = [p for p in parts if p.lib == "Device:D_Schottky" and p.nets.get("1") == "GSMAX"]
+    assert len(diodes) == 10
+    anodes = [p.nets["2"] for p in diodes]
+    assert len(set(anodes)) == 10
+    for gate in gates:
+        series = [p for p in parts if p.nets.get("1") == gate and p.value == "1k"
+                  and p.lib == "Device:R"]
+        assert len(series) == 1, gate
+        assert series[0].nets["2"] in anodes, gate
+
+
+def test_the_gate_max_node_cannot_leave_the_comparator_common_mode_range():
+    """All ten gates high put the sense node at 2.629 V at the 12 V rail and
+    3.286 V at the board's 15 V TVS standoff -- inside the LM393's
+    VCC-1.5 V = 3.5 V, where an out-of-range input could otherwise read low,
+    i.e. 'all off' while every gate is driven.
+
+    The limiting element is a divider with a computed bound, not a Zener: a
+    knee voltage is specified at 5 mA and this circuit only ever spends tens of
+    microamps, so the old BZX84C3V0 could not be trusted to clamp at 3 V.  The
+    bound below holds for any diode drop because Vf only lowers the node.
+    """
+    parts = board.parts()
     d9 = next(p for p in parts if p.ref == "D9")
-    assert r77.nets == {"1": "GSUM", "2": "GSUM_SNS"}
-    assert d9.nets == {"1": "GSUM_SNS", "2": "PGND"}  # zener cathode at the input
-    assert d9.value == "BZX84C3V0"
+    assert d9.lib == "Device:D_Schottky"
+    assert d9.nets == {"1": "GSMAX", "2": "GK1"}
+    assert not [p for p in parts if p.lib == "Device:D_Zener"
+                and p.nets.get("1") == "GSMAX"], "the Zener clamp is still here"
     u5 = next(p for p in parts if p.ref == "U5" and p.unit == 2)
-    assert u5.nets["5"] == "GSUM_SNS"
-    r_sum = board.resistance(board.part_value("R66"))
-    r_load = board.resistance(board.part_value("R76"))
-    raw_all_on = 10 * (r_sum / 10) / (r_sum / 10 + r_load)
-    assert raw_all_on == pytest.approx(5.0, abs=0.01)
-    assert raw_all_on > 5.0 - 1.5, "the clamp only matters because the raw sum leaves the range"
+    assert u5.nets["5"] == "GATE_SENSE"
+    assert board.gate_sense_v(12.0, conducting=10) < 3.5
+    assert board.gate_sense_v(15.0, conducting=10) < 3.5
+    assert board.gate_rail_for_common_mode() > 15.0, "the bound must cover the TVS standoff"
+
+
+def test_the_divider_covers_the_declared_gate_rail_not_just_twelve_volts():
+    """V12P comes from the bench input through a reverse-polarity diode and is
+    clamped by a 15 V-standoff TVS, so 15 V is the rail the board is allowed to
+    see.  A divider sized against 12 V alone would leave the comparator out of
+    range in exactly the overvoltage condition it is there for."""
+    assert board.gate_rail_for_common_mode() == pytest.approx(15.976, abs=1e-3)
+    assert board.gate_rail_for_common_mode() == pytest.approx(
+        3.5 * (board.resistance(board.part_value("R66")) / 10
+               + board.resistance(board.part_value("R76"))
+               + board.resistance(board.part_value("R77")))
+        / board.resistance(board.part_value("R77")), rel=1e-12)
+
+
+def test_each_gate_has_a_first_article_check_that_can_fail():
+    """An open diode or an open 1k blinds one channel and leaves the other nine
+    working, so a single all-gates-high test cannot see it.  The record carries
+    the per-gate expectation for a bring-up sweep, one gate at a time."""
+    sweep = board.gate_sense_bring_up()
+    assert len(sweep) == 10
+    for row in sweep:
+        assert row["gate_sense_v"] == pytest.approx(2.1233, abs=1e-4)
+        assert row["reads_on"] is True
+    assert len({row["gate"] for row in sweep}) == 10
+    assert len({row["net"] for row in sweep}) == 10
 
 
 def test_the_rail_good_dividers_stay_inside_the_comparator_common_mode_range():

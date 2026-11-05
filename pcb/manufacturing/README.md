@@ -35,7 +35,7 @@ Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask
 
 ### `d0_protection` -- D0 ten-channel protection logic board
 
-CD4013 fault latches, the ten-way sum comparator and the ACK token, with the POR folded into the latch.  Schematic and ERC only.
+CD4013 fault latches, the ten-way gate-maximum detector (one Schottky per gate into a 22k/6.2k divider, replacing the ten-resistor sum) and the ACK token, with the POR folded into the latch.  Schematic and ERC only.
 
 Not fabricable today:
 - no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper

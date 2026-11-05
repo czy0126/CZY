@@ -20,13 +20,13 @@ def read_bom(path):
         return list(csv.DictReader(stream))
 
 
-def test_176_unique_physical_parts_are_not_214_drawn_symbol_units():
+def test_186_unique_physical_parts_are_not_224_drawn_symbol_units():
     parts = board.parts()
     physical = board.physical_components(parts)
-    assert len(parts) == 217
-    assert len([p for p in parts if not p.ref.startswith("#")]) == 214
-    assert len(physical) == 176
-    assert len({p.ref for p in physical}) == 176
+    assert len(parts) == 227
+    assert len([p for p in parts if not p.ref.startswith("#")]) == 224
+    assert len(physical) == 186
+    assert len({p.ref for p in physical}) == 186
     assert all(p.unit >= 1 for p in physical)
     assert {p.ref for p in physical} == {
         p.ref for p in parts if not p.ref.startswith("#")
@@ -40,8 +40,8 @@ def test_native_generated_bom_matches_program_and_one_qty_per_package(tmp_path, 
     board.bom(board.parts())
     generated = read_bom(tmp_path / "BOM.csv")
     assert actual == generated
-    assert len(actual) == 176
-    assert len({row["Reference"] for row in actual}) == 176
+    assert len(actual) == 186
+    assert len({row["Reference"] for row in actual}) == 186
     assert all(row["Qty"] == "1" for row in actual)
     assert actual[0]["Reference"] == "J1"
     assert next(x for x in actual if x["Reference"] == "U13")["Footprint"] == HEF4093BT
@@ -108,7 +108,7 @@ def test_placed_native_schematic_and_exported_netlist_use_vendor_package():
 def test_committed_report_now_counts_physical_packages_without_fake_fab_claim():
     report = json.loads((DATA / "report.json").read_text(encoding="utf-8"))
     recomputed = board.report(board.parts())
-    assert report["physical_parts"] == recomputed["physical_parts"] == 176
-    assert report["part_instances"] == recomputed["part_instances"] == 217
+    assert report["physical_parts"] == recomputed["physical_parts"] == 186
+    assert report["part_instances"] == recomputed["part_instances"] == 227
     assert not report["hardware_built"]
     assert not report["fabrication_approved"]

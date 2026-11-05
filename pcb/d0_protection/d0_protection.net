@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\d0_protection\\d0_protection.kicad_sch")
-		(date "2026-11-05T13:56:57")
+		(date "2026-11-05T14:20:56")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -2702,22 +2702,22 @@
 		)
 		(comp
 			(ref "D9")
-			(value "BZX84C3V0")
-			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "clamps the sum at 3.0 V so ANY_ON never reads a gate state from an input outside the comparator's common-mode range")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
 			(fields
 				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+					(name "Footprint") "Diode_SMD:D_SOD-123")
 				(field
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "clamps the sum at 3.0 V so ANY_ON never reads a gate state from an input outside the comparator's common-mode range")
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
 			)
 			(libsource
 				(lib "Device")
-				(part "D_Zener")
-				(description "Zener diode")
+				(part "D_Schottky")
+				(description "Schottky diode")
 			)
 			(property
 				(name "Sheetname")
@@ -2729,7 +2729,7 @@
 			)
 			(property
 				(name "ki_keywords")
-				(value "diode")
+				(value "diode Schottky")
 			)
 			(property
 				(name "ki_fp_filters")
@@ -2740,6 +2740,492 @@
 				(tstamps "/")
 			)
 			(tstamps "d3848132-74d1-5e11-9a92-d65cbaf091f5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D10")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c3e749a6-5c20-5986-a827-db551f6b012d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D11")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4f40fdf3-653c-5a66-abcc-6cc42b7bbd81")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D12")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "1c803729-dd32-5c60-aa3d-584bc1175fbd")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D13")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "aa94fe54-aa46-5ee1-a414-363fe32c98c5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D14")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "f90d1d6e-f5a5-5748-b108-e87040dae2ea")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D15")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d654f40c-9073-57ab-a226-c77b0eefa48d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D16")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "afb669a8-bc29-5e58-99aa-8cd2ec769f9b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D17")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "gate max detector, primary pair")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "gate max detector, primary pair")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "531bbd3a-5960-5246-9d63-b4636a87c6ad")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D18")
+			(value "BAT54")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "gate max detector, primary pair")
+			(fields
+				(field
+					(name "Footprint") "Diode_SMD:D_SOD-123")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "gate max detector, primary pair")
+			)
+			(libsource
+				(lib "Device")
+				(part "D_Schottky")
+				(description "Schottky diode")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "diode Schottky")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "TO-???* *_Diode_* *SingleDiode* D_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ae51f5ad-97dd-5e09-876a-d84580efc0ea")
 			(units
 				(unit
 					(name "A")
@@ -6975,9 +7461,9 @@
 		)
 		(comp
 			(ref "R66")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -6985,7 +7471,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7029,9 +7515,9 @@
 		)
 		(comp
 			(ref "R67")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7039,7 +7525,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7083,9 +7569,9 @@
 		)
 		(comp
 			(ref "R68")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7093,7 +7579,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7137,9 +7623,9 @@
 		)
 		(comp
 			(ref "R69")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7147,7 +7633,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7191,9 +7677,9 @@
 		)
 		(comp
 			(ref "R70")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7201,7 +7687,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7245,9 +7731,9 @@
 		)
 		(comp
 			(ref "R71")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7255,7 +7741,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7299,9 +7785,9 @@
 		)
 		(comp
 			(ref "R72")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7309,7 +7795,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7353,9 +7839,9 @@
 		)
 		(comp
 			(ref "R73")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+			(description "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7363,7 +7849,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum star: 10 V on this gate alone gives 0.500 V while the other nine are held low, 0.645 V while they float on their pulldowns")
+					(name "Description") "gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper")
 			)
 			(libsource
 				(lib "Device")
@@ -7407,9 +7893,9 @@
 		)
 		(comp
 			(ref "R74")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum, primary pair")
+			(description "gate-max branch, primary pair")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7417,7 +7903,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum, primary pair")
+					(name "Description") "gate-max branch, primary pair")
 			)
 			(libsource
 				(lib "Device")
@@ -7461,9 +7947,9 @@
 		)
 		(comp
 			(ref "R75")
-			(value "10k")
+			(value "1k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum, primary pair")
+			(description "gate-max branch, primary pair")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7471,7 +7957,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum, primary pair")
+					(name "Description") "gate-max branch, primary pair")
 			)
 			(libsource
 				(lib "Device")
@@ -7515,9 +8001,9 @@
 		)
 		(comp
 			(ref "R76")
-			(value "1k")
+			(value "22k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other nine branches load the node too")
+			(description "divider top.  With the ten 1k branches this bounds the comparator input by a ratio, not by a knee voltage: at most 2.629 V at 12 V and 3.286 V at the 15 V TVS standoff")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7525,7 +8011,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other nine branches load the node too")
+					(name "Description") "divider top.  With the ten 1k branches this bounds the comparator input by a ratio, not by a knee voltage: at most 2.629 V at 12 V and 3.286 V at the 15 V TVS standoff")
 			)
 			(libsource
 				(lib "Device")
@@ -7569,9 +8055,9 @@
 		)
 		(comp
 			(ref "R77")
-			(value "10k")
+			(value "6.2k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "series into the comparator: all ten gates at 10 V put GSUM at 5 V, above the LM393's VCC-1.5 V common-mode limit")
+			(description "divider bottom: 3.5 V * 28.3k / 6.2k = 15.98 V of gate rail before the LM393 input reaches its common-mode limit")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -7579,7 +8065,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "series into the comparator: all ten gates at 10 V put GSUM at 5 V, above the LM393's VCC-1.5 V common-mode limit")
+					(name "Description") "divider bottom: 3.5 V * 28.3k / 6.2k = 15.98 V of gate rail before the LM393 input reaches its common-mode limit")
 			)
 			(libsource
 				(lib "Device")
@@ -8439,7 +8925,7 @@
 		)
 		(comp
 			(ref "TP17")
-			(value "GSUM")
+			(value "GSMAX")
 			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
 			(description "scope probe point")
 			(fields
@@ -8528,6 +9014,57 @@
 				(tstamps "/")
 			)
 			(tstamps "86b784f4-c3e4-5823-8651-95dcc223d756")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP19")
+			(value "GATE_SENSE")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(description "scope probe point")
+			(fields
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "scope probe point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "Sheetname")
+				(value "d0_protection")
+			)
+			(property
+				(name "Sheetfile")
+				(value "d0_protection.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "b41526fc-697b-5b2e-a5e2-c6e72d6e90ad")
 			(units
 				(unit
 					(name "A")
@@ -8776,7 +9313,7 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "c3467a0d-a71d-5ad4-b686-feae4a36f293" "af2ed6ba-02f8-5a4b-a574-f5abc3cceaff"
+			(tstamps "af2ed6ba-02f8-5a4b-a574-f5abc3cceaff" "c3467a0d-a71d-5ad4-b686-feae4a36f293"
 				"4e56448d-e2d1-54c5-b469-72c077cdbc11"
 			)
 			(units
@@ -8825,7 +9362,7 @@
 			(ref "U5")
 			(value "LM393")
 			(footprint "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
-			(description "V5_OK is also comparator_bias_good; U5B watches the gate sum")
+			(description "V5_OK is also comparator_bias_good; U5B watches the gate maximum")
 			(fields
 				(field
 					(name "Footprint") "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
@@ -8833,7 +9370,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "V5_OK is also comparator_bias_good; U5B watches the gate sum")
+					(name "Description") "V5_OK is also comparator_bias_good; U5B watches the gate maximum")
 			)
 			(libsource
 				(lib "Comparator")
@@ -9170,8 +9707,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "ccc668c9-68eb-5393-b561-d3210c5f4066" "be743360-9b37-5e8b-a2dd-828c30b6a4ad"
-				"b25a06ff-8643-5e2e-94f8-0d7cabd779e8" "587549f9-34aa-583b-bbf6-35d888eaa831"
+			(tstamps "ccc668c9-68eb-5393-b561-d3210c5f4066" "587549f9-34aa-583b-bbf6-35d888eaa831"
+				"b25a06ff-8643-5e2e-94f8-0d7cabd779e8" "be743360-9b37-5e8b-a2dd-828c30b6a4ad"
 				"3da08ae2-abfa-5a97-85ca-e65908440ee2"
 			)
 			(units
@@ -9283,8 +9820,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "aa1da750-20b9-5d25-856b-c70491f41c88" "447490eb-35b4-530c-a661-47a4e87b2d51"
-				"dc729988-3054-5509-99c8-b83443a13162" "8fa430fa-296f-5058-ab90-8596efd40eee"
+			(tstamps "dc729988-3054-5509-99c8-b83443a13162" "aa1da750-20b9-5d25-856b-c70491f41c88"
+				"8fa430fa-296f-5058-ab90-8596efd40eee" "447490eb-35b4-530c-a661-47a4e87b2d51"
 				"1b887ba5-b332-5dbd-874c-99a779c949cf"
 			)
 			(units
@@ -9396,8 +9933,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "a3a6cb01-d8b4-5be5-a96f-6b9fd8f65f94" "e7eae156-61e3-5de8-b486-6ef878b64ac6"
-				"6c47f4d8-7a33-5753-bdaf-7fda380e6362" "cf5fee76-b016-5c3c-b8c6-7fbd767e0c1d"
+			(tstamps "e7eae156-61e3-5de8-b486-6ef878b64ac6" "cf5fee76-b016-5c3c-b8c6-7fbd767e0c1d"
+				"a3a6cb01-d8b4-5be5-a96f-6b9fd8f65f94" "6c47f4d8-7a33-5753-bdaf-7fda380e6362"
 				"4e98c779-d8a7-5de3-beab-ec7c2d3bb8c1"
 			)
 			(units
@@ -9509,9 +10046,9 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "f59c518e-260d-5ce0-9ea6-3dc63f39248c" "7941e115-8983-53f6-b72d-c72368241da0"
-				"c7ede7ec-976f-54ae-8e13-448670b28487" "3f9eff89-e889-5745-b872-a8a5043e62cb"
+			(tstamps "7941e115-8983-53f6-b72d-c72368241da0" "c7ede7ec-976f-54ae-8e13-448670b28487"
 				"7ace20c9-34eb-5b57-9f4c-86279e7f5d7e" "d2e4e4a3-53de-512d-b62a-d909be32876e"
+				"3f9eff89-e889-5745-b872-a8a5043e62cb" "f59c518e-260d-5ce0-9ea6-3dc63f39248c"
 				"2d87b759-fa79-5bfd-9958-0a7488ee0c95"
 			)
 			(units
@@ -9598,7 +10135,7 @@
 			(ref "U12")
 			(value "CD4013BE")
 			(footprint "Package_DIP:DIP-14_W7.62mm")
-			(description "FF2: set-dominant level latch, not an edge sampler; SET=ACK_ARM, RESET=any fault or lost READY, clock and D tied off")
+			(description "FF1: SET=FLT, RESET=RST_EFF, clock static; ~Q is the permit term")
 			(fields
 				(field
 					(name "Footprint") "Package_DIP:DIP-14_W7.62mm")
@@ -9606,7 +10143,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "FF2: set-dominant level latch, not an edge sampler; SET=ACK_ARM, RESET=any fault or lost READY, clock and D tied off")
+					(name "Description") "FF1: SET=FLT, RESET=RST_EFF, clock static; ~Q is the permit term")
 			)
 			(libsource
 				(lib "4xxx")
@@ -9633,7 +10170,7 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "ab0c9212-739a-5824-929a-526cf9498836" "8a22746f-202c-58c8-a482-cc09d107f8f2"
+			(tstamps "8a22746f-202c-58c8-a482-cc09d107f8f2" "ab0c9212-739a-5824-929a-526cf9498836"
 				"2dd0de45-fcbf-5681-abef-e277ae561904"
 			)
 			(units
@@ -10900,43 +11437,6 @@
 		)
 		(libpart
 			(lib "Device")
-			(part "D_Zener")
-			(description "Zener diode")
-			(footprints
-				(fp "TO-???*")
-				(fp "*_Diode_*")
-				(fp "*SingleDiode*")
-				(fp "D_*")
-			)
-			(fields
-				(field
-					(name "Reference") "D")
-				(field
-					(name "Value") "D_Zener")
-				(field
-					(name "Footprint")
-				)
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description") "Zener diode")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "K")
-					(type "passive")
-				)
-				(pin
-					(num "2")
-					(name "A")
-					(type "passive")
-				)
-			)
-		)
-		(libpart
-			(lib "Device")
 			(part "Fuse")
 			(description "Fuse")
 			(footprints
@@ -11946,6 +12446,33 @@
 		)
 		(net
 			(code "28")
+			(name "/GATE_SENSE")
+			(class "Default")
+			(node
+				(ref "R76")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R77")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP19")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "5")
+				(pinfunction "+_5")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "29")
 			(name "/GH1")
 			(class "Default")
 			(node
@@ -11970,7 +12497,167 @@
 			)
 		)
 		(net
-			(code "29")
+			(code "30")
+			(name "/GK1")
+			(class "Default")
+			(node
+				(ref "D9")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R66")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "31")
+			(name "/GK2")
+			(class "Default")
+			(node
+				(ref "D10")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R67")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "32")
+			(name "/GK3")
+			(class "Default")
+			(node
+				(ref "D11")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R68")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "33")
+			(name "/GK4")
+			(class "Default")
+			(node
+				(ref "D12")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R69")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "34")
+			(name "/GK5")
+			(class "Default")
+			(node
+				(ref "D13")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R70")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "35")
+			(name "/GK6")
+			(class "Default")
+			(node
+				(ref "D14")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R71")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "36")
+			(name "/GK7")
+			(class "Default")
+			(node
+				(ref "D15")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R72")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "37")
+			(name "/GK8")
+			(class "Default")
+			(node
+				(ref "D16")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R73")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "38")
+			(name "/GK9")
+			(class "Default")
+			(node
+				(ref "D17")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R74")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "39")
+			(name "/GK10")
+			(class "Default")
+			(node
+				(ref "D18")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R75")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "40")
 			(name "/GL1")
 			(class "Default")
 			(node
@@ -11995,66 +12682,71 @@
 			)
 		)
 		(net
-			(code "30")
-			(name "/GSUM")
+			(code "41")
+			(name "/GSMAX")
 			(class "Default")
 			(node
-				(ref "R66")
-				(pin "2")
+				(ref "D10")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R67")
-				(pin "2")
+				(ref "D11")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R68")
-				(pin "2")
+				(ref "D12")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R69")
-				(pin "2")
+				(ref "D13")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R70")
-				(pin "2")
+				(ref "D14")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R71")
-				(pin "2")
+				(ref "D15")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R72")
-				(pin "2")
+				(ref "D16")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R73")
-				(pin "2")
+				(ref "D17")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R74")
-				(pin "2")
+				(ref "D18")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R75")
-				(pin "2")
+				(ref "D9")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R76")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R77")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -12066,29 +12758,7 @@
 			)
 		)
 		(net
-			(code "31")
-			(name "/GSUM_SNS")
-			(class "Default")
-			(node
-				(ref "D9")
-				(pin "1")
-				(pinfunction "K_1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R77")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U5")
-				(pin "5")
-				(pinfunction "+_5")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "32")
+			(code "42")
 			(name "/HARD_TRIP")
 			(class "Default")
 			(node
@@ -12119,7 +12789,7 @@
 			)
 		)
 		(net
-			(code "33")
+			(code "43")
 			(name "/HB")
 			(class "Default")
 			(node
@@ -12135,7 +12805,7 @@
 			)
 		)
 		(net
-			(code "34")
+			(code "44")
 			(name "/HEALTHY")
 			(class "Default")
 			(node
@@ -12161,7 +12831,7 @@
 			)
 		)
 		(net
-			(code "35")
+			(code "45")
 			(name "/HO")
 			(class "Default")
 			(node
@@ -12177,7 +12847,7 @@
 			)
 		)
 		(net
-			(code "36")
+			(code "46")
 			(name "/H_OK_A")
 			(class "Default")
 			(node
@@ -12192,7 +12862,7 @@
 			)
 		)
 		(net
-			(code "37")
+			(code "47")
 			(name "/H_OK_B")
 			(class "Default")
 			(node
@@ -12207,7 +12877,7 @@
 			)
 		)
 		(net
-			(code "38")
+			(code "48")
 			(name "/LATCHED")
 			(class "Default")
 			(node
@@ -12229,7 +12899,7 @@
 			)
 		)
 		(net
-			(code "39")
+			(code "49")
 			(name "/LATCHED_N")
 			(class "Default")
 			(node
@@ -12245,7 +12915,7 @@
 			)
 		)
 		(net
-			(code "40")
+			(code "50")
 			(name "/LO")
 			(class "Default")
 			(node
@@ -12261,7 +12931,7 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "51")
 			(name "/NOT_FLT")
 			(class "Default")
 			(node
@@ -12276,7 +12946,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "52")
 			(name "/NOT_HARD_TRIP")
 			(class "Default")
 			(node
@@ -12291,7 +12961,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "53")
 			(name "/NOT_HEALTHY")
 			(class "Default")
 			(node
@@ -12306,7 +12976,7 @@
 			)
 		)
 		(net
-			(code "44")
+			(code "54")
 			(name "/NOT_READY")
 			(class "Default")
 			(node
@@ -12321,7 +12991,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "55")
 			(name "/OC")
 			(class "Default")
 			(node
@@ -12358,7 +13028,7 @@
 			)
 		)
 		(net
-			(code "46")
+			(code "56")
 			(name "/OCD")
 			(class "Default")
 			(node
@@ -12385,7 +13055,7 @@
 			)
 		)
 		(net
-			(code "47")
+			(code "57")
 			(name "/OCF")
 			(class "Default")
 			(node
@@ -12405,7 +13075,7 @@
 			)
 		)
 		(net
-			(code "48")
+			(code "58")
 			(name "/OCM")
 			(class "Default")
 			(node
@@ -12447,7 +13117,7 @@
 			)
 		)
 		(net
-			(code "49")
+			(code "59")
 			(name "/OC_FILT")
 			(class "Default")
 			(node
@@ -12474,7 +13144,7 @@
 			)
 		)
 		(net
-			(code "50")
+			(code "60")
 			(name "/OPERATOR_RUN")
 			(class "Default")
 			(node
@@ -12495,7 +13165,7 @@
 			)
 		)
 		(net
-			(code "51")
+			(code "61")
 			(name "/PCOLL")
 			(class "Default")
 			(node
@@ -12517,7 +13187,7 @@
 			)
 		)
 		(net
-			(code "52")
+			(code "62")
 			(name "/PDRV")
 			(class "Default")
 			(node
@@ -12533,7 +13203,7 @@
 			)
 		)
 		(net
-			(code "53")
+			(code "63")
 			(name "/PERMIT")
 			(class "Default")
 			(node
@@ -12554,7 +13224,7 @@
 			)
 		)
 		(net
-			(code "54")
+			(code "64")
 			(name "/PERMIT_RAIL")
 			(class "Default")
 			(node
@@ -12685,7 +13355,7 @@
 			)
 		)
 		(net
-			(code "55")
+			(code "65")
 			(name "/PGND")
 			(class "Default")
 			(node
@@ -12896,12 +13566,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "D9")
-				(pin "2")
-				(pinfunction "A_2")
-				(pintype "passive")
-			)
-			(node
 				(ref "J1")
 				(pin "2")
 				(pinfunction "Pin_2_2")
@@ -13086,7 +13750,7 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "R76")
+				(ref "R77")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -13245,7 +13909,7 @@
 			)
 		)
 		(net
-			(code "56")
+			(code "66")
 			(name "/POR")
 			(class "Default")
 			(node
@@ -13260,7 +13924,7 @@
 			)
 		)
 		(net
-			(code "57")
+			(code "67")
 			(name "/POR_RC")
 			(class "Default")
 			(node
@@ -13285,7 +13949,7 @@
 			)
 		)
 		(net
-			(code "58")
+			(code "68")
 			(name "/P_A")
 			(class "Default")
 			(node
@@ -13300,7 +13964,7 @@
 			)
 		)
 		(net
-			(code "59")
+			(code "69")
 			(name "/P_B")
 			(class "Default")
 			(node
@@ -13315,7 +13979,7 @@
 			)
 		)
 		(net
-			(code "60")
+			(code "70")
 			(name "/P_C")
 			(class "Default")
 			(node
@@ -13330,7 +13994,7 @@
 			)
 		)
 		(net
-			(code "61")
+			(code "71")
 			(name "/READY")
 			(class "Default")
 			(node
@@ -13361,7 +14025,7 @@
 			)
 		)
 		(net
-			(code "62")
+			(code "72")
 			(name "/READY_A")
 			(class "Default")
 			(node
@@ -13381,7 +14045,7 @@
 			)
 		)
 		(net
-			(code "63")
+			(code "73")
 			(name "/READY_B")
 			(class "Default")
 			(node
@@ -13396,7 +14060,7 @@
 			)
 		)
 		(net
-			(code "64")
+			(code "74")
 			(name "/REF_0V2")
 			(class "Default")
 			(node
@@ -13422,7 +14086,7 @@
 			)
 		)
 		(net
-			(code "65")
+			(code "75")
 			(name "/REF_1V0")
 			(class "Default")
 			(node
@@ -13466,7 +14130,7 @@
 			)
 		)
 		(net
-			(code "66")
+			(code "76")
 			(name "/REF_1V8")
 			(class "Default")
 			(node
@@ -13492,7 +14156,7 @@
 			)
 		)
 		(net
-			(code "67")
+			(code "77")
 			(name "/REF_2V5")
 			(class "Default")
 			(node
@@ -13540,7 +14204,7 @@
 			)
 		)
 		(net
-			(code "68")
+			(code "78")
 			(name "/RESET_OK")
 			(class "Default")
 			(node
@@ -13555,7 +14219,7 @@
 			)
 		)
 		(net
-			(code "69")
+			(code "79")
 			(name "/RST_A")
 			(class "Default")
 			(node
@@ -13570,7 +14234,7 @@
 			)
 		)
 		(net
-			(code "70")
+			(code "80")
 			(name "/RST_EFF")
 			(class "Default")
 			(node
@@ -13586,7 +14250,7 @@
 			)
 		)
 		(net
-			(code "71")
+			(code "81")
 			(name "/SOA0")
 			(class "Default")
 			(node
@@ -13602,7 +14266,7 @@
 			)
 		)
 		(net
-			(code "72")
+			(code "82")
 			(name "/SOA1")
 			(class "Default")
 			(node
@@ -13618,7 +14282,7 @@
 			)
 		)
 		(net
-			(code "73")
+			(code "83")
 			(name "/SOA2")
 			(class "Default")
 			(node
@@ -13634,7 +14298,7 @@
 			)
 		)
 		(net
-			(code "74")
+			(code "84")
 			(name "/SOA3")
 			(class "Default")
 			(node
@@ -13650,7 +14314,7 @@
 			)
 		)
 		(net
-			(code "75")
+			(code "85")
 			(name "/SOB0")
 			(class "Default")
 			(node
@@ -13666,7 +14330,7 @@
 			)
 		)
 		(net
-			(code "76")
+			(code "86")
 			(name "/SOB1")
 			(class "Default")
 			(node
@@ -13682,7 +14346,7 @@
 			)
 		)
 		(net
-			(code "77")
+			(code "87")
 			(name "/SOB2")
 			(class "Default")
 			(node
@@ -13698,7 +14362,7 @@
 			)
 		)
 		(net
-			(code "78")
+			(code "88")
 			(name "/SOB3")
 			(class "Default")
 			(node
@@ -13714,7 +14378,7 @@
 			)
 		)
 		(net
-			(code "79")
+			(code "89")
 			(name "/SS_READY")
 			(class "Default")
 			(node
@@ -13740,7 +14404,7 @@
 			)
 		)
 		(net
-			(code "80")
+			(code "90")
 			(name "/TG_HI")
 			(class "Default")
 			(node
@@ -13757,7 +14421,7 @@
 			)
 		)
 		(net
-			(code "81")
+			(code "91")
 			(name "/TG_LO")
 			(class "Default")
 			(node
@@ -13774,7 +14438,7 @@
 			)
 		)
 		(net
-			(code "82")
+			(code "92")
 			(name "/TG_SR")
 			(class "Default")
 			(node
@@ -13833,7 +14497,7 @@
 			)
 		)
 		(net
-			(code "83")
+			(code "93")
 			(name "/V5")
 			(class "Default")
 			(node
@@ -14018,7 +14682,7 @@
 			)
 		)
 		(net
-			(code "84")
+			(code "94")
 			(name "/V5_OK")
 			(class "Default")
 			(node
@@ -14038,7 +14702,7 @@
 			)
 		)
 		(net
-			(code "85")
+			(code "95")
 			(name "/V5_SNS")
 			(class "Default")
 			(node
@@ -14064,7 +14728,7 @@
 			)
 		)
 		(net
-			(code "86")
+			(code "96")
 			(name "/V12P")
 			(class "Default")
 			(node
@@ -14129,7 +14793,7 @@
 			)
 		)
 		(net
-			(code "87")
+			(code "97")
 			(name "/V12P_F")
 			(class "Default")
 			(node
@@ -14145,7 +14809,7 @@
 			)
 		)
 		(net
-			(code "88")
+			(code "98")
 			(name "/V12P_IN")
 			(class "Default")
 			(node
@@ -14161,7 +14825,7 @@
 			)
 		)
 		(net
-			(code "89")
+			(code "99")
 			(name "/V12P_OK")
 			(class "Default")
 			(node
@@ -14181,7 +14845,7 @@
 			)
 		)
 		(net
-			(code "90")
+			(code "100")
 			(name "/V12P_SNS")
 			(class "Default")
 			(node
@@ -14207,7 +14871,7 @@
 			)
 		)
 		(net
-			(code "91")
+			(code "101")
 			(name "/V12S")
 			(class "Default")
 			(node
@@ -14309,7 +14973,7 @@
 			)
 		)
 		(net
-			(code "92")
+			(code "102")
 			(name "/V12S_F")
 			(class "Default")
 			(node
@@ -14325,7 +14989,7 @@
 			)
 		)
 		(net
-			(code "93")
+			(code "103")
 			(name "/V12S_IN")
 			(class "Default")
 			(node
@@ -14341,7 +15005,7 @@
 			)
 		)
 		(net
-			(code "94")
+			(code "104")
 			(name "/V12S_OK")
 			(class "Default")
 			(node
@@ -14361,7 +15025,7 @@
 			)
 		)
 		(net
-			(code "95")
+			(code "105")
 			(name "/V12S_SNS")
 			(class "Default")
 			(node
@@ -14387,7 +15051,7 @@
 			)
 		)
 		(net
-			(code "96")
+			(code "106")
 			(name "unconnected-(U11-Pad12)")
 			(class "Default")
 			(node
@@ -14397,7 +15061,7 @@
 			)
 		)
 		(net
-			(code "97")
+			(code "107")
 			(name "unconnected-(U12B-~{Q}-Pad12)")
 			(class "Default")
 			(node
@@ -14408,7 +15072,7 @@
 			)
 		)
 		(net
-			(code "98")
+			(code "108")
 			(name "unconnected-(U13-Pad4)")
 			(class "Default")
 			(node
@@ -14418,7 +15082,7 @@
 			)
 		)
 		(net
-			(code "99")
+			(code "109")
 			(name "unconnected-(U18-NC-Pad2)")
 			(class "Default")
 			(node

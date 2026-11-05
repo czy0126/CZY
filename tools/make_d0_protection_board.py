@@ -491,9 +491,9 @@ def comparator_parts() -> list[Part]:
         Part("U5", "Comparator:LM2903", "LM393", soic, 300, 120,
              {"1": "V5_OK", "2": "REF_1V0", "3": "V5_SNS"},
              unit=1, rating="36 V",
-             note="V5_OK is also comparator_bias_good; U5B watches the gate sum"),
+             note="V5_OK is also comparator_bias_good; U5B watches the gate maximum"),
         Part("U5", "Comparator:LM2903", "LM393", soic, 300, 120,
-             {"5": "GSUM_SNS", "6": "REF_0V2", "7": "ANY_ON"}, unit=2),
+             {"5": "GATE_SENSE", "6": "REF_0V2", "7": "ANY_ON"}, unit=2),
         Part("U5", "Comparator:LM2903", "LM393", soic, 300, 120,
              {"4": "PGND", "8": "V5"}, unit=3),
         Part("R18", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 316, 108,
@@ -731,11 +731,21 @@ def driver_parts() -> list[Part]:
 
 
 def gate_load_parts() -> list[Part]:
-    """Ten gate-source pulldowns, ten dummy loads, and the ten-resistor gate sum."""
+    """Ten gate pulldowns, ten dummy loads, and the ten-way gate *maximum* detector.
+
+    The detector is a diode-OR, not a resistor sum.  A sum is linear in every
+    gate at once, so one gate parked at 3 V contributes only its share of a
+    shared node (0.150 V through the old ten-resistor star) and disappears under
+    the 0.200 V reference -- the board then reports "all off" while a FET sits
+    in its linear region.  A diode-OR passes the *highest* gate: the other nine
+    branches are reverse-biased and carry nothing, so no combination of the
+    gates that are off can pull the answer down.
+    """
     out: list[Part] = []
     sr = ["SOA0", "SOB0", "SOA1", "SOB1", "SOA2", "SOB2", "SOA3", "SOB3"]
     for index, net in enumerate(sr):
         gate = f"GA{index + 1}"
+        branch = f"GK{index + 1}"
         out += [
             Part(f"R{48 + index}", "Device:R", "2.2R", "Resistor_SMD:R_0603_1608Metric",
                  360, 292 + 9 * index, {"1": net, "2": gate},
@@ -746,12 +756,17 @@ def gate_load_parts() -> list[Part]:
             Part(f"C{32 + index}", "Device:C", "6.7nF/50V", "Capacitor_SMD:C_0603_1608Metric",
                  388, 292 + 9 * index, {"1": gate, "2": "PGND"}, rating="50 V",
                  source=f"{LIB}:106", note="dummy gate load = Cgate 6.7 nF"),
-            Part(f"R{66 + index}", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric",
-                 402, 292 + 9 * index, {"1": gate, "2": "GSUM"},
-                 note="gate-sum star: 10 V on this gate alone gives 0.500 V while the "
-                      "other nine are held low, 0.645 V while they float on their pulldowns"),
+            Part(f"R{66 + index}", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric",
+                 402, 292 + 9 * index, {"1": gate, "2": branch},
+                 note="gate-max branch: in series with D so the diode drop is set by a "
+                      "current this 1k fixes, and so ten gate nodes never share copper"),
+            Part(f"D{9 + index}", "Device:D_Schottky", "BAT54", "Diode_SMD:D_SOD-123",
+                 426, 292 + 9 * index, {"1": "GSMAX", "2": branch}, rating="30 V 200 mA",
+                 note="anode on the gate branch, cathode on GSMAX: only the highest gate "
+                      "forward-biases its diode"),
         ]
     for index, (gate, load) in enumerate((("GH1", "4nF"), ("GL1", "4nF"))):
+        branch = f"GK{9 + index}"
         out += [
             Part(f"R{64 + index}", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric",
                  416, 292 + 9 * index, {"1": gate, "2": "PGND"},
@@ -759,23 +774,23 @@ def gate_load_parts() -> list[Part]:
             Part(f"C{40 + index}", "Device:C", load, "Capacitor_SMD:C_0603_1608Metric",
                  430, 292 + 9 * index, {"1": gate, "2": "PGND"}, rating="50 V",
                  source=f"{DECK}:Cgh", note="dummy gate load = 4 nF"),
-            Part(f"R{74 + index}", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric",
-                 444, 292 + 9 * index, {"1": gate, "2": "GSUM"},
-                 note="gate-sum, primary pair"),
+            Part(f"R{74 + index}", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric",
+                 444, 292 + 9 * index, {"1": gate, "2": branch},
+                 note="gate-max branch, primary pair"),
+            Part(f"D{17 + index}", "Device:D_Schottky", "BAT54", "Diode_SMD:D_SOD-123",
+                 456, 292 + 9 * index, {"1": "GSMAX", "2": branch}, rating="30 V 200 mA",
+                 note="gate max detector, primary pair"),
         ]
-    out.append(Part("R76", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric", 450, 280,
-                    {"1": "GSUM", "2": "PGND"},
-                    note="gate-sum load: 0.050 V per gate, not 1k/(10k+1k) -- the other "
-                         "nine branches load the node too"))
     out += [
-        Part("R77", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 456, 280,
-             {"1": "GSUM", "2": "GSUM_SNS"},
-             note="series into the comparator: all ten gates at 10 V put GSUM at 5 V, "
-                  "above the LM393's VCC-1.5 V common-mode limit"),
-        Part("D9", "Device:D_Zener", "BZX84C3V0", "Package_TO_SOT_SMD:SOT-23", 464, 288,
-             {"1": "GSUM_SNS", "2": "PGND"},
-             note="clamps the sum at 3.0 V so ANY_ON never reads a gate state from an "
-                  "input outside the comparator's common-mode range"),
+        Part("R76", "Device:R", "22k", "Resistor_SMD:R_0603_1608Metric", 468, 270,
+             {"1": "GSMAX", "2": "GATE_SENSE"},
+             note="divider top.  With the ten 1k branches this bounds the comparator "
+                  "input by a ratio, not by a knee voltage: at most 2.629 V at 12 V and "
+                  "3.286 V at the 15 V TVS standoff"),
+        Part("R77", "Device:R", "6.2k", "Resistor_SMD:R_0603_1608Metric", 480, 270,
+             {"1": "GATE_SENSE", "2": "PGND"},
+             note="divider bottom: 3.5 V * 28.3k / 6.2k = 15.98 V of gate rail before the "
+                  "LM393 input reaches its common-mode limit"),
     ]
     return out
 
@@ -793,7 +808,8 @@ def connector_and_flag_parts() -> list[Part]:
             ("TP5", "OC"), ("TP6", "OC_FILT"), ("TP7", "HARD_TRIP"), ("TP8", "FAST_TRIP"),
             ("TP9", "HEALTHY"), ("TP10", "READY"), ("TP11", "LATCHED"), ("TP12", "ACK_LOW_OK"),
             ("TP13", "ACK_RISE"), ("TP14", "FLT"), ("TP15", "PERMIT"),
-            ("TP16", "PERMIT_RAIL"), ("TP17", "GSUM"), ("TP18", "ANY_ON")]):
+            ("TP16", "PERMIT_RAIL"), ("TP17", "GSMAX"), ("TP18", "ANY_ON"),
+            ("TP19", "GATE_SENSE")]):
         out.append(Part(ref, "Connector:TestPoint", net, tp, 40 + 14 * index, 360,
                         {"1": net}, rating="1 mm pad", note="scope probe point"))
     # ERC needs a source declaration only where every existing pin is passive:
@@ -1191,19 +1207,106 @@ def burden_numbers() -> tuple[float, float]:
     return float(data["slope_v_per_a_peak"]), float(data["trip_peak_a"])
 
 
-def gate_sum_per_gate(*, drivers_low: bool) -> float:
-    """V(GSUM) per 10 V on one gate, with the other nine at 0 V.
+def burden_gain() -> float:
+    """Rf/Rd1/Rd2 divider gain, from the published CT record.
 
-    ``drivers_low`` selects the nine quiet gates' impedance: a powered driver
-    holds them at 0 V, an unpowered one leaves them on their 10k pulldowns.  The
-    other nine branches load the node through their own 10k resistors, which is
-    why the old 1k/(10k+1k) = 0.0909 estimate was 1.4-1.8x too generous.
+    The slope above is quoted at the *OC pin*, behind this divider; ``V(ocdf)``
+    sits on the burden ahead of it.  Anything comparing the two thresholds has
+    to convert through this gain, or it reads 1/gain = 1.46x high.
     """
-    r_sum = resistance(part_value("R66"))
-    r_load = resistance(part_value("R76"))
-    r_quiet = 0.0 if drivers_low else resistance(part_value("R56"))
-    g_sum = 1 / r_sum
-    return g_sum / (9 / (r_sum + r_quiet) + 1 / r_load + g_sum)
+    data = json.loads((ROOT / CT_DESIGN).read_text(encoding="utf-8"))["as_built"]
+    return float(data["divider_gain"])
+
+
+def trip_timing_record() -> dict | None:
+    """The measured two-channel timing, if the tool that writes it has run.
+
+    Optional on purpose: generating the board needs no raw files, and a machine
+    without them must still rebuild the schematic.  When the record is present
+    its numbers are used instead of a remembered sentence.
+    """
+    path = ROOT / "design" / "v3" / "stage_f" / "d0_trip_timing.json"
+    if not path.is_file():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))["results"]
+
+
+# LM393 (LM2903) inputs are specified from 0 V to VCC-1.5 V; at V5 = 5 V that is
+# 3.5 V.  No LM393 datasheet is vendored in this repository, so this is the
+# existing conservative assumption rather than a verified limit --
+# tools/d0_analog_preflight.py keeps it on the open-items list.
+LM393_COMMON_MODE_LIMIT_V = 3.5
+
+# One gate driven at a time, at a level a healthy 12 V driver reaches with
+# margin.  The per-channel sweep in gate_sense_bring_up() uses it.
+BRING_UP_GATE_V = 10.0
+
+
+def gate_branch_resistance() -> float:
+    """The 1k between a gate and its detector diode, read from the part table."""
+    return resistance(part_value("R66"))
+
+
+def gate_sense_v(gate_v: float, *, conducting: int = 1, vf: float = 0.0) -> float:
+    """V(GATE_SENSE) when ``conducting`` gates sit at ``gate_v``.
+
+    Only the highest gate forward-biases its diode, so the ordinary case is one
+    gate: the other nine branches are reverse-biased and contribute nothing,
+    which is exactly why a diode-OR answers "is *any* gate on" while a resistor
+    sum answers "how much gate voltage is there in total".  ``conducting`` > 1
+    describes the special case where several gates share the *same* voltage; it
+    is what sizes the divider, because n parallel 1k branches are the lowest
+    series resistance the node can ever see.  ``vf`` lowers the node, so 0 V is
+    the worst case for the common-mode bound.
+    """
+    if conducting < 1:
+        raise ValueError("at least one gate has to conduct")
+    series = gate_branch_resistance() / conducting
+    top, bottom = resistance(part_value("R76")), resistance(part_value("R77"))
+    return (gate_v - vf) * bottom / (series + top + bottom)
+
+
+def gate_trip_v(vf: float = 0.0) -> float:
+    """Gate volts at which a single gate's branch reaches the 0.200 V reference.
+
+    ``vf`` is the detector diode's forward drop at that current; it adds to the
+    gate voltage needed, so the default 0 V is the optimistic end.
+    """
+    series = gate_branch_resistance()
+    top, bottom = resistance(part_value("R76")), resistance(part_value("R77"))
+    return divider_output("R6", "R7") * (series + top + bottom) / bottom + vf
+
+
+def gate_rail_for_common_mode() -> float:
+    """Gate rail at which all ten gates high land exactly on the VCC-1.5 V limit.
+
+    Ten conducting is the worst case for the comparator input, not the best:
+    parallel branches lower the series resistance, so the sense node reaches
+    higher for a given gate voltage than it does with one gate on.
+    """
+    series = gate_branch_resistance() / 10
+    top, bottom = resistance(part_value("R76")), resistance(part_value("R77"))
+    return LM393_COMMON_MODE_LIMIT_V * (series + top + bottom) / bottom
+
+
+def gate_sense_bring_up() -> list[dict]:
+    """The per-channel first-article sweep: one gate driven at a time.
+
+    An open diode or an open branch resistor blinds exactly one channel and
+    leaves the other nine working, so a single "all ten gates high" test cannot
+    see it -- the node still reads the all-ten value.  Ten gates driven one at a
+    time must each produce the same 2.123 V; the channel that reads low is the
+    open one.
+    """
+    gates = [f"GA{i}" for i in range(1, 9)] + ["GH1", "GL1"]
+    reference = divider_output("R6", "R7")
+    rows = []
+    for index, gate in enumerate(gates):
+        sense = gate_sense_v(BRING_UP_GATE_V, conducting=1)
+        rows.append({"gate": gate, "net": f"GK{index + 1}",
+                     "gate_v": BRING_UP_GATE_V, "gate_sense_v": sense,
+                     "reference_v": reference, "reads_on": sense > reference})
+    return rows
 
 
 def observations() -> list[dict]:
@@ -1214,22 +1317,63 @@ def observations() -> list[dict]:
     the reference base and were wrong by 1.4-1.8x on the gate sum.
     """
     slope, hard_a = burden_numbers()
+    gain = burden_gain()
     fast_v = divider_output("R4", "R5")
-    fast_a = fast_v / slope
+    # slope is burden-peak-current -> OC pin; V(ocdf) sits on the burden itself,
+    # so the burden node moves slope/gain per amp and the fast threshold is at
+    # fast_v * gain / slope.  Dividing by the slope alone inflates it 1/gain =
+    # 1.46x, which is how the board used to claim a 42.9 A fast threshold.
+    burden_v_per_a = slope / gain
+    fast_a = fast_v / burden_v_per_a
+    hard_v = divider_output("R2", "R3")
     ref_0v2 = divider_output("R6", "R7")
-    per_gate_low = gate_sum_per_gate(drivers_low=True)
-    per_gate_float = gate_sum_per_gate(drivers_low=False)
-    trip_low, trip_float = ref_0v2 / per_gate_low, ref_0v2 / per_gate_float
+    measured = trip_timing_record()
     return [
-        {"id": "FAST_IS_LESS_SENSITIVE_THAN_HARD",
+        {"id": "FAST_IS_EARLIER_BUT_NOT_MORE_SENSITIVE",
          "statement": f"The {fast_v:.3f} V fast threshold sits on the filtered burden "
-                      f"node (divider gain 24/35), so it corresponds to a higher primary "
-                      f"current than the {divider_output('R2', 'R3'):.3f} V hard trip: "
-                      f"{fast_a:.1f} A versus {hard_a:.1f} A peak ({fast_a / hard_a:.2f}x).",
-         "consequence": "The 'fast' channel is a confirmation channel, not a faster "
-                        "one. It cannot protect anything the hard trip does not already "
-                        "catch; it can only add a second opinion.",
-         "source": f"{DECK}:{deck_line('Rbur')}-{deck_line('Coc')}"},
+                      f"node (gain 1.0, one 1k/10n pole), the {hard_v:.3f} V hard trip "
+                      f"behind the Rf/Rd1/Rd2 divider (gain {gain:.4f}, two poles of "
+                      f"47 us and 75.4 us). Converted on their own nodes they are "
+                      f"{fast_a:.1f} A versus {hard_a:.1f} A peak: the fast channel is "
+                      f"the earlier one and the less sensitive one at the same time."
+                      + (f" Measured on the 48 V hot-fault pair it fires "
+                         f"{measured['fast_is_earlier_us']:.1f} us earlier "
+                         f"({measured['fast_delay_us']:.1f} us versus "
+                         f"{measured['hard_delay_us']:.1f} us after the fault)."
+                         if measured else ""),
+         "consequence": "'Faster' and 'more sensitive' are two claims and only the first "
+                        "one holds. A statement that the fast channel is both is a unit "
+                        "error: the two thresholds are on different nodes and one "
+                        "divider gain separates them.",
+         "source": ("design/v3/stage_f/d0_trip_timing.json" if measured
+                    else f"{DECK}:{deck_line('Rbur')}-{deck_line('Coc')}")},
+        {"id": "GATE_MAX_DETECTOR_REPORTS_THE_HIGHEST_GATE",
+         "statement": f"Each gate drives a 1k into its own Schottky; the ten cathodes "
+                      f"share GSMAX, divided by 22k/6.2k against the {ref_0v2:.3f} V "
+                      f"reference. Because only the highest gate forward-biases its "
+                      f"diode, one gate at 3 V reads "
+                      f"{gate_sense_v(3.0, conducting=1):.3f} V -- "
+                      f"{gate_sense_v(3.0, conducting=1) / ref_0v2:.1f}x the reference -- "
+                      f"whatever the other nine are doing, where the ten-resistor sum it "
+                      f"replaces read 0.150 V, below the reference, i.e. 'off'. The trip "
+                      f"is {gate_trip_v():.3f} V of gate voltage plus the diode drop, "
+                      f"under VGS(th) min = 1.3 V, so a FET that is barely conducting "
+                      f"already reads on. All ten high give "
+                      f"{gate_sense_v(12.0, conducting=10):.3f} V at the 12 V rail and "
+                      f"{gate_sense_v(15.0, conducting=10):.3f} V at the 15 V TVS "
+                      f"standoff, both inside the LM393's VCC-1.5 V = 3.5 V limit; that "
+                      f"bound is a resistor ratio, so it holds for any diode drop, which "
+                      f"the BZX84C3V0 it replaces could not -- a Zener knee is specified "
+                      f"at 5 mA and this node spends tens of microamps.",
+         "consequence": "It answers 'is any gate on' without being diluted by gates that "
+                        "are off, but it cannot say which gate, and an open diode or "
+                        "branch resistor blinds one channel invisibly to an all-high "
+                        "test -- hence the ten-step bring-up sweep in "
+                        "gate_sense_bring_up(). The diode drop over temperature has no "
+                        "vendored datasheet, so the trip band between the ideal "
+                        f"{gate_trip_v():.3f} V and VGS(th) min 1.3 V is UNVERIFIED "
+                        "until measured at first article.",
+         "source": "DESIGN_PROPOSAL"},
         {"id": "RAIL_GOOD_TRIP_IS_A_DIVIDER_RATIO",
          "statement": f"Both 12 V supervisors compare a 100k/14.7k divider against the "
                       f"{divider_output('R2', 'R3'):.3f} V reference: trip "
@@ -1250,21 +1394,6 @@ def observations() -> list[dict]:
                         "Bench measurement at first article is required before the "
                         "permit stage can be called qualified.",
          "source": f"{CTRL}:proposed_sr_channels"},
-        {"id": "ALL_TEN_OFF_IS_A_SUM_NOT_A_PER_GATE_COMPARATOR",
-         "statement": f"The ten gates are summed through ten 10k resistors into GSUM "
-                      f"with a 1k load and compared against {ref_0v2:.3f} V. One gate at "
-                      f"10 V reads {10 * per_gate_low:.3f} V while the other nine drivers "
-                      f"hold their gates low, or {10 * per_gate_float:.3f} V while they "
-                      f"float on their pulldowns. All ten high would drive GSUM to 5 V, so "
-                      f"R77/D9 clamp the comparator input at 3.0 V: the sum is kept inside "
-                      f"the LM393's VCC-1.5 V = 3.5 V common-mode limit, where an "
-                      f"out-of-range input could otherwise read low, i.e. 'all off'.",
-         "consequence": f"The threshold therefore trips at {trip_float:.1f} V to "
-                        f"{trip_low:.1f} V on any single gate, so a gate parked at 3 V is "
-                        f"reported as 'off' -- 1.4-1.8x worse than the 2.2 V this note "
-                        f"claimed before the sums were computed. It also cannot name which "
-                        f"gate is on.",
-         "source": "DESIGN_PROPOSAL"},
         {"id": "ACK_TIMING_UNQUALIFIED",
          "statement": "The release token is a level latch, not an edge sampler: "
                       "ACK_ARM = READY and the button not pressed sets it, and any fault "
@@ -1363,7 +1492,7 @@ def check() -> None:
         raise SystemExit("ERC is not clean -- fix the circuit or record why each one is accepted")
     required = ["V12P", "V12S", "V5", "PGND", "OC", "HARD_TRIP", "FAST_TRIP",
                 "HEALTHY", "READY", "LATCHED", "ACK_LOW_OK", "ACK_ARM", "FLT",
-                "PERMIT", "PERMIT_RAIL", "GSUM", "GSUM_SNS"]
+                "PERMIT", "PERMIT_RAIL", "GSMAX", "GATE_SENSE"]
     # Nets are named "/<label>" on a single sheet, so a substring match on the bare
     # label never finds them -- parse the name field instead.
     net_names = set(re.findall(r'\(name "/([^"]+)"\)', text))

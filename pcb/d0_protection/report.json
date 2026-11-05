@@ -4,11 +4,11 @@
   "hardware_built": false,
   "fabrication_approved": false,
   "logic_verified_against": "tools/two_tier_fault_logic.py",
-  "part_instances": 217,
-  "physical_parts": 176,
-  "nets": 95,
+  "part_instances": 227,
+  "physical_parts": 186,
+  "nets": 105,
   "sourced_values": 36,
-  "design_proposals": 181,
+  "design_proposals": 191,
   "parts": [
     {
       "ref": "J1",
@@ -1269,7 +1269,15 @@
     {
       "ref": "R66",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D9",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1301,7 +1309,15 @@
     {
       "ref": "R67",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D10",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1333,7 +1349,15 @@
     {
       "ref": "R68",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D11",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1365,7 +1389,15 @@
     {
       "ref": "R69",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D12",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1397,7 +1429,15 @@
     {
       "ref": "R70",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D13",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1429,7 +1469,15 @@
     {
       "ref": "R71",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D14",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1461,7 +1509,15 @@
     {
       "ref": "R72",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D15",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1493,7 +1549,15 @@
     {
       "ref": "R73",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D16",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1517,7 +1581,15 @@
     {
       "ref": "R74",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D17",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1541,7 +1613,15 @@
     {
       "ref": "R75",
       "unit": 1,
-      "value": "10k",
+      "value": "1k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "D18",
+      "unit": 1,
+      "value": "BAT54",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1549,7 +1629,7 @@
     {
       "ref": "R76",
       "unit": 1,
-      "value": "1k",
+      "value": "22k",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1557,15 +1637,7 @@
     {
       "ref": "R77",
       "unit": 1,
-      "value": "10k",
-      "dnp": false,
-      "provenance": "DESIGN_PROPOSAL",
-      "source": "DESIGN_PROPOSAL"
-    },
-    {
-      "ref": "D9",
-      "unit": 1,
-      "value": "BZX84C3V0",
+      "value": "6.2k",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1709,7 +1781,7 @@
     {
       "ref": "TP17",
       "unit": 1,
-      "value": "GSUM",
+      "value": "GSMAX",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1718,6 +1790,14 @@
       "ref": "TP18",
       "unit": 1,
       "value": "ANY_ON",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "TP19",
+      "unit": 1,
+      "value": "GATE_SENSE",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1892,11 +1972,57 @@
       "R63.1",
       "R73.1"
     ],
+    "GATE_SENSE": [
+      "R76.2",
+      "R77.1",
+      "TP19.1",
+      "U5.5"
+    ],
     "GH1": [
       "C40.1",
       "R46.2",
       "R64.1",
       "R74.1"
+    ],
+    "GK1": [
+      "D9.2",
+      "R66.2"
+    ],
+    "GK10": [
+      "D18.2",
+      "R75.2"
+    ],
+    "GK2": [
+      "D10.2",
+      "R67.2"
+    ],
+    "GK3": [
+      "D11.2",
+      "R68.2"
+    ],
+    "GK4": [
+      "D12.2",
+      "R69.2"
+    ],
+    "GK5": [
+      "D13.2",
+      "R70.2"
+    ],
+    "GK6": [
+      "D14.2",
+      "R71.2"
+    ],
+    "GK7": [
+      "D15.2",
+      "R72.2"
+    ],
+    "GK8": [
+      "D16.2",
+      "R73.2"
+    ],
+    "GK9": [
+      "D17.2",
+      "R74.2"
     ],
     "GL1": [
       "C41.1",
@@ -1904,25 +2030,19 @@
       "R65.1",
       "R75.1"
     ],
-    "GSUM": [
-      "R66.2",
-      "R67.2",
-      "R68.2",
-      "R69.2",
-      "R70.2",
-      "R71.2",
-      "R72.2",
-      "R73.2",
-      "R74.2",
-      "R75.2",
-      "R76.1",
-      "R77.1",
-      "TP17.1"
-    ],
-    "GSUM_SNS": [
+    "GSMAX": [
+      "D10.1",
+      "D11.1",
+      "D12.1",
+      "D13.1",
+      "D14.1",
+      "D15.1",
+      "D16.1",
+      "D17.1",
+      "D18.1",
       "D9.1",
-      "R77.2",
-      "U5.5"
+      "R76.1",
+      "TP17.1"
     ],
     "HARD_TRIP": [
       "R14.2",
@@ -2103,7 +2223,6 @@
       "C9.2",
       "D3.2",
       "D4.2",
-      "D9.2",
       "J1.2",
       "J2.2",
       "J4.4",
@@ -2140,7 +2259,7 @@
       "R64.2",
       "R65.2",
       "R7.2",
-      "R76.2",
+      "R77.2",
       "U1.2",
       "U10.7",
       "U11.13",
@@ -2427,10 +2546,16 @@
   },
   "observations": [
     {
-      "id": "FAST_IS_LESS_SENSITIVE_THAN_HARD",
-      "statement": "The 1.769 V fast threshold sits on the filtered burden node (divider gain 24/35), so it corresponds to a higher primary current than the 1.000 V hard trip: 42.9 A versus 24.2 A peak (1.77x).",
-      "consequence": "The 'fast' channel is a confirmation channel, not a faster one. It cannot protect anything the hard trip does not already catch; it can only add a second opinion.",
-      "source": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118-123"
+      "id": "FAST_IS_EARLIER_BUT_NOT_MORE_SENSITIVE",
+      "statement": "The 1.769 V fast threshold sits on the filtered burden node (gain 1.0, one 1k/10n pole), the 1.000 V hard trip behind the Rf/Rd1/Rd2 divider (gain 0.6857, two poles of 47 us and 75.4 us). Converted on their own nodes they are 29.4 A versus 24.2 A peak: the fast channel is the earlier one and the less sensitive one at the same time. Measured on the 48 V hot-fault pair it fires 29.9 us earlier (10.2 us versus 40.1 us after the fault).",
+      "consequence": "'Faster' and 'more sensitive' are two claims and only the first one holds. A statement that the fast channel is both is a unit error: the two thresholds are on different nodes and one divider gain separates them.",
+      "source": "design/v3/stage_f/d0_trip_timing.json"
+    },
+    {
+      "id": "GATE_MAX_DETECTOR_REPORTS_THE_HIGHEST_GATE",
+      "statement": "Each gate drives a 1k into its own Schottky; the ten cathodes share GSMAX, divided by 22k/6.2k against the 0.200 V reference. Because only the highest gate forward-biases its diode, one gate at 3 V reads 0.637 V -- 3.2x the reference -- whatever the other nine are doing, where the ten-resistor sum it replaces read 0.150 V, below the reference, i.e. 'off'. The trip is 0.942 V of gate voltage plus the diode drop, under VGS(th) min = 1.3 V, so a FET that is barely conducting already reads on. All ten high give 2.629 V at the 12 V rail and 3.286 V at the 15 V TVS standoff, both inside the LM393's VCC-1.5 V = 3.5 V limit; that bound is a resistor ratio, so it holds for any diode drop, which the BZX84C3V0 it replaces could not -- a Zener knee is specified at 5 mA and this node spends tens of microamps.",
+      "consequence": "It answers 'is any gate on' without being diluted by gates that are off, but it cannot say which gate, and an open diode or branch resistor blinds one channel invisibly to an all-high test -- hence the ten-step bring-up sweep in gate_sense_bring_up(). The diode drop over temperature has no vendored datasheet, so the trip band between the ideal 0.942 V and VGS(th) min 1.3 V is UNVERIFIED until measured at first article.",
+      "source": "DESIGN_PROPOSAL"
     },
     {
       "id": "RAIL_GOOD_TRIP_IS_A_DIVIDER_RATIO",
@@ -2443,12 +2568,6 @@
       "statement": "UCC27524ADR ENA/ENB thresholds at VDD = 12 V are not checked against a datasheet: no vendor datasheet is vendored in this repo.",
       "consequence": "A 5 V PERMIT_RAIL is assumed to be a valid logic high. Bench measurement at first article is required before the permit stage can be called qualified.",
       "source": "hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels"
-    },
-    {
-      "id": "ALL_TEN_OFF_IS_A_SUM_NOT_A_PER_GATE_COMPARATOR",
-      "statement": "The ten gates are summed through ten 10k resistors into GSUM with a 1k load and compared against 0.200 V. One gate at 10 V reads 0.500 V while the other nine drivers hold their gates low, or 0.645 V while they float on their pulldowns. All ten high would drive GSUM to 5 V, so R77/D9 clamp the comparator input at 3.0 V: the sum is kept inside the LM393's VCC-1.5 V = 3.5 V common-mode limit, where an out-of-range input could otherwise read low, i.e. 'all off'.",
-      "consequence": "The threshold therefore trips at 3.1 V to 4.0 V on any single gate, so a gate parked at 3 V is reported as 'off' -- 1.4-1.8x worse than the 2.2 V this note claimed before the sums were computed. It also cannot name which gate is on.",
-      "source": "DESIGN_PROPOSAL"
     },
     {
       "id": "ACK_TIMING_UNQUALIFIED",

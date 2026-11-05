@@ -62,8 +62,10 @@ BOARDS: list[dict] = [
     {
         "id": "d0_protection",
         "title": "D0 ten-channel protection logic board",
-        "what": "CD4013 fault latches, the ten-way sum comparator and the ACK token, "
-                "with the POR folded into the latch.  Schematic and ERC only.",
+        "what": "CD4013 fault latches, the ten-way gate-maximum detector (one Schottky "
+                "per gate into a 22k/6.2k divider, replacing the ten-resistor sum) and "
+                "the ACK token, with the POR folded into the latch.  Schematic and "
+                "ERC only.",
         "generator": "python tools/make_d0_protection_board.py --check",
         "schematic": "pcb/d0_protection/d0_protection.kicad_sch",
         "board": None,

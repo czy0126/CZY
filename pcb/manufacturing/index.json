@@ -72,12 +72,12 @@
     {
       "id": "d0_protection",
       "title": "D0 ten-channel protection logic board",
-      "what": "CD4013 fault latches, the ten-way sum comparator and the ACK token, with the POR folded into the latch.  Schematic and ERC only.",
+      "what": "CD4013 fault latches, the ten-way gate-maximum detector (one Schottky per gate into a 22k/6.2k divider, replacing the ten-resistor sum) and the ACK token, with the POR folded into the latch.  Schematic and ERC only.",
       "generator": "python tools/make_d0_protection_board.py --check",
       "schematic": "pcb/d0_protection/d0_protection.kicad_sch",
       "board": null,
       "fab": null,
-      "schematic_sha256": "ede3f67ecf5f04ad3804e82cca5bd19dc791b77ecd7a18c54a60788956939b45",
+      "schematic_sha256": "7d61e9aa8cd90541d67cde6399cb857cf968e8a8fb589ec58e6b02e667b600f1",
       "status": "SCHEMATIC_ONLY",
       "not_fabricable_because": [
         "no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper"
