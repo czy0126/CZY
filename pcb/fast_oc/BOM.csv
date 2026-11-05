@@ -3,7 +3,7 @@ J1,5V/OCD/FAST_TRIP,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,5
 C1,1uF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,supply bulk,,,,1
 C2,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,at U1 pin 4,,,,1
 U1,TLV3501AIDBVR,Package_TO_SOT_SMD:SOT-23-6,2.7-5.5 V,"pin 1 = IN-, pin 3 = IN+, pin 6 = SHDN tied LOW to enable",,TLV3501AIDBVR,,1
-U2,LM4040D25IDBZR,Package_TO_SOT_SMD:SOT-23,2.5 V,shunt reference; pin 3 of the SOT-23 is NC,,LM4040D25IDBZR,,1
+U2,LM4040D25IDBZR,Package_TO_SOT_SMD:SOT-23,2.5 V,TI DBZ pin3 *: float or connect to anode; for EMI prefer anode,,LM4040D25IDBZR,,1
 R1,2.4k,Resistor_SMD:R_0603_1608Metric,,"reference bias, (5-2.5)/2.4k = 1.04 mA",,,,1
 C3,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,reference bypass,,,,1
 R2,30k 1%,Resistor_SMD:R_0603_1608Metric,,divider top; 1/3 of the burden voltage,,,,1
