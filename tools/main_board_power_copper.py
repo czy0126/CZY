@@ -94,6 +94,19 @@ STATUS = "ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET"
 # Nets whose series path the 0.15 mOhm output budget is measured against.
 OUTPUT_NETS = ("PGND", "VOUT")
 
+# Why each one-pad net ends here, keyed by net name.  A one-pad net is a claim
+# that the net continues *off* this board, so it needs a reason -- and the table
+# is checked against the live list (``single_pad_note``) in both directions, so a
+# reason cannot outlive its net and a new one-pad net cannot appear unannounced.
+# The dict exists because the typed sentence it replaces outlived the list: it
+# still named "the CT rectifier" after D_CT1-D_CT4 were placed and CS1/CS2 had
+# three pads and a track each.
+SINGLE_PAD_REASONS = {
+    "FAULT_IN": "the crowbar's fault input, which comes from the D0 protection board",
+    "GH_DRV": "the high-side gate drive, whose driver sits on the control board",
+    "GL_DRV": "the low-side gate drive, whose driver sits on the control board",
+}
+
 
 # ---------------------------------------------------------------- placement
 def placement_text(path: Path | None = None) -> str:
@@ -197,10 +210,30 @@ def route_plan(pads: list[router.Pad], ids: dict[str, int],
     return widths, routable, [name[n] for n in single]
 
 
+def single_pad_note(single: list[str]) -> str:
+    """The one sentence the report gives for every net that leaves the board.
+
+    Checked in both directions against ``SINGLE_PAD_REASONS``: a live one-pad net
+    with no reason, and a reason whose net now has two pads, are both mistakes.
+    The second is the one that actually happened -- prose listing nets that had
+    already been closed -- and it is invisible to the board and to the DRC.
+    """
+    unknown = sorted(n for n in single if n not in SINGLE_PAD_REASONS)
+    stale = sorted(n for n in SINGLE_PAD_REASONS if n not in single)
+    if unknown or stale:
+        raise SystemExit(
+            f"single-pad nets with no reason {unknown}; reasons whose net is no "
+            f"longer one-pad {stale} -- edit SINGLE_PAD_REASONS, the report's "
+            "sentence and its reasons are the same table")
+    return "; ".join(SINGLE_PAD_REASONS[n] for n in sorted(single))
+
+
 def route_board(text: str) -> tuple[router.RouteResult, dict[str, int], list[router.Pad], list[str]]:
     ids = net_table()
     pads = pads_of(text, ids)
     widths, order, single = route_plan(pads, ids)
+    # Before the route, not after: the check is free and the route is minutes.
+    single_pad_note(single)
     w, d = a5.board_rect()
     result = router.route(pads, w, d, [], widths=widths, order=order)
     return result, ids, pads, single
@@ -527,10 +560,11 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
             "track_width_mm": {"power": POWER_WIDTH_MM, "signal": SIGNAL_WIDTH_MM},
             "power_nets": power_nets,
             "signal_nets": signal_nets,
-            # Derived from ``single`` rather than typed: the list moved three times
-            # under package C (gate taps became two-pad nets, then VD*/VG* did, then
-            # the crowbar made REG* two-pad nets and put FAULT_IN on it) and a typed
-            # explanation kept naming nets that no longer leave the board.
+            # Derived from ``single`` and ``SINGLE_PAD_REASONS``, never typed: the
+            # list moved four times under package C (gate taps became two-pad nets,
+            # then VD*/VG* did, then the crowbar made REG* two-pad nets and put
+            # FAULT_IN on it, then the CT bridge gave CS1/CS2 three pads each) and a
+            # typed explanation kept naming nets that no longer leave the board.
             "width_basis": f"{len(power_nets)} nets at {POWER_WIDTH_MM} mm "
                            f"({', '.join(power_nets)}) because they are the nets the "
                            "0.15 mOhm budget and what_a_track_would_need are measured "
@@ -541,9 +575,8 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
                            "crossed one. The "
                            f"{len(single)} single-pad nets "
                            f"({', '.join(sorted(single))}) are ends that leave this "
-                           "board -- the gate drivers, the CT rectifier, and the "
-                           "crowbar's fault input, which comes from the D0 protection "
-                           "board -- so no track is owed on them",
+                           f"board -- {single_pad_note(single)} -- so no track is "
+                           "owed on them",
             "router": "tools/sr_board_router.py (deterministic grid router, "
                       "0.125 mm pitch, 0.20 mm clearance)",
         },

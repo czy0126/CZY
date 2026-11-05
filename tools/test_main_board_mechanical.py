@@ -707,10 +707,78 @@ def test_a_one_pad_net_is_listed_rather_than_read_as_routed():
     """
     nets = mbm.nets_report()
     single = set(nets["single_pad_nets"])
-    assert single == {"CS1", "CS2", "GH_DRV", "GL_DRV", "FAULT_IN"}
-    assert len(single) == 5
+    assert single == {"GH_DRV", "GL_DRV", "FAULT_IN"}
     assert "owes no track" in nets["single_pad_nets_note"]
-    assert "FAULT_IN" in nets["single_pad_nets_note"]
+    # every name the list holds has to be named in the prose beside it: the
+    # note is a literal, and a note that describes the list it used to have is
+    # exactly how a single-pad net gets read as routed.
+    for name in single:
+        assert name in nets["single_pad_nets_note"], name
+
+
+def test_the_ct_overcurrent_chain_closes_the_secondary_and_leaves_one_hole():
+    """Until the bridge lands, CS1/CS2 carry one pad each -- the CT's own logical
+    terminal -- so they are indistinguishable from an unrouted net.  Placing
+    D_CT1-D_CT4 and the divider closes both secondaries, creates OCD/OCM/OC1/OC
+    and takes the one-pad list down to the three ends that are genuinely
+    off-board.
+
+    The pad counts are read off ``pin_footprint_review.csv``, not chosen here:
+    D_CT1/D_CT2 put their cathodes on OCD, D_CT3/D_CT4 their anodes on OCM, and
+    R15/R16/R17/C11/C12 are the 1k/10k/24k/47n/10n divider the deck's OC network
+    already carries.  U1 is not on this board, so OC is three pads and no more.
+
+    R3 -- the 10 ohm burden across OCD/OCM -- is deliberately absent.  Its
+    value is frozen and its package is not: ``bom_draft.csv`` says "-", and the
+    measured 125.7 mW startup burden is 100.6 % of an 0805's 0.125 W rating.
+    Placing a 0603 (what the native schematic still carries) would draw a
+    resistor that cannot take the energy; placing a 1206 would be a selection
+    nobody has made.  An empty position with a stated reason is the honest third
+    option, and ``not_placed_here_netlist_refs`` has to say so.
+    """
+    refs = {p.ref for p in mbm.PARTS}
+    assert {"D_CT1", "D_CT2", "D_CT3", "D_CT4",
+            "R15", "R16", "R17", "C11", "C12"} <= refs
+    assert "R3" not in refs
+
+    nets = mbm.nets_report()
+    pads = {n["net"]: n["pads"] for n in nets["nets"]}
+    assert pads["CS1"] == 3, pads["CS1"]        # CT.SEC_A + D_CT1.1 + D_CT3.3
+    assert pads["CS2"] == 3, pads["CS2"]        # CT.SEC_B + D_CT2.1 + D_CT4.3
+    assert pads["OCD"] == 3, pads["OCD"]        # D_CT1.3 + D_CT2.3 + R15.1
+    assert pads["OCM"] == 5, pads["OCM"]        # D_CT3.1 + D_CT4.1 + R17.2 + C11.2 + C12.2
+    assert pads["OC1"] == 3, pads["OC1"]        # R15.2 + R16.1 + C11.1
+    assert pads["OC"] == 3, pads["OC"]          # R16.2 + R17.1 + C12.1
+    assert "R3" in nets["not_placed_here_netlist_refs"]
+    assert "R3" in nets["not_placed_here_reason"]
+
+
+def test_the_ct_sense_chain_sits_in_the_band_between_the_ct_and_the_crowbar():
+    """The sense chain goes in the one band that is free at y 59.5-65.3: below
+    the CT and above the REG crowbar.  Both edges are 1.2 mm, which is the
+    clearance the crowbar row already broke as a minimum -- so this row cannot
+    be slid to make a net shorter without eating one of them.
+
+    All nine parts are checked, not just the bridge: the divider sits in the same
+    band for the same reason, and a filter that only matched ``D_CT*`` left four
+    of them free to drift.
+    """
+    refs = ["D_CT1", "D_CT2", "D_CT3", "D_CT4", "R15", "R16", "R17", "C11", "C12"]
+    row = {p.ref: p for p in mbm.PARTS if p.ref in refs}
+    assert sorted(row) == sorted(refs)
+    for ref, part in row.items():
+        x0, y0, x1, y1 = mbm.bbox(part)
+        assert 59.5 < y0 and y1 < 65.3, (ref, y0, y1)
+    # max-min: the deepest part is the SOT-23, and it is centred in the band.
+    # If y were a round number picked first, these two gaps would differ.
+    deepest = max(row.values(), key=lambda p: p.d_mm)
+    assert deepest.d_mm == 3.40, deepest.d_mm
+    _, y0, _, y1 = mbm.bbox(deepest)
+    assert abs((y0 - 59.5) - (65.3 - y1)) < 1e-9, (y0 - 59.5, 65.3 - y1)
+    # left to right in signal order: bridge first, then the divider
+    order = ["D_CT1", "D_CT2", "D_CT3", "D_CT4"]
+    xs = [mbm.bbox(next(p for p in mbm.PARTS if p.ref == r))[0] for r in order]
+    assert xs == sorted(xs), xs
 
 
 def test_every_gate_resistor_lands_directly_under_the_gate_it_serves():
@@ -860,11 +928,14 @@ def test_the_resistor_values_come_from_the_register_not_the_review_table():
     A 10 k gate resistor would slow a real SR edge by an order of magnitude and a
     10 k Kelvin link would not sense anything, so the value has to come from the
     register that owns it -- and that has to be checked against the file, not
-    against a constant in the test.
+    against a constant in the test.  The CT divider legs joined the register
+    when they were placed: 1 kohm / 10 kohm / 24 kohm, the same three the BOM
+    freezes.
     """
     eco = json.loads(mbm.ECO.read_text(encoding="utf-8"))["rows"]
     stated = {r["ref"]: r["existing_value_or_rating"] for r in eco}
-    register = [f"R{i}" for i in (4, 5)] + [f"R{i}" for i in range(20, 36)]
+    register = ([f"R{i}" for i in (4, 5)] + [f"R{i}" for i in range(20, 36)]
+                + [f"R{i}" for i in (15, 16, 17)])
     all_0603 = {p.ref: p.value for p in mbm.PARTS if p.footprint == mbm.R0603_FP}
     # The crowbar's three 0603s share the footprint but not this source: their
     # values are the validation board's, checked against its BOM instead.  Naming

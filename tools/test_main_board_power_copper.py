@@ -53,25 +53,60 @@ def test_every_routable_net_is_connected(routed):
     assert result.unrouted == []
     assert result.failures == []
     # one pad per net is not a connection to make; it is a net that leaves the board
-    assert len(single) == 5
+    assert len(single) == 3
 
 
-def test_the_five_single_pad_nets_are_the_off_board_ends_of_the_taps(routed):
-    """These leave the board for the control area, the CT bridge and the crowbar.
+def test_the_three_single_pad_nets_are_the_off_board_ends_of_the_taps(routed):
+    """These leave the board for the gate drivers and the crowbar.
 
     They are reported rather than dropped: a net with one pad draws no ratsnest
     line, so silence would read as "already connected" -- the same trap A5's
     ``single_pad_nets`` exists for.
 
-    The set has moved three times under package C.  Placing the gate resistors
+    The set has moved four times under package C.  Placing the gate resistors
     turned GA*/GB*/GH/GL into two-pad nets; placing U3-U6 took all sixteen
     VD*/VG* off the list and put REG1-REG4 on it; placing the REG crowbar took
     REG1-REG4 off again -- each now reaches its 4.7 ohm -- and put FAULT_IN on
-    it, the crowbar's one off-board end.  The *set* is asserted, not a count: a
-    count would not have noticed which nets moved.
+    it; placing the CT rectifier (D_CT1-D_CT4) finally gave CS1 and CS2 three
+    pads each, because the bridge that closes the secondary now sits on this
+    board.  The *set* is asserted, not a count: a count would not have noticed
+    which nets moved.
     """
     _, _, _, single = routed
-    assert sorted(single) == sorted(["CS1", "CS2", "FAULT_IN", "GH_DRV", "GL_DRV"])
+    assert sorted(single) == sorted(["FAULT_IN", "GH_DRV", "GL_DRV"])
+
+
+def test_each_single_pad_net_carries_its_own_reason(routed):
+    """A one-pad net is a claim that the net continues *off* this board.
+
+    The report used to explain the list with one typed sentence, and that
+    sentence outlived the list: after the CT bridge was placed it still said
+    "the CT rectifier" among the ends, describing a net that now has three
+    pads and a track.  So the reasons live in a table keyed by net name and the
+    key set has to equal the live list -- a reason cannot outlive its net, and
+    a new one-pad net cannot appear without someone saying where it goes.
+    """
+    _, _, _, single = routed
+    assert set(m.SINGLE_PAD_REASONS) == set(single)
+    for net, why in m.SINGLE_PAD_REASONS.items():
+        assert net not in why, f"{net}: say where it goes, do not repeat the name"
+
+
+def test_the_width_basis_explains_only_the_nets_that_are_still_single(routed):
+    """The prose beside a list must describe that list, not the one before it."""
+    result, ids, pads, single = routed
+    board = m.board_file(m.placement_text(), result, ids)
+    basis = m.report(board, result, ids, pads, single)["route"]["width_basis"]
+    for net in single:
+        assert net in basis
+    # the sentence is the table, word for word -- typed prose beside a list is
+    # how the previous one survived three list changes
+    for why in m.SINGLE_PAD_REASONS.values():
+        assert why in basis
+    for gone in ("CS1", "CS2"):
+        assert gone not in basis, (
+            "CS1/CS2 now reach the bridge on this board; the sentence that "
+            "listed them as off-board ends has to go with them")
 
 
 def test_the_12v_bus_reaches_all_four_controllers(routed):

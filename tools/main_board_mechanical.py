@@ -37,9 +37,10 @@ Every outline carries an evidence class, and the report prints it:
 ``digitised-datasheet``  a land pattern measured off the datasheet's board-pads
                     figure (the SR FET).  Better than a borrowed library part,
                     still not vendor CAD and not checked against IPC-7351.
-``kicad-library``   the stock footprint's own dimensions.  No part uses this
-                    class any more; the machinery is kept because the vendored
-                    library and its PROVENANCE guard are still exercised.
+``kicad-library``   the stock footprint's own dimensions.  The CT rectifier and
+                    its divider (D_CT1-D_CT4, R15-R17, C11-C12) use this class:
+                    the BOM fixes the package and the value, the land is the
+                    vendored KiCad one, and no vendor drawing exists.
 ``datasheet``       a package size the BOM marks VERIFIED.  Body only: the
                     part's pads on this board are still placeholders, which is
                     why the report lists it under ``land_pattern_provisional``.
@@ -195,6 +196,13 @@ CROWBAR_R_DX = -4.2
 # zener, the pulldown that makes the input fail-open, the 10 us filter, and the
 # single 100 ohm gate resistor that drives all four gates.
 CROWBAR_SHARED_X = {"R50": 60.00, "D50": 65.33, "R51": 70.66, "C50": 75.12, "R52": 79.58}
+# The CT sense band, on the right of the board: 59.50 (the CT's bottom edge, and
+# U2/J_IN clear it by more) up to 65.30 (the top of the crowbar's SOT-23).  The
+# deepest part here is again the SOT-23 at 3.40 mm, so y = 62.40 centres it --
+# 1.20 mm to each side -- and the 1.46 mm 0603s clear by (5.80 - 1.46)/2 = 2.17 mm.
+# It is the max-min choice for this band, same argument as the crowbar row above
+# it, and the equality of those two 1.20 mm gaps is asserted rather than stated.
+CT_SENSE_ROW_Y = 62.4
 
 
 def crowbar_nets() -> dict[str, dict[str, str]]:
@@ -397,6 +405,46 @@ def parts() -> tuple[Part, ...]:
     out.append(Part("U2", "control area", 12.0, 12.0, 3.0, 132.0, 52.0, "PROVISIONAL",
                     "dcx:Placeholder_12x12",
                     note="UCC25600 + UCC27282 + passives grouped; no layout done"))
+    # Row 2d -- the CT over-current chain.  Before this row the board could not
+    # sense the resonant-tank current at all: CS1/CS2 carried one pad each (the
+    # CT's own logical terminal) because their rectifier lived in the padless U2
+    # outline, so both were indistinguishable from an unrouted net.  Doc 34,
+    # package C keeps the chain that decides the 24.2 A trip threshold beside the
+    # tank it watches, and every value here is frozen in bom_draft.csv.
+    #
+    # R3 is *not* in this row, and that is the increment's one deliberate hole.
+    # Its value is frozen at 10 ohm; its package is "-" / TO SELECT because the
+    # measured 125.7 mW continuous burden is 100.6 % of an 0805's 0.125 W nominal
+    # before any derating.  A 0603 (what the native schematic still carries)
+    # would draw a resistor that cannot take the energy, and a 1206 would encode
+    # a selection nobody has made -- so the burden stays a named gap.
+    for ref, x in (("D_CT1", 108.0), ("D_CT2", 114.0),
+                   ("D_CT3", 120.0), ("D_CT4", 126.0)):
+        out.append(Part(ref, "dual Schottky", SOT23_W, SOT23_D, SOT23_H, x,
+                        CT_SENSE_ROW_Y, "kicad-library", SOT23_FP,
+                        note="CT secondary bridge leg.  The value states the function "
+                             "because the BOM has not selected a part: D_CT1-D_CT4 is "
+                             "TO SELECT at >=0.5 A / >=25 V, and the native schematic's "
+                             "BAT54 is what it carries, not what was chosen.  Pads 1 "
+                             "and 3 take the net; pad 2 is the second anode, unused, "
+                             "which is why the review table calls it OPEN.  Land is the "
+                             "vendored KiCad SOT-23 -- 1.90 pitch, 2.4 span, the same "
+                             "numbers the native JLC footprint name states -- not the "
+                             "native land and not a vendor drawing"))
+    for ref, x in (("R15", 132.0), ("R16", 136.0), ("R17", 140.0)):
+        out.append(Part(ref, placeholder_value(ref), R0603_W, R0603_D, R0603_H, x,
+                        CT_SENSE_ROW_Y, "kicad-library", R0603_FP,
+                        note="CT burden divider leg: R15 from OCD, R16 to the OC node, "
+                             "R17 to OCM -- the 24/35 divider that turns the burden's "
+                             "0.1 V/A into the measured 24.2 A trip.  Value from "
+                             "placeholder_eco.json, MPN still TO ASSIGN"))
+    for ref, x in (("C11", 144.0), ("C12", 148.0)):
+        out.append(Part(ref, placeholder_value(ref), C0603_W, C0603_D, C0603_H, x,
+                        CT_SENSE_ROW_Y, "kicad-library", C0603_FP,
+                        note="CT over-current filter: C11 is the pole with Rf (47 us), "
+                             "C12 sets the 51.3 us OC delay.  Value from "
+                             "placeholder_eco.json, MPN still TO ASSIGN; no voltage "
+                             "rating is quoted because the register states none"))
     # Row 2c -- the REG crowbar, one channel per controller plus one shared front
     # end.  Doc 34, package C: "紧接着连接选定的实际硬件关断电路".  This is the
     # circuit `pcb/sr_fault_validation` selected and measured, not a proposal:
@@ -808,14 +856,15 @@ def nets_report() -> dict:
         "nets": rows,
         "single_pad_nets": [n["net"] for n in rows if n["pads"] == 1],
         "single_pad_nets_note": "a net with one pad here draws no ratsnest line and "
-                                "owes no track.  Three kinds remain: the far end of a "
-                                "resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV "
-                                "-- the driver side, which lives on the control board), "
-                                "the CT secondary terminals CS1/CS2, whose rectifier "
-                                "sits in the padless U2 outline, and FAULT_IN, the "
-                                "crowbar's one off-board end -- on the built board it "
-                                "comes from the D0 ten-channel protection board, not "
-                                "from anything here.  Listed so none is read as routed",
+                                "owes no track.  Three remain, and each is an end that "
+                                "leaves this board: GH_DRV and GL_DRV stop at the "
+                                "primary drivers, which live on the control board, and "
+                                "FAULT_IN is the crowbar's one input -- on the built "
+                                "board it comes from the D0 ten-channel protection "
+                                "board, not from anything here.  CS1/CS2 used to be on "
+                                "this list because the CT rectifier sat in the padless "
+                                "U2 outline; the bridge is placed now, so both are "
+                                "three-pad nets.  Listed so none is read as routed",
         "lumped_from_one_netlist_element": {
             f"{BANK_PREFIX}1..{BANK_PREFIX}{_cout()['n']}":
                 "the schematic models the whole bank as one lumped Cout; these "
@@ -835,7 +884,11 @@ def nets_report() -> dict:
                               if r["ref"] in placed and not r["net"].strip()],
         "not_placed_here_netlist_refs": sorted(set(table) - placed),
         "not_placed_here_reason": "power-stage placement only; control, drive and "
-                                  "decoupling parts have no position on this board",
+                                  "decoupling parts have no position on this board.  "
+                                  "R3 is held back for a different reason: its 10 ohm "
+                                  "value is frozen but its package is TO SELECT (the "
+                                  "measured 125.7 mW burden is 100.6 % of an 0805's "
+                                  "125 mW nominal), so no outline here would be true",
         "length_note": "straight-line spanning tree over pad centres, a lower "
                        "bound on copper and not a route",
     }

@@ -139,6 +139,114 @@
       "note": "UCC25600 + UCC27282 + passives grouped; no layout done"
     },
     {
+      "ref": "D_CT1",
+      "value": "dual Schottky",
+      "evidence": "kicad-library",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 108.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT secondary bridge leg.  The value states the function because the BOM has not selected a part: D_CT1-D_CT4 is TO SELECT at >=0.5 A / >=25 V, and the native schematic's BAT54 is what it carries, not what was chosen.  Pads 1 and 3 take the net; pad 2 is the second anode, unused, which is why the review table calls it OPEN.  Land is the vendored KiCad SOT-23 -- 1.90 pitch, 2.4 span, the same numbers the native JLC footprint name states -- not the native land and not a vendor drawing"
+    },
+    {
+      "ref": "D_CT2",
+      "value": "dual Schottky",
+      "evidence": "kicad-library",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 114.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT secondary bridge leg.  The value states the function because the BOM has not selected a part: D_CT1-D_CT4 is TO SELECT at >=0.5 A / >=25 V, and the native schematic's BAT54 is what it carries, not what was chosen.  Pads 1 and 3 take the net; pad 2 is the second anode, unused, which is why the review table calls it OPEN.  Land is the vendored KiCad SOT-23 -- 1.90 pitch, 2.4 span, the same numbers the native JLC footprint name states -- not the native land and not a vendor drawing"
+    },
+    {
+      "ref": "D_CT3",
+      "value": "dual Schottky",
+      "evidence": "kicad-library",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 120.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT secondary bridge leg.  The value states the function because the BOM has not selected a part: D_CT1-D_CT4 is TO SELECT at >=0.5 A / >=25 V, and the native schematic's BAT54 is what it carries, not what was chosen.  Pads 1 and 3 take the net; pad 2 is the second anode, unused, which is why the review table calls it OPEN.  Land is the vendored KiCad SOT-23 -- 1.90 pitch, 2.4 span, the same numbers the native JLC footprint name states -- not the native land and not a vendor drawing"
+    },
+    {
+      "ref": "D_CT4",
+      "value": "dual Schottky",
+      "evidence": "kicad-library",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 126.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT secondary bridge leg.  The value states the function because the BOM has not selected a part: D_CT1-D_CT4 is TO SELECT at >=0.5 A / >=25 V, and the native schematic's BAT54 is what it carries, not what was chosen.  Pads 1 and 3 take the net; pad 2 is the second anode, unused, which is why the review table calls it OPEN.  Land is the vendored KiCad SOT-23 -- 1.90 pitch, 2.4 span, the same numbers the native JLC footprint name states -- not the native land and not a vendor drawing"
+    },
+    {
+      "ref": "R15",
+      "value": "1 kohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 132.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT burden divider leg: R15 from OCD, R16 to the OC node, R17 to OCM -- the 24/35 divider that turns the burden's 0.1 V/A into the measured 24.2 A trip.  Value from placeholder_eco.json, MPN still TO ASSIGN"
+    },
+    {
+      "ref": "R16",
+      "value": "10 kohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 136.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT burden divider leg: R15 from OCD, R16 to the OC node, R17 to OCM -- the 24/35 divider that turns the burden's 0.1 V/A into the measured 24.2 A trip.  Value from placeholder_eco.json, MPN still TO ASSIGN"
+    },
+    {
+      "ref": "R17",
+      "value": "24 kohm",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 140.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT burden divider leg: R15 from OCD, R16 to the OC node, R17 to OCM -- the 24/35 divider that turns the burden's 0.1 V/A into the measured 24.2 A trip.  Value from placeholder_eco.json, MPN still TO ASSIGN"
+    },
+    {
+      "ref": "C11",
+      "value": "47 nF",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.9,
+      "x_mm": 144.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT over-current filter: C11 is the pole with Rf (47 us), C12 sets the 51.3 us OC delay.  Value from placeholder_eco.json, MPN still TO ASSIGN; no voltage rating is quoted because the register states none"
+    },
+    {
+      "ref": "C12",
+      "value": "10 nF",
+      "evidence": "kicad-library",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.9,
+      "x_mm": 148.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT over-current filter: C11 is the pole with Rf (47 us), C12 sets the 51.3 us OC delay.  Value from placeholder_eco.json, MPN still TO ASSIGN; no voltage rating is quoted because the register states none"
+    },
+    {
       "ref": "R50",
       "value": "1k",
       "evidence": "validation-board",
@@ -1040,9 +1148,9 @@
   "nets": {
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
-    "net_count": 60,
-    "pads_landed": 242,
-    "physical_pads_netted": 258,
+    "net_count": 64,
+    "pads_landed": 260,
+    "physical_pads_netted": 276,
     "pads_landed_note": "pad names with a net; physical pads are higher where a footprint splits one pin across several lands (the SR FET drain: a common base plus four fingers, two of which share the name 5).  KiCad merges same-numbered pads, and also same-net lands whose copper overlaps, so the ratsnest is shorter than pads_landed - net_count",
     "nets": [
       {
@@ -1275,6 +1383,48 @@
         "straight_line_mst_mm": 38.833
       },
       {
+        "net": "OCM",
+        "pads": 5,
+        "refs": [
+          "C11",
+          "C12",
+          "D_CT3",
+          "D_CT4",
+          "R17"
+        ],
+        "straight_line_mst_mm": 29.741
+      },
+      {
+        "net": "CS2",
+        "pads": 3,
+        "refs": [
+          "CT",
+          "D_CT2",
+          "D_CT4"
+        ],
+        "straight_line_mst_mm": 28.476
+      },
+      {
+        "net": "CS1",
+        "pads": 3,
+        "refs": [
+          "CT",
+          "D_CT1",
+          "D_CT3"
+        ],
+        "straight_line_mst_mm": 28.221
+      },
+      {
+        "net": "OCD",
+        "pads": 3,
+        "refs": [
+          "D_CT1",
+          "D_CT2",
+          "R15"
+        ],
+        "straight_line_mst_mm": 22.238
+      },
+      {
         "net": "SW",
         "pads": 9,
         "refs": [
@@ -1439,6 +1589,26 @@
           "U6"
         ],
         "straight_line_mst_mm": 14.096
+      },
+      {
+        "net": "OC",
+        "pads": 3,
+        "refs": [
+          "C12",
+          "R16",
+          "R17"
+        ],
+        "straight_line_mst_mm": 10.4
+      },
+      {
+        "net": "OC1",
+        "pads": 3,
+        "refs": [
+          "C11",
+          "R15",
+          "R16"
+        ],
+        "straight_line_mst_mm": 10.4
       },
       {
         "net": "REG1",
@@ -1612,22 +1782,6 @@
         "straight_line_mst_mm": 4.095
       },
       {
-        "net": "CS1",
-        "pads": 1,
-        "refs": [
-          "CT"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "CS2",
-        "pads": 1,
-        "refs": [
-          "CT"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
         "net": "FAULT_IN",
         "pads": 1,
         "refs": [
@@ -1653,13 +1807,11 @@
       }
     ],
     "single_pad_nets": [
-      "CS1",
-      "CS2",
       "FAULT_IN",
       "GH_DRV",
       "GL_DRV"
     ],
-    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track.  Three kinds remain: the far end of a resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV -- the driver side, which lives on the control board), the CT secondary terminals CS1/CS2, whose rectifier sits in the padless U2 outline, and FAULT_IN, the crowbar's one off-board end -- on the built board it comes from the D0 ten-channel protection board, not from anything here.  Listed so none is read as routed",
+    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track.  Three remain, and each is an end that leaves this board: GH_DRV and GL_DRV stop at the primary drivers, which live on the control board, and FAULT_IN is the crowbar's one input -- on the built board it comes from the D0 ten-channel protection board, not from anything here.  CS1/CS2 used to be on this list because the CT rectifier sat in the padless U2 outline; the bridge is placed now, so both are three-pad nets.  Listed so none is read as routed",
     "lumped_from_one_netlist_element": {
       "Cout1..Cout15": "the schematic models the whole bank as one lumped Cout; these fifteen borrow its two nets and the BOM must expand it into fifteen lines"
     },
@@ -1684,6 +1836,26 @@
     "netlist_pins_without_a_physical_pad_note": "grouped by why, because the two causes are different defects: a repeated pad name is a land-pattern gap, a padless outline is a placeholder",
     "pad_without_a_net": [
       {
+        "ref": "D_CT1",
+        "pad": "2",
+        "note": "second anode of the dual diode, unused"
+      },
+      {
+        "ref": "D_CT3",
+        "pad": "2",
+        "note": "second anode of the dual diode, unused"
+      },
+      {
+        "ref": "D_CT2",
+        "pad": "2",
+        "note": "second anode of the dual diode, unused"
+      },
+      {
+        "ref": "D_CT4",
+        "pad": "2",
+        "note": "second anode of the dual diode, unused"
+      },
+      {
         "ref": "U2",
         "pad": "2",
         "note": "NC by datasheet"
@@ -1700,11 +1872,9 @@
       "C107",
       "C108",
       "C109",
-      "C11",
       "C110",
       "C111",
       "C112",
-      "C12",
       "C13",
       "C5",
       "C6",
@@ -1714,15 +1884,8 @@
       "Cin",
       "Cout",
       "D_BT",
-      "D_CT1",
-      "D_CT2",
-      "D_CT3",
-      "D_CT4",
       "R1",
       "R10",
-      "R15",
-      "R16",
-      "R17",
       "R18",
       "R19",
       "R2",
@@ -1732,7 +1895,7 @@
       "R9",
       "U1"
     ],
-    "not_placed_here_reason": "power-stage placement only; control, drive and decoupling parts have no position on this board",
+    "not_placed_here_reason": "power-stage placement only; control, drive and decoupling parts have no position on this board.  R3 is held back for a different reason: its 10 ohm value is frozen but its package is TO SELECT (the measured 125.7 mW burden is 100.6 % of an 0805's 125 mW nominal), so no outline here would be true",
     "length_note": "straight-line spanning tree over pad centres, a lower bound on copper and not a route"
   },
   "cout_bank_refs": [
