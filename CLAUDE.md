@@ -53,6 +53,9 @@ python tools/ci_check.py            # pytest + 重新生成 v3 manifest 并逐�
 python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
 python tools/main_board_mechanical.py --check   # A5 带网摆放（1:1）：重生成 + SVG/PNG + DRC + 老鼠线计数（需 KiCad 10.0）
+python tools/main_board_power_copper.py --json hardware/dcx_mech/routed_copper.json
+    # A5 布线草稿：从摆放板派生走线 + 量输出路径方块数（DRC 可选，--no-drc 跳过；约 38 s）
+python tools/main_board_power_copper.py --check   # 重布并比对板子/报告字节，不需要 kicad-cli
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
 python tools/make_sr_fault_board_pcb.py --check   # 该板的布线 + 铺铜 pass 3：重生成 + kicad-cli DRC + 冲 fill.json + 导出 fab/
@@ -1599,6 +1602,49 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   加宽真正买到的只有均流对称（2.20 → 1.00），代价 8 µΩ 总路径 +
   **接点上限 57.8 → 46.1 µΩ，低于 50 µΩ 占位值**。别再把"加宽"当无本万利的杠杆。
   两个温度基准不要混：`connector_budget.joint_limit()` 用 20 °C，本工具用 100 °C。
+
+### A5 已经布出来的铜（`tools/main_board_power_copper.py`）
+
+`hardware/dcx_mech/power_stage_routed.kicad_pcb` 是**从摆放板派生的布线草稿**：108 只焊盘、
+18 条可布网、**130/130 连接**、875 段 0.8 mm 走线、11 个过孔，kicad-cli DRC 三个顶层数组全空
+（`violations` / `unconnected_items` / `schematic_parity` 都是 0，`counts.placement` 0）。
+摆放板一个字节没动（本工具只读它），所以 A5 的逐字节测试不受影响。
+
+```bash
+python tools/main_board_power_copper.py --json hardware/dcx_mech/routed_copper.json   # ~38 s，含 DRC
+python tools/main_board_power_copper.py --check        # 重布 + 比对板子与报告（不需要 kicad-cli）
+```
+
+- **状态字符串是 `ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET`，这不是保守话术**：
+  按走线最短路量出来的单组串联路径在 2 oz 下是 **121.5 mΩ**（g1 121.5 / g2 90.1 / g3 88.5 /
+  g4 94.7），对 `output_path_budget.DESIGN_BASIS_OHM` 的 **0.15 mΩ** 是 ~810 倍。
+  `what_a_track_would_need` 算出要满足 0.15 mΩ 的单条走线宽 **数十毫米**，比板还宽——
+  这就是"功率路径必须铺铜"的算术版本，不是意见。**别为了让这条变绿去改 0.15**：
+  它和公布的 92.33 % 效率是同一个基准。
+- **布线拓扑量不出电阻，必须先做"焊盘收缩"**：连续几条连接从**同一焊盘的格子**出发，
+  所以发出的线段之间**不共享栅格节点**——它们是被焊盘电气连起来的。第一版直接在
+  `(layer,x,y)` 上建图，VOUT 裂成 8 个连通块（20/20/20/19/18×4），`path_squares` 全部返回 None。
+  现在 `_pad_key` 把同一封装的同号焊盘并成一个节点，`_attach` 用 `router._pad_distance`
+  按层判断"线段端帽是否压在铜上"。**不要把 `None` 读成"没连上"**，先看是不是没做收缩。
+- **同号焊盘是一个电气节点（KiCad 语义）**：八只 SR 的漏极基座与一根指都叫 `5`，
+  所以 `_pad_key` 用 `(ref, number)` 而不是物理铜块。层也要对：F.Cu 焊盘上的 B.Cu 走线
+  不算相连，除非中间有过孔（`test_a_track_on_the_other_layer_does_not_reach_a_pad`）。
+- **`checks` 里放的全是结构不变量，`results` 里才有物理结论**：`checks` 全绿的同时
+  `results.power_path_meets_the_0p15_mohm_basis` 是 **false**，这是同一份报告要能同时说的两句话。
+  `test_the_structural_gates_pass_while_the_power_target_fails` 锁住这个组合。
+- **磁件的端子位置仍是 PROVISIONAL，铜因此是临时的**：`interfaces.provisional_land_patterns`
+  从**封装自己的 `descr`** 读（不是摆放的 `evidence` 标签——ELP32 那里写的是
+  `generated-json`，而封装文本仍写 "Terminal positions PROVISIONAL"）。T1–T4/Lr/Cr/CT/J_IN/U2/
+  Cout 都在表里；拿到厂家端子图后焊盘会移动，**这份走线要重做**，本增量的永久部分是
+  路由器与量出来的铜成本。
+- **`--check` 有两个独立的过期信号**：板子字节（摆放改了没重布）与
+  `routed_copper.json:board.board_sha256`（板子重布了但数字没重算，或有人手改 budget）。
+  只比板子的话，手改过的预算能混过每一次 `--check`。它已进 `tools/ci_check.py` 的 `VIEWS`
+  （`--skip-tests` 也会跑，约 40 s，是那里最慢的一项）。
+- **kicad-cli 的坑照旧**：报告先 `unlink` 再跑（否则崩溃后读上一次的干净报告）、
+  `tracks` 在 `unconnected_items` 这个**第二个顶层数组**里、退出码 0 不代表没违规、
+  子进程必须 `encoding="utf-8", errors="replace"`。板子需要同名 `.kicad_pro`
+  （`project_file()` 从摆放那份改名生成），否则 `dcx:` 封装解析不了，courtyard 检查静默失效。
 
 ## A6 机械剖面（Issue #12）
 

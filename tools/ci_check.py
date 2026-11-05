@@ -124,6 +124,11 @@ VIEWS = [
     ("bench-board manufacturing index", ["tools/manufacturing_index.py", "--check"]),
     ("main-board remaining dependencies",
      ["tools/remaining_dependencies.py", "--check"]),
+    # This one is not cheap (~40 s): it re-routes A5 to prove the committed
+    # copper and the reported budget both come from today's placement.  Kept a
+    # view because routing needs no kicad-cli, so --skip-tests still catches a
+    # placement that was moved without re-routing.
+    ("A5 routed power copper", ["tools/main_board_power_copper.py", "--check"]),
 ]
 
 

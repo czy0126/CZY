@@ -1,0 +1,517 @@
+{
+  "status": "ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET",
+  "flags": {
+    "routed": true,
+    "poured": false,
+    "fabrication_approved": false,
+    "hardware_built": false
+  },
+  "board": {
+    "file": "hardware/dcx_mech/power_stage_routed.kicad_pcb",
+    "placement_file": "hardware/dcx_mech/power_stage_placement.kicad_pcb",
+    "width_mm": 155.0,
+    "depth_mm": 131.0,
+    "copper_layers": 2,
+    "copper_weight": "UNSELECTED -- resistance is reported at 1/2/4 oz",
+    "board_sha256": "29bb0a1042b02ace19a1f8f7fdcbb05592a5b0c716b2d88dc2446af23d451950"
+  },
+  "route": {
+    "nets_routed": 18,
+    "nets_with_one_pad": [
+      "CS1",
+      "CS2",
+      "GA1",
+      "GA2",
+      "GA3",
+      "GA4",
+      "GB1",
+      "GB2",
+      "GB3",
+      "GB4",
+      "GH",
+      "GL"
+    ],
+    "connections_attempted": 130,
+    "connections_made": 130,
+    "unrouted_nets": [],
+    "failures": [],
+    "segments": 875,
+    "vias": 11,
+    "track_width_mm": 0.8,
+    "width_basis": "every routable net here is a power net: the twelve single-pad nets are the eight SR gate returns and the four CT secondaries, which leave this board",
+    "router": "tools/sr_board_router.py (deterministic grid router, 0.125 mm pitch, 0.20 mm clearance)"
+  },
+  "copper": [
+    {
+      "net": "PGND",
+      "net_index": 15,
+      "length_mm": 374.38,
+      "squares": 467.969,
+      "vias": 0
+    },
+    {
+      "net": "VOUT",
+      "net_index": 30,
+      "length_mm": 312.38,
+      "squares": 390.469,
+      "vias": 0
+    },
+    {
+      "net": "SEC1_A",
+      "net_index": 20,
+      "length_mm": 78.38,
+      "squares": 97.969,
+      "vias": 1
+    },
+    {
+      "net": "SEC2_A",
+      "net_index": 22,
+      "length_mm": 78.38,
+      "squares": 97.969,
+      "vias": 1
+    },
+    {
+      "net": "SEC3_A",
+      "net_index": 24,
+      "length_mm": 78.38,
+      "squares": 97.969,
+      "vias": 1
+    },
+    {
+      "net": "SEC4_A",
+      "net_index": 26,
+      "length_mm": 78.38,
+      "squares": 97.969,
+      "vias": 1
+    },
+    {
+      "net": "CT_LR",
+      "net_index": 4,
+      "length_mm": 74.5,
+      "squares": 93.125,
+      "vias": 4
+    },
+    {
+      "net": "VIN_P",
+      "net_index": 29,
+      "length_mm": 64.75,
+      "squares": 80.938,
+      "vias": 3
+    },
+    {
+      "net": "PRI_T1",
+      "net_index": 19,
+      "length_mm": 61.0,
+      "squares": 76.25,
+      "vias": 0
+    },
+    {
+      "net": "SEC1_B",
+      "net_index": 21,
+      "length_mm": 58.38,
+      "squares": 72.969,
+      "vias": 0
+    },
+    {
+      "net": "SEC2_B",
+      "net_index": 23,
+      "length_mm": 58.38,
+      "squares": 72.969,
+      "vias": 0
+    },
+    {
+      "net": "SEC3_B",
+      "net_index": 25,
+      "length_mm": 58.38,
+      "squares": 72.969,
+      "vias": 0
+    },
+    {
+      "net": "SEC4_B",
+      "net_index": 27,
+      "length_mm": 58.38,
+      "squares": 72.969,
+      "vias": 0
+    },
+    {
+      "net": "PRI_23",
+      "net_index": 17,
+      "length_mm": 47.5,
+      "squares": 59.375,
+      "vias": 0
+    },
+    {
+      "net": "PRI_34",
+      "net_index": 18,
+      "length_mm": 47.5,
+      "squares": 59.375,
+      "vias": 0
+    },
+    {
+      "net": "PRI_12",
+      "net_index": 16,
+      "length_mm": 42.0,
+      "squares": 52.5,
+      "vias": 0
+    },
+    {
+      "net": "SW",
+      "net_index": 28,
+      "length_mm": 17.0,
+      "squares": 21.25,
+      "vias": 0
+    },
+    {
+      "net": "CR_CT",
+      "net_index": 1,
+      "length_mm": 4.0,
+      "squares": 5.0,
+      "vias": 0
+    }
+  ],
+  "interfaces": {
+    "provisional_land_patterns": [
+      {
+        "ref": "T1",
+        "footprint": "dcx:ELP32_XFMR",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "T2",
+        "footprint": "dcx:ELP32_XFMR",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "T3",
+        "footprint": "dcx:ELP32_XFMR",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "T4",
+        "footprint": "dcx:ELP32_XFMR",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Lr",
+        "footprint": "dcx:ELP32_LR",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cr",
+        "footprint": "dcx:Placeholder_18x6",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "CT",
+        "footprint": "dcx:Placeholder_20x15",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "J_IN",
+        "footprint": "dcx:Placeholder_10x10",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "U2",
+        "footprint": "dcx:Placeholder_12x12",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout1",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout2",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout3",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout4",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout5",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout6",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout7",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout8",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout9",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout10",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout11",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout12",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout13",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout14",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      },
+      {
+        "ref": "Cout15",
+        "footprint": "dcx:Placeholder_Cout",
+        "why": "footprint descr says PROVISIONAL"
+      }
+    ],
+    "consequence": "the copper terminates on outline pads.  When the vendor terminal drawing lands, the magnetic pads move and this route must be redone; what is permanent here is the router and the measured copper cost, not the track positions."
+  },
+  "budget": {
+    "design_basis_mohm": 0.15,
+    "basis_source": "output_path_budget.DESIGN_BASIS_OHM (same basis as the published 92.33 % efficiency)",
+    "sheet_mohm_per_square": {
+      "1oz": 0.6474,
+      "2oz": 0.3237,
+      "4oz": 0.1619
+    },
+    "temperature_c": 100.0,
+    "method": "tracks only: shortest copper path through the routed tree from each secondary source to the output terminal, summed as length/width. Upper bound -- real current spreads over the other branches",
+    "by_weight": {
+      "1oz": [
+        {
+          "group": 1,
+          "vout": {
+            "squares": 193.125,
+            "r_mohm": 125.036
+          },
+          "pgnd": {
+            "squares": 182.1875,
+            "r_mohm": 117.955
+          },
+          "r_mohm": 242.991
+        },
+        {
+          "group": 2,
+          "vout": {
+            "squares": 148.125,
+            "r_mohm": 95.901
+          },
+          "pgnd": {
+            "squares": 130.3125,
+            "r_mohm": 84.369
+          },
+          "r_mohm": 180.27
+        },
+        {
+          "group": 3,
+          "vout": {
+            "squares": 193.125,
+            "r_mohm": 125.036
+          },
+          "pgnd": {
+            "squares": 80.3125,
+            "r_mohm": 51.997
+          },
+          "r_mohm": 177.033
+        },
+        {
+          "group": 4,
+          "vout": {
+            "squares": 238.125,
+            "r_mohm": 154.171
+          },
+          "pgnd": {
+            "squares": 54.375,
+            "r_mohm": 35.204
+          },
+          "r_mohm": 189.375
+        }
+      ],
+      "2oz": [
+        {
+          "group": 1,
+          "vout": {
+            "squares": 193.125,
+            "r_mohm": 62.518
+          },
+          "pgnd": {
+            "squares": 182.1875,
+            "r_mohm": 58.977
+          },
+          "r_mohm": 121.495
+        },
+        {
+          "group": 2,
+          "vout": {
+            "squares": 148.125,
+            "r_mohm": 47.951
+          },
+          "pgnd": {
+            "squares": 130.3125,
+            "r_mohm": 42.184
+          },
+          "r_mohm": 90.135
+        },
+        {
+          "group": 3,
+          "vout": {
+            "squares": 193.125,
+            "r_mohm": 62.518
+          },
+          "pgnd": {
+            "squares": 80.3125,
+            "r_mohm": 25.999
+          },
+          "r_mohm": 88.517
+        },
+        {
+          "group": 4,
+          "vout": {
+            "squares": 238.125,
+            "r_mohm": 77.085
+          },
+          "pgnd": {
+            "squares": 54.375,
+            "r_mohm": 17.602
+          },
+          "r_mohm": 94.687
+        }
+      ],
+      "4oz": [
+        {
+          "group": 1,
+          "vout": {
+            "squares": 193.125,
+            "r_mohm": 31.259
+          },
+          "pgnd": {
+            "squares": 182.1875,
+            "r_mohm": 29.489
+          },
+          "r_mohm": 60.748
+        },
+        {
+          "group": 2,
+          "vout": {
+            "squares": 148.125,
+            "r_mohm": 23.975
+          },
+          "pgnd": {
+            "squares": 130.3125,
+            "r_mohm": 21.092
+          },
+          "r_mohm": 45.067
+        },
+        {
+          "group": 3,
+          "vout": {
+            "squares": 193.125,
+            "r_mohm": 31.259
+          },
+          "pgnd": {
+            "squares": 80.3125,
+            "r_mohm": 12.999
+          },
+          "r_mohm": 44.258
+        },
+        {
+          "group": 4,
+          "vout": {
+            "squares": 238.125,
+            "r_mohm": 38.543
+          },
+          "pgnd": {
+            "squares": 54.375,
+            "r_mohm": 8.801
+          },
+          "r_mohm": 47.344
+        }
+      ]
+    },
+    "worst_group_mohm_at_2oz": 121.495,
+    "meets_design_basis_at_2oz": false,
+    "what_a_track_would_need": {
+      "longest_path_mm": 190.5,
+      "required_width_mm": 411.1,
+      "board_width_mm": 155.0
+    }
+  },
+  "pours": {
+    "count": 0,
+    "why": "the plane stage is not designed yet; what it has to beat is budget.what_a_track_would_need"
+  },
+  "drc": {
+    "version": "10.0.6",
+    "violations": 0,
+    "counts": {
+      "placement": 0,
+      "pours": 0,
+      "cosmetic": 0,
+      "other": 0
+    },
+    "unconnected_items": 0,
+    "schematic_parity": 0,
+    "types": [],
+    "ignored_checks": [
+      {
+        "description": "Track endpoint not centered on via",
+        "key": "track_not_centered_on_via"
+      },
+      {
+        "description": "Tuning profile track geometries",
+        "key": "tuning_profile_track_geometries"
+      },
+      {
+        "description": "Footprint doesn't match symbol's footprint filters",
+        "key": "footprint_filters_mismatch"
+      },
+      {
+        "description": "Footprint component type doesn't match footprint pads",
+        "key": "footprint_type_mismatch"
+      }
+    ]
+  },
+  "drc_reproduced": true,
+  "checks": {
+    "every_routable_net_is_connected": true,
+    "no_unrouted_nets": true,
+    "the_board_carries_copper": true,
+    "drc_was_reproduced_here": true,
+    "drc_reports_no_unconnected_items": true,
+    "drc_placement_clean": true,
+    "every_magnetic_is_reported_as_a_provisional_interface": true,
+    "the_power_path_verdict_is_reported_as_a_result": true
+  },
+  "results": {
+    "power_path_meets_the_0p15_mohm_basis": false,
+    "worst_group_mohm_at_2oz": 121.495
+  }
+}
