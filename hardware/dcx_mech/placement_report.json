@@ -139,6 +139,162 @@
       "note": "UCC25600 + UCC27282 + passives grouped; no layout done"
     },
     {
+      "ref": "R50",
+      "value": "1k",
+      "evidence": "validation-board",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 60.0,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "crowbar front end; value and footprint are the ones pcb/sr_fault_validation/BOM.csv carries, and the pin roles are its net_map.  Board-only connectivity: the deck has no crowbar and the native schematic has no MOSFET or Zener symbol (see crowbar_nets)"
+    },
+    {
+      "ref": "D50",
+      "value": "5V1",
+      "evidence": "validation-board",
+      "w_mm": 4.7,
+      "d_mm": 2.3,
+      "h_mm_worst": 1.35,
+      "x_mm": 65.33,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "crowbar front end; value and footprint are the ones pcb/sr_fault_validation/BOM.csv carries, and the pin roles are its net_map.  Board-only connectivity: the deck has no crowbar and the native schematic has no MOSFET or Zener symbol (see crowbar_nets)"
+    },
+    {
+      "ref": "R51",
+      "value": "10k",
+      "evidence": "validation-board",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 70.66,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "crowbar front end; value and footprint are the ones pcb/sr_fault_validation/BOM.csv carries, and the pin roles are its net_map.  Board-only connectivity: the deck has no crowbar and the native schematic has no MOSFET or Zener symbol (see crowbar_nets)"
+    },
+    {
+      "ref": "C50",
+      "value": "1nF/16V",
+      "evidence": "validation-board",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.9,
+      "x_mm": 75.12,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "crowbar front end; value and footprint are the ones pcb/sr_fault_validation/BOM.csv carries, and the pin roles are its net_map.  Board-only connectivity: the deck has no crowbar and the native schematic has no MOSFET or Zener symbol (see crowbar_nets)"
+    },
+    {
+      "ref": "R52",
+      "value": "100R",
+      "evidence": "validation-board",
+      "w_mm": 2.96,
+      "d_mm": 1.46,
+      "h_mm_worst": 0.55,
+      "x_mm": 79.58,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "crowbar front end; value and footprint are the ones pcb/sr_fault_validation/BOM.csv carries, and the pin roles are its net_map.  Board-only connectivity: the deck has no crowbar and the native schematic has no MOSFET or Zener symbol (see crowbar_nets)"
+    },
+    {
+      "ref": "Q51",
+      "value": "AO3400A",
+      "evidence": "validation-board",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 9.6,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG1 crowbar FET for group 1: gate on RC_G, source on PGND, drain on REG_CROW1.  AO3400A and its MPN source are the validation board's (references/datasheets/ao3400a.txt); qualified is false there -- turn-on SOA, self-heating and R44 repetitive pulse are still open"
+    },
+    {
+      "ref": "R53",
+      "value": "4.7R 0.5W",
+      "evidence": "validation-board",
+      "w_mm": 4.56,
+      "d_mm": 2.26,
+      "h_mm_worst": 0.6,
+      "x_mm": 14.8,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG1 -> REG_CROW1 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+    },
+    {
+      "ref": "Q52",
+      "value": "AO3400A",
+      "evidence": "validation-board",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 47.6,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG2 crowbar FET for group 2: gate on RC_G, source on PGND, drain on REG_CROW2.  AO3400A and its MPN source are the validation board's (references/datasheets/ao3400a.txt); qualified is false there -- turn-on SOA, self-heating and R44 repetitive pulse are still open"
+    },
+    {
+      "ref": "R54",
+      "value": "4.7R 0.5W",
+      "evidence": "validation-board",
+      "w_mm": 4.56,
+      "d_mm": 2.26,
+      "h_mm_worst": 0.6,
+      "x_mm": 52.8,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG2 -> REG_CROW2 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+    },
+    {
+      "ref": "Q53",
+      "value": "AO3400A",
+      "evidence": "validation-board",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 85.6,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG3 crowbar FET for group 3: gate on RC_G, source on PGND, drain on REG_CROW3.  AO3400A and its MPN source are the validation board's (references/datasheets/ao3400a.txt); qualified is false there -- turn-on SOA, self-heating and R44 repetitive pulse are still open"
+    },
+    {
+      "ref": "R55",
+      "value": "4.7R 0.5W",
+      "evidence": "validation-board",
+      "w_mm": 4.56,
+      "d_mm": 2.26,
+      "h_mm_worst": 0.6,
+      "x_mm": 90.8,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG3 -> REG_CROW3 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+    },
+    {
+      "ref": "Q54",
+      "value": "AO3400A",
+      "evidence": "validation-board",
+      "w_mm": 3.86,
+      "d_mm": 3.4,
+      "h_mm_worst": 1.1,
+      "x_mm": 123.6,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG4 crowbar FET for group 4: gate on RC_G, source on PGND, drain on REG_CROW4.  AO3400A and its MPN source are the validation board's (references/datasheets/ao3400a.txt); qualified is false there -- turn-on SOA, self-heating and R44 repetitive pulse are still open"
+    },
+    {
+      "ref": "R56",
+      "value": "4.7R 0.5W",
+      "evidence": "validation-board",
+      "w_mm": 4.56,
+      "d_mm": 2.26,
+      "h_mm_worst": 0.6,
+      "x_mm": 128.8,
+      "y_mm": 67.0,
+      "rot_deg": 0.0,
+      "note": "REG4 -> REG_CROW4 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+    },
+    {
       "ref": "U3",
       "value": "UCC24624DR",
       "evidence": "kicad-library",
@@ -716,10 +872,10 @@
     "note": "flat 9.94 mm clears 10 mm by 60 um, which is smaller than glue, label and core flatness; with a 0.5 mm clamp the same stack is 10.44 mm and over, so the cores need pockets"
   },
   "clearance": {
-    "min_gap_mm": 0.9,
+    "min_gap_mm": 0.6,
     "between": [
-      "Cout11",
-      "Cout12"
+      "Lr",
+      "Q51"
     ]
   },
   "overlaps": [],
@@ -884,15 +1040,16 @@
   "nets": {
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
-    "net_count": 53,
-    "pads_landed": 212,
-    "physical_pads_netted": 228,
+    "net_count": 60,
+    "pads_landed": 242,
+    "physical_pads_netted": 258,
     "pads_landed_note": "pad names with a net; physical pads are higher where a footprint splits one pin across several lands (the SR FET drain: a common base plus four fingers, two of which share the name 5).  KiCad merges same-numbered pads, and also same-net lands whose copper overlaps, so the ratsnest is shorter than pads_landed - net_count",
     "nets": [
       {
         "net": "PGND",
-        "pads": 53,
+        "pads": 60,
         "refs": [
+          "C50",
           "Cout1",
           "Cout10",
           "Cout11",
@@ -908,9 +1065,15 @@
           "Cout7",
           "Cout8",
           "Cout9",
+          "D50",
           "J_IN",
           "J_OUT",
+          "Q51",
+          "Q52",
+          "Q53",
+          "Q54",
           "QL",
+          "R51",
           "SR1A",
           "SR1B",
           "SR2A",
@@ -925,7 +1088,7 @@
           "U5",
           "U6"
         ],
-        "straight_line_mst_mm": 377.575
+        "straight_line_mst_mm": 413.698
       },
       {
         "net": "VOUT",
@@ -953,6 +1116,18 @@
           "T4"
         ],
         "straight_line_mst_mm": 325.209
+      },
+      {
+        "net": "RC_G",
+        "pads": 5,
+        "refs": [
+          "Q51",
+          "Q52",
+          "Q53",
+          "Q54",
+          "R52"
+        ],
+        "straight_line_mst_mm": 114.118
       },
       {
         "net": "VCC12_S",
@@ -1182,6 +1357,18 @@
         "straight_line_mst_mm": 18.008
       },
       {
+        "net": "FAULT_G",
+        "pads": 5,
+        "refs": [
+          "C50",
+          "D50",
+          "R50",
+          "R51",
+          "R52"
+        ],
+        "straight_line_mst_mm": 17.93
+      },
+      {
         "net": "VD1_B",
         "pads": 2,
         "refs": [
@@ -1254,6 +1441,42 @@
         "straight_line_mst_mm": 14.096
       },
       {
+        "net": "REG1",
+        "pads": 2,
+        "refs": [
+          "R53",
+          "U3"
+        ],
+        "straight_line_mst_mm": 6.474
+      },
+      {
+        "net": "REG2",
+        "pads": 2,
+        "refs": [
+          "R54",
+          "U4"
+        ],
+        "straight_line_mst_mm": 6.474
+      },
+      {
+        "net": "REG3",
+        "pads": 2,
+        "refs": [
+          "R55",
+          "U5"
+        ],
+        "straight_line_mst_mm": 6.474
+      },
+      {
+        "net": "REG4",
+        "pads": 2,
+        "refs": [
+          "R56",
+          "U6"
+        ],
+        "straight_line_mst_mm": 6.474
+      },
+      {
         "net": "CR_CT",
         "pads": 2,
         "refs": [
@@ -1261,6 +1484,42 @@
           "Cr"
         ],
         "straight_line_mst_mm": 5.831
+      },
+      {
+        "net": "REG_CROW1",
+        "pads": 2,
+        "refs": [
+          "Q51",
+          "R53"
+        ],
+        "straight_line_mst_mm": 5.725
+      },
+      {
+        "net": "REG_CROW2",
+        "pads": 2,
+        "refs": [
+          "Q52",
+          "R54"
+        ],
+        "straight_line_mst_mm": 5.725
+      },
+      {
+        "net": "REG_CROW3",
+        "pads": 2,
+        "refs": [
+          "Q53",
+          "R55"
+        ],
+        "straight_line_mst_mm": 5.725
+      },
+      {
+        "net": "REG_CROW4",
+        "pads": 2,
+        "refs": [
+          "Q54",
+          "R56"
+        ],
+        "straight_line_mst_mm": 5.725
       },
       {
         "net": "GH",
@@ -1369,6 +1628,14 @@
         "straight_line_mst_mm": 0.0
       },
       {
+        "net": "FAULT_IN",
+        "pads": 1,
+        "refs": [
+          "R50"
+        ],
+        "straight_line_mst_mm": 0.0
+      },
+      {
         "net": "GH_DRV",
         "pads": 1,
         "refs": [
@@ -1383,51 +1650,16 @@
           "R5"
         ],
         "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "REG1",
-        "pads": 1,
-        "refs": [
-          "U3"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "REG2",
-        "pads": 1,
-        "refs": [
-          "U4"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "REG3",
-        "pads": 1,
-        "refs": [
-          "U5"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "REG4",
-        "pads": 1,
-        "refs": [
-          "U6"
-        ],
-        "straight_line_mst_mm": 0.0
       }
     ],
     "single_pad_nets": [
       "CS1",
       "CS2",
+      "FAULT_IN",
       "GH_DRV",
-      "GL_DRV",
-      "REG1",
-      "REG2",
-      "REG3",
-      "REG4"
+      "GL_DRV"
     ],
-    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track.  Two kinds remain: the far end of a resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV -- the driver side, which lives on the control board), and the CT secondary terminals CS1/CS2, whose rectifier sits in the padless U2 outline. Listed so none is read as routed",
+    "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track.  Three kinds remain: the far end of a resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV -- the driver side, which lives on the control board), the CT secondary terminals CS1/CS2, whose rectifier sits in the padless U2 outline, and FAULT_IN, the crowbar's one off-board end -- on the built board it comes from the D0 ten-channel protection board, not from anything here.  Listed so none is read as routed",
     "lumped_from_one_netlist_element": {
       "Cout1..Cout15": "the schematic models the whole bank as one lumped Cout; these fifteen borrow its two nets and the BOM must expand it into fifteen lines"
     },
@@ -1526,12 +1758,28 @@
     "kicad_version_source": "hardware/dcx_mech/drc.json:kicad_version",
     "stock_footprints": [
       {
+        "lib_id": "Capacitor_SMD:C_0603_1608Metric",
+        "sha256": "fe0dbfefbb181a0466f93a8de52d84ba7b00fcd9acdbb69575f4128a0af4e405"
+      },
+      {
+        "lib_id": "Diode_SMD:D_SOD-123",
+        "sha256": "fd16785935b01254e1076f490e12f0f096da73cf087adefce51225585c62557a"
+      },
+      {
         "lib_id": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
         "sha256": "074ecb2092b24fa4b4b9cdd7c926fc587b0d7d6d21e7341e57935fd42d36894f"
       },
       {
+        "lib_id": "Package_TO_SOT_SMD:SOT-23",
+        "sha256": "0d88c86c1b6d8c1aae4aa8c09386264c089d4451a128b6ccd63ed253f4300b15"
+      },
+      {
         "lib_id": "Resistor_SMD:R_0603_1608Metric",
         "sha256": "7190ac4a00125b807e54129ef0d87d87f2a658eeb74d025a7028203419b09f23"
+      },
+      {
+        "lib_id": "Resistor_SMD:R_1206_3216Metric",
+        "sha256": "c7320668dc81bbb954cb4f15e4e7a766c120059343d43551468c8f7ccc8fde37"
       }
     ]
   }

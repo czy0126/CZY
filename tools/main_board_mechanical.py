@@ -110,6 +110,26 @@ R0603_W, R0603_D, R0603_H = 2.96, 1.46, 0.55
 # four SR controllers U3-U6; it is a library part, not a vendor drawing.
 SOIC8_FP = "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
 SOIC8_W, SOIC8_D, SOIC8_H = 7.4, 5.4, 1.75
+# The REG crowbar (doc 34, package C: "紧接着连接选定的实际硬件关断电路").  Not a
+# new circuit: it is the shutdown `pcb/sr_fault_validation` selected, with one
+# copy per controller.  UCC24624 has no enable pin -- only a REG undervoltage or
+# standby pulls VG low -- so pulling REG through 4.7 ohm (12.1 us) is the chosen
+# route, against 75.5 ms for cutting VDD.
+#
+# Courtyards are the vendored lands (hardware/stock_footprints/PROVENANCE.md),
+# measured from the files themselves, same as every other library part here.
+# The heights are SOT-23/SOD-123/1206/0603 *package envelopes*: the repository's
+# AO3400A text has no mechanical section, so unlike the Q5A and the SR land these
+# are not datasheet maxima.  They are all under 2 mm in a 10 mm stack, so they
+# cannot move the A6 section either way.
+SOT23_FP = "Package_TO_SOT_SMD:SOT-23"
+SOT23_W, SOT23_D, SOT23_H = 3.86, 3.40, 1.10
+SOD123_FP = "Diode_SMD:D_SOD-123"
+SOD123_W, SOD123_D, SOD123_H = 4.70, 2.30, 1.35
+R1206_FP = "Resistor_SMD:R_1206_3216Metric"
+R1206_W, R1206_D, R1206_H = 4.56, 2.26, 0.60
+C0603_FP = "Capacitor_SMD:C_0603_1608Metric"
+C0603_W, C0603_D, C0603_H = 2.96, 1.46, 0.90
 # The two FET lands are digitised into JSON and generated from it.  ``parts()``
 # runs while this module is still executing, and the builders import this module
 # back, so it reads these files instead of calling them -- see ``_land_pads``.
@@ -156,6 +176,57 @@ PRIMARY_GATE_ROW_Y = 57.5
 # their own pair, where below the row they would have to cross the drain slabs
 # that span the whole body width.
 SR_CTRL_ROW_Y = 72.0
+# The crowbar band: whatever is left between the primary row's deepest part (Lr
+# ends at 64.70) and the controllers (they start at 69.30).  The tallest part in
+# it is the SOT-23 at 3.40 mm deep, so y = 67.0 splits the 4.60 mm band evenly --
+# 0.60 mm to Lr, 0.60 mm to the controllers -- and it is the *max-min* choice,
+# not a round number picked first and checked later.  The 1206 and the two 0603s
+# clear by more.  Nothing already placed lives in this band.
+CROWBAR_ROW_Y = 67.0
+# One channel group per controller, at fixed offsets from the controller it
+# serves: Q at dx -9.4, the 4.7 ohm at dx -4.2.  Derived, never typed -- the four
+# groups are electrically identical, so a placement that gave one of them a
+# longer REG path would be one nobody measured.  The channel groups span
+# x_c - 11.33 .. x_c - 2.92, which leaves x 55.1 .. 83.7 free between groups 2
+# and 3 for the shared front end.
+CROWBAR_Q_DX = -9.4
+CROWBAR_R_DX = -4.2
+# The shared front end, left to right: the series limit into the clamp, the 5.1 V
+# zener, the pulldown that makes the input fail-open, the 10 us filter, and the
+# single 100 ohm gate resistor that drives all four gates.
+CROWBAR_SHARED_X = {"R50": 60.00, "D50": 65.33, "R51": 70.66, "C50": 75.12, "R52": 79.58}
+
+
+def crowbar_nets() -> dict[str, dict[str, str]]:
+    """``ref -> pad -> net`` for the board-only REG crowbar.
+
+    Board-only in the same sense as ``PERIPHERALS`` in ``main_board_schematic.py``
+    and ``NOT_A_DECK_ELEMENT`` in ``board_netlist.py``: the SPICE deck has no
+    crowbar, and the native schematic cannot draw one either -- ``library_pins``
+    has no MOSFET and no Zener symbol.  Writing these rows into
+    ``pin_footprint_review.csv`` would therefore assert native pins that do not
+    exist, so the declaration lives here and ``part_nets`` reads it as a third
+    source.  The value and footprint of every part still come from this generator;
+    ``test_the_reg_crowbar_is_the_selected_shutdown_circuit_wired_to_all_four_regs``
+    reads the same part back out of ``pcb/sr_fault_validation`` and fails if the
+    two statements ever disagree.
+
+    Pin roles are the reviewed board's, per pin: on the AO3400A (SOT-23) pin 1 is
+    the gate, 2 the source on PGND, 3 the drain on REG.  The zener's cathode is
+    pad 1 -- the SOD-123 has two pads and pad 1 is the banded end, which is the
+    whole reason the validation board moved off a three-pad SOT-23 land.
+    """
+    shared = {
+        "R50": {"1": "FAULT_IN", "2": "FAULT_G"},
+        "D50": {"1": "FAULT_G", "2": "PGND"},
+        "R51": {"1": "FAULT_G", "2": "PGND"},
+        "C50": {"1": "FAULT_G", "2": "PGND"},
+        "R52": {"1": "FAULT_G", "2": "RC_G"},
+    }
+    for i in range(1, 5):
+        shared[f"Q{50 + i}"] = {"1": "RC_G", "2": "PGND", "3": f"REG_CROW{i}"}
+        shared[f"R{52 + i}"] = {"1": f"REG{i}", "2": f"REG_CROW{i}"}
+    return shared
 
 
 def review_rows() -> list[dict]:
@@ -189,7 +260,7 @@ def bank_nets() -> dict[str, str]:
 
 
 def part_nets(part: "Part") -> dict[str, str]:
-    """The nets for one placed part: its own rows, or the bank's, or none.
+    """The nets for one placed part: its own rows, the bank's, the crowbar's, or none.
 
     Filtered to the pads this footprint actually carries.  Without that filter a
     padless outline would still be counted as a connection -- the control area
@@ -201,6 +272,8 @@ def part_nets(part: "Part") -> dict[str, str]:
     elif part.ref.startswith(BANK_PREFIX):
         got = bank_nets()
     else:
+        got = crowbar_nets().get(part.ref, {})
+    if not got:
         return {}
     local = _pad_positions(part.footprint)
     return {pad: net for pad, net in got.items() if pad in local}
@@ -324,6 +397,49 @@ def parts() -> tuple[Part, ...]:
     out.append(Part("U2", "control area", 12.0, 12.0, 3.0, 132.0, 52.0, "PROVISIONAL",
                     "dcx:Placeholder_12x12",
                     note="UCC25600 + UCC27282 + passives grouped; no layout done"))
+    # Row 2c -- the REG crowbar, one channel per controller plus one shared front
+    # end.  Doc 34, package C: "紧接着连接选定的实际硬件关断电路".  This is the
+    # circuit `pcb/sr_fault_validation` selected and measured, not a proposal:
+    # FAULT_IN -> 1k -> FAULT_G, clamped at 5.1 V, pulled down by 10k (so a lost
+    # fault source leaves it un-fired -- fail-open, carried forward honestly),
+    # filtered by 1 nF, then one 100 ohm gate resistor into four AO3400A gates
+    # that each pull REG through its own 4.7 ohm.  One gate resistor instead of
+    # four: 4 x 630 pF = 2.52 nF gives tau 252 ns and a Miller crossing near
+    # 0.94 us, still an order of magnitude inside the 12.1 us REG-UVLO window it
+    # has to fit in, and sharing costs one node (5 pads) rather than four parts.
+    # It is also the slower of the two options, which is the conservative
+    # direction for Q41's turn-on SOA.
+    for ref, value, fp, w, d, h in (
+            ("R50", "1k", R0603_FP, R0603_W, R0603_D, R0603_H),
+            ("D50", "5V1", SOD123_FP, SOD123_W, SOD123_D, SOD123_H),
+            ("R51", "10k", R0603_FP, R0603_W, R0603_D, R0603_H),
+            ("C50", "1nF/16V", C0603_FP, C0603_W, C0603_D, C0603_H),
+            ("R52", "100R", R0603_FP, R0603_W, R0603_D, R0603_H)):
+        out.append(Part(ref, value, w, d, h, CROWBAR_SHARED_X[ref], CROWBAR_ROW_Y,
+                        "validation-board", fp,
+                        note="crowbar front end; value and footprint are the ones "
+                             "pcb/sr_fault_validation/BOM.csv carries, and the pin "
+                             "roles are its net_map.  Board-only connectivity: the "
+                             "deck has no crowbar and the native schematic has no "
+                             "MOSFET or Zener symbol (see crowbar_nets)"))
+    for i, x0 in enumerate(SR_X0, start=1):
+        x_c = x0 + SR_PAIR_MM / 2
+        out.append(Part(f"Q{50 + i}", "AO3400A", SOT23_W, SOT23_D, SOT23_H,
+                        x_c + CROWBAR_Q_DX, CROWBAR_ROW_Y,
+                        "validation-board", SOT23_FP,
+                        note=f"REG{i} crowbar FET for group {i}: gate on RC_G, source "
+                             f"on PGND, drain on REG_CROW{i}.  AO3400A and its MPN "
+                             f"source are the validation board's (references/"
+                             f"datasheets/ao3400a.txt); qualified is false there -- "
+                             f"turn-on SOA, self-heating and R44 repetitive pulse "
+                             f"are still open"))
+        out.append(Part(f"R{52 + i}", "4.7R 0.5W", R1206_W, R1206_D, R1206_H,
+                        x_c + CROWBAR_R_DX, CROWBAR_ROW_Y,
+                        "validation-board", R1206_FP,
+                        note=f"REG{i} -> REG_CROW{i} crowbar resistor. 122.7 uJ, "
+                             f"25.2 W peak on the validation board; the 1206 pulse "
+                             f"curve is not in the repository, so this is a "
+                             f"screening ratio and not a qualification"))
     # Row 2b -- one SR controller per pair, centred on the pair it drives (doc
     # 34, package C: "紧接着连接选定的实际硬件关断电路").  Placing U3-U6 needs no
     # ECO: the golden netlist, the BOM row "U3-U6" and theme section 3 already
@@ -692,12 +808,14 @@ def nets_report() -> dict:
         "nets": rows,
         "single_pad_nets": [n["net"] for n in rows if n["pads"] == 1],
         "single_pad_nets_note": "a net with one pad here draws no ratsnest line and "
-                                "owes no track.  Two kinds remain: the far end of a "
+                                "owes no track.  Three kinds remain: the far end of a "
                                 "resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV "
                                 "-- the driver side, which lives on the control board), "
-                                "and the CT secondary terminals CS1/CS2, whose "
-                                "rectifier sits in the padless U2 outline. Listed so "
-                                "none is read as routed",
+                                "the CT secondary terminals CS1/CS2, whose rectifier "
+                                "sits in the padless U2 outline, and FAULT_IN, the "
+                                "crowbar's one off-board end -- on the built board it "
+                                "comes from the D0 ten-channel protection board, not "
+                                "from anything here.  Listed so none is read as routed",
         "lumped_from_one_netlist_element": {
             f"{BANK_PREFIX}1..{BANK_PREFIX}{_cout()['n']}":
                 "the schematic models the whole bank as one lumped Cout; these "

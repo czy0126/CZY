@@ -53,25 +53,96 @@ def test_every_routable_net_is_connected(routed):
     assert result.unrouted == []
     assert result.failures == []
     # one pad per net is not a connection to make; it is a net that leaves the board
-    assert len(single) == 8
+    assert len(single) == 5
 
 
-def test_the_eight_single_pad_nets_are_the_off_board_ends_of_the_taps(routed):
-    """These leave the board for the control area and the CT bridge.
+def test_the_five_single_pad_nets_are_the_off_board_ends_of_the_taps(routed):
+    """These leave the board for the control area, the CT bridge and the crowbar.
 
     They are reported rather than dropped: a net with one pad draws no ratsnest
     line, so silence would read as "already connected" -- the same trap A5's
     ``single_pad_nets`` exists for.
 
-    The set has moved twice under package C.  Placing the gate resistors turned
-    GA*/GB*/GH/GL into two-pad nets; placing U3-U6 then took all sixteen VD*/VG*
-    off the list and put REG1-REG4 on it -- the crowbar that pulls REG is not on
-    the board yet.  The *set* is asserted, not a count: a count would not have
-    noticed which nets moved.
+    The set has moved three times under package C.  Placing the gate resistors
+    turned GA*/GB*/GH/GL into two-pad nets; placing U3-U6 took all sixteen
+    VD*/VG* off the list and put REG1-REG4 on it; placing the REG crowbar took
+    REG1-REG4 off again -- each now reaches its 4.7 ohm -- and put FAULT_IN on
+    it, the crowbar's one off-board end.  The *set* is asserted, not a count: a
+    count would not have noticed which nets moved.
     """
     _, _, _, single = routed
-    assert sorted(single) == sorted(
-        ["CS1", "CS2", "GH_DRV", "GL_DRV"] + [f"REG{i}" for i in range(1, 5)])
+    assert sorted(single) == sorted(["CS1", "CS2", "FAULT_IN", "GH_DRV", "GL_DRV"])
+
+
+def test_the_12v_bus_reaches_all_four_controllers(routed):
+    """``VCC12_S`` is the board's longest four-pad net, and it lost its lane.
+
+    Pin 7 of each UCC24624 sits in a 1.27 mm column of four occupied pins --
+    PGND (5), VD (6), VCC12_S (7), VG (8) -- and the four parts are 38 mm
+    apart, so this bus has to cross every corridor on the board to reach them.
+    It ran after ten nets that have more pads (PGND, VOUT, SW, the eight SEC*
+    groups), and on 2026-11-06 all three of its connections failed at U3.
+
+    The repair pass could not rescue it: ``_rip_victims`` measured distance to
+    the two *endpoints*, so a blocker halfway down a 38 mm run was never a
+    candidate and the failure was permanent.  The fix is the width split --
+    at 0.25 mm a track fits the 0.67 mm air between the pins, at 0.8 mm it
+    needs 1.2 mm and never can.  Naming the net rather than asserting the
+    count is deliberate: "198/198" would go green again if the failure moved
+    somewhere else.
+    """
+    result, ids, _, _ = routed
+    net = ids["VCC12_S"]
+    assert str(net) not in result.unrouted, "the 12 V bus lost a controller"
+    assert sum(1 for s in result.segments if s.net == net) > 0
+
+
+def test_only_the_measured_output_nets_keep_a_power_width(routed):
+    """Two widths, and each one has a reason that is written down.
+
+    ``path_budget`` walks VOUT and PGND only, so those two keep 0.8 mm -- the
+    width ``what_a_track_would_need`` answers in, and the width the budget's
+    "a track would have to be wider than the board" argument is phrased
+    against.  Every other net on this board is a connectivity placeholder:
+    the status line already says the tracks cannot carry their currents, so
+    0.8 mm bought no rating and cost a lane every time it crossed one.
+
+    Splitting the widths is not cosmetic either -- it is the fix for the
+    twelve-volt bus.  A single width meant the four-pin UCC24624 column had to
+    give 1.2 mm of a 0.67 mm gap, so ``VCC12_S`` (four pads, routed after ten
+    nets that have more) could not leave its last three pins.
+    """
+    _, ids, pads, _ = routed
+    widths, order, _ = m.route_plan(pads, ids)
+    name = {i: n for n, i in ids.items()}
+    power = {name[n] for n, w in widths.items() if w == m.POWER_WIDTH_MM}
+    signal = {name[n] for n, w in widths.items() if w == m.SIGNAL_WIDTH_MM}
+    assert power == set(m.OUTPUT_NETS)
+    assert signal == {name[n] for n in order} - power
+    assert signal, "a one-width board is what lost VCC12_S; do not go back to it"
+    assert m.SIGNAL_WIDTH_MM < m.POWER_WIDTH_MM
+
+
+def test_a_power_track_cannot_leave_a_controller_pin_column(routed):
+    """The geometry, measured off the placement rather than quoted.
+
+    Pads 5-8 of a UCC24624 share one 1.27 mm column, so the widest track that
+    can pass between two of them is the pad-to-pad gap less two clearances.
+    Measuring it here means the second width cannot be retired by editing a
+    constant, and that the claim is checked against the board that ships.
+    """
+    _, _, pads, _ = routed
+    column = sorted((p for p in pads if p.ref == "U3" and p.number in {"5", "6", "7", "8"}),
+                    key=lambda p: p.y)
+    assert {p.number for p in column} == {"5", "6", "7", "8"}
+    assert len({round(p.x, 3) for p in column}) == 1, "the four pins are one column"
+    gaps = [column[i + 1].y - column[i].y - (column[i + 1].h + column[i].h) / 2.0
+            for i in range(3)]
+    gap = min(gaps)
+    assert m.POWER_WIDTH_MM + 2 * router.CLEARANCE_MM > gap, (
+        "an 0.8 mm track now fits the pin column -- re-measure before dropping the "
+        "signal width")
+    assert m.SIGNAL_WIDTH_MM < gap
 
 
 def test_the_route_is_deterministic(routed):

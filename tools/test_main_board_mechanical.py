@@ -27,6 +27,7 @@ stale-generated-file contract `tools/ci_check.py` enforces elsewhere.
 
 from __future__ import annotations
 
+import csv
 import json
 import re
 import shutil
@@ -41,7 +42,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import main_board_mechanical as mbm  # noqa: E402
 
 EVIDENCE = {"datasheet", "generated-json", "digitised-datasheet", "kicad-library",
-            "PROVISIONAL"}
+            "validation-board", "PROVISIONAL"}
 
 
 def test_no_two_parts_overlap():
@@ -62,8 +63,15 @@ def test_every_part_is_inside_the_board_outline():
 
 def test_every_dimension_states_its_evidence_class():
     """The whole document is worthless if a provisional case size travels
-    without its label.  Three classes are allowed and PROVISIONAL is the only
-    one that may appear in the "assumed" list of the report."""
+    without its label.  PROVISIONAL is the only class that may appear in the
+    "assumed" list of the report.
+
+    ``validation-board`` is the one class whose parts and values are not read from
+    a datasheet or derived here at all: they are the ones
+    ``pcb/sr_fault_validation`` selected and measured, with the vendored KiCad
+    lands for courtyards.  Folding it into ``kicad-library`` or ``datasheet``
+    would claim more than the repository holds.
+    """
     for part in mbm.PARTS:
         assert part.evidence in EVIDENCE, f"{part.ref}: {part.evidence!r}"
         if part.evidence == "PROVISIONAL":
@@ -566,14 +574,35 @@ def test_the_bank_refs_collide_with_nothing_the_schematic_already_uses():
 def test_every_landed_net_is_the_one_the_review_table_says():
     """Nets land on pads by *name*.  A pad whose name the table does not carry
     (the Lr's N1/N2 versus its "1"/"2", the U2 outline with no pads) silently
-    drops off the board, and the ratsnest looks complete without it."""
+    drops off the board, and the ratsnest looks complete without it.
+
+    The crowbar is checked against its own declaration instead, because no review
+    row for it can exist -- see ``test_the_crowbar_refs_are_not_in_the_review_table``.
+    """
+    crowbar = mbm.crowbar_nets()
     for part in mbm.PARTS:
         got = mbm.part_nets(part)
         if part.ref.startswith(mbm.BANK_PREFIX):
             assert set(got) == {"1", "2"}          # borrowed from the lumped Cout
             continue
         assert all(pad in mbm._pad_positions(part.footprint) for pad in got)
+        if part.ref in crowbar:
+            assert got == crowbar[part.ref], part.ref
+            continue
         assert set(got) == _expected_pads(part), part.ref
+
+
+def test_the_crowbar_refs_are_not_in_the_review_table():
+    """``part_nets`` reads the review table first, so a crowbar ref that also had
+    a row there would be checked against that row -- the test would end up
+    comparing the table with itself and pass whatever the table said.
+
+    There cannot be such a row anyway: that CSV records the per-pin status of the
+    *native* schematic, and ``library_pins`` has no MOSFET and no Zener symbol, so
+    a crowbar row would assert native pins that do not exist.
+    """
+    overlap = set(mbm.crowbar_nets()) & set(mbm.pad_nets())
+    assert overlap == set(), sorted(overlap)
 
 
 def _expected_pads(part) -> set[str]:
@@ -585,10 +614,15 @@ def _expected_pads(part) -> set[str]:
 
 
 def test_a_part_the_table_has_no_row_for_carries_no_net():
+    """Except the crowbar, which has no review row by design and whose nets come
+    from ``crowbar_nets()`` instead -- an empty dict here would mean the third
+    source was never consulted."""
     table = mbm.pad_nets()
+    crowbar = mbm.crowbar_nets()
     for part in mbm.PARTS:
-        if part.ref not in table and not part.ref.startswith(mbm.BANK_PREFIX):
-            assert mbm.part_nets(part) == {}, part.ref
+        if part.ref in table or part.ref.startswith(mbm.BANK_PREFIX) or part.ref in crowbar:
+            continue
+        assert mbm.part_nets(part) == {}, part.ref
 
 
 def test_the_padless_outline_is_not_counted_as_a_connection():
@@ -658,22 +692,25 @@ def test_the_four_secondary_groups_are_drawn_the_same_length():
 
 
 def test_a_one_pad_net_is_listed_rather_than_read_as_routed():
-    """Eight nets still end in exactly one pad, and each for a stated reason.
+    """Five nets still end in exactly one pad, and each for a stated reason.
 
     Package C turned GH/GL/GA*/GB* into two-pad nets by placing the gate
-    resistors; placing U3-U6 then took VD*/VG* off this list and put REG1-REG4
-    on it -- the crowbar that pulls REG is still a plan, so each REG node has
-    one pin and no copper.  CS1/CS2 stay because their rectifier sits in the
-    padless U2 outline, and GH_DRV/GL_DRV because the primary drivers are on the
-    control board.  A net with one pad draws no ratsnest line, so nothing else
-    would ever flag them.
+    resistors, and placing U3-U6 took VD*/VG* off this list.  REG1-REG4 were on
+    it for one stage and have now left it too: each REG node reaches the 4.7 ohm
+    that pulls it down, so what was a lone pin is a real two-pad net.  FAULT_IN
+    joins instead, and that is the honest count -- the crowbar has exactly one
+    off-board end, the fault input, which on the real board comes from the D0
+    ten-channel board rather than from anything on this board.  CS1/CS2 stay
+    because their rectifier sits in the padless U2 outline, and GH_DRV/GL_DRV
+    because the primary drivers are on the control board.  A net with one pad
+    draws no ratsnest line, so nothing else would ever flag them.
     """
     nets = mbm.nets_report()
     single = set(nets["single_pad_nets"])
-    assert single == {"CS1", "CS2", "GH_DRV", "GL_DRV"} | {
-        f"REG{i}" for i in range(1, 5)}
-    assert len(single) == 8
+    assert single == {"CS1", "CS2", "GH_DRV", "GL_DRV", "FAULT_IN"}
+    assert len(single) == 5
     assert "owes no track" in nets["single_pad_nets_note"]
+    assert "FAULT_IN" in nets["single_pad_nets_note"]
 
 
 def test_every_gate_resistor_lands_directly_under_the_gate_it_serves():
@@ -740,8 +777,81 @@ def test_the_four_sr_controllers_are_placed_on_the_pair_they_serve():
             assert nets[f"{kind}{i}_B"] == 2, (kind, i, "B")
             assert f"U{i + 2}.{a_pin}" in members[f"{kind}{i}_A"]
             assert f"U{i + 2}.{b_pin}" in members[f"{kind}{i}_B"]
-        # REG goes nowhere else yet: the crowbar that pulls it is the next step
-        assert members[f"REG{i}"] == [f"U{i + 2}.3"], members[f"REG{i}"]
+        # REG now reaches the resistor that pulls it -- the node exists to be pulled
+        assert members[f"REG{i}"] == [f"R{52 + i}.1", f"U{i + 2}.3"], members[f"REG{i}"]
+
+
+def test_the_reg_crowbar_is_the_selected_shutdown_circuit_wired_to_all_four_regs():
+    """Doc 34, package C: "紧接着连接选定的实际硬件关断电路".
+
+    UCC24624 has no enable pin -- only a REG undervoltage or standby pulls VG
+    low -- which is why the selected circuit on ``pcb/sr_fault_validation``
+    pulls REG down through 4.7 ohm instead of cutting VDD (11.6-12.1 us against
+    75.5 ms).  A5 now carries one copy of it per controller, all driven from the
+    same clamped fault input.
+
+    Nothing is restated from the generator: values, footprints, per-pin net
+    roles and the shared pin sets are read back out of that board's delivered
+    BOM and report, so a number changed on either side fails here instead of
+    drifting.  What the two boards cannot share is the channel count -- the
+    validation board proves one pair, A5 drives four -- so REG_CROW and REG are
+    checked per channel rather than copied.
+    """
+    sr = mbm.ROOT / "pcb" / "sr_fault_validation"
+    with (sr / "BOM.csv").open(encoding="utf-8", newline="") as fh:
+        bom = {row["Reference"]: row for row in csv.DictReader(fh)}
+    net_map = json.loads((sr / "sr_fault_validation.json").read_text(encoding="utf-8"))["net_map"]
+    by_ref = {p.ref: p for p in mbm.PARTS}
+
+    shared = {"R50": "R40", "D50": "D40", "R51": "R41", "C50": "C40", "R52": "R43"}
+    for ours, theirs in shared.items():
+        part = by_ref[ours]
+        assert part.value == bom[theirs]["Value"], (ours, part.value, bom[theirs]["Value"])
+        assert part.footprint == bom[theirs]["Footprint"], (ours, part.footprint)
+        for pad in ("1", "2"):
+            want = next(n for n, pads in net_map.items() if f"{theirs}.{pad}" in pads)
+            assert mbm.part_nets(part)[pad] == want, (ours, pad, want)
+
+    for i in range(1, 5):
+        q, r = by_ref[f"Q{50 + i}"], by_ref[f"R{52 + i}"]
+        assert (q.footprint, q.value) == (bom["Q41"]["Footprint"], bom["Q41"]["Value"]), q.ref
+        assert (r.footprint, r.value) == (bom["R44"]["Footprint"], bom["R44"]["Value"]), r.ref
+        assert mbm.part_nets(q) == {"1": "RC_G", "2": "PGND", "3": f"REG_CROW{i}"}, q.ref
+        assert mbm.part_nets(r) == {"1": f"REG{i}", "2": f"REG_CROW{i}"}, r.ref
+
+    members = mbm.placed_nets()
+    for i in range(1, 5):
+        # REG stops being an off-board end: it reaches the resistor that pulls it
+        assert members[f"REG{i}"] == [f"R{52 + i}.1", f"U{i + 2}.3"], members[f"REG{i}"]
+        assert members[f"REG_CROW{i}"] == [f"Q{50 + i}.3", f"R{52 + i}.2"], members[f"REG_CROW{i}"]
+        assert f"Q{50 + i}.2" in members["PGND"]
+    # one 100 ohm resistor drives all four gates.  Four separate gate resistors
+    # would be a different circuit, and the shared node is the one the reviewed
+    # board lists as RC_G; its 4 x 630 pF = 2.52 nF is still four times faster
+    # than the 12 us REG-UVLO budget it has to fit inside.
+    assert members["RC_G"] == [f"Q{i}.1" for i in range(51, 55)] + ["R52.2"]
+    assert members["FAULT_G"] == ["C50.1", "D50.1", "R50.2", "R51.1", "R52.1"]
+    assert members["FAULT_IN"] == ["R50.1"], "the fault input is the one off-board end"
+
+    # Every channel sits at the same offset from the controller it serves: the
+    # four groups are electrically identical, and a placement that gave one of
+    # them a longer REG path would be one nobody measured.
+    offsets = {(round(by_ref[f"Q{50 + i}"].x - by_ref[f"U{i + 2}"].x, 6),
+                round(by_ref[f"R{52 + i}"].x - by_ref[f"U{i + 2}"].x, 6),
+                round(by_ref[f"Q{50 + i}"].y - by_ref[f"U{i + 2}"].y, 6))
+               for i in range(1, 5)}
+    assert len(offsets) == 1, offsets
+    # and above the controllers, so the VG/VD tap corridor between the control
+    # row and the FET row stays empty
+    top = min(by_ref[f"U{i + 2}"].y - by_ref[f"U{i + 2}"].d_mm / 2 for i in range(1, 5))
+    for ref in {p.ref for p in mbm.PARTS if p.ref in shared} | {
+            f"Q{i}" for i in range(51, 55)} | {f"R{i}" for i in range(53, 57)}:
+        part = by_ref[ref]
+        assert part.y + part.d_mm / 2 < top, (ref, "the crowbar blocks the VD/VG corridor")
+        # a 1 mm-class part in a 10 mm stack: it cannot move the A6 section.
+        # This asserts the *envelope*, not a datasheet maximum -- the AO3400A
+        # text in the repository has no mechanical section.
+        assert part.h_mm_worst < 2.0, (ref, part.h_mm_worst)
 
 
 def test_the_resistor_values_come_from_the_register_not_the_review_table():
@@ -754,8 +864,13 @@ def test_the_resistor_values_come_from_the_register_not_the_review_table():
     """
     eco = json.loads(mbm.ECO.read_text(encoding="utf-8"))["rows"]
     stated = {r["ref"]: r["existing_value_or_rating"] for r in eco}
-    plate = {p.ref: p.value for p in mbm.PARTS if p.footprint == mbm.R0603_FP}
-    assert sorted(plate) == sorted([f"R{i}" for i in (4, 5)] + [f"R{i}" for i in range(20, 36)])
+    register = [f"R{i}" for i in (4, 5)] + [f"R{i}" for i in range(20, 36)]
+    all_0603 = {p.ref: p.value for p in mbm.PARTS if p.footprint == mbm.R0603_FP}
+    # The crowbar's three 0603s share the footprint but not this source: their
+    # values are the validation board's, checked against its BOM instead.  Naming
+    # them keeps this test from quietly growing a loop over fewer resistors.
+    assert sorted(set(all_0603) - set(register)) == ["R50", "R51", "R52"]
+    plate = {ref: all_0603[ref] for ref in register}
     for ref, value in plate.items():
         assert value.split()[0] in stated[ref], (ref, value)
         assert value == " ".join(stated[ref].split(";")[0].split()[:2])

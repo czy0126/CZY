@@ -3,11 +3,11 @@
 Why this module exists
 ----------------------
 ``hardware/dcx_mech/power_stage_placement.kicad_pcb`` is a netlist on a board:
-35 footprints, 30 nets, 74 ratsnest lines.  That is enough to judge placement,
-and the roadmap says it is not enough to count as layout work ("无网络机械板
-不再算A6推进").  This module turns the same placement into a routed board --
-every net with more than one pad gets copper -- and then *measures* the copper
-instead of describing it.
+70 footprints, 60 nets, 242 named pads and 134 ratsnest lines.  That is enough
+to judge placement, and the roadmap says it is not enough to count as layout
+work ("无网络机械板不再算A6推进").  This module turns the same placement into a
+routed board -- every net with more than one pad gets copper -- and then
+*measures* the copper instead of describing it.
 
 What it deliberately does not do
 --------------------------------
@@ -16,6 +16,12 @@ report carries the series resistance of the actual routed path from each
 secondary source to the output terminal, at 1/2/4 oz and 100 C, next to the
 0.15 mOhm design basis.  That comparison is the point: it turns "the power
 path still needs planes" from an opinion into arithmetic.
+
+There are two track widths, and the split is part of that arithmetic.  The two
+nets the basis is measured through keep the 0.8 mm reference width so the
+comparison means something; every other net is a 0.25 mm connectivity
+placeholder, because the status line already says ampacity is not met and a
+wider placeholder only takes lanes away from its neighbours.
 
 The second half of that arithmetic is the pour study.  A zone alone says
 nothing, so the module pours both output nets solid over the whole board,
@@ -68,11 +74,20 @@ PROJECT = OUT / "power_stage_routed.kicad_pro"
 REPORT = OUT / "routed_copper.json"
 DRC = OUT / "routed_drc.json"
 
-# Every net on this board that has two or more pads is a power net: the twelve
-# single-pad nets are the eight SR gates and the four CT secondaries, whose
-# other end is a gate resistor or a bridge that is not on this board.  So there
-# is no "signal width" here -- only the one number, and the report says why.
-TRACK_WIDTH_MM = 0.8
+# Two widths, and each one has a reason that is recorded rather than assumed.
+#
+# ``OUTPUT_NETS`` keep the 0.8 mm reference width because ``path_budget`` walks
+# VOUT and PGND and because ``what_a_track_would_need`` answers in that width --
+# "a track would have to be wider than the board" is a statement about 0.8 mm.
+#
+# Every other net on this board is a *connectivity placeholder*.  The board has
+# said ``AMPACITY_NOT_MET`` since it was first routed, so a wider track bought no
+# rating -- and it cost a lane every time it crossed one.  The twelve-volt bus is
+# what that cost: pin 7 of each UCC24624 shares a 1.27 mm column with pins 5/6/8
+# (0.67 mm of air between 0.6 mm pads), and an 0.8 mm track with 0.2 mm clearance
+# needs 1.2 mm, so ``VCC12_S`` could not leave three of its four pins.
+POWER_WIDTH_MM = 0.8
+SIGNAL_WIDTH_MM = 0.25
 
 STATUS = "ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET"
 
@@ -151,14 +166,24 @@ def pads_of(text: str, ids: dict[str, int]) -> list[router.Pad]:
 
 
 # ---------------------------------------------------------------- routing
+def width_of(net: str) -> float:
+    """The only place the two widths meet a net name.
+
+    Keeping this a function rather than a dict comprehension is deliberate:
+    ``route_plan`` and ``report`` must agree, and when they were written out
+    twice the report kept claiming one width for every net for a whole stage.
+    """
+    return POWER_WIDTH_MM if net in OUTPUT_NETS else SIGNAL_WIDTH_MM
+
+
 def route_plan(pads: list[router.Pad], ids: dict[str, int],
-               width: float = TRACK_WIDTH_MM) -> tuple[dict[int, float], list[int], list[str]]:
+               ) -> tuple[dict[int, float], list[int], list[str]]:
     """Which nets get copper, at what width, in what order.
 
-    Ordered by pad count, descending.  A net with many pads (PGND has 45) owns
-    the board's real corridors; lettings the two-pad nets go first would let
-    them take the only lanes wide enough for it.  Nets with one pad are not
-    routable at all and are reported instead of silently dropped.
+    Ordered by pad count, descending.  The net with the most pads (PGND, dozens
+    of them) owns the board's real corridors; letting the two-pad nets go first
+    would let them take the only lanes wide enough for it.  Nets with one pad are
+    not routable at all and are reported instead of silently dropped.
     """
     count: dict[int, int] = defaultdict(int)
     for pad in pads:
@@ -168,7 +193,7 @@ def route_plan(pads: list[router.Pad], ids: dict[str, int],
                       key=lambda n: (-count[n], n))
     single = sorted((n for n, c in count.items() if c < 2), key=lambda n: n)
     name = {i: n for n, i in ids.items()}
-    widths = {n: width for n in routable}
+    widths = {n: width_of(name[n]) for n in routable}
     return widths, routable, [name[n] for n in single]
 
 
@@ -280,7 +305,11 @@ def _attach(pad: router.Pad, nodes) -> list[tuple[int, float, float]]:
     path that is measured through copper it does not touch is shorter than the
     real one -- the direction of error that flatters the design.
     """
-    half = TRACK_WIDTH_MM / 2.0
+    # ``path_squares`` is only ever asked about an output net (the two-pad
+    # reach of ``what_a_track_would_need`` and the per-group budget both walk
+    # VOUT and PGND), so the power width is the width of every track this
+    # graph can see.
+    half = POWER_WIDTH_MM / 2.0
     return [n for n in nodes
             if n[0] in pad.layers
             and router._pad_distance(pad, n[1], n[2]) <= half + 1e-6]
@@ -475,6 +504,10 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
            pads: list[router.Pad], single: list[str],
            pours: dict | None = None) -> dict:
     w, d = a5.board_rect()
+    widths, _, _ = route_plan(pads, ids)
+    name = {i: n for n, i in ids.items()}
+    power_nets = sorted(name[n] for n, width in widths.items() if width == POWER_WIDTH_MM)
+    signal_nets = sorted(name[n] for n, width in widths.items() if width == SIGNAL_WIDTH_MM)
     return {
         "status": STATUS,
         "flags": {"routed": not result.unrouted, "poured": False,
@@ -491,17 +524,26 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
             "unrouted_nets": result.unrouted,
             "failures": [{"net": n, "from": a, "to": b} for n, a, b in result.failures],
             "segments": len(result.segments), "vias": len(result.vias),
-            "track_width_mm": TRACK_WIDTH_MM,
-            # Derived from ``single`` rather than typed: the list moved twice under
-            # package C (gate taps became two-pad nets, then VD*/VG* did) and a
-            # typed explanation kept naming nets that no longer leave the board.
-            "width_basis": "one width for every net, because this is a connectivity "
-                           "draft and not a design; the "
+            "track_width_mm": {"power": POWER_WIDTH_MM, "signal": SIGNAL_WIDTH_MM},
+            "power_nets": power_nets,
+            "signal_nets": signal_nets,
+            # Derived from ``single`` rather than typed: the list moved three times
+            # under package C (gate taps became two-pad nets, then VD*/VG* did, then
+            # the crowbar made REG* two-pad nets and put FAULT_IN on it) and a typed
+            # explanation kept naming nets that no longer leave the board.
+            "width_basis": f"{len(power_nets)} nets at {POWER_WIDTH_MM} mm "
+                           f"({', '.join(power_nets)}) because they are the nets the "
+                           "0.15 mOhm budget and what_a_track_would_need are measured "
+                           f"through; the other {len(signal_nets)} routable nets are "
+                           f"{SIGNAL_WIDTH_MM} mm connectivity placeholders -- the status "
+                           "line already says the tracks cannot carry their currents, so "
+                           "a wider track bought no rating and took a lane every time it "
+                           "crossed one. The "
                            f"{len(single)} single-pad nets "
                            f"({', '.join(sorted(single))}) are ends that leave this "
-                           "board -- the gate drivers, the CT rectifier and the REG "
-                           "crowbar that is not placed yet -- so no track is owed on "
-                           "them",
+                           "board -- the gate drivers, the CT rectifier, and the "
+                           "crowbar's fault input, which comes from the D0 protection "
+                           "board -- so no track is owed on them",
             "router": "tools/sr_board_router.py (deterministic grid router, "
                       "0.125 mm pitch, 0.20 mm clearance)",
         },
