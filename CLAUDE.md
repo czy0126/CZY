@@ -55,8 +55,11 @@ python tools/make_control_board.py --check   # 控制验证板：重生成 + 网
 python tools/main_board_mechanical.py --check   # A5 带网摆放（1:1）：重生成 + SVG/PNG + DRC + 老鼠线计数（需 KiCad 10.0）
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
-python tools/make_sr_fault_board_pcb.py --check   # 该板的布局 pass 1：重生成 + kicad-cli DRC（未布线，只判摆放）
+python tools/make_sr_fault_board_pcb.py --check   # 该板的布线 + 铺铜 pass 3：重生成 + kicad-cli DRC + 冲 fill.json + 导出 fab/
+python tools/make_sr_fault_board_pcb.py --fab     # 同上，缺 kicad-cli 时直接失败；fab/ 里含 assembly.svg
+python tools/assembly_drawing.py --check          # 装配/DNP 图（A4 1:1）：重生成并与 fab/assembly.svg 比对
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
+python tools/make_fast_oc_pcb.py --check          # 该模块的布线板：重生成 + kicad-cli DRC（需 KiCad 10.0，缺了 SystemExit）
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
 python tools/placeholder_eco.py --write          # 61 占位逐件责任清单（json + csv），只连表不造 MPN
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
@@ -803,7 +806,28 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 
 - **主关断是 REG 撬棒（Q41+R44 4.7 Ω），不是切 VDD、也不是门极钳位**：UCC24624 没有
   enable，只有 REG UVLO 或 standby 才会把 VG 拉低。2.3 µF×11 V=139 µJ，撬棒
-  **13.6 µs** 到 VREGOFF；只切 VDD 要 **75.5 ms**（1.1 µF 级电容 ÷ 1.5 mA 运行电流）。
+  **15.81 µs** 到 VREGOFF（3.63 V 门限、6.2 Ω 占位）；只切 VDD 要 **75.5 ms**
+  （1.1 µF 级电容 ÷ 1.5 mA 运行电流）。
+- **撬棒的 UVLO 时间必须按 3.63 V 算，且它只是估计值**（2026-11-05 审核 P1）：`VREGOFF`
+  是 3.63/4.0/4.25 V，取 4.25 V 会凭空快 1.5 µs。现在 `crowbar()` 报三个场景
+  （0.0 Ω 理想钳位 11.98 µs / 0.1 Ω BOM 目标 12.24 µs / 1.5 Ω 占位 15.81 µs）、
+  `worst_case.is_worst_case` **恒 false** 并列出理由，另有恒流注入敏感性
+  **17.55 µs**（`t=RC·ln[(V0−IR)/(Vth−IR)]`，95 mA 是 REG=8 V 条件，只在 IR<Vth 成立）。
+  **不要把它写"快速硬关断"**——route 里"REG 撬棒=快"已被降级为实验选项。
+- **R44/Q41 的脉冲表是筛选比，不是合格判据**：释放能量 124 µJ（11→3.63 V），R44
+  94 µJ、峰 14.8 W / 均 5.9 W；1206 单脉冲曲线与 Q41 热模型仓库里都没有，
+  `r44_pulse_rating_j`/`q41_thermal` 恒 `null`，温度写 UNVERIFIED。BOM 的
+  "Rds ≤0.1 Ω"是对 3.0 V 栅压提的（3.3 V 台架经 1k/10k 分压），Q41 **没有 MPN**。
+- **故障输入默认态是"不撬棒"（fail-open）**：R41 10k 下拉，故障源断开/失电时板子
+  保持不关断；`input_default()` 把这个限制写进 JSON，不许当成"默认安全"。
+  状态输出是开漏 + R42 100k 下拉，高电平是分压的**下拉端**（3.3 V×100k/110k=**3.0 V**），
+  写成 10k/110k 就把分压算反了（这条真的写错过一次）。
+- **BOM 的 MPN 只在仓库里有数据手册时写，其余一律 `TO_SELECT`**：`Part.mpn`/`Part.mpn_source`
+  成对出现，`test_every_mpn_in_the_bom_is_traced_to_a_datasheet_in_the_repository` 拿
+  `mpn_source` 指的文件去 `grep` 那个字符串——编一个型号会让测试红，而不是让它进采购单。
+  当前只有 U1（`UCC24624DR`，`references/datasheets/ucc24624.txt` 的订货表）与 Q1/Q2
+  （`BSC010N04LS6`）有名有姓，其余 68 行是 `TO_SELECT`。**空白格读起来像"待补"，编出来的
+  型号读起来像"有这个货"**——后者的代价高一个量级。
 - **门极钳位默认 DNP（R47/R48/Q42/Q43）**：能压住 VG 的钳位（≤0.2 Ω）要 UCC24624
   在输出级烧 **16–18 W**，因为 6.5 Ω 上拉与钳位分压后仍要求 1.5 A 源流；2N7002 级
   （1.5 Ω）只能压到 **2.06 V**，高于 SR 的 VGS(th) 下限 1.3 V。焊盘留着是为了**实测一次**。
@@ -811,8 +835,9 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
   推挽驱动硬并到 VG（路线 P1 明令）。
 - **`VSS` 与 `PGND` 是两个网络**，只经 R1(0 Ω)→SR_SRC→Rsh1(1 mΩ) 相连；不然门极电流
   的返回路径不可测。改这两只件等于放弃这条测量。
-- **SR 支路 23.6 µs > 参考原边支路 1.29 µs**（REG→UVLO 是主导项），所以
+- **SR 支路 15.8 µs > 参考原边支路 1.29 µs**（REG→UVLO 是主导项），所以
   `t_stop = t_common + max(t_primary, t_SR)` 在这里选 SR；两支路并联**不许相加**。
+  `delay_budget` 只是**地板**（`is_worst_case=false`），不含 UVLO 后的 VG 动态。
 
 生成器两个踩过的坑：
 - SR 符号把 S1–S3、D5–D8 合并到同一个图形端点，所以"不同器件不许共用 pin tip"的校验
@@ -839,7 +864,7 @@ SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
 每半副边从 x 43 的铺铜边缘经**一条 0.8 mm 走线 + 两个 0.3 mm 钻孔过孔**串到 x 46.87 的
 漏极焊盘；**两种铜厚下都是过孔筒壁绑住脉冲数**（0.3 mm 钻 / 0.020 mm 壁 = 0.0201 mm²，
 小于 1 oz 的 0.0278 mm²，长度相同），所以**加宽走线没用，要加大钻孔**。
-`--check` 现在同时导出 `fab/`（gerber 带 `--check-zones`、drill、position）与
+`--check` 现在同时导出 `fab/`（gerber 带 `--check-zones`、drill、position、装配图）与
 `fab/manifest.json`（逐文件 sha256 + 板哈希 + 重复那份载流评级 + 两个 false 旗）；
 `--fab` 在没有 kicad-cli 时直接失败。**这只是制造包，不是签核**：
 `hardware_built`/`fabrication_approved` 不变，1 oz 是包的要求。
@@ -847,6 +872,14 @@ SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
 清单另有 `process_requirements`，字段按出处三分（`measured_here` 读布线 /
 `design_rules` 路由器常量 / `our_choice_not_measured`），三组互斥且覆盖全部非列表字段，
 测试锁住；阻焊与丝印颜色写"板厂默认"，不编颜色。
+
+**装配/DNP 图不从 kicad-cli 出，从同一张 `Placed` 表生成**（`tools/assembly_drawing.py` →
+`fab/assembly.svg`）：A4 1:1 俯视，每只件一个 courtyard 方框 + 编号气泡，十个 DNP 件
+红底虚线框并在板上标 `DNP`，下方两栏表列位号/取值/封装/状态。选它是因为
+`pcb export svg` 画的是丝印——位号位置由布图决定（本板尚有重叠）、且**丝印说不出"DNP"**，
+空缺焊盘与漏订件在图上一样。图与铜同源，因此不会互相矛盾，也不需要 KiCad。
+`export_fab()` 里是**惰性 import**（`assembly_drawing` 反过来 import 本模块取件表）。
+清单的 `files` 必须覆盖 `fab/` 下每个文件，测试逐名比对——未列入即无人哈希过。
 
 **kicad-cli 只绘板文件 `(layers)` 表里声明过的层，没声明的静默丢弃**（退出码 0、
 无消息、无输出行），焊盘上写着 `(layers "F.Cu" "F.Mask" "F.Paste")` 也不算数。
@@ -992,12 +1025,12 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 - **系统级 `t_stop` 由 SR 支路决定，不是比较器**：`system_delay()` 按路线 P1-b 的式子
   `t_stop = t_CT/整流/滤波 + t_cmp + t_common_logic + max(t_primary, t_SR)` 组装。
   SR 支路从单对 SR 板的 `delay_budget` **读出**（不重推，防止两份文档漂移）：撬棒 50 ns +
-  REG→UVLO **13.56 µs** + VG 拉低 16 ns = **13.63 µs**；那块板自己的 **10 µs 输入 RC 不计入**
+  REG→UVLO **15.81 µs**（3.63 V 门限）+ VG 拉低 16 ns = **15.88 µs**；那块板自己的 **10 µs 输入 RC 不计入**
   （它是验证板前端，不是主板的故障通路，`sr_branch_terms.excluded_input_rc_*` 显式记着）。
-  原边参考支路 1.29 µs ⇒ 慢支路是 SR。整机地板 **14.69 µs**，对原滤波通路 142.5 µs 是
-  **≈9.7×**，而模块自身的 **121×** 只是**检测段**比较。D0 的 CD4013 锁存与门控**没建模**，
+  原边参考支路 1.29 µs ⇒ 慢支路是 SR。整机地板 **16.9 µs**，对原滤波通路 142.5 µs 是
+  **≈8.5×**，而模块自身的 **121×** 只是**检测段**比较。D0 的 CD4013 锁存与门控**没建模**，
   `common_logic_s` 恒 `null`，所以这两个总数都是**地板不是最坏值**——不得引用成最坏关断时间。
-  `test_the_system_stop_is_not_the_module_delay` 锁住 9.7× 必须远小于 121×（<1/5），
+  `test_the_system_stop_is_not_the_module_delay` 锁住 8.5× 必须远小于 121×（<1/5），
   `test_the_shutdown_branch_comes_from_the_sr_board_report` 锁住 SR 板 `max_branch_s` 与
   这里之差**恰好**是那条被排除的 RC。
 
@@ -1017,6 +1050,28 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 - 生成器复用 `make_sr_fault_board` 的解析/校验helper（`Part`/`Pin`/`custom_symbol`/
   `extract_symbol`/`pin_tips`/`validate*`/`erc_violations`），UUID 命名空间与件表是本板自己的，
   两块板不会撞。改 helper 的签名要同时看两个测试。
+- **U1 是 DBV 六脚封装，不能和两脚基准源共用 `SMD = SOT-23` 这个常量**：第一版就是六脚落在
+  三个焊盘上，而 ERC 全绿——**ERC 不看封装**。已改成 `Package_TO_SOT_SMD:SOT-23-6`，
+  `test_every_symbol_pin_has_a_pad_in_its_footprint` 逐件读库文件数焊盘（不是数符号脚）。
+
+### 模块布线板（`pcb/fast_oc/fast_oc.kicad_pcb`，`tools/make_fast_oc_pcb.py`）
+
+52 × 38 mm 双层，26 只件、9 条网、52 个焊盘、**42/42 连接**（504 段 0.25 mm、35 过孔），
+`drc.json` 三个顶层数组全空。`--check` 在 DRC 有任何一条时就 `SystemExit`，
+`hardware_built`/`fabrication_approved` 恒 false。三条操作事实：
+
+- **`escape_mm = 0.0` 是实测选的**：路由器默认给"尚未布线的网"的焊盘留 0.40 mm 余量，
+  防后续网把出口封死；U1 内侧焊盘到对面一排只有 1.375 mm，够 0.25 mm 走线（0.775 mm）
+  不够两侧同时留（1.575 mm）。六种确定性顺序在默认值下停 40/42 或 41/42，归零后 42/42
+  且无净空违规。参数默认值仍是 `ESCAPE_MM`（SR 板不变，`test_sr_board_router.py` 锁住），
+  本板的选择写进 `fast_oc_pcb.json:escape_reserve_mm`——**不要只写在注释里**。
+- **安装孔位号必须隐藏**：孔中心离边 5 mm、位号在孔上方 4.9 mm ⇒ 落在 38 mm 板外，
+  DRC 报 `silk_edge_clearance`。`mounting_hole_source(hide_reference=False)` 默认不变
+  （SR 板已提交文件的字节不能动），本板传 True。**两处都要传**：`write()` 写 `dcx.pretty`
+  的文件、`board_file()` 内嵌的那份是**各自独立生成的文本**，只改一处板子照样带可见位号。
+- **`dcx.pretty` 必须先写再生成板文件**：`board_file()` 经 `stock_text()` 从磁盘读封装，
+  顺序反了会内嵌上一次的副本——全新 checkout 重生成与提交件不一致，而本机看起来没问题。
+  同一个陷阱对任何"生成器先写库、再引库"的板子都成立。
 
 **本机 `PostToolUse` 钩子会对编辑过的 `.py` 跑 `ruff check --fix`，它会删掉"暂时未使用"的 import**：
 先加 `import x`、下一次编辑才写用法的分步做法会被吃掉（`make_fast_oc_eco.py` 与它的测试都撞过）。
