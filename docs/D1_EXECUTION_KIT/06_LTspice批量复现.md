@@ -62,3 +62,17 @@ deck/log/raw 哈希、`last_saved_us`、故障前 Vout 与配对差值都由 JSO
     python tools/d1_fabrication_gate.py --require-release
 
 前者检查脚本与已有分析数据；后者即使 Python 测试全绿也应暂时拒绝制造。
+
+## 6. 2026-11-05 远程多 lane 运行结果守门（已提交代码）
+
+远程批处理入口 `tools/remote_lanes.py` 用于 Windows 上已安装 LTspice 的模拟主机。和本地 `python tools/ci_check.py` 不同，它确实启动后台批处理进程；**本次仅通过离线合成样例检验启动器，未从 ChatGPT 实际连接 winsrv 跑新 RAW。**
+
+上一版启动器只要退出后看到 `.raw` 和 `.log` 文件存在就将 lane 计为成功；实际 LTspice 可在启动时写好 `.log` 而 RAW 仍是 0 字节，或出现合法文件但波形尚未结束。已改为 fail-closed 检查：
+
+- 子进程须**退出码为0**；`.raw/.log` 非空；ASCII RAW 头有 `No. Variables`、`No. Points` 均大于0及 `Values:` 后面的样本；日志有 `Total elapsed time` 完成标记且没有明确错误标记。**此轻量完成预检并非完整RAW解析：仍须依首节核对停止时间与RAW最后采样点。**
+- 任一 lane 失败不得以部分完成计算 `all_same=true`；如指定 `--reference`，必须所有 lane 成功且所有非时间戳RAW内容哈希完全一致，否则脚本**退出码1**并列出不一致序号。
+- CPU停滞且 RAW 不增长超过配置的阈值时重启；即使 0 字节 RAW 已存在、CPU 性能计数器不可用，也不能永久跳过超时；但重试不等于故障仿真已达到科学结论。
+- `--root` 内部 deck 不得用绝对路径或 `..\` 越界；一次批次使用唯一 `sim/lane_*\` 目录，防止同秒重跑覆盖旧结果。报告记录每一路失败原因、重试次数和完成哈希。
+- `body_hash` 忽略 ASCII RAW 前两行 Title/Date，**仅是波形主体相等的粗筛**；不能证明 LTspice 求解值准确、模型没被改、器件 SOA 已满足。运行时还需分别保存原始 deck 的 SHA-256、模型库版本、参数和环境、完整 RAW/LOG 及终点时间检查。
+
+验证：`python -m pytest tools/test_remote_lanes.py -q`，`python tools/ci_check.py`。真正运行仅在准备好远程机和原生 LTspice 的环境中执行（使用约束在脚本 `--help` 和 winsrv 运维文档）；不要为了追求批处理吞吐率继续重复已做足的 50V B 组扫参，优先修正 D0 保护板的模拟漏判，再进行硬件测量。
