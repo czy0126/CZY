@@ -504,7 +504,9 @@ def fault_parts() -> list[Part]:
         Part("Q41", "Transistor_FET:Q_NMOS_GSD", "NMOS 30V IDM>=3A",
              "Package_TO_SOT_SMD:SOT-23", 74, 292, {"1": "RC_G", "2": "PGND", "3": "REG_CROW"},
              "30 V, IDM >= 3 A", f"REG crowbar; MPN TO SELECT, Rds(on) <= {RDS_BOM_TARGET:g} ohm "
-             f"at 3.0 V VGS; absorbs {crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event"),
+             f"at 3.0 V VGS; absorbs {crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event",
+             mpn="AO3400A",
+             mpn_source="references/datasheets/ao3400a_oem_parameters.txt"),
         Part("R44", "Device:R", "4.7R 0.5W", "Resistor_SMD:R_1206_3216Metric",
              92, 292, {"1": "REG", "2": "REG_CROW"}, "0.5 W pulse",
              f"sets the discharge tau with Q41; {crowbar_pulse()['r44_energy_j'] * 1e3:.3f} mJ / "
