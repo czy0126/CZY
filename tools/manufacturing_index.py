@@ -184,7 +184,7 @@ def entry(spec: dict) -> dict:
     # exists. This never grants electrical/fabrication approval.
     for item in entries:
         name = item.get("name")
-        if not isinstance(name, str) or not name or Path(name).name != name:
+        if not isinstance(name, str) or name in ("", ".", "..") or Path(name).name != name:
             problems.append(f"invalid/untrusted file name in manifest: {name!r}")
             continue
         actual = fab / name
