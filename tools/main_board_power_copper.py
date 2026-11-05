@@ -15,8 +15,16 @@ Tracks are not a 100 A conductor, and nothing here pretends otherwise.  The
 report carries the series resistance of the actual routed path from each
 secondary source to the output terminal, at 1/2/4 oz and 100 C, next to the
 0.15 mOhm design basis.  That comparison is the point: it turns "the power
-path still needs planes" from an opinion into arithmetic.  ``pours`` stay
-empty until the plane stage is designed; the status string says so.
+path still needs planes" from an opinion into arithmetic.
+
+The second half of that arithmetic is the pour study.  A zone alone says
+nothing, so the module pours both output nets solid over the whole board,
+refills them with kicad-cli, rasterises the resulting copper and solves the
+resistance mesh between source pads and the output terminal.  That is the
+*upper bound* -- the most any copper on this board could do -- and it is still
+several times the basis, which is why the busbar, not the plane, has to carry
+the output current.  It is not a layout: the full-board pour bridges every SR
+solder-mask aperture, and the report says so rather than hiding it.
 
 The placement board is an input, never a target
 -----------------------------------------------
@@ -464,7 +472,8 @@ def provisional_interfaces() -> list[dict]:
 
 
 def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
-           pads: list[router.Pad], single: list[str]) -> dict:
+           pads: list[router.Pad], single: list[str],
+           pours: dict | None = None) -> dict:
     w, d = a5.board_rect()
     return {
         "status": STATUS,
@@ -498,9 +507,355 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
                            "and the measured copper cost, not the track positions.",
         },
         "budget": path_budget(result, pads),
-        "pours": {"count": 0,
-                  "why": "the plane stage is not designed yet; what it has to beat is "
-                         "budget.what_a_track_would_need"},
+        "pours": pours if pours is not None else {
+            "count": 0,
+            "why": "kicad-cli was not available, so no zone could be refilled and "
+                   "there is no fill to measure",
+        },
+    }
+
+
+# ---------------------------------------------------------------- pours
+# A track can never carry 100 A: budget.what_a_track_would_need is wider than
+# the board.  So the question a pour stage has to answer is the *upper bound* --
+# if each copper layer were poured solid over the whole board, what would the
+# series path be?  That is a measurement of shape, and it is independent of
+# copper weight, so one solve answers "does 1/2/4 oz work?" afterwards.
+#
+# It is deliberately NOT a layout.  A full-board VOUT pour puts VOUT copper
+# under every SR source-strip solder-mask aperture, beside SEC*_A/B pads and
+# tracks; kicad-cli reports exactly that as solder_mask_bridge.  The zone is an
+# experiment that prices the copper, and the report says so.
+POUR_CELL_MM = 0.25        # measurement mesh
+POUR_COARSE_MM = 0.35      # second mesh, quotes the discretisation spread
+SHEET_MOHM_PER_SQ = {"1oz": 0.6474, "2oz": 0.3237, "4oz": 0.1619}
+POUR_PATHS = (
+    {"net": "VOUT", "layer": "F.Cu", "refs": ("T1", "T2", "T3", "T4"),
+     "sink_ref": "J_OUT", "sink_pin": "1",
+     "what": "the four transformer centre taps to the output terminal"},
+    {"net": "PGND", "layer": "B.Cu",
+     "refs": ("SR1A", "SR1B", "SR2A", "SR2B", "SR3A", "SR3B", "SR4A", "SR4B"),
+     "sink_ref": "J_OUT", "sink_pin": "2",
+     "what": "the eight SR source pads to the return terminal"},
+)
+
+
+def zone_text(ids: dict[str, int]) -> str:
+    """One full-board zone per output net, on opposite layers."""
+    w, d = a5.board_rect()
+    w, d = w - 0.5, d - 0.5
+    out = ""
+    for k, spec in enumerate(POUR_PATHS):
+        uid = f"{k + 7:08x}-0000-5000-8000-00000000000{k}"
+        out += (f'\n\t(zone (net {ids[spec["net"]]}) (net_name "{spec["net"]}") '
+                f'(layer "{spec["layer"]}")\n'
+                f'\t\t(priority 0) (uuid "{uid}")\n'
+                f'\t\t(hatch edge 0.5)\n'
+                f'\t\t(connect_pads yes (clearance 0.2))\n'
+                f'\t\t(min_thickness 0.25)\n'
+                f'\t\t(filled_areas_thickness no)\n'
+                f'\t\t(fill yes (thermal_gap 0.5) (thermal_bridge_width 0.5) '
+                f'(island_removal_mode 0))\n'
+                f'\t\t(polygon (pts (xy 0.5 0.5) (xy {w:.3f} 0.5) '
+                f'(xy {w:.3f} {d:.3f}) (xy 0.5 {d:.3f})))\n'
+                f'\t)\n')
+    return out
+
+
+def _poured_board(cli: Path) -> tuple[str, dict]:
+    """Write the poured variant, refill it, read it back, delete the scratch copy.
+
+    The copy has to sit in ``OUT`` itself: ``fp-lib-table`` points at
+    ``${KIPRJMOD}/dcx.pretty``, so a board in a subdirectory loses all 35
+    footprints -- and an unresolvable footprint also switches the courtyard
+    check off, which is how a "clean" DRC ends up having checked nothing.
+
+    The scratch files are removed on the way out.  Leaving them behind would
+    hand the next ``git status`` three untracked files that look like boards.
+    """
+    text = BOARD.read_text(encoding="utf-8")
+    end = text.rstrip().rfind(")")
+    if end < 0:
+        raise SystemExit("the routed board has no closing parenthesis")
+    board = OUT / "_pour_stage.kicad_pcb"
+    project = OUT / "_pour_stage.kicad_pro"
+    report = OUT / "_pour_stage_drc.json"
+    try:
+        board.write_text(text[:end] + zone_text(net_table()) + ")\n",
+                         encoding="utf-8", newline="\n")
+        project.write_text(project_file(), encoding="utf-8", newline="\n")
+        drc = _drc(cli, board, report, save=True)
+        return board.read_text(encoding="utf-8"), drc
+    finally:
+        for path in (board, project, report, OUT / "_pour_stage.kicad_prl"):
+            path.unlink(missing_ok=True)
+
+
+def fill_contours(text: str, layer: str) -> list[list[tuple[float, float]]]:
+    """Closed contours of every ``(filled_polygon)`` on one layer.
+
+    A repeated first point delimits one contour from the next.  On KiCad 10 that
+    never fires -- holes are fractured into the outline itself, so each layer is
+    one contour -- but a file that emits an outline plus separate hole subpaths
+    is split correctly, and ``raster_fill``'s parity rule handles both.
+    """
+    out: list[list[tuple[float, float]]] = []
+    i = 0
+    pattern = re.compile(r'\(filled_polygon\s+\(layer "' + re.escape(layer) + r'"\)')
+    while True:
+        hit = pattern.search(text, i)
+        if hit is None:
+            return out
+        k = text.find("(pts", hit.start())
+        if k < 0:
+            return out
+        depth, e = 0, k
+        while e < len(text):
+            depth += {"(": 1, ")": -1}.get(text[e], 0)
+            if depth == 0:
+                break
+            e += 1
+        pts = [(float(x), float(y)) for x, y in
+               re.findall(r"\(xy ([-\d.]+) ([-\d.]+)\)", text[k:e])]
+        cur = [pts[0]]
+        for p in pts[1:]:
+            cur.append(p)
+            if len(cur) > 2 and p == cur[0]:
+                out.append(cur)
+                cur = [p]
+        if len(cur) > 2:
+            out.append(cur)
+        i = e
+
+
+def raster_fill(contours: list[list[tuple[float, float]]], cell: float
+                ) -> tuple[object, float, float]:
+    """Cell-centre fill map, plus the grid's origin.
+
+    KiCad 10 writes a layer's whole fill as one closed polyline: every clearance
+    hole is fractured into the outline by a zero-width slit, so ``fill_contours``
+    returns a single contour and one ``contains_points`` already excludes the
+    holes.  That was checked against the board, not assumed -- every sample point
+    inside the fill on F.Cu belonged to VOUT's own copper, and none of the other
+    nets' track midpoints landed inside it.
+
+    Parity is still the rule, because it is the one that stays correct if a
+    future file writes holes as separate subpaths: matplotlib **unions**
+    subpaths there (a point inside a hole comes back True), and an odd/even
+    count is what repairs it.  Contours are evaluated inside their own bounding
+    box, so a 1 mm hole costs 16 cells and not 300 000.
+    """
+    import numpy as np                                     # noqa: PLC0415
+    from matplotlib.path import Path as MPath              # noqa: PLC0415
+
+    xs = [p[0] for c in contours for p in c]
+    ys = [p[1] for c in contours for p in c]
+    x0, y0 = min(xs), min(ys)
+    nx = int(math.ceil((max(xs) - x0) / cell))
+    ny = int(math.ceil((max(ys) - y0) / cell))
+    gx, gy = np.meshgrid(x0 + (np.arange(nx) + 0.5) * cell,
+                         y0 + (np.arange(ny) + 0.5) * cell)
+    pts = np.column_stack([gx.ravel(), gy.ravel()])
+    depth = np.zeros(len(pts), np.int16)
+    for c in contours:
+        a = np.array(c, float)
+        lo, hi = a.min(0), a.max(0)
+        sel = ((pts[:, 0] >= lo[0]) & (pts[:, 0] <= hi[0])
+               & (pts[:, 1] >= lo[1]) & (pts[:, 1] <= hi[1]))
+        if not sel.any():
+            continue
+        codes = ([MPath.MOVETO] + [MPath.LINETO] * (len(c) - 2) + [MPath.CLOSEPOLY])
+        depth[sel] += MPath(a, np.array(codes)).contains_points(pts[sel], radius=0)
+    return ((depth % 2) == 1).reshape(ny, nx), x0, y0
+
+
+def _electrode(pad: router.Pad, shape, x0: float, y0: float, cell: float):
+    """Cells within one cell-width of the pad's copper.
+
+    Pads are placed on the layer being solved even when the footprint puts them
+    on the other one.  That is the optimistic side of an upper-bound study: a
+    real connection would pay a via and a track, and those are not modelled.
+    """
+    import numpy as np                                     # noqa: PLC0415
+
+    out = np.zeros_like(shape)
+    ny, nx = shape.shape
+    r = max(pad.w, pad.h) / 2 + 0.3
+    for j in range(max(0, int((pad.y - r - y0) / cell)),
+                   min(ny, int((pad.y + r - y0) / cell) + 1)):
+        for i in range(max(0, int((pad.x - r - x0) / cell)),
+                       min(nx, int((pad.x + r - x0) / cell) + 1)):
+            cx, cy = x0 + (i + 0.5) * cell, y0 + (j + 0.5) * cell
+            if router._pad_distance(pad, cx, cy) <= cell:
+                out[j, i] = True
+    return out
+
+
+def mesh_squares(mask, source, sink, tol: float = 1e-8,  # noqa: PLR0913
+                 maxit: int = 40000) -> dict:
+    """Effective sheet resistance in squares between two electrode sets.
+
+    Every in-mask cell is one square and every 4-neighbour edge one unit of
+    conductance; sink held at 1 V, source at 0 V, Jacobi-preconditioned CG on
+    the 5-point Laplacian.  Nothing leaves the mask (Neumann at the pour edge),
+    which is what copper with no route off it does.  ``R = 1 / I_total``.
+
+    Verified on fixtures before it was pointed at a board: a 20 x 200 strip
+    gives 9.95 squares (10 expected) and a 40 x 40 plate 0.975 (1 expected).
+    """
+    import numpy as np                                     # noqa: PLC0415
+
+    dirs = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    h, w = mask.shape
+    m = mask.astype(float)
+    pad = np.zeros((h + 2, w + 2), float)
+    pad[1:-1, 1:-1] = m
+    k = np.zeros_like(m)
+    for dy, dx in dirs:
+        k += pad[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+    free = mask & ~source & ~sink
+    fixed = np.where(sink, 1.0, 0.0)
+    fp = np.zeros((h + 2, w + 2), float)
+    fp[1:-1, 1:-1] = fixed
+    b = np.zeros_like(k)
+    for dy, dx in dirs:
+        b += fp[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+    kf = np.where(free, k, 1.0)
+    bf = np.where(free, b, 0.0)
+
+    def matvec(v):
+        q = np.zeros((h + 2, w + 2), float)
+        q[1:-1, 1:-1] = v
+        out = kf * v
+        for dy, dx in dirs:
+            out -= q[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+        out[~free] = 0.0
+        return out
+
+    x = np.zeros_like(k)
+    r = bf - matvec(x)
+    p = r.copy()
+    rs = (r * r).sum()
+    rs0 = rs
+    it = 0
+    for it in range(1, maxit):
+        ap = matvec(p)
+        alpha = rs / (p * ap).sum()
+        x += alpha * p
+        r -= alpha * ap
+        rs_new = (r * r).sum()
+        if rs_new < tol * tol * rs0:
+            break
+        p = r + (rs_new / rs) * p
+        rs = rs_new
+    v = np.where(sink, 1.0, np.where(source, 0.0, x))
+    vp = np.zeros((h + 2, w + 2), float)
+    vp[1:-1, 1:-1] = v
+    pad_m = np.zeros((h + 2, w + 2), float)
+    pad_m[1:-1, 1:-1] = m
+    i_total = 0.0
+    for dy, dx in dirs:
+        # Only edges that stay in the copper carry current.  A sink cell sits on
+        # the pour edge, and (1 - 0) across the edge would otherwise invent an
+        # ampere per open side -- that alone turns a plate's 1 square into 0.02.
+        linked = pad_m[1 + dy:1 + dy + h, 1 + dx:1 + dx + w] > 0.5
+        i_total += np.where(sink & linked,
+                            1.0 - vp[1 + dy:1 + dy + h, 1 + dx:1 + dx + w], 0.0).sum()
+    # float(), not np.float64: round() keeps the numpy type, and a np.bool_ from
+    # comparing it is not JSON-serialisable.
+    return {"squares": float(1.0 / i_total) if i_total else None,
+            "iterations": int(it), "converged": bool(it < maxit - 1)}
+
+
+def pour_path(filled: str, pads: list[router.Pad], ids: dict[str, int],
+              spec: dict, cell: float) -> dict:
+    contours = fill_contours(filled, spec["layer"])
+    if not contours:
+        raise SystemExit(f"no filled polygon on {spec['layer']} -- the refill "
+                         "produced nothing; check fp-lib-table and the zone text")
+    shape, x0, y0 = raster_fill(contours, cell)
+    netpads = [p for p in pads if p.net == ids[spec["net"]]]
+    sink_pads = [p for p in netpads
+                 if p.ref == spec["sink_ref"] and p.number == spec["sink_pin"]]
+    source_pads = [p for p in netpads if p.ref in spec["refs"]]
+    if not sink_pads or not source_pads:
+        raise SystemExit(f"{spec['net']}: the pour stage found no terminals "
+                         f"({len(source_pads)} sources, {len(sink_pads)} sinks)")
+    source = shape & False
+    sink = shape & False
+    missing = []
+    for p in source_pads + sink_pads:
+        # The electrode is the pad's halo *clipped to the fill*.  Requiring
+        # every electrode cell to be copper would fail by construction: a pad's
+        # own copper is not part of the zone fill, and the zone reaches it
+        # through thermal spokes.  Contact is the claim worth testing.
+        e = _electrode(p, shape, x0, y0, cell) & shape
+        if not e.any():
+            missing.append(f"{p.ref}.{p.number}")
+        if p in source_pads:
+            source |= e
+        else:
+            sink |= e
+    if not source.any() or not sink.any():
+        raise SystemExit(f"{spec['net']}: the fill touches "
+                         f"{'no source' if not source.any() else 'no sink'} pad -- "
+                         "the pour is not connected to the terminal it is measured on")
+    solved = mesh_squares(shape | source | sink, source, sink)
+    if solved["squares"] is None:
+        # Touching the fill is not the same as conducting through it: heat
+        # spokes and clearance channels can leave a pad on an isolated sliver.
+        raise SystemExit(f"{spec['net']}: no current flows between the terminals "
+                         "through the fill -- every pad touches copper, but not "
+                         "the same copper")
+    return {
+        "net": spec["net"], "layer": spec["layer"], "what": spec["what"],
+        "sources": sorted({p.ref for p in source_pads}),
+        "sink": f"{spec['sink_ref']}.{spec['sink_pin']}",
+        "fill_fraction": round(float(shape.mean()), 3),
+        "squares": round(solved["squares"], 4),
+        "converged": solved["converged"],
+        "every_terminal_lands_in_the_fill": not missing,
+        "terminals_without_contact": missing,
+    }
+
+
+def pour_study(cli: Path) -> dict:
+    filled, drc = _poured_board(cli)
+    ids = net_table()
+    pads = pads_of(BOARD.read_text(encoding="utf-8"), ids)
+    paths = []
+    for spec in POUR_PATHS:
+        fine = pour_path(filled, pads, ids, spec, POUR_CELL_MM)
+        coarse = pour_path(filled, pads, ids, spec, POUR_COARSE_MM)
+        fine["squares_coarse"] = coarse["squares"]
+        fine["spread_pct"] = round(
+            abs(fine["squares"] - coarse["squares"]) / fine["squares"] * 100, 2)
+        fine["mohm"] = {w: round(s * fine["squares"], 4)
+                        for w, s in SHEET_MOHM_PER_SQ.items()}
+        fine["every_terminal_lands_in_the_fill"] &= coarse["every_terminal_lands_in_the_fill"]
+        paths.append(fine)
+    series = {w: round(sum(p["mohm"][w] for p in paths), 4) for w in SHEET_MOHM_PER_SQ}
+    kinds = drc_summary(drc)
+    return {
+        "count": len(paths),
+        "method": "rasterise the refilled zone, one unit of conductance per cell "
+                  "edge, sink at 1 V and sources at 0 V, R = 1/I_total (squares); "
+                  "multiply by the sheet resistance afterwards",
+        "cell_mm": POUR_CELL_MM, "second_cell_mm": POUR_COARSE_MM,
+        "sheets_mohm_per_square": SHEET_MOHM_PER_SQ,
+        "paths": paths,
+        "series_mohm": series,
+        "meets_the_0p15_mohm_basis": {w: v <= 0.15 for w, v in series.items()},
+        "verdict": "even poured solid on both layers this board is "
+                   f"{series['4oz'] / 0.15:.1f}x the 0.15 mOhm basis at 4 oz and "
+                   f"{series['2oz'] / 0.15:.1f}x at 2 oz, so the plane is not the "
+                   "output path -- the busbar is, and the pour only has to bridge "
+                   "each group to the busbar land",
+        "not_a_layout": "the full-board pour exposes VOUT copper under every SR "
+                        "solder-mask aperture, which kicad-cli reports as "
+                        "solder_mask_bridge.  This measures what copper area can "
+                        "buy; it is not a design and its DRC is not a gate.",
+        "drc": kinds,
     }
 
 
@@ -513,18 +868,23 @@ def _sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _drc(cli: Path, board: Path, out: Path) -> dict:
+def _drc(cli: Path, board: Path, out: Path, save: bool = False) -> dict:
     """Run kicad-cli and refuse to read a report it did not write.
 
     ``kicad-cli`` exits 0 even when it reports violations, so the exit code
     cannot be the gate; a missing or stale report is.  Unlinking first is the
     same lesson the SR board learned: a ``check=False`` run that crashed used
     to leave yesterday's clean report to be read as today's result.
+
+    ``save`` writes the refilled zones back into the board.  It is only ever
+    used on the throwaway copy under ``POUR_DIR``: the committed board carries
+    no zones, and refilling it in place would rewrite the whole file.
     """
     if out.exists():
         out.unlink()
     proc = subprocess.run([str(cli), "pcb", "drc", "--format", "json", "--severity-all",
-                           "--refill-zones", "-o", str(out), str(board)],
+                           "--refill-zones", *(["--save-board"] if save else []),
+                           "-o", str(out), str(board)],
                           capture_output=True, text=True, encoding="utf-8",
                           errors="replace", check=False)
     if proc.returncode != 0 or not out.exists():
@@ -555,8 +915,9 @@ def write(check_drc: bool = True) -> dict:
     OUT.mkdir(parents=True, exist_ok=True)
     BOARD.write_text(board, encoding="utf-8", newline="\n")
     PROJECT.write_text(project_file(), encoding="utf-8", newline="\n")
-    data = report(board, result, ids, pads, single)
     cli = a5.find_kicad_cli()
+    pours = pour_study(cli) if check_drc and cli is not None else None
+    data = report(board, result, ids, pads, single, pours)
     if check_drc and cli is not None:
         data["drc"] = drc_summary(_drc(cli, BOARD, DRC))
         data["drc_reproduced"] = True
@@ -580,6 +941,8 @@ def _set_checks(data: dict) -> None:
     """
     route, drc = data["route"], data.get("drc", {})
     counts = drc.get("counts", {})
+    pours = data.get("pours", {})
+    paths = pours.get("paths", [])
     data["checks"] = {
         "every_routable_net_is_connected":
             route["connections_made"] == route["connections_attempted"],
@@ -596,10 +959,24 @@ def _set_checks(data: dict) -> None:
                               data["interfaces"]["provisional_land_patterns"]},
         "the_power_path_verdict_is_reported_as_a_result":
             "meets_design_basis_at_2oz" in data["budget"],
+        # Structure only.  "The pour meets 0.15 mOhm" is a physical result and
+        # stays in results -- it does not, and at 4 oz it is still 5x over.
+        "the_pour_was_measured_here": pours.get("count") == len(POUR_PATHS),
+        "every_poured_terminal_lands_in_the_fill":
+            bool(paths) and all(p["every_terminal_lands_in_the_fill"] for p in paths),
+        # Two meshes is the cheapest honest error bar: a single cell size cannot
+        # tell a converged number from a grid artefact.
+        "the_pour_mesh_agrees_at_two_cell_sizes":
+            bool(paths) and all(p["spread_pct"] <= 2.0 for p in paths),
+        "the_pour_verdict_is_reported_as_a_result":
+            "meets_the_0p15_mohm_basis" in pours,
     }
     data["results"] = {
         "power_path_meets_the_0p15_mohm_basis": data["budget"]["meets_design_basis_at_2oz"],
         "worst_group_mohm_at_2oz": data["budget"]["worst_group_mohm_at_2oz"],
+        "pour_series_mohm": pours.get("series_mohm"),
+        "pour_meets_the_0p15_mohm_basis_at_2oz":
+            pours.get("meets_the_0p15_mohm_basis", {}).get("2oz"),
     }
 
 
@@ -643,6 +1020,45 @@ def check() -> None:
     print(f"worst output path at 2 oz: {budget['worst_group_mohm_at_2oz']} mOhm against a "
           f"{budget['design_basis_mohm']} mOhm basis "
           f"({'meets' if budget['meets_design_basis_at_2oz'] else 'NOT met'})")
+    cli = a5.find_kicad_cli()
+    if cli is None:
+        print("kicad-cli not found: the pour study was not reproduced "
+              "(refilling a zone needs it; the route does not)")
+        return
+    print("re-pouring and solving the copper mesh, this takes about 2 min ...")
+    _compare_pours(data.get("pours", {}), pour_study(cli))
+
+
+def _compare_pours(printed: dict, fresh: dict) -> None:
+    """The committed pour numbers are re-derived here, not trusted.
+
+    They are a measurement of the same copper the board bytes were just checked
+    against, so a hand-edited series resistance would otherwise survive every
+    ``--check`` -- the same hole the budget comparison closes.
+    """
+    old, new = printed.get("series_mohm") or {}, fresh["series_mohm"]
+    if not old:
+        # Written by --no-drc, or by a machine without kicad-cli.  It is not
+        # wrong, it is incomplete, and the person reading --check needs to know
+        # which: nothing was measured, so nothing can be compared.
+        raise SystemExit("routed_copper.json has no pour study (it was written "
+                         "without kicad-cli or with --no-drc) -- run "
+                         "tools/main_board_power_copper.py --json here")
+    for weight, value in new.items():
+        if weight not in old or abs(old[weight] - value) > 1e-6 * max(value, 1e-9):
+            raise SystemExit(
+                f"routed_copper.json reports {old.get(weight)} mOhm of poured path at "
+                f"{weight}, but re-pouring and solving gives {value} mOhm -- "
+                "run tools/main_board_power_copper.py --json")
+    for a, b in zip(printed.get("paths", []), fresh["paths"]):
+        if abs((a.get("squares") or 0) - b["squares"]) > 1e-6 * b["squares"]:
+            raise SystemExit(
+                f"{a.get('net')} pour: report says {a.get('squares')} squares, "
+                f"the refilled copper solves to {b['squares']}")
+    print("poured series path: " + ", ".join(f"{v} mOhm at {k}"
+                                              for k, v in new.items())
+          + f" against a 0.15 mOhm basis "
+            f"({'meets' if fresh['meets_the_0p15_mohm_basis']['4oz'] else 'NOT met even at 4 oz'})")
 
 
 def main(argv: list[str] | None = None) -> int:

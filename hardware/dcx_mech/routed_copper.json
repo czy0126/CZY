@@ -465,8 +465,114 @@
     }
   },
   "pours": {
-    "count": 0,
-    "why": "the plane stage is not designed yet; what it has to beat is budget.what_a_track_would_need"
+    "count": 2,
+    "method": "rasterise the refilled zone, one unit of conductance per cell edge, sink at 1 V and sources at 0 V, R = 1/I_total (squares); multiply by the sheet resistance afterwards",
+    "cell_mm": 0.25,
+    "second_cell_mm": 0.35,
+    "sheets_mohm_per_square": {
+      "1oz": 0.6474,
+      "2oz": 0.3237,
+      "4oz": 0.1619
+    },
+    "paths": [
+      {
+        "net": "VOUT",
+        "layer": "F.Cu",
+        "what": "the four transformer centre taps to the output terminal",
+        "sources": [
+          "T1",
+          "T2",
+          "T3",
+          "T4"
+        ],
+        "sink": "J_OUT.1",
+        "fill_fraction": 0.935,
+        "squares": 3.9891,
+        "converged": true,
+        "every_terminal_lands_in_the_fill": true,
+        "terminals_without_contact": [],
+        "squares_coarse": 3.994,
+        "spread_pct": 0.12,
+        "mohm": {
+          "1oz": 2.5825,
+          "2oz": 1.2913,
+          "4oz": 0.6458
+        }
+      },
+      {
+        "net": "PGND",
+        "layer": "B.Cu",
+        "what": "the eight SR source pads to the return terminal",
+        "sources": [
+          "SR1A",
+          "SR1B",
+          "SR2A",
+          "SR2B",
+          "SR3A",
+          "SR3B",
+          "SR4A",
+          "SR4B"
+        ],
+        "sink": "J_OUT.2",
+        "fill_fraction": 0.957,
+        "squares": 0.8296,
+        "converged": true,
+        "every_terminal_lands_in_the_fill": true,
+        "terminals_without_contact": [],
+        "squares_coarse": 0.8209,
+        "spread_pct": 1.05,
+        "mohm": {
+          "1oz": 0.5371,
+          "2oz": 0.2685,
+          "4oz": 0.1343
+        }
+      }
+    ],
+    "series_mohm": {
+      "1oz": 3.1196,
+      "2oz": 1.5598,
+      "4oz": 0.7801
+    },
+    "meets_the_0p15_mohm_basis": {
+      "1oz": false,
+      "2oz": false,
+      "4oz": false
+    },
+    "verdict": "even poured solid on both layers this board is 5.2x the 0.15 mOhm basis at 4 oz and 10.4x at 2 oz, so the plane is not the output path -- the busbar is, and the pour only has to bridge each group to the busbar land",
+    "not_a_layout": "the full-board pour exposes VOUT copper under every SR solder-mask aperture, which kicad-cli reports as solder_mask_bridge.  This measures what copper area can buy; it is not a design and its DRC is not a gate.",
+    "drc": {
+      "version": "10.0.6",
+      "violations": 12,
+      "counts": {
+        "placement": 0,
+        "pours": 0,
+        "cosmetic": 0,
+        "other": 12
+      },
+      "unconnected_items": 0,
+      "schematic_parity": 0,
+      "types": [
+        "solder_mask_bridge"
+      ],
+      "ignored_checks": [
+        {
+          "description": "Track endpoint not centered on via",
+          "key": "track_not_centered_on_via"
+        },
+        {
+          "description": "Tuning profile track geometries",
+          "key": "tuning_profile_track_geometries"
+        },
+        {
+          "description": "Footprint doesn't match symbol's footprint filters",
+          "key": "footprint_filters_mismatch"
+        },
+        {
+          "description": "Footprint component type doesn't match footprint pads",
+          "key": "footprint_type_mismatch"
+        }
+      ]
+    }
   },
   "drc": {
     "version": "10.0.6",
@@ -508,10 +614,20 @@
     "drc_reports_no_unconnected_items": true,
     "drc_placement_clean": true,
     "every_magnetic_is_reported_as_a_provisional_interface": true,
-    "the_power_path_verdict_is_reported_as_a_result": true
+    "the_power_path_verdict_is_reported_as_a_result": true,
+    "the_pour_was_measured_here": true,
+    "every_poured_terminal_lands_in_the_fill": true,
+    "the_pour_mesh_agrees_at_two_cell_sizes": true,
+    "the_pour_verdict_is_reported_as_a_result": true
   },
   "results": {
     "power_path_meets_the_0p15_mohm_basis": false,
-    "worst_group_mohm_at_2oz": 121.495
+    "worst_group_mohm_at_2oz": 121.495,
+    "pour_series_mohm": {
+      "1oz": 3.1196,
+      "2oz": 1.5598,
+      "4oz": 0.7801
+    },
+    "pour_meets_the_0p15_mohm_basis_at_2oz": false
   }
 }

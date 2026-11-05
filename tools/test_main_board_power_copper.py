@@ -12,9 +12,17 @@ whole reason these tests exist:
   0.15 mOhm basis until the board went "green" -- the exact failure CLAUDE.md
   records for the 100 A ledger.
 
-The measurement tests are synthetic on purpose.  The real board routes in ~40 s,
-so the interesting geometry (tracks that only meet *inside* a pad) is pinned on
-a four-segment fixture where the expected numbers can be read off by hand.
+The measurement tests are synthetic on purpose.  The real board routes in ~40 s
+and takes ~2 min more to pour and solve, so the interesting geometry (tracks
+that only meet *inside* a pad) is pinned on a four-segment fixture where the
+expected numbers can be read off by hand.
+
+The pour tests follow the same rule one level down.  ``mesh_squares`` is
+verified on a strip and a plate whose sheet resistance is known exactly --
+20 x 200 cells is ten squares, a square plate is one -- before any number from
+a board is quoted.  Both fixtures read one cell short (199/20 and 39/40) because
+the electrodes are one cell wide; that is the mesh's own bias, and the pour
+figures inherit it, so the expectations are exact rather than rounded.
 """
 
 from __future__ import annotations
@@ -255,7 +263,78 @@ def test_the_budget_reports_what_a_track_would_need():
     need = data["budget"]["what_a_track_would_need"]
     assert need["required_width_mm"] > need["board_width_mm"]
     assert data["budget"]["meets_design_basis_at_2oz"] is False
-    assert data["pours"]["count"] == 0
+    assert data["pours"]["count"] == len(m.POUR_PATHS)
+
+
+# ---------------------------------------------------------------- the pour
+def test_the_mesh_counts_squares_of_a_strip():
+    """A 20 x 200 strip is 10 squares: the sheet resistance is the *shape*.
+
+    This is the fixture the solver was verified on before it was pointed at a
+    board.  9.95 rather than 10.00 is the mesh doing its job -- the electrodes
+    are one cell wide, so the ends cost half a cell each.
+    """
+    import numpy as np
+    mask = np.zeros((24, 208), bool)
+    mask[2:22, 4:204] = True
+    source = mask & False
+    sink = mask & False
+    source[2:22, 4] = True
+    sink[2:22, 203] = True
+    solved = m.mesh_squares(mask, source, sink)
+    assert solved["converged"]
+    # The electrodes are one cell wide and sit *in* the strip, so the measured
+    # span is 199 cells of 20 -- 9.95, not 10.00.  That 0.5 % is the mesh's own
+    # bias and the pour numbers carry it too.
+    assert solved["squares"] == pytest.approx(199 / 20, rel=1e-6)
+
+
+def test_the_mesh_counts_one_square_of_a_plate():
+    """Two opposite edges of an equal-sided plate are one square per side."""
+    import numpy as np
+    mask = np.zeros((40, 40), bool)
+    mask[0:40, 0:40] = True
+    source = mask & False
+    sink = mask & False
+    source[:, 0] = True
+    sink[:, 39] = True
+    solved = m.mesh_squares(mask, source, sink)
+    # 39 of 40 cells between the electrode columns: the same one-cell bias.
+    assert solved["squares"] == pytest.approx(39 / 40, rel=1e-6)
+
+
+def test_a_hole_in_the_fill_is_not_copper():
+    """KiCad concatenates a contour and its holes into one ``(pts ...)`` list.
+
+    The only delimiter is the repeated first point, and the hole is wound the
+    other way.  If the rasteriser ignored either, a board-wide pour would read
+    as solid and every resistance here would be too low.
+    """
+    text = ('(filled_polygon (layer "F.Cu") (pts (xy 0 0) (xy 10 0) (xy 10 10) '
+            '(xy 0 10) (xy 0 0) (xy 3 3) (xy 3 7) (xy 7 7) (xy 7 3) (xy 3 3)))')
+    contours = m.fill_contours(text, "F.Cu")
+    assert len(contours) == 2
+    shape, x0, y0 = m.raster_fill(contours, 0.25)
+    assert shape[1, 1], "the corner of the outer contour must be copper"
+    cy = int((5 - y0) / 0.25)
+    cx = int((5 - x0) / 0.25)
+    assert not shape[cy, cx], "the hole must not be copper"
+
+
+def test_the_pour_covers_both_output_nets_and_fails_the_basis():
+    """The number that decides the topology: a solid 4 oz pour is still over.
+
+    If this ever passes, someone lowered the basis or poured a different board;
+    the busbar conclusion rests on it failing.
+    """
+    data = json.loads(m.REPORT.read_text(encoding="utf-8"))
+    pours = data["pours"]
+    assert {p["net"] for p in pours["paths"]} == {"VOUT", "PGND"}
+    assert all(p["every_terminal_lands_in_the_fill"] for p in pours["paths"])
+    assert data["results"]["pour_meets_the_0p15_mohm_basis_at_2oz"] is False
+    assert pours["series_mohm"]["4oz"] > 1.0 * 0.15
+    assert pours["series_mohm"]["4oz"] < pours["series_mohm"]["1oz"]
+    assert "not" in pours["not_a_layout"].lower() or "not a design" in pours["not_a_layout"]
 
 
 def test_the_committed_board_is_what_the_route_produces(routed):

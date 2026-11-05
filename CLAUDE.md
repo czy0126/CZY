@@ -54,8 +54,9 @@ python tools/ci_check.py --skip-tests   # 只查生成文件是否过期
 python tools/make_control_board.py --check   # 控制验证板：重生成 + 网表 + ERC（需本机 KiCad 10.0）
 python tools/main_board_mechanical.py --check   # A5 带网摆放（1:1）：重生成 + SVG/PNG + DRC + 老鼠线计数（需 KiCad 10.0）
 python tools/main_board_power_copper.py --json hardware/dcx_mech/routed_copper.json
-    # A5 布线草稿：从摆放板派生走线 + 量输出路径方块数（DRC 可选，--no-drc 跳过；约 38 s）
-python tools/main_board_power_copper.py --check   # 重布并比对板子/报告字节，不需要 kicad-cli
+    # A5 布线草稿：从摆放板派生走线 + 量输出路径方块数 + 铺满两层解电阻网络
+    # （DRC 可选，--no-drc 跳过并省掉铺铜；约 38 s 布线 + 约 2 min 铺铜）
+python tools/main_board_power_copper.py --check   # 重布 + 重铺重解 + 比对板子/报告，约 3 min，不需要 kicad-cli
 python tools/make_d0_protection_board.py --check   # D0 十路保护板：重生成 + 网表 + ERC（需 KiCad 10.0，缺了直接 SystemExit）
 python tools/make_sr_fault_board.py --check       # 单对真实 UCC24624 SR 故障关断验证板：重生成 + 网表 + ERC + 争流算术
 python tools/make_sr_fault_board_pcb.py --check   # 该板的布线 + 铺铜 pass 3：重生成 + kicad-cli DRC + 冲 fill.json + 导出 fab/
@@ -1640,11 +1641,62 @@ python tools/main_board_power_copper.py --check        # 重布 + 比对板子�
 - **`--check` 有两个独立的过期信号**：板子字节（摆放改了没重布）与
   `routed_copper.json:board.board_sha256`（板子重布了但数字没重算，或有人手改 budget）。
   只比板子的话，手改过的预算能混过每一次 `--check`。它已进 `tools/ci_check.py` 的 `VIEWS`
-  （`--skip-tests` 也会跑，约 40 s，是那里最慢的一项）。
+  （`--skip-tests` 也会跑；加了铺铜重解之后约 3 min，是那里最慢的一项）。
 - **kicad-cli 的坑照旧**：报告先 `unlink` 再跑（否则崩溃后读上一次的干净报告）、
   `tracks` 在 `unconnected_items` 这个**第二个顶层数组**里、退出码 0 不代表没违规、
   子进程必须 `encoding="utf-8", errors="replace"`。板子需要同名 `.kicad_pro`
   （`project_file()` 从摆放那份改名生成），否则 `dcx:` 封装解析不了，courtyard 检查静默失效。
+
+### A5 铺满两层的上限（`POUR_PATHS` / `pour_study()`）
+
+走线量出来的 121.5 mΩ 只说明"走线不行"，没回答**铺铜行不行**。这一层把两条输出网真的铺满整板
+再解电阻网络，结论是**也不行**，而且差得不是一点：
+
+| 网 / 层 | 填充率 | 方块数（0.25 / 0.35 mm） | 1 oz | 2 oz | 4 oz |
+|---|---|---|---|---|---|
+| VOUT / F.Cu（T1–T4 中心抽头 → J_OUT.1） | 93.5 % | 3.9891 / 3.9940 | 2.5825 | 1.2913 | 0.6458 |
+| PGND / B.Cu（八只 SR 源极 → J_OUT.2） | 95.7 % | 0.8296 / 0.8209 | 0.5371 | 0.2685 | 0.1343 |
+| **串联** | | | **3.1196** | **1.5598** | **0.7801** |
+
+对 `DESIGN_BASIS_OHM` 0.15 mΩ 是 **2 oz 10.4 倍、4 oz 5.2 倍** ⇒ **铜排才是输出路径，
+铺铜只是每组到铜排焊盘的过渡**。`verdict` 与 `not_a_layout` 都由实测值拼出，不写死。
+
+- **方法**：把重填后的铜栅格化（一格 = 一个方块），四邻边各一个单位电导，汇 1 V、源 0 V，
+  五点拉普拉斯上跑 Jacobi 预条件 CG，`R = 1/I_total`，最后才乘方阻。
+  **上机前先过两个夹具**：20×200 长条给 **199/20 = 9.95**（不是 10）、40×40 方板给
+  **39/40 = 0.975**（不是 1）——电极只有一格宽，量到的跨距短一格。**这个 0.5 % 偏置是网格自己的，
+  铺铜数字继承它**，不要再当成收敛证据。两个网格尺寸（0.25 / 0.35 mm）的差 ≤1.1 %，
+  是"栅格化没漏轮廓、求解没早停"的**一致性**检查，不是收敛性证明。
+- **汇电流求和必须只算留在铜里的边**：一块方板最初读出 **0.02 方块**，因为汇电极在铺铜边缘，
+  朝外那条边 `1 − 0` 也计了 1 A，每开一面白送一安培。现在把 mask 补零一圈、用
+  `linked = pad_m[...] > 0.5` 过滤。**只这一条就把方板从 0.02 拉回 0.975。**
+- **KiCad 10 的填充格式是一整条带缝折线，不是轮廓+孔**：每层只有一个 `(filled_polygon)`，
+  它的 `(pts ...)` 是**单条闭合折线**，避让孔靠**零宽切口**折进去，首点只出现一次，
+  所以"按重复首点切轮廓"在这个版本**永远不触发**。matplotlib 的 `contains_points`
+  对子路径是**并集**（两个绕向都返回 True），所以判据用**逐轮廓奇偶**
+  （`depth % 2 == 1`），不用绕向。表里的填充率（93.5 / 95.7 %）是**真的铜**，不是栅格化漏了孔：
+  探针在那块铺满板上逐点核对过，238/238 个落在填充里的采样点都是本网自己的走线，
+  528 个他网 F.Cu 走线中点**没有一个**落在里面，缺的那几个百分点是避让通道。
+- **临时板必须写在 `OUT` 里，不能放子目录**：`${KIPRJMOD}/dcx.pretty` 要靠板子旁边的
+  `fp-lib-table` 解析，放进 `_pour/` 会让**35 个封装全部丢失**，而 courtyard 检查随之
+  **静默失效**——DRC 从 12 条变 47 条，其中 35 条是 `lib_footprint_issues`。
+  `_poured_board()` 把 `_pour_stage.kicad_pcb/.kicad_pro` 写在 `OUT`，`finally` 里连同
+  `_pour_stage_drc.json`/`.kicad_prl` 一起删，`git status` 保持干净。
+- **铺满时那 12 条 `solder_mask_bridge` 不是缺陷，是这个实验的代价**：VOUT 铺满后每只 SR 的
+  阻焊开窗下面都有铜。所以 `not_a_layout` 明写"这不是一个设计、它的 DRC 不是门"，
+  **不要为此去印一条更小的 zone**——那会把"铺满能买到多少铜"这个问题悄悄改掉。
+- **接触 ≠ 导通**：`pour_path()` 里每个电极先与填充求交（焊盘自己的铜本来就不在 zone fill 里，
+  要求整个电极都是铜会**按构造失败**），逐焊盘判接触；但那只证明碰得到。
+  `mesh_squares()` 返回 `None`（没有电流流过）时直接 `SystemExit`，因为热焊盘辐条与避让通道
+  可以把一只焊盘留在孤岛上——那种情况下"每只焊盘都接触铜"照样是 true。
+- **numpy 出不了 `json.dumps`**：`round(np.float64, n)` 返回的还是 `np.float64`，
+  用它与阈值比较得到 `np.bool_`，`json.dumps` 直接
+  `TypeError: Object of type bool is not JSON serializable`——而它炸在**最后一行写文件**上，
+  前面所有测量都印出来了，看起来像跑完了。类型在 `mesh_squares()` 边界上就转成
+  `float`/`int`/`bool`，不要留到序列化时。
+- **`--check` 会重铺重解**（`_compare_pours`，每个权重相对误差 >1e-6 即 `SystemExit`），
+  约 3 min，是 `ci_check` 的 `VIEWS` 里最慢的一项；没有 kicad-cli 时打一行说明并跳过。
+  **只比板子字节不够**：手改预算能混过每一次 `--check`，所以报告自己的 `pours` 也必须重算比对。
 
 ## A6 机械剖面（Issue #12）
 
