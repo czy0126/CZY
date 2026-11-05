@@ -78,13 +78,22 @@ def test_the_drc_report_is_clean(drc):
     assert drc["schematic_parity"] == []
 
 
-def test_the_drc_report_is_not_stale():
-    """kicad-cli exits 0 even when it reports violations, so a report left
-    behind by an earlier run reads exactly like a clean one.  The report has to
-    be newer than the board it describes."""
-    board_path = OUT / board.BOARD
-    drc_path = OUT / "drc.json"
-    assert drc_path.stat().st_mtime >= board_path.stat().st_mtime
+def test_committed_drc_is_a_cached_report_bound_to_the_current_board():
+    """Checkout mtime is nondeterministic: use exact board hash and schema.
+
+    A zero cached DRC remains necessary but NOT sufficient: only running
+    kicad-cli again in the CAD environment proves the current board passes.
+    """
+    import hashlib
+
+    actual = json.loads((OUT / "drc.json").read_text(encoding="utf-8"))
+    assert actual["source"] == board.BOARD
+    assert not actual["violations"] and not actual["unconnected_items"]
+    assert not actual["schematic_parity"]
+    manifest = json.loads((board.FAB / "manifest.json").read_text())
+    sha = hashlib.sha256((OUT / board.BOARD).read_bytes()).hexdigest()
+    assert manifest["board_sha256"] == sha
+    assert manifest["flags"]["fabrication_approved"] is False
 
 
 def test_the_board_declares_mask_and_paste_layers():
