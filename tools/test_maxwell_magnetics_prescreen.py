@@ -74,5 +74,5 @@ def test_config_has_separate_cad_cases_and_all_currents():
     assert {x["turns"] for x in cfg["cases"]} == {2, 3}
     assert 121.515 in cfg["solved_currents_a"]
     assert 104.17 in cfg["solved_currents_a"]
-    assert cfg["aedt_material_name"] is None
+    assert cfg["aedt_material_name"] == "N97_100C_BH_CONCEPT_REVIEWED"
     assert all(c["step_file"] is None for c in cfg["cases"])
