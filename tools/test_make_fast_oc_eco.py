@@ -355,12 +355,63 @@ def test_the_sr_front_end_rc_is_not_charged_to_the_main_board(report):
     assert sd["sr_branch_s"] < terms["excluded_input_rc_s"] * 2
 
 
-def test_the_unmodelled_latch_is_reported_as_a_floor_not_a_worst_case(report):
+def test_the_common_logic_is_read_from_the_d0_budget(report):
+    """D0 owns the decode and the latch, so this module reads them back instead
+    of keeping a second copy that can drift."""
+    stages = json.loads((board.ROOT / "design/v3/stage_f/d0_response_budget.json")
+                        .read_text(encoding="utf-8"))["stages"]
     sd = report["system_delay"]
-    assert sd["common_logic_s"] is None
-    assert "floor" in sd["common_logic_note"]
+    for key, channel in (("common_logic_terms", "external"),
+                         ("existing_common_logic_terms", "fast")):
+        terms = sd[key]
+        assert terms["decode_s"] == pytest.approx(
+            stages["decode"]["per_channel"][channel]["priced_max_us"] * 1e-6)
+        assert terms["latch_s"] == pytest.approx(stages["latch"]["us"] * 1e-6)
+        assert terms["total_s"] == pytest.approx(terms["decode_s"] + terms["latch_s"])
+        assert terms["decode_gates"] == stages["decode"]["per_channel"][channel]["gates"]
+    assert sd["common_logic_s"] == pytest.approx(sd["common_logic_terms"]["total_s"])
+    assert sd["existing_common_logic_s"] == pytest.approx(
+        sd["existing_common_logic_terms"]["total_s"])
+    assert "d0_response_budget" in sd["d0_budget"]
+
+
+def test_each_path_pays_its_own_decode_not_the_other_one(report):
+    """The external trip crosses U11F before U19; the legacy LM393 trip enters
+    U19 directly.  Each total uses its own term, and the gap is the inverter."""
+    sd = report["system_delay"]
+    ext, legacy = sd["common_logic_terms"], sd["existing_common_logic_terms"]
+    assert "U11.6" in ext["decode_gates"] and "U11.6" not in legacy["decode_gates"]
+    assert legacy["decode_gates"] == [g for g in ext["decode_gates"] if g != "U11.6"]
+    assert ext["decode_s"] - legacy["decode_s"] == pytest.approx(110e-9)
+    assert ext["latch_s"] == pytest.approx(legacy["latch_s"])
+    slowest = max(sd["sr_branch_s"], sd["primary_branch_s"])
     assert sd["system_floor_s"] == pytest.approx(
-        sd["detection_module_s"] + max(sd["sr_branch_s"], sd["primary_branch_s"]))
+        sd["detection_module_s"] + ext["total_s"] + slowest)
+    assert sd["existing_system_floor_s"] == pytest.approx(
+        report["delay"]["existing_path_total_s"] + legacy["total_s"] + slowest)
+    # Charging one figure to both would fake a 0.11 us difference one way or the
+    # other, so the two terms must actually differ.
+    assert sd["common_logic_s"] != pytest.approx(sd["existing_common_logic_s"])
+
+
+def test_the_common_logic_stays_a_floor_because_the_and_has_no_maximum(report):
+    sd = report["system_delay"]
+    assert sd["common_logic_is_a_floor"] is True
+    assert "floor" in sd["common_logic_note"]
+    for key in ("common_logic_terms", "existing_common_logic_terms"):
+        assert sd[key]["unpriced_gates"] == ["U6.4"]
+        assert sd[key]["complete"] is False
+
+
+def test_a_moved_decode_chain_is_not_silently_repriced(tmp_path, monkeypatch):
+    budget = json.loads((board.ROOT / "design/v3/stage_f/d0_response_budget.json")
+                        .read_text(encoding="utf-8"))
+    budget["stages"]["decode"]["per_channel"]["external"]["gates"][0] = "U19.1"
+    moved = tmp_path / "d0_response_budget.json"
+    moved.write_text(json.dumps(budget), encoding="utf-8")
+    monkeypatch.setattr(board, "D0_BUDGET", moved)
+    with pytest.raises(SystemExit, match="U11.6"):
+        board.d0_common_logic()
 
 
 def test_the_equation_is_the_roadmap_one(report):

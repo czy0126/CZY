@@ -187,8 +187,44 @@
   "system_delay": {
     "equation": "t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic + max(t_primary, t_SR)",
     "detection_module_s": 1.062e-06,
-    "common_logic_s": null,
-    "common_logic_note": "the D0 CD4013 latch and its gating are not modelled here, so every total below is a floor, not a worst case",
+    "common_logic_s": 1.5100000000000002e-06,
+    "common_logic_terms": {
+      "decode_s": 1.11e-06,
+      "latch_s": 4e-07,
+      "total_s": 1.5100000000000002e-06,
+      "decode_gates": [
+        "U11.6",
+        "U19.1",
+        "U6.4",
+        "U10.1",
+        "U10.2",
+        "U10.3"
+      ],
+      "unpriced_gates": [
+        "U6.4"
+      ],
+      "complete": false
+    },
+    "existing_common_logic_s": 1.4e-06,
+    "existing_common_logic_terms": {
+      "decode_s": 1e-06,
+      "latch_s": 4e-07,
+      "total_s": 1.4e-06,
+      "decode_gates": [
+        "U19.1",
+        "U6.4",
+        "U10.1",
+        "U10.2",
+        "U10.3"
+      ],
+      "unpriced_gates": [
+        "U6.4"
+      ],
+      "complete": false
+    },
+    "common_logic_is_a_floor": true,
+    "common_logic_note": "read from D0's own budget, not re-derived here; the two paths differ by the U11F inverter, and the figure stays a floor because U6.4 publishes no maximum",
+    "d0_budget": "design/v3/stage_f/d0_response_budget.json (stages.decode.per_channel.external / .fast, stages.latch)",
     "sr_branch_s": 1.2173389324825803e-05,
     "sr_branch_terms": {
       "crowbar_fet_turn_on_s": 5e-08,
@@ -199,10 +235,11 @@
     },
     "primary_branch_s": 1.2899999999999997e-06,
     "slowest_branch": "sr",
-    "system_floor_s": 1.3235389324825802e-05,
-    "existing_system_floor_s": 0.00014106162461894345,
-    "system_improvement_factor": 10.65791274869053,
-    "note": "the 121x module figure is a detection-only comparison; against the whole machine the comparator change is worth the ratio below, because the REG crowbar sets the stop time"
+    "system_floor_s": 1.4745389324825803e-05,
+    "existing_system_floor_s": 0.00014246162461894346,
+    "system_improvement_factor": 9.661435278557926,
+    "note": "the 121x module figure is a detection-only comparison; against the whole machine the comparator change is worth the ratio below, because the REG crowbar sets the stop time",
+    "comparison_caveat": "the two detection terms are not of one kind: the module's 1.06 us is a worst case over -40..+125 C, while the filtered path's 128.9 us is a sum of cascaded time constants plus the LM393's typical delay. The decode and latch added to each are maxima, so the existing total is still the optimistic side"
   },
   "supply": {
     "connector_rail_v": 5.0,
@@ -422,8 +459,8 @@
     },
     {
       "id": "OC-03b",
-      "finding": "That 121x is detection only. With the SR board's shutdown branch added, the whole-machine stop goes from ~141.1 us to ~13.2 us -- 10.7x -- because the sr branch sets it. D0's latch is not modelled, so both are floors.",
-      "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget",
+      "finding": "That 121x is detection only. With D0's decode and latch and the SR board's shutdown branch added, the whole-machine stop goes from ~142.5 us to ~14.7 us -- 9.7x -- because the sr branch sets it. Both totals pay their own decode (1.51 us here, 1.40 us on the filtered path) and both stay floors: U6.4 has no published maximum.",
+      "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget; design/v3/stage_f/d0_response_budget.json:stages",
       "status": "DESIGN_ESTIMATE"
     },
     {

@@ -1114,10 +1114,17 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   REG→UVLO **12.107 µs**（3.63 V 门限、AO3400A 0.048 Ω）+ VG 拉低 16 ns = **12.173 µs**；
   那块板自己的 **10 µs 输入 RC 不计入**
   （它是验证板前端，不是主板的故障通路，`sr_branch_terms.excluded_input_rc_*` 显式记着）。
-  原边参考支路 1.29 µs ⇒ 慢支路是 SR。整机地板 **13.2 µs**，对原滤波通路 **141.1 µs** 是
-  **≈10.7×**，而模块自身的 **121×** 只是**检测段**比较。D0 的 CD4013 锁存与门控**没建模**，
-  `common_logic_s` 恒 `null`，所以这两个总数都是**地板不是最坏值**——不得引用成最坏关断时间。
-  `test_the_system_stop_is_not_the_module_delay` 锁住 10.7× 必须远小于 121×（<1/5），
+  原边参考支路 1.29 µs ⇒ 慢支路是 SR。公共项（D0 解码 + CD4013 锁存）从
+  `design/v3/stage_f/d0_response_budget.json` **读出**，不在这里重推：
+  快模块路径付 **external** 通道 1.11 µs、原滤波通路付 **fast** 通道 1.00 µs
+  （差的就是 U11F 反相器），各加锁存 0.4 µs ⇒ **1.51 / 1.40 µs**，两条总数各加自己那一项
+  （`common_logic_terms` / `existing_common_logic_terms`）。整机地板 **14.7 µs**，
+  对原滤波通路 **142.5 µs** 是 **≈9.7×**，而模块自身的 **121×** 只是**检测段**比较。
+  仍是**地板不是最坏值**：U6.4（CD4081B）没有 max，`common_logic_is_a_floor` 为 true。
+  `test_each_path_pays_its_own_decode_not_the_other_one` 锁住两条路径不许共用一项
+  （共用会凭空造出 0.11 µs 的差异），`test_a_moved_decode_chain_is_not_silently_repriced`
+  锁住解码链一挪就 `SystemExit`；`test_the_system_stop_is_not_the_module_delay` 锁住
+  9.7× 必须远小于 121×（<1/5），
   `test_the_shutdown_branch_comes_from_the_sr_board_report` 锁住 SR 板 `max_branch_s` 与
   这里之差**恰好**是那条被排除的 RC。
 

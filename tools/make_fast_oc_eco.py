@@ -369,6 +369,57 @@ def delay() -> dict:
 
 
 SR_BOARD = ROOT / "pcb" / "sr_fault_validation" / "sr_fault_validation.json"
+D0_BUDGET = ROOT / "design" / "v3" / "stage_f" / "d0_response_budget.json"
+
+
+def d0_common_logic() -> dict:
+    """D0's decode and latch: the stages between a trip signal and the branch.
+
+    This module ends at J1.4.  Before the trip reaches the flip-flop's SET it
+    crosses D0's decode (U11F, U19, U6.4 and the three U10 ORs) and then the
+    CD4013.  Both figures are owned by ``tools/d0_response_budget.py``, so they
+    are read from its record instead of being re-derived here -- the same rule
+    the shutdown branches already follow.
+
+    The two paths do not cross the same gates.  The legacy LM393 trip enters
+    U19 directly, while this module's low-true output first crosses U11F, so the
+    status quo must be charged the ``fast`` channel's 1.00 us and this module the
+    ``external`` channel's 1.11 us.  Charging one figure to both would either
+    hide the inverter or bill it to a path that does not contain it.
+    """
+    if not D0_BUDGET.is_file():
+        raise SystemExit(f"{D0_BUDGET} is missing; run tools/d0_response_budget.py first")
+    stages = json.loads(D0_BUDGET.read_text(encoding="utf-8"))["stages"]
+    per_channel = stages["decode"]["per_channel"]
+    for channel, first_gate in (("external", "U11.6"), ("fast", "U19.1")):
+        if per_channel[channel]["gates"][:1] != [first_gate]:
+            raise SystemExit(
+                f"the {channel} decode starts at {per_channel[channel]['gates'][:1]}, "
+                f"not {first_gate}: the receiver chain moved, so the module's term "
+                "no longer applies")
+    latch_us = stages["latch"]["us"]
+
+    def path(channel: str) -> dict:
+        decode = per_channel[channel]
+        return {
+            "decode_s": decode["priced_max_us"] * 1e-6,
+            "latch_s": latch_us * 1e-6,
+            "total_s": (decode["priced_max_us"] + latch_us) * 1e-6,
+            "decode_gates": list(decode["gates"]),
+            "unpriced_gates": list(decode["unpriced_gates"]),
+            "complete": decode["complete"],
+        }
+
+    module_path, existing_path = path("external"), path("fast")
+    return {
+        "module_path": module_path,
+        "existing_path": existing_path,
+        "is_a_floor": not (module_path["complete"] and existing_path["complete"]),
+        "why_a_floor": "U6.4 (CD4081B) publishes no propagation maximum, so it is "
+                       "counted at zero and sits in unpriced_gates",
+        "source": "design/v3/stage_f/d0_response_budget.json "
+                  "(stages.decode.per_channel.external / .fast, stages.latch)",
+    }
 
 
 def system_delay() -> dict:
@@ -376,8 +427,9 @@ def system_delay() -> dict:
 
     ``t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic + max(t_primary, t_SR)``
 
-    The module only owns the first two terms.  The shutdown branches come from
-    the single-pair SR board's ``delay_budget``, which is read rather than
+    The module only owns the first two terms.  The common logic is D0's decode
+    and latch, read from the D0 budget.  The shutdown branches come from the
+    single-pair SR board's ``delay_budget``, which is read rather than
     re-derived so the two documents cannot drift.  On this machine the SR
     branch wins by an order of magnitude: the UCC24624 does not let go of VG
     until REG has fallen through UVLO.
@@ -393,15 +445,24 @@ def system_delay() -> dict:
                  + branch["vg_active_low_s"])
     primary_branch = sr["primary_branch_reference"]["total_s"]
     slowest = max(sr_branch, primary_branch)
+    common = d0_common_logic()
     module = delay()["module_total_s"]
     existing = delay()["existing_path_total_s"]
+    module_floor = module + common["module_path"]["total_s"] + slowest
+    existing_floor = existing + common["existing_path"]["total_s"] + slowest
     return {
         "equation": "t_stop = t_CT/rectifier/filter + t_cmp + t_common_logic "
                     "+ max(t_primary, t_SR)",
         "detection_module_s": module,
-        "common_logic_s": None,
-        "common_logic_note": "the D0 CD4013 latch and its gating are not modelled here, so "
-                             "every total below is a floor, not a worst case",
+        "common_logic_s": common["module_path"]["total_s"],
+        "common_logic_terms": common["module_path"],
+        "existing_common_logic_s": common["existing_path"]["total_s"],
+        "existing_common_logic_terms": common["existing_path"],
+        "common_logic_is_a_floor": common["is_a_floor"],
+        "common_logic_note": "read from D0's own budget, not re-derived here; the two "
+                             "paths differ by the U11F inverter, and the figure stays a "
+                             "floor because U6.4 publishes no maximum",
+        "d0_budget": common["source"],
         "sr_branch_s": sr_branch,
         "sr_branch_terms": {
             "crowbar_fet_turn_on_s": branch["crowbar_fet_turn_on_s"],
@@ -413,12 +474,17 @@ def system_delay() -> dict:
         },
         "primary_branch_s": primary_branch,
         "slowest_branch": "sr" if sr_branch > primary_branch else "primary",
-        "system_floor_s": module + slowest,
-        "existing_system_floor_s": existing + slowest,
-        "system_improvement_factor": (existing + slowest) / (module + slowest),
+        "system_floor_s": module_floor,
+        "existing_system_floor_s": existing_floor,
+        "system_improvement_factor": existing_floor / module_floor,
         "note": "the 121x module figure is a detection-only comparison; against the whole "
                 "machine the comparator change is worth the ratio below, because the REG "
                 "crowbar sets the stop time",
+        "comparison_caveat": "the two detection terms are not of one kind: the module's "
+                             "1.06 us is a worst case over -40..+125 C, while the filtered "
+                             "path's 128.9 us is a sum of cascaded time constants plus the "
+                             "LM393's typical delay. The decode and latch added to each are "
+                             "maxima, so the existing total is still the optimistic side",
     }
 
 
@@ -657,14 +723,17 @@ def observations() -> list[dict]:
         },
         {
             "id": "OC-03b",
-            "finding": f"That 121x is detection only. With the SR board's shutdown branch "
-                       f"added, the whole-machine stop goes from "
+            "finding": f"That 121x is detection only. With D0's decode and latch and the SR "
+                       f"board's shutdown branch added, the whole-machine stop goes from "
                        f"~{sd['existing_system_floor_s'] * 1e6:.1f} us to "
                        f"~{sd['system_floor_s'] * 1e6:.1f} us -- "
                        f"{sd['system_improvement_factor']:.1f}x -- because the "
-                       f"{sd['slowest_branch']} branch sets it. D0's latch is not "
-                       "modelled, so both are floors.",
-            "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget",
+                       f"{sd['slowest_branch']} branch sets it. Both totals pay their own "
+                       f"decode ({sd['common_logic_s'] * 1e6:.2f} us here, "
+                       f"{sd['existing_common_logic_s'] * 1e6:.2f} us on the filtered path) "
+                       "and both stay floors: U6.4 has no published maximum.",
+            "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget; "
+                        "design/v3/stage_f/d0_response_budget.json:stages",
             "status": "DESIGN_ESTIMATE",
         },
         {
@@ -989,7 +1058,8 @@ def main() -> None:
         json.dumps(report(ps), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {OUT / 'fast_oc.json'}")
     sd = system_delay()
-    print(f"module delay {sd['detection_module_s'] * 1e6:.2f} us; whole-machine floor "
+    print(f"module delay {sd['detection_module_s'] * 1e6:.2f} us + decode/latch "
+          f"{sd['common_logic_s'] * 1e6:.2f} us; whole-machine floor "
           f"{sd['system_floor_s'] * 1e6:.1f} us (slowest branch: {sd['slowest_branch']}), "
           f"{sd['system_improvement_factor']:.1f}x vs the filtered path")
     if args.check:
