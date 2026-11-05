@@ -1581,16 +1581,31 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 `main_board_mechanical.py` 已从"无网摆件"改成**带网摆放**（网从
 `hardware/dcx_main/pin_footprint_review.csv` 读，按**焊盘名**落户）。板仍然是**未布线**的。
 
-- **三个数不是同一个量**：`pads_landed` **180**（带网的焊盘**名**）、`physical_pads_netted`
-  **196**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **84**（**不是** 180 − 48）。
+- **三个数不是同一个量**：`pads_landed` **212**（带网的焊盘**名**）、`physical_pads_netted`
+  **228**（实际铜焊盘）、`kicad-cli` 的 `unconnected_items` **111**（**不是** 212 − 53）。
   差额 16 = 8 只 SR × 2（漏极基座与一根指都叫 `5`，源极条与一根指都叫 `1`）。
   **KiCad 把同一封装里同号焊盘当一只连接实体**，所以老鼠线条数跟着焊盘**名**数走，
   不跟物理铜走——这正是厂家用同号漏极焊盘表达"这五个是一个引脚"的原因。两个数都报，
-  报一个会让另一个看起来像丢了的连接。**84 比两个计数都短**，因为 KiCad 还会把**铜重叠的
+  报一个会让另一个看起来像丢了的连接。**111 比两个计数都短**，因为 KiCad 还会把**铜重叠的
   同网焊盘**并成一个节点（四根漏极指压进基座 0.125 mm），所以"老鼠线 = 焊盘名 − 网数"这个
   等式不成立，不要写死。**这两个数字随摆放改变，别当板子的属性**：144/160/74 是 35 件时的
-  读数，66 是 QH/QL 换 comb land 后的读数，180/196/84 是 2026-11-06 放上 18 只门极/Kelvin
-  电阻后的读数——引用必须带"哪一版"，相减没有意义。
+  读数，66 是 QH/QL 换 comb land 后的读数，180/196/84 是放上 18 只门极/Kelvin 电阻后的读数，
+  212/228/111 是 2026-11-06 再放上 U3–U6 后的读数——引用必须带"哪一版"，相减没有意义。
+- **老鼠线与连接数都等于 Σ(每网焊盘数 − 1)，所以新冒出来的网只贡献 k−1 条**：U3–U6 那步
+  的 +27 = 16（`VD*`/`VG*` 由一焊盘变两焊盘）+ 8（`PGND` 新增 8 个脚）+ **3**（`VCC12_S`
+  是板上原先没有的**新网**，4 个脚给 3 条）。按焊盘数算会得到 28，差的那一条就是新网的第一只
+  焊盘。同一笔账在网数上也对：48 → 53 = `VCC12_S` + `REG1`–`REG4`。
+- **U3–U6（`UCC24624DR`，四只 SOIC-8）摆在 FET 行的上方（y = 72），不是按信号流放在下方**：
+  一对里两片 land 铜之间只剩 **3.35 mm** 的竖缝（A 的漏极指到 `x_fet+3.325`，B 的源极从
+  `x_fet+6.675` 起），`VG`/`VD` 只能从这条缝下去；FET 下方是横贯整片身体的漏极铜，且
+  y = 88 那条电阻带已经在那儿。放置坐标是 `x0 + SR_PAIR_MM/2`（= 各对中缝 19/57/95/133），
+  不是手打。**这一步不需要 ECO**（金网表、BOM 的 `U3-U6` 行、主题第 3 节都有它们，缺的只是
+  焊盘），但 `VG`/`VD` 从一焊盘变成两焊盘、`REG1`–`REG4` 作为**新的一焊盘网**出现（撬棒还没放），
+  单焊盘网因此从 20 条变成 8 条，`test_the_eight_single_pad_nets_are_the_off_board_ends_of_the_taps`
+  锁的是**名字集合**——只断个数的话，网搬家看不出来。
+  值是 BOM 的 MPN，**不过 `placeholder_value()`**（这四只在 `placeholder_eco.json` 里没有行，
+  它们是已选型件，不是占位）；land 是 vendored `Package_SO:SOIC-8_3.9x4.9mm_P1.27mm`
+  （`PROVENANCE.md` 有 sha256），**不是厂家图**。
 - **A5 的 SR 已换成按数据手册量出的 land pattern**（`dcx:BSC010N04LS6`，来自
   `design/v3/pcb/bsc010n04ls6_land.json`，`make_sr_fault_board_pcb.bsc_source()` 生成），
   所以 `netlist_pins_without_a_physical_pad` 里不再有 SR 脚（旧 vendored TDSON-8 把五个漏极
@@ -1615,7 +1630,7 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 - **`unconnected_items` 是第二个顶层数组**，不在 `violations` 里。只读 `violations` 会在
   一块一条线都没画的板上读出"0 个未连接"。`check()` 现在打印两个数，并带一条**反向守卫**：
   声明了网却报 0 条老鼠线 ⇒ `SystemExit`（要么真布完了，要么 `(net …)` 没落到焊盘上）。
-  **84 条是欠账，不是失败门**——`check()` 不为未连接失败。
+  **111 条是欠账，不是失败门**——`check()` 不为未连接失败。
 - **焊盘名就是身份**：Lr 用审查表的 `1`/`2`，**不是**原理图的 `N1`/`N2`（第一版按 N1/N2 建
   封装，Lr 一条网都没落上）；U2 的占位外形**没有焊盘**，所以它的十一条网表行一条都不该上板
   ——`part_nets()` 必须先按 `_pad_positions()` 过滤，否则 U2 会出现在 `PGND` 里。
@@ -1657,11 +1672,16 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   电阻靠"FET 焊盘 x − 电阻焊盘相对偏移"（`under()`）贴到栅极/漏极基座正下方，
   不靠转 90°。行位：SR 那批 y = **88.0**，QH/QL 那两只 y = **57.5**。
 - **电阻带落在 SR→铜排的输出通道里**（y = 88 在 SR 行 y ≈ 82 与 Cout 行 y ≈ 98 之间），
-  铺铜必须绕开它们，`routed_copper.json:pours.series_mohm` 现在是 1 oz **3.1742** /
-  2 oz **1.5871** / 4 oz **0.7937 mΩ**；派生布线板 `power_stage_routed.kicad_pcb`
-  **28 条网、148/148 连接、959 段、17 过孔、DRC 三个顶层数组全空**，但最差一组
-  2 oz **122.153 mΩ** 对 0.15 mΩ 基准 ⇒ 状态串 `ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET`
-  说的是"走线扛不了 100 A"，不是布线没做完。摆放板一个字节没动。
+  铺铜必须绕开它们。只放电阻时 `routed_copper.json:pours.series_mohm` 是 1 oz **3.1742** /
+  2 oz **1.5871** / 4 oz **0.7937 mΩ**；2026-11-06 再放上 U3–U6 后是
+  **3.4741 / 1.7371 / 0.8688**（VOUT 填充 93.5 → **90.8 %**、PGND 95.7 → **93.5 %**，
+  方块 3.9891/0.8296 → **4.4526/0.9137**；铺满实验的 `solder_mask_bridge` 也从 12 条变 **20** 条）。
+  派生布线板 `power_stage_routed.kicad_pcb` 现在是 **45 条网、220 只焊盘、175/175 连接、
+  1182 段、55 过孔、DRC 三个顶层数组全空**（220 = 228 − 8 只单焊盘网，175 = 220 − 45），
+  但最差一组 2 oz **122.153 mΩ** 对 0.15 mΩ 基准 ⇒ 状态串
+  `ROUTED_DRAFT_CONNECTIVITY_ONLY_AMPACITY_NOT_MET` 说的是"走线扛不了 100 A"，
+  不是布线没做完。**最差组没变**：新增的全是信号腿，100 A 那条路径一个字节没改。
+  摆放板一个字节没动。
 - **提交的 `drc.json` 逐次重跑会大改**（带 `date`、每条未连接项带 uuid 与坐标），
   重跑后看到两千行 diff 是正常的；没有测试逐字节比对它，只比对**板子本身**
   （`test_the_committed_board_is_what_the_table_produces`）。
@@ -1681,10 +1701,12 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 
 ### A5 已经布出来的铜（`tools/main_board_power_copper.py`）
 
-`hardware/dcx_mech/power_stage_routed.kicad_pcb` 是**从摆放板派生的布线草稿**：108 只焊盘、
-18 条可布网、**130/130 连接**、875 段 0.8 mm 走线、11 个过孔，kicad-cli DRC 三个顶层数组全空
+`hardware/dcx_mech/power_stage_routed.kicad_pcb` 是**从摆放板派生的布线草稿**：220 只焊盘、
+45 条可布网、**175/175 连接**、1182 段 0.8 mm 走线、55 个过孔，kicad-cli DRC 三个顶层数组全空
 （`violations` / `unconnected_items` / `schematic_parity` 都是 0，`counts.placement` 0）。
 摆放板一个字节没动（本工具只读它），所以 A5 的逐字节测试不受影响。
+`width_basis` 里那 8 条单焊盘网的名字**从 `single` 派生**，不再手写——它两次被手写文字
+留在"`VG*`/`VD*` 是单焊盘网"的旧状态上（放上 U3–U6 之后它们是两焊盘网）。
 
 ```bash
 python tools/main_board_power_copper.py --json hardware/dcx_mech/routed_copper.json   # ~38 s，含 DRC
@@ -1729,12 +1751,14 @@ python tools/main_board_power_copper.py --check        # 重布 + 比对板子�
 
 | 网 / 层 | 填充率 | 方块数（0.25 / 0.35 mm） | 1 oz | 2 oz | 4 oz |
 |---|---|---|---|---|---|
-| VOUT / F.Cu（T1–T4 中心抽头 → J_OUT.1） | 93.5 % | 3.9891 / 3.9940 | 2.5825 | 1.2913 | 0.6458 |
-| PGND / B.Cu（八只 SR 源极 → J_OUT.2） | 95.7 % | 0.8296 / 0.8209 | 0.5371 | 0.2685 | 0.1343 |
-| **串联** | | | **3.1196** | **1.5598** | **0.7801** |
+| VOUT / F.Cu（T1–T4 中心抽头 → J_OUT.1） | 90.8 % | 4.4526 / 4.4637 | 2.8826 | 1.4413 | 0.7209 |
+| PGND / B.Cu（八只 SR 源极 → J_OUT.2） | 93.5 % | 0.9137 / 0.9079 | 0.5915 | 0.2958 | 0.1479 |
+| **串联** | | | **3.4741** | **1.7371** | **0.8688** |
 
-对 `DESIGN_BASIS_OHM` 0.15 mΩ 是 **2 oz 10.4 倍、4 oz 5.2 倍** ⇒ **铜排才是输出路径，
+对 `DESIGN_BASIS_OHM` 0.15 mΩ 是 **2 oz 11.6 倍、4 oz 5.8 倍** ⇒ **铜排才是输出路径，
 铺铜只是每组到铜排焊盘的过渡**。`verdict` 与 `not_a_layout` 都由实测值拼出，不写死。
+这组数字随摆放变（放 U3–U6 前是 3.1196 / 1.5598 / 0.7801，即 2 oz 10.4 倍），
+引用必须带"哪一版"。
 
 - **方法**：把重填后的铜栅格化（一格 = 一个方块），四邻边各一个单位电导，汇 1 V、源 0 V，
   五点拉普拉斯上跑 Jacobi 预条件 CG，`R = 1/I_total`，最后才乘方阻。
@@ -1757,8 +1781,10 @@ python tools/main_board_power_copper.py --check        # 重布 + 比对板子�
   **静默失效**——DRC 从 12 条变 47 条，其中 35 条是 `lib_footprint_issues`。
   `_poured_board()` 把 `_pour_stage.kicad_pcb/.kicad_pro` 写在 `OUT`，`finally` 里连同
   `_pour_stage_drc.json`/`.kicad_prl` 一起删，`git status` 保持干净。
-- **铺满时那 12 条 `solder_mask_bridge` 不是缺陷，是这个实验的代价**：VOUT 铺满后每只 SR 的
-  阻焊开窗下面都有铜。所以 `not_a_layout` 明写"这不是一个设计、它的 DRC 不是门"，
+- **铺满时那 `solder_mask_bridge` 不是缺陷，是这个实验的代价**：VOUT 铺满后每只 SR 的
+  阻焊开窗下面都有铜。条数随摆放走（放 U3–U6 前 **12** 条、之后 **20** 条），
+  引用要带"哪一版"，**不要**把它当成一个可以调平的指标。所以 `not_a_layout` 明写
+  "这不是一个设计、它的 DRC 不是门"，
   **不要为此去印一条更小的 zone**——那会把"铺满能买到多少铜"这个问题悄悄改掉。
 - **接触 ≠ 导通**：`pour_path()` 里每个电极先与填充求交（焊盘自己的铜本来就不在 zone fill 里，
   要求整个电极都是铜会**按构造失败**），逐焊盘判接触；但那只证明碰得到。

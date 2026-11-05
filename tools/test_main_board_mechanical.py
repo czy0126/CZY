@@ -658,21 +658,21 @@ def test_the_four_secondary_groups_are_drawn_the_same_length():
 
 
 def test_a_one_pad_net_is_listed_rather_than_read_as_routed():
-    """Twenty nets still end in exactly one pad, and each for a stated reason.
+    """Eight nets still end in exactly one pad, and each for a stated reason.
 
     Package C turned GH/GL/GA*/GB* into two-pad nets by placing the gate
-    resistors, but the driver *side* of each of those resistors is now the
-    single-pad end (VG*_A/B, GH_DRV, GL_DRV) -- the driver lives on the control
-    board.  The Kelvin links add VD*_A/B the same way.  CS1/CS2 stay because
-    their rectifier sits in the padless U2 outline.  A net with one pad draws no
-    ratsnest line, so nothing else would ever flag them.
+    resistors; placing U3-U6 then took VD*/VG* off this list and put REG1-REG4
+    on it -- the crowbar that pulls REG is still a plan, so each REG node has
+    one pin and no copper.  CS1/CS2 stay because their rectifier sits in the
+    padless U2 outline, and GH_DRV/GL_DRV because the primary drivers are on the
+    control board.  A net with one pad draws no ratsnest line, so nothing else
+    would ever flag them.
     """
     nets = mbm.nets_report()
     single = set(nets["single_pad_nets"])
     assert single == {"CS1", "CS2", "GH_DRV", "GL_DRV"} | {
-        f"{kind}{i}_{side}"
-        for kind in ("VD", "VG") for i in range(1, 5) for side in ("A", "B")}
-    assert len(single) == 20
+        f"REG{i}" for i in range(1, 5)}
+    assert len(single) == 8
     assert "owes no track" in nets["single_pad_nets_note"]
 
 
@@ -707,6 +707,41 @@ def test_every_gate_resistor_lands_directly_under_the_gate_it_serves():
             ref, "the resistor must sit below the FET, not above it")
         checked += 1
     assert checked == 18
+
+
+def test_the_four_sr_controllers_are_placed_on_the_pair_they_serve():
+    """Doc 34, package C: the SR controllers stop being a padless block.
+
+    U3-U6 were already in the golden netlist, the BOM and the review table, but
+    the board carried no pad for them, so all sixteen VD*/VG* nets ended at the
+    resistor band and REG1-REG4 did not exist.  One controller per pair, centred
+    on that pair, turns each VG/VD into a two-pad net and gives the REG node a
+    real pin -- which is the node the hardware shutdown circuit has to pull.
+
+    The y assertion is the one that matters for copper: above the FET row the
+    VG/VD taps come down through the inter-FET channel, below it they would have
+    to cross the drain slabs.
+    """
+    by_ref = {p.ref: p for p in mbm.PARTS}
+    fet_d = by_ref["SR1A"].d_mm
+    for i, x0 in enumerate(mbm.SR_X0, start=1):
+        part = by_ref[f"U{i + 2}"]
+        assert part.footprint == mbm.SOIC8_FP, part.footprint
+        assert part.value == "UCC24624DR"
+        assert part.rot == 0, "extract_pads ignores rotation"
+        assert abs(part.x - (x0 + mbm.SR_PAIR_MM / 2)) < 1e-9
+        assert part.y + part.d_mm / 2 < mbm.SR_ROW_Y - fet_d / 2, (
+            part.ref, "the controller must clear the FET row it drives")
+    nets = {row["net"]: row["pads"] for row in mbm.nets_report()["nets"]}
+    members = mbm.placed_nets()
+    for i in range(1, 5):
+        for kind, a_pin, b_pin in (("VG", "1", "8"), ("VD", "4", "6")):
+            assert nets[f"{kind}{i}_A"] == 2, (kind, i, "A")
+            assert nets[f"{kind}{i}_B"] == 2, (kind, i, "B")
+            assert f"U{i + 2}.{a_pin}" in members[f"{kind}{i}_A"]
+            assert f"U{i + 2}.{b_pin}" in members[f"{kind}{i}_B"]
+        # REG goes nowhere else yet: the crowbar that pulls it is the next step
+        assert members[f"REG{i}"] == [f"U{i + 2}.3"], members[f"REG{i}"]
 
 
 def test_the_resistor_values_come_from_the_register_not_the_review_table():

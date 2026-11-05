@@ -492,11 +492,16 @@ def report(board_text: str, result: router.RouteResult, ids: dict[str, int],
             "failures": [{"net": n, "from": a, "to": b} for n, a, b in result.failures],
             "segments": len(result.segments), "vias": len(result.vias),
             "track_width_mm": TRACK_WIDTH_MM,
-            "width_basis": "every routable net here is a power net: the twenty "
-                           "single-pad nets are the driver-side ends of the ten gate "
-                           "resistors and eight drain Kelvin links (GH_DRV, GL_DRV, "
-                           "VG*_A/B, VD*_A/B) plus CS1/CS2, all of which leave this "
-                           "board -- the gate-side pads are now real two-pad nets",
+            # Derived from ``single`` rather than typed: the list moved twice under
+            # package C (gate taps became two-pad nets, then VD*/VG* did) and a
+            # typed explanation kept naming nets that no longer leave the board.
+            "width_basis": "one width for every net, because this is a connectivity "
+                           "draft and not a design; the "
+                           f"{len(single)} single-pad nets "
+                           f"({', '.join(sorted(single))}) are ends that leave this "
+                           "board -- the gate drivers, the CT rectifier and the REG "
+                           "crowbar that is not placed yet -- so no track is owed on "
+                           "them",
             "router": "tools/sr_board_router.py (deterministic grid router, "
                       "0.125 mm pitch, 0.20 mm clearance)",
         },

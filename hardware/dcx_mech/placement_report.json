@@ -139,6 +139,54 @@
       "note": "UCC25600 + UCC27282 + passives grouped; no layout done"
     },
     {
+      "ref": "U3",
+      "value": "UCC24624DR",
+      "evidence": "kicad-library",
+      "w_mm": 7.4,
+      "d_mm": 5.4,
+      "h_mm_worst": 1.75,
+      "x_mm": 19.0,
+      "y_mm": 72.0,
+      "rot_deg": 0.0,
+      "note": "dual SR controller for group 1: pin 1/8 drive VG1_A/B through R20/R21, pin 4/6 sit on the drain Kelvin links, pin 3 (REG1) is the node a crowbar pulls, pin 7 is VCC12_S.  MPN from bom_draft.csv U3-U6 (ucc24624.pdf); land is the vendored KiCad SOIC-8, not a vendor drawing"
+    },
+    {
+      "ref": "U4",
+      "value": "UCC24624DR",
+      "evidence": "kicad-library",
+      "w_mm": 7.4,
+      "d_mm": 5.4,
+      "h_mm_worst": 1.75,
+      "x_mm": 57.0,
+      "y_mm": 72.0,
+      "rot_deg": 0.0,
+      "note": "dual SR controller for group 2: pin 1/8 drive VG2_A/B through R22/R23, pin 4/6 sit on the drain Kelvin links, pin 3 (REG2) is the node a crowbar pulls, pin 7 is VCC12_S.  MPN from bom_draft.csv U3-U6 (ucc24624.pdf); land is the vendored KiCad SOIC-8, not a vendor drawing"
+    },
+    {
+      "ref": "U5",
+      "value": "UCC24624DR",
+      "evidence": "kicad-library",
+      "w_mm": 7.4,
+      "d_mm": 5.4,
+      "h_mm_worst": 1.75,
+      "x_mm": 95.0,
+      "y_mm": 72.0,
+      "rot_deg": 0.0,
+      "note": "dual SR controller for group 3: pin 1/8 drive VG3_A/B through R24/R25, pin 4/6 sit on the drain Kelvin links, pin 3 (REG3) is the node a crowbar pulls, pin 7 is VCC12_S.  MPN from bom_draft.csv U3-U6 (ucc24624.pdf); land is the vendored KiCad SOIC-8, not a vendor drawing"
+    },
+    {
+      "ref": "U6",
+      "value": "UCC24624DR",
+      "evidence": "kicad-library",
+      "w_mm": 7.4,
+      "d_mm": 5.4,
+      "h_mm_worst": 1.75,
+      "x_mm": 133.0,
+      "y_mm": 72.0,
+      "rot_deg": 0.0,
+      "note": "dual SR controller for group 4: pin 1/8 drive VG4_A/B through R26/R27, pin 4/6 sit on the drain Kelvin links, pin 3 (REG4) is the node a crowbar pulls, pin 7 is VCC12_S.  MPN from bom_draft.csv U3-U6 (ucc24624.pdf); land is the vendored KiCad SOIC-8, not a vendor drawing"
+    },
+    {
       "ref": "SR1A",
       "value": "BSC010N04LS6",
       "evidence": "digitised-datasheet",
@@ -836,14 +884,14 @@
   "nets": {
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
-    "net_count": 48,
-    "pads_landed": 180,
-    "physical_pads_netted": 196,
+    "net_count": 53,
+    "pads_landed": 212,
+    "physical_pads_netted": 228,
     "pads_landed_note": "pad names with a net; physical pads are higher where a footprint splits one pin across several lands (the SR FET drain: a common base plus four fingers, two of which share the name 5).  KiCad merges same-numbered pads, and also same-net lands whose copper overlaps, so the ratsnest is shorter than pads_landed - net_count",
     "nets": [
       {
         "net": "PGND",
-        "pads": 45,
+        "pads": 53,
         "refs": [
           "Cout1",
           "Cout10",
@@ -871,9 +919,13 @@
           "SR3B",
           "SR4A",
           "SR4B",
-          "T4"
+          "T4",
+          "U3",
+          "U4",
+          "U5",
+          "U6"
         ],
-        "straight_line_mst_mm": 341.124
+        "straight_line_mst_mm": 377.575
       },
       {
         "net": "VOUT",
@@ -901,6 +953,17 @@
           "T4"
         ],
         "straight_line_mst_mm": 325.209
+      },
+      {
+        "net": "VCC12_S",
+        "pads": 4,
+        "refs": [
+          "U3",
+          "U4",
+          "U5",
+          "U6"
+        ],
+        "straight_line_mst_mm": 114.0
       },
       {
         "net": "SEC1_A",
@@ -1047,6 +1110,150 @@
         "straight_line_mst_mm": 20.917
       },
       {
+        "net": "VG1_A",
+        "pads": 2,
+        "refs": [
+          "R20",
+          "U3"
+        ],
+        "straight_line_mst_mm": 19.215
+      },
+      {
+        "net": "VG2_A",
+        "pads": 2,
+        "refs": [
+          "R22",
+          "U4"
+        ],
+        "straight_line_mst_mm": 19.215
+      },
+      {
+        "net": "VG3_A",
+        "pads": 2,
+        "refs": [
+          "R24",
+          "U5"
+        ],
+        "straight_line_mst_mm": 19.215
+      },
+      {
+        "net": "VG4_A",
+        "pads": 2,
+        "refs": [
+          "R26",
+          "U6"
+        ],
+        "straight_line_mst_mm": 19.215
+      },
+      {
+        "net": "VG1_B",
+        "pads": 2,
+        "refs": [
+          "R21",
+          "U3"
+        ],
+        "straight_line_mst_mm": 18.008
+      },
+      {
+        "net": "VG2_B",
+        "pads": 2,
+        "refs": [
+          "R23",
+          "U4"
+        ],
+        "straight_line_mst_mm": 18.008
+      },
+      {
+        "net": "VG3_B",
+        "pads": 2,
+        "refs": [
+          "R25",
+          "U5"
+        ],
+        "straight_line_mst_mm": 18.008
+      },
+      {
+        "net": "VG4_B",
+        "pads": 2,
+        "refs": [
+          "R27",
+          "U6"
+        ],
+        "straight_line_mst_mm": 18.008
+      },
+      {
+        "net": "VD1_B",
+        "pads": 2,
+        "refs": [
+          "R29",
+          "U3"
+        ],
+        "straight_line_mst_mm": 16.119
+      },
+      {
+        "net": "VD2_B",
+        "pads": 2,
+        "refs": [
+          "R31",
+          "U4"
+        ],
+        "straight_line_mst_mm": 16.119
+      },
+      {
+        "net": "VD3_B",
+        "pads": 2,
+        "refs": [
+          "R33",
+          "U5"
+        ],
+        "straight_line_mst_mm": 16.119
+      },
+      {
+        "net": "VD4_B",
+        "pads": 2,
+        "refs": [
+          "R35",
+          "U6"
+        ],
+        "straight_line_mst_mm": 16.119
+      },
+      {
+        "net": "VD1_A",
+        "pads": 2,
+        "refs": [
+          "R28",
+          "U3"
+        ],
+        "straight_line_mst_mm": 14.096
+      },
+      {
+        "net": "VD2_A",
+        "pads": 2,
+        "refs": [
+          "R30",
+          "U4"
+        ],
+        "straight_line_mst_mm": 14.096
+      },
+      {
+        "net": "VD3_A",
+        "pads": 2,
+        "refs": [
+          "R32",
+          "U5"
+        ],
+        "straight_line_mst_mm": 14.096
+      },
+      {
+        "net": "VD4_A",
+        "pads": 2,
+        "refs": [
+          "R34",
+          "U6"
+        ],
+        "straight_line_mst_mm": 14.096
+      },
+      {
         "net": "CR_CT",
         "pads": 2,
         "refs": [
@@ -1178,130 +1385,34 @@
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "VD1_A",
+        "net": "REG1",
         "pads": 1,
         "refs": [
-          "R28"
+          "U3"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "VD1_B",
+        "net": "REG2",
         "pads": 1,
         "refs": [
-          "R29"
+          "U4"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "VD2_A",
+        "net": "REG3",
         "pads": 1,
         "refs": [
-          "R30"
+          "U5"
         ],
         "straight_line_mst_mm": 0.0
       },
       {
-        "net": "VD2_B",
+        "net": "REG4",
         "pads": 1,
         "refs": [
-          "R31"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VD3_A",
-        "pads": 1,
-        "refs": [
-          "R32"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VD3_B",
-        "pads": 1,
-        "refs": [
-          "R33"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VD4_A",
-        "pads": 1,
-        "refs": [
-          "R34"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VD4_B",
-        "pads": 1,
-        "refs": [
-          "R35"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG1_A",
-        "pads": 1,
-        "refs": [
-          "R20"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG1_B",
-        "pads": 1,
-        "refs": [
-          "R21"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG2_A",
-        "pads": 1,
-        "refs": [
-          "R22"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG2_B",
-        "pads": 1,
-        "refs": [
-          "R23"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG3_A",
-        "pads": 1,
-        "refs": [
-          "R24"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG3_B",
-        "pads": 1,
-        "refs": [
-          "R25"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG4_A",
-        "pads": 1,
-        "refs": [
-          "R26"
-        ],
-        "straight_line_mst_mm": 0.0
-      },
-      {
-        "net": "VG4_B",
-        "pads": 1,
-        "refs": [
-          "R27"
+          "U6"
         ],
         "straight_line_mst_mm": 0.0
       }
@@ -1311,22 +1422,10 @@
       "CS2",
       "GH_DRV",
       "GL_DRV",
-      "VD1_A",
-      "VD1_B",
-      "VD2_A",
-      "VD2_B",
-      "VD3_A",
-      "VD3_B",
-      "VD4_A",
-      "VD4_B",
-      "VG1_A",
-      "VG1_B",
-      "VG2_A",
-      "VG2_B",
-      "VG3_A",
-      "VG3_B",
-      "VG4_A",
-      "VG4_B"
+      "REG1",
+      "REG2",
+      "REG3",
+      "REG4"
     ],
     "single_pad_nets_note": "a net with one pad here draws no ratsnest line and owes no track.  Two kinds remain: the far end of a resistor that is now placed (VG*_A/B, GH_DRV, GL_DRV -- the driver side, which lives on the control board), and the CT secondary terminals CS1/CS2, whose rectifier sits in the padless U2 outline. Listed so none is read as routed",
     "lumped_from_one_netlist_element": {
@@ -1399,11 +1498,7 @@
       "R7",
       "R8",
       "R9",
-      "U1",
-      "U3",
-      "U4",
-      "U5",
-      "U6"
+      "U1"
     ],
     "not_placed_here_reason": "power-stage placement only; control, drive and decoupling parts have no position on this board",
     "length_note": "straight-line spanning tree over pad centres, a lower bound on copper and not a route"
@@ -1430,6 +1525,10 @@
     "kicad_needed_for": "DRC and drawings only; the board file needs no KiCad",
     "kicad_version_source": "hardware/dcx_mech/drc.json:kicad_version",
     "stock_footprints": [
+      {
+        "lib_id": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+        "sha256": "074ecb2092b24fa4b4b9cdd7c926fc587b0d7d6d21e7341e57935fd42d36894f"
+      },
       {
         "lib_id": "Resistor_SMD:R_0603_1608Metric",
         "sha256": "7190ac4a00125b807e54129ef0d87d87f2a658eeb74d025a7028203419b09f23"

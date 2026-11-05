@@ -105,6 +105,11 @@ ECO = ROOT / "hardware" / "dcx_main" / "placeholder_eco.json"
 # pads at +-0.825 x 0.8 x 0.95, reference text 1.43 mm above centre.
 R0603_FP = "Resistor_SMD:R_0603_1608Metric"
 R0603_W, R0603_D, R0603_H = 2.96, 1.46, 0.55
+# Vendored (PROVENANCE.md): SOIC-8, courtyard 7.4 x 5.4, pads at +-2.475 x
+# {+-1.905, +-0.635}, MS-012AA body height max 1.75 mm.  This is the land of the
+# four SR controllers U3-U6; it is a library part, not a vendor drawing.
+SOIC8_FP = "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+SOIC8_W, SOIC8_D, SOIC8_H = 7.4, 5.4, 1.75
 # The two FET lands are digitised into JSON and generated from it.  ``parts()``
 # runs while this module is still executing, and the builders import this module
 # back, so it reads these files instead of calling them -- see ``_land_pads``.
@@ -145,6 +150,12 @@ SR_ROW_Y = 82.0
 # straight vertical run into the gate pad's bottom edge.
 SR_GATE_ROW_Y = 88.0
 PRIMARY_GATE_ROW_Y = 57.5
+# The SR controllers' band: between the primary row (its deepest part, Lr, ends
+# at y = 64.7) and the FET row (starts at 79.18).  Above the FETs on purpose --
+# the VG/VD taps then come down the 3.35 mm channel between the two FETs of
+# their own pair, where below the row they would have to cross the drain slabs
+# that span the whole body width.
+SR_CTRL_ROW_Y = 72.0
 
 
 def review_rows() -> list[dict]:
@@ -313,6 +324,22 @@ def parts() -> tuple[Part, ...]:
     out.append(Part("U2", "control area", 12.0, 12.0, 3.0, 132.0, 52.0, "PROVISIONAL",
                     "dcx:Placeholder_12x12",
                     note="UCC25600 + UCC27282 + passives grouped; no layout done"))
+    # Row 2b -- one SR controller per pair, centred on the pair it drives (doc
+    # 34, package C: "紧接着连接选定的实际硬件关断电路").  Placing U3-U6 needs no
+    # ECO: the golden netlist, the BOM row "U3-U6" and theme section 3 already
+    # carry them; what was missing was a pad to land on.  With them placed, each
+    # VD*/VG* becomes a two-pad net and REG1-REG4 appear as the pin the REG
+    # crowbar will pull.
+    for i, x0 in enumerate(SR_X0, start=1):
+        out.append(Part(f"U{i + 2}", "UCC24624DR", SOIC8_W, SOIC8_D, SOIC8_H,
+                        x0 + SR_PAIR_MM / 2, SR_CTRL_ROW_Y,
+                        "kicad-library", SOIC8_FP,
+                        note=f"dual SR controller for group {i}: pin 1/8 drive VG{i}_A/B "
+                             f"through R{20 + 2 * (i - 1)}/R{21 + 2 * (i - 1)}, pin 4/6 "
+                             f"sit on the drain Kelvin links, pin 3 (REG{i}) is the "
+                             f"node a crowbar pulls, pin 7 is VCC12_S.  MPN from "
+                             f"bom_draft.csv U3-U6 (ucc24624.pdf); land is the "
+                             f"vendored KiCad SOIC-8, not a vendor drawing"))
     # Row 3 -- the eight SR FETs, two per transformer, directly under their own
     # secondary.  Each pair spans one transformer's width so the secondary loop
     # stays local.

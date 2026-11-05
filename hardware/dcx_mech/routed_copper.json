@@ -13,125 +13,120 @@
     "depth_mm": 131.0,
     "copper_layers": 2,
     "copper_weight": "UNSELECTED -- resistance is reported at 1/2/4 oz",
-    "board_sha256": "55e80b4e649dae7550047e86e2ec65fe7ae7611cb257eb5146c62eb3b334fac7"
+    "board_sha256": "6a0bf91801663fe518eebbd56b54db86ecc097e500468067347910047bb5c425"
   },
   "route": {
-    "nets_routed": 28,
+    "nets_routed": 45,
     "nets_with_one_pad": [
       "CS1",
       "CS2",
       "GH_DRV",
       "GL_DRV",
-      "VD1_A",
-      "VD1_B",
-      "VD2_A",
-      "VD2_B",
-      "VD3_A",
-      "VD3_B",
-      "VD4_A",
-      "VD4_B",
-      "VG1_A",
-      "VG1_B",
-      "VG2_A",
-      "VG2_B",
-      "VG3_A",
-      "VG3_B",
-      "VG4_A",
-      "VG4_B"
+      "REG1",
+      "REG2",
+      "REG3",
+      "REG4"
     ],
-    "connections_attempted": 148,
-    "connections_made": 148,
+    "connections_attempted": 175,
+    "connections_made": 175,
     "unrouted_nets": [],
     "failures": [],
-    "segments": 959,
-    "vias": 17,
+    "segments": 1182,
+    "vias": 55,
     "track_width_mm": 0.8,
-    "width_basis": "every routable net here is a power net: the twelve single-pad nets are the eight SR gate returns and the four CT secondaries, which leave this board",
+    "width_basis": "one width for every net, because this is a connectivity draft and not a design; the 8 single-pad nets (CS1, CS2, GH_DRV, GL_DRV, REG1, REG2, REG3, REG4) are ends that leave this board -- the gate drivers, the CT rectifier and the REG crowbar that is not placed yet -- so no track is owed on them",
     "router": "tools/sr_board_router.py (deterministic grid router, 0.125 mm pitch, 0.20 mm clearance)"
   },
   "copper": [
     {
       "net": "PGND",
       "net_index": 17,
-      "length_mm": 384.62,
-      "squares": 480.781,
+      "length_mm": 423.5,
+      "squares": 529.375,
       "vias": 0
     },
     {
       "net": "VOUT",
-      "net_index": 48,
+      "net_index": 53,
       "length_mm": 312.38,
       "squares": 390.469,
       "vias": 0
     },
     {
-      "net": "SEC1_A",
-      "net_index": 22,
-      "length_mm": 83.38,
-      "squares": 104.219,
-      "vias": 1
-    },
-    {
-      "net": "SEC2_A",
-      "net_index": 24,
-      "length_mm": 83.38,
-      "squares": 104.219,
-      "vias": 1
-    },
-    {
-      "net": "SEC3_A",
-      "net_index": 26,
-      "length_mm": 83.38,
-      "squares": 104.219,
-      "vias": 1
-    },
-    {
-      "net": "SEC4_A",
-      "net_index": 28,
-      "length_mm": 83.38,
-      "squares": 104.219,
-      "vias": 1
+      "net": "VCC12_S",
+      "net_index": 35,
+      "length_mm": 138.88,
+      "squares": 173.594,
+      "vias": 10
     },
     {
       "net": "CT_LR",
       "net_index": 4,
-      "length_mm": 74.5,
-      "squares": 93.125,
+      "length_mm": 85.75,
+      "squares": 107.188,
       "vias": 4
     },
     {
+      "net": "SEC1_A",
+      "net_index": 26,
+      "length_mm": 83.62,
+      "squares": 104.531,
+      "vias": 1
+    },
+    {
+      "net": "SEC2_A",
+      "net_index": 28,
+      "length_mm": 83.62,
+      "squares": 104.531,
+      "vias": 1
+    },
+    {
+      "net": "SEC3_A",
+      "net_index": 30,
+      "length_mm": 83.62,
+      "squares": 104.531,
+      "vias": 1
+    },
+    {
+      "net": "SEC4_A",
+      "net_index": 32,
+      "length_mm": 83.62,
+      "squares": 104.531,
+      "vias": 1
+    },
+    {
       "net": "VIN_P",
-      "net_index": 47,
-      "length_mm": 65.12,
-      "squares": 81.406,
+      "net_index": 52,
+      "length_mm": 66.25,
+      "squares": 82.812,
       "vias": 3
     },
     {
       "net": "SEC1_B",
-      "net_index": 23,
-      "length_mm": 63.38,
-      "squares": 79.219,
+      "net_index": 27,
+      "length_mm": 63.62,
+      "squares": 79.531,
       "vias": 0
     },
     {
       "net": "SEC2_B",
-      "net_index": 25,
-      "length_mm": 63.38,
-      "squares": 79.219,
+      "net_index": 29,
+      "length_mm": 63.62,
+      "squares": 79.531,
       "vias": 0
     },
     {
       "net": "SEC3_B",
-      "net_index": 27,
-      "length_mm": 63.38,
-      "squares": 79.219,
+      "net_index": 31,
+      "length_mm": 63.62,
+      "squares": 79.531,
       "vias": 0
     },
     {
       "net": "SEC4_B",
-      "net_index": 29,
-      "length_mm": 63.38,
-      "squares": 79.219,
+      "net_index": 33,
+      "length_mm": 63.62,
+      "squares": 79.531,
       "vias": 0
     },
     {
@@ -163,25 +158,137 @@
       "vias": 0
     },
     {
+      "net": "VG1_A",
+      "net_index": 44,
+      "length_mm": 23.5,
+      "squares": 29.375,
+      "vias": 0
+    },
+    {
+      "net": "VG3_A",
+      "net_index": 48,
+      "length_mm": 23.5,
+      "squares": 29.375,
+      "vias": 0
+    },
+    {
+      "net": "VG2_A",
+      "net_index": 46,
+      "length_mm": 23.12,
+      "squares": 28.906,
+      "vias": 2
+    },
+    {
+      "net": "VG4_A",
+      "net_index": 50,
+      "length_mm": 23.12,
+      "squares": 28.906,
+      "vias": 2
+    },
+    {
+      "net": "VG3_B",
+      "net_index": 49,
+      "length_mm": 22.38,
+      "squares": 27.969,
+      "vias": 2
+    },
+    {
+      "net": "VG2_B",
+      "net_index": 47,
+      "length_mm": 22.12,
+      "squares": 27.656,
+      "vias": 2
+    },
+    {
+      "net": "VG4_B",
+      "net_index": 51,
+      "length_mm": 19.12,
+      "squares": 23.906,
+      "vias": 2
+    },
+    {
+      "net": "VD1_B",
+      "net_index": 37,
+      "length_mm": 18.38,
+      "squares": 22.969,
+      "vias": 2
+    },
+    {
+      "net": "VD2_B",
+      "net_index": 39,
+      "length_mm": 18.38,
+      "squares": 22.969,
+      "vias": 2
+    },
+    {
+      "net": "VD3_B",
+      "net_index": 41,
+      "length_mm": 18.38,
+      "squares": 22.969,
+      "vias": 2
+    },
+    {
+      "net": "VD4_B",
+      "net_index": 43,
+      "length_mm": 18.38,
+      "squares": 22.969,
+      "vias": 2
+    },
+    {
+      "net": "VG1_B",
+      "net_index": 45,
+      "length_mm": 18.25,
+      "squares": 22.812,
+      "vias": 2
+    },
+    {
       "net": "SW",
-      "net_index": 30,
+      "net_index": 34,
       "length_mm": 17.0,
       "squares": 21.25,
       "vias": 0
+    },
+    {
+      "net": "VD2_A",
+      "net_index": 38,
+      "length_mm": 15.62,
+      "squares": 19.531,
+      "vias": 2
+    },
+    {
+      "net": "VD1_A",
+      "net_index": 36,
+      "length_mm": 13.5,
+      "squares": 16.875,
+      "vias": 2
+    },
+    {
+      "net": "VD3_A",
+      "net_index": 40,
+      "length_mm": 13.5,
+      "squares": 16.875,
+      "vias": 2
+    },
+    {
+      "net": "VD4_A",
+      "net_index": 42,
+      "length_mm": 13.5,
+      "squares": 16.875,
+      "vias": 2
     },
     {
       "net": "GH",
       "net_index": 13,
       "length_mm": 5.0,
       "squares": 6.25,
-      "vias": 2
+      "vias": 0
     },
     {
       "net": "GL",
       "net_index": 15,
       "length_mm": 5.0,
       "squares": 6.25,
-      "vias": 0
+      "vias": 2
     },
     {
       "net": "CR_CT",
@@ -403,10 +510,10 @@
             "r_mohm": 95.901
           },
           "pgnd": {
-            "squares": 135.1562,
-            "r_mohm": 87.505
+            "squares": 136.0938,
+            "r_mohm": 88.112
           },
-          "r_mohm": 183.406
+          "r_mohm": 184.013
         },
         {
           "group": 3,
@@ -427,10 +534,10 @@
             "r_mohm": 154.171
           },
           "pgnd": {
-            "squares": 56.25,
-            "r_mohm": 36.418
+            "squares": 56.7188,
+            "r_mohm": 36.722
           },
-          "r_mohm": 190.589
+          "r_mohm": 190.893
         }
       ],
       "2oz": [
@@ -453,10 +560,10 @@
             "r_mohm": 47.951
           },
           "pgnd": {
-            "squares": 135.1562,
-            "r_mohm": 43.752
+            "squares": 136.0938,
+            "r_mohm": 44.056
           },
-          "r_mohm": 91.703
+          "r_mohm": 92.007
         },
         {
           "group": 3,
@@ -477,10 +584,10 @@
             "r_mohm": 77.085
           },
           "pgnd": {
-            "squares": 56.25,
-            "r_mohm": 18.209
+            "squares": 56.7188,
+            "r_mohm": 18.361
           },
-          "r_mohm": 95.294
+          "r_mohm": 95.446
         }
       ],
       "4oz": [
@@ -503,10 +610,10 @@
             "r_mohm": 23.975
           },
           "pgnd": {
-            "squares": 135.1562,
-            "r_mohm": 21.876
+            "squares": 136.0938,
+            "r_mohm": 22.028
           },
-          "r_mohm": 45.851
+          "r_mohm": 46.003
         },
         {
           "group": 3,
@@ -527,10 +634,10 @@
             "r_mohm": 38.543
           },
           "pgnd": {
-            "squares": 56.25,
-            "r_mohm": 9.105
+            "squares": 56.7188,
+            "r_mohm": 9.18
           },
-          "r_mohm": 47.648
+          "r_mohm": 47.723
         }
       ]
     },
@@ -564,17 +671,17 @@
           "T4"
         ],
         "sink": "J_OUT.1",
-        "fill_fraction": 0.928,
-        "squares": 4.0707,
+        "fill_fraction": 0.908,
+        "squares": 4.4526,
         "converged": true,
         "every_terminal_lands_in_the_fill": true,
         "terminals_without_contact": [],
-        "squares_coarse": 4.0827,
-        "spread_pct": 0.29,
+        "squares_coarse": 4.4637,
+        "spread_pct": 0.25,
         "mohm": {
-          "1oz": 2.6354,
-          "2oz": 1.3177,
-          "4oz": 0.659
+          "1oz": 2.8826,
+          "2oz": 1.4413,
+          "4oz": 0.7209
         }
       },
       {
@@ -592,40 +699,40 @@
           "SR4B"
         ],
         "sink": "J_OUT.2",
-        "fill_fraction": 0.956,
-        "squares": 0.8322,
+        "fill_fraction": 0.935,
+        "squares": 0.9137,
         "converged": true,
         "every_terminal_lands_in_the_fill": true,
         "terminals_without_contact": [],
-        "squares_coarse": 0.8229,
-        "spread_pct": 1.12,
+        "squares_coarse": 0.9079,
+        "spread_pct": 0.63,
         "mohm": {
-          "1oz": 0.5388,
-          "2oz": 0.2694,
-          "4oz": 0.1347
+          "1oz": 0.5915,
+          "2oz": 0.2958,
+          "4oz": 0.1479
         }
       }
     ],
     "series_mohm": {
-      "1oz": 3.1742,
-      "2oz": 1.5871,
-      "4oz": 0.7937
+      "1oz": 3.4741,
+      "2oz": 1.7371,
+      "4oz": 0.8688
     },
     "meets_the_0p15_mohm_basis": {
       "1oz": false,
       "2oz": false,
       "4oz": false
     },
-    "verdict": "even poured solid on both layers this board is 5.3x the 0.15 mOhm basis at 4 oz and 10.6x at 2 oz, so the plane is not the output path -- the busbar is, and the pour only has to bridge each group to the busbar land",
+    "verdict": "even poured solid on both layers this board is 5.8x the 0.15 mOhm basis at 4 oz and 11.6x at 2 oz, so the plane is not the output path -- the busbar is, and the pour only has to bridge each group to the busbar land",
     "not_a_layout": "the full-board pour exposes VOUT copper under every SR solder-mask aperture, which kicad-cli reports as solder_mask_bridge.  This measures what copper area can buy; it is not a design and its DRC is not a gate.",
     "drc": {
       "version": "10.0.6",
-      "violations": 32,
+      "violations": 20,
       "counts": {
         "placement": 0,
         "pours": 0,
         "cosmetic": 0,
-        "other": 32
+        "other": 20
       },
       "unconnected_items": 0,
       "schematic_parity": 0,
@@ -702,9 +809,9 @@
     "power_path_meets_the_0p15_mohm_basis": false,
     "worst_group_mohm_at_2oz": 122.153,
     "pour_series_mohm": {
-      "1oz": 3.1742,
-      "2oz": 1.5871,
-      "4oz": 0.7937
+      "1oz": 3.4741,
+      "2oz": 1.7371,
+      "4oz": 0.8688
     },
     "pour_meets_the_0p15_mohm_basis_at_2oz": false
   }
