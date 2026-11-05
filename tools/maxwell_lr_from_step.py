@@ -1,7 +1,9 @@
 """Prepare or solve one vetted Lr CAD case in Maxwell 3D via PyAEDT.
 
-The repository does NOT contain an executable STEP model or certified 100 C
-N97 nonlinear B-H table. Until both are supplied, --check returns blockers,
+The repository does NOT contain an executable STEP model or nonlinear 100 C
+N97 B-H curve. Engineers can build a *catalogue-based concept STEP* while
+waiting for OEM geometry, but must label the provenance. Until a reviewed
+STEP and traceable BH table are supplied, --check returns blockers,
 and --build/--solve fail closed. This is intentionally not a fictitious FEM run.
 
     python tools/maxwell_lr_from_step.py --check --case ELP38_Lr_2turn_0920uH
@@ -62,22 +64,23 @@ def check_bh_csv(path: Path) -> list[str]:
 
 def blockers(config: dict, case: dict) -> list[str]:
     problems = []
-    for k in ("real_step_from_oem_geometry", "material_has_nonlinear_bh_100c",
+    for k in ("geometry_source_reviewed_for_concept",
+              "bh_curve_source_reviewed_for_concept",
               "winding_direction_confirmed", "cad_gap_matches_case"):
         if config["approval"].get(k) is not True:
             problems.append("approval." + k + " still false")
     geometry = under_repo(case.get("step_file"))
     if geometry is None or not geometry.is_file():
-        problems.append("case.step_file missing actual solid CAD STEP geometry")
+        problems.append("case.step_file missing reviewed CAD STEP (self-built concept allowed)")
     elif geometry.suffix.lower() not in {".step", ".stp"}:
         problems.append("case.step_file must be STEP")
     bh = under_repo(config.get("n97_bh_100c_csv"))
     if bh is None or not bh.is_file():
-        problems.append("n97_bh_100c_csv missing nonlinear 100C BH table")
+        problems.append("n97_bh_100c_csv missing sourced nonlinear BH table")
     else:
         problems.extend(check_bh_csv(bh))
     if not config.get("aedt_material_name"):
-        problems.append("aedt_material_name must name a pre-existing verified nonlinear material")
+        problems.append("aedt_material_name required; runner creates material from supplied BH CSV")
     if config.get("hardware_fabrication_approved") is not False:
         problems.append("fabrication flag cannot be set by Maxwell recipe")
     if config.get("maxwell_solution") != "Magnetostatic":
@@ -109,9 +112,11 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
     output.mkdir(parents=True, exist_ok=True)
     input_evidence = {
         "case": case["id"], "source": CONFIG.relative_to(ROOT).as_posix(),
+        "manufacturer_geometry_verified": config["approval"].get("manufacturer_geometry_verified", False),
         "step_sha256": sha256(step), "bh_sha256": sha256(bh),
         "solver": "Ansys Maxwell 3D Magnetostatic",
         "meaning": "CAD/source provenance only, NOT an L(I) answer",
+        "concept_model": True,
         "fab_release": False,
     }
     (output / "inputs.json").write_text(
@@ -134,10 +139,18 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
             raise RuntimeError("STEP must name independent core, plate, copper, "
                                "terminal sheet bodies: " + str(sorted(missing)))
         material = config["aedt_material_name"]
-        known = {str(k).lower() for k in app.materials.material_keys}
-        if material.lower() not in known:
-            raise RuntimeError("nonlinear BH material not imported/defined in "
-                               "AEDT materials library: " + material)
+        # Build the non-linear concept material from the supplied sourced
+        # CSV instead of requiring a manually preloaded AEDT library item.
+        # PyAEDT expects magnetization entries ordered [H (A/m), B (T)].
+        with bh.open(encoding="utf-8-sig", newline="") as stream:
+            points = [[float(row["H_A_per_m"]), float(row["B_T"])]
+                      for row in csv.DictReader(stream)]
+        mat = app.materials.add_material(material)
+        if not mat:
+            raise RuntimeError("cannot register N97 BH material")
+        mat.permeability.value = points
+        if not mat.update():
+            raise RuntimeError("nonlinear BH assignment did not update")
         if not app.assign_material(
             [names["core"], names["plate"]], material
         ):
