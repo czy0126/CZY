@@ -74,3 +74,22 @@ def test_q41_is_not_counted_as_performance_or_fab_approval():
     # AOS's 30A pulsed current and 48mohm @2.5V (25C) cannot qualify
     # 14.8 W short-pulse behaviour without a real fixture and thermal proof.
     assert summary["crowbar_pulse"]["fet_energy_j"] > 0
+
+
+def test_q40_status_fet_has_an_exact_real_onsemi_order_code():
+    q40 = next(p for p in board.parts() if p.ref == "Q40")
+    assert q40.value == "2N7002"
+    assert q40.mpn == "2N7002LT1G"
+    assert q40.mpn_source == "references/datasheets/2n7002lt1g_onsemi_oem_parameters.txt"
+    assert q40.nets == {"1": "FAULT_G", "2": "PGND", "3": "FAULT_N"}
+    assert q40.footprint == "Package_TO_SOT_SMD:SOT-23"
+    evidence = (board.ROOT / q40.mpn_source).read_text(encoding="utf-8")
+    assert "https://www.onsemi.com/download/data-sheet/pdf/2n7002l-d.pdf" in evidence
+    assert "pin 1 GATE, pin 2 SOURCE, pin 3 DRAIN" in evidence
+    with BOM.open(encoding="utf-8", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    ordered = [row for row in rows if row["Reference"] == "Q40"]
+    assert len(ordered) == 1
+    assert ordered[0]["MPN"] == "2N7002LT1G"
+    assert ordered[0]["MPN_Source"] == q40.mpn_source
+    assert ordered[0]["Qty"] == "1"
