@@ -8,13 +8,13 @@ pole list on top of it would turn the 10.21 us fast channel into a 130 us one.
 
 What is left after detection is short and mostly arithmetic:
 
+* the LM393 comparator, whose only published figure is a typical;
+* the CD4013 latch, driving its output down from SET;
 * the permit rail, discharged by whatever sits between it and ground;
 * the driver's own disable time, which both vendored datasheets publish --
   and, for the UCC27524A, the logic table that settles what the output does
   when its enable goes low;
-* the gate falling from the driver supply to VGS(th);
-* and two stages the repository has no datasheet for -- the LM393 comparator
-  and the CD4013 latch -- which stay ``None`` with the reason attached.
+* the gate falling from the driver supply to VGS(th).
 
 The result is a **floor**, not a worst case, and the tool says so in the JSON
 rather than leaving a reader to assume otherwise.
@@ -87,6 +87,28 @@ UCC27524A_OUTPUT_STATE_ON_DISABLE = "low"
 UCC27524A_SOURCE = ("references/datasheets/ucc27524a.txt (SLUSBP4C, revised June 2024; "
                     "ENABLE and Switching Characteristics tables, Device Logic "
                     "Table 6-2)")
+
+# LM393, vendored as references/datasheets/lm393.txt (SLCS005AH, revised April
+# 2025).  Section 5.11 is a TYP-only table -- VCC = 5 V, 25 C, 5.1 k to 5 V,
+# CL = 15 pF -- and it publishes two numbers: 1.3 us for a 100 mV step with
+# 5 mV overdrive and 0.3 us for a TTL-level step.  The non-B part has no
+# maximum column at all, so this stage can only make the totals longer than the
+# floor, never shorter.  The budget takes the slower published typical.
+LM393_RESPONSE_TYP_US = 1.3
+LM393_LARGE_OVERDRIVE_TYP_US = 0.3
+LM393_SOURCE = ("references/datasheets/lm393.txt (SLCS005AH, revised April 2025; "
+                "section 5.11 Switching Characteristics)")
+
+# CD4013B, vendored as references/datasheets/cd4013b.txt (SCHS023E, revised
+# September 2016).  FF1 has SET = FLT and its ~Q is the permit term, so the
+# fault drives the output *down*: the applicable row is section 6.6's "tPHL,
+# Set to Q or reset to Q", 200 typ / 400 max ns at VDD = 5 V.  The clock-to-Q
+# row (150/300 ns) would understate a path whose clock and D are tied off.
+CD4013B_VDD_V = 5.0
+CD4013B_SET_TO_OUTPUT_TYP_NS = 200.0
+CD4013B_SET_TO_OUTPUT_MAX_NS = 400.0
+CD4013B_SOURCE = ("references/datasheets/cd4013b.txt (SCHS023E, revised September "
+                  "2016; section 6.6 Electrical Characteristics: Dynamic, VDD = 5 V)")
 
 
 def _parallel(*resistances: float) -> float:
@@ -322,11 +344,20 @@ def build() -> dict:
                     + sr_gate["with_driver_ns"] / 1e3)
     primary_branch_us = (release["fastest_us"] + UCC27282_TDIS_US
                          + primary_gate["with_driver_ns"] / 1e3)
-    shared_us = max(sr_branch_us, primary_branch_us)
+    driver_branch_us = max(sr_branch_us, primary_branch_us)
+    # Detection stops at the comparator input -- the deck's own header says its
+    # comparator, logic and driver delays are ideal zero.  So everything after
+    # detection is in series: comparator, latch, permit rail, driver, gate.  The
+    # two driver branches are the only parallel pair, and they are resolved
+    # inside ``driver_branch_us``.
+    comparator_us = LM393_RESPONSE_TYP_US
+    latch_us = CD4013B_SET_TO_OUTPUT_MAX_NS / 1e3
+    shared_us = comparator_us + latch_us + driver_branch_us
     totals = {
         "hard_channel_floor_us": measured["hard_delay_us"] + shared_us,
         "fast_channel_floor_us": measured["fast_delay_us"] + shared_us,
         "shared_after_detection_us": shared_us,
+        "driver_branch_us": driver_branch_us,
         "sr_branch_floor_us": sr_branch_us,
         "primary_branch_floor_us": primary_branch_us,
         "slowest_branch": "primary" if primary_branch_us >= sr_branch_us else "sr",
@@ -337,9 +368,12 @@ def build() -> dict:
         "status": "RESPONSE_BUDGET_INCOMPLETE",
         "is_worst_case": False,
         "not_worst_case_because": [
-            "the comparator stage is unknown: no LM393 datasheet is vendored, so its "
-            "response time is neither cited nor guessed",
-            "the latch stage is unknown: no CD4013 datasheet is vendored",
+            "the LM393 publishes no maximum response time at all -- 1.3 us is a "
+            "typical at 5 mV overdrive, and the datasheet itself shows the figure "
+            "rising as overdrive falls, so a slow part lengthens every total",
+            "the CD4013 stage is a max (400 ns), but only at VDD = 5 V and 25 C "
+            "with a 20 ns input edge; it is not a max over the full temperature "
+            "range at this board's edge rate",
             "the UCC27524A's switching parameters are not tested in production (the "
             "datasheet says so itself), and its 13/23 ns are specified at VDD = 12 V, "
             "CLOAD = 1.8 nF and 125 C, not over the part-to-part spread",
@@ -363,13 +397,30 @@ def build() -> dict:
                          "double-count 47 us and 75 us"),
             },
             "comparator": {
-                "us": None,
-                "reason": ("no LM393 (LM2903) datasheet is vendored; a response time "
-                           "quoted from memory would be a fabrication"),
+                "us": comparator_us,
+                "typ_only": True,
+                "published_max_us": None,
+                "large_overdrive_typ_us": LM393_LARGE_OVERDRIVE_TYP_US,
+                "source": LM393_SOURCE,
+                "conditions": ("VCC = 5 V, TA = 25 C, RL 5.1 k to 5 V, CL = 15 pF; "
+                               "the cited value is the 100 mV step with 5 mV "
+                               "overdrive, and the interval ends when the output "
+                               "crosses 1.4 V"),
+                "overdrive_at_the_threshold_crossing": "unknown",
+                "reason_typ_only": ("section 5.11 has a TYP column and no MAX for the "
+                                    "non-B part, so a slower comparator makes every "
+                                    "total longer than this floor"),
             },
             "latch": {
-                "us": None,
-                "reason": "no CD4013 datasheet is vendored; the latch is unmodelled",
+                "us": latch_us,
+                "typ_us": CD4013B_SET_TO_OUTPUT_TYP_NS / 1e3,
+                "vdd_v": CD4013B_VDD_V,
+                "edge": "set to ~Q output falling (tPHL)",
+                "source": CD4013B_SOURCE,
+                "wiring": ("FF1 on this board: SET = FLT, RESET = RST_EFF, clock and D "
+                           "tied off, and ~Q is the permit term"),
+                "conditions": ("VDD = 5 V, TA = 25 C, CL = 50 pF, RL = 20 k, input "
+                               "tr/tf = 20 ns"),
             },
             "permit_release": release,
             "driver_disable": {

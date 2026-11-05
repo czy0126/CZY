@@ -1,0 +1,6967 @@
+
+--- PAGE 1 ---
+LM393B, LM2903B, LM193, LM293, LM393 and LM2903 Dual Comparators
+1 Features
+•
+NEW LM393B and LM2903B
+•
+Improved specifications of B-version
+–
+Maximum rating: up to 38V
+–
+ESD rating (HBM): 2kV
+–
+Low input offset: 0.37mV
+–
+Low input bias current: 3.5nA
+–
+Low supply-current: 200µA per comparator
+–
+Faster response time of 1µsec
+–
+Extended temperature range for LM393B
+–
+Available in tiny 2 x 2mm WSON package
+•
+B-version is drop-in replacement for LM293, 
+LM393 and LM2903, A and V versions
+•
+Common-mode input voltage range includes 
+ground
+•
+Differential input voltage range equal to maximum-
+rated supply voltage: ±38 V
+•
+Low output saturation voltage
+•
+Output compatible with TTL, MOS, and CMOS
+2 Applications
+•
+Vacuum robot
+•
+Single phase UPS
+•
+Server PSU
+•
+Cordless power tool
+•
+Wireless infrastructure
+•
+Applicances
+•
+Building automation
+•
+Factory automation & control
+•
+Motor drives
+•
+Infotainment & cluster
+3 Description
+The LM393B and LM2903B devices are the 
+next generation versions of the industry-standard 
+LM393 and LM2903 comparator family. These next 
+generation B-version comparators feature lower offset 
+voltage, higher supply voltage capability, lower supply 
+current, lower input bias current, lower propagation 
+delay, and improved 2 kV ESD performance and 
+input ruggedness through dedicated ESD clamps. 
+The LM393B and LM2903B can drop-in replace the 
+LM293, LM393 and LM2903, for both "A" and "V" 
+grades.
+All devices consist of two independent voltage 
+comparators that are designed to operate from a 
+single power supply over a wide range of voltages. 
+Quiescent current is independent of the supply 
+voltage.
+Device Information
+PART NUMBER
+PACKAGE(1)
+BODY SIZE (NOM)
+LM393B, LM2903B, 
+LM193, LM293, LM293A, 
+LM393, LM393A, LM2903, 
+LM2903V, LM2903AV
+SOIC (8)
+4.90mm x 3.91mm
+LM393B, LM2903B, 
+LM293, LM293A, LM393, 
+LM393A, LM2903
+VSSOP (8)
+3.00mm x 3.00mm
+LM293, LM393, LM393A, 
+LM2903
+PDIP (8)
+9.81mm × 6.35mm
+LM393, LM393A, LM2903
+SO (8)
+6.20mm x 5.30mm
+LM393B, LM2903B, 
+LM393, LM393A, LM2903, 
+LM2903V, LM2903AV
+TSSOP (8)
+3.00mm x 4.40mm
+LM393B, LM2903B
+SOT-23 (8)
+2.90mm x 1.60mm
+LM393B, LM2903B
+WSON (8)
+2.00mm × 2.00mm
+(1)
+For all available packages, see the orderable addendum at 
+the end of the data sheet.
+Family Comparison Table
+Specification
+LM393B
+LM2903B
+LM393
+LM393A
+LM2903
+LM2903V
+LM2903AV
+LM193
+LM293
+LM293A
+Units
+Supply Voltage
+2 to 36
+2 to 36
+2 to 30
+2 to 30
+2 to 32
+2 to 30
+2 to 30
+V
+Total Supply Current
+(5V to 36V max)
+0.6 to 0.8
+0.6 to 0.8
+1 to 2.5
+1 to 2.5
+1 to 2.5
+1 to 2.5
+1 to 2.5
+mA
+Temperature Range
+−40 to 85
+−40 to 125
+0 to 70
+−40 to 125
+−40 to 125
+−55 to 125
+−25 to 85
+°C
+ESD (HBM)
+2000
+2000
+2000
+2000
+2000
+2000
+2000
+V
+Offset Voltage
+(Max over temp)
+± 4
+± 4
+± 9
+± 4
+± 15
+± 15
+± 4
+± 9
+± 9
+± 4
+mV
+Input Bias Current (typ / max)
+3.5 / 25
+3.5 / 25
+25 / 250
+25 / 250
+25 / 250
+25 / 100
+25 / 250
+nA
+Response Time (typ)
+1
+1
+1.3
+1.3
+1.3
+1.3
+1.3
+µsec
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+An IMPORTANT NOTICE at the end of this data sheet addresses availability, warranty, changes, use in safety-critical applications, 
+intellectual property matters and other important disclaimers. PRODUCTION DATA.
+
+--- PAGE 2 ---
+Table of Contents
+1 Features............................................................................1
+2 Applications.....................................................................1
+3 Description.......................................................................1
+4 Pin Configuration and Functions...................................3
+5 Specifications.................................................................. 4
+5.1 Absolute Maximum Ratings........................................ 4
+5.2 Recommended Operating Conditions.........................4
+5.3 Thermal Information: LMx93x and LM2903x.............. 5
+5.4 ESD Ratings............................................................... 5
+5.5 Electrical Characteristics LM393B.............................. 6
+5.6 Electrical Characteristics LM2903B............................ 7
+5.7 Switching Characteristics LM393B and LM2903B......7
+5.8 Electrical Characteristics for LM193, LM293, and 
+LM393 (without A suffix)................................................8
+5.9 Electrical Characteristics for LM293A and LM393A....9
+5.10 Electrical Characteristics for LM2903, 
+LM2903V, and LM2903AV...........................................10
+5.11 Switching Characteristics: LM193, LM239, 
+LM393, LM2903, all 'A' and 'V' versions......................10
+5.12 Typical Characteristics, LMx93x and LM2903x.......11
+6 Detailed Description......................................................17
+6.1 Overview...................................................................17
+6.2 Functional Block Diagram.........................................17
+6.3 Feature Description...................................................17
+6.4 Device Functional Modes..........................................17
+7 Application and Implementation..................................18
+7.1 Application Information............................................. 18
+7.2 Typical Application.................................................... 18
+8 Device and Documentation Support............................21
+8.1 Receiving Notification of Documentation Updates....21
+8.2 Support Resources................................................... 21
+8.3 Trademarks...............................................................21
+8.4 Electrostatic Discharge Caution................................21
+8.5 Glossary....................................................................21
+9 Revision History............................................................ 21
+10 Mechanical, Packaging, and Orderable 
+Information.................................................................... 22
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+2
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 3 ---
+4 Pin Configuration and Functions
+1
+2
+3
+4
+8
+7
+6
+5
+1OUT
+1IN−
+1IN+
+GND
+VCC
+2OUT
+2IN−
+2IN+
+Figure 4-1. D, DGK, JG, P, PS, DDF or PW Package 8-Pin SOIC, VSSOP, PDIP, SO, or TSSOP Top View 
+1
+1OUT
+8
+ V+
+2
+1IN±
+7
+ 2OUT
+3
+1IN+
+6
+ 2IN±
+4
+GND
+5
+ 2IN+
+Exposed 
+Thermal 
+Die Pad 
+on 
+Underside
+Connect thermal pad directly to GND pin.
+Figure 4-2. DSG Package 8-Pin WSON With Exposed Pad Top View 
+Table 4-1. Pin Functions
+PIN
+I/O
+DESCRIPTION
+NAME
+SOIC, VSSOP, 
+PDIP, SO, DDF and 
+TSSOP
+DSG
+1OUT
+1
+1
+Output
+Output pin of comparator 1
+1IN–
+2
+2
+Input
+Negative input pin of comparator 1
+1IN+
+3
+3
+Input
+Positive input pin of comparator 1
+GND
+4
+4
+—
+Ground
+2IN+
+5
+5
+Input
+Positive input pin of comparator 2
+2IN-
+6
+6
+Input
+Negative input pin of comparator 2
+2OUT
+7
+7
+Output
+Output pin of comparator 2
+VCC
+8
+8
+—
+Positive Supply
+Thermal 
+Pad
+—
+PAD
+—
+Connect directly to GND pin
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+3
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 4 ---
+5 Specifications
+5.1 Absolute Maximum Ratings
+over operating free-air temperature range (unless otherwise noted) (1)
+MIN
+MAX
+UNIT
+VCC
+Supply voltage(2)
+Non-B Versions
+–0.3
+36
+V
+B Versions Only
+38
+VID
+Differential input voltage(3)
+Non-B Versions
+-36
+36
+V
+B Versions Only
+-38
+38
+VI
+Input voltage (either input)
+Non-B Versions
+–0.3
+36
+V
+B Versions Only
+38
+IIK
+Input current(5)
+-50
+mA
+VO
+Output voltage
+Non-B Versions
+–0.3
+36
+V
+B Versions Only
+38
+IO
+Output current
+Non-B Versions
+20
+mA
+B Versions Only
+25
+ISC
+Duration of output short circuit to ground(4)
+Unlimited
+TJ
+Operating virtual-junction temperature
+150
+°C
+Tstg
+Storage temperature
+–65
+150
+°C
+(1)
+Stresses beyond those listed under Absolute Maximum Ratings can cause permanent damage to the device. These are stress ratings 
+only, and functional operation of the device at these or any other conditions beyond those indicated under Recommended Operating 
+Conditions is not implied. Exposure to absolute-maximum-rated conditions for extended periods can affect device reliability. Production 
+Processing Does Not Necessarily Include Testing of All Parameters.
+(2)
+All voltage values, except differential voltages, are with respect to network ground.
+(3)
+Differential voltages are at IN+ with respect to IN–.
+(4)
+Short circuits from outputs to VCC can cause excessive heating and eventual destruction.
+(5)
+Input current flows thorough parasitic diode to ground and turns on parasitic transistors that increases ICC and can cause the output to 
+be incorrect. Normal operation resumes when input current is removed.
+5.2 Recommended Operating Conditions
+Over operating free-air temperature range (unless otherwise noted)
+MIN
+MAX
+UNIT
+Supply voltage,  VS = (V+) – (V–)
+non-V devices
+2
+30
+V
+V devices
+2
+32
+"B" version devices
+2
+36
+Input voltage range, VIVR
+non-B devices
+0
+(V+) – 2.0
+V
+"B" version devices
+–0.1
+Ambient temperature, TA
+LM193
+–55
+125
+°C
+LM2903, LM2903V, LM2903AV, LM2903B
+–40
+125
+LM393B
+–40
+85
+LM293, LM293A
+–25
+85
+LM393, LM393A
+0
+70
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+4
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 5 ---
+5.3 Thermal Information: LMx93x and LM2903x
+THERMAL METRIC(1)
+LMx93x, LM2903x
+UNIT
+D
+(SOIC)
+P
+(PDIP)
+PW
+(TSSOP)
+DGK
+(VSSOP)
+DDF
+(SOT-23)
+DSG
+(WSON)
+8
+PINS
+8
+PINS
+8
+PINS
+8
+PINS
+8
+PINS
+8
+PINS
+RθJA
+Junction-to-ambient thermal resistance
+ 148.5
+114.9
+200.6
+193.7 
+197.9
+96.9
+°C/W
+RθJC(top)
+Junction-to-case (top) thermal resistance
+ 90.2
+93.8
+89.6
+82.9
+119.2
+119.0
+°C/W
+RθJB
+Junction-to-board thermal resistance
+ 91.8
+77.7
+131.3
+ 115.5
+115.4
+63.1
+°C/W
+ψJT
+Junction-to-top characterization parameter
+ 38.5
+60.4
+22.1
+ 20.8
+19.4
+12.4
+°C/W
+ψJB
+Junction-to-board characterization parameter
+ 91.1
+76.7
+129.6
+ 113.9
+113.7
+63.0
+°C/W
+RθJC(bot)
+Junction-to-case (bottom) thermal resistance
+-
+-
+-
+-
+-
+37.8
+°C/W
+(1)
+For more information about traditional and new thermal metrics, see the Semiconductor and IC Package Thermal Metrics report.
+5.4 ESD Ratings
+VALUE
+UNIT
+V(ESD)
+Electrostatic discharge
+Human body model (HBM), per ANSI/ESDA/JEDEC JS-001(1)
+±2000
+V
+Charged-device model (CDM), per JEDEC specification JESD22-C101(2)
+±1000
+(1)
+JEDEC document JEP155 states that 500V HBM allows safe manufacturing with a standard ESD control process.
+(2)
+JEDEC document JEP157 states that 250V CDM allows safe manufacturing with a standard ESD control process.
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+5
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 6 ---
+5.5 Electrical Characteristics LM393B
+VS = 5V, VCM = (V–) ; TA = 25°C (unless otherwise noted).
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+VIO
+Input offset voltage
+VS = 5 to 36V
+–2.5
+±0.37
+2.5
+mV
+VS = 5 to 36V, TA = –40°C to +85°C
+-4
+4
+Input offset voltage, DGK package 
+only
+VS = 5 to 36V
+–3.5
+±0.37
+3.5
+VS = 5 to 36V, TA = –40°C to +85°C
+–5
+5
+IB
+Input bias current
+–3.5
+–25
+nA
+TA = –40°C to +85°C
+–50
+nA
+IOS
+Input offset current
+–10
+±0.5
+10
+nA
+TA = –40°C to +85°C
+–25
+25
+nA
+VCM
+Common mode range (1)
+VS = 3 to 36V
+(V–) 
+(V+) – 1.5
+V
+VS = 3 to 36V, TA = –40°C to +85°C
+(V–) 
+(V+) – 2.0
+V
+AVD
+Large signal differential voltage 
+amplification
+VS = 15V, VO = 1.4V to 11.4V;
+RL ≥ 15k to (V+)
+50
+200
+V/mV
+VOL
+Low level output Voltage {swing 
+from (V–)}
+ISINK ≤ 4mA, VID = -1V
+110
+400
+mV
+ISINK ≤ 4mA, VID = -1V
+TA =  –40°C to +85°C
+550
+mV
+IOH-LKG
+High-level output leakage current
+(V+) = VO = 5V; VID = 1V
+0.1
+20
+nA
+(V+) = VO = 36V; VID = 1V
+0.3
+50
+nA
+IOL
+Low level output current
+VOL = 1.5V; VID = -1V; VS = 5V
+6
+21
+mA
+IQ
+Quiescent current (all comparators)
+VS = 5V, no load
+400
+600
+µA
+VS = 36V, no load, TA = –40°C to +85°C
+550
+800
+µA
+(1)
+The voltage at either input can not be allowed to go negative by more than 0.3V otherwise output can be incorrect and excessive
+input current can flow. The upper end of the common-mode voltage range is limited by VCC – 2V. However only one input needs to be
+in the valid common mode range, the other input can go up the maximum VCC level and the comparator provides a proper output state.
+Either or both inputs can go to maximum VCC level without damage.
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+6
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 7 ---
+5.6 Electrical Characteristics LM2903B
+VS = 5V, VCM = (V–) ; TA = 25°C (unless otherwise noted).
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+VIO
+Input offset voltage
+VS = 5 to 36V
+–2.5
+±0.37
+2.5
+mV
+VS = 5 to 36V, TA = –40°C to +125°C
+–4
+4
+Input offset voltage, DGK package 
+only
+VS = 5 to 36V
+-3.5
+±0.37
+3.5
+VS = 5 to 36V, TA = –40°C to +125°C
+-5
+5
+IB
+Input bias current
+–3.5
+–25
+nA
+TA = –40°C to +125°C
+–50
+nA
+IOS
+Input offset current
+–10
+±0.5
+10
+nA
+TA = –40°C to +125°C
+–25
+25
+nA
+VCM
+Common mode range (1)
+VS = 3 to 36V
+(V–) 
+(V+) – 1.5
+V
+VS = 3 to 36V, TA = –40°C to +125°C
+(V–) 
+(V+) – 2.0
+V
+AVD
+Large signal differential voltage 
+amplification
+VS = 15V, VO = 1.4V to 11.4V;
+RL ≥ 15k to (V+)
+50
+200
+V/mV
+VOL
+Low level output Voltage {swing 
+from (V–)}
+ISINK ≤ 4mA, VID = -1V
+110
+400
+mV
+ISINK ≤ 4mA, VID = -1V
+TA =  –40°C to +125°C
+550
+mV
+IOH-LKG
+High-level output leakage current
+(V+) = VO = 5V; VID = 1V 
+0.1
+20
+nA
+(V+) = VO = 36V; VID = 1V
+0.3
+50
+nA
+IOL
+Low level output current
+VOL = 1.5V; VID = -1V; VS = 5V
+6
+21
+mA
+IQ
+Quiescent current (all comparators)
+VS = 5V, no load
+400
+600
+µA
+VS = 36V, no load, TA = –40°C to +125°C
+550
+800
+µA
+(1)
+The voltage at either input can not be allowed to go negative by more than 0.3V otherwise output can be incorrect and excessive
+input current can flow. The upper end of the common-mode voltage range is limited by VCC – 2V. However only one input needs to be
+in the valid common mode range, the other input can go up the maximum VCC level and the comparator provides a proper output state.
+Either or both inputs can go to maximum VCC level without damage.
+5.7 Switching Characteristics LM393B and LM2903B
+VS = 5V, VO_PULLUP = 5V, VCM = VS/2, CL = 15pF,  RL = 5.1k Ohm, TA = 25°C (unless otherwise noted).
+PARAMETER
+TEST CONDITIONS
+MIN
+TYP
+MAX
+UNIT
+tresponse
+Propagation delay time, high-to-low; 
+TTL input signal (1)
+TTL input with Vref = 1.4V
+300
+ns
+tresponse
+Propagation delay time, high-to-low; 
+Small scale input signal (1)
+Input overdrive = 5mV, Input step = 100mV
+1000
+ns
+(1)
+High-to-low and low-to-high refers to the transition at the input.
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+7
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 8 ---
+5.8 Electrical Characteristics for LM193, LM293, and LM393 (without A suffix)
+at specified free-air temperature, VCC = 5V (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+TA (1)
+LM193
+LM293
+LM393
+UNIT
+MIN
+TYP
+MAX
+MIN
+TYP
+MAX
+VIO
+Input offset voltage
+VCC = 5V to 30V,
+VIC = VICR min,
+VO = 1.4V
+25°C
+2
+5
+2
+5
+mV
+Full range
+9
+9
+IIO
+Input offset current
+VO = 1.4V
+25°C
+3
+25
+5
+50
+nA
+Full range
+100
+250
+IIB
+Input bias current
+VO = 1.4V
+25°C
+–25
+–100
+–25
+–250
+nA
+Full range
+–300
+–400
+VICR
+Common-mode input-voltage 
+range(2)
+25°C
+0 to
+VCC – 1.5
+0 to
+VCC – 1.5
+V
+Full range
+0 to
+VCC – 2
+0 to
+VCC – 2
+AVD
+Large-signal differential-voltage 
+amplification
+VCC = 15V,
+VO = 1.4V to 11.4V,
+RL ≥ 15kΩ to VCC
+25°C
+50
+200
+50
+200
+V/mV
+IOH
+High-level output current
+VOH = 5V
+VID = 1V
+25°C
+0.1
+0.1
+50
+nA
+VOH = 30V
+VID = 1V
+Full range
+1
+1
+µA
+VOL
+Low-level output voltage
+IOL = 4mA,
+VID = –1V
+25°C
+150
+400
+130
+400
+mV
+Full range
+700
+700
+IOL
+Low-level output current
+VOL = 1.5V,
+VID = –1V
+25°C
+6
+6
+mA
+ICC
+Supply current
+RL = ∞
+VCC = 5V
+25°C
+0.8
+1
+0.45
+1
+mA
+VCC = 30V
+Full range
+2.5
+0.55
+2.5
+(1)
+Full range (minimum or maximum) for LM193 is –55°C to 125°C, for LM293 is –25°C to 85°C, and for LM393 is 0°C to 70°C. All 
+characteristics are measured with zero common-mode input voltage, unless otherwise specified.
+(2)
+The voltage at either input can not be allowed to go negative by more than 0.3V otherwise output can be incorrect and excessive input 
+current can flow. The upper end of the common-mode voltage range is limited by VCC – 2V. However only one input needs to be in the 
+valid common mode range, and the other input can go up the maximum VCC level and the comparator provides a proper output state. 
+Either or both inputs can go to maximum VCC level without damage.
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+8
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 9 ---
+5.9 Electrical Characteristics for LM293A and LM393A
+at specified free-air temperature, VCC = 5V (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+TA (1)
+LM293A
+LM393A
+UNIT
+MIN
+TYP
+MAX
+VIO
+Input offset voltage
+VCC = 5V to 30V, VO = 1.4V
+VIC = VICR(min)
+25°C
+1
+2
+mV
+Full range
+4
+IIO
+Input offset current
+VO = 1.4V
+25°C
+5
+50
+nA
+Full range
+150
+IIB
+Input bias current
+VO = 1.4V
+25°C
+–25
+–250
+nA
+Full range
+–400
+VICR
+Common-mode input-voltage range(2)
+25°C
+0 to
+VCC – 1.5
+V
+Full range
+0 to
+VCC – 2
+AVD
+Large-signal differential-voltage 
+amplification
+VCC = 15V, VO = 1.4V to 11.4V,
+RL ≥ 15kΩ to VCC
+25°C
+50
+200
+V/mV
+IOH
+High-level output current
+VOH = 5V,
+VID = 1V
+25°C
+0.1
+50
+nA
+VOH = 30V,
+VID = 1V
+Full range
+1
+µA
+VOL
+Low-level output voltage
+IOL = 4mA,
+VID = –1V
+25°C
+110
+400
+mV
+Full range
+700
+IOL
+Low-level output current
+VOL = 1.5V,
+VID = –1V,
+25°C
+6
+mA
+ICC
+Supply current
+RL = ∞
+VCC = 5V
+25°C
+0.60
+1
+mA
+VCC = 30V
+Full range
+0.72
+2.5
+(1)
+Full range (minimum or maximum) for LM293A is –25°C to 85°C, and for LM393A is 0°C to 70°C. All characteristics are measured with 
+zero common-mode input voltage, unless otherwise specified.
+(2)
+The voltage at either input can not be allowed to go negative by more than 0.3V otherwise output can be incorrect and excessive input 
+current can flow. The upper end of the common-mode voltage range is limited by VCC – 2V. However only one input needs to be in the 
+valid common mode range, and the other input can go up the maximum VCC level and the comparator provides a proper output state. 
+Either or both inputs can go to maximum VCC level without damage.
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+9
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 10 ---
+5.10 Electrical Characteristics for LM2903, LM2903V, and LM2903AV
+at specified free-air temperature, VCC = 5V (unless otherwise noted)
+PARAMETER
+TEST CONDITIONS
+TA (1)
+LM2903, LM2903V
+LM2903AV
+UNIT
+MIN
+TYP
+MAX
+MIN
+TYP
+MAX
+VIO
+Input offset voltage
+VCC = 5V to MAX(2) ,
+VO = 1.4V,
+VIC = VICR(min),
+25°C
+2
+7
+1
+2
+mV
+Full range
+15
+4
+IIO
+Input offset current
+VO = 1.4V
+25°C
+5
+50
+5
+50
+nA
+Full range
+200
+200
+IIB
+Input bias current
+VO = 1.4V
+25°C
+–25
+–250
+–25
+–250
+nA
+Full range
+–500
+–500
+VICR
+Common-mode input-
+voltage range(3)
+25°C
+0 to
+VCC – 1.5
+0 to
+VCC – 1.5
+V
+Full range
+0 to
+VCC – 2
+0 to
+VCC – 2
+AVD
+Large-signal differential-
+voltage amplification
+VCC = 15V, VO = 1.4V to 11.4V,
+RL ≥ 15kΩ to VCC
+25°C
+25
+100
+25
+100
+V/mV
+IOH
+High-level output current
+VOH = 5V,
+VID = 1V
+25°C
+0.1
+50
+0.1
+50
+nA
+VOH = VCC MAX(2),
+VID = 1V
+Full range
+1
+1
+µA
+VOL
+Low-level output voltage
+IOL = 4mA,
+VID = –1V,
+25°C
+150
+400
+150
+400
+mV
+Full range
+700
+700
+IOL
+Low-level output current
+VOL = 1.5V,
+VID = –1V
+25°C
+6
+6
+mA
+ICC
+Supply current
+RL = ∞
+VCC = 5V
+25°C
+0.8
+1
+0.8
+1
+mA
+VCC = MAX
+Full range
+2.5
+2.5
+(1)
+Full range (minimum or maximum) for LM2903 is –40°C to 125°C. All characteristics are measured with zero common-mode input 
+voltage, unless otherwise specified.
+(2)
+VCC MAX = 30V for non-V devices and 32V for V-suffix devices.
+(3)
+The voltage at either input can not be allowed to go negative by more than 0.3V otherwise output can be incorrect and excessive input 
+current can flow. The upper end of the common-mode voltage range is limited by VCC – 2V. However only one input needs to be in 
+the valid common mode range, the other input can go up the maximum VCC level and the comparator provides a proper output state. 
+Either or both inputs can go to maximum VCC level without damage.
+5.11 Switching Characteristics: LM193, LM239, LM393, LM2903, all 'A' and 'V' versions
+VCC = 5V, TA = 25°C
+PARAMETER
+TEST CONDITIONS
+TYP
+UNIT
+Response time
+RL connected to 5V through 5.1kΩ,
+CL = 15pF(1) (2)
+100mV input step with 5mV overdrive
+1.3
+µs
+TTL-level input step
+0.3
+(1)
+CL includes probe and jig capacitance.
+(2)
+The response time specified is the interval between the input step function and the instant when the output crosses 1.4V.
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+10
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 11 ---
+5.12 Typical Characteristics, LMx93x and LM2903x
+TA = 25°C, VS = 5V, RPULLUP = 5.1k, CL = 15pF, VCM = 0V, VUNDERDRIVE = 100mV, VOVERDRIVE = 100mV unless otherwise 
+noted.
+Figure 5-1. Total Supply Current vs. Supply Voltage
+Input Voltage (V)
+Total Supply Current (PA)
+-0.5 -0.25
+0
+0.25
+0.5
+0.75
+1
+1.25
+1.5
+1.75
+2
+100
+140
+180
+220
+260
+300
+340
+380
+420
+460
+500
+VS=3V
+-40°C
+0°C
+25°C
+85°C
+125°C
+Figure 5-2. Total Supply Current vs. Input Voltage at 3V
+Input Voltage (V)
+Total Supply Current (PA)
+-0.5 -0.25
+0
+0.25
+0.5
+0.75
+1
+1.25
+1.5
+1.75
+2
+100
+140
+180
+220
+260
+300
+340
+380
+420
+460
+500
+VS=3.3V
+-40°C
+0°C
+25°C
+85°C
+125°C
+Figure 5-3. Total Supply Current vs. Input Voltage at 3.3V
+Input Voltage (V)
+Total Supply Current (PA)
+-0.5
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+100
+140
+180
+220
+260
+300
+340
+380
+420
+460
+500
+VS=5V
+-40°C
+0°C
+25°C
+85°C
+125°C
+Figure 5-4. Total Supply Current vs. Input Voltage at 5V
+Input Voltage (V)
+Total Supply Current (PA)
+-1
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+100
+140
+180
+220
+260
+300
+340
+380
+420
+460
+500
+VS=12V
+-40°C
+0°C
+25°C
+85°C
+125°C
+Figure 5-5. Total Supply Current vs. Input Voltage at 12V
+Input Voltage (V)
+Total Supply Current (PA)
+0
+3
+6
+9
+12
+15
+18
+21
+24
+27
+30
+33
+36
+150
+190
+230
+270
+310
+350
+390
+430
+470
+510
+550
+VS=36V
+-40°C
+0°C
+25°C
+85°C
+125°C
+Figure 5-6. Total Supply Current vs. Input Voltage at 36V
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+11
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 12 ---
+5.12 Typical Characteristics, LMx93x and LM2903x (continued)
+TA = 25°C, VS = 5V, RPULLUP = 5.1k, CL = 15pF, VCM = 0V, VUNDERDRIVE = 100mV, VOVERDRIVE = 100mV unless otherwise 
+noted.
+Temperature (°C)
+Input Offset Voltage (mV)
+-40
+-25
+-10
+5
+20
+35
+50
+65
+80
+95
+110
+125
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+VS = 3V
+63 Channels
+Figure 5-7. Input Offset Voltage vs. Temperature at 3V
+Temperature (°C)
+Input Offset Voltage (mV)
+-40
+-25
+-10
+5
+20
+35
+50
+65
+80
+95
+110
+125
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+VS = 5V
+62 Channels
+Figure 5-8. Input Offset Voltage vs. Temperature at 5V
+Temperature (°C)
+Input Offset Voltage (mV)
+-40
+-25
+-10
+5
+20
+35
+50
+65
+80
+95
+110
+125
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+VS = 12V
+62 Channels
+Figure 5-9. Input Offset Voltage vs. Temperature at 12V
+Temperature (°C)
+Input Offset Voltage (mV)
+-40
+-25
+-10
+5
+20
+35
+50
+65
+80
+95
+110
+125
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+VS = 36V
+62 Channels
+Figure 5-10. Input Offset Voltage vs. Temperature at 36
+Supply Voltage (V)
+Input Offset Voltage (mV)
+3
+6
+9
+12
+15
+18
+21
+24
+27
+30
+33
+36
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+TA = -40°C
+62 Channels
+Figure 5-11. Input Offset Voltage vs. Supply Voltage at -40°C
+Supply Voltage (V)
+Input Offset Voltage (mV)
+3
+6
+9
+12
+15
+18
+21
+24
+27
+30
+33
+36
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+TA = 25°C
+62 Channels
+Figure 5-12. Input Offset Voltage vs. Supply Voltage at 25°C
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+12
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 13 ---
+5.12 Typical Characteristics, LMx93x and LM2903x (continued)
+TA = 25°C, VS = 5V, RPULLUP = 5.1k, CL = 15pF, VCM = 0V, VUNDERDRIVE = 100mV, VOVERDRIVE = 100mV unless otherwise 
+noted.
+Supply Voltage (V)
+Input Offset Voltage (mV)
+3
+6
+9
+12
+15
+18
+21
+24
+27
+30
+33
+36
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+TA = 85°C
+62 Channels
+Figure 5-13. Input Offset Voltage vs. Supply Voltage at 85°C
+Supply Voltage (V)
+Input Offset Voltage (mV)
+3
+6
+9
+12
+15
+18
+21
+24
+27
+30
+33
+36
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+1.5
+2
+TA = 125qC
+62 Channels
+Figure 5-14. Input Offset Voltage vs. Supply Voltage at 125°C
+Supply Voltage (V)
+Input Bias Current (nA)
+3
+6
+9
+12
+15
+18
+21
+24
+27
+30
+33
+36
+-5
+-4.5
+-4
+-3.5
+-3
+-2.5
+-2
+-1.5
+-1
+-0.5
+0
+VCM=0V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-15. Input Bias Current vs. Supply Voltage
+Input Voltage (V)
+Input Bias Current (nA)
+-0.5
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+-5
+-4.5
+-4
+-3.5
+-3
+-2.5
+-2
+-1.5
+-1
+-0.5
+0
+VS=5V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-16. Input Bias Current vs. Input Voltage at 5V
+Input Voltage (V)
+Input Bias Current (nA)
+-0.5
+0.5
+1.5
+2.5
+3.5
+4.5
+5.5
+6.5
+7.5
+8.5
+9.5
+10.5
+-5
+-4.5
+-4
+-3.5
+-3
+-2.5
+-2
+-1.5
+-1
+-0.5
+0
+VS=12V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-17. Input Bias Current vs. Input Voltage at 12V
+Input Voltage (V)
+Input Bias Current (nA)
+0
+4
+8
+12
+16
+20
+24
+28
+32
+36
+-5
+-4.5
+-4
+-3.5
+-3
+-2.5
+-2
+-1.5
+-1
+-0.5
+0
+0.5
+1
+VS=36V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-18. Input Bias Current vs. Input Voltage at 36V
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+13
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 14 ---
+5.12 Typical Characteristics, LMx93x and LM2903x (continued)
+TA = 25°C, VS = 5V, RPULLUP = 5.1k, CL = 15pF, VCM = 0V, VUNDERDRIVE = 100mV, VOVERDRIVE = 100mV unless otherwise 
+noted.
+Output Sinking Current (A)
+Output Voltage to GND (V)
+10P
+100P
+1m
+10m
+100m
+1m
+10m
+100m
+1
+10
+VS = 3V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-19. Output Low Voltage vs. Output Sinking Current at 
+3V
+Output Sinking Current (A)
+Output Voltage to GND (V)
+10P
+100P
+1m
+10m
+100m
+1m
+10m
+100m
+1
+10
+VS = 5V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-20. Output Low Voltage vs. Output Sinking Current at 
+5V
+Output Sinking Current (A)
+Output Voltage to GND (V)
+10P
+100P
+1m
+10m
+100m
+1m
+10m
+100m
+1
+10
+VS = 12V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-21. Output Low Voltage vs. Output Sinking Current at 
+12V
+Output Sinking Current (A)
+Output Voltage to GND (V)
+10P
+100P
+1m
+10m
+100m
+1m
+10m
+100m
+1
+10
+VS = 36V
+125°C
+85°C
+25°C
+0°C
+-40°C
+Figure 5-22. Output Low Voltage vs.Output Sinking Current at 
+36V
+Temperature (°C)
+Output High Leakage to GND (nA)
+-40
+-25
+-10
+5
+20
+35
+50
+65
+80
+95
+110
+125
+0.01
+0.02
+0.05
+0.1
+0.2
+0.5
+1
+2
+5
+10
+20
+50
+100
+Output set high
+VOUT = VS
+Figure 5-23. Output High Leakage Current vs.Temperature at 5V
+Temperature (°C)
+Output High Leakage to GND (nA)
+-40
+-25
+-10
+5
+20
+35
+50
+65
+80
+95
+110
+125
+0.01
+0.02
+0.05
+0.1
+0.2
+0.5
+1
+2
+5
+10
+20
+50
+100
+Output set high
+VOUT = VS
+Figure 5-24. Output High Leakage Current vs. Temperature at 
+36V
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+14
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 15 ---
+5.12 Typical Characteristics, LMx93x and LM2903x (continued)
+TA = 25°C, VS = 5V, RPULLUP = 5.1k, CL = 15pF, VCM = 0V, VUNDERDRIVE = 100mV, VOVERDRIVE = 100mV unless otherwise 
+noted.
+Input Overdrive (mV)
+Propagation Delay, High to Low (ns)
+5
+10
+100
+1000
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+VS = 5V
+VCM = 0V
+CL = 15pF
+RP = 5.1k
+125°C
+85°C
+25°C
+-40°C
+Figure 5-25. High to Low Propagation Delay vs. Input Overdrive 
+Voltage, 5V
+Input Overdrive (mV)
+Propagation Delay, Low to High (ns)
+5
+10
+100
+1000
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+VS = 5V
+VCM = 0V
+CL = 15pF
+RP = 5.1k
+125°C
+85°C
+25°C
+-40°C
+Figure 5-26. Low to High Propagation Delay vs. Input Overdrive 
+Voltage, 5V
+Input Overdrive (mV)
+Propagation Delay, High to Low (ns)
+5
+10
+100
+1000
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+VS = 12V
+VCM = 0V
+CL = 15pF
+RP = 5.1k
+125°C
+85°C
+25°C
+-40°C
+Figure 5-27. High to Low Propagation Delay vs. Input Overdrive 
+Voltage, 12V
+Input Overdrive (mV)
+Propagation Delay, Low to High (ns)
+5
+10
+100
+1000
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+VS = 12V
+VCM = 0V
+CL = 15pF
+RP = 5.1k
+125°C
+85°C
+25°C
+-40°C
+Figure 5-28. Low to High Propagation Delay vs. Input Overdrive 
+Voltage, 12V
+Input Overdrive (mV)
+Propagation Delay, High to Low (ns)
+5
+10
+100
+1000
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+VS = 36V
+VCM = 0V
+CL = 15pF
+RP = 5.1k
+125°C
+85°C
+25°C
+-40°C
+Figure 5-29. High to Low Propagation Delay vs. Input Overdrive 
+Voltage, 36V
+Input Overdrive (mV)
+Propagation Delay, Low to High (ns)
+5
+10
+100
+1000
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+VS = 36V
+VCM = 0V
+CL = 15pF
+RP = 5.1k
+125°C
+85°C
+25°C
+-40°C
+Figure 5-30. Low to High Propagation Delay vs. Input Overdrive 
+Voltage, 36V
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+15
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 16 ---
+5.12 Typical Characteristics, LMx93x and LM2903x (continued)
+TA = 25°C, VS = 5V, RPULLUP = 5.1k, CL = 15pF, VCM = 0V, VUNDERDRIVE = 100mV, VOVERDRIVE = 100mV unless otherwise 
+noted.
+Time (Ps)
+Output Voltage (V)
+-0.1
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1
+1.1
+-1
+0
+1
+2
+3
+4
+5
+6
+VREF = VCC/2
+20mV Overdrive
+5mV
+Overdrive
+100mV
+Overdrive
+Figure 5-31. Response Time for Various Overdrives, High-to-
+Low Transition
+Time (Ps)
+Output Voltage (V)
+-0.1
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1
+1.1
+-1
+0
+1
+2
+3
+4
+5
+6
+20mV Overdrive
+5mV Overdrive
+100mV
+Overdrive
+VREF = VCC/2
+Figure 5-32. Response Time for Various Overdrives, Low-to-
+High Transition
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+16
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 17 ---
+6 Detailed Description
+6.1 Overview
+These dual comparators have the ability to operate up to absolute maximum of 36V (38V for the "B" version) on 
+the supply pin. This device has proven ubiquity and versatility across a wide range of applications. This is due to 
+very wide supply voltages range, low Iq and fast response of the devices.
+The open-collector outputs allow the user to level shift to the desired logic level indpendent of VCC, while also 
+enabling AND functionality when multiple outputs are connected together.
+6.2 Functional Block Diagram
+- Input
+Q2
+Q1
+Q3
+Q4
+Q9
+Q10
+Q11
+Q5
+Q6
+D1
+D2
+D3
+D4
+Q7
+Q8
+Q12
++ Input
+Output
+VCC
+Internal
+Bias
+Itail
+I1
+I2
+Q13
+Q14
+ESD
+ESD
+VCM
+Clamp
+Q15
+Figure 6-1. Schematic (Each Comparator)
+6.3 Feature Description
+The comparator consists of a PNP Darlington pair input, allowing the device to operate with very high gain 
+and fast response with minimal input bias current. The input Darlington pair creates a limit on the input 
+common mode voltage capability, allowing the comparator to accurately function from ground to VCC– 2V over 
+temperature. A clamp is added around Q3 to mimic the both inputs above input voltage range behavior of the 
+original classic silicon.
+The output consists of an open drain NPN (pull-down or low side) transistor. The output NPN sinks current when 
+the negative input voltage is higher than the positive input voltage and the offset voltage. The VOL is resistive 
+and scales with the output current. Please see the "Output Low Voltage vs. Output Sinking Current" graphs for 
+VOL values with respect to the output current.
+6.4 Device Functional Modes
+6.4.1 Voltage Comparison
+The device operates solely as a voltage comparator, comparing the differential voltage between the positive and 
+negative pins and outputting a logic low or high impedance (logic high with pullup) based on the input differential 
+polarity.
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+17
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 18 ---
+7 Application and Implementation
+Note
+Information in the following applications sections is not part of the TI component specification, 
+and TI does not warrant its accuracy or completeness. TI’s customers are responsible for 
+determining suitability of components for their purposes, as well as validating and testing their design 
+implementation to confirm system functionality.
+7.1 Application Information
+The device is typically used to compare a single signal to a reference or two signals against each other. Many 
+users take advantage of the open drain output to drive the comparison logic output to a logic voltage level to 
+an MCU or logic device. The wide supply range and high voltage capability makes this comaprator an excellent 
+choice for level shifting to a higher or lower voltage.
+7.2 Typical Application
++
+½ LM2903
+VLOGIC
+VSUP
+Vref
+Vin
++
+½ LM2903
+Vin-
+Vin+
+Rpullup
+Rpullup
+VLOGIC
+VSUP
+CL
+CL
+Figure 7-1. Single-Ended and Differential Comparator Configurations
+7.2.1 Design Requirements
+For this design example, use the parameters listed in Table 7-1 as the input parameters.
+Table 7-1. Design Parameters
+DESIGN PARAMETER
+EXAMPLE VALUE
+Input Voltage Range
+0V to Vsup-2V
+Supply Voltage
+4.5V to VCC maximum
+Logic Supply Voltage
+0V to VCC maximum
+Output Current (RPULLUP)
+1µA to 4mA
+Input Overdrive Voltage
+100mV
+Reference Voltage
+2.5V
+Load Capacitance (CL)
+15pF
+7.2.2 Detailed Design Procedure
+When using the device in a general comparator application, determine the following:
+•
+Input Voltage Range
+•
+Minimum Overdrive Voltage
+•
+Output and Drive Current
+•
+Response Time
+7.2.2.1 Input Voltage Range
+When choosing the input voltage range, the input common mode voltage range (VICR) must be taken in to 
+account. If temperature operation is below 25°C the VICR can range from 0V to VCC– 2.0V. This limits the input 
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+18
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 19 ---
+voltage range to as high as VCC– 2.0V and as low as 0V. Operation outside of this range can yield incorrect 
+comparisons.
+The following is a list of input voltage situation and the outcomes:
+1.
+When both IN- and IN+ are both within the common-mode range:
+a.
+If IN- is higher than IN+ and the offset voltage, the output is low and the output transistor is sinking 
+current
+b.
+If IN- is lower than IN+ and the offset voltage, the output is high impedance and the output transistor is 
+not conducting
+2.
+When IN- is higher than common-mode and IN+ is within common-mode, the output is low and the output 
+transistor is sinking current
+3.
+When IN+ is higher than common-mode and IN- is within common-mode, the output is high impedance and 
+the output transistor is not conducting
+4.
+When IN- and IN+ are both higher than common-mode, see Section 2 of Application Design Guidelines for 
+LM339, LM393, TL331 Family Comparators Including the New B-versions.
+7.2.2.2 Minimum Overdrive Voltage
+Overdrive Voltage is the differential voltage produced between the positive and negative inputs of the 
+comparator over the offset voltage (VIO). To make an accurate comparison the Overdrive Voltage (VOD) must 
+be higher than the input offset voltage (VIO). Overdrive voltage can also determine the response time of the 
+comparator, with the response time decreasing with increasing overdrive. Figure 7-2 and Figure 7-3 show 
+positive and negative response times with respect to overdrive voltage.
+7.2.2.3 Output and Drive Current
+Output current is determined by the load/pull-up resistance and logic/pullup voltage. The output current produces 
+a output low voltage (VOL) from the comparator. In which VOL is proportional to the output current. See the 
+Output Low vs. Sinking Current graphs in the Typical Characteristics, LMx93x and LM2903x section to determine 
+VOL based on the output current.
+The output current can also effect the transient response. See Section 7.2.2.4 for more information.
+7.2.2.4 Response Time
+Response time is a function of input over drive. See Application Curves for typical response times. The rise 
+and falls times can be determined by the load capacitance (CL), load/pullup resistance (RPULLUP) and equivalent 
+collector-emitter resistance (RCE).
+•
+The rise time (τR) is approximately τR = RPULLUP × CL
+•
+The fall time (τF) is approximately τF = RCE × CL
+–
+RCE can be determine by taking the slope of Figure 5-20 in the linear region at the desired temperature, or 
+by dividing the VOL by Iout
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+19
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 20 ---
+7.2.3 Application Curves
+The following curves are generated with 5V on VCC and VLogic, RPULLUP = 5.1kΩ, and 50pF scope probe.
+±1 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+-0.25 
+0.25 
+0.75 
+1.25 
+1.75 
+2.25 
+Output Voltage, Vo(V) 
+Time (usec) 
+5mV OD 
+20mV OD 
+100mV OD 
+C004 
+Figure 7-2. Response Time for Various Overdrives 
+(Positive Transition)
+±1 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+±0.25 0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 
+Output Voltage (Vo) 
+Time (usec) 
+5mV OD 
+20mV OD 
+100mV OD 
+C006 
+Figure 7-3. Response Time for Various Overdrives 
+(Negative Transition)
+7.2.4 Power Supply Recommendations
+For fast response and comparison applications with noisy or AC inputs, TI recommends to use a bypass 
+capacitor on the supply pin to reject any variation on the supply voltage. This variation can eat into the input 
+common-mode range of the comparator and create an inaccurate comparison.
+7.2.5 Layout
+7.2.5.1 Layout Guidelines
+For accurate comparator applications without hysteresis maintaining a stable power supply with minimized noise 
+and glitches is critical. Best practice is to add a bypass capacitor between the supply voltage and ground. This 
+can be implemented on the positive power supply and negative supply (if available). If a negative supply is not 
+being used, do not put a capacitor between the IC's GND pin and system ground.
+Minimize coupling between outputs and inverting inputs to prevent output oscillations. Do not run output and 
+inverting input traces in parallel unless there is a VCC or GND trace between output and inverting input traces to 
+reduce coupling. When series resistance is added to inputs, place resistor close to the device.
+7.2.5.2 Layout Example
+VCC
+ Ground
+6
+5
+7
+1
+2
+3
+4
+8
+ Ground
+PF
+1IN-
+1IN+
+GND
+2OUT
+2IN-
+2IN+
+1OUT
+VCC
+OK
+VCC or GND
+Better
+Input Resistors
+Close to device
+Figure 7-4. LM2903 Layout Example
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+20
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 21 ---
+8 Device and Documentation Support
+8.1 Receiving Notification of Documentation Updates
+To receive notification of documentation updates, navigate to the device product folder on ti.com. Click on 
+Notifications to register and receive a weekly digest of any product information that has changed. For change 
+details, review the revision history included in any revised document.
+8.2 Support Resources
+TI E2E™ support forums are an engineer's go-to source for fast, verified answers and design help — straight 
+from the experts. Search existing answers or ask your own question to get the quick design help you need.
+Linked content is provided "AS IS" by the respective contributors. They do not constitute TI specifications and do 
+not necessarily reflect TI's views; see TI's Terms of Use.
+8.3 Trademarks
+TI E2E™ is a trademark of Texas Instruments.
+All trademarks are the property of their respective owners.
+8.4 Electrostatic Discharge Caution
+This integrated circuit can be damaged by ESD. Texas Instruments recommends that all integrated circuits be handled 
+with appropriate precautions. Failure to observe proper handling and installation procedures can cause damage.
+ESD damage can range from subtle performance degradation to complete device failure. Precision integrated circuits may 
+be more susceptible to damage because very small parametric changes could cause the device not to meet its published 
+specifications.
+8.5 Glossary
+TI Glossary 
+This glossary lists and explains terms, acronyms, and definitions.
+9 Revision History
+NOTE: Page numbers for previous revisions may differ from page numbers in the current version.
+Changes from Revision AG (January 2025) to Revision AH (April 2025)
+Page
+•
+Updated front page Family Comparison Table ESD specs................................................................................ 1
+•
+Restored missing "P" package column in Thermal Information table.................................................................5
+Changes from Revision AF (August 2023) to Revision AG (January 2025)
+Page
+•
+Removed legacy device graphs........................................................................................................................11
+•
+Updated internal Schematic ............................................................................................................................ 17
+Changes from Revision AE (November 2020) to Revision AF (August 2023)
+Page
+•
+Added reference to Application Note................................................................................................................18
+Changes from Revision AD (October 2020) to Revision AE (November 2020)
+Page
+•
+Corrected Family Comparison Table Offset Voltage units to mV........................................................................1
+•
+LM393B and LM2903B recommended minimum supply votlage changed to 2V throughout.............................1
+•
+Added separate offset voltage row for LM393B and LM2903B DGK package...................................................1
+•
+Changed "B" devices recommended minimum supply votlage to 2V.................................................................4
+www.ti.com
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+Copyright © 2025 Texas Instruments Incorporated
+Submit Document Feedback
+21
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 22 ---
+•
+Updated "B" device Supply Current vs Supply Voltage Graph for 2V...............................................................11
+Changes from Revision AC (February 2020) to Revision AD (October 2020)
+Page
+•
+Updated the numbering format for tables, figures and cross-references throughout the document.................. 1
+Changes from Revision AB (December 2019) to Revision AC (February 2020)
+Page
+•
+Changed front page Features, Applications and Description text to highlight B version....................................1
+•
+Added WSON and SOT-23-8 packages.............................................................................................................1
+•
+Added Links to Family Table ..............................................................................................................................1
+•
+Added DDF and DSG pkgs to Thermal Table.....................................................................................................5
+Changes from Revision AA (September 2019) to Revision AB (December 2019)
+Page
+•
+Changed LM393B and LM2903B from Preview to Active status........................................................................1
+•
+Added Family Comparison Table........................................................................................................................1
+Changes from Revision Z (October 2017) to Revision AA (September 2019)
+Page
+•
+Added "B" devices with various text changes throughout data sheet.................................................................1
+•
+Deleted from Device Information old LM193 CDIP and LCCC package references and drawings. These are 
+on the LM139-MIL data sheet.............................................................................................................................1
+•
+Added "B" devices Thermal Information table....................................................................................................5
+•
+Added "B" device electrical tables......................................................................................................................5
+•
+Added "B" device graphs .................................................................................................................................11
+10 Mechanical, Packaging, and Orderable Information
+The following pages include mechanical, packaging, and orderable information. This information is the most 
+current data available for the designated devices. This data is subject to change without notice and revision of 
+this document. For browser based versions of this data sheet, refer to the left hand navigation.
+LM393B, LM2903B, LM193, LM293, LM293A, LM393, LM393A, LM2903, LM2903V
+SLCS005AH – OCTOBER 1979 – REVISED APRIL 2025
+www.ti.com
+22
+Submit Document Feedback
+Copyright © 2025 Texas Instruments Incorporated
+Product Folder Links: LM393B LM2903B LM193 LM293 LM293A LM393 LM393A LM2903 LM2903V
+
+--- PAGE 23 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+PACKAGING INFORMATION
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM193DR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+LM193
+LM193DR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+LM193
+LM193DRG4
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+LM193
+LM193DRG4.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-55 to 125
+LM193
+LM2903AVQDR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903AV
+LM2903AVQDR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903AV
+LM2903AVQDRG4
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903AV
+LM2903AVQDRG4.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903AV
+LM2903AVQPWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(2903AV, L2903AV)
+LM2903AVQPWR.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(2903AV, L2903AV)
+LM2903AVQPWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(2903AV, L2903AV)
+LM2903AVQPWRG4
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(2903AV, L2903AV)
+LM2903AVQPWRG4.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(2903AV, L2903AV)
+LM2903AVQPWRG4.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(2903AV, L2903AV)
+LM2903BIDDFR
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+2903B
+LM2903BIDDFR.B
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+2903B
+LM2903BIDDFRG4
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+2903B
+LM2903BIDDFRG4.B
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+2903B
+LM2903BIDGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU | SN
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDGKR.B
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDGKRG4
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDGKRG4.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDGKRG4.B
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903BIDR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903BIDR.B
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903BIDRG4
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903BIDRG4.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+Addendum-Page 1
+
+--- PAGE 24 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM2903BIDRG4.B
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903BIDSGR
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDSGR.A
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDSGR.B
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDSGRG4
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDSGRG4.A
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIDSGRG4.B
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+903B
+LM2903BIPWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903BIPWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903B
+LM2903D
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-40 to 125
+LM2903
+LM2903DGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU | SN
+| NIPDAUAG
+Level-1-260C-UNLIM
+-40 to 125
+(MAP, MAS, MAU)
+LM2903DGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+(MAP, MAS, MAU)
+LM2903DR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+LM2903
+LM2903DR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+LM2903
+LM2903DRG3
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+LM2903
+LM2903DRG3.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+LM2903
+LM2903P
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-40 to 125
+LM2903P
+LM2903P.A
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-40 to 125
+LM2903P
+LM2903P.B
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-40 to 125
+LM2903P
+LM2903PSR
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PSR.A
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU | SN
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWR.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWRG3
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWRG3.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWRG4
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWRG4.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903PWRG4.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903
+LM2903QD
+Active
+Production
+SOIC (D) | 8
+75 | TUBE
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+2903Q
+Addendum-Page 2
+
+--- PAGE 25 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM2903QD.A
+Active
+Production
+SOIC (D) | 8
+75 | TUBE
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+2903Q
+LM2903QDG4
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-40 to 125
+2903Q
+LM2903QDRG4
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-40 to 125
+2903Q
+LM2903VQDR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903V
+LM2903VQDR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903V
+LM2903VQDRG4
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-40 to 125
+L2903V
+LM2903VQPWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903V
+LM2903VQPWR.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903V
+LM2903VQPWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 125
+L2903V
+LM2903VQPWRG4
+Obsolete
+Production
+TSSOP (PW) | 8
+-
+-
+Call TI
+Call TI
+-40 to 125
+L2903V
+LM293AD
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-25 to 85
+LM293A
+LM293ADGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+(MDP, MDS, MDU)
+LM293ADGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+(MDP, MDS, MDU)
+LM293ADGKRG4
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+-
+Call TI
+Call TI
+-25 to 85
+LM293ADR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+LM293A
+LM293ADR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+LM293A
+LM293ADRG4
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-25 to 85
+LM293A
+LM293D
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+-25 to 85
+LM293
+LM293DGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU | SN
+Level-1-260C-UNLIM
+-25 to 85
+(MCP, MCS, MCU)
+LM293DGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+(MCP, MCS, MCU)
+LM293DGKR.B
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+(MCP, MCS, MCU)
+LM293DGKRG4
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+-
+Call TI
+Call TI
+-25 to 85
+LM293DR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+LM293
+LM293DR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-25 to 85
+LM293
+LM293DRG3
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-25 to 85
+LM293
+LM293DRG3.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-25 to 85
+LM293
+LM293P
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-25 to 85
+LM293P
+LM293P.A
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-25 to 85
+LM293P
+LM293P.B
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+-25 to 85
+LM293P
+LM293PE4
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+-
+Call TI
+Call TI
+-25 to 85
+LM393AD
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+0 to 70
+LM393A
+Addendum-Page 3
+
+--- PAGE 26 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM393ADGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+(M8P, M8S, M8U)
+LM393ADGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+(M8P, M8S, M8U)
+LM393ADGKRG4
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+-
+Call TI
+Call TI
+0 to 70
+LM393ADR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+LM393A
+LM393ADR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+LM393A
+LM393ADRG4
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+0 to 70
+LM393A
+LM393AP
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU | SN
+N/A for Pkg Type
+0 to 70
+LM393AP
+LM393AP.A
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393AP
+LM393AP.B
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393AP
+LM393APE4
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+-
+Call TI
+Call TI
+0 to 70
+LM393APSR
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393A
+LM393APSR.A
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393A
+LM393APWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393A
+LM393APWR.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393A
+LM393APWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393A
+LM393APWRG4
+Obsolete
+Production
+TSSOP (PW) | 8
+-
+-
+Call TI
+Call TI
+0 to 70
+L393A
+LM393BIDDFR
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDDFR.B
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDDFRG4
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDDFRG4.B
+Active
+Production
+SOT-23-THIN (DDF) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDGKR.B
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIDR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIDR.B
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIDRG4
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIDRG4.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIDRG4.B
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIDSGR
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDSGR.A
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 85
+393B
+Addendum-Page 4
+
+--- PAGE 27 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM393BIDSGR.B
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDSGRG4
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDSGRG4.A
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIDSGRG4.B
+Active
+Production
+WSON (DSG) | 8
+3000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+393B
+LM393BIPWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIPWR.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393BIPWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+-40 to 85
+LM393B
+LM393D
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+0 to 70
+LM393
+LM393DGKR
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU | SN
+Level-1-260C-UNLIM
+0 to 70
+(M9P, M9S, M9U)
+LM393DGKR.A
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+(M9P, M9S, M9U)
+LM393DGKRG4
+Active
+Production
+VSSOP (DGK) | 8
+2500 | LARGE T&R
+-
+Call TI
+Call TI
+0 to 70
+LM393DR
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+LM393
+LM393DR.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+LM393
+LM393DRG3
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+0 to 70
+LM393
+LM393DRG3.A
+Active
+Production
+SOIC (D) | 8
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+0 to 70
+LM393
+LM393DRG4
+Obsolete
+Production
+SOIC (D) | 8
+-
+-
+Call TI
+Call TI
+0 to 70
+LM393
+LM393P
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU | SN
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393P.A
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393P.B
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393PE3
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+SN
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393PE3.A
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+SN
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393PE4
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393PE4.A
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393PE4.B
+Active
+Production
+PDIP (P) | 8
+50 | TUBE
+Yes
+NIPDAU
+N/A for Pkg Type
+0 to 70
+LM393P
+LM393PS
+Active
+Production
+SO (PS) | 8
+80 | TUBE
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PS.A
+Active
+Production
+SO (PS) | 8
+80 | TUBE
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PSR
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PSR.A
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PSRG4
+Active
+Production
+SO (PS) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PW
+Obsolete
+Production
+TSSOP (PW) | 8
+-
+-
+Call TI
+Call TI
+0 to 70
+L393
+LM393PWR
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+Addendum-Page 5
+
+--- PAGE 28 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM393PWR.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PWR.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PWRG3
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PWRG3.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PWRG4
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PWRG4.A
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+LM393PWRG4.B
+Active
+Production
+TSSOP (PW) | 8
+2000 | LARGE T&R
+Yes
+NIPDAU
+Level-1-260C-UNLIM
+0 to 70
+L393
+ 
+(1) Status:  For more details on status, see our product life cycle.
+ 
+(2) Material type:  When designated, preproduction parts are prototypes/experimental devices, and are not yet approved or released for full production. Testing and final process, including without limitation quality assurance,
+reliability performance testing, and/or process qualification, may not yet be complete, and this item is subject to further changes or possible discontinuation. If available for ordering, purchases will be subject to an additional
+waiver at checkout, and are intended for early internal evaluation purposes only. These items are sold without warranties of any kind.
+ 
+(3) RoHS values:  Yes, No, RoHS Exempt. See the TI RoHS Statement for additional information and value definition.
+ 
+(4) Lead finish/Ball material:  Parts may have multiple material finish options. Finish options are separated by a vertical ruled line. Lead finish/Ball material values may wrap to two lines if the finish value exceeds the maximum
+column width.
+ 
+(5) MSL rating/Peak reflow:  The moisture sensitivity level ratings and peak solder (reflow) temperatures. In the event that a part has multiple moisture sensitivity ratings, only the lowest level per JEDEC standards is shown.
+Refer to the shipping label for the actual reflow temperature that will be used to mount the part to the printed circuit board.
+ 
+(6) Part marking:  There may be an additional marking, which relates to the logo, the lot trace code information, or the environmental category of the part.
+ 
+Multiple part markings will be inside parentheses. Only one part marking contained in parentheses and separated by a "~" will appear on a part. If a line is indented then it is a continuation of the previous line and the two
+combined represent the entire part marking for that device.
+ 
+Important Information and Disclaimer:The information provided on this page represents TI's knowledge and belief as of the date that it is provided. TI bases its knowledge and belief on information provided by third parties, and
+makes no representation or warranty as to the accuracy of such information. Efforts are underway to better integrate information from third parties. TI has taken and continues to take reasonable steps to provide representative
+and accurate information but may not have conducted destructive testing or chemical analysis on incoming materials and chemicals. TI and TI suppliers consider certain information to be proprietary, and thus CAS numbers
+and other limited information may not be available for release.
+ 
+In no event shall TI's liability arising out of such information exceed the total purchase price of the TI part(s) at issue in this document sold by TI to Customer on an annual basis.
+ 
+Addendum-Page 6
+
+--- PAGE 29 ---
+PACKAGE OPTION ADDENDUM
+www.ti.com
+25-Sep-2026
+ OTHER QUALIFIED VERSIONS OF LM2903, LM2903B, LM293 :
+• Automotive : LM2903-Q1, LM2903B-Q1
+• Enhanced Product : LM293-EP
+ NOTE: Qualified Version Definitions:
+• Automotive - Q100 devices qualified for high-reliability automotive applications targeting zero defects
+• Enhanced Product - Supports Defense, Aerospace and Medical Applications
+Addendum-Page 7
+
+--- PAGE 30 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+TAPE AND REEL INFORMATION
+Reel Width (W1)
+REEL DIMENSIONS
+A0
+B0
+K0
+W
+Dimension designed to accommodate the component length
+Dimension designed to accommodate the component thickness
+Overall width of the carrier tape
+Pitch between successive cavity centers
+Dimension designed to accommodate the component width
+TAPE DIMENSIONS
+K0
+ P1
+B0 W
+A0
+Cavity
+QUADRANT ASSIGNMENTS FOR PIN 1 ORIENTATION IN TAPE
+Pocket Quadrants
+Sprocket Holes
+Q1
+Q1
+Q2
+Q2
+Q3
+Q3
+Q4
+Q4
+User Direction of Feed
+P1
+Reel
+Diameter
+ 
+*All dimensions are nominal
+Device
+Package
+Type
+Package
+Drawing
+Pins
+SPQ
+Reel
+Diameter
+(mm)
+Reel
+Width
+W1 (mm)
+A0
+(mm)
+B0
+(mm)
+K0
+(mm)
+P1
+(mm)
+W
+(mm)
+Pin1
+Quadrant
+LM193DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.5
+5.4
+2.0
+8.0
+12.0
+Q1
+LM193DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM193DRG4
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903AVQDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903AVQDR
+SOIC
+D
+8
+2500
+330.0
+12.5
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903AVQDRG4
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903AVQPWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM2903AVQPWRG4
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM2903BIDDFR
+SOT-23-
+THIN
+DDF
+8
+3000
+180.0
+8.4
+3.2
+3.2
+1.4
+4.0
+8.0
+Q3
+LM2903BIDDFRG4
+SOT-23-
+THIN
+DDF
+8
+3000
+180.0
+8.4
+3.2
+3.2
+1.4
+4.0
+8.0
+Q3
+LM2903BIDGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM2903BIDGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903BIDGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM2903BIDGKRG4
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM2903BIDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+Pack Materials-Page 1
+
+--- PAGE 31 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+Device
+Package
+Type
+Package
+Drawing
+Pins
+SPQ
+Reel
+Diameter
+(mm)
+Reel
+Width
+W1 (mm)
+A0
+(mm)
+B0
+(mm)
+K0
+(mm)
+P1
+(mm)
+W
+(mm)
+Pin1
+Quadrant
+LM2903BIDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903BIDRG4
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903BIDSGR
+WSON
+DSG
+8
+3000
+180.0
+8.4
+2.3
+2.3
+1.15
+4.0
+8.0
+Q2
+LM2903BIDSGRG4
+WSON
+DSG
+8
+3000
+180.0
+8.4
+2.3
+2.3
+1.15
+4.0
+8.0
+Q2
+LM2903BIPWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM2903DGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.5
+5.4
+2.0
+8.0
+12.0
+Q1
+LM2903DRG3
+SOIC
+D
+8
+2500
+330.0
+12.8
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903PSR
+SO
+PS
+8
+2000
+330.0
+16.4
+8.35
+6.6
+2.4
+12.0
+16.0
+Q1
+LM2903PWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM2903PWRG3
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM2903PWRG4
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM2903VQDR
+SOIC
+D
+8
+2500
+330.0
+12.5
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903VQDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903VQDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM2903VQPWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM293ADGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM293ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.5
+5.4
+2.0
+8.0
+12.0
+Q1
+LM293ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM293ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM293ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM293DGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM293DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM293DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM293DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.5
+5.4
+2.0
+8.0
+12.0
+Q1
+LM293DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM293DRG3
+SOIC
+D
+8
+2500
+330.0
+12.8
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393ADGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM393ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.5
+5.4
+2.0
+8.0
+12.0
+Q1
+LM393ADR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393APSR
+SO
+PS
+8
+2000
+330.0
+16.4
+8.35
+6.6
+2.4
+12.0
+16.0
+Q1
+LM393APWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM393BIDDFR
+SOT-23-
+THIN
+DDF
+8
+3000
+180.0
+8.4
+3.2
+3.2
+1.4
+4.0
+8.0
+Q3
+LM393BIDDFRG4
+SOT-23-
+THIN
+DDF
+8
+3000
+180.0
+8.4
+3.2
+3.2
+1.4
+4.0
+8.0
+Q3
+LM393BIDGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393BIDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393BIDR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393BIDRG4
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+Pack Materials-Page 2
+
+--- PAGE 32 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+Device
+Package
+Type
+Package
+Drawing
+Pins
+SPQ
+Reel
+Diameter
+(mm)
+Reel
+Width
+W1 (mm)
+A0
+(mm)
+B0
+(mm)
+K0
+(mm)
+P1
+(mm)
+W
+(mm)
+Pin1
+Quadrant
+LM393BIDSGR
+WSON
+DSG
+8
+3000
+180.0
+8.4
+2.3
+2.3
+1.15
+4.0
+8.0
+Q2
+LM393BIDSGRG4
+WSON
+DSG
+8
+3000
+180.0
+8.4
+2.3
+2.3
+1.15
+4.0
+8.0
+Q2
+LM393BIPWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM393DGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+5.3
+3.4
+1.4
+8.0
+12.0
+Q1
+LM393DGKR
+VSSOP
+DGK
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393DR
+SOIC
+D
+8
+2500
+330.0
+12.4
+6.5
+5.4
+2.0
+8.0
+12.0
+Q1
+LM393DRG3
+SOIC
+D
+8
+2500
+330.0
+12.8
+6.4
+5.2
+2.1
+8.0
+12.0
+Q1
+LM393PSR
+SO
+PS
+8
+2000
+330.0
+16.4
+8.35
+6.6
+2.4
+12.0
+16.0
+Q1
+LM393PWR
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM393PWRG3
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+LM393PWRG4
+TSSOP
+PW
+8
+2000
+330.0
+12.4
+7.0
+3.6
+1.6
+8.0
+12.0
+Q1
+Pack Materials-Page 3
+
+--- PAGE 33 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+TAPE AND REEL BOX DIMENSIONS
+Width (mm)
+W
+L
+H
+ 
+*All dimensions are nominal
+Device
+Package Type
+Package Drawing
+Pins
+SPQ
+Length (mm)
+Width (mm)
+Height (mm)
+LM193DR
+SOIC
+D
+8
+2500
+367.0
+367.0
+35.0
+LM193DR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM193DRG4
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903AVQDR
+SOIC
+D
+8
+2500
+340.5
+338.1
+20.6
+LM2903AVQDR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903AVQDRG4
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903AVQPWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM2903AVQPWRG4
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM2903BIDDFR
+SOT-23-THIN
+DDF
+8
+3000
+210.0
+185.0
+35.0
+LM2903BIDDFRG4
+SOT-23-THIN
+DDF
+8
+3000
+210.0
+185.0
+35.0
+LM2903BIDGKR
+VSSOP
+DGK
+8
+2500
+367.0
+367.0
+35.0
+LM2903BIDGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM2903BIDGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM2903BIDGKRG4
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM2903BIDR
+SOIC
+D
+8
+2500
+356.0
+356.0
+35.0
+LM2903BIDR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903BIDRG4
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903BIDSGR
+WSON
+DSG
+8
+3000
+210.0
+185.0
+35.0
+Pack Materials-Page 4
+
+--- PAGE 34 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+Device
+Package Type
+Package Drawing
+Pins
+SPQ
+Length (mm)
+Width (mm)
+Height (mm)
+LM2903BIDSGRG4
+WSON
+DSG
+8
+3000
+210.0
+185.0
+35.0
+LM2903BIPWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM2903DGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM2903DR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903DR
+SOIC
+D
+8
+2500
+367.0
+367.0
+35.0
+LM2903DRG3
+SOIC
+D
+8
+2500
+364.0
+364.0
+27.0
+LM2903PSR
+SO
+PS
+8
+2000
+353.0
+353.0
+32.0
+LM2903PWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM2903PWRG3
+TSSOP
+PW
+8
+2000
+364.0
+364.0
+27.0
+LM2903PWRG4
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM2903VQDR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903VQDR
+SOIC
+D
+8
+2500
+340.5
+338.1
+20.6
+LM2903VQDR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM2903VQPWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM293ADGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM293ADR
+SOIC
+D
+8
+2500
+367.0
+367.0
+35.0
+LM293ADR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM293ADR
+SOIC
+D
+8
+2500
+340.5
+338.1
+20.6
+LM293ADR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM293DGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM293DR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM293DR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM293DR
+SOIC
+D
+8
+2500
+367.0
+367.0
+35.0
+LM293DR
+SOIC
+D
+8
+2500
+340.5
+338.1
+20.6
+LM293DRG3
+SOIC
+D
+8
+2500
+364.0
+364.0
+27.0
+LM393ADGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM393ADR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM393ADR
+SOIC
+D
+8
+2500
+367.0
+367.0
+35.0
+LM393ADR
+SOIC
+D
+8
+2500
+340.5
+338.1
+20.6
+LM393APSR
+SO
+PS
+8
+2000
+353.0
+353.0
+32.0
+LM393APWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM393BIDDFR
+SOT-23-THIN
+DDF
+8
+3000
+210.0
+185.0
+35.0
+LM393BIDDFRG4
+SOT-23-THIN
+DDF
+8
+3000
+210.0
+185.0
+35.0
+LM393BIDGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM393BIDR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM393BIDR
+SOIC
+D
+8
+2500
+356.0
+356.0
+35.0
+LM393BIDRG4
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+LM393BIDSGR
+WSON
+DSG
+8
+3000
+210.0
+185.0
+35.0
+LM393BIDSGRG4
+WSON
+DSG
+8
+3000
+210.0
+185.0
+35.0
+LM393BIPWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM393DGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM393DGKR
+VSSOP
+DGK
+8
+2500
+353.0
+353.0
+32.0
+LM393DR
+SOIC
+D
+8
+2500
+353.0
+353.0
+32.0
+Pack Materials-Page 5
+
+--- PAGE 35 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+Device
+Package Type
+Package Drawing
+Pins
+SPQ
+Length (mm)
+Width (mm)
+Height (mm)
+LM393DR
+SOIC
+D
+8
+2500
+367.0
+367.0
+35.0
+LM393DRG3
+SOIC
+D
+8
+2500
+364.0
+364.0
+27.0
+LM393PSR
+SO
+PS
+8
+2000
+353.0
+353.0
+32.0
+LM393PWR
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+LM393PWRG3
+TSSOP
+PW
+8
+2000
+364.0
+364.0
+27.0
+LM393PWRG4
+TSSOP
+PW
+8
+2000
+353.0
+353.0
+32.0
+Pack Materials-Page 6
+
+--- PAGE 36 ---
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+28-Oct-2026
+TUBE
+ 
+ 
+L - Tube length
+T - Tube  
+height
+W - Tube  
+width
+B - Alignment groove width
+ 
+ 
+*All dimensions are nominal
+Device
+Package Name
+Package Type
+Pins
+SPQ
+L (mm)
+W (mm)
+T (µm)
+B (mm)
+LM2903P
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM2903P.A
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM2903P.B
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM2903QD
+D
+SOIC
+8
+75
+505.46
+6.76
+3810
+4
+LM2903QD.A
+D
+SOIC
+8
+75
+505.46
+6.76
+3810
+4
+LM293P
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM293P.A
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM293P.B
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393AP
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393AP
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393AP.A
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393AP.A
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393AP.B
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393AP.B
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393P
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393P
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393P.A
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393P.A
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393P.B
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393P.B
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393PE3
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393PE3.A
+P
+PDIP
+8
+50
+506.1
+9
+600
+5.4
+LM393PE4
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393PE4.A
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393PE4.B
+P
+PDIP
+8
+50
+506
+13.97
+11230
+4.32
+LM393PS
+PS
+SOP
+8
+80
+530
+10.5
+4000
+4.1
+LM393PS.A
+PS
+SOP
+8
+80
+530
+10.5
+4000
+4.1
+Pack Materials-Page 7
+
+--- PAGE 37 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+6X 0.65
+2X
+1.95
+8X 0.38
+0.25
+5.05
+4.75 TYP
+SEATING
+PLANE
+0.15
+0.05
+0.25
+GAGE PLANE
+0 -8
+1.1 MAX
+0.23
+0.13
+B
+3.1
+2.9
+NOTE 4
+A
+3.1
+2.9
+NOTE 3
+0.7
+0.4
+VSSOP - 1.1 mm max height
+DGK0008A
+SMALL OUTLINE PACKAGE
+4214862/A   04/2023
+1
+4
+5
+8
+0.13
+C A B
+PIN 1 INDEX AREA
+SEE DETAIL  A
+0.1 C
+NOTES: 
+ 
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed 0.15 mm per side. 
+4. This dimension does not include interlead flash. Interlead flash shall not exceed 0.25 mm per side.
+5. Reference JEDEC registration MO-187.
+ 
+PowerPAD is a trademark of Texas Instruments.
+A  20
+DETAIL A
+TYPICAL
+SCALE  4.000
+
+--- PAGE 38 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+0.05 MAX
+ALL AROUND
+0.05 MIN
+ALL AROUND
+8X (1.4)
+8X (0.45)
+6X (0.65)
+(4.4)
+(R0.05) TYP
+VSSOP - 1.1 mm max height
+DGK0008A
+SMALL OUTLINE PACKAGE
+4214862/A   04/2023
+NOTES: (continued)
+ 
+  6. Publication IPC-7351 may have alternate designs. 
+  7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+  8. Vias are optional depending on application, refer to device data sheet. If any vias are implemented, refer to their locations shown
+      on this view. It is recommended that vias under paste be filled, plugged or tented.
+  9. Size of metal pad may vary due to creepage requirement.
+ 
+TM
+LAND PATTERN EXAMPLE
+EXPOSED METAL SHOWN
+SCALE: 15X
+SYMM
+SYMM
+1
+4
+5
+8
+SEE DETAILS
+15.000
+METAL
+SOLDER MASK
+OPENING
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+OPENING
+EXPOSED METAL
+EXPOSED METAL
+SOLDER MASK DETAILS
+NON-SOLDER MASK
+DEFINED
+(PREFERRED)
+SOLDER MASK
+DEFINED
+
+--- PAGE 39 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+8X (1.4)
+8X (0.45)
+6X (0.65)
+(4.4)
+(R0.05) TYP
+VSSOP - 1.1 mm max height
+DGK0008A
+SMALL OUTLINE PACKAGE
+4214862/A   04/2023
+NOTES: (continued)
+ 
+11. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+      design recommendations.   
+12. Board assembly site may have different recommendations for stencil design.
+ 
+TM
+SOLDER PASTE EXAMPLE
+ SCALE: 15X
+SYMM
+SYMM
+1
+4
+5
+8
+
+--- PAGE 40 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+2.95
+2.65 TYP
+1.1
+MAX
+6X 0.65
+8X 0.38
+0.22
+2X
+1.95
+0.20
+0.08 TYP
+0 - 8
+0.1
+0.0
+0.25
+GAGE PLANE
+0.6
+0.3
+4X 0 -15
+4X 4 -15
+A
+2.95
+2.85
+NOTE 3
+B
+1.65
+1.55
+4222047/E   07/2024
+SOT-23-THIN - 1.1 mm max height
+DDF0008A
+PLASTIC SMALL OUTLINE
+NOTES: 
+ 
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed 0.15 mm per side.
+ 
+1
+8
+0.1
+C A B
+5
+4
+PIN 1 ID
+AREA
+SEATING PLANE
+0.1 C
+ SEE DETAIL A
+DETAIL A
+TYPICAL
+SCALE  4.000
+
+--- PAGE 41 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+(2.6)
+0.05 MAX
+ALL AROUND
+0.05 MIN
+ALL AROUND
+8X (1.05)
+8X (0.45)
+6X (0.65)
+(R0.05)
+TYP
+4222047/E   07/2024
+SOT-23-THIN - 1.1 mm max height
+DDF0008A
+PLASTIC SMALL OUTLINE
+SYMM
+SYMM
+LAND PATTERN EXAMPLE
+EXPOSED METAL SHOWN
+SCALE:15X
+1
+4
+5
+8
+NOTES: (continued)
+ 
+4. Publication IPC-7351 may have alternate designs. 
+5. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+METAL
+SOLDER MASK
+OPENING
+NON SOLDER MASK
+DEFINED
+SOLDER MASK DETAILS
+EXPOSED
+METAL
+SOLDER MASK
+OPENING
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+DEFINED
+EXPOSED
+METAL
+
+--- PAGE 42 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+(2.6)
+6X (0.65)
+8X (0.45)
+8X (1.05)
+(R0.05) TYP
+4222047/E   07/2024
+SOT-23-THIN - 1.1 mm max height
+DDF0008A
+PLASTIC SMALL OUTLINE
+NOTES: (continued)
+ 
+6. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+7. Board assembly site may have different recommendations for stencil design.
+ 
+SYMM
+SYMM
+1
+4
+5
+8
+SOLDER PASTE EXAMPLE
+BASED ON 0.125 mm THICK STENCIL
+SCALE:15X
+
+--- PAGE 43 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+.228-.244 TYP
+[5.80-6.19]
+.069 MAX
+[1.75]     
+6X .050
+[1.27]
+8X .012-.020
+     [0.31-0.51]
+2X
+.150
+[3.81]
+.005-.010 TYP
+[0.13-0.25]
+0 - 8
+.004-.010
+[0.11-0.25]
+.010
+[0.25]
+.016-.050
+[0.41-1.27]
+4X (0 -15 )
+A
+.189-.197
+[4.81-5.00]
+NOTE 3
+B
+.150-.157
+[3.81-3.98]
+NOTE 4
+4X (0 -15 )
+(.041)
+[1.04]
+SOIC - 1.75 mm max height
+D0008A
+SMALL OUTLINE INTEGRATED CIRCUIT
+4214825/C   02/2019
+NOTES: 
+ 
+1. Linear dimensions are in inches [millimeters]. Dimensions in parenthesis are for reference only. Controlling dimensions are in inches.
+    Dimensioning and tolerancing per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed .006 [0.15] per side. 
+4. This dimension does not include interlead flash.
+5. Reference JEDEC registration MS-012, variation AA.
+ 
+1
+8
+.010 [0.25]
+C A B
+5
+4
+PIN 1 ID AREA
+SEATING PLANE
+.004 [0.1] C
+ SEE DETAIL A
+DETAIL A
+TYPICAL
+SCALE  2.800
+
+--- PAGE 44 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+.0028 MAX
+[0.07]
+ALL AROUND
+.0028 MIN
+[0.07]
+ALL AROUND
+ 
+(.213)
+[5.4]
+6X (.050 )
+[1.27]
+8X (.061 )
+[1.55]
+8X (.024)
+[0.6]
+(R.002 ) TYP
+[0.05]
+SOIC - 1.75 mm max height
+D0008A
+SMALL OUTLINE INTEGRATED CIRCUIT
+4214825/C   02/2019
+NOTES: (continued)
+ 
+6. Publication IPC-7351 may have alternate designs. 
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+METAL
+SOLDER MASK
+OPENING
+NON SOLDER MASK
+DEFINED
+SOLDER MASK DETAILS
+EXPOSED
+METAL
+OPENING
+SOLDER MASK
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+DEFINED
+EXPOSED
+METAL
+LAND PATTERN EXAMPLE
+EXPOSED METAL SHOWN
+SCALE:8X
+SYMM
+1
+4
+5
+8
+SEE
+DETAILS
+SYMM
+
+--- PAGE 45 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+8X (.061 )
+[1.55]
+8X (.024)
+[0.6]
+6X (.050 )
+[1.27]
+(.213)
+[5.4]
+(R.002 ) TYP
+[0.05]
+SOIC - 1.75 mm max height
+D0008A
+SMALL OUTLINE INTEGRATED CIRCUIT
+4214825/C   02/2019
+NOTES: (continued)
+ 
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+9. Board assembly site may have different recommendations for stencil design.
+ 
+SOLDER PASTE EXAMPLE
+BASED ON .005 INCH [0.125 MM] THICK STENCIL
+SCALE:8X
+SYMM
+SYMM
+1
+4
+5
+8
+
+--- PAGE 46 ---
+
+--- PAGE 47 ---
+
+--- PAGE 48 ---
+
+--- PAGE 49 ---
+www.ti.com
+GENERIC PACKAGE VIEW
+This image is a representation of the package family, actual package may vary.
+Refer to the product data sheet for package details.
+WSON - 0.8 mm max height
+DSG 8
+PLASTIC SMALL OUTLINE - NO LEAD
+2 x 2, 0.5 mm pitch
+4224783/A
+
+--- PAGE 50 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+8X 0.32
+0.18
+1.6
+0.1
+2X
+1.5
+0.9
+0.1
+6X 0.5
+8X 0.4
+0.2
+0.05
+0.00
+0.8
+0.7
+A
+2.1
+1.9
+B
+2.1
+1.9
+0.32
+0.18
+0.4
+0.2
+(DIM A) TYP
+WSON - 0.8 mm max height
+DSG0008A
+PLASTIC SMALL OUTLINE - NO LEAD
+4218900/E   08/2022
+SIDE WALL 
+METAL THICKNESS
+DIM A
+OPTION 1
+OPTION 2
+0.1
+0.2
+PIN 1 INDEX AREA
+SEATING PLANE
+0.08 C
+1
+4
+5
+8
+X 0.25)
+(45
+PIN 1 ID
+0.1
+C A B
+0.05
+C
+THERMAL PAD
+EXPOSED
+9
+NOTES:
+ 
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. The package thermal pad must be soldered to the printed circuit board for thermal and mechanical performance.
+SCALE  5.500
+ALTERNATIVE TERMINAL SHAPE
+TYPICAL
+
+--- PAGE 51 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+0.07 MIN
+ALL AROUND
+0.07 MAX
+ALL AROUND
+8X (0.25)
+(1.6)
+(1.9)
+6X (0.5)
+(0.9)
+(
+0.2) VIA
+TYP
+(0.55)
+8X (0.5)
+(R0.05) TYP
+WSON - 0.8 mm max height
+DSG0008A
+PLASTIC SMALL OUTLINE - NO LEAD
+4218900/E   08/2022
+SYMM
+1
+4
+5
+8
+LAND PATTERN EXAMPLE
+SCALE:20X
+SYMM
+9
+NOTES: (continued)
+ 
+4. This package is designed to be soldered to a thermal pad on the board. For more information, see Texas Instruments literature
+    number SLUA271 (www.ti.com/lit/slua271).
+5. Vias are optional depending on application, refer to device data sheet. If any vias are implemented, refer to their locations shown
+    on this view. It is recommended that vias under paste be filled, plugged or tented. 
+ 
+SOLDER MASK
+OPENING
+SOLDER MASK
+METAL UNDER
+SOLDER MASK
+DEFINED
+METAL
+SOLDER MASK
+OPENING
+SOLDER MASK DETAILS
+NON SOLDER MASK
+DEFINED
+(PREFERRED)
+
+--- PAGE 52 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+(R0.05) TYP
+8X (0.25)
+8X (0.5)
+(0.9)
+(0.7)
+(1.9)
+(0.45)
+6X (0.5)
+WSON - 0.8 mm max height
+DSG0008A
+PLASTIC SMALL OUTLINE - NO LEAD
+4218900/E   08/2022
+NOTES: (continued)
+ 
+6. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations. 
+ 
+SOLDER PASTE EXAMPLE
+BASED ON 0.125 mm THICK STENCIL
+ 
+EXPOSED PAD 9:
+ 87% PRINTED SOLDER COVERAGE BY AREA UNDER PACKAGE
+SCALE:25X
+SYMM
+1
+4
+5
+8
+METAL
+SYMM
+9
+
+--- PAGE 53 ---
+www.ti.com
+PACKAGE OUTLINE
+C
+ TYP
+6.6
+6.2
+1.2 MAX
+6X 0.65
+8X 0.30
+0.19
+2X
+1.95
+0.15
+0.05
+(0.15) TYP
+0 - 8
+0.25
+GAGE PLANE
+0.75
+0.50
+A
+NOTE 3
+3.1
+2.9
+B
+NOTE 4
+4.5
+4.3
+4221848/A   02/2015
+TSSOP - 1.2 mm max height
+PW0008A
+SMALL OUTLINE PACKAGE
+NOTES: 
+ 
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed 0.15 mm per side. 
+4. This dimension does not include interlead flash. Interlead flash shall not exceed 0.25 mm per side.
+5. Reference JEDEC registration MO-153, variation AA.
+ 
+1
+8
+0.1
+C A
+B
+5
+4
+PIN 1 ID
+AREA
+SEATING PLANE
+0.1 C
+ SEE DETAIL A
+DETAIL A
+TYPICAL
+SCALE  2.800
+
+--- PAGE 54 ---
+www.ti.com
+EXAMPLE BOARD LAYOUT
+(5.8)
+0.05 MAX
+ALL AROUND
+0.05 MIN
+ALL AROUND
+8X (1.5)
+8X (0.45)
+6X (0.65)
+(R
+)
+TYP
+0.05
+4221848/A   02/2015
+TSSOP - 1.2 mm max height
+PW0008A
+SMALL OUTLINE PACKAGE
+SYMM
+SYMM
+LAND PATTERN EXAMPLE
+SCALE:10X
+1
+4
+5
+8
+NOTES: (continued)
+ 
+6. Publication IPC-7351 may have alternate designs. 
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+METAL
+SOLDER MASK
+OPENING
+NON SOLDER MASK
+DEFINED
+SOLDER MASK DETAILS
+NOT TO SCALE
+SOLDER MASK
+OPENING
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+DEFINED
+
+--- PAGE 55 ---
+www.ti.com
+EXAMPLE STENCIL DESIGN
+(5.8)
+6X (0.65)
+8X (0.45)
+8X (1.5)
+(R
+) TYP
+0.05
+4221848/A   02/2015
+TSSOP - 1.2 mm max height
+PW0008A
+SMALL OUTLINE PACKAGE
+NOTES: (continued)
+ 
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+9. Board assembly site may have different recommendations for stencil design.
+ 
+SYMM
+SYMM
+1
+4
+5
+8
+SOLDER PASTE EXAMPLE
+BASED ON 0.125 mm THICK STENCIL
+SCALE:10X
+
+--- PAGE 56 ---
+IMPORTANT NOTICE AND DISCLAIMER
+TI PROVIDES TECHNICAL AND RELIABILITY DATA (INCLUDING DATASHEETS), DESIGN RESOURCES (INCLUDING REFERENCE 
+DESIGNS), APPLICATION OR OTHER DESIGN ADVICE, WEB TOOLS, SAFETY INFORMATION, AND OTHER RESOURCES “AS IS” 
+AND WITH ALL FAULTS, AND DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION ANY 
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD 
+PARTY INTELLECTUAL PROPERTY RIGHTS.
+These resources are intended for skilled developers designing with TI products. You are solely responsible for (1) selecting the appropriate 
+TI products for your application, (2) designing, validating and testing your application, and (3) ensuring your application meets applicable 
+standards, and any other safety, security, regulatory or other requirements.
+These resources are subject to change without notice. TI grants you permission to use these resources only for development of an 
+application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited. No license 
+is granted to any other TI intellectual property right or to any third party intellectual property right. TI disclaims responsibility for, and you fully 
+indemnify TI and its representatives against any claims, damages, costs, losses, and liabilities arising out of your use of these resources.
+TI’s products are provided subject to TI’s Terms of Sale, TI’s General Quality Guidelines, or other applicable terms available either on 
+ti.com or provided in conjunction with such TI products. TI’s provision of these resources does not expand or otherwise alter TI’s applicable 
+warranties or warranty disclaimers for TI products. Unless TI explicitly designates a product as custom or customer-specified, TI products 
+are standard, catalog, general purpose devices.
+TI objects to and rejects any additional or different terms you may propose.
+IMPORTANT NOTICE
+Copyright © 2026, Texas Instruments Incorporated
+Last updated 10/2025

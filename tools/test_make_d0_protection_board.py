@@ -542,6 +542,28 @@ def test_the_gate_max_node_cannot_leave_the_comparator_common_mode_range():
     assert board.gate_rail_for_common_mode() > 15.0, "the bound must cover the TVS standoff"
 
 
+def test_the_common_mode_constant_is_the_25c_figure_and_the_full_range_one_is_kept():
+    """Section 5.8 of the vendored LM393 datasheet gives VICR twice: 0 to
+    VCC-1.5 (3.5 V) at 25 C and 0 to VCC-2 (3.0 V) over the full range.  The
+    3.5 V this board has always used is the 25 C row; the guaranteed number is
+    3.0 V, and the rail it covers is 13.69 V -- below the 15 V TVS standoff.
+    Both are kept rather than one replacing the other, because the design is
+    not retuned: the datasheet's own note allows it."""
+    assert board.LM393_COMMON_MODE_LIMIT_V == pytest.approx(3.5)
+    assert board.LM393_COMMON_MODE_LIMIT_FULL_RANGE_V == pytest.approx(3.0)
+    assert board.gate_rail_for_full_range_common_mode() == pytest.approx(13.69, abs=0.02)
+    assert board.gate_rail_for_common_mode() > board.gate_rail_for_full_range_common_mode()
+
+
+def test_the_reference_input_stays_inside_the_range_at_every_gate_rail():
+    """The datasheet's rule is that only *one* input has to be in the valid
+    common-mode range for the output to be proper.  Here that input is the
+    0.200 V reference, which is inside 0..VCC-2 no matter what the gates do --
+    so the 15 V case is outside the spec limit on one pin, not undefined."""
+    assert board.divider_output("R6", "R7") == pytest.approx(0.200, abs=1e-3)
+    assert board.divider_output("R6", "R7") < board.LM393_COMMON_MODE_LIMIT_FULL_RANGE_V
+
+
 def test_the_divider_covers_the_declared_gate_rail_not_just_twelve_volts():
     """V12P comes from the bench input through a reverse-polarity diode and is
     clamped by a 15 V-standoff TVS, so 15 V is the rail the board is allowed to

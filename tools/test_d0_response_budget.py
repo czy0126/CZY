@@ -6,11 +6,11 @@ Adding ``filter_poles_us`` on top would count the same 47 us and 75 us twice
 and turn a 10 us fast channel into a 130 us one -- the exact double-count
 these tests exist to prevent.
 
-The remaining stages are pinned three ways: the permit rail, whose fall time
+The remaining stages are pinned four ways: the permit rail, whose fall time
 is set by eight resistors that exist for an unrelated reason, a gate that
-stays on for a hundred microseconds behind a dead driver, and every
-unpublished number left as ``None`` with the reason instead of a plausible
-guess.
+stays on for a hundred microseconds behind a dead driver, the comparator and
+latch delays whose vendor tables are now vendored, and every number that is
+still not a guarantee left labelled as what it actually is.
 """
 from __future__ import annotations
 
@@ -134,12 +134,45 @@ def test_the_detector_path_is_the_branch_resistor_not_the_gate_resistor():
 
 # -------------------------------------------------- what the budget cannot know
 def test_the_budget_names_what_it_cannot_know():
-    stages = budget.build()["stages"]
-    assert stages["comparator"]["us"] is None
-    assert "LM393" in stages["comparator"]["reason"]
-    assert stages["latch"]["us"] is None
-    assert "CD4013" in stages["latch"]["reason"]
-    assert stages["permit_release"]["sr_pin_capacitance_known"] is False
+    """Both chip stages now carry a number, so the list of unknowns has to be
+    about *why the numbers are not guarantees* -- a typ-only comparator, a latch
+    max at one supply, switching parameters the vendor does not production-test
+    -- rather than about a page missing from the repository."""
+    result = budget.build()
+    assert result["stages"]["permit_release"]["sr_pin_capacitance_known"] is False
+    joined = " ".join(result["not_worst_case_because"])
+    assert "LM393" in joined
+    assert "CD4013" in joined
+    assert "not tested in production" in joined
+
+
+def test_the_comparator_stage_is_typ_only_and_says_so():
+    """LM393 section 5.11 publishes a typical and no maximum column at all, so
+    1.3 us is a nominal: a slower part lengthens every total, which is one
+    reason the sum is a floor rather than a worst case.  The same table gives
+    0.3 us for a TTL-level step -- response time is a function of overdrive --
+    and the budget takes the slower of the two published typicals."""
+    comparator = budget.build()["stages"]["comparator"]
+    assert comparator["us"] == pytest.approx(1.3)
+    assert comparator["typ_only"] is True
+    assert comparator["published_max_us"] is None
+    assert comparator["large_overdrive_typ_us"] == pytest.approx(0.3)
+    assert "references/datasheets/lm393.txt" in comparator["source"]
+    assert "5.11" in comparator["source"]
+
+
+def test_the_latch_delay_is_the_set_to_output_falling_edge():
+    """FF1 has SET = FLT and its ~Q is the permit term, so setting the flip-flop
+    drives ~Q *down*: the applicable row is set-to-output tPHL, 200 typ /
+    400 max ns at VDD = 5 V.  Quoting the clock-to-Q row (150/300 ns) would
+    understate a path that never uses the clock -- D and CLK are tied off."""
+    latch = budget.build()["stages"]["latch"]
+    assert latch["us"] == pytest.approx(0.4)
+    assert latch["typ_us"] == pytest.approx(0.2)
+    assert latch["vdd_v"] == pytest.approx(5.0)
+    assert latch["edge"].startswith("set to")
+    assert "references/datasheets/cd4013b.txt" in latch["source"]
+    assert "6.6" in latch["source"]
 
 
 def test_the_sr_drivers_have_a_published_disable_delay_and_drive_low():
@@ -189,8 +222,23 @@ def test_the_primary_branch_not_the_sr_branch_sets_the_all_ten_low_time():
     totals = budget.build()["totals"]
     assert totals["primary_branch_floor_us"] > totals["sr_branch_floor_us"]
     assert totals["slowest_branch"] == "primary"
-    assert totals["shared_after_detection_us"] == pytest.approx(
+    assert totals["driver_branch_us"] == pytest.approx(
         totals["primary_branch_floor_us"])
+
+
+def test_the_shared_stage_is_the_sum_of_the_stages_that_are_actually_in_series():
+    """Detection stops at the comparator input, so the comparator and the latch
+    sit in series with the permit rail and the driver -- the two driver branches
+    are the only parallel pair.  Every one of those stages moves both channel
+    floors by the same amount, which is why the 29.88 us detection gap survives
+    the sum unchanged."""
+    result = budget.build()
+    stages, totals = result["stages"], result["totals"]
+    assert totals["shared_after_detection_us"] == pytest.approx(
+        stages["comparator"]["us"] + stages["latch"]["us"]
+        + totals["driver_branch_us"])
+    assert totals["hard_channel_floor_us"] == pytest.approx(44.18, abs=0.02)
+    assert totals["fast_channel_floor_us"] == pytest.approx(14.30, abs=0.02)
 
 
 def test_the_budget_is_not_a_worst_case_and_says_so():

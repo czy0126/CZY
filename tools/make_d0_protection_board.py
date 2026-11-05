@@ -1231,11 +1231,20 @@ def trip_timing_record() -> dict | None:
     return json.loads(path.read_text(encoding="utf-8"))["results"]
 
 
-# LM393 (LM2903) inputs are specified from 0 V to VCC-1.5 V; at V5 = 5 V that is
-# 3.5 V.  No LM393 datasheet is vendored in this repository, so this is the
-# existing conservative assumption rather than a verified limit --
-# tools/d0_analog_preflight.py keeps it on the open-items list.
-LM393_COMMON_MODE_LIMIT_V = 3.5
+# LM393 inputs, references/datasheets/lm393.txt (SLCS005AH) section 5.8, which
+# tabulates VICR twice: 0 to VCC-1.5 at 25 C and 0 to VCC-2 over the full
+# range.  At V5 = 5 V those are 3.5 V and 3.0 V.  The board's divider has
+# always been sized against the 25 C row; the full-range row is the guaranteed
+# number, so both are kept and both are reported.  Neither is a design margin
+# the board can retune away: the divider's ratio is what sets the gate trip,
+# and the datasheet's own note allows one input to exceed the range, which is
+# the input that is *not* the 0.200 V reference.
+LM393_VICR_25C_V = 3.5
+LM393_VICR_FULL_RANGE_V = 3.0
+LM393_COMMON_MODE_LIMIT_V = LM393_VICR_25C_V
+LM393_COMMON_MODE_LIMIT_FULL_RANGE_V = LM393_VICR_FULL_RANGE_V
+LM393_COMMON_MODE_SOURCE = ("references/datasheets/lm393.txt (SLCS005AH, revised "
+                            "April 2025; section 5.8, VICR row)")
 
 # One gate driven at a time, at a level a healthy 12 V driver reaches with
 # margin.  The per-channel sweep in gate_sense_bring_up() uses it.
@@ -1277,16 +1286,25 @@ def gate_trip_v(vf: float = 0.0) -> float:
     return divider_output("R6", "R7") * (series + top + bottom) / bottom + vf
 
 
-def gate_rail_for_common_mode() -> float:
-    """Gate rail at which all ten gates high land exactly on the VCC-1.5 V limit.
+def gate_rail_for_common_mode(limit_v: float | None = None) -> float:
+    """Gate rail at which all ten gates high land exactly on the VICR bound.
 
     Ten conducting is the worst case for the comparator input, not the best:
     parallel branches lower the series resistance, so the sense node reaches
     higher for a given gate voltage than it does with one gate on.
+
+    ``limit_v`` defaults to the 25 C row (3.5 V -> 15.98 V of gate); passing
+    the full-range row gives 13.69 V, which the 15 V TVS standoff exceeds.
     """
+    limit = LM393_COMMON_MODE_LIMIT_V if limit_v is None else limit_v
     series = gate_branch_resistance() / 10
     top, bottom = resistance(part_value("R76")), resistance(part_value("R77"))
-    return LM393_COMMON_MODE_LIMIT_V * (series + top + bottom) / bottom
+    return limit * (series + top + bottom) / bottom
+
+
+def gate_rail_for_full_range_common_mode() -> float:
+    """Same bound on the guaranteed-over-temperature VICR row (3.0 V)."""
+    return gate_rail_for_common_mode(LM393_COMMON_MODE_LIMIT_FULL_RANGE_V)
 
 
 def gate_sense_bring_up() -> list[dict]:
@@ -1361,7 +1379,12 @@ def observations() -> list[dict]:
                       f"already reads on. All ten high give "
                       f"{gate_sense_v(12.0, conducting=10):.3f} V at the 12 V rail and "
                       f"{gate_sense_v(15.0, conducting=10):.3f} V at the 15 V TVS "
-                      f"standoff, both inside the LM393's VCC-1.5 V = 3.5 V limit; that "
+                      f"standoff. At 12 V that is inside both LM393 VICR rows "
+                      f"(VCC-1.5 = 3.5 V at 25 C, VCC-2 = 3.0 V over the full range); "
+                      f"at 15 V it is inside the 25 C row and 0.29 V above the "
+                      f"full-range one, which the datasheet permits because only one "
+                      f"input has to be in range and the other input here is the "
+                      f"0.200 V reference; that "
                       f"bound is a resistor ratio, so it holds for any diode drop, which "
                       f"the BZX84C3V0 it replaces could not -- a Zener knee is specified "
                       f"at 5 mA and this node spends tens of microamps.",
@@ -1379,20 +1402,26 @@ def observations() -> list[dict]:
                       f"{divider_output('R2', 'R3'):.3f} V reference: trip "
                       f"{rail_good_trip():.2f} V, {rail_good_node():.2f} V at 12 V. The "
                       f"base has to stay low -- with the 2.5 V reference the first draft "
-                      f"read 3.84 V at 12 V, above the LM393's VCC-1.5 V = 3.5 V "
-                      f"common-mode limit, where the output is undefined.",
+                      f"read 3.84 V at 12 V, above both LM393 VICR rows (3.5 V at 25 C, "
+                      f"3.0 V over the full range), where the output is not specified.",
          "consequence": f"Rail-good is a {rail_good_trip():.1f} V threshold on a 12 V rail, "
                         f"so the drivers are declared healthy down to "
                         f"{rail_good_trip():.1f} V and run with reduced gate drive in that "
                         f"band. The trip is set by resistor choice and is not adjusted "
                         f"at first article.",
          "source": f"{CTRL}:proposed_sr_channels"},
-        {"id": "EN_THRESHOLD_NOT_VERIFIED",
-         "statement": "UCC27524ADR ENA/ENB thresholds at VDD = 12 V are not checked "
-                      "against a datasheet: no vendor datasheet is vendored in this repo.",
-         "consequence": "A 5 V PERMIT_RAIL is assumed to be a valid logic high. "
-                        "Bench measurement at first article is required before the "
-                        "permit stage can be called qualified.",
+        {"id": "EN_THRESHOLD_IS_A_TABLE_FIGURE_BUT_NOT_PRODUCTION_TESTED",
+         "statement": "UCC27524ADR ENA/ENB thresholds come from the vendored datasheet "
+                      "(references/datasheets/ucc27524a.txt, SLUSBP4C, D package): "
+                      "VEN_H 1.9 V min, VEN_L 1.35 V max, 0.7/0.95/1.1 V of hysteresis. "
+                      "The 5 V PERMIT_RAIL clears VEN_H min by 3.1 V, and the released "
+                      "rail settles at 0.26 V, below VEN_L max by 1.09 V, so both ends "
+                      "of the logic are specified rather than assumed.",
+         "consequence": "What is still missing is not a threshold but an acceptance: the "
+                        "datasheet states that switching parameters are not tested in "
+                        "production, and the internal EN pull-up is a 200 k typical with "
+                        "no min or max, so the released-rail ceiling is nominal. The "
+                        "permit stage stays unqualified until first article.",
          "source": f"{CTRL}:proposed_sr_channels"},
         {"id": "ACK_TIMING_UNQUALIFIED",
          "statement": "The release token is a level latch, not an edge sampler: "

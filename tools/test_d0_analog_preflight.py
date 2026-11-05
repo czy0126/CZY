@@ -8,7 +8,9 @@ gain, a review that starts claiming hardware evidence).
 """
 from __future__ import annotations
 
+import json
 from dataclasses import replace
+from pathlib import Path
 
 import pytest
 
@@ -56,6 +58,26 @@ def test_all_high_stays_inside_the_comparator_range_without_a_zener():
     assert d["bound_is_a_resistor_ratio_not_a_knee_voltage"] is True
 
 
+def test_the_15v_case_clears_the_25c_limit_and_misses_the_full_range_one():
+    """Section 5.8 gives VICR twice: 0 to VCC-1.5 (3.5 V) at 25 C and 0 to
+    VCC-2 (3.0 V) over the full range.  The all-ten node reads 3.286 V at the
+    15 V standoff, so it clears the 25 C figure by 214 mV and misses the
+    guaranteed one by 286 mV.  Nothing is retuned: the datasheet's own note
+    says only one input has to be in range, and this comparator's other input
+    is the 0.200 V reference, which is always inside it."""
+    d = audit.build()["gate_max_detector"]
+    assert d["lm393_vicr_25c_v"] == pytest.approx(3.5)
+    assert d["lm393_vicr_full_range_v"] == pytest.approx(3.0)
+    assert "references/datasheets/lm393.txt" in d["lm393_common_mode_source"]
+    assert d["all_ten_inside_common_mode_at_15v"] is True            # the 25 C row
+    assert d["all_ten_inside_full_range_common_mode_at_12v"] is True
+    assert d["all_ten_inside_full_range_common_mode_at_15v"] is False
+    assert d["reference_input_v"] == pytest.approx(0.200, abs=1e-3)
+    assert d["reference_input_inside_full_range_vicr"] is True
+    assert d["gate_rail_at_the_full_range_common_mode_bound_v"] == pytest.approx(
+        13.69, abs=0.02)
+
+
 def test_the_zener_is_gone_and_its_reason_is_still_on_the_record():
     clamp = audit.build()["clamp"]
     assert clamp["part"] is None
@@ -91,11 +113,15 @@ def test_an_updated_ti_package_is_not_a_fabrication_authorization():
 
 
 def test_the_review_lists_what_the_arithmetic_cannot_settle():
+    """The LM393 limit is now cited from its own datasheet, so 'verified' has to
+    split in two: the *limit* is a number off a page, the *margin* over
+    temperature is still nobody's measurement."""
     d = audit.build()["gate_max_detector"]
     for key in ("residual_vgs_safe_off_threshold_verified_per_fet",
                 "diode_drop_over_temperature_verified",
-                "lm393_common_mode_limit_verified"):
+                "lm393_common_mode_margin_verified_over_temperature"):
         assert d[key] is False, key
+    assert d["lm393_common_mode_limit_is_cited"] is True
     text = " ".join(audit.build()["unqualified_prerequisites"])
     for topic in ("bring-up", "VGS", "common-mode", "TL431"):
         assert topic in text, topic
@@ -124,8 +150,18 @@ def test_a_changed_detector_part_is_not_silently_certified(monkeypatch):
     monkeypatch.setattr(board, "parts", changed_parts)
     result = audit.build()
     assert result["gate_max_detector"]["wiring_as_designed"] is False
-    assert result["gate_max_detector"]["lm393_common_mode_limit_verified"] is False
+    assert result["gate_max_detector"]["lm393_common_mode_margin_verified_over_temperature"] is False
     assert result["hardware_protection_approved"] is False
+
+
+RECORD = Path(__file__).resolve().parent.parent / "design/v3/stage_f/d0_analog_preflight.json"
+
+
+def test_the_committed_review_is_what_the_tool_produces():
+    """Same rule as d0_trip_timing.json: a design record that CI cannot
+    reproduce is a story, not evidence."""
+    assert RECORD.is_file(), "run: python tools/d0_analog_preflight.py --output ..."
+    assert json.loads(RECORD.read_text(encoding="utf-8")) == audit.build()
 
 
 def test_analog_release_cli_fails_closed(tmp_path):

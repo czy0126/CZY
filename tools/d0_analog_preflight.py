@@ -90,16 +90,30 @@ def gate_max_detector(parts: dict) -> dict:
         "all_ten_gates_at_12v_sense_v": all_twelve,
         "all_ten_gates_at_15v_sense_v": all_fifteen,
         "lm393_common_mode_upper_v": board.LM393_COMMON_MODE_LIMIT_V,
+        "lm393_common_mode_source": board.LM393_COMMON_MODE_SOURCE,
+        "lm393_vicr_25c_v": board.LM393_VICR_25C_V,
+        "lm393_vicr_full_range_v": board.LM393_VICR_FULL_RANGE_V,
         "all_ten_inside_common_mode_at_12v": all_twelve < board.LM393_COMMON_MODE_LIMIT_V,
         "all_ten_inside_common_mode_at_15v": all_fifteen < board.LM393_COMMON_MODE_LIMIT_V,
+        "all_ten_inside_full_range_common_mode_at_12v": (
+            all_twelve < board.LM393_COMMON_MODE_LIMIT_FULL_RANGE_V),
+        "all_ten_inside_full_range_common_mode_at_15v": (
+            all_fifteen < board.LM393_COMMON_MODE_LIMIT_FULL_RANGE_V),
+        "reference_input_v": board.divider_output("R6", "R7"),
+        "reference_input_inside_full_range_vicr": (
+            board.divider_output("R6", "R7") < board.LM393_COMMON_MODE_LIMIT_FULL_RANGE_V),
+        "datasheet_allows_one_input_out_of_range": True,
         "gate_rail_at_the_common_mode_bound_v": board.gate_rail_for_common_mode(),
+        "gate_rail_at_the_full_range_common_mode_bound_v": (
+            board.gate_rail_for_full_range_common_mode()),
         "bound_is_a_resistor_ratio_not_a_knee_voltage": True,
         "can_name_the_failing_gate": False,
         "per_channel_bring_up_rows": len(board.gate_sense_bring_up()),
         "one_open_channel_is_invisible_to_an_all_high_test": True,
         "residual_vgs_safe_off_threshold_verified_per_fet": False,
         "diode_drop_over_temperature_verified": False,
-        "lm393_common_mode_limit_verified": False,
+        "lm393_common_mode_limit_is_cited": True,
+        "lm393_common_mode_margin_verified_over_temperature": False,
     }
 
 
@@ -180,15 +194,18 @@ def build() -> dict:
             "detector diode drop over -40..+125 C and its spread (no vendored datasheet), "
             "which moves the trip between the ideal %.3f V and VGS(th) min %.1f V"
             % (board.gate_trip_v(), SR_VGS_TH_MIN_V),
-            "LM393 common-mode limit as a datasheet number: the %.1f V used here is a "
-            "carried-over assumption, not a cited limit" % board.LM393_COMMON_MODE_LIMIT_V,
+            "the LM393's common-mode limit is now a cited number (§5.8: 3.5 V at "
+            "25 C, 3.0 V over the full range), but the 15 V standoff puts the all-ten "
+            "sense node 0.29 V above the full-range row; it is permitted because the "
+            "0.200 V reference on the other input is in range, and that reading needs "
+            "bench confirmation at the temperature extremes rather than at 25 C",
             "ten-step bring-up sweep plus all-three-rails startup/collapse records; a "
             "sum or a maximum cannot show which channel is open",
             "the response budget is a floor, not a worst case: tools/d0_response_budget.py "
-            "settles the permit rail and both driver datasheets' disable delays, but the "
-            "LM393 and CD4013 stages have no vendored datasheet, the UCC27524A's own "
-            "switching numbers are not production-tested, and the 48/50-V 120-A fault "
-            "cases are not swept",
+            "now settles the permit rail, both driver datasheets' disable delays, the "
+            "LM393 typical response and the CD4013 set-to-output max, but the LM393 "
+            "publishes no maximum at all, the UCC27524A's own switching numbers are not "
+            "production-tested, and the 48/50-V 120-A fault cases are not swept",
             "TL431 reference stability with C7 and min/max shunt current",
             "power-on reset/ACK debounce and rail sequencing on actual hardware",
             "real connected VGS probe records for all ten gates; ERC is not that evidence",
