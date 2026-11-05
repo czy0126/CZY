@@ -190,6 +190,17 @@ def test_empty_raw_does_not_exempt_stalled_solver_from_watchdog(tmp_path: Path):
     assert "stalled" in state["last_failure"]
 
 
+def test_cpu_probe_is_unavailable_but_liveness_still_times_out(tmp_path: Path):
+    deck = tmp_path / "deck.cir"
+    deck.write_text("* test")
+    proc = FakeProcess()
+    state = new_state(proc, now=0.0, cpu=0.0)
+    assert check_lane(state, str(deck), now=100, t0=0,
+                      cpu_of=lambda _: None) == "wait"
+    assert proc.killed
+    assert "CPU counter unavailable" in state["last_failure"]
+
+
 def test_recent_raw_growth_prevents_watchdog_killing_busy_writer(tmp_path: Path):
     deck = tmp_path / "deck.cir"
     deck.write_text("* test")
