@@ -23,6 +23,8 @@ import ctypes
 import hashlib
 import json
 import os
+import re
+import tempfile
 import shutil
 import subprocess
 import sys
@@ -53,6 +55,41 @@ def artifact_paths(deck: str) -> tuple[str, str]:
     """The .raw and .log LTspice writes next to a deck."""
     base = deck[:-4] if deck.lower().endswith(".cir") else deck
     return base + ".raw", base + ".log"
+
+
+def completed_artifacts(deck: str) -> tuple[bool, str]:
+    """Require a finished *ASCII* transient raw and LTspice completion marker.
+
+    A 0-byte raw + startup log existed on the remote before solver success.
+    File existence and process returncode 0 are NOT enough. This is a cheap
+    header/completion preflight, not an exhaustive parse of every raw sample.
+    """
+    raw, log = artifact_paths(deck)
+    if not os.path.isfile(raw) or not os.path.isfile(log):
+        return False, "missing raw/log"
+    if os.path.getsize(raw) == 0 or os.path.getsize(log) == 0:
+        return False, "empty raw/log"
+    try:
+        with open(raw, "rb") as stream:
+            prefix = stream.read(512 * 1024)
+        header = re.search(rb"(?m)^No\. Points:\s*([0-9]+)\s*$", prefix)
+        variables = re.search(rb"(?m)^No\. Variables:\s*([0-9]+)\s*$", prefix)
+        values = re.search(rb"(?m)^Values:\s*\r?\n", prefix)
+        if (not header or int(header.group(1)) < 1 or
+                not variables or int(variables.group(1)) < 1 or
+                not values):
+            return False, "ASCII raw lacks nonzero points/variables or Values header"
+        if not prefix[values.end():].strip():
+            return False, "ASCII raw has no waveform data after Values"
+        with open(log, "r", encoding="utf-8", errors="replace") as stream:
+            logfile = stream.read()
+        if re.search(r"(?im)^\s*(?:fatal error|error(?: in line)?|internal error)\s*:", logfile):
+            return False, "LTspice log contains an error"
+        if not re.search(r"(?im)^Total elapsed time:\s*[0-9.]+\s+seconds?\.", logfile):
+            return False, "LTspice log lacks completion-time marker"
+    except OSError as error:
+        return False, f"cannot inspect artifacts: {error}"
+    return True, "validated completed raw header and LTspice log"
 
 
 def cpu_seconds(pid: int) -> float | None:
@@ -94,23 +131,32 @@ def check_lane(state: dict, deck: str, now: float, t0: float,
     proc = state["proc"]
     raw_path, log_path = artifact_paths(deck)
     if proc is not None:
-        if proc.poll() is not None:
-            if os.path.exists(raw_path) and os.path.exists(log_path):
+        exitcode = proc.poll()
+        if exitcode is not None:
+            complete, reason = completed_artifacts(deck)
+            if exitcode == 0 and complete:
                 state["done"] = True
                 state["finish"] = now - t0
                 return "done"
+            state["last_failure"] = (f"LTspice exited {exitcode}; " + reason)
             state["proc"] = None
             state["when"] = now + 3
             return "wait"
         cpu = cpu_of(proc.pid)
         if cpu is None:
             return "run"
+        size = os.path.getsize(raw_path) if os.path.isfile(raw_path) else 0
+        if size > state.get("raw_size", 0):
+            # A writer may be busy flushing gigabytes of RAW while CPU is idle.
+            # Treat byte growth as work, but an empty/unchanged file is NOT liveness.
+            state["raw_size"], state["cpu_at"] = size, now
         if cpu - state["cpu"] >= CPU_MIN_GROWTH_S:
             state["cpu"], state["cpu_at"] = cpu, now
-        elif now - state["cpu_at"] > CPU_STALL_S and not os.path.exists(raw_path):
+        elif now - state["cpu_at"] > CPU_STALL_S:
             proc.kill()
             proc.wait()
             state["kills"] += 1
+            state["last_failure"] = "CPU and RAW output remained stalled"
             state["proc"] = None
             state["when"] = now + 3
             return "wait"
@@ -123,7 +169,8 @@ def check_lane(state: dict, deck: str, now: float, t0: float,
     clear_artifacts(deck)
     proc = launcher(deck)
     state.update({"proc": proc, "attempts": state["attempts"] + 1, "started": now,
-                  "cpu": cpu_of(proc.pid) or 0.0, "cpu_at": now, "when": None})
+                  "cpu": cpu_of(proc.pid) or 0.0, "cpu_at": now, "raw_size": 0,
+                  "when": None})
     return "run"
 
 
@@ -134,21 +181,34 @@ def prepare_lanes(root: str, deck: str, count: int) -> list[str]:
     staging root — so a lane must sit at <root>/sim/lane* when the deck lives at
     <root>/sim/v3/deck.cir.
     """
-    source = os.path.join(root, deck)
+    if count < 1 or count > 32:
+        raise ValueError("concurrent lane count must be between 1 and 32")
+    if os.path.isabs(deck) or ".." in deck.replace("\\\\", "/").split("/"):
+        raise ValueError("deck must be relative to --root without parent traversal")
+    source = os.path.abspath(os.path.join(root, deck))
+    root_abs = os.path.abspath(root)
+    if os.path.commonpath([source, root_abs]) != root_abs:
+        raise ValueError("deck path escapes the staging root")
+    if not source.lower().endswith(".cir") or not os.path.isfile(source):
+        raise ValueError("deck must be an existing .cir file")
     lane_parent = os.path.dirname(os.path.dirname(source))
-    tag = time.strftime("%H%M%S")
+    if os.path.basename(lane_parent).lower() != "sim":
+        raise ValueError("deck must be directly under <root>/sim/<case>/")
     lanes = []
     for index in range(count):
-        lane = os.path.join(lane_parent, "lane%s_%d" % (tag, index))
-        os.makedirs(lane, exist_ok=True)
+        # Never reuse a lane: old .raw/.log files are precious experimental
+        # evidence and clear_artifacts() must not destroy a prior run.
+        lane = tempfile.mkdtemp(prefix=f"lane_{index}_", dir=lane_parent)
         target = os.path.join(lane, os.path.basename(deck))
-        shutil.copy(source, target)
+        shutil.copy2(source, target)
         lanes.append(target)
     return lanes
 
 
 def run(root: str, deck: str, count: int, stagger: float, reference: str | None,
         report_path: str) -> int:
+    if not (0 <= stagger <= 60):
+        raise ValueError("stagger must be between 0 and 60 seconds")
     lanes = prepare_lanes(root, deck, count)
     anchor = time.time()
     states = {}
@@ -158,7 +218,8 @@ def run(root: str, deck: str, count: int, stagger: float, reference: str | None,
         states[index] = {"proc": proc, "attempts": 1, "started": stale,
                          "cpu": cpu_seconds(proc.pid) or 0.0, "cpu_at": stale,
                          "when": None, "done": False, "failed": False,
-                         "kills": 0, "finish": None}
+                         "kills": 0, "finish": None, "raw_size": 0,
+                         "last_failure": None}
         time.sleep(stagger)
     last_write = 0.0
     while True:
@@ -174,6 +235,9 @@ def run(root: str, deck: str, count: int, stagger: float, reference: str | None,
     wall = time.time() - anchor
     done = {i: body_hash(artifact_paths(lanes[i])[0]) for i, s in states.items() if s["done"]}
     expected = body_hash(os.path.join(root, reference)) if reference else None
+    all_complete = len(done) == count
+    all_match_reference = (expected is not None and all_complete
+                           and all(value == expected for value in done.values()))
     result = {
         "n": count,
         "wall_s": round(wall, 1),
@@ -183,13 +247,19 @@ def run(root: str, deck: str, count: int, stagger: float, reference: str | None,
         "watchdog_kills": sum(s["kills"] for s in states.values()),
         "finish_s": {i: round(s["finish"], 1) for i, s in states.items() if s["finish"]},
         "hashes": done,
-        "all_same": expected is not None and all(value == expected for value in done.values()),
+        "all_same": all_match_reference,
+        "reference_mismatch_lanes": (
+            [i for i, value in done.items() if value != expected]
+            if expected is not None else []),
+        "failed_lanes": [i for i, state in states.items() if state["failed"]],
+        "last_failures": {i: state.get("last_failure") for i, state in states.items()
+                          if state.get("last_failure")},
         "reference": reference,
     }
     with open(report_path, "w") as handle:
         json.dump(result, handle, indent=2)
     print(json.dumps({k: v for k, v in result.items() if k != "hashes"}))
-    return 0 if result["ok"] == count else 1
+    return 0 if all_complete and (expected is None or all_match_reference) else 1
 
 
 def main(argv: list[str] | None = None) -> int:
