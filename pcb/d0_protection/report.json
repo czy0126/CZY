@@ -2452,8 +2452,8 @@
     },
     {
       "id": "ACK_TIMING_UNQUALIFIED",
-      "statement": "The release token is a level latch, not an edge sampler: ACK_ARM = READY and the button not pressed sets it, and any fault or lost READY clears it, so the first press after power-up is the one that clears the fault latch (an edge sampler armed on release would swallow that press). The press charges C17 straight from V5 through the button; the 10.0 ms (R30*C17) is the release decay and the 1.00 ms edge window is R31*C18.",
-      "consequence": "The press path is undebounced, so one contact bounce while READY is indistinguishable from an operator press and clears the latch; only the release is filtered. Neither the 1.00 ms window nor the bounce sensitivity is qualified on hardware.",
+      "statement": "The release token is a level latch, not an edge sampler: ACK_ARM = READY and the button not pressed sets it, and any fault or lost READY clears it, so the first press after power-up is the one that clears the fault latch (an edge sampler armed on release would swallow that press). The press charges C17 straight from V5 through the button; the 10 ms (R30*C17) is the release decay and the 1 ms edge window is R31*C18.",
+      "consequence": "The press path is undebounced, so one contact bounce while READY is indistinguishable from an operator press and clears the latch; only the release is filtered. Neither the 1 ms window nor the bounce sensitivity is qualified on hardware.",
       "source": "tools/two_tier_fault_logic.py:50-61"
     },
     {

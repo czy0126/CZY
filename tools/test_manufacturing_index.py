@@ -115,6 +115,25 @@ def test_a_board_without_a_package_is_not_reported_as_present(tmp_path):
     assert "does not exist" in row["not_fabricable_because"][0]
 
 
+def test_a_routed_board_with_no_package_path_does_not_send_you_after_a_manifest(tmp_path):
+    """Copper that passes DRC is not a package.
+
+    With no ``fab`` path at all, the "run the generator, the manifest is
+    missing" branch would point at a generator that has no fab export -- a
+    circle.  The row still hashes the board, because copper without a package
+    is still committed evidence.
+    """
+    (tmp_path / "b.kicad_sch").write_text("sch", encoding="utf-8")
+    (tmp_path / "b.kicad_pcb").write_text("board", encoding="utf-8")
+    spec = spec_for(str(tmp_path))
+    spec["fab"] = None
+    row = index.entry(spec)
+    assert row["status"] == "NO_FAB_PACKAGE"
+    assert row["board_sha256"] == index._sha256(tmp_path / "b.kicad_pcb")
+    reason = row["not_fabricable_because"][0]
+    assert "no gerber" in reason and "does not exist" not in reason
+
+
 # ---------------------------------------------------------------- flags
 def test_a_missing_flag_reads_as_false():
     """Absence is exactly how an unapproved package slips through as approved."""

@@ -1090,9 +1090,16 @@ def bom(parts_: list[Part]) -> None:
 
 
 def project_file() -> str:
-    """The ``.kicad_pro`` without which ERC cannot see the project libraries."""
+    """The ``.kicad_pro`` without which ERC cannot see the project libraries.
+
+    ``missing_courtyard`` is raised from its default to **error** for the same
+    reason ``main_board_mechanical`` does it: KiCad can leave that check off, and
+    a board whose every footprint lacked a courtyard would then report zero
+    violations while nothing had been checked.  ERC does not read this section.
+    """
     return json.dumps({
-        "board": {}, "boards": [], "cvpcb": {}, "erc": {},
+        "board": {"design_settings": {"rule_severities": {"missing_courtyard": "error"}}},
+        "boards": [], "cvpcb": {}, "erc": {},
         "libraries": {"pinned_footprint_libs": [], "pinned_symbol_libs": []},
         "meta": {"filename": "d0_protection.kicad_pro", "version": 1},
         "net_settings": {}, "pcbnew": {},

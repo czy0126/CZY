@@ -364,6 +364,22 @@ def _element_rect_distance(el: _Element,
     return _rect_rect_distance(el.rect, rect)
 
 
+def _element_line_distance(el: _Element,
+                           line: tuple[float, float, float, float]) -> float:
+    """Centreline distance from one element to a straight line segment.
+
+    Exact for the two kinds the rip-up pass scores -- a track and a via -- and
+    a corner sample for a pad, which the pass never asks about.
+    """
+    if el.kind == "track":
+        return _segment_segment_distance(el.seg, line)
+    if el.kind == "via":
+        return _segment_distance(el.point[0], el.point[1], *line)
+    x0, y0, x1, y1 = el.rect
+    corners = ((x0, y0, x0, y0), (x1, y0, x1, y0), (x1, y1, x1, y1), (x0, y1, x0, y1))
+    return min(_rect_segment_distance(c, line) for c in corners)
+
+
 class Router:
     """Clearance-respecting Manhattan router on a square grid."""
 
@@ -371,7 +387,10 @@ class Router:
                  holes: list[tuple[float, float]], *,
                  pitch: float = PITCH_MM,
                  keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None,
-                 escape_mm: float = ESCAPE_MM
+                 escape_mm: float = ESCAPE_MM,
+                 rip_corridor: bool = False,
+                 dir_penalty: float = 0.0,
+                 t_junction: bool = False
                  ) -> None:
         self.pads = pads
         self.width_mm = width_mm
@@ -384,6 +403,26 @@ class Router:
         # fast-OC module's inner SOT-23-6 pins sit 1.375 mm from the opposite
         # row, which fits a 0.25 mm track (0.775 mm) but not this on both sides.
         self.escape_mm = escape_mm
+        # Whether the repair pass looks for blockers along the whole run of a
+        # failed connection or only around its two pads.  Off by default
+        # because it changes which nets get lifted, and the boards that are
+        # already committed were routed with the narrow search.
+        self.rip_corridor = rip_corridor
+        # Extra cost, in grid steps, for moving across the grain of a layer.
+        # Without it the two layers are interchangeable, so a net that runs
+        # fifty millimetres east spreads itself over both and neither layer
+        # keeps a lane open for the nets that have to run north.  Giving F.Cu
+        # the horizontal grain and B.Cu the vertical one makes vias the only
+        # way to turn a corner, which is what a hand-routed board looks like
+        # and what lets a 415-connection board fit in two layers.  Zero keeps
+        # the isotropic search the committed boards were routed with.
+        self.dir_penalty = dir_penalty
+        # Whether a pad may be joined by tapping the net's own copper instead of
+        # running a fresh path back to a pad that is already connected.  Off by
+        # default: without it every connection is an independent point-to-point
+        # run, which on a 118-pad ground net lays 117 long parallel traces where
+        # a hand router would lay short spurs off one spine.
+        self.t_junction = t_junction
         # ``keep_clear[layer]`` is ``(outline, net)`` pairs: cells inside the
         # outline cost extra for every net but ``net``.  This is how a pour
         # corridor stays a corridor -- a track that crosses it splits the fill,
@@ -561,6 +600,54 @@ class Router:
                 and margin <= y <= self.depth_mm - margin)
 
     # ------------------------------------------------------------ search
+    def _track_cells(self, layer: int, seg: tuple[float, float, float, float]
+                     ) -> set[tuple[int, int]]:
+        """Grid cells a straight run covers, as ``(layer, index)`` pairs."""
+        x0, y0, x1, y1 = seg
+        steps = max(1, int(math.ceil(math.hypot(x1 - x0, y1 - y0) / self.pitch)))
+        cells: set[tuple[int, int]] = set()
+        for k in range(steps + 1):
+            t = k / steps
+            i = int(round((x0 + (x1 - x0) * t) / self.pitch))
+            j = int(round((y0 + (y1 - y0) * t) / self.pitch))
+            if 0 <= i < self.nx and 0 <= j < self.ny:
+                cells.add((layer, self._index(i, j)))
+        return cells
+
+    def _own_cells(self, net: int) -> set[tuple[int, int]]:
+        """Every cell this net's committed copper already occupies."""
+        cells: set[tuple[int, int]] = set()
+        for el in self.elements:
+            if el.net != net:
+                continue
+            if el.kind == "track":
+                cells |= self._track_cells(el.layers[0], el.seg)
+            elif el.kind == "via":
+                i = int(round(el.point[0] / self.pitch))
+                j = int(round(el.point[1] / self.pitch))
+                if 0 <= i < self.nx and 0 <= j < self.ny:
+                    cells |= {(layer, self._index(i, j)) for layer in el.layers}
+        return cells
+
+    def _near_cells(self, cells: set[tuple[int, int]], pad: Pad,
+                    reach_mm: float = 6.0) -> set[tuple[int, int]]:
+        """The part of a tree worth aiming at from ``pad``.
+
+        The A* heuristic is the distance to the bounding box of the target, so
+        handing it a hundred-millimetre tree turns the search into Dijkstra over
+        the whole board.  Aiming at the nearest cell and its neighbourhood keeps
+        the box small and still finds the spur a hand router would draw.
+        """
+        scored = []
+        for layer, idx in cells:
+            x, y = self._cell_xy(idx % self.nx, idx // self.nx)
+            scored.append((abs(x - pad.x) + abs(y - pad.y), layer, idx))
+        if not scored:
+            return set()
+        nearest = min(d for d, _, _ in scored)
+        limit = nearest + reach_mm
+        return {(layer, idx) for d, layer, idx in scored if d <= limit}
+
     def _pad_cells(self, pad: Pad, radius: float) -> set[tuple[int, int]]:
         """Cells a track may stop on and still touch ``pad``'s copper.
 
@@ -643,7 +730,12 @@ class Router:
                 if not self._inside_board(ni, nj, radius) and (layer, nidx) not in source:
                     continue
                 nnode = (layer, nidx)
-                ng = g + 1 + WALL_PRESSURE * _pressure(grid, self.nx, self.ny, ni, nj)
+                # Running across the grain of the layer costs extra; see
+                # ``Router.__init__``.  The heuristic stays admissible because
+                # every step still costs at least one.
+                against = (dj != 0) if layer == 0 else (di != 0)
+                ng = (g + 1 + (self.dir_penalty if against else 0.0)
+                      + WALL_PRESSURE * _pressure(grid, self.nx, self.ny, ni, nj))
                 if zone is not None:
                     ng += zone[layer][nidx]
                 if ng < best.get(nnode, math.inf):
@@ -732,6 +824,10 @@ class Router:
         radius = width / 2.0
         connected = [pads[0]]
         remaining = pads[1:]
+        # Copper this net already has on the board.  A connection that reaches
+        # it is a junction, not a missed pad: the tree is one connected piece of
+        # metal by construction, so touching it at any point is electrical.
+        tree = self._own_cells(net) if self.t_junction else set()
         while remaining:
             best = None
             for a in connected:
@@ -744,6 +840,8 @@ class Router:
             via_blocked = self._blocked(net, VIA_DIAMETER_MM / 2.0)
             source = self._pad_cells(src_pad, radius)
             target = self._pad_cells(dst_pad, radius)
+            if tree:
+                target |= self._near_cells(tree, dst_pad)
             path = self._search(blocked, via_blocked, self._via_keepout(),
                                 radius, source, target, self._zone_cost(net))
             route.attempted += 1
@@ -756,6 +854,14 @@ class Router:
             self._commit(segments, vias)
             route.segments.extend(segments)
             route.vias.extend(vias)
+            if self.t_junction:
+                for s in segments:
+                    tree |= self._track_cells(s.layer, (s.x0, s.y0, s.x1, s.y1))
+                for v in vias:
+                    i = int(round(v.x / self.pitch))
+                    j = int(round(v.y / self.pitch))
+                    if 0 <= i < self.nx and 0 <= j < self.ny:
+                        tree |= {(layer, self._index(i, j)) for layer in (0, 1)}
             connected.append(src_pad)
             remaining.remove(src_pad)
         self.routes[net] = route
@@ -778,27 +884,38 @@ class Router:
         return sum(route.made for route in self.routes.values())
 
     def _rip_victims(self, net: int, *, radius: float = RIP_RADIUS_MM,
-                     limit: int = RIP_MAX_VICTIMS) -> list[int]:
+                     limit: int = RIP_MAX_VICTIMS,
+                     corridor: bool = False) -> list[int]:
         """Foreign nets whose copper is nearest the pads ``net`` failed to reach.
 
         A failed connection is nearly always a corridor somebody else took
         first, so the candidates are the nets occupying the cells around the
         two endpoints -- not the whole board.  Pads are never candidates: they
         are where the parts are, and ripping one out is placement, not routing.
+
+        ``corridor`` also scores copper against the straight line between the
+        two endpoints.  Endpoint proximity answers "who is standing on the
+        door", which is the whole story on a dense little board; on a board
+        with hundred-millimetre nets the blocker is usually halfway along, out
+        of reach of ``radius`` from either pad, so the pass finds no victim and
+        the failure is silently permanent.  Tracks and vias are measured to the
+        line exactly; pads are still never candidates.
         """
         by_name = {f"{p.ref}.{p.number}": p for p in self.pads}
         scored: dict[int, float] = {}
         for a, b in self.routes[net].failures:
-            for name in (a, b):
-                pad = by_name.get(name)
-                if pad is None:
+            pads = [by_name[n] for n in (a, b) if n in by_name]
+            line = ((pads[0].x, pads[0].y, pads[1].x, pads[1].y)
+                    if corridor and len(pads) == 2 else None)
+            for el in self.elements:
+                if el.net < 0 or el.net == net or el.kind == "pad":
                     continue
-                for el in self.elements:
-                    if el.net < 0 or el.net == net or el.kind == "pad":
-                        continue
-                    d = _element_rect_distance(el, pad.rect)
-                    if d <= radius and d < scored.get(el.net, math.inf):
-                        scored[el.net] = d
+                d = min((_element_rect_distance(el, pad.rect) for pad in pads),
+                        default=math.inf)
+                if line is not None:
+                    d = min(d, _element_line_distance(el, line))
+                if d <= radius and d < scored.get(el.net, math.inf):
+                    scored[el.net] = d
         return [n for n, _ in sorted(scored.items(), key=lambda kv: (kv[1], kv[0]))[:limit]]
 
     def rip_up(self, order: list[int], widths: dict[int, float]) -> None:
@@ -828,7 +945,7 @@ class Router:
         board stayed at 118 of 119 and the monotone check threw the whole
         repair away.  In ``order`` the same six nets reach 119.
         """
-        victims = self._rip_victims(net)
+        victims = self._rip_victims(net, corridor=self.rip_corridor)
         if not victims:
             return
         rank = {n: k for k, n in enumerate(order)}
@@ -868,16 +985,26 @@ def route(pads: list[Pad], width_mm: float, depth_mm: float,
           holes: list[tuple[float, float]], *,
           widths: dict[int, float], order: list[int],
           keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None,
-          escape_mm: float = ESCAPE_MM
+          escape_mm: float = ESCAPE_MM,
+          rip_corridor: bool = False,
+          dir_penalty: float = 0.0,
+          t_junction: bool = False
           ) -> RouteResult:
     """Route ``order`` (net indices) with the given widths, then repair failures.
 
     ``keep_clear`` discourages every net but the owner's from routing through a
     pour corridor; see ``Router._zone_cost``.  ``escape_mm`` is the room kept
     around a pad whose net is still unrouted; see ``Router.__init__``.
+    ``rip_corridor`` widens the repair pass from the endpoints of a failed
+    connection to its whole run; see ``Router._rip_victims``.  ``dir_penalty``
+    gives each layer a grain, F.Cu horizontal and B.Cu vertical; see
+    ``Router.__init__``.  ``t_junction`` lets a pad tap the net's own copper
+    instead of running a fresh path to a connected pad; see
+    ``Router.route_net``.
     """
     router = Router(pads, width_mm, depth_mm, holes, keep_clear=keep_clear,
-                    escape_mm=escape_mm)
+                    escape_mm=escape_mm, rip_corridor=rip_corridor,
+                    dir_penalty=dir_penalty, t_junction=t_junction)
     for net in order:
         router.route_net(net, widths[net])
     router.rip_up(order, widths)

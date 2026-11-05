@@ -131,6 +131,17 @@ def entry(spec: dict) -> dict:
         raise SystemExit(f"{spec['id']}: {spec['board']} is missing")
     row["board_sha256"] = _sha256(board)
 
+    if spec["fab"] is None:
+        # Copper that passes DRC is not a package: no gerber, no drill, no
+        # position file, so there is nothing to send a fabricator.  Saying so
+        # is the difference between "not made yet" and "look harder".
+        row["status"] = "NO_FAB_PACKAGE"
+        row["not_fabricable_because"] = [
+            "this board has a routed, DRC-clean board file but no gerber/drill/"
+            "position package has been exported for it",
+        ]
+        return row
+
     fab = ROOT / spec["fab"]
     manifest_path = fab / "manifest.json"
     if not manifest_path.is_file():

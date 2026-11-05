@@ -377,3 +377,129 @@ def test_two_crossing_segments_are_zero_apart():
 def test_a_segment_inside_a_rect_is_zero_apart():
     assert rt._rect_segment_distance((0.0, 0.0, 4.0, 4.0), (1.0, 1.0, 3.0, 3.0)) == 0.0
     assert rt._rect_segment_distance((0.0, 0.0, 4.0, 4.0), (6.0, 2.0, 8.0, 2.0)) == 2.0
+
+
+# ---------------------------------------------------------------- repair reach
+def test_a_track_is_measured_to_the_line_a_failed_connection_runs_along():
+    track = rt._Element(net=2, layers=(0,), kind="track",
+                        seg=(0.0, 3.0, 10.0, 3.0), radius=0.125)
+    assert rt._element_line_distance(track, (0.0, 0.0, 10.0, 0.0)) == pytest.approx(3.0)
+    via = rt._Element(net=2, layers=(0, 1), kind="via", point=(5.0, 0.0), radius=0.3)
+    assert rt._element_line_distance(via, (0.0, 0.0, 10.0, 0.0)) == 0.0
+
+
+def test_a_blocker_halfway_along_a_long_net_is_only_seen_along_the_corridor():
+    """The failure this fixes: a hundred-millimetre net fails in the middle.
+
+    ``_rip_victims`` used to score copper against the two pads alone, within
+    1.5 mm.  On the ten-gate board, 43 of 95 nets span more than 40 mm and 29
+    more than 80 mm, so the net standing in the way is routinely out of that
+    reach from either end; the pass found no victim, and a repairable failure
+    became a permanent one.  Measured on that board, PGND alone (routed first,
+    nothing else on the board) shuts out 8 of the 40 nets that fail in the
+    full run, and those 8 are the ones whose whole run is blocked.
+    """
+    pads = [
+        pad("A", "1", 1, 5.0, 5.0),
+        pad("B", "1", 1, 45.0, 5.0),
+        pad("C", "1", 2, 25.0, 2.0),
+        pad("D", "1", 2, 25.0, 8.0),
+    ]
+    r = rt.Router(pads, 50.0, 10.0, [])
+    r.route_net(2, 0.25)
+    assert r.routes[2].segments, "the blocker has to be copper; pads are never candidates"
+    r.routes[1] = rt._NetRoute(failures=[("A.1", "B.1")])
+
+    assert r._rip_victims(1) == [], "the narrow search only reaches the two pads"
+    assert r._rip_victims(1, corridor=True) == [2]
+
+
+def test_the_corridor_search_is_off_unless_the_caller_asks_for_it():
+    """The committed boards were routed with the narrow search; keep it default."""
+    assert inspect.signature(rt.route).parameters["rip_corridor"].default is False
+    assert inspect.signature(rt.Router.__init__).parameters["rip_corridor"].default is False
+    router = rt.Router([], 10.0, 10.0, [])
+    assert router.rip_corridor is False
+
+
+# ------------------------------------------------------------------ layer grain
+def test_the_grain_penalty_sends_a_corner_through_the_layers():
+    """F.Cu runs east, B.Cu runs north; a corner is a barrel, not a bend.
+
+    Both layers are otherwise interchangeable, so a net that turns simply turns
+    where it stands and the two layers fill up evenly.  Giving each a grain is
+    what lets a board with several hundred connections keep a lane open in each
+    direction -- and the test says the corner really moved onto a via rather
+    than merely costing more.
+    """
+    pads = [pad("A", "1", 1, 5.0, 10.0), pad("B", "1", 1, 45.0, 40.0)]
+    res = rt.route(pads, 50.0, 50.0, [], widths={1: 0.25}, order=[1],
+                   dir_penalty=2.0)
+    assert res.connections_made == 1
+    # The pads are F.Cu only, so the run leaves and re-enters through a barrel.
+    assert len(res.vias) == 2
+    assert all(s.y0 == s.y1 for s in res.segments if s.layer == 0), "F.Cu is the east-west grain"
+    assert all(s.x0 == s.x1 for s in res.segments if s.layer == 1), "B.Cu is the north-south grain"
+
+
+def test_the_grain_penalty_is_off_unless_the_caller_asks_for_it():
+    """Every committed board was routed with an isotropic search."""
+    assert inspect.signature(rt.route).parameters["dir_penalty"].default == 0.0
+    assert inspect.signature(rt.Router.__init__).parameters["dir_penalty"].default == 0.0
+    router = rt.Router([], 10.0, 10.0, [])
+    assert router.dir_penalty == 0.0
+
+
+# ---------------------------------------------------------------- junctions
+def _length(segments) -> float:
+    return sum(((s.x1 - s.x0) ** 2 + (s.y1 - s.y0) ** 2) ** 0.5 for s in segments)
+
+
+def test_a_pad_taps_the_nets_spine_instead_of_running_back_to_a_pad():
+    """The measured difference between a spine and a set of parallel runs.
+
+    A is the seed, so the router connects C first (it is nearer than B).  Plain
+    nearest-pad-first then has to reach B from C, and C is at the far end of
+    its own spur: 65 + 65 mm.  With junctions the spine that A-C already laid
+    passes directly below B, so B drops 50 mm onto it.  Same connection count,
+    fifteen millimetres less copper, and -- on the ten-gate board, where one
+    ground net has 118 pads -- the difference between a wall and a spine.
+    """
+    pads = [pad("A", "1", 1, 5.0, 5.0), pad("B", "1", 1, 105.0, 5.0),
+            pad("C", "1", 1, 55.0, 20.0)]
+    plain = rt.route(pads, 115.0, 30.0, [], widths={1: 0.25}, order=[1])
+    tapped = rt.route(pads, 115.0, 30.0, [], widths={1: 0.25}, order=[1],
+                      t_junction=True)
+    assert plain.connections_made == tapped.connections_made == 2
+    assert _length(tapped.segments) < _length(plain.segments)
+
+
+def test_the_owned_cells_are_the_copper_the_net_already_has():
+    pads = [pad("A", "1", 1, 5.0, 5.0), pad("B", "1", 1, 15.0, 5.0)]
+    r = rt.Router(pads, 30.0, 12.0, [])
+    assert r._own_cells(1) == set()
+    r.route_net(1, 0.25)
+    cells = r._own_cells(1)
+    assert all(layer == 0 for layer, _ in cells), "the copper is on the layer that was routed"
+    xs = [r._cell_xy(idx % r.nx, idx // r.nx)[0] for _, idx in cells]
+    assert min(xs) <= 5.5 and max(xs) >= 14.0, "the copper spans pad A to pad B"
+
+
+def test_the_junction_target_is_limited_to_the_neighbourhood_of_the_pad():
+    """An unbounded target turns the A* heuristic into a constant and the search
+    into Dijkstra over the whole board; ``_near_cells`` keeps the box small."""
+    pads = [pad("A", "1", 1, 5.0, 5.0), pad("B", "1", 1, 115.0, 5.0)]
+    r = rt.Router(pads, 130.0, 12.0, [])
+    r.route_net(1, 0.25)
+    tree = r._own_cells(1)
+    near = r._near_cells(tree, pad("F", "1", 1, 120.0, 5.0))
+    assert near, "the nearest cell is always kept"
+    assert len(near) < len(tree)
+    xs = [r._cell_xy(idx % r.nx, idx // r.nx)[0] for _, idx in near]
+    assert min(xs) > 100.0, "the far end of the 110 mm spine is not a target"
+
+
+def test_junctions_are_off_unless_the_caller_asks_for_it():
+    assert inspect.signature(rt.route).parameters["t_junction"].default is False
+    assert inspect.signature(rt.Router.__init__).parameters["t_junction"].default is False
+    assert rt.Router([], 10.0, 10.0, []).t_junction is False
