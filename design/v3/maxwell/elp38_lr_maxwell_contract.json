@@ -1,7 +1,7 @@
 {
   "schema": "CZY_MAXWELL3D_LR_CAD_CONTRACT_V1",
   "design_intent": "Lr only; ELP38 + I38 N97; 2-turn and 3-turn are alternative geometries, not a single shared STEP",
-  "model_status": "NOT_BUILT_NOT_SOLVED",
+  "model_status": "NO_ACTUAL_STEP_OR_BH; ENGINEER_RECONSTRUCTED_CAD_ACCEPTED_FOR_CONCEPT_ONLY",
   "maxwell_solution": "Magnetostatic",
   "manufacturer_core": "TDK ELP 38/8/25 + I 38/4/25 N97",
   "source_design": "design/v3/bom/lr_design.json",
@@ -51,13 +51,14 @@
     "winding_terminal_sheet": "LR_COIL_TERMINAL",
     "winding_copper": "LR_FOIL_COPPER"
   },
-  "aedt_material_name": null,
+  "aedt_material_name": "N97_100C_BH_CONCEPT_REVIEWED",
   "n97_bh_100c_csv": null,
   "approval": {
-    "real_step_from_oem_geometry": false,
-    "material_has_nonlinear_bh_100c": false,
     "winding_direction_confirmed": false,
-    "cad_gap_matches_case": false
+    "cad_gap_matches_case": false,
+    "geometry_source_reviewed_for_concept": false,
+    "bh_curve_source_reviewed_for_concept": false,
+    "manufacturer_geometry_verified": false
   },
   "numerical_acceptance": {
     "maxwell_inductance_mesh_change_percent": 2,
@@ -66,5 +67,7 @@
     "differential_l_at_121_515a_uh": "REPORT_UNQUALIFIED",
     "winding_loss_ac_at_200_622khz_w": "SECOND_SOLVER_AC_EDDY_REQUIRED"
   },
-  "hardware_fabrication_approved": false
+  "hardware_fabrication_approved": false,
+  "geometry_source_policy": "Engineer-reconstructed catalogue geometry is allowed for exploratory Maxwell. Manufacturer STEP is NOT a prerequisite. Record geometry/differences; manufacturer CAD is needed for final signoff.",
+  "material_source_policy": "Digitized/approximated BH may be used with explicit provenance for concept; actual 100C nonlinear BH is required for high-current signoff. Solver must never equate concept with measured."
 }
