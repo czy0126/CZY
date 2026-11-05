@@ -157,11 +157,22 @@ STANDARD = {
 
 
 def build_symbols() -> dict[str, str]:
-    libs = symbol_libs()
+    # Offline CI is not a KiCad executable: use symbols embedded in the
+    # committed native schematic only when the CLI is unavailable. This
+    # validates the frozen design; it is NOT a new OEM library/GUI/ERC check.
+    cli = kicad_cli()
+    libs = symbol_libs() if cli is not None else None
+    source_schematic = OUT / "fast_oc.kicad_sch"
+    if libs is None and not source_schematic.is_file():
+        raise SystemExit("KiCad symbols unavailable: install kicad-cli or provide "
+                         "the committed native schematic for offline review")
     symbols: dict[str, str] = {}
     for lib_id, (lib, name) in STANDARD.items():
-        block = extract_symbol(libs / lib, name)
-        block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
+        if libs is not None:
+            block = extract_symbol(libs / lib, name)
+            block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
+        else:
+            block = extract_symbol(source_schematic, lib_id)
         symbols[lib_id] = block
     # Two-pin shunt reference.  The TI DBZ SOT-23 pin 3 is marked '*' (not NC),
     # and TI permits it to float OR connect to pin 2 (anode), recommending
