@@ -19,8 +19,23 @@
 // API references:
 // https://prodocs.lceda.cn/cn/api/reference/pro-api.sch_primitivecomponent.modify.html
 // https://prodocs.lceda.cn/cn/api/reference/pro-api.sch_primitivecomponent.getall.html
+//
+// Two identities are accepted, and the pair is checked the same way in
+// read_native_inventory.js and value_eco.js:
+//   * by studio uuid -- a project opened from the library carries the uuid
+//     stored inside the .eprj2;
+//   * by path name   -- opening the file with --path (the only supported way,
+//     see CLAUDE.md) wraps it in a path-derived project whose uuid is NEW on
+//     every open (f7433cc3..., 0054c1e0..., and another for a probe copy), so
+//     the file stem is the only stable identity there.
+// An earlier version of this script accepted only the studio uuid and would
+// therefore have refused every path-opened run.  Both uuids are recorded in
+// the result so the operator can see which route was taken.
+// The substantive guard is the native pin map below (R8.1=VCC12, R8.2=RUN,
+// R7 RUN/PGND, U2.6=RUN), which is checked before anything is modified.
 
 const PROJECT_UUID = '14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46';
+const PATH_OPENED_NAME = 'dcx_main_board';
 const APPLY = typeof CZY_APPLY_R8_DNP !== 'undefined' && CZY_APPLY_R8_DNP === true;
 const fail = (why, extra = {}) => ({ status: 'REFUSED', reason: why, applied: false, ...extra });
 let info = null, board = null;
@@ -32,9 +47,19 @@ for (let i = 0; i < 20 && !board; i++) {
   if (!board) await new Promise(resolve => setTimeout(resolve, 1000));
 }
 if (!board) return fail('No active, loaded native EasyEDA project');
-if (info.uuid !== PROJECT_UUID) {
+const byStudio = info.uuid === PROJECT_UUID;
+const byPath = !!info.friendlyName && String(info.friendlyName) === PATH_OPENED_NAME;
+const project = {
+  name: info.friendlyName === undefined ? null : info.friendlyName,
+  session_uuid: info.uuid === undefined ? null : info.uuid,
+  stored_uuid: PROJECT_UUID,
+  identified_by: byStudio ? 'studio_uuid' : (byPath ? 'path_name' : null)
+};
+if (!byStudio && !byPath) {
   return fail('Wrong project: refusing to modify somebody else\'s schematic',
-              { expected_project: PROJECT_UUID, actual_project: info.uuid });
+              { expected_project: PROJECT_UUID, expected_path_opened_name: PATH_OPENED_NAME,
+                actual_project: project.session_uuid, actual_name: project.name,
+                project });
 }
 if (board.schematic.page.length !== 1) {
   return fail('Multiple schematic pages: update this script to audit all pages first');
@@ -79,6 +104,7 @@ if (before.addIntoBom === false && before.addIntoPcb === false) {
   return {
     status: 'ALREADY_DNP',
     applied: false,
+    project,
     ref: 'R8',
     primitiveId: id,
     before,
@@ -89,6 +115,7 @@ if (!APPLY) {
   return {
     status: 'DRY_RUN_SAFE',
     applied: false,
+    project,
     ref: 'R8',
     primitiveId: id,
     before,
@@ -117,6 +144,7 @@ if (!saved) return fail('Document save failed; inspect the GUI, do not infer suc
 return {
   status: 'R8_ASSEMBLY_EXCLUSION_SAVED_NOT_VERIFIED',
   applied: true,
+  project,
   ref: 'R8',
   primitiveId: id,
   before,
