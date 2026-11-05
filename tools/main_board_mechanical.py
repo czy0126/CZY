@@ -798,6 +798,79 @@ def _padless_reason(part: "Part", pad: str) -> str:
     return "the footprint has no pad with this name"
 
 
+NOT_PLACED_CATEGORIES = ("REPRESENTED_BY_OTHER_REFS", "HELD_BACK", "NOT_THIS_BOARD")
+
+# Most of what this board leaves out really is control, drive or decoupling: the
+# controller, its RT/DT/SS network, the bootstrap parts, the EN and gate
+# pull-downs and the twelve IC decoupling capacitors.  Three are not, and one
+# sentence covering all thirty-two was false for exactly those three:
+#
+# * ``Cout`` is not absent -- the schematic models the whole bank as one lumped
+#   element, and its fifteen units are placed as Cout1..Cout15.
+# * ``Cin`` and ``R3`` are power-chain parts held back on purpose.  Doc 34 puts
+#   Cin ahead of the placeholders, so filing it under "decoupling" answers the
+#   wrong question; and R3's package is undecided for a measured reason.
+NOT_PLACED_REASONS: dict[str, tuple[str, str]] = {
+    "Cout":
+        ("REPRESENTED_BY_OTHER_REFS",
+         "the schematic models the whole output bank as one lumped element, so this "
+         "ref has no body of its own; its fifteen units are placed here as "
+         "Cout1..Cout15 (see lumped_from_one_netlist_element)"),
+    "Cin":
+        ("HELD_BACK",
+         "a 20 uF input bank is required and its package is TO SELECT, so the review "
+         "row's 100 nF 0603 is a placeholder for a part nobody has chosen; the bank "
+         "has to carry 5.316 A AC RMS through the high-side switch "
+         "(passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, "
+         "not the outline, is what picks the part"),
+    "R3":
+        ("HELD_BACK",
+         "its 10 ohm value is frozen but its package is TO SELECT: the measured "
+         "125.7 mW burden is 100.6 % of an 0805's 125 mW nominal, so neither the 0603 "
+         "the native schematic still carries nor a 1206 nobody has selected would be "
+         "a true outline"),
+}
+NOT_PLACED_DEFAULT = (
+    "NOT_THIS_BOARD",
+    "a control, drive or decoupling part, none of which has a position on this "
+    "power-stage board")
+
+
+def not_placed_here(refs: set[str], placed: set[str]) -> tuple[list[str], list[dict], str]:
+    """Every ref the review table lists and this board does not, with a reason each.
+
+    Bidirectional, like ``SINGLE_PAD_REASONS``: an excluded ref with no explicit
+    row falls back to the default sentence -- that is the intended shape for the
+    controller and its support parts -- but an explicit row whose ref is now
+    *placed* is stale and stops the build.  That is the failure that actually
+    happens: CS1/CS2 stayed on the one-pad list for commits after the bridge
+    landed, and a per-ref table left alone would rot the same way.
+
+    The one-line summary is assembled from the rows rather than written next to
+    them, so placing ``Cin`` changes both the count and the sentence.
+    """
+    excluded = sorted(refs - placed)
+    stale = sorted(set(NOT_PLACED_REASONS) & placed)
+    if stale:
+        raise SystemExit(
+            "{0} named in NOT_PLACED_REASONS {1} on the board now, so the report "
+            "would quote a decision that has been made; delete the row(s)".format(
+                ", ".join(stale), "is" if len(stale) == 1 else "are"))
+    rows = []
+    for ref in excluded:
+        category, why = NOT_PLACED_REASONS.get(ref, NOT_PLACED_DEFAULT)
+        rows.append({"ref": ref, "category": category, "why": why})
+    others = sum(1 for row in rows if row["category"] == "NOT_THIS_BOARD")
+    named = [f"{row['ref']}: {row['why']}" for row in rows
+             if row["category"] != "NOT_THIS_BOARD"]
+    sentence = (f"power-stage placement only; {others} control, drive and decoupling "
+                f"parts have no position on this board.")
+    if named:
+        sentence += ("  {0} more are left out for reasons of their own, which one "
+                     "sentence could not carry: ".format(len(named)) + "; ".join(named))
+    return excluded, rows, sentence
+
+
 def nets_report() -> dict:
     """What the connectivity actually is, and what it does not reach.
 
@@ -834,6 +907,7 @@ def nets_report() -> dict:
     physical = sum(1 for part in PARTS
                    for name in _pad_blocks(part.footprint)
                    if name in part_nets(part))
+    not_placed, not_placed_rows, not_placed_sentence = not_placed_here(set(table), placed)
     padless: dict[str, list[str]] = {}
     for part in PARTS:
         local = _pad_positions(part.footprint)
@@ -882,13 +956,9 @@ def nets_report() -> dict:
         "pad_without_a_net": [{"ref": r["ref"], "pad": r["pad"], "note": r["note"]}
                               for r in review_rows()
                               if r["ref"] in placed and not r["net"].strip()],
-        "not_placed_here_netlist_refs": sorted(set(table) - placed),
-        "not_placed_here_reason": "power-stage placement only; control, drive and "
-                                  "decoupling parts have no position on this board.  "
-                                  "R3 is held back for a different reason: its 10 ohm "
-                                  "value is frozen but its package is TO SELECT (the "
-                                  "measured 125.7 mW burden is 100.6 % of an 0805's "
-                                  "125 mW nominal), so no outline here would be true",
+        "not_placed_here_netlist_refs": not_placed,
+        "not_placed_here_reasons": not_placed_rows,
+        "not_placed_here_reason": not_placed_sentence,
         "length_note": "straight-line spanning tree over pad centres, a lower "
                        "bound on copper and not a route",
     }

@@ -753,6 +753,74 @@ def test_the_ct_overcurrent_chain_closes_the_secondary_and_leaves_one_hole():
     assert "R3" in nets["not_placed_here_reason"]
 
 
+def test_each_ref_this_board_leaves_out_is_named_with_its_own_reason():
+    """One sentence used to cover all 32 excluded refs, and it was false for
+    three of them.
+
+    It said "control, drive and decoupling parts have no position on this
+    board", with a paragraph carved out for R3.  ``Cin`` is a power part with a
+    measured requirement and its own package decision; ``Cout`` is not missing
+    at all -- the schematic's lumped element stands for fifteen units that are
+    all on the board; and R3 was the only exception the sentence admitted.
+    A reader checking doc 34's "decide Cin before the placeholders" would find
+    a report that had quietly classified Cin as decoupling.
+
+    So every excluded ref gets a row, the three exceptions get their own
+    category, and the one-line summary is assembled from the same table instead
+    of being written next to it.
+    """
+    nets = mbm.nets_report()
+    rows = {r["ref"]: r for r in nets["not_placed_here_reasons"]}
+    excluded = set(nets["not_placed_here_netlist_refs"])
+    assert set(rows) == excluded, set(rows) ^ excluded
+
+    for row in rows.values():
+        assert row["why"].strip(), row["ref"]
+        assert row["category"] in mbm.NOT_PLACED_CATEGORIES, (row["ref"], row["category"])
+
+    # Cout is not an omission: the bank borrows its two nets, and the report
+    # already says so three keys away.
+    assert rows["Cout"]["category"] == "REPRESENTED_BY_OTHER_REFS"
+    assert "Cout1" in rows["Cout"]["why"]
+
+    # The two power-chain parts are held back on purpose, and each reason has to
+    # carry the fact that decides it, not a synonym for "not yet".
+    for ref in ("Cin", "R3"):
+        assert rows[ref]["category"] == "HELD_BACK", ref
+    assert "20 uF" in rows["Cin"]["why"], rows["Cin"]["why"]
+    assert "TO SELECT" in rows["Cin"]["why"]
+    assert "5.316" in rows["Cin"]["why"]        # passive_requirements.json:cin.bridge_ac_rms_a
+    assert "10 ohm" in rows["R3"]["why"], rows["R3"]["why"]
+    assert "TO SELECT" in rows["R3"]["why"]
+
+    # Everything left really is control, drive or decoupling and may share one
+    # sentence -- but the three above must not be in that group.
+    others = {r for r in excluded if rows[r]["category"] == "NOT_THIS_BOARD"}
+    assert {"U1", "R1", "C6", "D_BT", "C101"} <= others
+    assert not ({"Cin", "R3", "Cout"} & others)
+
+    # Derived, not transcribed: the count and the named exceptions come out of
+    # the table, so placing Cin (or adding another exception) changes the line.
+    sentence = nets["not_placed_here_reason"]
+    assert f"{len(others)} control" in sentence, sentence
+    assert "Cin" in sentence and "Cout" in sentence and "R3" in sentence
+
+
+def test_a_reason_left_behind_by_a_part_that_is_now_placed_stops_the_build(monkeypatch):
+    """The table is only a guard if it fails in the other direction too.
+
+    A row for a ref that is on the board means the report is quoting a decision
+    somebody has since made -- exactly the shape of the ``single_pad_nets``
+    history, where CS1/CS2 stayed on the list for several commits after the
+    bridge landed.  ``Lr`` is used here because it is placed, so the row is
+    stale by construction and no real entry has to be disturbed.
+    """
+    monkeypatch.setitem(mbm.NOT_PLACED_REASONS, "Lr", ("HELD_BACK", "stale on purpose"))
+    with pytest.raises(SystemExit) as exc:
+        mbm.nets_report()
+    assert "Lr" in str(exc.value)
+
+
 def test_the_ct_sense_chain_sits_in_the_band_between_the_ct_and_the_crowbar():
     """The sense chain goes in the one band that is free at y 59.5-65.3: below
     the CT and above the REG crowbar.  Both edges are 1.2 mm, which is the

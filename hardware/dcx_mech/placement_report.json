@@ -1895,7 +1895,169 @@
       "R9",
       "U1"
     ],
-    "not_placed_here_reason": "power-stage placement only; control, drive and decoupling parts have no position on this board.  R3 is held back for a different reason: its 10 ohm value is frozen but its package is TO SELECT (the measured 125.7 mW burden is 100.6 % of an 0805's 125 mW nominal), so no outline here would be true",
+    "not_placed_here_reasons": [
+      {
+        "ref": "C10",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C101",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C102",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C103",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C104",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C105",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C106",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C107",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C108",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C109",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C110",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C111",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C112",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C13",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C5",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C6",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C7",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C8",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "C9",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "Cin",
+        "category": "HELD_BACK",
+        "why": "a 20 uF input bank is required and its package is TO SELECT, so the review row's 100 nF 0603 is a placeholder for a part nobody has chosen; the bank has to carry 5.316 A AC RMS through the high-side switch (passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, not the outline, is what picks the part"
+      },
+      {
+        "ref": "Cout",
+        "category": "REPRESENTED_BY_OTHER_REFS",
+        "why": "the schematic models the whole output bank as one lumped element, so this ref has no body of its own; its fifteen units are placed here as Cout1..Cout15 (see lumped_from_one_netlist_element)"
+      },
+      {
+        "ref": "D_BT",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R1",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R10",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R18",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R19",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R2",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R3",
+        "category": "HELD_BACK",
+        "why": "its 10 ohm value is frozen but its package is TO SELECT: the measured 125.7 mW burden is 100.6 % of an 0805's 125 mW nominal, so neither the 0603 the native schematic still carries nor a 1206 nobody has selected would be a true outline"
+      },
+      {
+        "ref": "R7",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R8",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "R9",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      },
+      {
+        "ref": "U1",
+        "category": "NOT_THIS_BOARD",
+        "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
+      }
+    ],
+    "not_placed_here_reason": "power-stage placement only; 29 control, drive and decoupling parts have no position on this board.  3 more are left out for reasons of their own, which one sentence could not carry: Cin: a 20 uF input bank is required and its package is TO SELECT, so the review row's 100 nF 0603 is a placeholder for a part nobody has chosen; the bank has to carry 5.316 A AC RMS through the high-side switch (passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, not the outline, is what picks the part; Cout: the schematic models the whole output bank as one lumped element, so this ref has no body of its own; its fifteen units are placed here as Cout1..Cout15 (see lumped_from_one_netlist_element); R3: its 10 ohm value is frozen but its package is TO SELECT: the measured 125.7 mW burden is 100.6 % of an 0805's 125 mW nominal, so neither the 0603 the native schematic still carries nor a 1206 nobody has selected would be a true outline",
     "length_note": "straight-line spanning tree over pad centres, a lower bound on copper and not a route"
   },
   "cout_bank_refs": [

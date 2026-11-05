@@ -1700,6 +1700,16 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   `test_the_ct_overcurrent_chain_closes_the_secondary_and_leaves_one_hole` 断言的是
   **每网焊盘数**（`CS1 3 / CS2 3 / OCD 3 / OCM 5 / OC1 3 / OC 3`），不是"≥2"——
   这些数就是审查表的 pad→net 行，哪天把 D_CT3 从 OCM 改到 OCD，焊盘数先红。
+- **`not_placed_here_reasons` 是逐位号的表，不是一句话**（`NOT_PLACED_REASONS`）：32 个
+  排除位号里**只有 29 个**是控制/驱动/去耦，上一版那句「control, drive and decoupling parts
+  have no position on this board」对另外三个是错的——`Cin` 是功率链上的件（doc 34 把它排在
+  占位之前），`Cout` 根本没漏（集总元件，十五颗以 `Cout1..Cout15` 在板上），`R3` 是唯一被
+  那句话例外出来的。三类：`REPRESENTED_BY_OTHER_REFS` / `HELD_BACK` / `NOT_THIS_BOARD`（默认）。
+  汇总句 `nets.not_placed_here_reason` **由表拼出来**（`29 control, … 3 more …: Cin: …; Cout: …; R3: …`），
+  摆上任何一个都会同时改计数与句子。守卫**双向**：`NOT_PLACED_REASONS` 里的位号上了板 ⇒
+  `SystemExit`（和 `SINGLE_PAD_REASONS` 同一个病：CS1/CS2 就是这样在列表上多待了好几个提交）。
+  **`Cin` 的理由带的是选型数**（20 µF 输入组、`TO SELECT`、`bridge_ac_rms_a` 5.3157 A），
+  不是审查表里那只 100 nF 0603 的外形——没有要求就没有可核对的对象。
 - **`unconnected_items` 是第二个顶层数组**，不在 `violations` 里。只读 `violations` 会在
   一块一条线都没画的板上读出"0 个未连接"。`check()` 现在打印两个数，并带一条**反向守卫**：
   声明了网却报 0 条老鼠线 ⇒ `SystemExit`（要么真布完了，要么 `(net …)` 没落到焊盘上）。
