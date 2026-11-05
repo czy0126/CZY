@@ -316,16 +316,16 @@ def test_the_primary_branch_not_the_sr_branch_sets_the_all_ten_low_time():
 def test_the_shared_stage_is_the_sum_of_the_stages_that_are_actually_in_series():
     """Detection stops at the comparator input, so the comparator and the latch
     sit in series with the permit rail and the driver -- the two driver branches
-    are the only parallel pair.  Every one of those stages moves both channel
-    floors by the same amount, which is why the 29.88 us detection gap survives
-    the sum unchanged."""
+    are the only parallel pair.  The decode that follows is *not* shared: each
+    channel crosses its own gates, so it is added per channel on top of the
+    shared stage rather than inside it."""
     result = budget.build()
     stages, totals = result["stages"], result["totals"]
     assert totals["shared_after_detection_us"] == pytest.approx(
         stages["comparator"]["us"] + stages["latch"]["us"]
         + totals["driver_branch_us"])
-    assert totals["hard_channel_floor_us"] == pytest.approx(44.18, abs=0.02)
-    assert totals["fast_channel_floor_us"] == pytest.approx(14.30, abs=0.02)
+    assert totals["hard_channel_floor_us"] == pytest.approx(44.93, abs=0.02)
+    assert totals["fast_channel_floor_us"] == pytest.approx(15.30, abs=0.02)
 
 
 def test_the_budget_is_not_a_worst_case_and_says_so():
@@ -338,19 +338,28 @@ def test_the_budget_is_not_a_worst_case_and_says_so():
 
 
 def test_the_two_channels_keep_their_separate_floors():
-    """The fast channel is 30 us earlier at detection and then waits on the same
-    permit node, so the gap narrows but does not close."""
-    totals = budget.build()["totals"]
+    """The fast channel is ~30 us earlier at detection and then crosses one gate
+    the hard channel does not (U19.1), so the gap narrows by 0.25 us instead of
+    staying exactly the detection advantage."""
+    result = budget.build()
+    totals = result["totals"]
+    detection = result["stages"]["detection"]
+    decode = result["stages"]["decode"]["per_channel"]
     assert totals["fast_channel_floor_us"] < totals["hard_channel_floor_us"]
     assert totals["hard_channel_floor_us"] == pytest.approx(
-        budget.build()["stages"]["detection"]["hard_us"]
-        + totals["shared_after_detection_us"])
+        detection["hard_us"] + totals["shared_after_detection_us"]
+        + decode["hard"]["priced_max_us"], abs=1e-6)
+    assert totals["fast_channel_floor_us"] == pytest.approx(
+        detection["fast_us"] + totals["shared_after_detection_us"]
+        + decode["fast"]["priced_max_us"], abs=1e-6)
     assert totals["detection_advantage_us"] > 25.0
-    # Every stage after detection is shared, so the gap between the two totals
-    # has to be exactly the gap between the two detections -- if a later stage
-    # ever differed by channel, this equality is what would break.
+    # After detection the channels differ by exactly one CD4071B gate -- the OR
+    # at U19.1 that brings the external trip in.  If a later stage ever became
+    # channel-dependent, this equality would break and say so.
     assert (totals["hard_channel_floor_us"] - totals["fast_channel_floor_us"]
-            == pytest.approx(totals["detection_advantage_us"], abs=1e-6))
+            == pytest.approx(totals["detection_advantage_us"] - 0.25, abs=1e-6))
+    assert totals["floor_difference_us"] == pytest.approx(
+        totals["hard_channel_floor_us"] - totals["fast_channel_floor_us"], abs=1e-9)
 
 
 # ------------------------------------------------- recomputed, not remembered
@@ -493,8 +502,9 @@ def test_the_cited_load_and_edge_bound_only_the_asserting_direction():
 
 def test_the_new_logic_is_priced_but_stays_out_of_the_legacy_totals():
     """The external path starts at the TLV3501 and skips the LM393 and the
-    127.6 us of filtering, so its 360 ns cannot be folded into a legacy total;
-    the shared stage stays what it always was."""
+    127.6 us of filtering, so its gates cannot be folded into a legacy total;
+    the shared stage stays what it always was, and the decode is added per
+    channel because the external path crosses one gate more than the LM393."""
     result = budget.build()
     stages, totals = result["stages"], result["totals"]
     assert totals["shared_after_detection_us"] == pytest.approx(
@@ -502,7 +512,12 @@ def test_the_new_logic_is_priced_but_stays_out_of_the_legacy_totals():
     external = result["external_fast_path"]
     assert external["status"] == "PARTIALLY_PRICED_NOT_INCLUDED_IN_TOTALS"
     assert "U11F and U19 delay" not in external["missing"]
-    assert "the U6.4 AND and U10 stages after FAST_COMBINED" in external["missing"]
+    # The two gates it used to list as unpriced are inside the decode now; what
+    # remains unpriced out of that stretch is the AND's missing maximum.
+    assert not any("U10 stages" in item for item in external["missing"])
+    assert any("U6.4 AND" in item for item in external["missing"])
+    assert external["decode_to_the_latch_us"] == pytest.approx(
+        stages["decode"]["per_channel"]["external"]["priced_max_us"])
 
 
 def test_a_gate_moved_off_the_chain_is_not_silently_repriced(monkeypatch):
@@ -532,7 +547,129 @@ def test_a_gate_swapped_for_another_part_is_not_repriced(monkeypatch):
                 for part in original]
 
     monkeypatch.setattr(board, "parts", swapped)
+    # The two-gate stage is priced first and catches the swap on its own; the
+    # decode's family guard (below) covers the gates that stage never reads.
     with pytest.raises(SystemExit, match="not the CD4071B"):
+        budget.build()
+
+
+# ---------------------------------------- the decode between trip and latch
+def test_the_decode_is_read_back_from_the_board_and_priced_per_channel():
+    """The chain is not one shared stage.  Read off the exported netlist, the
+    hard trip enters the OR at U10.1, the LM393 enters through U19 and the U6
+    AND, and the external path crosses the inverter as well -- three gates, five
+    and six.  Charging the hard channel for an AND it never crosses would be as
+    wrong as charging the fast channel nothing."""
+    decode = budget.build()["stages"]["decode"]
+    assert decode["hard_channel_gate_count"] == 3
+    assert decode["fast_channel_gate_count"] == 5
+    assert decode["external_channel_gate_count"] == 6
+    assert decode["decode_is_per_channel_not_shared"] is True
+    per = decode["per_channel"]
+    assert per["hard"]["gates"] == ["U10.1", "U10.2", "U10.3"]
+    assert per["fast"]["gates"] == ["U19.1", "U6.4", "U10.1", "U10.2", "U10.3"]
+    assert per["external"]["gates"][0] == "U11.6"
+    # And the wiring in the JSON is the wiring in the part table.
+    parts = {(p.ref, p.unit): p for p in board.parts()}
+    assert parts[("U10", 1)].nets["1"] == "HARD_TRIP"
+    assert parts[("U10", 1)].nets["2"] == "FAST_ARMED"
+    assert parts[("U6", 4)].nets["11"] == parts[("U10", 1)].nets["2"]
+    assert parts[("U10", 3)].nets["10"] == "FLT"
+
+
+def test_the_three_or_gates_cost_750_nanoseconds():
+    """CD4071B at VDD = 5 V: 125 typ / 250 max ns per gate, three of them in
+    series on the hard channel.  That path is the one channel whose decode is
+    fully bounded."""
+    per = budget.build()["stages"]["decode"]["per_channel"]
+    assert per["hard"]["priced_max_us"] == pytest.approx(0.75, abs=1e-9)
+    assert per["hard"]["priced_typ_us"] == pytest.approx(0.375, abs=1e-9)
+    assert per["hard"]["complete"] is True
+    assert per["fast"]["priced_max_us"] == pytest.approx(1.00, abs=1e-9)
+    assert per["external"]["priced_max_us"] == pytest.approx(1.11, abs=1e-9)
+
+
+def test_the_and_gate_has_no_maximum_and_is_not_given_a_borrowed_one():
+    """The vendored CD4081B carries a static table and a typical-only curve, and
+    no dynamic electrical table at all.  Borrowing the CD4071B's 250 ns would
+    make the AND look bounded when it is not; it is priced at zero and declared
+    unpriced instead, which is why both fast sums stay floors."""
+    result = budget.build()
+    decode = result["stages"]["decode"]
+    gate = decode["gates"]["U6.4"]
+    assert gate["max_ns"] is None
+    assert gate["typ_ns"] is None
+    assert gate["publishes_a_maximum"] is False
+    assert "no dynamic electrical table" in gate["why_no_maximum"]
+    assert decode["every_gate_is_bounded_except_the_and"] is True
+    assert decode["per_channel"]["fast"]["unpriced_gates"] == ["U6.4"]
+    assert decode["per_channel"]["fast"]["complete"] is False
+    assert "U6.4" in " ".join(result["not_worst_case_because"])
+
+
+def test_the_absence_of_a_maximum_is_a_fact_about_the_vendored_file():
+    """A claim about what a document does *not* say has to be checkable in the
+    file that ships, the same rule the positive numbers follow.  The three
+    scanned pages stay beside the text because they are where a reader would
+    look for the missing table."""
+    root = Path(__file__).resolve().parent.parent / "references/datasheets"
+    text = (root / "cd4081b.txt").read_text(encoding="utf-8")
+    assert "SCHS057C" in text
+    assert "THIS DOCUMENT PUBLISHES NO PROPAGATION DELAY MAXIMUM" in text
+    assert "APPENDED TRANSCRIPTION" in text
+    # The "Dynamic Electrical Characteristics" string occurs only inside that
+    # appended block, i.e. as a statement of its absence -- never as a table.
+    assert "Dynamic Electrical Characteristics" not in text.split("APPENDED")[0]
+    for suffix in ("p2", "p3", "p4"):
+        assert (root / f"cd4081b_{suffix}.png").is_file()
+
+
+def test_the_fourth_or_clears_the_acknowledge_flip_flop_off_the_trip_path():
+    """U10.4 ORs FLT with NOT_READY into FF2_RESET.  It is on the board and it
+    costs 250 ns, but no channel's trip path crosses it, so it is reported
+    separately instead of being folded into a floor."""
+    decode = budget.build()["stages"]["decode"]
+    clear = decode["ff2_clear"]
+    assert clear["gate"] == "U10.4"
+    assert clear["on_a_trip_path"] is False
+    assert clear["pins"] == {"12": "FLT", "13": "NOT_READY", "11": "FF2_RESET"}
+    assert clear["max_us"] == pytest.approx(0.25)
+    assert "U10.4" not in [g for channel in decode["per_channel"].values()
+                           for g in channel["gates"]]
+
+
+def test_a_decode_gate_moved_to_another_net_is_not_silently_repriced(monkeypatch):
+    """Same rule as the comparator inputs and the two external gates: a unit
+    moved off the chain has to break the tool rather than keep its price."""
+    original = board.parts()
+
+    def rewired():
+        out = []
+        for part in original:
+            if (part.ref, part.unit) == ("U10", 2):
+                nets = dict(part.nets)
+                nets["6"] = "POR"
+                part = replace(part, nets=nets)
+            out.append(part)
+        return out
+
+    monkeypatch.setattr(board, "parts", rewired)
+    with pytest.raises(SystemExit, match="U10.2 pin 6"):
+        budget.build()
+
+
+def test_a_decode_gate_swapped_for_another_family_is_not_repriced(monkeypatch):
+    """The 250 ns belongs to the CD4071B.  Replacing U10 with a 4081 and keeping
+    the sum would silently price an unbounded AND as a bounded OR."""
+    original = board.parts()
+
+    def swapped():
+        return [replace(part, value="CD4081BE")
+                if part.ref == "U10" else part
+                for part in original]
+
+    monkeypatch.setattr(board, "parts", swapped)
+    with pytest.raises(SystemExit, match="U10.1 is CD4081BE"):
         budget.build()
 
 

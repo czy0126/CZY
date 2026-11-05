@@ -12,12 +12,13 @@
       "U19 or"
     ],
     "logic_is_a_25c_max": true,
+    "decode_to_the_latch_us": 1.11,
     "missing": [
       "loaded Q1 edge and wiring capacitance",
       "real UCC24624 REG discharge and last SR gate turn-off",
-      "the U6.4 AND and U10 stages after FAST_COMBINED"
+      "a maximum for the U6.4 AND: the vendored CD4081B publishes none, so the sum above is a floor"
     ],
-    "note": "The new inverter and OR are now priced from their vendored datasheets; the legacy totals still cannot be used as the external fast path latency, and the stages before and after the two gates are still unpriced."
+    "note": "The inverter, the U19 OR and the three U10 ORs are now priced from their vendored datasheets (25 C maxima).  The U6.4 AND has no published maximum and is priced at zero, so this is a floor; the stages before U11F are still unpriced."
   },
   "not_worst_case_because": [
     "the LM393 publishes no maximum response time at all -- 1.3 us is a typical at 5 mV overdrive, and the datasheet itself shows the figure rising as overdrive falls, so a slow part lengthens every total",
@@ -27,7 +28,8 @@
     "the gate fall omits the driver's internal sink resistance, which adds time",
     "the comparator's 1.3 us was measured through a 5.1 k pull-up and 15 pF; this board uses 10 k, and the added time constant scales with the load capacitance, which is not measured -- the priced 73.5 ns is what the datasheet's own C_L produces, not what this layout produces",
     "no temperature or device spread is applied: every value is a nominal part-table arithmetic, not a worst-case-over-temperature figure",
-    "the external fast path's two gates are 25 C maxima -- CD4069UB and CD4071B publish their dynamic table at TA = 25 C only -- so 360 ns bounds the pair at one temperature, not over the board's range"
+    "the decode chain is priced from 25 C maxima (CD4071B and CD4069UB), and its AND gate (U6.4) is priced at zero because the vendored CD4081B publishes no dynamic table at all -- so the hard channel's three ORs and the fast channels' extra gates each lengthen the floor by an unknown amount",
+    "the external fast path's inverter, its U19 OR and the three U10 ORs are 25 C maxima -- CD4069UB and CD4071B publish their dynamic table at TA = 25 C only -- so the priced 1.11 us bounds that segment at one temperature, not over the board's range"
   ],
   "stages": {
     "detection": {
@@ -138,8 +140,200 @@
       "asserting_edge_meets_the_cited_20ns": true,
       "releasing_edge_condition": "FAST_EXT_N rises through R7 10 k and an unmeasured line capacitance, so it is slower than the cited 20 ns input edge; a slow release holds FAST_COMBINED low, which is the fault level",
       "not_priced_after_this": [
-        "the U6.4 AND and U10 stages between FAST_COMBINED and the U12 latch"
+        "a maximum for U6.4, the AND between FAST_COMBINED and the U12 latch -- the CD4081B has none; the three U10 ORs after it are priced in stages.decode"
       ]
+    },
+    "decode": {
+      "gates": {
+        "U11.6": {
+          "ref": "U11",
+          "unit": 6,
+          "part": "CD4069UBE",
+          "role": "inverter of the external fast trip",
+          "nets": {
+            "13": "FAST_EXT_N",
+            "12": "FAST_EXT_H"
+          },
+          "supply_net": "V5",
+          "typ_ns": 55.0,
+          "max_ns": 110.0,
+          "source": "references/datasheets/cd4069ub.txt (SCHS054E, revised January 2019; section 6.5 Electrical Characteristics - Dynamic, VDD = 5 V)"
+        },
+        "U19.1": {
+          "ref": "U19",
+          "unit": 1,
+          "part": "CD4071BE",
+          "role": "OR that merges the external trip with the legacy one",
+          "nets": {
+            "1": "FAST_TRIP",
+            "2": "FAST_EXT_H",
+            "3": "FAST_COMBINED"
+          },
+          "supply_net": "V5",
+          "typ_ns": 125.0,
+          "max_ns": 250.0,
+          "source": "references/datasheets/cd4071b.txt (SCHS056D, revised August 2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)"
+        },
+        "U6.4": {
+          "ref": "U6",
+          "unit": 4,
+          "part": "CD4081BE",
+          "role": "AND of the combined trip and the armed condition",
+          "nets": {
+            "12": "FAST_COMBINED",
+            "13": "FAST_ARMED_IN",
+            "11": "FAST_ARMED"
+          },
+          "supply_net": "V5",
+          "typ_ns": null,
+          "max_ns": null,
+          "source": "references/datasheets/cd4081b.txt (SCHS057C, revised September 2003; pages 2-4 are scans, the document has no dynamic electrical table and Fig. 4 is a typical-only curve)",
+          "publishes_a_maximum": false,
+          "why_no_maximum": "the vendored document has no dynamic electrical table; its only delay information is Fig. 4, a typical curve at TA = 25 C"
+        },
+        "U10.1": {
+          "ref": "U10",
+          "unit": 1,
+          "part": "CD4071BE",
+          "role": "OR of the hard trip and the fast trip",
+          "nets": {
+            "1": "HARD_TRIP",
+            "2": "FAST_ARMED",
+            "3": "FAULT_A"
+          },
+          "supply_net": "V5",
+          "typ_ns": 125.0,
+          "max_ns": 250.0,
+          "source": "references/datasheets/cd4071b.txt (SCHS056D, revised August 2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)"
+        },
+        "U10.2": {
+          "ref": "U10",
+          "unit": 2,
+          "part": "CD4071BE",
+          "role": "OR of the trip with the health monitor",
+          "nets": {
+            "5": "FAULT_A",
+            "6": "NOT_HEALTHY",
+            "4": "FAULT_B"
+          },
+          "supply_net": "V5",
+          "typ_ns": 125.0,
+          "max_ns": 250.0,
+          "source": "references/datasheets/cd4071b.txt (SCHS056D, revised August 2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)"
+        },
+        "U10.3": {
+          "ref": "U10",
+          "unit": 3,
+          "part": "CD4071BE",
+          "role": "OR of the fault with power-on reset",
+          "nets": {
+            "8": "FAULT_B",
+            "9": "POR",
+            "10": "FLT"
+          },
+          "supply_net": "V5",
+          "typ_ns": 125.0,
+          "max_ns": 250.0,
+          "source": "references/datasheets/cd4071b.txt (SCHS056D, revised August 2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)"
+        },
+        "U10.4": {
+          "ref": "U10",
+          "unit": 4,
+          "part": "CD4071BE",
+          "role": "OR that clears the acknowledge flip-flop",
+          "nets": {
+            "12": "FLT",
+            "13": "NOT_READY",
+            "11": "FF2_RESET"
+          },
+          "supply_net": "V5",
+          "typ_ns": 125.0,
+          "max_ns": 250.0,
+          "source": "references/datasheets/cd4071b.txt (SCHS056D, revised August 2003; page 2 Dynamic Electrical Characteristics, VDD = 5 V)"
+        }
+      },
+      "per_channel": {
+        "hard": {
+          "gates": [
+            "U10.1",
+            "U10.2",
+            "U10.3"
+          ],
+          "priced_gates": [
+            "U10.1",
+            "U10.2",
+            "U10.3"
+          ],
+          "unpriced_gates": [],
+          "priced_max_us": 0.75,
+          "priced_typ_us": 0.375,
+          "complete": true
+        },
+        "fast": {
+          "gates": [
+            "U19.1",
+            "U6.4",
+            "U10.1",
+            "U10.2",
+            "U10.3"
+          ],
+          "priced_gates": [
+            "U19.1",
+            "U10.1",
+            "U10.2",
+            "U10.3"
+          ],
+          "unpriced_gates": [
+            "U6.4"
+          ],
+          "priced_max_us": 1.0,
+          "priced_typ_us": 0.5,
+          "complete": false
+        },
+        "external": {
+          "gates": [
+            "U11.6",
+            "U19.1",
+            "U6.4",
+            "U10.1",
+            "U10.2",
+            "U10.3"
+          ],
+          "priced_gates": [
+            "U11.6",
+            "U19.1",
+            "U10.1",
+            "U10.2",
+            "U10.3"
+          ],
+          "unpriced_gates": [
+            "U6.4"
+          ],
+          "priced_max_us": 1.11,
+          "priced_typ_us": 0.555,
+          "complete": false
+        }
+      },
+      "ff2_clear": {
+        "gate": "U10.4",
+        "pins": {
+          "12": "FLT",
+          "13": "NOT_READY",
+          "11": "FF2_RESET"
+        },
+        "max_us": 0.25,
+        "typ_us": 0.125,
+        "on_a_trip_path": false,
+        "role": "OR that clears the acknowledge flip-flop"
+      },
+      "hard_channel_gate_count": 3,
+      "fast_channel_gate_count": 5,
+      "external_channel_gate_count": 6,
+      "every_gate_is_bounded_except_the_and": true,
+      "max_is_at_25c_only": true,
+      "max_over_temperature_us": null,
+      "decode_is_per_channel_not_shared": true,
+      "derived_from": "pcb/d0_protection/d0_protection.net (pintype records)"
     },
     "permit_release": {
       "enable_rail_v": 5.0,
@@ -223,9 +417,14 @@
     }
   },
   "totals": {
-    "hard_channel_floor_us": 44.181549282331076,
-    "fast_channel_floor_us": 14.299221735615875,
+    "hard_channel_floor_us": 44.931549282331076,
+    "fast_channel_floor_us": 15.299221735615875,
     "shared_after_detection_us": 4.0848844059157745,
+    "decode_after_detection_us": {
+      "hard": 0.75,
+      "fast": 1.0
+    },
+    "floor_difference_us": 29.632327546715203,
     "driver_branch_us": 2.3848844059157743,
     "sr_branch_floor_us": 0.8471246050112,
     "primary_branch_floor_us": 2.3848844059157743,

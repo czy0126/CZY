@@ -21,6 +21,17 @@ U11F inverter and the U19 OR -- and those datasheets *do* publish a maximum, at
 25 C.  They are priced here and kept out of the legacy totals, because that path
 starts at a different detector and skips the filtering.
 
+Between those gates and the latch sits a decode chain that *every* channel
+walks: one CD4081B AND (U6.4) that gates the combined trip with the armed
+condition, then three CD4071B ORs (U10.1-3) that fold in the health monitor and
+POR before FLT reaches the first flip-flop's SET.  The hard channel enters that
+OR at U10.1, the LM393 fast channel enters through U19 and the AND, and the
+external path enters through the inverter as well -- so the decode is priced
+per channel rather than once.  Charging the hard channel for an AND it never
+crosses would be as wrong as charging the fast channel nothing.  Four of those
+five gates publish a 25 C maximum; the CD4081B publishes no maximum at all,
+which is why the two fast sums remain floors.
+
 The result is a **floor**, not a worst case, and the tool says so in the JSON
 rather than leaving a reader to assume otherwise.
 
@@ -172,6 +183,57 @@ LOGIC_CITED_EDGE_NS = 20.0
 # carry so a swapped pin breaks the tool instead of being silently re-priced.
 INVERTER_PIN_IN, INVERTER_PIN_OUT = "13", "12"
 OR_PIN_A, OR_PIN_B, OR_PIN_OUT = "2", "1", "3"
+
+# ---- the decode chain that every channel walks (2026-11-05) ------------------
+# CD4081B, vendored as references/datasheets/cd4081b.txt (SCHS057C, revised
+# September 2003).  This one is the opposite case to the two parts above: the
+# document has a static table and a single "typical propagation delay versus
+# load capacitance" curve (Fig. 4, TA = 25 C), and **no dynamic electrical
+# table at all**.  There is therefore no maximum to quote for U6.4, and the
+# CD4071B's 250 ns must not be borrowed for it -- that number belongs to a
+# different device with its own table.  The absence is recorded as a fact about
+# the source, with the scanned pages kept beside the text.
+CD4081B_SOURCE = ("references/datasheets/cd4081b.txt (SCHS057C, revised September "
+                  "2003; pages 2-4 are scans, the document has no dynamic "
+                  "electrical table and Fig. 4 is a typical-only curve)")
+CD4081B_PUBLISHES_A_MAXIMUM = False
+# Every gate on the way to the latch, named by ref and unit, with the nets it
+# must carry.  Pins follow the 4000B pinout this project already uses: a quad
+# 4081/4071 is 1,2 -> 3, 5,6 -> 4, 8,9 -> 10, 12,13 -> 11, and the 4069 pairs
+# 13 -> 12.  A moved wire or a swapped pin changes the message, not the number.
+PRICED_GATES = {
+    "U11.6": ({"13": "FAST_EXT_N", "12": "FAST_EXT_H"},
+              "inverter of the external fast trip"),
+    "U19.1": ({"1": "FAST_TRIP", "2": "FAST_EXT_H", "3": "FAST_COMBINED"},
+              "OR that merges the external trip with the legacy one"),
+    "U6.4": ({"12": "FAST_COMBINED", "13": "FAST_ARMED_IN", "11": "FAST_ARMED"},
+             "AND of the combined trip and the armed condition"),
+    "U10.1": ({"1": "HARD_TRIP", "2": "FAST_ARMED", "3": "FAULT_A"},
+              "OR of the hard trip and the fast trip"),
+    "U10.2": ({"5": "FAULT_A", "6": "NOT_HEALTHY", "4": "FAULT_B"},
+              "OR of the trip with the health monitor"),
+    "U10.3": ({"8": "FAULT_B", "9": "POR", "10": "FLT"},
+              "OR of the fault with power-on reset"),
+    "U10.4": ({"12": "FLT", "13": "NOT_READY", "11": "FF2_RESET"},
+              "OR that clears the acknowledge flip-flop"),
+}
+# Part family, (typ, max) in ns, and source, per reference designator.  U6 is
+# the only entry with no max -- see CD4081B_PUBLISHES_A_MAXIMUM.
+GATE_FAMILIES = {
+    "U6": ("CD4081BE", None, None, CD4081B_SOURCE),
+    "U10": ("CD4071BE", CD4071B_TPD_TYP_NS, CD4071B_TPD_MAX_NS, CD4071B_SOURCE),
+    "U11": ("CD4069UBE", CD4069UB_TPD_TYP_NS, CD4069UB_TPD_MAX_NS, CD4069UB_SOURCE),
+    "U19": ("CD4071BE", CD4071B_TPD_TYP_NS, CD4071B_TPD_MAX_NS, CD4071B_SOURCE),
+}
+# Which gates each channel crosses on its way to FLT, the latch's SET input.
+# The hard comparator enters the OR directly; both fast channels pay the AND,
+# and the external one pays the inverter as well.  Names, not indices, so a
+# per-channel sum cannot silently drift onto the wrong gates.
+CHANNEL_LINKS = {
+    "hard": ("U10.1", "U10.2", "U10.3"),
+    "fast": ("U19.1", "U6.4", "U10.1", "U10.2", "U10.3"),
+    "external": ("U11.6", "U19.1", "U6.4", "U10.1", "U10.2", "U10.3"),
+}
 
 
 def _parallel(*resistances: float) -> float:
@@ -555,8 +617,114 @@ def external_fast_logic(part_list) -> dict:
             "FAST_EXT_N rises through R7 10 k and an unmeasured line capacitance, "
             "so it is slower than the cited 20 ns input edge; a slow release "
             "holds FAST_COMBINED low, which is the fault level"),
-        "not_priced_after_this": ["the U6.4 AND and U10 stages between "
-                                  "FAST_COMBINED and the U12 latch"],
+        "not_priced_after_this": ["a maximum for U6.4, the AND between "
+                                  "FAST_COMBINED and the U12 latch -- the CD4081B "
+                                  "has none; the three U10 ORs after it are priced "
+                                  "in stages.decode"],
+    }
+
+
+def decode_chain(part_list) -> dict:
+    """Price the gates between the trip signals and the latch's SET input.
+
+    The chain is not one shared stage.  Read off the exported netlist, a trip
+    reaches FLT by three different paths:
+
+        HARD_TRIP   -> U10.1 (OR with FAST_ARMED) -> U10.2 -> U10.3 -> FLT
+        FAST_TRIP   -> U19.1 (OR with the external trip) -> U6.4 (AND with the
+                       armed condition) -> U10.1 -> U10.2 -> U10.3 -> FLT
+        FAST_EXT_N  -> U11.6 (inverter) -> U19.1 -> U6.4 -> U10.1..3 -> FLT
+
+    So the hard channel crosses three gates, the LM393 fast channel four, and
+    the external path five.  Summing one "decode" term into every channel would
+    charge the hard channel for a gate it never crosses; summing none would book
+    a maximum the fast channels really do pay.  Each channel gets its own links.
+
+    One of the five gates is *not* bounded.  The vendored CD4081B (SCHS057C)
+    carries a static table and a typical-only propagation-delay curve, and no
+    dynamic electrical table, so U6.4 has no maximum to quote -- least of all
+    the CD4071B's 250 ns, which belongs to a different device.  It is priced as
+    zero and listed as unpriced, which keeps the fast sums floors.  The fourth
+    U10 gate (FLT | NOT_READY -> FF2_RESET) is priced and reported separately:
+    it clears the acknowledge flip-flop, so no channel's trip path crosses it.
+
+    Every unit and pin is read back from the part table.  A unit moved to a
+    different net, a swapped pin, or a gate replaced by another family raises
+    instead of re-pricing the old chain.
+    """
+    gates: dict[str, dict] = {}
+    for name, (pins, role) in PRICED_GATES.items():
+        ref, unit = name.split(".")
+        part = _unit(part_list, ref, int(unit))
+        family, typ_ns, max_ns, source = GATE_FAMILIES[ref]
+        if part.value != family:
+            raise SystemExit(f"{name} is {part.value}, but the timing figures "
+                             f"priced here belong to the {family}")
+        for pin, net in pins.items():
+            actual = part.nets.get(pin)
+            if actual != net:
+                raise SystemExit(f"{name} pin {pin} reads {actual!r}, not {net}: "
+                                 "the decode chain moved and its price no longer "
+                                 "applies")
+        rail = _supply_net(part_list, ref)
+        if rail != RAIL_SOURCE_NET:
+            raise SystemExit(f"{name} is powered from {rail}, but the priced "
+                             f"figures assume {RAIL_SOURCE_NET}")
+        gates[name] = {
+            "ref": ref,
+            "unit": int(unit),
+            "part": part.value,
+            "role": role,
+            "nets": dict(pins),
+            "supply_net": rail,
+            "typ_ns": typ_ns,
+            "max_ns": max_ns,
+            "source": source,
+        }
+    if (gates["U6.4"]["max_ns"] is not None) != CD4081B_PUBLISHES_A_MAXIMUM:
+        raise SystemExit("CD4081B_PUBLISHES_A_MAXIMUM disagrees with the U6.4 "
+                         "entry: the absence of a maximum is a fact about the "
+                         "source, not a choice")
+    gates["U6.4"]["publishes_a_maximum"] = CD4081B_PUBLISHES_A_MAXIMUM
+    gates["U6.4"]["why_no_maximum"] = (
+        "the vendored document has no dynamic electrical table; its only delay "
+        "information is Fig. 4, a typical curve at TA = 25 C")
+
+    channels: dict[str, dict] = {}
+    for channel, links in CHANNEL_LINKS.items():
+        priced = [gates[n] for n in links if gates[n]["max_ns"] is not None]
+        unpriced = [n for n in links if gates[n]["max_ns"] is None]
+        channels[channel] = {
+            "gates": list(links),
+            "priced_gates": [f"{g['ref']}.{g['unit']}" for g in priced],
+            "unpriced_gates": unpriced,
+            "priced_max_us": sum(g["max_ns"] for g in priced) / 1e3,
+            "priced_typ_us": sum(g["typ_ns"] for g in priced) / 1e3,
+            "complete": not unpriced,
+        }
+    clear = gates["U10.4"]
+    return {
+        "gates": gates,
+        "per_channel": channels,
+        "ff2_clear": {
+            "gate": "U10.4",
+            "pins": dict(clear["nets"]),
+            "max_us": clear["max_ns"] / 1e3,
+            "typ_us": clear["typ_ns"] / 1e3,
+            "on_a_trip_path": False,
+            "role": clear["role"],
+        },
+        "hard_channel_gate_count": len(channels["hard"]["gates"]),
+        "fast_channel_gate_count": len(channels["fast"]["gates"]),
+        "external_channel_gate_count": len(channels["external"]["gates"]),
+        "every_gate_is_bounded_except_the_and": (
+            [n for n, g in gates.items() if g["max_ns"] is None] == ["U6.4"]),
+        "max_is_at_25c_only": True,
+        "max_over_temperature_us": None,
+        "decode_is_per_channel_not_shared": (
+            len(channels["hard"]["gates"]) != len(channels["fast"]["gates"])
+            and channels["fast"]["gates"][:1] == ["U19.1"]),
+        "derived_from": "pcb/d0_protection/d0_protection.net (pintype records)",
     }
 
 
@@ -603,10 +771,22 @@ def build() -> dict:
     # and the 127.6 us of filtering, so adding it to a legacy figure would mix
     # two different measurements.
     logic = external_fast_logic(part_list)
+    decode = decode_chain(part_list)
+    # The decode is charged per channel because the three channels cross a
+    # different number of gates: three ORs for the hard comparator, the U19 OR
+    # and the U6 AND as well for the LM393, the inverter on top for the external
+    # path.  All three non-AND gates are CD4071B/CD4069UB 25 C maxima; the AND
+    # has no maximum at all, so both fast sums stay floors.
+    hard_decode_us = decode["per_channel"]["hard"]["priced_max_us"]
+    fast_decode_us = decode["per_channel"]["fast"]["priced_max_us"]
+    external_decode_us = decode["per_channel"]["external"]["priced_max_us"]
     totals = {
-        "hard_channel_floor_us": measured["hard_delay_us"] + shared_us,
-        "fast_channel_floor_us": measured["fast_delay_us"] + shared_us,
+        "hard_channel_floor_us": measured["hard_delay_us"] + shared_us + hard_decode_us,
+        "fast_channel_floor_us": measured["fast_delay_us"] + shared_us + fast_decode_us,
         "shared_after_detection_us": shared_us,
+        "decode_after_detection_us": {"hard": hard_decode_us, "fast": fast_decode_us},
+        "floor_difference_us": (measured["hard_delay_us"] + hard_decode_us)
+                               - (measured["fast_delay_us"] + fast_decode_us),
         "driver_branch_us": driver_branch_us,
         "sr_branch_floor_us": sr_branch_us,
         "primary_branch_floor_us": primary_branch_us,
@@ -624,13 +804,19 @@ def build() -> dict:
             "logic_typ_us": logic["typ_us"],
             "logic_stages": [f"{s['ref']} {s['role']}" for s in logic["stages"]],
             "logic_is_a_25c_max": logic["max_is_at_25c_only"],
+            # The two gates the ECO added sit inside the decode now, so the
+            # external path's cost from the detector to FLT is the same sum the
+            # channel table already holds -- quoted here because this is the
+            # number a reader of *this* section came for.
+            "decode_to_the_latch_us": external_decode_us,
             "missing": ["loaded Q1 edge and wiring capacitance",
                         "real UCC24624 REG discharge and last SR gate turn-off",
-                        "the U6.4 AND and U10 stages after FAST_COMBINED"],
-            "note": ("The new inverter and OR are now priced from their vendored "
-                     "datasheets; the legacy totals still cannot be used as the "
-                     "external fast path latency, and the stages before and after "
-                     "the two gates are still unpriced."),
+                        "a maximum for the U6.4 AND: the vendored CD4081B publishes "
+                        "none, so the sum above is a floor"],
+            "note": ("The inverter, the U19 OR and the three U10 ORs are now priced "
+                     "from their vendored datasheets (25 C maxima).  The U6.4 AND "
+                     "has no published maximum and is priced at zero, so this is a "
+                     "floor; the stages before U11F are still unpriced."),
         },
         "not_worst_case_because": [
             "the LM393 publishes no maximum response time at all -- 1.3 us is a "
@@ -652,9 +838,15 @@ def build() -> dict:
             "datasheet's own C_L produces, not what this layout produces",
             "no temperature or device spread is applied: every value is a nominal "
             "part-table arithmetic, not a worst-case-over-temperature figure",
-            "the external fast path's two gates are 25 C maxima -- CD4069UB and "
-            "CD4071B publish their dynamic table at TA = 25 C only -- so 360 ns "
-            "bounds the pair at one temperature, not over the board's range",
+            "the decode chain is priced from 25 C maxima (CD4071B and CD4069UB), "
+            "and its AND gate (U6.4) is priced at zero because the vendored "
+            "CD4081B publishes no dynamic table at all -- so the hard channel's "
+            "three ORs and the fast channels' extra gates each lengthen the "
+            "floor by an unknown amount",
+            "the external fast path's inverter, its U19 OR and the three U10 ORs "
+            "are 25 C maxima -- CD4069UB and CD4071B publish their dynamic table "
+            "at TA = 25 C only -- so the priced 1.11 us bounds that segment at "
+            "one temperature, not over the board's range",
         ],
         "stages": {
             "detection": {
@@ -696,6 +888,7 @@ def build() -> dict:
                                "tr/tf = 20 ns"),
             },
             "external_fast_logic": logic,
+            "decode": decode,
             "permit_release": release,
             "driver_disable": {
                 "ucc27282_tdis_us": UCC27282_TDIS_US,
