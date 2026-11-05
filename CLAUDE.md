@@ -61,6 +61,8 @@ python tools/assembly_drawing.py --check          # 装配/DNP 图（A4 1:1）�
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
 python tools/make_fast_oc_pcb.py --check          # 该模块的布线板：重生成 + kicad-cli DRC（需 KiCad 10.0，缺了 SystemExit）
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
+python tools/magnetics_manufacturing_input.py --write  # 加工输入页：每件冻结一个候选 + 首件判据 + 空白回填
+python tools/magnetics_manufacturing_input.py --check  # 页面是否过期（与 --write 同源，只比字节）
 python tools/placeholder_eco.py --write          # 61 占位逐件责任清单（json + csv），只连表不造 MPN
 python tools/run_d1_50v_matched_cases.py     # PROT-03 50 V A/B 配对实跑（默认 dry-run）
 python tools/run_d1_50v_matched_cases.py --variant shunt_2f   # PR 30 数值扫描（shunt_2f/5f/10f）
@@ -1153,6 +1155,31 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   它量的是振铃，不是磁通。只有 48 V 基座跑满声明的 320 µs（50 V 在 296.9 µs 塌缩），
   所以这条只建立在 48 V 上。故障 deck 只存 T1 副边电压 ⇒ RFQ 只有 T1 引这组数。
   见 `design/v3/magnetics/transformer_flux_fault_48v.json`。
+
+## 磁件加工输入页（`hardware/dcx_main/manufacturing/`）
+
+`tools/magnetics_manufacturing_input.py` 生成 6 张加工输入页（T1–T4、Lr、CT）+ `index.json`。
+它**不是询价单的副本**：询价单问厂家能给什么（多候选），加工输入页写我们要做什么、回来量什么
+（一个冻结候选 + 首件判据 + 空白回填表）。两套工件都留着，混用会让"候选"读成"决定"。
+
+- **变压器与 Lr 分用途冻结**：T1–T4 在 ELP32（`EILP32`，磁通按副边电压积分定），Lr 在 ELP38
+  （按电感保持率、气隙工艺范围与 0.9·Bsat 选）。`test_the_transformer_and_the_inductor_do_not_share_a_core`
+  锁住两边不互相串。
+- **气隙窗口必须按电感排序**：气隙越大电感越小，所以 L_min 对应最宽气隙。第一版直接按
+  L±10 % 的顺序返回，页面印成 `0.1374 - 0.1077 mm`（窗口倒过来，磨不出来）——文字级测试全绿。
+  `gap_window_mm()` 现在返回 `(narrow, wide)`，`test_the_gap_window_is_ordered_by_inductance`
+  要求 `low < 标称 < high`。**这个数从 `core_gap_m()` 反算，不抄询价单里的字面值。**
+- **Lr 页只写 `L_external = L_tank_target − L_leak_measured`（0.920 µH 是模型漏感的预估），
+  1.000 µH 是筛选上限**，不是要绕的值；页面同时写出对 D3 的余量是 **−2.49 mm**（ELP38 只能用在
+  D1 的 16 mm，D3 的 10 mm 需要更矮的套件）。
+- **物理端子一律写「待商家提供」**：T1–T4/CT 来自 `vendor_terminal_request.json` 的 null 物理号，
+  Lr 来自 `board_netlist.csv` 的两个端子（该文件里没有 Lr，因为它只有两端）。**不编焊盘号**，
+  `test_every_logical_terminal_has_a_requirement_row` 逐端比对且禁止出现 `physical_pad`。
+- **磁密只能写「仿真波形积分」或解析值**：`test_the_flux_figures_are_labelled_simulation_not_measurement`
+  禁止 `实测磁密`，回填栏的值必须全是 `—`（表头单独一行、分隔行以 `|-` 开头所以不在表体里）。
+- **CT 的磁芯还没选**（只有 Ae 20.1 mm² 与 Bsat 0.34 T），所以 `frozen: False` 会在页头加一条
+  「尚未选定，不是可下单的加工输入」；`test_a_page_that_has_not_frozen_a_core_says_so` 锁住
+  「没说未选定的页面不许出现这四个字」。现行 2 pad 封装是无效的，四端必须各自独立。
 
 ## 61 占位责任清单（`hardware/dcx_main/placeholder_eco.{json,csv}`）
 

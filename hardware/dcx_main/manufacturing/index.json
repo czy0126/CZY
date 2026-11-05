@@ -1,0 +1,54 @@
+{
+ "kind": "D1_MAGNETICS_MANUFACTURING_INPUT_DRAFT",
+ "status": "MANUFACTURING_INPUT_DRAFT_NOT_RELEASED",
+ "rule": "one frozen candidate per page; physical pads are requirements; measurements start empty",
+ "devices": [
+  {
+   "ref": "T1",
+   "page": "manufacturing/T1.md",
+   "terminal_count": 5,
+   "test_count": 9,
+   "open_item_count": 5
+  },
+  {
+   "ref": "T2",
+   "page": "manufacturing/T2.md",
+   "terminal_count": 5,
+   "test_count": 9,
+   "open_item_count": 5
+  },
+  {
+   "ref": "T3",
+   "page": "manufacturing/T3.md",
+   "terminal_count": 5,
+   "test_count": 9,
+   "open_item_count": 5
+  },
+  {
+   "ref": "T4",
+   "page": "manufacturing/T4.md",
+   "terminal_count": 5,
+   "test_count": 9,
+   "open_item_count": 5
+  },
+  {
+   "ref": "Lr",
+   "page": "manufacturing/Lr.md",
+   "terminal_count": 2,
+   "test_count": 7,
+   "open_item_count": 4
+  },
+  {
+   "ref": "CT",
+   "page": "manufacturing/CT.md",
+   "terminal_count": 4,
+   "test_count": 6,
+   "open_item_count": 4
+  }
+ ],
+ "not": [
+  "not a released drawing: no vendor terminal drawing exists in this repository",
+  "not an approval: nothing here has been measured on a first article",
+  "not the RFQ: the candidate menus live in hardware/dcx_main/rfq/"
+ ]
+}
