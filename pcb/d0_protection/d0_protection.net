@@ -8599,16 +8599,16 @@
 		(comp
 			(ref "U2")
 			(value "TL431LP")
-			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "REF tied to K: 2.500 V reference")
+			(footprint "Package_TO_SOT_THT:TO-92_Inline")
+			(description "TI LP is TO-92: K=1, A=2, REF=3; K/REF are shorted only in this 2.500 V design")
 			(fields
 				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+					(name "Footprint") "Package_TO_SOT_THT:TO-92_Inline")
 				(field
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "REF tied to K: 2.500 V reference")
+					(name "Description") "TI LP is TO-92: K=1, A=2, REF=3; K/REF are shorted only in this 2.500 V design")
 			)
 			(libsource
 				(lib "Reference_Voltage")
