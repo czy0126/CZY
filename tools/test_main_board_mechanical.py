@@ -716,11 +716,11 @@ def test_a_one_pad_net_is_listed_rather_than_read_as_routed():
         assert name in nets["single_pad_nets_note"], name
 
 
-def test_the_ct_overcurrent_chain_closes_the_secondary_and_leaves_one_hole():
+def test_the_ct_overcurrent_chain_closes_the_secondary_from_end_to_end():
     """Until the bridge lands, CS1/CS2 carry one pad each -- the CT's own logical
     terminal -- so they are indistinguishable from an unrouted net.  Placing
-    D_CT1-D_CT4 and the divider closes both secondaries, creates OCD/OCM/OC1/OC
-    and takes the one-pad list down to the three ends that are genuinely
+    D_CT1-D_CT4 and the divider closes both secondaries and creates OCD/OCM/OC1/
+    OC, taking the one-pad list down to the three ends that are genuinely
     off-board.
 
     The pad counts are read off ``pin_footprint_review.csv``, not chosen here:
@@ -728,34 +728,88 @@ def test_the_ct_overcurrent_chain_closes_the_secondary_and_leaves_one_hole():
     R15/R16/R17/C11/C12 are the 1k/10k/24k/47n/10n divider the deck's OC network
     already carries.  U1 is not on this board, so OC is three pads and no more.
 
-    R3 -- the 10 ohm burden across OCD/OCM -- is deliberately absent.  Its
-    value is frozen and its package is not: ``bom_draft.csv`` says "-", and the
-    measured 125.7 mW startup burden is 100.6 % of an 0805's 0.125 W rating.
-    Placing a 0603 (what the native schematic still carries) would draw a
-    resistor that cannot take the energy; placing a 1206 would be a selection
-    nobody has made.  An empty position with a stated reason is the honest third
-    option, and ``not_placed_here_netlist_refs`` has to say so.
+    R3 -- the 10 ohm burden across OCD/OCM -- used to be this chain's one hole:
+    its value was frozen and its package was not.  ``r3_vendor_rating_screen.json``
+    has since picked the case, so the hole is now a position and both of its pads
+    join the same two nodes the divider taps.
     """
     refs = {p.ref for p in mbm.PARTS}
     assert {"D_CT1", "D_CT2", "D_CT3", "D_CT4",
-            "R15", "R16", "R17", "C11", "C12"} <= refs
-    assert "R3" not in refs
+            "R15", "R16", "R17", "C11", "C12", "R3"} <= refs
 
     nets = mbm.nets_report()
     pads = {n["net"]: n["pads"] for n in nets["nets"]}
     assert pads["CS1"] == 3, pads["CS1"]        # CT.SEC_A + D_CT1.1 + D_CT3.3
     assert pads["CS2"] == 3, pads["CS2"]        # CT.SEC_B + D_CT2.1 + D_CT4.3
-    assert pads["OCD"] == 3, pads["OCD"]        # D_CT1.3 + D_CT2.3 + R15.1
-    assert pads["OCM"] == 5, pads["OCM"]        # D_CT3.1 + D_CT4.1 + R17.2 + C11.2 + C12.2
+    assert pads["OCD"] == 4, pads["OCD"]        # D_CT1.3 + D_CT2.3 + R15.1 + R3.1
+    assert pads["OCM"] == 6, pads["OCM"]        # D_CT3.1 + D_CT4.1 + R17.2 + C11.2 + C12.2 + R3.2
     assert pads["OC1"] == 3, pads["OC1"]        # R15.2 + R16.1 + C11.1
     assert pads["OC"] == 3, pads["OC"]          # R16.2 + R17.1 + C12.1
-    assert "R3" in nets["not_placed_here_netlist_refs"]
-    assert "R3" in nets["not_placed_here_reason"]
+    assert "R3" not in nets["not_placed_here_netlist_refs"]
+
+
+def test_the_burden_is_a_2512_across_the_rectified_secondary():
+    """R3 lands as the case the vendor screen picked, not as the 0603 the native
+    schematic still carries.
+
+    Three separate facts are asserted, each against the file that owns it: the
+    land is the vendored KiCad 2512 (read back out of the footprint text, not
+    out of a constant), the case and the 0.7 mm height are the screen's
+    (``r3_vendor_rating_screen.json``), and the 10 ohm value is the register's
+    (``placeholder_eco.json``).  Copying any of the three into this file would
+    let the board and the document that decides it drift apart.
+
+    The part is a *candidate*: the screen's ``pcb_footprint_verified`` and
+    ``pcb_layout_updated`` are still false, so nothing here says a part was
+    ordered.  It says the position exists and is measured.
+    """
+    (r3,) = [p for p in mbm.PARTS if p.ref == "R3"]
+    screen = json.loads(
+        (mbm.ROOT / "docs" / "D1_EXECUTION_KIT" / "r3_vendor_rating_screen.json")
+        .read_text(encoding="utf-8"))
+    assert screen["candidate_eia_case"] == "2512", screen["candidate_eia_case"]
+    assert screen["pcb_layout_updated"] is False   # a position, not a released layout
+    assert r3.footprint == mbm.R2512_FP
+    assert r3.h_mm_worst == screen["candidate_height_max_mm"], r3.h_mm_worst
+
+    # The land itself: the vendored file's two pads, read from the file.
+    local = mbm._text_pad_positions(mbm._stock_footprint(mbm.R2512_FP))
+    assert set(local) == {"1", "2"}, local
+    assert all(abs(abs(x) - 2.9625) < 1e-9 for x, _ in local.values()), local
+    assert mbm.part_nets(r3) == {"1": "OCD", "2": "OCM"}
+
+    # The value still comes from the register, which freezes 10 ohm.
+    eco = json.loads(mbm.ECO.read_text(encoding="utf-8"))["rows"]
+    stated = next(r["existing_value_or_rating"] for r in eco if r["ref"] == "R3")
+    assert r3.value == " ".join(stated.split(";")[0].split()[:2]), r3.value
+    assert r3.value == "10 ohm", r3.value
+
+
+def test_the_burden_sits_in_the_free_run_left_of_the_ct():
+    """The 2512 is 7.66 mm wide and the sense band's right end is full: the
+    divider already reaches x 149.48 on a 155 mm board, so the only free run at
+    y 59.5-65.3 is x 35.88 (Lr) to 82.00 (CT).  The burden goes at the CT end of
+    it, which is as close to the rectifier as a part this wide can get.
+
+    A run that is not checked is a run that gets "improved" into a track under a
+    core: the assertion is against the two neighbours by name, not against the
+    numbers that happened to be free on the day.
+    """
+    (r3,) = [p for p in mbm.PARTS if p.ref == "R3"]
+    lr = next(p for p in mbm.PARTS if p.ref == "Lr")
+    ct = next(p for p in mbm.PARTS if p.ref == "CT")
+    x0, y0, x1, y1 = mbm.bbox(r3)
+    assert mbm.bbox(lr)[2] < x0, (mbm.bbox(lr)[2], x0)
+    assert x1 < mbm.bbox(ct)[0], (x1, mbm.bbox(ct)[0])
+    assert 59.5 < y0 and y1 < 65.3, (y0, y1)
+    # left of the CT, but hugging it: a burden 40 mm from its rectifier would be
+    # a placement nobody measured
+    assert mbm.bbox(ct)[0] - x1 < 2.0, mbm.bbox(ct)[0] - x1
 
 
 def test_each_ref_this_board_leaves_out_is_named_with_its_own_reason():
-    """One sentence used to cover all 32 excluded refs, and it was false for
-    three of them.
+    """One shared sentence used to cover all 32 excluded refs, and it was false
+    for three of them.
 
     It said "control, drive and decoupling parts have no position on this
     board", with a paragraph carved out for R3.  ``Cin`` is a power part with a
@@ -765,9 +819,11 @@ def test_each_ref_this_board_leaves_out_is_named_with_its_own_reason():
     A reader checking doc 34's "decide Cin before the placeholders" would find
     a report that had quietly classified Cin as decoupling.
 
-    So every excluded ref gets a row, the three exceptions get their own
-    category, and the one-line summary is assembled from the same table instead
-    of being written next to it.
+    So every excluded ref gets a row, the exceptions get their own category, and
+    the one-line summary is assembled from the same table instead of being
+    written next to it.  R3 has since left this list for a position, which is
+    the other direction the table has to fail in -- and it does, see the stale
+    row test below.
     """
     nets = mbm.nets_report()
     rows = {r["ref"]: r for r in nets["not_placed_here_reasons"]}
@@ -783,27 +839,26 @@ def test_each_ref_this_board_leaves_out_is_named_with_its_own_reason():
     assert rows["Cout"]["category"] == "REPRESENTED_BY_OTHER_REFS"
     assert "Cout1" in rows["Cout"]["why"]
 
-    # The two power-chain parts are held back on purpose, and each reason has to
-    # carry the fact that decides it, not a synonym for "not yet".
-    for ref in ("Cin", "R3"):
-        assert rows[ref]["category"] == "HELD_BACK", ref
+    # The one power-chain part still held back has to carry the fact that
+    # decides it, not a synonym for "not yet".
+    assert rows["Cin"]["category"] == "HELD_BACK"
     assert "20 uF" in rows["Cin"]["why"], rows["Cin"]["why"]
     assert "TO SELECT" in rows["Cin"]["why"]
     assert "5.316" in rows["Cin"]["why"]        # passive_requirements.json:cin.bridge_ac_rms_a
-    assert "10 ohm" in rows["R3"]["why"], rows["R3"]["why"]
-    assert "TO SELECT" in rows["R3"]["why"]
+    assert "R3" not in excluded
 
     # Everything left really is control, drive or decoupling and may share one
-    # sentence -- but the three above must not be in that group.
+    # sentence -- but the two above must not be in that group.
     others = {r for r in excluded if rows[r]["category"] == "NOT_THIS_BOARD"}
     assert {"U1", "R1", "C6", "D_BT", "C101"} <= others
-    assert not ({"Cin", "R3", "Cout"} & others)
+    assert not ({"Cin", "Cout"} & others)
 
     # Derived, not transcribed: the count and the named exceptions come out of
     # the table, so placing Cin (or adding another exception) changes the line.
     sentence = nets["not_placed_here_reason"]
     assert f"{len(others)} control" in sentence, sentence
-    assert "Cin" in sentence and "Cout" in sentence and "R3" in sentence
+    assert "Cin" in sentence and "Cout" in sentence
+    assert "R3" not in sentence, sentence
 
 
 def test_a_reason_left_behind_by_a_part_that_is_now_placed_stops_the_build(monkeypatch):
@@ -823,26 +878,29 @@ def test_a_reason_left_behind_by_a_part_that_is_now_placed_stops_the_build(monke
 
 def test_the_ct_sense_chain_sits_in_the_band_between_the_ct_and_the_crowbar():
     """The sense chain goes in the one band that is free at y 59.5-65.3: below
-    the CT and above the REG crowbar.  Both edges are 1.2 mm, which is the
-    clearance the crowbar row already broke as a minimum -- so this row cannot
-    be slid to make a net shorter without eating one of them.
+    the CT and above the REG crowbar.  Both edges are the clearance the crowbar
+    row already broke as a minimum -- so this row cannot be slid to make a net
+    shorter without eating one of them.
 
-    All nine parts are checked, not just the bridge: the divider sits in the same
+    All ten parts are checked, not just the bridge: the divider sits in the same
     band for the same reason, and a filter that only matched ``D_CT*`` left four
-    of them free to drift.
+    of them free to drift.  The deepest part is now the burden's 2512 rather
+    than the SOT-23, and it is the one that sets the row's clearance: (5.80 -
+    3.86) / 2 = 0.97 mm a side.
     """
-    refs = ["D_CT1", "D_CT2", "D_CT3", "D_CT4", "R15", "R16", "R17", "C11", "C12"]
+    refs = ["D_CT1", "D_CT2", "D_CT3", "D_CT4", "R15", "R16", "R17", "C11", "C12", "R3"]
     row = {p.ref: p for p in mbm.PARTS if p.ref in refs}
     assert sorted(row) == sorted(refs)
     for ref, part in row.items():
         x0, y0, x1, y1 = mbm.bbox(part)
         assert 59.5 < y0 and y1 < 65.3, (ref, y0, y1)
-    # max-min: the deepest part is the SOT-23, and it is centred in the band.
-    # If y were a round number picked first, these two gaps would differ.
+    # max-min: the deepest part is the burden's 2512, and it is centred in the
+    # band.  If y were a round number picked first, these two gaps would differ.
     deepest = max(row.values(), key=lambda p: p.d_mm)
-    assert deepest.d_mm == 3.40, deepest.d_mm
+    assert deepest.ref == "R3" and deepest.d_mm == 3.86, (deepest.ref, deepest.d_mm)
     _, y0, _, y1 = mbm.bbox(deepest)
     assert abs((y0 - 59.5) - (65.3 - y1)) < 1e-9, (y0 - 59.5, 65.3 - y1)
+    assert abs((y0 - 59.5) - 0.97) < 1e-9, y0 - 59.5
     # left to right in signal order: bridge first, then the divider
     order = ["D_CT1", "D_CT2", "D_CT3", "D_CT4"]
     xs = [mbm.bbox(next(p for p in mbm.PARTS if p.ref == r))[0] for r in order]

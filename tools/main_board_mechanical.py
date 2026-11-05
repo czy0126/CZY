@@ -129,6 +129,11 @@ SOD123_FP = "Diode_SMD:D_SOD-123"
 SOD123_W, SOD123_D, SOD123_H = 4.70, 2.30, 1.35
 R1206_FP = "Resistor_SMD:R_1206_3216Metric"
 R1206_W, R1206_D, R1206_H = 4.56, 2.26, 0.60
+# Vendored (PROVENANCE.md): IPC-7351 2512, courtyard 7.66 x 3.86, pads at
+# +-2.9625 x 1.225 x 3.35.  This is the land the OC burden's candidate case
+# needs; it is KiCad's nominal land, not the manufacturer's recommended one.
+R2512_FP = "Resistor_SMD:R_2512_6332Metric"
+R2512_W, R2512_D, R2512_H = 7.66, 3.86, 0.70
 C0603_FP = "Capacitor_SMD:C_0603_1608Metric"
 C0603_W, C0603_D, C0603_H = 2.96, 1.46, 0.90
 # The two FET lands are digitised into JSON and generated from it.  ``parts()``
@@ -198,11 +203,19 @@ CROWBAR_R_DX = -4.2
 CROWBAR_SHARED_X = {"R50": 60.00, "D50": 65.33, "R51": 70.66, "C50": 75.12, "R52": 79.58}
 # The CT sense band, on the right of the board: 59.50 (the CT's bottom edge, and
 # U2/J_IN clear it by more) up to 65.30 (the top of the crowbar's SOT-23).  The
-# deepest part here is again the SOT-23 at 3.40 mm, so y = 62.40 centres it --
-# 1.20 mm to each side -- and the 1.46 mm 0603s clear by (5.80 - 1.46)/2 = 2.17 mm.
-# It is the max-min choice for this band, same argument as the crowbar row above
-# it, and the equality of those two 1.20 mm gaps is asserted rather than stated.
+# deepest part here is the burden resistor's 2512 at 3.86 mm, so y = 62.40
+# centres it -- (5.80 - 3.86)/2 = 0.97 mm to each side -- and the SOT-23s clear
+# by (5.80 - 3.40)/2 = 1.20 mm.  It is the max-min choice for this band, same
+# argument as the crowbar row above it, and the equality of those two gaps is
+# asserted rather than stated.
 CT_SENSE_ROW_Y = 62.4
+# The burden sits at the CT end of the only free run in that band: the divider
+# already reaches x 149.48 on a 155 mm board, so the run is x 35.88 (Lr) to
+# 82.00 (CT) and the 7.66 mm case can reach no further left than x 78.17.  At
+# 77.00 it is 1.17 mm from the CT, i.e. as close to its rectifier as a part this
+# wide gets -- 30 mm of OCD/OCM track, not the 45 mm of putting it at the run's
+# far end.
+CT_BURDEN_X = 77.0
 
 
 def crowbar_nets() -> dict[str, dict[str, str]]:
@@ -412,12 +425,23 @@ def parts() -> tuple[Part, ...]:
     # package C keeps the chain that decides the 24.2 A trip threshold beside the
     # tank it watches, and every value here is frozen in bom_draft.csv.
     #
-    # R3 is *not* in this row, and that is the increment's one deliberate hole.
-    # Its value is frozen at 10 ohm; its package is "-" / TO SELECT because the
-    # measured 125.7 mW continuous burden is 100.6 % of an 0805's 0.125 W nominal
-    # before any derating.  A 0603 (what the native schematic still carries)
-    # would draw a resistor that cannot take the energy, and a 1206 would encode
-    # a selection nobody has made -- so the burden stays a named gap.
+    # The burden itself used to be this row's one deliberate hole: 10 ohm frozen,
+    # package "-" / TO SELECT, because the measured 125.7 mW is 100.6 % of an
+    # 0805's 0.125 W nominal before any derating.  r3_vendor_rating_screen.json now
+    # names a candidate -- CRCW251210R0FKEHHP, EIA 2512, 1.5 W, 0.70 mm max -- and
+    # its first remaining action is exactly "2512 footprint/placement".  So the
+    # burden gets a position, on a land that is vendored and measurable, while the
+    # part itself stays a candidate: pcb_footprint_verified, verified_mpn and both
+    # approval flags are still false, and the native editor still carries the 0603.
+    out.append(Part("R3", placeholder_value("R3"), R2512_W, R2512_D, R2512_H,
+                    CT_BURDEN_X, CT_SENSE_ROW_Y, "kicad-library", R2512_FP,
+                    note="CT burden, 10 ohm across OCD/OCM.  Case, power and height "
+                         "come from r3_vendor_rating_screen.json (CRCW251210R0FKEHHP, "
+                         "2512, 1.5 W, 0.70 mm max); the land is the vendored KiCad "
+                         "IPC-7351 2512, not the vendor's recommended land, and the "
+                         "part is a candidate -- no MPN is verified and no approval "
+                         "flag is set.  Continuous 125.7 mW is 8.4 % of the 1.5 W "
+                         "rating; the fault pulse is 10.08 W for 0.131 mJ"))
     for ref, x in (("D_CT1", 108.0), ("D_CT2", 114.0),
                    ("D_CT3", 120.0), ("D_CT4", 126.0)):
         out.append(Part(ref, "dual Schottky", SOT23_W, SOT23_D, SOT23_H, x,
@@ -802,14 +826,16 @@ NOT_PLACED_CATEGORIES = ("REPRESENTED_BY_OTHER_REFS", "HELD_BACK", "NOT_THIS_BOA
 
 # Most of what this board leaves out really is control, drive or decoupling: the
 # controller, its RT/DT/SS network, the bootstrap parts, the EN and gate
-# pull-downs and the twelve IC decoupling capacitors.  Three are not, and one
-# sentence covering all thirty-two was false for exactly those three:
+# pull-downs and the twelve IC decoupling capacitors.  Two are not, and one
+# sentence covering all thirty-one was false for exactly those two:
 #
 # * ``Cout`` is not absent -- the schematic models the whole bank as one lumped
 #   element, and its fifteen units are placed as Cout1..Cout15.
-# * ``Cin`` and ``R3`` are power-chain parts held back on purpose.  Doc 34 puts
-#   Cin ahead of the placeholders, so filing it under "decoupling" answers the
-#   wrong question; and R3's package is undecided for a measured reason.
+# * ``Cin`` is a power-chain part held back on purpose.  Doc 34 puts Cin ahead of
+#   the placeholders, so filing it under "decoupling" answers the wrong question.
+#
+# ``R3`` used to be the third.  It has since left this list for a position on the
+# 2512 candidate case, which is the other direction the table has to fail in.
 NOT_PLACED_REASONS: dict[str, tuple[str, str]] = {
     "Cout":
         ("REPRESENTED_BY_OTHER_REFS",
@@ -823,12 +849,6 @@ NOT_PLACED_REASONS: dict[str, tuple[str, str]] = {
          "has to carry 5.316 A AC RMS through the high-side switch "
          "(passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, "
          "not the outline, is what picks the part"),
-    "R3":
-        ("HELD_BACK",
-         "its 10 ohm value is frozen but its package is TO SELECT: the measured "
-         "125.7 mW burden is 100.6 % of an 0805's 125 mW nominal, so neither the 0603 "
-         "the native schematic still carries nor a 1206 nobody has selected would be "
-         "a true outline"),
 }
 NOT_PLACED_DEFAULT = (
     "NOT_THIS_BOARD",

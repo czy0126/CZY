@@ -139,6 +139,18 @@
       "note": "UCC25600 + UCC27282 + passives grouped; no layout done"
     },
     {
+      "ref": "R3",
+      "value": "10 ohm",
+      "evidence": "kicad-library",
+      "w_mm": 7.66,
+      "d_mm": 3.86,
+      "h_mm_worst": 0.7,
+      "x_mm": 77.0,
+      "y_mm": 62.4,
+      "rot_deg": 0.0,
+      "note": "CT burden, 10 ohm across OCD/OCM.  Case, power and height come from r3_vendor_rating_screen.json (CRCW251210R0FKEHHP, 2512, 1.5 W, 0.70 mm max); the land is the vendored KiCad IPC-7351 2512, not the vendor's recommended land, and the part is a candidate -- no MPN is verified and no approval flag is set.  Continuous 125.7 mW is 8.4 % of the 1.5 W rating; the fault pulse is 10.08 W for 0.131 mJ"
+    },
+    {
       "ref": "D_CT1",
       "value": "dual Schottky",
       "evidence": "kicad-library",
@@ -1149,8 +1161,8 @@
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
     "net_count": 64,
-    "pads_landed": 260,
-    "physical_pads_netted": 276,
+    "pads_landed": 262,
+    "physical_pads_netted": 278,
     "pads_landed_note": "pad names with a net; physical pads are higher where a footprint splits one pin across several lands (the SR FET drain: a common base plus four fingers, two of which share the name 5).  KiCad merges same-numbered pads, and also same-net lands whose copper overlaps, so the ratsnest is shorter than pads_landed - net_count",
     "nets": [
       {
@@ -1298,6 +1310,19 @@
         "straight_line_mst_mm": 74.061
       },
       {
+        "net": "OCM",
+        "pads": 6,
+        "refs": [
+          "C11",
+          "C12",
+          "D_CT3",
+          "D_CT4",
+          "R17",
+          "R3"
+        ],
+        "straight_line_mst_mm": 68.853
+      },
+      {
         "net": "VIN_P",
         "pads": 6,
         "refs": [
@@ -1347,6 +1372,17 @@
         "straight_line_mst_mm": 65.766
       },
       {
+        "net": "OCD",
+        "pads": 4,
+        "refs": [
+          "D_CT1",
+          "D_CT2",
+          "R15",
+          "R3"
+        ],
+        "straight_line_mst_mm": 57.138
+      },
+      {
         "net": "PRI_T1",
         "pads": 2,
         "refs": [
@@ -1383,18 +1419,6 @@
         "straight_line_mst_mm": 38.833
       },
       {
-        "net": "OCM",
-        "pads": 5,
-        "refs": [
-          "C11",
-          "C12",
-          "D_CT3",
-          "D_CT4",
-          "R17"
-        ],
-        "straight_line_mst_mm": 29.741
-      },
-      {
         "net": "CS2",
         "pads": 3,
         "refs": [
@@ -1413,16 +1437,6 @@
           "D_CT3"
         ],
         "straight_line_mst_mm": 28.221
-      },
-      {
-        "net": "OCD",
-        "pads": 3,
-        "refs": [
-          "D_CT1",
-          "D_CT2",
-          "R15"
-        ],
-        "straight_line_mst_mm": 22.238
       },
       {
         "net": "SW",
@@ -1889,7 +1903,6 @@
       "R18",
       "R19",
       "R2",
-      "R3",
       "R7",
       "R8",
       "R9",
@@ -2032,11 +2045,6 @@
         "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
       },
       {
-        "ref": "R3",
-        "category": "HELD_BACK",
-        "why": "its 10 ohm value is frozen but its package is TO SELECT: the measured 125.7 mW burden is 100.6 % of an 0805's 125 mW nominal, so neither the 0603 the native schematic still carries nor a 1206 nobody has selected would be a true outline"
-      },
-      {
         "ref": "R7",
         "category": "NOT_THIS_BOARD",
         "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
@@ -2057,7 +2065,7 @@
         "why": "a control, drive or decoupling part, none of which has a position on this power-stage board"
       }
     ],
-    "not_placed_here_reason": "power-stage placement only; 29 control, drive and decoupling parts have no position on this board.  3 more are left out for reasons of their own, which one sentence could not carry: Cin: a 20 uF input bank is required and its package is TO SELECT, so the review row's 100 nF 0603 is a placeholder for a part nobody has chosen; the bank has to carry 5.316 A AC RMS through the high-side switch (passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, not the outline, is what picks the part; Cout: the schematic models the whole output bank as one lumped element, so this ref has no body of its own; its fifteen units are placed here as Cout1..Cout15 (see lumped_from_one_netlist_element); R3: its 10 ohm value is frozen but its package is TO SELECT: the measured 125.7 mW burden is 100.6 % of an 0805's 125 mW nominal, so neither the 0603 the native schematic still carries nor a 1206 nobody has selected would be a true outline",
+    "not_placed_here_reason": "power-stage placement only; 29 control, drive and decoupling parts have no position on this board.  2 more are left out for reasons of their own, which one sentence could not carry: Cin: a 20 uF input bank is required and its package is TO SELECT, so the review row's 100 nF 0603 is a placeholder for a part nobody has chosen; the bank has to carry 5.316 A AC RMS through the high-side switch (passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, not the outline, is what picks the part; Cout: the schematic models the whole output bank as one lumped element, so this ref has no body of its own; its fifteen units are placed here as Cout1..Cout15 (see lumped_from_one_netlist_element)",
     "length_note": "straight-line spanning tree over pad centres, a lower bound on copper and not a route"
   },
   "cout_bank_refs": [
@@ -2105,6 +2113,10 @@
       {
         "lib_id": "Resistor_SMD:R_1206_3216Metric",
         "sha256": "c7320668dc81bbb954cb4f15e4e7a766c120059343d43551468c8f7ccc8fde37"
+      },
+      {
+        "lib_id": "Resistor_SMD:R_2512_6332Metric",
+        "sha256": "abab4bf8eeb3ed03061d8eeb56b542cdac074ce8a0ace0f9b06e933c0b48f297"
       }
     ]
   }
