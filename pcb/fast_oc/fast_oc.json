@@ -206,7 +206,7 @@
     "shutdown_logic": "SHDN low enables; within 0.9 V of V+ disables",
     "quiescent_current_max_a": 0.005,
     "loss_of_5v": "reference and comparator dead; R6 holds Q1 off, so FAST_TRIP is released -- no false trip, but no fast protection either",
-    "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum operating current is not in this repository"
+    "minimum_reference_current": "UNVERIFIED - the LM4040D25IDBZR minimum operating current is not in this repository"
   },
   "d0_connection": [
     "J1.1 V5 -> D0 V5 (bench 5 V rail)",
@@ -269,7 +269,7 @@
     "the system stop is NOT set by this comparator: the SR branch waits for REG to fall through UVLO, so the whole-machine floor is quoted in system_delay",
     "D0's CD4013 latch propagation is not modelled, so system_delay totals are floors",
     "no latch, no isolation, no reverse-supply protection beyond D2",
-    "the LM4040DBZ-2.5 minimum operating current is unverified, so the low-supply corner is not characterised",
+    "the LM4040D25IDBZR minimum operating current is unverified, so the low-supply corner is not characterised",
     "a clean ERC only says the drawing agrees with itself"
   ]
 }
