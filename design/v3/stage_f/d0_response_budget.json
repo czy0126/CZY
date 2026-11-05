@@ -5,7 +5,8 @@
   "not_worst_case_because": [
     "the comparator stage is unknown: no LM393 datasheet is vendored, so its response time is neither cited nor guessed",
     "the latch stage is unknown: no CD4013 datasheet is vendored",
-    "the UCC27524A disable time is unknown: its datasheet is not vendored, and the EN pin capacitance behind PERMIT_RAIL is unpublished, so the rail fall time above is a floor that extra pin capacitance only lengthens",
+    "the UCC27524A disable delay comes from doc 15's transcription of a datasheet this repository does not hold, and whether disabling pulls the output low or tri-states it is unstated -- tri-stating would put the SR gate on the 10k pull-down alone",
+    "the eight 200 k pull-ups that set the permit rail's ceiling are a typical transcribed from doc 15, not a guaranteed minimum, so the 0.26 V ceiling is a nominal figure",
     "the gate fall omits the driver's internal sink resistance, which adds time",
     "no temperature or device spread is applied: every value is a nominal part-table arithmetic, not a worst-case-over-temperature figure"
   ],
@@ -36,30 +37,43 @@
       "enable_rail_v": 5.0,
       "rail_source_net": "V5",
       "discharge_ohm": 550.6220858033225,
+      "sr_pullup_ohm": 25000.0,
+      "sr_pullup_is_a_typical_not_a_guarantee": true,
+      "thevenin_ohm": 538.7560466769069,
+      "ceiling_v": 0.2586029024049153,
+      "ceiling_below_vd_is_max": true,
+      "ceiling_above_vd_is_max": false,
+      "ceiling_below_ven_min": true,
+      "ven_min_v": 1.54,
       "specified_capacitance_f": 1e-09,
-      "tau_us": 0.5506220858033226,
+      "tau_us": 0.5387560466769068,
       "vd_is_max_v": 1.21,
       "vd_is_min_v": 0.7,
-      "fastest_us": 0.7812322803111156,
-      "guaranteed_us": 1.0825851619007374,
+      "fastest_us": 0.8653260329249541,
+      "guaranteed_us": 1.279083465511321,
       "fastest_uses_vd_is_max": true,
       "guaranteed_uses_vd_is_min": true,
       "sr_pulldown_count": 8,
       "sr_pulldowns_carry_most_of_the_discharge": true,
       "sr_pulldown_conductance_share": 0.9372290822184213,
-      "release_without_sr_pulldowns_us": 12.445768007240794,
-      "filter_to_tdis_ratio": 0.5208215202074103,
+      "without_pulldowns_ceiling_v": 3.116883116883116,
+      "without_pulldowns_never_disables": true,
+      "filter_to_tdis_ratio": 0.5768840219499695,
       "pin_capacitance_unknown_so_this_is_a_floor": true,
       "sr_pin_capacitance_known": false,
       "sr_driver_release_us": null,
-      "sr_driver_release_reason": "the UCC27524A's EN pin capacitance and thresholds are not in the repository (no vendored datasheet); PERMIT_RAIL reaches the eight EN pins directly, so that branch is only bounded by the rail fall above"
+      "sr_driver_release_reason": "the UCC27524A's EN pin capacitance is unpublished, so the 1 nF counted here is C28 only and extra pin capacitance only lengthens the fall; the eight EN pins do reach this node directly"
     },
     "driver_disable": {
       "ucc27282_tdis_us": 1.5,
       "ucc27282_ten_us": 18.0,
       "ucc27282_source": "references/datasheets/ucc27282.txt (SNVSAQ5B, ENABLE table)",
-      "ucc27524a_us": null,
-      "ucc27524a_reason": "the UCC27524A datasheet is not vendored; the eight SR drivers' disable time is unknown"
+      "ucc27524a_us": 0.023,
+      "ucc27524a_typ_us": 0.013,
+      "ucc27524a_source": "docs/D1_EXECUTION_KIT/15_十路硬件故障关断接口及实施验收.md section 0.5, transcribing the UCC27524A D datasheet; that datasheet is not vendored in this repository",
+      "ucc27524a_datasheet_vendored": false,
+      "ucc27524a_output_state_on_disable": null,
+      "ucc27524a_output_state_reason": "the transcribed material gives the EN-to-output delay but not whether a low EN pulls OUT low or tri-states it; if it tri-states, the SR gate falls on the 10k pull-down alone and takes the gate_discharge.sr.pulldown_only_us figure instead"
     },
     "gate_discharge": {
       "sr": {
@@ -91,9 +105,12 @@
     }
   },
   "totals": {
-    "hard_channel_floor_us": 42.410657431486044,
-    "fast_channel_floor_us": 12.52832988477084,
-    "shared_after_detection_us": 2.3139925550707403,
+    "hard_channel_floor_us": 42.48154928233108,
+    "fast_channel_floor_us": 12.599221735615874,
+    "shared_after_detection_us": 2.3848844059157743,
+    "sr_branch_floor_us": 0.9210863076845784,
+    "primary_branch_floor_us": 2.3848844059157743,
+    "slowest_branch": "primary",
     "detection_advantage_us": 29.882327546715203
   },
   "hardware_protection_approved": false,

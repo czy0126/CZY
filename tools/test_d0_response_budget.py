@@ -53,8 +53,31 @@ def test_the_eight_enable_pulldowns_are_what_makes_the_permit_rail_fall():
     assert release["sr_pulldown_count"] == 8
     assert release["fastest_us"] < release["guaranteed_us"]
     assert release["filter_to_tdis_ratio"] < 1.0  # the filter is not the delay
-    assert release["release_without_sr_pulldowns_us"] > 10.0 * release["fastest_us"]
     assert release["sr_pulldowns_carry_most_of_the_discharge"] is True
+
+
+def test_the_enable_pull_ups_hold_the_released_rail_above_ground():
+    """The rail does not discharge to 0 V: eight UCC27524A ENA/ENB pins pull it
+    toward their 12 V supply through ~200k each.  It settles at a ceiling, and
+    the ceiling -- not the exponential alone -- decides whether the drivers can
+    ever read disabled."""
+    release = budget.build()["stages"]["permit_release"]
+    assert release["sr_pullup_ohm"] == pytest.approx(25e3, rel=0.01)
+    assert release["ceiling_v"] == pytest.approx(0.259, abs=0.01)
+    assert release["ceiling_below_vd_is_max"] is True
+    assert release["ceiling_below_ven_min"] is True
+    assert release["sr_pullup_is_a_typical_not_a_guarantee"] is True
+
+
+def test_without_the_pulldowns_the_drivers_stay_enabled_forever():
+    """This is the whole argument for keeping eight resistors that look
+    redundant: delete them and the remaining 200 k pull-ups win the divider, so
+    the node parks at ~3.1 V -- above VDIS and above VEN.  The permit rail then
+    never disables anything, at any time, not merely later."""
+    release = budget.build()["stages"]["permit_release"]
+    assert release["without_pulldowns_ceiling_v"] > release["vd_is_max_v"]
+    assert release["without_pulldowns_never_disables"] is True
+    assert release["without_pulldowns_ceiling_v"] == pytest.approx(3.12, abs=0.15)
 
 
 def test_the_disable_threshold_is_bracketed_by_its_own_min_and_max():
@@ -102,9 +125,35 @@ def test_the_budget_names_what_it_cannot_know():
     assert "LM393" in stages["comparator"]["reason"]
     assert stages["latch"]["us"] is None
     assert "CD4013" in stages["latch"]["reason"]
-    assert stages["driver_disable"]["ucc27524a_us"] is None
-    assert "UCC27524A" in stages["driver_disable"]["ucc27524a_reason"]
     assert stages["permit_release"]["sr_pin_capacitance_known"] is False
+
+
+def test_the_sr_drivers_have_a_published_disable_delay_but_no_output_state():
+    """Doc 15 transcribes the UCC27524A D datasheet's EN-to-output 13 ns typ /
+    23 ns max, so the delay is no longer a blank -- but the same material never
+    says whether a low EN pulls OUT low or tri-states it.  If it tri-states, the
+    SR gate has only the 10k pull-down and the same millisecond that applies to
+    a dead driver applies here.  That is a D0a measurement, not an assumption."""
+    disable = budget.build()["stages"]["driver_disable"]
+    assert disable["ucc27524a_us"] == pytest.approx(0.023)
+    assert disable["ucc27524a_typ_us"] == pytest.approx(0.013)
+    assert "15_" in disable["ucc27524a_source"]
+    assert disable["ucc27524a_datasheet_vendored"] is False
+    assert disable["ucc27524a_output_state_on_disable"] is None
+    assert "tri-state" in disable["ucc27524a_output_state_reason"]
+    sr = budget.build()["stages"]["gate_discharge"]["sr"]
+    assert sr["pulldown_only_us"] > 100.0  # what tri-stating would cost
+
+
+def test_the_primary_branch_not_the_sr_branch_sets_the_all_ten_low_time():
+    """Both branches hang off the same permit rail, so 'all ten gates low' is
+    the max, not the sum: the SR branch answers 23 ns after the rail falls while
+    the primary waits out the UCC27282's 1.5 us TDIS."""
+    totals = budget.build()["totals"]
+    assert totals["primary_branch_floor_us"] > totals["sr_branch_floor_us"]
+    assert totals["slowest_branch"] == "primary"
+    assert totals["shared_after_detection_us"] == pytest.approx(
+        totals["primary_branch_floor_us"])
 
 
 def test_the_budget_is_not_a_worst_case_and_says_so():
@@ -123,9 +172,7 @@ def test_the_two_channels_keep_their_separate_floors():
     assert totals["fast_channel_floor_us"] < totals["hard_channel_floor_us"]
     assert totals["hard_channel_floor_us"] == pytest.approx(
         budget.build()["stages"]["detection"]["hard_us"]
-        + budget.build()["stages"]["permit_release"]["fastest_us"]
-        + budget.build()["stages"]["driver_disable"]["ucc27282_tdis_us"]
-        + budget.build()["stages"]["gate_discharge"]["sr"]["with_driver_ns"] / 1000.0)
+        + totals["shared_after_detection_us"])
     assert totals["detection_advantage_us"] > 25.0
     # Every stage after detection is shared, so the gap between the two totals
     # has to be exactly the gap between the two detections -- if a later stage
@@ -151,9 +198,11 @@ def test_the_drawn_en_filter_is_not_what_sets_the_release(monkeypatch):
     assert after < before * 1.10
 
 
-def test_weakening_the_sr_pulldowns_would_cost_five_microseconds(monkeypatch):
-    """They are 94 % of the conductance, so the same 10x on them is the change
-    that matters -- which is why deleting them as "redundant" is not free."""
+def test_weakening_the_sr_pulldowns_parks_the_rail_in_the_hysteresis_band(monkeypatch):
+    """Ten times weaker pull-downs put the released rail at ~1.48 V: below VEN
+    min (1.54 V) but above VDIS max (1.21 V).  That is inside the EN pin's own
+    0.3 V hysteresis, so whether the driver ends up enabled depends on which
+    state it was in -- the worst kind of margin.  The same 10x on R44 buys 5 %."""
     original = board.parts
 
     def weaker_parts():
@@ -161,10 +210,19 @@ def test_weakening_the_sr_pulldowns_would_cost_five_microseconds(monkeypatch):
                 if part.ref in {f"R{n}" for n in range(36, 44)} else part
                 for part in original()]
 
-    before = budget.build()["stages"]["permit_release"]["fastest_us"]
+    before = budget.permit_rail_release({p.ref: p for p in original()})
     monkeypatch.setattr(board, "parts", weaker_parts)
-    after = budget.build()["stages"]["permit_release"]["fastest_us"]
-    assert after > before * 5.0
+    after = budget.permit_rail_release({p.ref: p for p in weaker_parts()})
+    assert after["ceiling_v"] > before["ceiling_v"]
+    assert after["ceiling_above_vd_is_max"] is True
+    assert after["ceiling_below_ven_min"] is True
+    assert not after["ceiling_below_vd_is_max"]
+    # The rail no longer crosses, so it has no release time at all -- not a
+    # longer one.  build() is what turns that into a refusal.
+    assert after["fastest_us"] is None
+    assert after["guaranteed_us"] is None
+    with pytest.raises(SystemExit, match="never read"):
+        budget.build()
 
 
 RECORD = Path(__file__).resolve().parent.parent / "design/v3/stage_f/d0_response_budget.json"
