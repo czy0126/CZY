@@ -1,0 +1,1500 @@
+{
+ "source": {
+  "pdf": "references/datasheets/csd19531q5a.pdf",
+  "sha256": "bee261f0df17541099fec60efdc9cd4cb0cf00de5ac0ba2ff582657038cbcf92",
+  "pages": {
+   "package": 9,
+   "land": 10,
+   "stencil": 11
+  },
+  "figures": [
+   "Q5A Package Dimensions",
+   "Recommended PCB Pattern",
+   "Recommended Stencil Opening"
+  ],
+  "revision": "SLPS406B, 2013-09 to 2014-05"
+ },
+ "pinout": {
+  "left_pins": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "right_pins": [
+   4,
+   3,
+   2,
+   1
+  ],
+  "body_pin": "9",
+  "printed_labels": {
+   "left0": 5,
+   "left3": 8,
+   "right0": 4,
+   "right3": 1
+  },
+  "column_order": "top to bottom in the drawing's frame"
+ },
+ "datum_pt": {
+  "land": [
+   171.938,
+   174.145
+  ],
+  "stencil": [
+   305.792,
+   217.268
+  ]
+ },
+ "scale": {
+  "land": {
+   "mm_per_pt": 0.0430257,
+   "residual_max_mm": 0.0211,
+   "anchors": [
+    {
+     "name": "F1",
+     "drawn_pt": 144.216,
+     "printed_mm": 6.205,
+     "pt_per_mm": 23.2419,
+     "usable": true,
+     "note": "tooth tip to pad outer edge"
+    },
+    {
+     "name": "F2",
+     "drawn_pt": 104.15,
+     "printed_mm": 4.46,
+     "pt_per_mm": 23.352,
+     "usable": true,
+     "note": "overall land height"
+    },
+    {
+     "name": "F4",
+     "drawn_pt": 15.15,
+     "printed_mm": 0.65,
+     "pt_per_mm": 23.3077,
+     "usable": true,
+     "note": "pad band height"
+    },
+    {
+     "name": "F5",
+     "drawn_pt": 14.51,
+     "printed_mm": 0.62,
+     "pt_per_mm": 23.4032,
+     "usable": true,
+     "note": "gap between bands"
+    },
+    {
+     "name": "F6",
+     "drawn_pt": 14.29,
+     "printed_mm": 0.63,
+     "pt_per_mm": 22.6825,
+     "usable": true,
+     "note": "tooth depth"
+    },
+    {
+     "name": "F7",
+     "drawn_pt": 16.032,
+     "printed_mm": 0.7,
+     "pt_per_mm": 22.9029,
+     "usable": true,
+     "note": "source pad width"
+    },
+    {
+     "name": "F10",
+     "drawn_pt": 113.83,
+     "printed_mm": 4.9,
+     "pt_per_mm": 23.2306,
+     "usable": true,
+     "note": "tooth tip to the body's far edge"
+    }
+   ]
+  },
+  "stencil": {
+   "mm_per_pt": 0.0301853,
+   "residual_max_mm": 0.0026,
+   "anchors": [
+    {
+     "name": "lead width",
+     "drawn_pt": 16.595,
+     "printed_mm": 0.5,
+     "pt_per_mm": 33.19,
+     "usable": true,
+     "note": "one lead opening"
+    },
+    {
+     "name": "lead height",
+     "drawn_pt": 16.595,
+     "printed_mm": 0.5,
+     "pt_per_mm": 33.19,
+     "usable": true,
+     "note": "one lead opening"
+    },
+    {
+     "name": "lead pitch",
+     "drawn_pt": 42.093,
+     "printed_mm": 1.27,
+     "pt_per_mm": 33.1437,
+     "usable": true,
+     "note": "row to row"
+    },
+    {
+     "name": "overall height",
+     "drawn_pt": 142.7,
+     "printed_mm": 4.31,
+     "pt_per_mm": 33.109,
+     "usable": true,
+     "note": "outer edges"
+    },
+    {
+     "name": "half width",
+     "drawn_pt": 100.002,
+     "printed_mm": 3.02,
+     "pt_per_mm": 33.1133,
+     "usable": true,
+     "note": "centre line to outer edge"
+    },
+    {
+     "name": "centre to lead",
+     "drawn_pt": 12.749,
+     "printed_mm": 0.385,
+     "pt_per_mm": 33.1137,
+     "usable": true,
+     "note": "centre line to the inner lead edge"
+    },
+    {
+     "name": "left block",
+     "drawn_pt": 52.55,
+     "printed_mm": 1.585,
+     "pt_per_mm": 33.1546,
+     "usable": true,
+     "note": "block width"
+    },
+    {
+     "name": "right block",
+     "drawn_pt": 40.88,
+     "printed_mm": 1.235,
+     "pt_per_mm": 33.1012,
+     "usable": true,
+     "note": "block width"
+    },
+    {
+     "name": "block height",
+     "drawn_pt": 51.95,
+     "printed_mm": 1.57,
+     "pt_per_mm": 33.0892,
+     "usable": true,
+     "note": "block height"
+    },
+    {
+     "name": "left gap",
+     "drawn_pt": 20.316,
+     "printed_mm": 0.615,
+     "pt_per_mm": 33.0335,
+     "usable": true,
+     "note": "lead to block"
+    },
+    {
+     "name": "right gap",
+     "drawn_pt": 36.645,
+     "printed_mm": 1.105,
+     "pt_per_mm": 33.1632,
+     "usable": true,
+     "note": "block to lead"
+    },
+    {
+     "name": "row gap",
+     "drawn_pt": 20.57,
+     "printed_mm": 0.62,
+     "pt_per_mm": 33.1774,
+     "usable": true,
+     "note": "between the block rows"
+    }
+   ]
+  }
+ },
+ "copper": {
+  "body": {
+   "number": "9",
+   "kind": "drain_body",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -2.4725,
+    -2.23,
+    1.7975000000000003,
+    2.23
+   ]
+  },
+  "teeth": [
+   {
+    "number": "5",
+    "kind": "drain_tooth",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     -3.1025,
+     1.58,
+     -2.4725,
+     2.23
+    ]
+   },
+   {
+    "number": "6",
+    "kind": "drain_tooth",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     -3.1025,
+     0.31000000000000005,
+     -2.4725,
+     0.9600000000000001
+    ]
+   },
+   {
+    "number": "7",
+    "kind": "drain_tooth",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     -3.1025,
+     -0.96,
+     -2.4725,
+     -0.30999999999999994
+    ]
+   },
+   {
+    "number": "8",
+    "kind": "drain_tooth",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     -3.1025,
+     -2.23,
+     -2.4725,
+     -1.58
+    ]
+   }
+  ],
+  "right": [
+   {
+    "number": "4",
+    "kind": "source_pad",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     2.4025,
+     1.58,
+     3.1025,
+     2.23
+    ]
+   },
+   {
+    "number": "3",
+    "kind": "source_pad",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     2.4025,
+     0.31000000000000005,
+     3.1025,
+     0.9600000000000001
+    ]
+   },
+   {
+    "number": "2",
+    "kind": "source_pad",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     2.4025,
+     -0.96,
+     3.1025,
+     -0.30999999999999994
+    ]
+   },
+   {
+    "number": "1",
+    "kind": "source_pad",
+    "layers": [
+     "F.Cu"
+    ],
+    "rect": [
+     2.4025,
+     -2.23,
+     3.1025,
+     -1.58
+    ]
+   }
+  ]
+ },
+ "mask": [
+  [
+   -2.5225,
+   -2.28,
+   1.8475000000000004,
+   2.28
+  ],
+  [
+   -3.1525,
+   1.53,
+   -2.4225000000000003,
+   2.28
+  ],
+  [
+   -3.1525,
+   0.26000000000000006,
+   -2.4225000000000003,
+   1.01
+  ],
+  [
+   -3.1525,
+   -1.01,
+   -2.4225000000000003,
+   -0.25999999999999995
+  ],
+  [
+   -3.1525,
+   -2.28,
+   -2.4225000000000003,
+   -1.53
+  ],
+  [
+   2.3525,
+   1.53,
+   3.1525,
+   2.28
+  ],
+  [
+   2.3525,
+   0.26000000000000006,
+   3.1525,
+   1.01
+  ],
+  [
+   2.3525,
+   -1.01,
+   3.1525,
+   -0.25999999999999995
+  ],
+  [
+   2.3525,
+   -2.28,
+   3.1525,
+   -1.53
+  ]
+ ],
+ "paste": [
+  {
+   "kind": "paste_lead",
+   "side": "left",
+   "band": 0,
+   "rect": [
+    -3.02,
+    1.655,
+    -2.52,
+    2.1550000000000002
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "left",
+   "band": 1,
+   "rect": [
+    -3.02,
+    0.385,
+    -2.52,
+    0.885
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "left",
+   "band": 2,
+   "rect": [
+    -3.02,
+    -0.885,
+    -2.52,
+    -0.385
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "left",
+   "band": 3,
+   "rect": [
+    -3.02,
+    -2.1550000000000002,
+    -2.52,
+    -1.655
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "right",
+   "band": 0,
+   "rect": [
+    2.52,
+    1.655,
+    3.02,
+    2.1550000000000002
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "right",
+   "band": 1,
+   "rect": [
+    2.52,
+    0.385,
+    3.02,
+    0.885
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "right",
+   "band": 2,
+   "rect": [
+    2.52,
+    -0.885,
+    3.02,
+    -0.385
+   ]
+  },
+  {
+   "kind": "paste_lead",
+   "side": "right",
+   "band": 3,
+   "rect": [
+    2.52,
+    -2.1550000000000002,
+    3.02,
+    -1.655
+   ]
+  },
+  {
+   "kind": "paste_block",
+   "side": "left",
+   "row": "top",
+   "rect": [
+    -1.905,
+    0.31,
+    -0.32000000000000006,
+    1.8800000000000001
+   ]
+  },
+  {
+   "kind": "paste_block",
+   "side": "left",
+   "row": "bottom",
+   "rect": [
+    -1.905,
+    -1.8800000000000001,
+    -0.32000000000000006,
+    -0.31
+   ]
+  },
+  {
+   "kind": "paste_block",
+   "side": "right",
+   "row": "top",
+   "rect": [
+    0.17999999999999994,
+    0.31,
+    1.415,
+    1.8800000000000001
+   ]
+  },
+  {
+   "kind": "paste_block",
+   "side": "right",
+   "row": "bottom",
+   "rect": [
+    0.17999999999999994,
+    -1.8800000000000001,
+    1.415,
+    -0.31
+   ]
+  }
+ ],
+ "pads": [
+  {
+   "number": "9",
+   "kind": "drain_body",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -2.4725,
+    -2.23,
+    1.7975000000000003,
+    2.23
+   ]
+  },
+  {
+   "number": "4",
+   "kind": "source_pad",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4025,
+    1.58,
+    3.1025,
+    2.23
+   ]
+  },
+  {
+   "number": "3",
+   "kind": "source_pad",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4025,
+    0.31000000000000005,
+    3.1025,
+    0.9600000000000001
+   ]
+  },
+  {
+   "number": "2",
+   "kind": "source_pad",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4025,
+    -0.96,
+    3.1025,
+    -0.30999999999999994
+   ]
+  },
+  {
+   "number": "1",
+   "kind": "source_pad",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    2.4025,
+    -2.23,
+    3.1025,
+    -1.58
+   ]
+  },
+  {
+   "number": "5",
+   "kind": "drain_tooth",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.1025,
+    1.58,
+    -2.3475,
+    2.23
+   ]
+  },
+  {
+   "number": "6",
+   "kind": "drain_tooth",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.1025,
+    0.31000000000000005,
+    -2.3475,
+    0.9600000000000001
+   ]
+  },
+  {
+   "number": "7",
+   "kind": "drain_tooth",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.1025,
+    -0.96,
+    -2.3475,
+    -0.30999999999999994
+   ]
+  },
+  {
+   "number": "8",
+   "kind": "drain_tooth",
+   "layers": [
+    "F.Cu"
+   ],
+   "rect": [
+    -3.1025,
+    -2.23,
+    -2.3475,
+    -1.58
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    -2.5225,
+    -2.28,
+    1.8475000000000004,
+    2.28
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    -3.1525,
+    1.53,
+    -2.4225000000000003,
+    2.28
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    -3.1525,
+    0.26000000000000006,
+    -2.4225000000000003,
+    1.01
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    -3.1525,
+    -1.01,
+    -2.4225000000000003,
+    -0.25999999999999995
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    -3.1525,
+    -2.28,
+    -2.4225000000000003,
+    -1.53
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    2.3525,
+    1.53,
+    3.1525,
+    2.28
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    2.3525,
+    0.26000000000000006,
+    3.1525,
+    1.01
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    2.3525,
+    -1.01,
+    3.1525,
+    -0.25999999999999995
+   ]
+  },
+  {
+   "number": "",
+   "kind": "mask",
+   "layers": [
+    "F.Mask"
+   ],
+   "rect": [
+    2.3525,
+    -2.28,
+    3.1525,
+    -1.53
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    -3.02,
+    1.655,
+    -2.52,
+    2.1550000000000002
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    -3.02,
+    0.385,
+    -2.52,
+    0.885
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    -3.02,
+    -0.885,
+    -2.52,
+    -0.385
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    -3.02,
+    -2.1550000000000002,
+    -2.52,
+    -1.655
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    2.52,
+    1.655,
+    3.02,
+    2.1550000000000002
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    2.52,
+    0.385,
+    3.02,
+    0.885
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    2.52,
+    -0.885,
+    3.02,
+    -0.385
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_lead",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    2.52,
+    -2.1550000000000002,
+    3.02,
+    -1.655
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_block",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    -1.905,
+    0.31,
+    -0.32000000000000006,
+    1.8800000000000001
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_block",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    -1.905,
+    -1.8800000000000001,
+    -0.32000000000000006,
+    -0.31
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_block",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    0.17999999999999994,
+    0.31,
+    1.415,
+    1.8800000000000001
+   ]
+  },
+  {
+   "number": "",
+   "kind": "paste_block",
+   "layers": [
+    "F.Paste"
+   ],
+   "rect": [
+    0.17999999999999994,
+    -1.8800000000000001,
+    1.415,
+    -0.31
+   ]
+  }
+ ],
+ "courtyard": [
+  -3.3,
+  -2.75,
+  3.3,
+  2.75
+ ],
+ "body": {
+  "w": 6.1,
+  "d": 5.0
+ },
+ "pad_overlap_mm": 0.125,
+ "mask_expansion_mm": 0.05,
+ "results": {
+  "residuals_mm": {
+   "land:source_pad": 0.0104,
+   "land:drain_tooth": 0.0152,
+   "land:drain_body": 0.0152,
+   "land:F1": 0.0,
+   "land:F2": 0.0211,
+   "land:F4": 0.0018,
+   "land:F5": 0.0043,
+   "land:F6": 0.0152,
+   "land:F7": 0.0102,
+   "land:F10": 0.0024,
+   "stencil:lead width": 0.0009,
+   "stencil:lead height": 0.0009,
+   "stencil:lead pitch": 0.0006,
+   "stencil:overall height": 0.0026,
+   "stencil:half width": 0.0014,
+   "stencil:centre to lead": 0.0002,
+   "stencil:left block": 0.0012,
+   "stencil:right block": 0.001,
+   "stencil:block height": 0.0019,
+   "stencil:left gap": 0.0018,
+   "stencil:right gap": 0.0011,
+   "stencil:row gap": 0.0009,
+   "stencil:paste_rect": 0.0028
+  },
+  "land_residual_max_mm": 0.0211,
+  "stencil_residual_max_mm": 0.0028,
+  "residual_max_mm": 0.0211,
+  "tolerances_mm": {
+   "land": 0.0254,
+   "stencil": 0.005
+  },
+  "drawn_land": {
+   "body": [
+    -2.487662481316575,
+    -2.240565530356813,
+    1.7951199073865856,
+    2.240565530356812
+   ],
+   "pads": [
+    [
+     2.412711738018306,
+     1.5885968039033214,
+     3.102500338806712,
+     2.240789745315168
+    ],
+    [
+     2.412711738018306,
+     0.31227718211774774,
+     3.102500338806712,
+     0.9644701235295944
+    ],
+    [
+     2.412711738018306,
+     -0.9640437527092779,
+     3.102500338806712,
+     -0.31185081129743125
+    ],
+    [
+     2.412711738018306,
+     -2.240358778849769,
+     3.102500338806712,
+     -1.5881664939586486
+    ]
+   ],
+   "teeth": [
+    [
+     -3.1025003388067116,
+     1.5887255344872828,
+     -2.487662481316575,
+     2.240565530356812
+    ],
+    [
+     -3.1025003388067116,
+     0.31215176039824605,
+     -2.487662481316575,
+     0.9644220136907907
+    ],
+    [
+     -3.1025003388067116,
+     -0.9639917562677762,
+     -2.487662481316575,
+     -0.31172150297523027
+    ],
+    [
+     -3.1025003388067116,
+     -2.240565530356813,
+     -2.487662481316575,
+     -1.5882952770642682
+    ]
+   ]
+  },
+  "drawn_paste": [
+   {
+    "kind": "paste_lead",
+    "side": "left",
+    "band": 0,
+    "rect": [
+     -3.02,
+     1.655,
+     -2.52,
+     2.1550000000000002
+    ],
+    "drawn": [
+     -3.0185993884326976,
+     1.652794822847146,
+     -2.5176737113161134,
+     2.1537200393724887
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "paste_lead",
+    "side": "left",
+    "band": 1,
+    "rect": [
+     -3.02,
+     0.385,
+     -2.52,
+     0.885
+    ],
+    "drawn": [
+     -3.0185993884326976,
+     0.3848262852349794,
+     -2.5176737113161134,
+     0.8831431735596703
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "paste_lead",
+    "side": "left",
+    "band": 2,
+    "rect": [
+     -3.02,
+     -0.885,
+     -2.52,
+     -0.385
+    ],
+    "drawn": [
+     -3.0185993884326976,
+     -0.8857510411690807,
+     -2.5176737113161134,
+     -0.3848253640524964
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "paste_lead",
+    "side": "left",
+    "band": 3,
+    "rect": [
+     -3.02,
+     -2.1550000000000002,
+     -2.52,
+     -1.655
+    ],
+    "drawn": [
+     -3.0185993884326976,
+     -2.1537200393724887,
+     -2.5176737113161134,
+     -1.6554026904565564
+    ],
+    "residual_mm": 0.0023
+   },
+   {
+    "kind": "paste_lead",
+    "side": "right",
+    "band": 0,
+    "rect": [
+     2.52,
+     1.655,
+     3.02,
+     2.1550000000000002
+    ],
+    "drawn": [
+     2.5202838818817312,
+     1.652794822847146,
+     3.0185993884326976,
+     2.1537200393724887
+    ],
+    "residual_mm": 0.0022
+   },
+   {
+    "kind": "paste_lead",
+    "side": "right",
+    "band": 1,
+    "rect": [
+     2.52,
+     0.385,
+     3.02,
+     0.885
+    ],
+    "drawn": [
+     2.5202838818817312,
+     0.3848262852349794,
+     3.0185993884326976,
+     0.8831431735596703
+    ],
+    "residual_mm": 0.0019
+   },
+   {
+    "kind": "paste_lead",
+    "side": "right",
+    "band": 2,
+    "rect": [
+     2.52,
+     -0.885,
+     3.02,
+     -0.385
+    ],
+    "drawn": [
+     2.5202838818817312,
+     -0.8857510411690807,
+     3.0185993884326976,
+     -0.3848253640524964
+    ],
+    "residual_mm": 0.0014
+   },
+   {
+    "kind": "paste_lead",
+    "side": "right",
+    "band": 3,
+    "rect": [
+     2.52,
+     -2.1550000000000002,
+     3.02,
+     -1.655
+    ],
+    "drawn": [
+     2.5202838818817312,
+     -2.1537200393724887,
+     3.0185993884326976,
+     -1.6554026904565564
+    ],
+    "residual_mm": 0.0014
+   },
+   {
+    "kind": "paste_block",
+    "side": "left",
+    "row": "top",
+    "rect": [
+     -1.905,
+     0.31,
+     -0.32000000000000006,
+     1.8800000000000001
+    ],
+    "drawn": [
+     -1.904440597891,
+     0.30903826255397504,
+     -0.3182026833335314,
+     1.8771649925494167
+    ],
+    "residual_mm": 0.0028
+   },
+   {
+    "kind": "paste_block",
+    "side": "left",
+    "row": "bottom",
+    "rect": [
+     -1.905,
+     -1.8800000000000001,
+     -0.32000000000000006,
+     -0.31
+    ],
+    "drawn": [
+     -1.904440597891,
+     -1.8796983917669012,
+     -0.3182026833335314,
+     -0.3118735148474923
+    ],
+    "residual_mm": 0.0019
+   },
+   {
+    "kind": "paste_block",
+    "side": "right",
+    "row": "top",
+    "rect": [
+     0.17999999999999994,
+     0.31,
+     1.415,
+     1.8800000000000001
+    ],
+    "drawn": [
+     0.18015674519822475,
+     0.30903826255397504,
+     1.4141321200242818,
+     1.8771649925494167
+    ],
+    "residual_mm": 0.0028
+   },
+   {
+    "kind": "paste_block",
+    "side": "right",
+    "row": "bottom",
+    "rect": [
+     0.17999999999999994,
+     -1.8800000000000001,
+     1.415,
+     -0.31
+    ],
+    "drawn": [
+     0.18015674519822475,
+     -1.8796983917669012,
+     1.4141321200242818,
+     -0.3118735148474923
+    ],
+    "residual_mm": 0.0019
+   }
+  ],
+  "copper_area_mm2": 22.502,
+  "paste_area_mm2": 10.855,
+  "paste_fraction": 0.4824,
+  "paste_off_pad_centre_mm": 0.0175,
+  "pad_band_chain": {
+   "band_mm": 0.65,
+   "gap_mm": 0.62,
+   "steps": 7,
+   "sum_mm": 4.46
+  },
+  "table_repeats": {
+   "F2=F3=F11": true,
+   "F4=F8": true,
+   "F5=F9": true
+  }
+ },
+ "callouts": {
+  "land_table": {
+   "F1": {
+    "min": 6.205,
+    "max": 6.305,
+    "inch": [
+     0.244,
+     0.248
+    ]
+   },
+   "F2": {
+    "min": 4.46,
+    "max": 4.56,
+    "inch": [
+     0.176,
+     0.18
+    ]
+   },
+   "F3": {
+    "min": 4.46,
+    "max": 4.56,
+    "inch": [
+     0.176,
+     0.18
+    ]
+   },
+   "F4": {
+    "min": 0.65,
+    "max": 0.7,
+    "inch": [
+     0.026,
+     0.028
+    ]
+   },
+   "F5": {
+    "min": 0.62,
+    "max": 0.67,
+    "inch": [
+     0.024,
+     0.026
+    ]
+   },
+   "F6": {
+    "min": 0.63,
+    "max": 0.68,
+    "inch": [
+     0.025,
+     0.027
+    ]
+   },
+   "F7": {
+    "min": 0.7,
+    "max": 0.8,
+    "inch": [
+     0.028,
+     0.031
+    ]
+   },
+   "F8": {
+    "min": 0.65,
+    "max": 0.7,
+    "inch": [
+     0.026,
+     0.028
+    ]
+   },
+   "F9": {
+    "min": 0.62,
+    "max": 0.67,
+    "inch": [
+     0.024,
+     0.026
+    ]
+   },
+   "F10": {
+    "min": 4.9,
+    "max": 5.0,
+    "inch": [
+     0.193,
+     0.197
+    ]
+   },
+   "F11": {
+    "min": 4.46,
+    "max": 4.56,
+    "inch": [
+     0.176,
+     0.18
+    ]
+   }
+  },
+  "package_table": {
+   "A": {
+    "min": 0.9,
+    "nom": 1.0,
+    "max": 1.1
+   },
+   "b": {
+    "min": 0.33,
+    "nom": 0.41,
+    "max": 0.51
+   },
+   "c": {
+    "min": 0.2,
+    "nom": 0.25,
+    "max": 0.34
+   },
+   "D1": {
+    "min": 4.8,
+    "nom": 4.9,
+    "max": 5.0
+   },
+   "D2": {
+    "min": 3.61,
+    "nom": 3.81,
+    "max": 4.02
+   },
+   "E": {
+    "min": 5.9,
+    "nom": 6.0,
+    "max": 6.1
+   },
+   "E1": {
+    "min": 5.7,
+    "nom": 5.75,
+    "max": 5.8
+   },
+   "E2": {
+    "min": 3.38,
+    "nom": 3.58,
+    "max": 3.78
+   },
+   "E3": {
+    "min": 3.03,
+    "nom": 3.13,
+    "max": 3.23
+   },
+   "e": {
+    "min": 1.17,
+    "nom": 1.27,
+    "max": 1.37
+   },
+   "e1": {
+    "min": 0.27,
+    "nom": 0.37,
+    "max": 0.47
+   },
+   "e2": {
+    "min": 0.15,
+    "nom": 0.25,
+    "max": 0.35
+   },
+   "H": {
+    "min": 0.41,
+    "nom": 0.56,
+    "max": 0.71
+   },
+   "K": {
+    "min": 1.1,
+    "nom": null,
+    "max": null
+   },
+   "L": {
+    "min": 0.51,
+    "nom": 0.61,
+    "max": 0.71
+   },
+   "L1": {
+    "min": 0.06,
+    "nom": 0.13,
+    "max": 0.2
+   }
+  },
+  "stencil_printed_mm": [
+   0.385,
+   0.5,
+   0.615,
+   0.62,
+   1.105,
+   1.235,
+   1.27,
+   1.57,
+   1.585,
+   3.02,
+   4.31
+  ],
+  "stencil_printed_inch": [
+   0.015,
+   0.02,
+   0.024,
+   0.044,
+   0.049,
+   0.05,
+   0.062,
+   0.119
+  ],
+  "stencil_used_mm": [
+   0.385,
+   0.5,
+   0.615,
+   0.62,
+   1.105,
+   1.235,
+   1.27,
+   1.57,
+   1.585,
+   3.02,
+   4.31
+  ],
+  "stencil_unassigned_mm": [],
+  "stencil_repeats": {
+   "0.5": 8,
+   "1.57": 4
+  }
+ },
+ "checks": {
+  "the_two_pages_are_the_land_and_its_stencil": true,
+  "every_scale_anchor_agrees": true,
+  "every_land_dimension_matches_the_drawing": true,
+  "every_stencil_callout_matches_the_drawing": true,
+  "every_aperture_matches_the_drawing": true,
+  "the_pad_bands_chain_to_the_printed_height": true,
+  "the_table_repeats_the_dimensions_it_should": true,
+  "the_stencil_chain_closes_on_the_printed_half_width": true,
+  "the_stencil_leads_sit_on_the_pad_rows": true,
+  "every_modelled_aperture_is_drawn": true,
+  "the_printed_multiplicities_match_the_aperture_counts": true,
+  "the_two_figures_print_the_same_pinout": true,
+  "the_stencil_is_smaller_than_the_land": true,
+  "every_pad_number_is_a_symbol_pin": true,
+  "the_courtyard_clears_the_land": true,
+  "no_printed_millimetre_callout_is_unexplained": true
+ },
+ "limitations": [
+  "The exposed pad is numbered 9 because the symbol's drain is pins 5-9; neither figure prints a number for it.  Pins 5-8 and 9 are one node, so a different assignment would only relabel copper.",
+  "This sheet draws no solder-mask layer.  Each copper region is grown by 0.05 mm, the expansion the project's BSC010N04LS6 land uses; the number comes from that sheet, not from this one.",
+  "This sheet draws no courtyard.  The body is the page-9 maximum (E x D1) plus 0.25 mm per side, the project's convention.",
+  "The stencil figure is symmetric about the land's outer edges (0.0825 mm inset either side) while the copper is not -- the drain teeth are 0.63 wide and the source pads 0.70 -- so every lead aperture sits 0.0175 mm off its own pad centre.  The sheet's chain is emitted as drawn rather than re-centred, because re-centring would be an unprinted edit.",
+  "Silkscreen is not on either figure; only the body outline and a pin-1 wedge are drawn, at project convention.",
+  "No 3D model: the package here is 6.10 x 5.00 mm, which matches TI's Q5A, but no vendored STEP exists for it."
+ ]
+}

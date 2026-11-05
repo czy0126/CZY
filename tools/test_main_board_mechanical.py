@@ -261,9 +261,37 @@ def test_the_sr_fet_land_is_generated_from_the_datasheet_measurement():
     assert land["checks"] and all(land["checks"].values())
     assert srpcb.bsc_source() == mbm.footprint_library()["BSC010N04LS6.kicad_mod"]
     # a measured land pattern is not a provisional one -- the old substring
-    # test on the note put all eight FETs on the provisional list
+    # test on the note put all eight FETs on the provisional list, and QH/QL
+    # were the last two boxes until their own figures were digitised
     provisional = mbm.report()["land_pattern_provisional"]
-    assert provisional == ["QH", "QL"], provisional
+    assert provisional == [], provisional
+
+
+def test_the_primary_fets_land_is_generated_from_the_two_figures():
+    """QH/QL used to sit on a generic ``SON_5x6`` box: nine schematic pins on
+    nine pads of unspecified size.  The datasheet draws both the land (sect.
+    7.2, a MIN/MAX table) and the stencil (sect. 7.3, callouts on the figure),
+    so the footprint is now derived from those drawings and labelled as a
+    measurement rather than as vendor CAD."""
+    hs = [p for p in mbm.PARTS if p.ref in ("QH", "QL")]
+    assert len(hs) == 2
+    assert {p.footprint for p in hs} == {"dcx:CSD19531Q5A"}
+    assert {p.evidence for p in hs} == {"digitised-datasheet"}
+    assert "CSD19531Q5A.kicad_mod" in mbm.footprint_library()
+    assert "Placeholder_SON_5x6.kicad_mod" not in mbm.footprint_library()
+    import csd19531q5a_land as csd
+    land = json.loads((mbm.ROOT / "design/v3/pcb/csd19531q5a_land.json")
+                      .read_text(encoding="utf-8"))
+    assert land["checks"] and all(land["checks"].values())
+    assert csd.footprint_text(land) == mbm.footprint_library()["CSD19531Q5A.kicad_mod"]
+
+
+def test_the_footprint_directory_holds_only_footprints_the_board_uses():
+    """``write()`` adds files but never prunes, and ``fp-lib-table`` points at
+    the whole directory -- so a deleted placeholder stays loadable by name until
+    its file is removed too."""
+    on_disk = {p.name for p in (mbm.OUT / "dcx.pretty").glob("*.kicad_mod")}
+    assert on_disk == set(mbm.footprint_library())
 
 
 def test_regeneration_needs_no_kicad_install(tmp_path, monkeypatch):

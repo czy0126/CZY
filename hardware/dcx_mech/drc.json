@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-11-05T07:28:39",
+    "date": "2026-11-05T08:06:52",
     "ignored_checks": [
         {
             "description": "Track endpoint not centered on via",
@@ -79,43 +79,20 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "F.Cu 上 SR1B 的焊盘 2 [PGND]",
-                    "pos": {
-                        "x": 21.0125,
-                        "y": 81.365
-                    },
-                    "uuid": "9af07352-1f17-5a6c-9eaa-6e53e2fba7e1"
-                },
-                {
                     "description": "F.Cu 上 SR1A 的焊盘 1 [PGND]",
                     "pos": {
                         "x": 11.4775,
                         "y": 81.29
                     },
                     "uuid": "a454e884-accb-5f6a-8ce2-6cc468b0eb40"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "F.Cu 上 SR1B 的焊盘 3 [PGND]",
-                    "pos": {
-                        "x": 21.0125,
-                        "y": 82.635
-                    },
-                    "uuid": "ed56ad64-47f1-5417-a855-2aceded32405"
                 },
                 {
-                    "description": "Cout2 的PTH 焊盘 2 [PGND]",
+                    "description": "F.Cu 上 SR1B 的焊盘 2 [PGND]",
                     "pos": {
-                        "x": 24.2,
-                        "y": 98.0
+                        "x": 21.0125,
+                        "y": 81.365
                     },
-                    "uuid": "4499e4f5-9e52-5099-91dd-f18985509781"
+                    "uuid": "9af07352-1f17-5a6c-9eaa-6e53e2fba7e1"
                 }
             ],
             "severity": "error",
@@ -148,6 +125,29 @@
             "description": "Missing connection between items",
             "items": [
                 {
+                    "description": "Cout2 的PTH 焊盘 2 [PGND]",
+                    "pos": {
+                        "x": 24.2,
+                        "y": 98.0
+                    },
+                    "uuid": "4499e4f5-9e52-5099-91dd-f18985509781"
+                },
+                {
+                    "description": "F.Cu 上 SR1B 的焊盘 3 [PGND]",
+                    "pos": {
+                        "x": 21.0125,
+                        "y": 82.635
+                    },
+                    "uuid": "ed56ad64-47f1-5417-a855-2aceded32405"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
                     "description": "Cout3 的PTH 焊盘 2 [PGND]",
                     "pos": {
                         "x": 32.4,
@@ -240,89 +240,20 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "Cout5 的PTH 焊盘 2 [PGND]",
-                    "pos": {
-                        "x": 48.8,
-                        "y": 98.0
-                    },
-                    "uuid": "de064139-b32a-5eea-adf2-ff9b3acff0aa"
-                },
-                {
                     "description": "F.Cu 上 SR2A 的焊盘 3 [PGND]",
                     "pos": {
                         "x": 49.0125,
                         "y": 82.635
                     },
                     "uuid": "6168241d-0fb4-5708-90fa-cfbc403ce857"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 2 [PGND]",
-                    "pos": {
-                        "x": 55.4,
-                        "y": 50.0
-                    },
-                    "uuid": "9619b06d-a8c3-5184-b412-1f3963e1a64d"
                 },
                 {
-                    "description": "QL 的PTH 焊盘 1 [PGND]",
+                    "description": "Cout5 的PTH 焊盘 2 [PGND]",
                     "pos": {
-                        "x": 55.4,
-                        "y": 49.0
+                        "x": 48.8,
+                        "y": 98.0
                     },
-                    "uuid": "c674fb04-9dcc-5693-9782-5bfbaec3b04d"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 2 [PGND]",
-                    "pos": {
-                        "x": 55.4,
-                        "y": 50.0
-                    },
-                    "uuid": "9619b06d-a8c3-5184-b412-1f3963e1a64d"
-                },
-                {
-                    "description": "QL 的PTH 焊盘 3 [PGND]",
-                    "pos": {
-                        "x": 55.4,
-                        "y": 51.0
-                    },
-                    "uuid": "08144b89-d55f-5866-9cb1-a785511a1601"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 3 [PGND]",
-                    "pos": {
-                        "x": 55.4,
-                        "y": 51.0
-                    },
-                    "uuid": "08144b89-d55f-5866-9cb1-a785511a1601"
-                },
-                {
-                    "description": "F.Cu 上 SR2B 的焊盘 1 [PGND]",
-                    "pos": {
-                        "x": 59.0125,
-                        "y": 80.095
-                    },
-                    "uuid": "27840584-9bf9-5771-885f-da176ce9f07e"
+                    "uuid": "de064139-b32a-5eea-adf2-ff9b3acff0aa"
                 }
             ],
             "severity": "error",
@@ -355,6 +286,29 @@
             "description": "Missing connection between items",
             "items": [
                 {
+                    "description": "F.Cu 上 SR2B 的焊盘 1 [PGND]",
+                    "pos": {
+                        "x": 59.0125,
+                        "y": 80.095
+                    },
+                    "uuid": "27840584-9bf9-5771-885f-da176ce9f07e"
+                },
+                {
+                    "description": "F.Cu 上 QL 的焊盘 3 [PGND]",
+                    "pos": {
+                        "x": 59.7525,
+                        "y": 50.635
+                    },
+                    "uuid": "31b4f87e-0a92-5b61-ad1d-9d9c12867d01"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
                     "description": "F.Cu 上 SR2B 的焊盘 2 [PGND]",
                     "pos": {
                         "x": 59.0125,
@@ -369,6 +323,52 @@
                         "y": 81.29
                     },
                     "uuid": "11028e79-4a0f-5ba5-83e5-09501a1cefa9"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "F.Cu 上 QL 的焊盘 2 [PGND]",
+                    "pos": {
+                        "x": 59.7525,
+                        "y": 49.365
+                    },
+                    "uuid": "e6b5882d-3537-5f91-8ea7-f49f1c05d2bc"
+                },
+                {
+                    "description": "F.Cu 上 QL 的焊盘 1 [PGND]",
+                    "pos": {
+                        "x": 59.7525,
+                        "y": 48.095
+                    },
+                    "uuid": "f85aeb91-4676-524e-aad7-7c1075e707b3"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "F.Cu 上 QL 的焊盘 3 [PGND]",
+                    "pos": {
+                        "x": 59.7525,
+                        "y": 50.635
+                    },
+                    "uuid": "31b4f87e-0a92-5b61-ad1d-9d9c12867d01"
+                },
+                {
+                    "description": "F.Cu 上 QL 的焊盘 2 [PGND]",
+                    "pos": {
+                        "x": 59.7525,
+                        "y": 49.365
+                    },
+                    "uuid": "e6b5882d-3537-5f91-8ea7-f49f1c05d2bc"
                 }
             ],
             "severity": "error",
@@ -608,52 +608,6 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "J_IN 的PTH 焊盘 2 [PGND]",
-                    "pos": {
-                        "x": 114.54,
-                        "y": 52.0
-                    },
-                    "uuid": "db2bd29b-2488-5842-9d5d-b38e13492a09"
-                },
-                {
-                    "description": "T4 的PTH 焊盘 PRI_B [PGND]",
-                    "pos": {
-                        "x": 124.0,
-                        "y": 24.0
-                    },
-                    "uuid": "50aa3801-784d-503b-8125-ded371af9e3e"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "J_IN 的PTH 焊盘 2 [PGND]",
-                    "pos": {
-                        "x": 114.54,
-                        "y": 52.0
-                    },
-                    "uuid": "db2bd29b-2488-5842-9d5d-b38e13492a09"
-                },
-                {
-                    "description": "F.Cu 上 SR4A 的焊盘 1 [PGND]",
-                    "pos": {
-                        "x": 125.0125,
-                        "y": 80.095
-                    },
-                    "uuid": "ce43dab6-d0a1-5cd9-9512-34dcc2f6374c"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
                     "description": "Cout14 的PTH 焊盘 2 [PGND]",
                     "pos": {
                         "x": 122.6,
@@ -691,6 +645,52 @@
                         "y": 82.635
                     },
                     "uuid": "3ee52ec6-9937-54af-bcca-bc9333814b56"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "T4 的PTH 焊盘 PRI_B [PGND]",
+                    "pos": {
+                        "x": 124.0,
+                        "y": 24.0
+                    },
+                    "uuid": "50aa3801-784d-503b-8125-ded371af9e3e"
+                },
+                {
+                    "description": "J_IN 的PTH 焊盘 2 [PGND]",
+                    "pos": {
+                        "x": 114.54,
+                        "y": 52.0
+                    },
+                    "uuid": "db2bd29b-2488-5842-9d5d-b38e13492a09"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "F.Cu 上 SR4A 的焊盘 1 [PGND]",
+                    "pos": {
+                        "x": 125.0125,
+                        "y": 80.095
+                    },
+                    "uuid": "ce43dab6-d0a1-5cd9-9512-34dcc2f6374c"
+                },
+                {
+                    "description": "J_IN 的PTH 焊盘 2 [PGND]",
+                    "pos": {
+                        "x": 114.54,
+                        "y": 52.0
+                    },
+                    "uuid": "db2bd29b-2488-5842-9d5d-b38e13492a09"
                 }
             ],
             "severity": "error",
@@ -999,173 +999,81 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "QH 的PTH 焊盘 1 [SW]",
+                    "description": "F.Cu 上 QH 的焊盘 1 [SW]",
                     "pos": {
-                        "x": 46.4,
-                        "y": 49.0
+                        "x": 50.7525,
+                        "y": 48.095
                     },
-                    "uuid": "fa9b667a-6615-5a71-bf39-8b64ab7656fd"
+                    "uuid": "fca0eb11-6f2e-5844-8d2e-862722ead425"
                 },
                 {
-                    "description": "QH 的PTH 焊盘 2 [SW]",
+                    "description": "F.Cu 上 QH 的焊盘 2 [SW]",
                     "pos": {
-                        "x": 46.4,
+                        "x": 50.7525,
+                        "y": 49.365
+                    },
+                    "uuid": "4abfc6e4-f013-59c2-83ec-76e206f828ca"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "F.Cu 上 QH 的焊盘 2 [SW]",
+                    "pos": {
+                        "x": 50.7525,
+                        "y": 49.365
+                    },
+                    "uuid": "4abfc6e4-f013-59c2-83ec-76e206f828ca"
+                },
+                {
+                    "description": "F.Cu 上 QH 的焊盘 3 [SW]",
+                    "pos": {
+                        "x": 50.7525,
+                        "y": 50.635
+                    },
+                    "uuid": "3a20528b-4915-5a7c-a89d-47231475b932"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "F.Cu 上 QH 的焊盘 2 [SW]",
+                    "pos": {
+                        "x": 50.7525,
+                        "y": 49.365
+                    },
+                    "uuid": "4abfc6e4-f013-59c2-83ec-76e206f828ca"
+                },
+                {
+                    "description": "F.Cu 上 QL 的焊盘 7 [SW]",
+                    "pos": {
+                        "x": 54.275,
+                        "y": 49.365
+                    },
+                    "uuid": "279f0f6e-d127-56f9-a561-3c4461dc60aa"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "F.Cu 上 QL 的焊盘 9 [SW]",
+                    "pos": {
+                        "x": 56.6625,
                         "y": 50.0
                     },
-                    "uuid": "7798abc6-ea49-5fd7-afe0-f04596258f90"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QH 的PTH 焊盘 1 [SW]",
-                    "pos": {
-                        "x": 46.4,
-                        "y": 49.0
-                    },
-                    "uuid": "fa9b667a-6615-5a71-bf39-8b64ab7656fd"
-                },
-                {
-                    "description": "QL 的PTH 焊盘 6 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 49.0
-                    },
-                    "uuid": "c75d500c-8870-5985-8f90-e16ba785bd93"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QH 的PTH 焊盘 2 [SW]",
-                    "pos": {
-                        "x": 46.4,
-                        "y": 50.0
-                    },
-                    "uuid": "7798abc6-ea49-5fd7-afe0-f04596258f90"
-                },
-                {
-                    "description": "QH 的PTH 焊盘 3 [SW]",
-                    "pos": {
-                        "x": 46.4,
-                        "y": 51.0
-                    },
-                    "uuid": "b50ddcb4-af45-5bef-b1a2-65a3db7e2141"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 5 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 48.0
-                    },
-                    "uuid": "94104b7e-3cd0-51f6-befa-e8b4000275bb"
-                },
-                {
-                    "description": "QL 的PTH 焊盘 6 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 49.0
-                    },
-                    "uuid": "c75d500c-8870-5985-8f90-e16ba785bd93"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 6 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 49.0
-                    },
-                    "uuid": "c75d500c-8870-5985-8f90-e16ba785bd93"
-                },
-                {
-                    "description": "QL 的PTH 焊盘 7 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 50.0
-                    },
-                    "uuid": "85e5b349-dcf3-5d06-8f26-9d53adea6151"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 7 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 50.0
-                    },
-                    "uuid": "85e5b349-dcf3-5d06-8f26-9d53adea6151"
-                },
-                {
-                    "description": "QL 的PTH 焊盘 8 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 51.0
-                    },
-                    "uuid": "cc02eee2-bb79-5937-a1f9-248c75786894"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 8 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 51.0
-                    },
-                    "uuid": "cc02eee2-bb79-5937-a1f9-248c75786894"
-                },
-                {
-                    "description": "QL 的PTH 焊盘 9 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 52.0
-                    },
-                    "uuid": "552cbbd0-b37a-5100-bce9-8641d624c7ad"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QL 的PTH 焊盘 9 [SW]",
-                    "pos": {
-                        "x": 58.2,
-                        "y": 52.0
-                    },
-                    "uuid": "552cbbd0-b37a-5100-bce9-8641d624c7ad"
+                    "uuid": "c18af5d7-817f-5e22-a39d-f38d942e974c"
                 },
                 {
                     "description": "Cr 的PTH 焊盘 1 [SW]",
@@ -1183,112 +1091,20 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "QH 的PTH 焊盘 5 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 48.0
-                    },
-                    "uuid": "3f7c3996-d5f5-5aa1-beeb-f1b2ea3aad6c"
-                },
-                {
-                    "description": "QH 的PTH 焊盘 6 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 49.0
-                    },
-                    "uuid": "71025230-311b-57ae-872e-dd1f3cc4621a"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QH 的PTH 焊盘 6 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 49.0
-                    },
-                    "uuid": "71025230-311b-57ae-872e-dd1f3cc4621a"
-                },
-                {
-                    "description": "QH 的PTH 焊盘 7 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 50.0
-                    },
-                    "uuid": "71cfd01b-7262-5958-81a0-dea1c8d6df6b"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QH 的PTH 焊盘 7 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 50.0
-                    },
-                    "uuid": "71cfd01b-7262-5958-81a0-dea1c8d6df6b"
-                },
-                {
-                    "description": "QH 的PTH 焊盘 8 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 51.0
-                    },
-                    "uuid": "9e1d0ba5-f8ca-5d72-9be4-70dfa4f32661"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QH 的PTH 焊盘 8 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 51.0
-                    },
-                    "uuid": "9e1d0ba5-f8ca-5d72-9be4-70dfa4f32661"
-                },
-                {
-                    "description": "QH 的PTH 焊盘 9 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 52.0
-                    },
-                    "uuid": "2ff27d9e-2264-5105-81a1-1186f499dc34"
-                }
-            ],
-            "severity": "error",
-            "type": "unconnected_items"
-        },
-        {
-            "description": "Missing connection between items",
-            "items": [
-                {
-                    "description": "QH 的PTH 焊盘 9 [VIN_P]",
-                    "pos": {
-                        "x": 49.2,
-                        "y": 52.0
-                    },
-                    "uuid": "2ff27d9e-2264-5105-81a1-1186f499dc34"
-                },
-                {
                     "description": "J_IN 的PTH 焊盘 1 [VIN_P]",
                     "pos": {
                         "x": 109.46,
                         "y": 52.0
                     },
                     "uuid": "25b11e44-37fb-50aa-912f-e670de98f247"
+                },
+                {
+                    "description": "F.Cu 上 QH 的焊盘 9 [VIN_P]",
+                    "pos": {
+                        "x": 47.6625,
+                        "y": 50.0
+                    },
+                    "uuid": "71c6e252-c20a-5442-b7d6-f3b45626ec34"
                 }
             ],
             "severity": "error",

@@ -69,26 +69,26 @@
     {
       "ref": "QH",
       "value": "CSD19531Q5A",
-      "evidence": "datasheet",
-      "w_mm": 5.0,
-      "d_mm": 6.1,
+      "evidence": "digitised-datasheet",
+      "w_mm": 6.6,
+      "d_mm": 5.5,
       "h_mm_worst": 1.1,
       "x_mm": 48.0,
       "y_mm": 50.0,
       "rot_deg": 0.0,
-      "note": "Q5A dims D1/E/A max from datasheet p9; land pattern still provisional (the recommended-pad figure is not in the text)"
+      "note": "Q5A dims D1/E/A max from datasheet p9; land and stencil digitised from the sect. 7.2/7.3 figures (design/v3/pcb/csd19531q5a_land.json); drain 5-8 on a common base.  Not vendor CAD, not IPC-7351 checked"
     },
     {
       "ref": "QL",
       "value": "CSD19531Q5A",
-      "evidence": "datasheet",
-      "w_mm": 5.0,
-      "d_mm": 6.1,
+      "evidence": "digitised-datasheet",
+      "w_mm": 6.6,
+      "d_mm": 5.5,
       "h_mm_worst": 1.1,
       "x_mm": 57.0,
       "y_mm": 50.0,
       "rot_deg": 0.0,
-      "note": "Q5A dims D1/E/A max from datasheet p9; land pattern still provisional (the recommended-pad figure is not in the text)"
+      "note": "Q5A dims D1/E/A max from datasheet p9; land and stencil digitised from the sect. 7.2/7.3 figures (design/v3/pcb/csd19531q5a_land.json); drain 5-8 on a common base.  Not vendor CAD, not IPC-7351 checked"
     },
     {
       "ref": "Cr",
@@ -573,10 +573,7 @@
     "J_IN",
     "U2"
   ],
-  "land_pattern_provisional": [
-    "QH",
-    "QL"
-  ],
+  "land_pattern_provisional": [],
   "nets": {
     "status": "NETTED_PLACEMENT_NOT_ROUTED",
     "source": "hardware/dcx_main/pin_footprint_review.csv",
@@ -617,7 +614,7 @@
           "SR4B",
           "T4"
         ],
-        "straight_line_mst_mm": 340.491
+        "straight_line_mst_mm": 341.124
       },
       {
         "net": "VOUT",
@@ -698,7 +695,7 @@
           "J_IN",
           "QH"
         ],
-        "straight_line_mst_mm": 64.26
+        "straight_line_mst_mm": 68.11
       },
       {
         "net": "SEC1_B",
@@ -780,7 +777,7 @@
           "QH",
           "QL"
         ],
-        "straight_line_mst_mm": 24.6
+        "straight_line_mst_mm": 20.917
       },
       {
         "net": "CR_CT",

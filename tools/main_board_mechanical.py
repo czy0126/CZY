@@ -43,6 +43,9 @@ Every outline carries an evidence class, and the report prints it:
 ``datasheet``       a package size the BOM marks VERIFIED.  Body only: the
                     part's pads on this board are still placeholders, which is
                     why the report lists it under ``land_pattern_provisional``.
+                    No part uses this class any more -- QH/QL were the last, and
+                    their land is now digitised -- but the filter stays because
+                    it is what makes the class mean something.
 ``PROVISIONAL``     nobody has selected the part.  CT, Cr, J_IN and the
                     control area are placeholders with a stated size, and the
                     report lists them so a reader cannot mistake the drawing
@@ -243,11 +246,16 @@ def parts() -> tuple[Part, ...]:
     # Q5A package table (datasheet p9): D1 max 5.00, E max 6.10, A max 1.10.
     # Using the maximums, not the 5x6x1 nominal the BOM calls it -- that is the
     # same nominal/maximum trap the magnetics height stack already avoids.
+    # The land is 6.60 x 5.50 with its courtyard, and the pads reach 6.205 x 4.46
+    # -- the printed F1/F2.  Clearance and overlap use the courtyard, because
+    # that is the box KiCad will actually check.
     for ref, x in (("QH", 48.0), ("QL", 57.0)):
-        out.append(Part(ref, "CSD19531Q5A", 5.00, 6.10, 1.10, x, 50.0, "datasheet",
-                        "dcx:Placeholder_SON_5x6",
-                        note="Q5A dims D1/E/A max from datasheet p9; land pattern still "
-                             "provisional (the recommended-pad figure is not in the text)"))
+        out.append(Part(ref, "CSD19531Q5A", 6.60, 5.50, 1.10, x, 50.0,
+                        "digitised-datasheet", "dcx:CSD19531Q5A",
+                        note="Q5A dims D1/E/A max from datasheet p9; land and stencil "
+                             "digitised from the sect. 7.2/7.3 figures "
+                             "(design/v3/pcb/csd19531q5a_land.json); drain 5-8 on a "
+                             "common base.  Not vendor CAD, not IPC-7351 checked"))
     out.append(Part("Cr", "0.62 uF", 18.0, 6.0, 6.0, 72.0, 52.0, "PROVISIONAL",
                     "dcx:Placeholder_18x6", note="no part selected; 18x6x6 film assumed"))
     out.append(Part("CT", "100:1", 20.0, 15.0, 8.0, 92.0, 52.0, "PROVISIONAL",
@@ -367,6 +375,20 @@ def _bsc_source() -> str:
     """
     import make_sr_fault_board_pcb as srpcb
     return srpcb.bsc_source()
+
+
+def _csd_source() -> str:
+    """The QH/QL land pattern, from the module that digitised its datasheet.
+
+    Same lazy-import reason as the SR FETs: ``csd19531q5a_land`` is a leaf, but
+    keeping every land builder behind a function keeps the import graph a star
+    rather than a web.  ``footprint_text`` refuses a JSON whose own ``checks``
+    failed, and reads the committed file rather than the PDF -- so a machine
+    without PyMuPDF still builds the board from the same numbers.
+    """
+    import csd19531q5a_land as csd
+    with csd.DEFAULT_JSON.open(encoding="utf-8") as fh:
+        return csd.footprint_text(json.load(fh))
 
 
 def _footprint_text(lib_id: str) -> str:
@@ -703,18 +725,6 @@ def footprint_library() -> dict[str, str]:
             "this outline stands for the whole control section, so any pad it "
             "carried would be a pin of a part that has no position yet.",
             []),
-        # Nine pads because the netlist gives QH/QL nine pins (1-3 source,
-        # 4 gate, 5-9 drain).  0.6 mm pads on a 1 mm pitch are a drawing, not a
-        # land pattern -- the recommended layout is a figure in the datasheet.
-        "Placeholder_SON_5x6.kicad_mod": _outline_footprint(
-            "Placeholder_SON_5x6", 5.00, 6.10,
-            "PROVISIONAL land pattern - CSD19531Q5A (VSONP DQJ): body 5.00x6.10 from "
-            "datasheet p9, but the recommended board pads are a figure, not text, and "
-            "are not reproduced here",
-            [("1", -1.6, -1.0), ("2", -1.6, 0.0), ("3", -1.6, 1.0),
-             ("4", -1.6, 2.0), ("5", 1.2, -2.0), ("6", 1.2, -1.0),
-             ("7", 1.2, 0.0), ("8", 1.2, 1.0), ("9", 1.2, 2.0)],
-            pad_mm=0.6),
         "Placeholder_Cout.kicad_mod": _outline_footprint(
             "Placeholder_Cout", 7.3, 4.3,
             "Bulk output capacitor: max height 2.1 mm from YAGEO OEM; the "
@@ -724,6 +734,7 @@ def footprint_library() -> dict[str, str]:
         # all five drain lands "5", so the schematic's drain pins 6-8 had no
         # pad; the datasheet figure has four drain fingers on a common base.
         "BSC010N04LS6.kicad_mod": _bsc_source(),
+        "CSD19531Q5A.kicad_mod": _csd_source(),
     }
     return files
 

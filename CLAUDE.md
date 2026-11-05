@@ -1238,6 +1238,18 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   **不再按注释里出现"land pattern"**——换封装后那句注释把八只 SR 全误判成占位。
   `test_the_sr_drain_pins_now_have_pads_of_their_own` 与
   `test_the_sr_fet_land_is_generated_from_the_datasheet_measurement` 锁住。
+- **QH/QL 的 land + stencil 由 `tools/csd19531q5a_land.py` 数字化**（2026-11-05），
+  `design/v3/pcb/csd19531q5a_land.json` → `dcx:CSD19531Q5A`，占位 `Placeholder_SON_5x6`
+  已删，`land_pattern_provisional` 因此**为空**。两页要分开拟合：
+  **§7.2 第 10 页是 MIN/MAX 表**（F1–F11），**§7.3 第 11 页没有表、标注直接印在图上**
+  （`(0.020) 8x` 这种，所以倍数是 `re.search(r"(\d+)x\s*$")` 才能抓到，`fullmatch` 抓不到）。
+  比例尺取**图上/标注比值的中位数**，不是最小二乘——后者被最长跨度拖到 11.3 µm；
+  残差按 **1 mil（0.0254 mm）** 判（制图取整的底噪），land 最大 21.1 µm、stencil 2.8 µm。
+  **引脚号是量的**：左列 5–8、右列 4→1；**第 9 脚（散热焊盘）图上没有号**，是符号给的，
+  0.05 mm 阻焊外扩与 0.25 mm courtyard 也不在图上，从另一份 land 借——三条都在
+  `limitations` 里。**梳状漏极四指压进基座 0.125 mm**（图上边对边），否则导入器舍入会让
+  5–8 脚落在只是相碰的铜上。**1 脚标记必须放在 courtyard 外**：第一版在 (3.12, −2.30)
+  落在源极阻焊开窗里，DRC 报 20 µm `silk_over_copper`；不要靠缩阻焊去消它。
 - **`unconnected_items` 是第二个顶层数组**，不在 `violations` 里。只读 `violations` 会在
   一块一条线都没画的板上读出"0 个未连接"。`check()` 现在打印两个数，并带一条**反向守卫**：
   声明了网却报 0 条老鼠线 ⇒ `SystemExit`（要么真布完了，要么 `(net …)` 没落到焊盘上）。
