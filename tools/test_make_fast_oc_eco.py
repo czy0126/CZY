@@ -117,6 +117,71 @@ def test_the_input_protection_is_two_diodes_and_a_series_divider(parts):
     assert by_ref(parts, "R2").nets == {"1": "OCD", "2": "INP"}
 
 
+def test_every_mpn_in_the_bom_is_traced_to_a_datasheet_in_the_repository(parts):
+    """Same rule as the SR board: a code with no source is an invented part.
+
+    "BAT54" on a SOD-123 land was the review's example -- the same short name
+    is SOT-23 at Nexperia and SOT323 as BAT54W, so the string cannot be ordered
+    and must not sit in the MPN column.
+    """
+    for part in parts:
+        if not part.mpn:
+            assert part.mpn_source == "TO_SELECT", part.ref
+            continue
+        path = board.ROOT / part.mpn_source
+        assert path.is_file(), f"{part.ref}: {part.mpn_source} does not exist"
+        assert part.mpn in path.read_text(encoding="utf-8", errors="replace"), part.ref
+
+
+def test_the_two_input_diodes_name_the_sod_123_part_not_the_short_name(parts):
+    for ref in ("D1", "D2"):
+        part = by_ref(parts, ref)
+        assert part.mpn == "BAT54W-E3-08"
+        assert part.mpn_source == "references/datasheets/bat54w.txt"
+        assert part.footprint == "Diode_SMD:D_SOD-123"
+        assert part.value == "BAT54W"
+
+
+def test_the_land_in_use_is_compared_against_the_vendor_recommendation(report):
+    """The vendored land is not Vishay's; the delta is reported, not hidden.
+
+    Parsed from the footprint file, so swapping the library footprint changes
+    the report instead of leaving a stale assertion.
+    """
+    land = report["d12_selection"]["land"]
+    pads = board._vendored_pads(board.ROOT / board.D12_FP_FILE)
+    assert pads["1"]["w_mm"] == land["vendored_pad_mm"][0]
+    assert pads["1"]["h_mm"] == land["vendored_pad_mm"][1]
+    assert land["vendor_centre_spacing_mm"] == pytest.approx(
+        board.D12_VENDOR_GAP + board.D12_VENDOR_PAD_W)
+    assert land["centre_spacing_delta_mm"] == pytest.approx(
+        land["vendored_centre_spacing_mm"] - land["vendor_centre_spacing_mm"])
+    # The footprint in use must at least cover the vendor land.
+    assert land["vendored_pad_mm"][0] >= board.D12_VENDOR_PAD_W
+    assert land["vendored_pad_mm"][1] >= board.D12_VENDOR_PAD_H
+    assert abs(land["centre_spacing_delta_mm"]) < 0.1
+    assert "NOT_THE_VENDOR_LAND" in land["verdict"]
+
+
+def test_the_diode_selection_is_not_reported_as_qualified(report):
+    sel = report["d12_selection"]
+    assert sel["qualified"] is False
+    assert sel["open_items"], "an unqualified part without open items is a claim"
+    assert sel["datasheet"]["vrr_v"] >= board.V5 * 2, "30 V against a 5 V rail"
+    assert sel["datasheet"]["ifsm_a"] > 0
+
+
+def test_the_bom_file_carries_the_diode_codes(parts):
+    import csv
+
+    rows = {r["Reference"]: r for r in
+            csv.DictReader((OUT / "BOM.csv").open(encoding="utf-8"))}
+    assert rows["D1"]["MPN"] == "BAT54W-E3-08"
+    assert rows["D1"]["MPN_Source"] == "references/datasheets/bat54w.txt"
+    assert rows["D2"]["MPN"] == "BAT54W-E3-08"
+    assert rows["R2"]["MPN"] == "" and rows["R2"]["MPN_Source"] == "TO_SELECT"
+
+
 def test_q1_is_off_when_the_comparator_has_no_supply(parts):
     """Loss of 5 V must not assert a fault; R6 is the default-state element."""
     assert by_ref(parts, "R6").nets == {"1": "Q1G", "2": "PGND"}

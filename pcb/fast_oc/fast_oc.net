@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\fast_oc\\fast_oc.kicad_sch")
-		(date "2026-11-05T20:32:25")
+		(date "2026-11-05T22:13:24")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -272,9 +272,9 @@
 		)
 		(comp
 			(ref "D1")
-			(value "BAT54")
+			(value "BAT54W")
 			(footprint "Diode_SMD:D_SOD-123")
-			(description "cathode at IN+: holds the pin above -0.3 V")
+			(description "cathode at IN+: holds the pin above -0.3 V; SOD-123, not the SOT-23 BAT54")
 			(fields
 				(field
 					(name "Footprint") "Diode_SMD:D_SOD-123")
@@ -282,7 +282,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "cathode at IN+: holds the pin above -0.3 V")
+					(name "Description") "cathode at IN+: holds the pin above -0.3 V; SOD-123, not the SOT-23 BAT54")
 			)
 			(libsource
 				(lib "Device")
@@ -326,9 +326,9 @@
 		)
 		(comp
 			(ref "D2")
-			(value "BAT54")
+			(value "BAT54W")
 			(footprint "Diode_SMD:D_SOD-123")
-			(description "cathode at V5: starts conducting above 5.3 V")
+			(description "cathode at V5: starts conducting above 5.3 V; the backfeed path this diode creates is measured in the bench plan, not modelled")
 			(fields
 				(field
 					(name "Footprint") "Diode_SMD:D_SOD-123")
@@ -336,7 +336,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "cathode at V5: starts conducting above 5.3 V")
+					(name "Description") "cathode at V5: starts conducting above 5.3 V; the backfeed path this diode creates is measured in the bench plan, not modelled")
 			)
 			(libsource
 				(lib "Device")

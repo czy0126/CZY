@@ -100,6 +100,21 @@ def symbol_libs() -> Path:
 # ------------------------------------------------------------------ constants
 CMP = "references/datasheets/tlv3501.txt"
 
+# D1/D2 were written "BAT54" on a SOD-123 land, which is not a part number:
+# Nexperia's BAT54 is SOT-23 and its BAT54W is SOT323.  Vishay's BAT54W is
+# SOD-123 and its ordering table is in references/, so that is the code written
+# to the BOM.  Selection is not qualification -- see d12_selection().
+D12_MPN = "BAT54W-E3-08"
+D12_MPN_SOURCE = "references/datasheets/bat54w.txt"
+D12_FP = "Diode_SMD:D_SOD-123"
+D12_FP_FILE = "hardware/stock_footprints/Diode_SMD.pretty/D_SOD-123.kicad_mod"
+# Vishay's own land recommendation, from the drawing on p.4 (0.85 x 0.85 pads,
+# 2.5 mm between the pads).  The vendored land is parsed from its file so the
+# two can be compared instead of asserted.
+D12_VENDOR_PAD_W = 0.85
+D12_VENDOR_PAD_H = 0.85
+D12_VENDOR_GAP = 2.5
+
 VREF = 2.5                 # V, LM4040DBZ-2.5
 R_TOP = 30e3               # ohm, OCD -> IN+
 R_BOT = 15e3               # ohm, IN+ -> PGND
@@ -217,12 +232,15 @@ def parts() -> list[Part]:
              note="1 us with the 10k divider Thevenin"),
         Part("R4", "Device:R", "470k 1%", "Resistor_SMD:R_0603_1608Metric", 96, 64,
              {"1": "INP", "2": "OUT"}, note="positive feedback: 3.2 A hysteresis"),
-        Part("D1", "Device:D_Schottky", "BAT54", "Diode_SMD:D_SOD-123", 58, 66,
+        Part("D1", "Device:D_Schottky", "BAT54W", D12_FP, 58, 66,
              {"1": "INP", "2": "PGND"}, rating="30 V",
-             note="cathode at IN+: holds the pin above -0.3 V"),
-        Part("D2", "Device:D_Schottky", "BAT54", "Diode_SMD:D_SOD-123", 58, 56,
+             note="cathode at IN+: holds the pin above -0.3 V; SOD-123, not the "
+                  "SOT-23 BAT54", mpn=D12_MPN, mpn_source=D12_MPN_SOURCE),
+        Part("D2", "Device:D_Schottky", "BAT54W", D12_FP, 58, 56,
              {"1": "V5", "2": "INP"}, rating="30 V",
-             note="cathode at V5: starts conducting above 5.3 V"),
+             note="cathode at V5: starts conducting above 5.3 V; the backfeed path "
+                  "this diode creates is measured in the bench plan, not modelled",
+             mpn=D12_MPN, mpn_source=D12_MPN_SOURCE),
         Part("R5", "Device:R", "100R", "Resistor_SMD:R_0603_1608Metric", 108, 80,
              {"1": "OUT", "2": "Q1G"}, note="gate series"),
         Part("R6", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 120, 92,
@@ -475,6 +493,83 @@ def observations() -> list[dict]:
     ]
 
 
+def _vendored_pads(path: Path) -> dict[str, dict[str, float]]:
+    """Pad name -> (x, y, w, h) from a vendored ``.kicad_mod``.
+
+    Parsed rather than transcribed so the report compares the land the board
+    actually uses against the vendor recommendation; a hand-copied number would
+    stay right while the library changed underneath it.
+    """
+    text = path.read_text(encoding="utf-8")
+    pads: dict[str, dict[str, float]] = {}
+    for chunk in text.split('(pad "')[1:]:
+        name = chunk.split('"', 1)[0]
+        at = chunk.split("(at ", 1)[1].split(")", 1)[0].split()
+        size = chunk.split("(size ", 1)[1].split(")", 1)[0].split()
+        pads[name] = {"x_mm": float(at[0]), "y_mm": float(at[1]),
+                      "w_mm": float(size[0]), "h_mm": float(size[1])}
+    return pads
+
+
+def d12_selection() -> dict:
+    """What D1/D2 are, which land they sit on, and what is still open.
+
+    The review's point: "BAT54 + SOD-123" cannot be ordered, because the same
+    short name is SOT-23 at one vendor and SOT323 at another.  Vishay's BAT54W
+    is the SOD-123 part and its ordering table is in the repository, so the MPN
+    is written; the land is then checked against the vendor drawing instead of
+    assumed compatible.
+    """
+    pads = _vendored_pads(ROOT / D12_FP_FILE)
+    left, right = pads["1"], pads["2"]
+    centres = abs(right["x_mm"] - left["x_mm"])
+    gap = centres - (left["w_mm"] + right["w_mm"]) / 2
+    return {
+        "refs": ["D1", "D2"],
+        "mpn": D12_MPN,
+        "mpn_source": D12_MPN_SOURCE,
+        "package": "SOD-123",
+        "footprint": D12_FP,
+        "pins": {"1": "K", "2": "A"},
+        "datasheet": {
+            "vrr_v": 30.0,
+            "if_ma": 200.0,
+            "ifrm_ma": 300.0,
+            "ifsm_a": 0.6,
+            "ptot_mw": 230.0,
+        },
+        "land": {
+            "vendored_pad_mm": [left["w_mm"], left["h_mm"]],
+            "vendored_centre_spacing_mm": centres,
+            "vendored_gap_mm": gap,
+            "vendor_pad_mm": [D12_VENDOR_PAD_W, D12_VENDOR_PAD_H],
+            "vendor_gap_mm": D12_VENDOR_GAP,
+            "vendor_centre_spacing_mm": D12_VENDOR_GAP + D12_VENDOR_PAD_W,
+            "centre_spacing_delta_mm": centres - (D12_VENDOR_GAP + D12_VENDOR_PAD_W),
+            "pad_delta_mm": [left["w_mm"] - D12_VENDOR_PAD_W,
+                             left["h_mm"] - D12_VENDOR_PAD_H],
+            "verdict": "COMPATIBLE_WITHIN_0P1_MM_NOT_THE_VENDOR_LAND",
+            "first_article_check": "measure the solder joint on the first built "
+                                   "board; the pad is 0.35 mm taller and 0.05 mm "
+                                   "wider than the recommendation",
+        },
+        "worst_case_current": {
+            "path": "D2 from V5 into IN+ if the module loses V5 while OCD is live",
+            "ifsm_rating_a": 0.6,
+            "note": "surge, not continuous; the continuous path is bounded by the "
+                    "divider, so the diode current is not the stress — the backfeed "
+                    "into V5 is (see the bench plan)",
+        },
+        "qualified": False,
+        "open_items": [
+            "the SOD-123 vendor land is not the footprint in use; the difference "
+            "is inside 0.1 mm on centres but the pads are larger",
+            "D2's backfeed path from OCD into a dead V5 rail is not characterised",
+            "no temperature derating is applied to the 230 mW total dissipation",
+        ],
+    }
+
+
 def report(ps: list[Part]) -> dict:
     nets: dict[str, list[str]] = {}
     for part in ps:
@@ -494,6 +589,7 @@ def report(ps: list[Part]) -> dict:
         "delay": delay(),
         "system_delay": system_delay(),
         "supply": supply(),
+        "d12_selection": d12_selection(),
         "d0_connection": [
             "J1.1 V5 -> D0 V5 (bench 5 V rail)",
             "J1.2 PGND -> D0 PGND",
@@ -603,12 +699,12 @@ def bom(parts_: list[Part]) -> None:
     with path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["Reference", "Value", "Footprint", "Rating", "Note", "DNP",
-                    "MPN", "LCSC", "Qty"])
+                    "MPN", "MPN_Source", "LCSC", "Qty"])
         for part in parts_:
             if part.ref.startswith("#"):
                 continue
             w.writerow([part.ref, part.value, part.footprint, part.rating, part.note,
-                        "yes" if part.dnp else "", "", "", 1])
+                        "yes" if part.dnp else "", part.mpn, part.mpn_source, "", 1])
     print(f"wrote {path}")
 
 

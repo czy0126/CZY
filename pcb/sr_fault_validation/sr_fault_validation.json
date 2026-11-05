@@ -238,7 +238,7 @@
       "reg_owner": "Q41 + R44 pull REG to PGND against the U1 regulator, which keeps sourcing while it can",
       "vdd_owner": "still connected; this is the point of the test",
       "gate_pulldown": "Rgs 10k in parallel with the U1 sink",
-      "expected": "REG reaches UVLO in 15.8 us at the 3.63 V threshold (estimate, not a worst case), then VG is actively low"
+      "expected": "REG reaches UVLO in 12.1 us at the 3.63 V threshold (estimate, not a worst case), then VG is actively low"
     },
     {
       "state": "FAULT_VDD_CUT",
@@ -283,14 +283,14 @@
   ],
   "crowbar": {
     "c_reg_f": 2.3e-06,
-    "r_total_ohm": 6.2,
+    "r_total_ohm": 4.748,
     "stored_energy_j": 0.00013915,
     "energy_released_to_uvlo_j": 0.000123996565,
-    "peak_current_a": 1.7741935483870968,
-    "tau_s": 1.426e-05,
-    "time_to_uvlo_s": 1.5809529025678174e-05,
-    "time_to_uvlo_at_max_threshold_s": 1.3560921893432765e-05,
-    "time_to_uvlo_with_reg_current_limit_s": 1.7549447329170756e-05,
+    "peak_current_a": 2.316764953664701,
+    "tau_s": 1.0920400000000001e-05,
+    "time_to_uvlo_s": 1.2107039324825803e-05,
+    "time_to_uvlo_at_max_threshold_s": 1.038504147580948e-05,
+    "time_to_uvlo_with_reg_current_limit_s": 1.3098774888732325e-05,
     "threshold_basis": {
       "turn_off_min_v": 3.63,
       "turn_off_typ_v": 4.0,
@@ -304,6 +304,13 @@
         "r_total_ohm": 4.7,
         "time_to_uvlo_s": 1.1984642971078615e-05,
         "time_to_uvlo_at_max_threshold_s": 1.028005369340871e-05
+      },
+      {
+        "label": "Q41 AO3400A at 2.5 V VGS (selected, 25 C max)",
+        "rds_on_ohm": 0.048,
+        "r_total_ohm": 4.748,
+        "time_to_uvlo_s": 1.2107039324825803e-05,
+        "time_to_uvlo_at_max_threshold_s": 1.038504147580948e-05
       },
       {
         "label": "Q41 at the BOM target",
@@ -320,37 +327,89 @@
         "time_to_uvlo_at_max_threshold_s": 1.3560921893432765e-05
       }
     ],
-    "resistor_share_j": 9.39973960483871e-05,
-    "fet_share_j": 2.9999168951612898e-05,
-    "fet_peak_a": 1.7741935483870968,
+    "resistor_share_j": 0.0001227430192712721,
+    "fet_share_j": 1.2535457287278853e-06,
+    "fet_peak_a": 2.316764953664701,
     "worst_case": {
       "is_worst_case": false,
       "reasons": [
         "the UCC24624 linear regulator keeps sourcing into REG while the crowbar pulls it down; the constant-current column is a sensitivity, not a guaranteed bound",
         "no component tolerance band is applied to R44 or the REG capacitors",
-        "Q41 has no selected MPN, so its Rds(on) at the actual gate voltage is a placeholder",
+        "Q41 is the selected AO3400A, but selection is not qualification: its Rds(on) is the datasheet max at 2.5 V VGS and 25 C, with no SOA curve at the turn-on crossing and no self-heating",
+        "the discharge model starts with Q41 already on; the gate slewing through R43 delays the 11 V connection, so the quoted time is a floor",
         "turn-on propagation of Q41 and the UVLO-to-VG transient are not modelled"
       ]
     },
-    "note": "Rds(on) is a placeholder for a 2N7002-class part; the BOM asks for <=0.1 ohm and IDM>=3 A at an unspecified gate voltage"
+    "note": "headline uses the selected AO3400A at its 2.5 V VGS maximum; the 1.5 ohm row is the old 2N7002-class placeholder and must not be quoted as the design number"
   },
   "crowbar_pulse": {
-    "duration_s": 1.5809529025678174e-05,
-    "r44_energy_j": 9.39973960483871e-05,
-    "fet_energy_j": 2.9999168951612898e-05,
-    "r44_peak_power_w": 14.79448491155047,
-    "r44_mean_power_w": 5.9456164630656945,
-    "fet_peak_power_w": 4.721644120707596,
-    "fet_mean_power_w": 1.8975371690635192,
+    "duration_s": 1.2107039324825803e-05,
+    "r44_energy_j": 0.0001227430192712721,
+    "fet_energy_j": 1.2535457287278853e-06,
+    "r44_peak_power_w": 25.22677929748632,
+    "r44_mean_power_w": 10.138153183295962,
+    "r44_equivalent_pulse_width_s": 4.8655842199999996e-06,
+    "fet_peak_power_w": 0.2576351928253922,
+    "fet_mean_power_w": 0.10353858570174598,
     "repetition": {
-      "1_per_s_w": 9.39973960483871e-05,
-      "10_per_s_w": 0.0009399739604838709,
-      "100_per_s_w": 0.00939973960483871,
+      "1_per_s_w": 0.0001227430192712721,
+      "10_per_s_w": 0.001227430192712721,
+      "100_per_s_w": 0.01227430192712721,
+      "continuous_rating_w": 0.5,
+      "rate_at_continuous_rating_per_s": 4073.551416353537,
       "basis": "thermal average = released energy x rate; the single-pulse surge, not this average, is the binding limit"
     },
     "r44_pulse_rating_j": null,
     "q41_thermal": null,
     "temperature_note": "no vendor pulse curve for the 1206 and no Q41 thermal model in this repository: single-pulse capability and temperature rise are UNVERIFIED, not assumed"
+  },
+  "q41_selection": {
+    "ref": "Q41",
+    "mpn": "AO3400A",
+    "mpn_source": "references/datasheets/ao3400a.txt",
+    "package": "SOT-23",
+    "footprint": "Package_TO_SOT_SMD:SOT-23",
+    "pins": {
+      "1": "G",
+      "2": "S",
+      "3": "D"
+    },
+    "symbol_pin_map": "Q_NMOS_GSD: 1=G, 2=S, 3=D -- same numbering as SOT-23",
+    "abs_max_vds_v": 30.0,
+    "abs_max_vgs_v": 12.0,
+    "id_a_25c": 5.7,
+    "idm_a": 30.0,
+    "vgs_th_max_v": 1.45,
+    "rds_max_ohm_by_vgs": {
+      "2.5": 0.048,
+      "4.5": 0.032,
+      "10": 0.0265
+    },
+    "gate_level_v_at_3v3_harness": 3.0,
+    "rds_used_ohm": 0.048,
+    "rds_basis": "3.0 V sits between the 2.5 and 4.5 V datasheet columns; the 2.5 V maximum is used because interpolation is not a guarantee and the 4.5 V column does not apply",
+    "turn_on_estimate": {
+      "gate_rc_s": 6.5835e-08,
+      "time_to_threshold_s": 4.347462664661239e-08,
+      "miller_crossing_s": 2.3512500000000004e-07,
+      "assumed_plateau_v": 2.2,
+      "peak_switch_power_w": 25.48441449031171,
+      "linear_ramp_energy_upper_bound_j": 3.5499741811541813e-06,
+      "status": "ESTIMATE from datasheet typ Ciss/Qgd and an assumed Miller plateau; no SOA curve at this crossing is digitised in the repository, so turn-on stress is UNVERIFIED"
+    },
+    "stress_check": {
+      "peak_current_a": 2.316764953664701,
+      "idm_margin": 12.94909090909091,
+      "fet_peak_power_w": 0.2576351928253922,
+      "fet_energy_j": 1.2535457287278853e-06
+    },
+    "open_items": [
+      "SOA at the 11 V turn-on crossing is not checked against a vendor curve",
+      "self-heating and the Rds(on) temperature coefficient are not modelled",
+      "repeated-pulse capability of R44 is not checked (no vendor curve)",
+      "the 3.3 V harness gives a 3.0 V gate; a 5 V harness would allow the 4.5 V column, but that column is not used here"
+    ],
+    "qualified": false
   },
   "input_default": {
     "fault_input_pulldown_ohm": 10000.0,
@@ -367,7 +426,7 @@
       "fault_g_v_at_5v0": 4.545454545454546,
       "series_ohm": 1000.0,
       "note": "D40 clamps at 5.1 V and does not conduct at either harness level",
-      "rds_claim": "Q41 must be specified for Rds(on) <= 0.1 ohm at the 3.0 V gate the 3.3 V harness produces (or the harness must drive 5 V); a 2N7002-class part at 3.0 V does not meet it"
+      "rds_claim": "AO3400A meets 0.1 ohm at the 3.0 V gate the 3.3 V harness produces (datasheet max 0.048 ohm at 2.5 V); a 2N7002-class part at 3.0 V does not"
     }
   },
   "vdd_cut": {
@@ -460,11 +519,11 @@
     "sr_branch": {
       "input_rc_s": 1e-05,
       "crowbar_fet_turn_on_s": 5e-08,
-      "reg_to_uvlo_s": 1.5809529025678174e-05,
-      "reg_to_uvlo_basis": "3.63 V turn-off threshold, 1.5 ohm Q41 placeholder",
-      "reg_to_uvlo_with_reg_current_limit_s": 1.7549447329170756e-05,
+      "reg_to_uvlo_s": 1.2107039324825803e-05,
+      "reg_to_uvlo_basis": "3.63 V turn-off threshold (slowest of 3.63/4.0/4.25 V), AO3400A Rds(on) 0.048 ohm at 2.5 V VGS",
+      "reg_to_uvlo_with_reg_current_limit_s": 1.3098774888732325e-05,
       "vg_active_low_s": 1.635e-08,
-      "total_s": 2.5875879025678173e-05,
+      "total_s": 2.2173389324825802e-05,
       "dominant_term": "reg_to_uvlo_s"
     },
     "primary_branch_reference": {
@@ -475,13 +534,13 @@
       "ucc27282_fall_time_1n8_s": 1e-08,
       "total_s": 1.2899999999999997e-06
     },
-    "max_branch_s": 2.5875879025678173e-05,
+    "max_branch_s": 2.2173389324825802e-05,
     "slowest_branch": "sr",
     "is_worst_case": false,
     "not_worst_case_reasons": [
       "reg_to_uvlo_s is an RC estimate at the 3.63 V threshold; the regulator keeps sourcing, and the current-limit column is a sensitivity",
       "component tolerances on R44 and the REG capacitors are not applied",
-      "Q41 turn-on and its gate threshold are not measured (no MPN)"
+      "Q41 turn-on and its gate threshold are estimates from typical datasheet values; there is no digitised SOA curve in the repository"
     ],
     "rule": "t_stop = t_common + max(t_primary, t_SR); do not add the two branches in series"
   },
@@ -494,7 +553,7 @@
     },
     {
       "id": "SR-02",
-      "finding": "REG holds 139 uJ at 11 V (124 uJ down to the 3.63 V threshold); the 6.2 ohm crowbar reaches UVLO in 15.8 us. That is an estimate covering a low-threshold part, not a fast hard shutdown and not a hardware worst case.",
+      "finding": "REG holds 139 uJ at 11 V (124 uJ down to the 3.63 V threshold); the 4.7 ohm crowbar reaches UVLO in 12.1 us. That is an estimate covering a low-threshold part, not a fast hard shutdown and not a hardware worst case.",
       "evidence": "computed from C4+C5 and references/datasheets/ucc24624.txt VREGOFF min/max",
       "status": "DESIGN_ESTIMATE"
     },
@@ -544,7 +603,7 @@
   "limits": [
     "low-energy validation board, <=10 A and <=5 V output",
     "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
-    "Q41 has no selected MPN; its Rds(on) is a placeholder, so the crowbar delay is a scenario table, not a single guaranteed number",
+    "Q41 is selected as AO3400A (datasheet in references/) but not qualified: SOA at the turn-on crossing, self-heating and the R44 pulse curve are open",
     "no vendor pulse curve for R44 and no Q41 thermal model; pulse capability and temperature rise are unverified",
     "FAULT_IN defaults to no crowbar: a lost fault source is not a shutdown",
     "a clean ERC only says the drawing agrees with itself"

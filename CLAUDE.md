@@ -855,18 +855,28 @@ BSC010N04LS6 + 故障接口**，取代"UCC27524 推假门极电容"那种只能�
 
 - **主关断是 REG 撬棒（Q41+R44 4.7 Ω），不是切 VDD、也不是门极钳位**：UCC24624 没有
   enable，只有 REG UVLO 或 standby 才会把 VG 拉低。2.3 µF×11 V=139 µJ，撬棒
-  **15.81 µs** 到 VREGOFF（3.63 V 门限、6.2 Ω 占位）；只切 VDD 要 **75.5 ms**
-  （1.1 µF 级电容 ÷ 1.5 mA 运行电流）。
+  **12.11 µs** 到 VREGOFF（3.63 V 门限、4.748 Ω = 4.7 + AO3400A 的 0.048 Ω）；
+  只切 VDD 要 **75.5 ms**（1.1 µF 级电容 ÷ 1.5 mA 运行电流）。
+- **Q41 已选 AO3400A（`references/datasheets/ao3400a.txt`），但"选中"不是"合格"**：
+  3.3 V 台架经 R40/R41 1k/10k 只给 **3.0 V** 栅压，落在数据手册 2.5 V 列（48 mΩ max）
+  与 4.5 V 列（32 mΩ）之间，所以 `RDS_SELECTED = 0.048` 取慢的那一列，不做插值。
+  `q41_selection.qualified` **恒 false**，open items 是开通过渡 SOA（仓库没有数字化 SOA 曲线）、
+  自热与 Rds 温度系数、R44 重复脉冲。BOM 行写 `AO3400A` + `mpn_source`，
+  `test_the_bom_carries_the_same_stress_the_report_computes` 锁住"3.0 V"与能量字样。
 - **撬棒的 UVLO 时间必须按 3.63 V 算，且它只是估计值**（2026-11-05 审核 P1）：`VREGOFF`
-  是 3.63/4.0/4.25 V，取 4.25 V 会凭空快 1.5 µs。现在 `crowbar()` 报三个场景
-  （0.0 Ω 理想钳位 11.98 µs / 0.1 Ω BOM 目标 12.24 µs / 1.5 Ω 占位 15.81 µs）、
-  `worst_case.is_worst_case` **恒 false** 并列出理由，另有恒流注入敏感性
+  是 3.63/4.0/4.25 V，取 4.25 V 会凭空快 1.5 µs。`crowbar()` 报四个场景
+  （0.0 Ω 理想钳位 11.98 µs / **AO3400A 0.048 Ω 12.11 µs** / 0.1 Ω BOM 目标 12.24 µs /
+  1.5 Ω 旧占位 15.81 µs），`worst_case.is_worst_case` **恒 false** 并列出理由，另有恒流注入敏感性
   **17.55 µs**（`t=RC·ln[(V0−IR)/(Vth−IR)]`，95 mA 是 REG=8 V 条件，只在 IR<Vth 成立）。
   **不要把它写"快速硬关断"**——route 里"REG 撬棒=快"已被降级为实验选项。
-- **R44/Q41 的脉冲表是筛选比，不是合格判据**：释放能量 124 µJ（11→3.63 V），R44
-  94 µJ、峰 14.8 W / 均 5.9 W；1206 单脉冲曲线与 Q41 热模型仓库里都没有，
-  `r44_pulse_rating_j`/`q41_thermal` 恒 `null`，温度写 UNVERIFIED。BOM 的
-  "Rds ≤0.1 Ω"是对 3.0 V 栅压提的（3.3 V 台架经 1k/10k 分压），Q41 **没有 MPN**。
+- **R44/Q41 的脉冲表是筛选比，不是合格判据**：释放能量 124 µJ（11→3.63 V），
+  R44 **122.7 µJ、峰 25.23 W** / 均 10.1 W（在 4.748 Ω 下，**不是** 1.5 Ω 占位的 14.8 W
+  ——Rds 变小 R44 分到的更多，审核明确不许再引旧值）；`r44_equivalent_pulse_width_s`
+  = E/P_peak = **4.87 µs**，供对厂家脉冲曲线查表。1206 单脉冲曲线与 Q41 热模型仓库里都没有，
+  `r44_pulse_rating_j`/`q41_thermal` 恒 `null`，温度写 UNVERIFIED。
+- **开通过渡只能报估计**：Ciss 630 pF / Qgd 1.8 nC / Rg 4.5 Ω 全是 typ，经 R43 100 Ω 得
+  到阈值 **43.5 ns** + Miller 穿越 **235 ns**（假定平台 2.2 V），线性斜坡上界 **3.55 µJ**；
+  `turn_on_estimate.status` 明写 ESTIMATE 且无 SOA 曲线。**这不是 SOA 签核**。
 - **故障输入默认态是"不撬棒"（fail-open）**：R41 10k 下拉，故障源断开/失电时板子
   保持不关断；`input_default()` 把这个限制写进 JSON，不许当成"默认安全"。
   状态输出是开漏 + R42 100k 下拉，高电平是分压的**下拉端**（3.3 V×100k/110k=**3.0 V**），
@@ -1101,12 +1111,13 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 - **系统级 `t_stop` 由 SR 支路决定，不是比较器**：`system_delay()` 按路线 P1-b 的式子
   `t_stop = t_CT/整流/滤波 + t_cmp + t_common_logic + max(t_primary, t_SR)` 组装。
   SR 支路从单对 SR 板的 `delay_budget` **读出**（不重推，防止两份文档漂移）：撬棒 50 ns +
-  REG→UVLO **15.81 µs**（3.63 V 门限）+ VG 拉低 16 ns = **15.88 µs**；那块板自己的 **10 µs 输入 RC 不计入**
+  REG→UVLO **12.107 µs**（3.63 V 门限、AO3400A 0.048 Ω）+ VG 拉低 16 ns = **12.173 µs**；
+  那块板自己的 **10 µs 输入 RC 不计入**
   （它是验证板前端，不是主板的故障通路，`sr_branch_terms.excluded_input_rc_*` 显式记着）。
-  原边参考支路 1.29 µs ⇒ 慢支路是 SR。整机地板 **16.9 µs**，对原滤波通路 142.5 µs 是
-  **≈8.5×**，而模块自身的 **121×** 只是**检测段**比较。D0 的 CD4013 锁存与门控**没建模**，
+  原边参考支路 1.29 µs ⇒ 慢支路是 SR。整机地板 **13.2 µs**，对原滤波通路 **141.1 µs** 是
+  **≈10.7×**，而模块自身的 **121×** 只是**检测段**比较。D0 的 CD4013 锁存与门控**没建模**，
   `common_logic_s` 恒 `null`，所以这两个总数都是**地板不是最坏值**——不得引用成最坏关断时间。
-  `test_the_system_stop_is_not_the_module_delay` 锁住 8.5× 必须远小于 121×（<1/5），
+  `test_the_system_stop_is_not_the_module_delay` 锁住 10.7× 必须远小于 121×（<1/5），
   `test_the_shutdown_branch_comes_from_the_sr_board_report` 锁住 SR 板 `max_branch_s` 与
   这里之差**恰好**是那条被排除的 RC。
 
@@ -1115,6 +1126,14 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   `test_shutdown_is_pulled_low_because_high_disables_the_comparator` 锁死。
 - **推挽输出不能直接并到 `FAST_TRIP`**：D0 那条网是 U3B 漏极开路 + R15 10k 上拉，本模块
   用 R5→Q1(2N7002)→漏极开路才合法。`U1.5` 不在 `FAST_TRIP` 网络里，测试锁死。
+- **D1/D2 写的是 `BAT54W-E3-08`（Vishay，SOD-123），不是短名 "BAT54"**：同一个短名在
+  Nexperia 是 SOT-23（`BAT54W` 那边反而是 SOT323），在 Vishay 是 SOD-123
+  （Doc 86408 订货表），所以短名既不能下单也不能当封装依据。`d12_selection.land`
+  拿仓库里的 `Diode_SMD:D_SOD-123` 与 Vishay 推荐焊盘逐项比：焊盘 0.9×1.2 对 0.85×0.85、
+  中心距 3.30 对 3.35 mm（差 0.05 mm），verdict
+  `COMPATIBLE_WITHIN_0P1_MM_NOT_THE_VENDOR_LAND`——**兼容但不是厂家 land**，首件要实测；
+  `qualified` 恒 false，open items 里有反向馈电通路（D2 把 INP 抬回 V5 的工况没建模，
+  只列台架计划）。
 - **最坏值用 12 ns，不用 4.5 ns**：12 ns 是 5 mV 过驱、−40…+125 °C 的 max。典型值只配当注释。
 - **门限 75.0 A 标称 / 76.6 A 跳闸 / 73.4 A 释放**（2.5 V × 3 / 0.1 V/A）。它**刻意高于**
   冻结短路 deck 的 73.68 A——那一档留给 UCC25600 自己的 1 V/24 A、2 V/48 A 两级；

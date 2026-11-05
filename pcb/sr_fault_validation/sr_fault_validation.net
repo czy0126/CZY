@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\sr_fault_validation\\sr_fault_validation.kicad_sch")
-		(date "2026-11-05T10:24:59")
+		(date "2026-11-05T22:13:21")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -1500,9 +1500,9 @@
 		)
 		(comp
 			(ref "Q41")
-			(value "NMOS 30V IDM>=3A")
+			(value "AO3400A")
 			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event")
+			(description "REG crowbar; 3.0 V gate from a 3.3 V harness, Rds(on) <= 0.048 ohm at 2.5 V VGS (max, 25 C); absorbs 0.001 mJ per event; selected, not qualified (see report q41_selection)")
 			(fields
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
@@ -1510,7 +1510,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event")
+					(name "Description") "REG crowbar; 3.0 V gate from a 3.3 V harness, Rds(on) <= 0.048 ohm at 2.5 V VGS (max, 25 C); absorbs 0.001 mJ per event; selected, not qualified (see report q41_selection)")
 			)
 			(libsource
 				(lib "Transistor_FET")
@@ -2153,7 +2153,7 @@
 			(ref "R44")
 			(value "4.7R 0.5W")
 			(footprint "Resistor_SMD:R_1206_3216Metric")
-			(description "sets the discharge tau with Q41; 0.094 mJ / 14.8 W peak per event at the 1.5 ohm placeholder, single-pulse rating UNVERIFIED")
+			(description "sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), single-pulse rating UNVERIFIED")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
@@ -2161,7 +2161,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "sets the discharge tau with Q41; 0.094 mJ / 14.8 W peak per event at the 1.5 ohm placeholder, single-pulse rating UNVERIFIED")
+					(name "Description") "sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), single-pulse rating UNVERIFIED")
 			)
 			(libsource
 				(lib "Device")

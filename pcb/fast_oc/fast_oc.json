@@ -184,19 +184,19 @@
     "detection_module_s": 1.062e-06,
     "common_logic_s": null,
     "common_logic_note": "the D0 CD4013 latch and its gating are not modelled here, so every total below is a floor, not a worst case",
-    "sr_branch_s": 1.5875879025678174e-05,
+    "sr_branch_s": 1.2173389324825803e-05,
     "sr_branch_terms": {
       "crowbar_fet_turn_on_s": 5e-08,
-      "reg_to_uvlo_s": 1.5809529025678174e-05,
+      "reg_to_uvlo_s": 1.2107039324825803e-05,
       "vg_active_low_s": 1.635e-08,
       "excluded_input_rc_s": 1e-05,
       "excluded_input_rc_reason": "the 10 us RC is the validation board's front end, not the main board's fault path"
     },
     "primary_branch_s": 1.2899999999999997e-06,
     "slowest_branch": "sr",
-    "system_floor_s": 1.6937879025678175e-05,
-    "existing_system_floor_s": 0.00014476411431979582,
-    "system_improvement_factor": 8.546767520321193,
+    "system_floor_s": 1.3235389324825802e-05,
+    "existing_system_floor_s": 0.00014106162461894345,
+    "system_improvement_factor": 10.65791274869053,
     "note": "the 121x module figure is a detection-only comparison; against the whole machine the comparator change is worth the ratio below, because the REG crowbar sets the stop time"
   },
   "supply": {
@@ -207,6 +207,59 @@
     "quiescent_current_max_a": 0.005,
     "loss_of_5v": "without backfeed Q1 releases and D0 R100 pulls FAST_EXT_N low (fault when armed); OCD/D2 backfeed and whole-domain UVLO remain unverified on hardware",
     "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum operating current is not in this repository"
+  },
+  "d12_selection": {
+    "refs": [
+      "D1",
+      "D2"
+    ],
+    "mpn": "BAT54W-E3-08",
+    "mpn_source": "references/datasheets/bat54w.txt",
+    "package": "SOD-123",
+    "footprint": "Diode_SMD:D_SOD-123",
+    "pins": {
+      "1": "K",
+      "2": "A"
+    },
+    "datasheet": {
+      "vrr_v": 30.0,
+      "if_ma": 200.0,
+      "ifrm_ma": 300.0,
+      "ifsm_a": 0.6,
+      "ptot_mw": 230.0
+    },
+    "land": {
+      "vendored_pad_mm": [
+        0.9,
+        1.2
+      ],
+      "vendored_centre_spacing_mm": 3.3,
+      "vendored_gap_mm": 2.4,
+      "vendor_pad_mm": [
+        0.85,
+        0.85
+      ],
+      "vendor_gap_mm": 2.5,
+      "vendor_centre_spacing_mm": 3.35,
+      "centre_spacing_delta_mm": -0.050000000000000266,
+      "pad_delta_mm": [
+        0.050000000000000044,
+        0.35
+      ],
+      "verdict": "COMPATIBLE_WITHIN_0P1_MM_NOT_THE_VENDOR_LAND",
+      "first_article_check": "measure the solder joint on the first built board; the pad is 0.35 mm taller and 0.05 mm wider than the recommendation"
+    },
+    "worst_case_current": {
+      "path": "D2 from V5 into IN+ if the module loses V5 while OCD is live",
+      "ifsm_rating_a": 0.6,
+      "note": "surge, not continuous; the continuous path is bounded by the divider, so the diode current is not the stress — the backfeed into V5 is (see the bench plan)"
+    },
+    "qualified": false,
+    "open_items": [
+      "the SOD-123 vendor land is not the footprint in use; the difference is inside 0.1 mm on centres but the pads are larger",
+      "D2's backfeed path from OCD into a dead V5 rail is not characterised",
+      "no temperature derating is applied to the 230 mW total dissipation"
+    ]
   },
   "d0_connection": [
     "J1.1 V5 -> D0 V5 (bench 5 V rail)",
@@ -235,7 +288,7 @@
     },
     {
       "id": "OC-03b",
-      "finding": "That 121x is detection only. With the SR board's shutdown branch added, the whole-machine stop goes from ~144.8 us to ~16.9 us -- 8.5x -- because the sr branch sets it. D0's latch is not modelled, so both are floors.",
+      "finding": "That 121x is detection only. With the SR board's shutdown branch added, the whole-machine stop goes from ~141.1 us to ~13.2 us -- 10.7x -- because the sr branch sets it. D0's latch is not modelled, so both are floors.",
       "evidence": "pcb/sr_fault_validation/sr_fault_validation.json:delay_budget",
       "status": "DESIGN_ESTIMATE"
     },

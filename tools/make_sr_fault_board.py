@@ -133,7 +133,7 @@ RG_INT = 1.0               # ohm, internal gate resistance
 R_GATE = 2.2               # ohm, same as the main board's external gate resistor
 R_GS = 10e3                # ohm, gate-source pulldown
 R_CROWBAR = 4.7            # ohm, series resistor in the REG crowbar
-RDS_BOM_TARGET = 0.1       # ohm, what the Q41 BOM line asks for (no MPN yet)
+RDS_BOM_TARGET = 0.1       # ohm, the ceiling the Q41 BOM line quotes; selection beats it
 C_REG_BYPASS = 2.2e-6      # F, C4
 C_REG_HF = 100e-9          # F, C5
 C1_F = 10e-6               # C1
@@ -142,7 +142,22 @@ C3_F = 100e-9              # C3
 C_VDD_TOTAL = C1_F + C2_F + C3_F
 VDD_NOM = 15.0             # V, bench bias
 RDS_ON_CROWBAR = 1.5       # ohm, placeholder for a 2N7002-class NMOS
+RDS_SELECTED = 0.048       # ohm, AO3400A max at VGS=2.5 V / 25 C, datasheet p.2
+R_CROWBAR_GATE = 100.0     # ohm, R43 between FAULT_G and the Q41 gate
 RDS_CLAMP_TABLE = (0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 1.5)
+
+# AO3400A (AOS, Rev 3.1) -- the part now named on the Q41 line.  Its datasheet
+# is in references/, so the MPN is traceable; the numbers below are transcribed
+# from it, not measured on this board.
+Q41_MPN = "AO3400A"
+Q41_MPN_SOURCE = "references/datasheets/ao3400a.txt"
+Q41_RDS_MAX = {10.0: 0.0265, 4.5: 0.032, 2.5: 0.048}   # ohm, datasheet table
+Q41_VGS_TH_MAX = 1.45      # V
+Q41_ID_A = 5.7             # A, 25 C
+Q41_IDM_A = 30.0           # A, pulsed
+Q41_CISS_TYP = 630e-12     # F
+Q41_QGD_TYP = 1.8e-9       # C
+Q41_RG_MAX = 4.5           # ohm, internal gate resistance
 R_FAULT_PULLDOWN = 10e3    # ohm, R41 from the fault gate to PGND
 FAULT_RC_R = R_FAULT_PULLDOWN
 FAULT_RC_C = 1e-9          # F, input filter (C40)
@@ -501,15 +516,19 @@ def fault_parts() -> list[Part]:
              "status default low; the external pull-up sees this 100k to PGND"),
         Part("R43", "Device:R", "100R", "Resistor_SMD:R_0603_1608Metric",
              58, 292, {"1": "FAULT_G", "2": "RC_G"}, "1/10 W", "crowbar gate resistor"),
-        Part("Q41", "Transistor_FET:Q_NMOS_GSD", "NMOS 30V IDM>=3A",
+        Part("Q41", "Transistor_FET:Q_NMOS_GSD", Q41_MPN,
              "Package_TO_SOT_SMD:SOT-23", 74, 292, {"1": "RC_G", "2": "PGND", "3": "REG_CROW"},
-             "30 V, IDM >= 3 A", f"REG crowbar; MPN TO SELECT, Rds(on) <= {RDS_BOM_TARGET:g} ohm "
-             f"at 3.0 V VGS; absorbs {crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event"),
+             "30 V, 5.7 A, IDM 30 A",
+             f"REG crowbar; 3.0 V gate from a 3.3 V harness, Rds(on) <= "
+             f"{Q41_RDS_MAX[2.5]:.3f} ohm at 2.5 V VGS (max, 25 C); absorbs "
+             f"{crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event; selected, not "
+             f"qualified (see report q41_selection)", mpn=Q41_MPN, mpn_source=Q41_MPN_SOURCE),
         Part("R44", "Device:R", "4.7R 0.5W", "Resistor_SMD:R_1206_3216Metric",
              92, 292, {"1": "REG", "2": "REG_CROW"}, "0.5 W pulse",
              f"sets the discharge tau with Q41; {crowbar_pulse()['r44_energy_j'] * 1e3:.3f} mJ / "
-             f"{crowbar_pulse()['r44_peak_power_w']:.1f} W peak per event at the "
-             f"{RDS_ON_CROWBAR:g} ohm placeholder, single-pulse rating UNVERIFIED"),
+             f"{crowbar_pulse()['r44_peak_power_w']:.1f} W peak per event "
+             f"({crowbar_pulse()['r44_equivalent_pulse_width_s'] * 1e6:.1f} us equivalent), "
+             f"single-pulse rating UNVERIFIED"),
         Part("R45", "Device:R", "100R", "Resistor_SMD:R_0603_1608Metric",
              58, 312, {"1": "FAULT_G", "2": "VC1_G"}, "1/10 W", "VG1 clamp gate resistor"),
         Part("Q42", "Transistor_FET:Q_NMOS_GSD", "NMOS clamp DNP",
@@ -771,7 +790,7 @@ def crowbar() -> dict:
     has to cover.  None of these is a hardware worst case -- see ``worst_case``.
     """
     c = C_REG_BYPASS + C_REG_HF
-    r = R_CROWBAR + RDS_ON_CROWBAR
+    r = R_CROWBAR + RDS_SELECTED
     energy = 0.5 * c * VREG_TYP ** 2
     released = 0.5 * c * (VREG_TYP ** 2 - VREGOFF_MIN ** 2)
     tau = r * c
@@ -786,6 +805,7 @@ def crowbar() -> dict:
         }
         for label, rds in (
             ("R44 only, ideal clamp", 0.0),
+            (f"Q41 {Q41_MPN} at 2.5 V VGS (selected, 25 C max)", RDS_SELECTED),
             ("Q41 at the BOM target", RDS_BOM_TARGET),
             ("Q41 placeholder (2N7002 class)", RDS_ON_CROWBAR),
         )
@@ -809,7 +829,7 @@ def crowbar() -> dict:
         },
         "scenarios": scenarios,
         "resistor_share_j": released * R_CROWBAR / r,
-        "fet_share_j": released * RDS_ON_CROWBAR / r,
+        "fet_share_j": released * RDS_SELECTED / r,
         "fet_peak_a": VREG_TYP / r,
         "worst_case": {
             "is_worst_case": False,
@@ -818,13 +838,17 @@ def crowbar() -> dict:
                 "crowbar pulls it down; the constant-current column is a "
                 "sensitivity, not a guaranteed bound",
                 "no component tolerance band is applied to R44 or the REG capacitors",
-                "Q41 has no selected MPN, so its Rds(on) at the actual gate voltage "
-                "is a placeholder",
+                f"Q41 is the selected {Q41_MPN}, but selection is not qualification: "
+                "its Rds(on) is the datasheet max at 2.5 V VGS and 25 C, with no "
+                "SOA curve at the turn-on crossing and no self-heating",
+                "the discharge model starts with Q41 already on; the gate slewing "
+                "through R43 delays the 11 V connection, so the quoted time is a floor",
                 "turn-on propagation of Q41 and the UVLO-to-VG transient are not modelled",
             ],
         },
-        "note": "Rds(on) is a placeholder for a 2N7002-class part; the BOM asks "
-                "for <=0.1 ohm and IDM>=3 A at an unspecified gate voltage",
+        "note": f"headline uses the selected {Q41_MPN} at its 2.5 V VGS maximum; "
+                "the 1.5 ohm row is the old 2N7002-class placeholder and must not be "
+                "quoted as the design number",
     }
 
 
@@ -842,19 +866,23 @@ def crowbar_pulse() -> dict:
     duration = c["time_to_uvlo_s"]
     peak_current = VREG_TYP / c["r_total_ohm"]
     r44_energy = released * R_CROWBAR / c["r_total_ohm"]
-    fet_energy = released * RDS_ON_CROWBAR / c["r_total_ohm"]
+    fet_energy = released * RDS_SELECTED / c["r_total_ohm"]
+    r44_peak = peak_current ** 2 * R_CROWBAR
     return {
         "duration_s": duration,
         "r44_energy_j": r44_energy,
         "fet_energy_j": fet_energy,
-        "r44_peak_power_w": peak_current ** 2 * R_CROWBAR,
+        "r44_peak_power_w": r44_peak,
         "r44_mean_power_w": r44_energy / duration,
-        "fet_peak_power_w": peak_current ** 2 * RDS_ON_CROWBAR,
+        "r44_equivalent_pulse_width_s": r44_energy / r44_peak,
+        "fet_peak_power_w": peak_current ** 2 * RDS_SELECTED,
         "fet_mean_power_w": fet_energy / duration,
         "repetition": {
             "1_per_s_w": r44_energy * 1,
             "10_per_s_w": r44_energy * 10,
             "100_per_s_w": r44_energy * 100,
+            "continuous_rating_w": 0.5,
+            "rate_at_continuous_rating_per_s": 0.5 / r44_energy,
             "basis": "thermal average = released energy x rate; the single-pulse "
                      "surge, not this average, is the binding limit",
         },
@@ -863,6 +891,74 @@ def crowbar_pulse() -> dict:
         "temperature_note": "no vendor pulse curve for the 1206 and no Q41 thermal "
                             "model in this repository: single-pulse capability and "
                             "temperature rise are UNVERIFIED, not assumed",
+    }
+
+
+def q41_selection() -> dict:
+    """Why AO3400A, at which gate voltage its Rds(on) is taken, and what is left.
+
+    The review (2026-11-05) accepted AO3400A as a candidate and asked for the
+    actual gate voltage, the turn-on crossing and the pins.  Those three are
+    answered here; selection is not qualification, so ``qualified`` stays false
+    and the open items are listed rather than closed.
+    """
+    vg = 3.3 * R_FAULT_PULLDOWN / (R_FAULT_SERIES + R_FAULT_PULLDOWN)   # 3.0 V
+    rds_used = Q41_RDS_MAX[2.5]
+    assert 2.5 <= vg < 4.5, "the 3.3 V harness has to land between two datasheet columns"
+    tau_g = (R_CROWBAR_GATE + Q41_RG_MAX) * Q41_CISS_TYP
+    t_th = tau_g * math.log(vg / (vg - Q41_VGS_TH_MAX))
+    # Miller crossing: the gate drive has to move Qgd while the drain falls.
+    # The plateau is taken at Vth + 0.75 V (i.e. barely above threshold); a
+    # higher plateau lowers the drive current and lengthens the crossing.
+    plateau = Q41_VGS_TH_MAX + 0.75
+    i_drive = (vg - plateau) / (R_CROWBAR_GATE + Q41_RG_MAX)
+    t_miller = Q41_QGD_TYP / i_drive
+    peak_a = VREG_TYP / (R_CROWBAR + RDS_SELECTED)
+    return {
+        "ref": "Q41",
+        "mpn": Q41_MPN,
+        "mpn_source": Q41_MPN_SOURCE,
+        "package": "SOT-23",
+        "footprint": "Package_TO_SOT_SMD:SOT-23",
+        "pins": {"1": "G", "2": "S", "3": "D"},
+        "symbol_pin_map": "Q_NMOS_GSD: 1=G, 2=S, 3=D -- same numbering as SOT-23",
+        "abs_max_vds_v": 30.0,
+        "abs_max_vgs_v": 12.0,
+        "id_a_25c": Q41_ID_A,
+        "idm_a": Q41_IDM_A,
+        "vgs_th_max_v": Q41_VGS_TH_MAX,
+        "rds_max_ohm_by_vgs": {f"{k:g}": v for k, v in sorted(Q41_RDS_MAX.items())},
+        "gate_level_v_at_3v3_harness": vg,
+        "rds_used_ohm": rds_used,
+        "rds_basis": f"{vg:.1f} V sits between the 2.5 and 4.5 V datasheet columns; "
+                      "the 2.5 V maximum is used because interpolation is not a "
+                      "guarantee and the 4.5 V column does not apply",
+        "turn_on_estimate": {
+            "gate_rc_s": tau_g,
+            "time_to_threshold_s": t_th,
+            "miller_crossing_s": t_miller,
+            "assumed_plateau_v": plateau,
+            "peak_switch_power_w": VREG_TYP * peak_a,
+            "linear_ramp_energy_upper_bound_j":
+                0.5 * VREG_TYP * peak_a * (t_th + t_miller),
+            "status": "ESTIMATE from datasheet typ Ciss/Qgd and an assumed Miller "
+                      "plateau; no SOA curve at this crossing is digitised in the "
+                      "repository, so turn-on stress is UNVERIFIED",
+        },
+        "stress_check": {
+            "peak_current_a": peak_a,
+            "idm_margin": Q41_IDM_A / peak_a,
+            "fet_peak_power_w": peak_a ** 2 * RDS_SELECTED,
+            "fet_energy_j": crowbar()["fet_share_j"],
+        },
+        "open_items": [
+            "SOA at the 11 V turn-on crossing is not checked against a vendor curve",
+            "self-heating and the Rds(on) temperature coefficient are not modelled",
+            "repeated-pulse capability of R44 is not checked (no vendor curve)",
+            "the 3.3 V harness gives a 3.0 V gate; a 5 V harness would allow the "
+            "4.5 V column, but that column is not used here",
+        ],
+        "qualified": False,
     }
 
 
@@ -895,9 +991,9 @@ def input_default() -> dict:
             "fault_g_v_at_5v0": 5.0 * R_FAULT_PULLDOWN / (R_FAULT_SERIES + R_FAULT_PULLDOWN),
             "series_ohm": R_FAULT_SERIES,
             "note": "D40 clamps at 5.1 V and does not conduct at either harness level",
-            "rds_claim": "Q41 must be specified for Rds(on) <= 0.1 ohm at the 3.0 V "
-                         "gate the 3.3 V harness produces (or the harness must drive "
-                         "5 V); a 2N7002-class part at 3.0 V does not meet it",
+            "rds_claim": f"{Q41_MPN} meets {RDS_BOM_TARGET:g} ohm at the 3.0 V gate the "
+                         "3.3 V harness produces (datasheet max 0.048 ohm at 2.5 V); "
+                         "a 2N7002-class part at 3.0 V does not",
         },
     }
 
@@ -1051,7 +1147,9 @@ def delay_budget() -> dict:
             "input_rc_s": FAULT_RC_S,
             "crowbar_fet_turn_on_s": 50e-9,
             "reg_to_uvlo_s": c["time_to_uvlo_s"],
-            "reg_to_uvlo_basis": "3.63 V turn-off threshold, 1.5 ohm Q41 placeholder",
+            "reg_to_uvlo_basis": f"3.63 V turn-off threshold (slowest of "
+                                 f"3.63/4.0/4.25 V), {Q41_MPN} Rds(on) "
+                                 f"{RDS_SELECTED} ohm at 2.5 V VGS",
             "reg_to_uvlo_with_reg_current_limit_s":
                 c["time_to_uvlo_with_reg_current_limit_s"],
             "vg_active_low_s": gd["active_sink_time_s"],
@@ -1074,7 +1172,8 @@ def delay_budget() -> dict:
             "reg_to_uvlo_s is an RC estimate at the 3.63 V threshold; the "
             "regulator keeps sourcing, and the current-limit column is a sensitivity",
             "component tolerances on R44 and the REG capacitors are not applied",
-            "Q41 turn-on and its gate threshold are not measured (no MPN)",
+            "Q41 turn-on and its gate threshold are estimates from typical "
+            "datasheet values; there is no digitised SOA curve in the repository",
         ],
         "rule": "t_stop = t_common + max(t_primary, t_SR); do not add the two "
                 "branches in series",
@@ -1178,6 +1277,7 @@ def report(ps: list[Part]) -> dict:
         "states": states(),
         "crowbar": crowbar(),
         "crowbar_pulse": crowbar_pulse(),
+        "q41_selection": q41_selection(),
         "input_default": input_default(),
         "vdd_cut": vdd_cut(),
         "vg_clamp_table": vg_clamp_table(),
@@ -1187,8 +1287,8 @@ def report(ps: list[Part]) -> dict:
         "limits": [
             "low-energy validation board, <=10 A and <=5 V output",
             "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
-            "Q41 has no selected MPN; its Rds(on) is a placeholder, so the crowbar "
-            "delay is a scenario table, not a single guaranteed number",
+            f"Q41 is selected as {Q41_MPN} (datasheet in references/) but not qualified: "
+            "SOA at the turn-on crossing, self-heating and the R44 pulse curve are open",
             "no vendor pulse curve for R44 and no Q41 thermal model; pulse "
             "capability and temperature rise are unverified",
             "FAULT_IN defaults to no crowbar: a lost fault source is not a shutdown",

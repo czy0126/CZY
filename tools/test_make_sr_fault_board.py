@@ -116,7 +116,7 @@ def test_the_fault_input_has_a_default_low_and_a_clamp(parts):
 # ---------------------------------------------------------------- arithmetic
 def test_crowbar_numbers_match_the_closed_form(report):
     c = board.C_REG_BYPASS + board.C_REG_HF
-    r = board.R_CROWBAR + board.RDS_ON_CROWBAR
+    r = board.R_CROWBAR + board.RDS_SELECTED
     assert report["crowbar"]["c_reg_f"] == pytest.approx(c)
     assert report["crowbar"]["stored_energy_j"] == pytest.approx(0.5 * c * board.VREG_TYP ** 2)
     assert report["crowbar"]["tau_s"] == pytest.approx(r * c)
@@ -130,7 +130,7 @@ def test_the_uvlo_time_is_the_late_turn_off_threshold(report):
     this test keeps the number on the slow side.
     """
     c = board.C_REG_BYPASS + board.C_REG_HF
-    r = board.R_CROWBAR + board.RDS_ON_CROWBAR
+    r = board.R_CROWBAR + board.RDS_SELECTED
     assert report["crowbar"]["time_to_uvlo_s"] == pytest.approx(
         r * c * math.log(board.VREG_TYP / board.VREGOFF_MIN))
     assert report["crowbar"]["time_to_uvlo_at_max_threshold_s"] == pytest.approx(
@@ -163,7 +163,7 @@ def test_the_reg_current_limit_lengthens_the_discharge(report):
     figure is a 8 V condition, so this is a sensitivity, not a guarantee.
     """
     c = board.C_REG_BYPASS + board.C_REG_HF
-    r = board.R_CROWBAR + board.RDS_ON_CROWBAR
+    r = board.R_CROWBAR + board.RDS_SELECTED
     ir = board.IREGLIM_MAX_A * r
     expected = r * c * math.log((board.VREG_TYP - ir) / (board.VREGOFF_MIN - ir))
     assert report["crowbar"]["time_to_uvlo_with_reg_current_limit_s"] == pytest.approx(expected)
@@ -177,9 +177,50 @@ def test_the_crowbar_scenarios_name_both_the_placeholder_and_the_bom_target(repo
     assert rds == sorted(rds)
     assert board.RDS_ON_CROWBAR in rds
     assert board.RDS_BOM_TARGET in rds
+    assert board.RDS_SELECTED in rds
     assert 0.0 in rds, "the R44-only ideal clamp is the review's 11.98 us figure"
     times = [row["time_to_uvlo_s"] for row in rows]
     assert all(a < b for a, b in zip(times, times[1:])), times
+
+
+def test_the_headline_is_the_selected_part_not_the_old_placeholder(report):
+    """The review's wording: do not keep quoting the 1.5 ohm placeholder.
+
+    The placeholder row is slower (14.8 W R44 peak at 1.5 ohm becomes 25.2 W at
+    0.048 ohm), so leaving it as the headline would understate the stress the
+    selected part actually produces.
+    """
+    crow = report["crowbar"]
+    assert crow["r_total_ohm"] == pytest.approx(board.R_CROWBAR + board.RDS_SELECTED)
+    old = next(r for r in crow["scenarios"] if r["rds_on_ohm"] == board.RDS_ON_CROWBAR)
+    assert crow["time_to_uvlo_s"] < old["time_to_uvlo_s"]
+    assert "placeholder" in crow["note"]
+    pulse = report["crowbar_pulse"]
+    assert pulse["r44_peak_power_w"] > (board.VREG_TYP / (board.R_CROWBAR + 1.5)) ** 2 * board.R_CROWBAR
+
+
+def test_the_selected_q41_records_the_gate_it_was_taken_at(report):
+    """3.3 V harness x 10k/11k = 3.0 V, which is not a datasheet column."""
+    sel = report["q41_selection"]
+    assert sel["mpn"] == "AO3400A"
+    assert (board.ROOT / sel["mpn_source"]).is_file()
+    assert sel["gate_level_v_at_3v3_harness"] == pytest.approx(3.0, abs=0.01)
+    assert sel["rds_used_ohm"] == pytest.approx(0.048)
+    assert sel["rds_used_ohm"] == board.RDS_SELECTED, "the report and the arithmetic must agree"
+    assert sel["qualified"] is False, "selected is not qualified"
+    assert sel["open_items"], "an unqualified part without open items is a claim"
+    assert sel["pins"] == {"1": "G", "2": "S", "3": "D"}
+    assert sel["abs_max_vds_v"] >= board.VREG_TYP
+    assert sel["idm_a"] > sel["stress_check"]["peak_current_a"]
+
+
+def test_the_turn_on_crossing_is_labelled_an_estimate(report):
+    """The review asked for turn-on SOA; the repository has no SOA curve."""
+    t = report["q41_selection"]["turn_on_estimate"]
+    assert t["time_to_threshold_s"] > 0
+    assert t["miller_crossing_s"] > 0
+    assert "ESTIMATE" in t["status"].upper()
+    assert "unverified" in t["status"].lower()
 
 
 def test_the_pulse_table_splits_the_energy_between_r44_and_q41(report):
@@ -193,6 +234,10 @@ def test_the_pulse_table_splits_the_energy_between_r44_and_q41(report):
         pulse["r44_energy_j"] / crow["time_to_uvlo_s"])
     assert pulse["repetition"]["1_per_s_w"] == pytest.approx(pulse["r44_energy_j"] * 1)
     assert pulse["repetition"]["10_per_s_w"] == pytest.approx(pulse["r44_energy_j"] * 10)
+    # The vendor pulse curve is looked up against a pulse width, so the energy
+    # has to be convertible into one: W = E/P_peak for a rectangular pulse.
+    assert pulse["r44_equivalent_pulse_width_s"] == pytest.approx(
+        pulse["r44_energy_j"] / pulse["r44_peak_power_w"])
 
 
 def test_the_pulse_rating_and_temperature_are_reported_as_unverified(report):
@@ -228,6 +273,8 @@ def test_the_two_silicon_parts_have_their_orderable_code(parts):
     assert by_ref(parts, "U1").mpn == "UCC24624DR"          # TI ordering table
     assert by_ref(parts, "Q1").mpn == "BSC010N04LS6"        # Infineon ordering code
     assert by_ref(parts, "Q2").mpn == "BSC010N04LS6"
+    assert by_ref(parts, "Q41").mpn == "AO3400A"            # AOS datasheet, Rev 3.1
+    assert by_ref(parts, "Q41").mpn_source == "references/datasheets/ao3400a.txt"
     assert by_ref(parts, "C4").mpn_source == "TO_SELECT"
 
 
@@ -245,6 +292,7 @@ def test_the_bom_file_says_the_same_thing_as_the_part_table(parts):
     assert by["U1"]["MPN"] == "UCC24624DR"
     assert by["U1"]["MPN_Source"].startswith("references/datasheets/")
     assert by["Q1"]["MPN"] == "BSC010N04LS6"
+    assert by["Q41"]["MPN"] == "AO3400A" and by["Q41"]["MPN_Source"].endswith("ao3400a.txt")
     assert by["C4"]["MPN"] == "" and by["C4"]["MPN_Source"] == "TO_SELECT"
 
 
@@ -346,9 +394,10 @@ def test_the_state_list_covers_the_roadmap_cases(report):
 def test_the_delay_budget_takes_the_slowest_branch_not_the_sum(report):
     """The roadmap's rule: t_stop = t_common + max(t_primary, t_SR).
 
-    On this board the SR branch is the slow one, because REG UVLO (~16 us at
-    the 3.63 V threshold) dominates the 4 A gate sink (~16 ns).  A test that assumed the primary
-    branch was slower would hide the very trade-off the board exists to show.
+    On this board the SR branch is the slow one, because REG UVLO (~12 us at
+    the 3.63 V threshold with the selected part) dominates the ~16 ns gate
+    sink.  A test that assumed the primary branch was slower would hide the
+    very trade-off the board exists to show.
     """
     budget = report["delay_budget"]
     assert "max(" in budget["rule"] and "not add" in budget["rule"]
@@ -358,6 +407,14 @@ def test_the_delay_budget_takes_the_slowest_branch_not_the_sum(report):
     assert budget["slowest_branch"] == "sr"
     # The SR branch is dominated by REG UVLO, not by the gate sink.
     assert budget["sr_branch"]["reg_to_uvlo_s"] > 10 * budget["sr_branch"]["vg_active_low_s"]
+    # The basis line must name the part the headline actually uses: a budget
+    # that still says "placeholder" while the crowbar() table quotes a
+    # selected Rds(on) is two numbers wearing one label.
+    basis = budget["sr_branch"]["reg_to_uvlo_basis"]
+    assert board.Q41_MPN in basis
+    assert f"{board.RDS_SELECTED}" in basis
+    assert "placeholder" not in basis
+    assert not any("no MPN" in r for r in budget["not_worst_case_reasons"])
     # And the serial sum would be measurably wrong, which is why the rule exists.
     assert budget["max_branch_s"] < sr + primary
 
