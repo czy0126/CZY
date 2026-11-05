@@ -7,7 +7,7 @@
   "physical_parts": 26,
   "nets": 9,
   "net_map": {
-    "FAST_TRIP": [
+    "FAST_EXT_N": [
       "J1.4",
       "Q1.3",
       "R7.2",
@@ -205,14 +205,14 @@
     "shutdown_enable_threshold_v": 3.3,
     "shutdown_logic": "SHDN low enables; within 0.9 V of V+ disables",
     "quiescent_current_max_a": 0.005,
-    "loss_of_5v": "reference and comparator dead; R6 holds Q1 off, so FAST_TRIP is released -- no false trip, but no fast protection either",
+    "loss_of_5v": "without backfeed Q1 releases and D0 R100 pulls FAST_EXT_N low (fault when armed); OCD/D2 backfeed and whole-domain UVLO remain unverified on hardware",
     "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum operating current is not in this repository"
   },
   "d0_connection": [
     "J1.1 V5 -> D0 V5 (bench 5 V rail)",
     "J1.2 PGND -> D0 PGND",
     "J1.3 OCD -> D0 R8/OCD node (the burden, before R9)",
-    "J1.4 FAST_TRIP -> D0 FAST_TRIP (R15/TP8); both drivers are open drain"
+    "J1.4 FAST_EXT_N -> D0 J10.4 ONLY; U11F inverts before U19 OR with legacy FAST_TRIP"
   ],
   "observations": [
     {
@@ -260,7 +260,7 @@
     {
       "id": "OC-07",
       "finding": "The module does not latch; the CD4013 on D0 does. Used standalone, the output follows the current.",
-      "evidence": "D0 FAST_TRIP net and CD4013 unit 4",
+      "evidence": "D0 J10/U11F/U19 -> FAST_COMBINED -> U6/U10 -> U12 SET",
       "status": "DESIGN_FACT"
     }
   ],

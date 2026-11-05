@@ -4,11 +4,11 @@
   "hardware_built": false,
   "fabrication_approved": false,
   "logic_verified_against": "tools/two_tier_fault_logic.py",
-  "part_instances": 227,
-  "physical_parts": 186,
-  "nets": 105,
+  "part_instances": 235,
+  "physical_parts": 190,
+  "nets": 108,
   "sourced_values": 36,
-  "design_proposals": 191,
+  "design_proposals": 199,
   "parts": [
     {
       "ref": "J1",
@@ -902,6 +902,46 @@
       "ref": "U11",
       "unit": 7,
       "value": "CD4069UBE",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "U19",
+      "unit": 1,
+      "value": "CD4071BE",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "U19",
+      "unit": 2,
+      "value": "CD4071BE",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "U19",
+      "unit": 3,
+      "value": "CD4071BE",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "U19",
+      "unit": 4,
+      "value": "CD4071BE",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "U19",
+      "unit": 5,
+      "value": "CD4071BE",
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
@@ -1825,6 +1865,30 @@
       "dnp": false,
       "provenance": "DESIGN_PROPOSAL",
       "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "J10",
+      "unit": 1,
+      "value": "FAST_OC_MODULE",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "R100",
+      "unit": 1,
+      "value": "100k",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
+    },
+    {
+      "ref": "C100",
+      "unit": 1,
+      "value": "100nF/50V",
+      "dnp": false,
+      "provenance": "DESIGN_PROPOSAL",
+      "source": "DESIGN_PROPOSAL"
     }
   ],
   "net_map": {
@@ -1899,11 +1963,24 @@
       "R28.1",
       "U6.13"
     ],
+    "FAST_COMBINED": [
+      "U19.3",
+      "U6.12"
+    ],
+    "FAST_EXT_H": [
+      "U11.12",
+      "U19.2"
+    ],
+    "FAST_EXT_N": [
+      "J10.4",
+      "R100.1",
+      "U11.13"
+    ],
     "FAST_TRIP": [
       "R15.2",
       "TP8.1",
-      "U3.7",
-      "U6.12"
+      "U19.1",
+      "U3.7"
     ],
     "FAULT_A": [
       "U10.3",
@@ -2113,6 +2190,7 @@
     "OCD": [
       "D5.1",
       "D6.1",
+      "J10.3",
       "R8.1",
       "R9.1"
     ],
@@ -2184,6 +2262,7 @@
       "#FLG3.1",
       "C1.2",
       "C10.2",
+      "C100.2",
       "C13.2",
       "C14.2",
       "C15.2",
@@ -2224,9 +2303,11 @@
       "D3.2",
       "D4.2",
       "J1.2",
+      "J10.2",
       "J2.2",
       "J4.4",
       "Q1.2",
+      "R100.2",
       "R13.2",
       "R21.2",
       "R23.2",
@@ -2262,7 +2343,6 @@
       "R77.2",
       "U1.2",
       "U10.7",
-      "U11.13",
       "U11.7",
       "U12.11",
       "U12.3",
@@ -2278,6 +2358,13 @@
       "U18.11",
       "U18.5",
       "U18.9",
+      "U19.12",
+      "U19.13",
+      "U19.5",
+      "U19.6",
+      "U19.7",
+      "U19.8",
+      "U19.9",
       "U2.2",
       "U3.4",
       "U4.4",
@@ -2499,8 +2586,10 @@
       "U4.5"
     ],
     "V5": [
+      "C100.1",
       "C3.1",
       "C4.1",
+      "J10.1",
       "J5.1",
       "J6.1",
       "J7.1",
@@ -2524,6 +2613,7 @@
       "U12.14",
       "U12.5",
       "U13.14",
+      "U19.14",
       "U3.8",
       "U4.8",
       "U5.8",

@@ -6,23 +6,24 @@ D0's "fast" channel is U3B (LM393) fed from OC_FILT.  That node sits behind
 three cascaded poles:
 
     OCD --[1k/47nF, 47 us]--> OCF --[10k/24k + 10nF, 70.6 us]--> OC
-        --[10k/1nF, 10 us]--> OC_FILT --[LM393]--> FAST_TRIP
+        --[10k/1nF, 10 us]--> OC_FILT --[LM393]--> FAST_TRIP (legacy D0)
 
 so the comparator is not the problem; the ~128 us in front of it is.  Swapping
 LM393 for a 4.5 ns part changes nothing measurable.  This module taps the CT
 burden node (OCD) through a single 1 us pole, compares against a 2.5 V shunt
-reference, and pulls FAST_TRIP low through an open-drain NMOS.
+reference, and pulls FAST_EXT_N low through an open-drain NMOS.
 
 It is a separate 4-pin board so D0's tests are untouched and the module can be
-characterised on its own, then wired onto D0 at OCD / FAST_TRIP / V5 / PGND.
+characterised on its own, then wired onto D0 at OCD / FAST_EXT_N / V5 / PGND.
 
 Output polarity and wiring
 --------------------------
-FAST_TRIP on D0 is open-collector (R15 10k to V5) and feeds the CD4013 latch.
-The TLV3501 output is push-pull, so it may not be wire-OR'd directly.  Q1 makes
-it open drain: overcurrent -> OUT high -> Q1 on -> FAST_TRIP low.  Two
-open-drain drivers on one net is a legal wired-OR; the module simply asserts
-much earlier than U3B.
+J1.4 is FAST_EXT_N, active LOW. Connect only to D0 J10.4 (new receiver).
+D0 inverts it with U11F, then ORs it with its separate high-active FAST_TRIP.
+NEVER connect J1.4 to D0 TP8/FAST_TRIP: doing so suppresses faults.
+The module is supplied from the same D0 V5 domain. The receiver's 100k
+pull-down makes an open signal wire a fault while armed. Local rail loss
+with OCD backfeed is NOT qualified by this logic ECO and needs bench testing.
 
 Arithmetic the report carries (recomputed by the test)
 ------------------------------------------------------
@@ -184,11 +185,11 @@ SMD = "Package_TO_SOT_SMD:SOT-23"
 
 def parts() -> list[Part]:
     ps = [
-        Part("J1", "Connector_Generic:Conn_01x04", "5V/OCD/FAST_TRIP",
+        Part("J1", "Connector_Generic:Conn_01x04", "5V/OCD/FAST_EXT_N",
              "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", 30, 60,
-             {"1": "V5", "2": "PGND", "3": "OCD", "4": "FAST_TRIP"},
+             {"1": "V5", "2": "PGND", "3": "OCD", "4": "FAST_EXT_N"},
              rating="5 V",
-             note="wire to D0: V5, PGND, OCD (R8 node), FAST_TRIP (R15/TP8)"),
+             note="wire to D0: V5, PGND, OCD (R8 node), FAST_EXT_N (J10.4 ONLY)"),
         Part("C1", "Device:C", "1uF/16V", "Capacitor_SMD:C_0603_1608Metric", 62, 48,
              {"1": "V5", "2": "PGND"}, rating="16 V X7R", note="supply bulk"),
         Part("C2", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 74, 48,
@@ -228,11 +229,11 @@ def parts() -> list[Part]:
              {"1": "Q1G", "2": "PGND"},
              note="Q1 off while the comparator is unpowered"),
         Part("Q1", "Transistor_FET:Q_NMOS_GSD", "2N7002", SMD, 120, 74,
-             {"1": "Q1G", "2": "PGND", "3": "FAST_TRIP"}, rating="60 V",
-             note="open-drain output; overcurrent pulls FAST_TRIP low"),
+             {"1": "Q1G", "2": "PGND", "3": "FAST_EXT_N"}, rating="60 V",
+             note="open-drain output; overcurrent pulls FAST_EXT_N low"),
         Part("R7", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 134, 62,
-             {"1": "V5", "2": "FAST_TRIP"},
-             note="standalone pull-up; parallels D0 R15 when wired in"),
+             {"1": "V5", "2": "FAST_EXT_N"},
+             note="local pull-up; D0 J10.4 has 100k pull-down, NOT R15"),
         Part("R8", "Device:R", "10k", "Resistor_SMD:R_0603_1608Metric", 104, 96,
              {"1": "PGND", "2": "SHDN"},
              note="SHDN low enables the comparator; 2 pA bias -> 20 nV across 10k"),
@@ -246,7 +247,7 @@ def parts() -> list[Part]:
              30 + 14 * i, 130, {"1": net}, "1 mm pad", "scope probe")
         for i, (ref, net) in enumerate([
             ("TP1", "OCD"), ("TP2", "INP"), ("TP3", "REF"), ("TP4", "OUT"),
-            ("TP5", "FAST_TRIP"), ("TP6", "SHDN"), ("TP7", "V5"), ("TP8", "PGND"),
+            ("TP5", "FAST_EXT_N"), ("TP6", "SHDN"), ("TP7", "V5"), ("TP8", "PGND"),
         ])
     ]
     return ps
@@ -384,9 +385,9 @@ def supply() -> dict:
         "shutdown_enable_threshold_v": SHDN_ENABLE_BELOW,
         "shutdown_logic": "SHDN low enables; within 0.9 V of V+ disables",
         "quiescent_current_max_a": IQ_MAX,
-        "loss_of_5v": "reference and comparator dead; R6 holds Q1 off, so "
-                      "FAST_TRIP is released -- no false trip, but no fast "
-                      "protection either",
+        "loss_of_5v": "without backfeed Q1 releases and D0 R100 pulls FAST_EXT_N "
+                      "low (fault when armed); OCD/D2 backfeed and whole-domain "
+                      "UVLO remain unverified on hardware",
         "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum "
                                      "operating current is not in this repository",
     }
@@ -468,7 +469,7 @@ def observations() -> list[dict]:
             "id": "OC-07",
             "finding": "The module does not latch; the CD4013 on D0 does. Used "
                        "standalone, the output follows the current.",
-            "evidence": "D0 FAST_TRIP net and CD4013 unit 4",
+            "evidence": "D0 J10/U11F/U19 -> FAST_COMBINED -> U6/U10 -> U12 SET",
             "status": "DESIGN_FACT",
         },
     ]
@@ -497,7 +498,7 @@ def report(ps: list[Part]) -> dict:
             "J1.1 V5 -> D0 V5 (bench 5 V rail)",
             "J1.2 PGND -> D0 PGND",
             "J1.3 OCD -> D0 R8/OCD node (the burden, before R9)",
-            "J1.4 FAST_TRIP -> D0 FAST_TRIP (R15/TP8); both drivers are open drain",
+            "J1.4 FAST_EXT_N -> D0 J10.4 ONLY; U11F inverts before U19 OR with legacy FAST_TRIP",
         ],
         "observations": observations(),
         "limits": [
@@ -570,7 +571,7 @@ def schematic(symbols: dict[str, str], parts_: list[Part]) -> str:
 \t\t(date "2026-11-04")
 \t\t(rev "A")
 \t\t(comment 1 "Taps the CT burden directly; replaces the ~128 us filtered LM393 path.")
-\t\t(comment 2 "Open-drain output; wire-OR onto D0 FAST_TRIP.")
+\t\t(comment 2 "Active-low output to D0 J10.4 ONLY; receiver inverter plus OR.")
 \t\t(comment 3 "Generated by tools/make_fast_oc_eco.py.")
 \t)
 \t(lib_symbols

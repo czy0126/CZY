@@ -26,7 +26,7 @@
 	)
 	(setup (pad_to_mask_clearance 0))
 	(net 0 "")
-	(net 1 "FAST_TRIP")
+	(net 1 "FAST_EXT_N")
 	(net 2 "INP")
 	(net 3 "OCD")
 	(net 4 "OUT")
@@ -1171,7 +1171,7 @@
 			)
 		)
 	)
-	(property "Value" "5V/OCD/FAST_TRIP"
+	(property "Value" "5V/OCD/FAST_EXT_N"
 		(at 0 10 0)
 		(layer "F.Fab")
 		(effects
@@ -1342,7 +1342,7 @@
 	)
 	(pad "4" thru_hole circle
 
-		(net 1 "FAST_TRIP")
+		(net 1 "FAST_EXT_N")
 		(at 0 7.62)
 		(size 1.7 1.7)
 		(drill 1)
@@ -1664,7 +1664,7 @@
 	)
 	(pad "3" smd roundrect
 
-		(net 1 "FAST_TRIP")
+		(net 1 "FAST_EXT_N")
 		(at 0.9375 0)
 		(size 1.475 0.6)
 		(layers "F.Cu" "F.Mask" "F.Paste")
@@ -2476,7 +2476,7 @@
 	)
 	(pad "2" smd roundrect
 
-		(net 1 "FAST_TRIP")
+		(net 1 "FAST_EXT_N")
 		(at 0.825 0)
 		(size 0.8 0.95)
 		(layers "F.Cu" "F.Mask" "F.Paste")
@@ -3024,7 +3024,7 @@
 			)
 		)
 	)
-	(property "Value" "FAST_TRIP"
+	(property "Value" "FAST_EXT_N"
 		(at 0 1.55 0)
 		(layer "F.Fab")
 		(uuid "2578a41f-b591-552d-b338-1f3f9ad48051")
@@ -3098,7 +3098,7 @@
 	)
 	(pad "1" smd circle
 
-		(net 1 "FAST_TRIP")
+		(net 1 "FAST_EXT_N")
 		(at 0 0)
 		(size 1 1)
 		(layers "F.Cu" "F.Mask")

@@ -79,6 +79,7 @@ U8,CD4081BE,Package_DIP:DIP-14_W7.62mm,,PERMIT: same terms as the contract's per
 U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,RST_EFF also ANDs LATCHED: the model's reset_valid term,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U10,CD4071BE,Package_DIP:DIP-14_W7.62mm,,fault = hard trip OR armed fast trip OR any supervisor down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U11,CD4069UBE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U19,CD4071BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U12,CD4013BE,Package_DIP:DIP-14_W7.62mm,,"FF1: SET=FLT, RESET=RST_EFF, clock static; ~Q is the permit term",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 U13,HEF4093BT,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,,Schmitt on the RC node: the delayed copy for edge detection,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R33,10k,Resistor_SMD:R_0603_1608Metric,,Q1 base resistor,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
@@ -185,3 +186,6 @@ TP16,PERMIT_RAIL,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESI
 TP17,GSMAX,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP18,ANY_ON,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP19,GATE_SENSE,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J10,FAST_OC_MODULE,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,,Only connect fast_oc J1 here. Never bridge FAST_EXT_N to FAST_TRIP.,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R100,100k,Resistor_SMD:R_0603_1608Metric,,Open signal wire requests fault while armed; not a backfeed guarantee.,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C100,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U19 local bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1

@@ -2,6 +2,16 @@
   "kind": "D0_RESPONSE_TIME_BUDGET",
   "status": "RESPONSE_BUDGET_INCOMPLETE",
   "is_worst_case": false,
+  "external_fast_path": {
+    "status": "UNPRICED_NOT_INCLUDED_IN_TOTALS",
+    "path": "TLV3501/Q1 -> FAST_EXT_N -> U11F -> U19 -> U6/U10 -> U12",
+    "missing": [
+      "loaded Q1 edge and wiring capacitance",
+      "U11F and U19 delay",
+      "real UCC24624 REG discharge and last SR gate turn-off"
+    ],
+    "note": "Legacy totals cannot be used as the new external fast path latency."
+  },
   "not_worst_case_because": [
     "the LM393 publishes no maximum response time at all -- 1.3 us is a typical at 5 mV overdrive, and the datasheet itself shows the figure rising as overdrive falls, so a slow part lengthens every total",
     "the CD4013 stage is a max (400 ns), but only at VDD = 5 V and 25 C with a 20 ns input edge; it is not a max over the full temperature range at this board's edge rate",

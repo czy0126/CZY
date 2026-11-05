@@ -29,8 +29,8 @@ Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask
 
 One TLV3501 comparator and a 2N7002 open-drain pull-down that make the overcurrent channel fast by replacing the three RC filters, not the comparator.  It does not latch.
 
-Package: `pcb/fast_oc/fab/` (manifest `609f9b553d4b0c581efb4884603f32f3dc76edf7b55bf09b3de3a974fb727c8c`)
-Board: `pcb/fast_oc/fast_oc.kicad_pcb` (`95b5b480cfe323ef9aee4717f3db2d5f79f9763469fca377fdfb42751896c014`)
+Package: `pcb/fast_oc/fab/` (manifest `f669cd67e18862ee62486c57ec87e9cd990feecb9406930b5664bfbf26aa7f52`)
+Board: `pcb/fast_oc/fast_oc.kicad_pcb` (`09e76c66804d092a8905efd79fb41c9ae2f60b9aecc3a4806d5f7e3d824d5f15`)
 Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask, Edge.Cuts
 
 ### `d0_protection` -- D0 ten-channel protection logic board

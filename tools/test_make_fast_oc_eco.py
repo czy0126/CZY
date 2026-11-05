@@ -5,8 +5,8 @@ The interesting claims are not "the generator ran".  They are:
 * the comparator's shutdown pin is held LOW -- on a TLV3501 a high SHDN
   *disables* the part, so the obvious "tie it to the supply" wiring produces a
   fast comparator that never switches;
-* the push-pull output cannot reach FAST_TRIP except through the open-drain
-  NMOS, because D0's FAST_TRIP is a wired-OR node;
+* the push-pull output cannot reach FAST_EXT_N except through the open-drain
+  NMOS; D0 receives the independent active-low signal at J10.4;
 * the 1 us input pole plus the 12 ns over-temperature comparator delay is
   recomputed from the datasheet constants, not copied out of the report.
 
@@ -101,14 +101,14 @@ def test_shutdown_is_pulled_low_because_high_disables_the_comparator(parts, repo
 
 
 def test_the_push_pull_output_reaches_fast_trip_only_through_the_nmos(parts, report):
-    """D0's FAST_TRIP is a wired-OR of open-drain drivers; a push-pull output
-    tied to it would fight U3B.  The only path is U1.5 -> R5 -> Q1 gate -> Q1.3.
+    """The module retains its active-low open-drain output, separate from U3B.
+    The only path is U1.5 -> R5 -> Q1 gate -> Q1.3.
     """
-    members = report["net_map"]["FAST_TRIP"]
+    members = report["net_map"]["FAST_EXT_N"]
     assert "Q1.3" in members
     assert "U1.5" not in members
     assert by_ref(parts, "R5").nets == {"1": "OUT", "2": "Q1G"}
-    assert by_ref(parts, "Q1").nets["3"] == "FAST_TRIP"
+    assert by_ref(parts, "Q1").nets["3"] == "FAST_EXT_N"
 
 
 def test_the_input_protection_is_two_diodes_and_a_series_divider(parts):
@@ -287,7 +287,7 @@ def test_the_erc_report_is_clean_and_not_stale():
 def test_the_netlist_contains_every_module_net():
     text = (OUT / "fast_oc.net").read_text(encoding="utf-8")
     for net in ("V5", "PGND", "OCD", "INP", "REF", "OUT", "Q1G",
-                "SHDN", "FAST_TRIP"):
+                "SHDN", "FAST_EXT_N"):
         assert f'(name "/{net}")' in text, net
 
 

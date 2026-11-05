@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\fast_oc\\fast_oc.kicad_sch")
-		(date "2026-11-05T10:14:22")
+		(date "2026-11-05T20:32:25")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -20,7 +20,7 @@
 				)
 				(comment
 					(number "2")
-					(value "Open-drain output; wire-OR onto D0 FAST_TRIP.")
+					(value "Active-low output to D0 J10.4 ONLY; receiver inverter plus OR.")
 				)
 				(comment
 					(number "3")
@@ -380,9 +380,9 @@
 		)
 		(comp
 			(ref "J1")
-			(value "5V/OCD/FAST_TRIP")
+			(value "5V/OCD/FAST_EXT_N")
 			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical")
-			(description "wire to D0: V5, PGND, OCD (R8 node), FAST_TRIP (R15/TP8)")
+			(description "wire to D0: V5, PGND, OCD (R8 node), FAST_EXT_N (J10.4 ONLY)")
 			(fields
 				(field
 					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical")
@@ -390,7 +390,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "wire to D0: V5, PGND, OCD (R8 node), FAST_TRIP (R15/TP8)")
+					(name "Description") "wire to D0: V5, PGND, OCD (R8 node), FAST_EXT_N (J10.4 ONLY)")
 			)
 			(libsource
 				(lib "Connector_Generic")
@@ -442,7 +442,7 @@
 			(ref "Q1")
 			(value "2N7002")
 			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "open-drain output; overcurrent pulls FAST_TRIP low")
+			(description "open-drain output; overcurrent pulls FAST_EXT_N low")
 			(fields
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
@@ -450,7 +450,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "open-drain output; overcurrent pulls FAST_TRIP low")
+					(name "Description") "open-drain output; overcurrent pulls FAST_EXT_N low")
 			)
 			(libsource
 				(lib "Transistor_FET")
@@ -819,7 +819,7 @@
 			(ref "R7")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0603_1608Metric")
-			(description "standalone pull-up; parallels D0 R15 when wired in")
+			(description "local pull-up; D0 J10.4 has 100k pull-down, NOT R15")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
@@ -827,7 +827,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "standalone pull-up; parallels D0 R15 when wired in")
+					(name "Description") "local pull-up; D0 J10.4 has 100k pull-down, NOT R15")
 			)
 			(libsource
 				(lib "Device")
@@ -1129,7 +1129,7 @@
 		)
 		(comp
 			(ref "TP5")
-			(value "FAST_TRIP")
+			(value "FAST_EXT_N")
 			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
 			(description "scope probe")
 			(fields
@@ -1775,7 +1775,7 @@
 	(nets
 		(net
 			(code "1")
-			(name "/FAST_TRIP")
+			(name "/FAST_EXT_N")
 			(class "Default")
 			(node
 				(ref "J1")

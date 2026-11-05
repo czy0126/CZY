@@ -1,5 +1,5 @@
 Reference,Value,Footprint,Rating,Note,DNP,MPN,LCSC,Qty
-J1,5V/OCD/FAST_TRIP,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,5 V,"wire to D0: V5, PGND, OCD (R8 node), FAST_TRIP (R15/TP8)",,,,1
+J1,5V/OCD/FAST_EXT_N,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,5 V,"wire to D0: V5, PGND, OCD (R8 node), FAST_EXT_N (J10.4 ONLY)",,,,1
 C1,1uF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,supply bulk,,,,1
 C2,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,at U1 pin 4,,,,1
 U1,TLV3501AIDBV,Package_TO_SOT_SMD:SOT-23-6,2.7-5.5 V,"pin 1 = IN-, pin 3 = IN+, pin 6 = SHDN tied LOW to enable",,,,1
@@ -14,14 +14,14 @@ D1,BAT54,Diode_SMD:D_SOD-123,30 V,cathode at IN+: holds the pin above -0.3 V,,,,
 D2,BAT54,Diode_SMD:D_SOD-123,30 V,cathode at V5: starts conducting above 5.3 V,,,,1
 R5,100R,Resistor_SMD:R_0603_1608Metric,,gate series,,,,1
 R6,10k,Resistor_SMD:R_0603_1608Metric,,Q1 off while the comparator is unpowered,,,,1
-Q1,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain output; overcurrent pulls FAST_TRIP low,,,,1
-R7,10k,Resistor_SMD:R_0603_1608Metric,,standalone pull-up; parallels D0 R15 when wired in,,,,1
+Q1,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain output; overcurrent pulls FAST_EXT_N low,,,,1
+R7,10k,Resistor_SMD:R_0603_1608Metric,,"local pull-up; D0 J10.4 has 100k pull-down, NOT R15",,,,1
 R8,10k,Resistor_SMD:R_0603_1608Metric,,SHDN low enables the comparator; 2 pA bias -> 20 nV across 10k,,,,1
 TP1,OCD,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
 TP2,INP,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
 TP3,REF,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
 TP4,OUT,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
-TP5,FAST_TRIP,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
+TP5,FAST_EXT_N,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
 TP6,SHDN,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
 TP7,V5,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1
 TP8,PGND,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe,,,,1

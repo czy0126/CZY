@@ -172,7 +172,7 @@ def por(env: dict[str, bool]) -> bool:
 
 def step_from_env(env: dict[str, bool]) -> dict[str, bool]:
     return board.hardware_step(
-        hard_trip=env["HARD_TRIP"], fast_trip=env["FAST_TRIP"],
+        hard_trip=env["HARD_TRIP"], fast_trip=env["FAST_TRIP"], fast_ext_n=env["FAST_EXT_N"],
         fast_armed_in=env["FAST_ARMED_IN"],
         v12p_ok=env["V12P_OK"], v12s_ok=env["V12S_OK"],
         v5_ok=env["V5_OK"], ct_ok=env["CT_OK"],
@@ -186,7 +186,7 @@ def model_from_env(env: dict[str, bool]) -> dict:
     return ref.transition(
         latched_off=env["LATCHED"],
         i=ref.Inputs(
-            hard_trip=env["HARD_TRIP"], fast_trip=env["FAST_TRIP"],
+            hard_trip=env["HARD_TRIP"], fast_trip=(env["FAST_TRIP"] or not env["FAST_EXT_N"]),
             armed=env["FAST_ARMED_IN"],
             primary_bias_good=env["V12P_OK"], secondary_bias_good=env["V12S_OK"],
             ct_signal_valid=env["CT_OK"], comparator_bias_good=env["V5_OK"],
@@ -284,6 +284,44 @@ def test_every_combinational_net_matches_hardware_step():
     assert checked > 0
 
 
+def test_external_fast_fault_cannot_suppress_the_legacy_trip():
+    """Evaluate actual gate wiring, not a hand-written OR truth function."""
+    funcs = combinational_functions()
+    for legacy, external in itertools.product((False, True), repeat=2):
+        env = dict(CONSTANTS)
+        env.update(dict.fromkeys(free_inputs(), False))
+        env.update(FAST_TRIP=legacy, FAST_EXT_N=not external,
+                   FAST_ARMED_IN=True, LATCHED=False, LATCHED_N=True,
+                   ACK_LOW_OK=False)
+        assert evaluate("FAST_COMBINED", env, funcs, {}) == (legacy or external)
+        assert evaluate("FAST_ARMED", env, funcs, {}) == (legacy or external)
+
+
+def test_external_connector_and_open_signal_wire_contract():
+    import make_fast_oc_eco as module
+
+    ps = {p.ref: p for p in board.parts()}
+    tx = {p.ref: p for p in module.parts()}
+    assert ps["J10"].nets == tx["J1"].nets
+    assert ps["R100"].nets == {"1": "FAST_EXT_N", "2": "PGND"}
+    assert ps["R100"].value == "100k"
+    assert tx["Q1"].nets["3"] == "FAST_EXT_N"
+    assert ps["J10"].nets["4"] != "FAST_TRIP"
+    # Check exported native nets as well as the generator table.
+    text = (board.OUT / "d0_protection.net").read_text(encoding="utf-8")
+    nets = {}
+    for match in re.finditer(r"\(net\s+\(code", text):
+        chunk = text[match.start():board.block_end(text, match.start())]
+        name = re.search(r'\(name "([^"]+)"\)', chunk).group(1)
+        nets[name.lstrip("/")] = set(re.findall(r'\(ref "([^"]+)"\)\s+\(pin "([^"]+)"\)', chunk))
+    assert {("J10", "4"), ("U11", "13"), ("R100", "1")} <= nets["FAST_EXT_N"]
+    assert ("U6", "12") in nets["FAST_COMBINED"]
+    assert ("U3", "7") in nets["FAST_TRIP"]
+    assert ("J10", "4") not in nets["FAST_TRIP"]
+    funcs = combinational_functions()
+    assert evaluate("FAST_EXT_H", {"FAST_EXT_N": False}, funcs, {}) is True
+
+
 def test_the_latch_update_is_the_reference_transition():
     """Exact equality wherever the reference defines a transition.
 
@@ -313,6 +351,7 @@ def test_a_cold_start_is_latched_until_the_operator_presses():
     says go, yet the latch is set and PERMIT stays low."""
     env = dict(CONSTANTS)
     env.update(dict.fromkeys(free_inputs(), False))
+    env["FAST_EXT_N"] = True
     env.update({"V12P_OK": True, "V12S_OK": True, "V5_OK": True, "CT_OK": True,
                 "SS_READY": True, "OPERATOR_RUN": True,
                 "LATCHED": False, "LATCHED_N": True, "ACK_LOW_OK": True,
@@ -363,6 +402,7 @@ def test_a_held_high_ack_is_not_a_rising_edge():
     for ack_raw, ack_rc in itertools.product((False, True), repeat=2):
         env = dict(CONSTANTS)
         env.update(dict.fromkeys(free_inputs(), False))
+        env["FAST_EXT_N"] = True
         env.update({"LATCHED": True, "LATCHED_N": False, "ACK_LOW_OK": True,
                     "ACK_RAW": ack_raw, "ACK_RC": ack_rc})
         rise = ack_raw and ack_dly_n(env)
@@ -388,6 +428,7 @@ def test_the_first_press_after_power_up_clears_the_latch():
     sampler armed on the release needed press-release-press."""
     env = dict(CONSTANTS)
     env.update(dict.fromkeys(free_inputs(), False))
+    env["FAST_EXT_N"] = True
     env.update({"V12P_OK": True, "V12S_OK": True, "V5_OK": True, "CT_OK": True,
                 "SS_READY": True, "OPERATOR_RUN": True, "POR_RC": True,
                 "LATCHED": True, "LATCHED_N": False, "ACK_LOW_OK": False,

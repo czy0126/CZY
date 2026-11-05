@@ -473,6 +473,13 @@ def build() -> dict:
         "kind": "D0_RESPONSE_TIME_BUDGET",
         "status": "RESPONSE_BUDGET_INCOMPLETE",
         "is_worst_case": False,
+        "external_fast_path": {
+            "status": "UNPRICED_NOT_INCLUDED_IN_TOTALS",
+            "path": "TLV3501/Q1 -> FAST_EXT_N -> U11F -> U19 -> U6/U10 -> U12",
+            "missing": ["loaded Q1 edge and wiring capacitance", "U11F and U19 delay",
+                        "real UCC24624 REG discharge and last SR gate turn-off"],
+            "note": "Legacy totals cannot be used as the new external fast path latency.",
+        },
         "not_worst_case_because": [
             "the LM393 publishes no maximum response time at all -- 1.3 us is a "
             "typical at 5 mV overdrive, and the datasheet itself shows the figure "

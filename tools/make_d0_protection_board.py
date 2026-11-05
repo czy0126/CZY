@@ -560,7 +560,7 @@ def logic_parts() -> list[Part]:
         Part("U6", "4xxx:4081", "CD4081BE", dip, 40, 250,
              {"8": "H_OK_A", "9": "H_OK_B", "10": "HEALTHY"}, unit=3),
         Part("U6", "4xxx:4081", "CD4081BE", dip, 40, 250,
-             {"11": "FAST_ARMED", "12": "FAST_TRIP", "13": "FAST_ARMED_IN"}, unit=4),
+             {"11": "FAST_ARMED", "12": "FAST_COMBINED", "13": "FAST_ARMED_IN"}, unit=4),
         Part("U6", "4xxx:4081", "CD4081BE", dip, 40, 250, {"7": "PGND", "14": "V5"}, unit=5),
         # U7 -- 4081 #2
         Part("U7", "4xxx:4081", "CD4081BE", dip, 90, 250,
@@ -623,8 +623,19 @@ def logic_parts() -> list[Part]:
         Part("U11", "4xxx:4069", "CD4069UBE", dip, 290, 250,
              {"11": "READY", "10": "NOT_READY"}, unit=5),
         Part("U11", "4xxx:4069", "CD4069UBE", dip, 290, 250,
-             {"13": "PGND", "12": NC}, unit=6),
+             {"13": "FAST_EXT_N", "12": "FAST_EXT_H"}, unit=6),
         Part("U11", "4xxx:4069", "CD4069UBE", dip, 290, 250, {"7": "PGND", "14": "V5"}, unit=7),
+        # External active-low receiver. Same V5 domain; no wired-OR at FAST_TRIP.
+        Part("U19", "4xxx:4071", "CD4071BE", dip, 410, 210,
+             {"1": "FAST_TRIP", "2": "FAST_EXT_H", "3": "FAST_COMBINED"}, unit=1),
+        Part("U19", "4xxx:4071", "CD4071BE", dip, 410, 210,
+             {"5": "PGND", "6": "PGND", "4": NC}, unit=2),
+        Part("U19", "4xxx:4071", "CD4071BE", dip, 410, 210,
+             {"8": "PGND", "9": "PGND", "10": NC}, unit=3),
+        Part("U19", "4xxx:4071", "CD4071BE", dip, 410, 210,
+             {"12": "PGND", "13": "PGND", "11": NC}, unit=4),
+        Part("U19", "4xxx:4071", "CD4071BE", dip, 410, 210,
+             {"7": "PGND", "14": "V5"}, unit=5),
         # U12 -- 4013 latches
         Part("U12", "4xxx:4013", "CD4013BE", dip, 340, 250,
              {"1": "LATCHED", "2": "LATCHED_N", "3": "PGND", "4": "RST_EFF",
@@ -821,10 +832,24 @@ def connector_and_flag_parts() -> list[Part]:
     return out
 
 
+def external_fast_parts() -> list[Part]:
+    return [
+        Part("J10", "Connector_Generic:Conn_01x04", "FAST_OC_MODULE",
+             "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", 420, 340,
+             {"1": "V5", "2": "PGND", "3": "OCD", "4": "FAST_EXT_N"},
+             note="Only connect fast_oc J1 here. Never bridge FAST_EXT_N to FAST_TRIP."),
+        Part("R100", "Device:R", "100k", "Resistor_SMD:R_0603_1608Metric", 440, 340,
+             {"1": "FAST_EXT_N", "2": "PGND"},
+             note="Open signal wire requests fault while armed; not a backfeed guarantee."),
+        Part("C100", "Device:C", "100nF/50V", "Capacitor_SMD:C_0603_1608Metric", 460, 340,
+             {"1": "V5", "2": "PGND"}, rating="50 V X7R", note="U19 local bypass"),
+    ]
+
+
 def parts() -> list[Part]:
     return (bias_parts() + reference_parts() + ct_parts() + comparator_parts()
             + bench_input_parts() + logic_parts() + permit_parts() + driver_parts()
-            + gate_load_parts() + connector_and_flag_parts())
+            + gate_load_parts() + connector_and_flag_parts() + external_fast_parts())
 
 
 # ------------------------------------------------- the executable network
@@ -832,7 +857,7 @@ def hardware_step(*, hard_trip: bool, fast_trip: bool, fast_armed_in: bool,
                   v12p_ok: bool, v12s_ok: bool, v5_ok: bool, ct_ok: bool,
                   ss_ready: bool, operator_run: bool, all_off: bool,
                   ack_raw: bool, ack_rise: bool, por: bool,
-                  latched: bool, ack_low_ok: bool) -> dict[str, bool]:
+                  latched: bool, ack_low_ok: bool, fast_ext_n: bool = True) -> dict[str, bool]:
     """One combinational pass of the gate list, then the two latch next-states.
 
     ``latched`` is the model's ``latched_off``: true means protection is holding
@@ -842,7 +867,7 @@ def hardware_step(*, hard_trip: bool, fast_trip: bool, fast_armed_in: bool,
     h_ok_b = v5_ok and ct_ok
     healthy = h_ok_a and h_ok_b
     not_healthy = not healthy
-    fast_armed = fast_trip and fast_armed_in
+    fast_armed = (fast_trip or not fast_ext_n) and fast_armed_in
     fault_a = hard_trip or fast_armed
     fault_b = fault_a or not_healthy
     flt = fault_b or por
