@@ -371,9 +371,9 @@ def reference_parts() -> list[Part]:
     """One TL431 plus three dividers: 1.000 V trip, 1.769 V fast, 0.200 V gate-sum."""
     return [
         Part("U2", "Reference_Voltage:TL431LP", "TL431LP",
-             "Package_TO_SOT_SMD:SOT-23", 170, 50,
+             "Package_TO_SOT_THT:TO-92_Inline", 170, 50,
              {"1": "REF_2V5", "2": "PGND", "3": "REF_2V5"},
-             rating="2.5 V shunt", note="REF tied to K: 2.500 V reference"),
+             rating="2.5 V shunt", note="TI LP is TO-92: K=1, A=2, REF=3; K/REF are shorted only in this 2.500 V design"),
         Part("R1", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric", 156, 38,
              {"1": "V5", "2": "REF_2V5"}, note="TL431 cathode bias, 2.5 mA"),
         Part("C7", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 170, 32,
