@@ -17,10 +17,10 @@ D_CT2,2. Resonant tank and T1-T4,BAT54,C2931736,SOT-23-3_L2.9-W1.3-P1.90-LS2.4-B
 D_CT4,2. Resonant tank and T1-T4,BAT54,C2931736,SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR,K,3,CS2,measured pin dump: diode A/K -> pad,MAPPED,
 D_CT4,2. Resonant tank and T1-T4,BAT54,C2931736,SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR,A,1,OCM,measured pin dump: diode A/K -> pad,MAPPED,
 D_CT4,2. Resonant tank and T1-T4,BAT54,C2931736,SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR,,2,,no net by design,OPEN - REASON GIVEN,"second anode of the dual diode, unused"
-Lr,2. Resonant tank and T1-T4,L-SMD1010-PCB_C9900024507,C9900024507,IND-SMD_L10.2-W10.0_YPRH104R,N1,1,CT_LR,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP32 3-turn / 1.444 mm gap part
-Lr,2. Resonant tank and T1-T4,L-SMD1010-PCB_C9900024507,C9900024507,IND-SMD_L10.2-W10.0_YPRH104R,N2,2,PRI_T1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP32 3-turn / 1.444 mm gap part
-R1,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N1,1,DT,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R1,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+Lr,2. Resonant tank and T1-T4,L-SMD1010-PCB_C9900024507,C9900024507,IND-SMD_L10.2-W10.0_YPRH104R,N1,1,CT_LR,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP38_I38 2-turn / 0.9461 mm gap / Isat 119.0 A part (see hardware/dcx_main/placeholder_eco.json)
+Lr,2. Resonant tank and T1-T4,L-SMD1010-PCB_C9900024507,C9900024507,IND-SMD_L10.2-W10.0_YPRH104R,N2,2,PRI_T1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP38_I38 2-turn / 0.9461 mm gap / Isat 119.0 A part (see hardware/dcx_main/placeholder_eco.json)
+R1,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N1,1,DT,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R1,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL,1,1,DT,symbol pin name equals golden pin,MAPPED,
 U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL,8,8,GD1,symbol pin name equals golden pin,MAPPED,
 U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL,5,5,GD2,symbol pin name equals golden pin,MAPPED,
@@ -29,8 +29,8 @@ U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0
 U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL,2,2,RT,symbol pin name equals golden pin,MAPPED,
 U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL,4,4,SS,symbol pin name equals golden pin,MAPPED,
 U1,4. Control: UCC25600 / UCC27282,UCC25600D,C88569,SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL,7,7,VCC12,symbol pin name equals golden pin,MAPPED,
-R20,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R20,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG1_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R20,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R20,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG1_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GA1,measured pin dump: pin name -> pad group,MAPPED,
 SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -39,8 +39,8 @@ SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC1_A,measured pin dump: pin name -> pad group,MAPPED,
 SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC1_A,measured pin dump: pin name -> pad group,MAPPED,
 SR1A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC1_A,measured pin dump: pin name -> pad group,MAPPED,
-R22,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA2,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R22,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG2_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R22,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA2,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R22,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG2_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GA2,measured pin dump: pin name -> pad group,MAPPED,
 SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -49,8 +49,8 @@ SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC2_A,measured pin dump: pin name -> pad group,MAPPED,
 SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC2_A,measured pin dump: pin name -> pad group,MAPPED,
 SR2A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC2_A,measured pin dump: pin name -> pad group,MAPPED,
-R24,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA3,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R24,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG3_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R24,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA3,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R24,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG3_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GA3,measured pin dump: pin name -> pad group,MAPPED,
 SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -59,8 +59,8 @@ SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC3_A,measured pin dump: pin name -> pad group,MAPPED,
 SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC3_A,measured pin dump: pin name -> pad group,MAPPED,
 SR3A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC3_A,measured pin dump: pin name -> pad group,MAPPED,
-R26,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R26,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R26,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GA4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R26,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GA4,measured pin dump: pin name -> pad group,MAPPED,
 SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -69,8 +69,8 @@ SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC4_A,measured pin dump: pin name -> pad group,MAPPED,
 SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC4_A,measured pin dump: pin name -> pad group,MAPPED,
 SR4A,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC4_A,measured pin dump: pin name -> pad group,MAPPED,
-R21,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R21,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG1_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R21,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R21,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG1_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GB1,measured pin dump: pin name -> pad group,MAPPED,
 SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -79,8 +79,8 @@ SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC1_B,measured pin dump: pin name -> pad group,MAPPED,
 SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC1_B,measured pin dump: pin name -> pad group,MAPPED,
 SR1B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC1_B,measured pin dump: pin name -> pad group,MAPPED,
-R23,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB2,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R23,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG2_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R23,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB2,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R23,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG2_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GB2,measured pin dump: pin name -> pad group,MAPPED,
 SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -89,8 +89,8 @@ SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC2_B,measured pin dump: pin name -> pad group,MAPPED,
 SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC2_B,measured pin dump: pin name -> pad group,MAPPED,
 SR2B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC2_B,measured pin dump: pin name -> pad group,MAPPED,
-R25,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB3,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R25,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG3_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R25,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB3,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R25,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG3_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GB3,measured pin dump: pin name -> pad group,MAPPED,
 SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -99,8 +99,8 @@ SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.
 SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,6,SEC3_B,measured pin dump: pin name -> pad group,MAPPED,
 SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,7,SEC3_B,measured pin dump: pin name -> pad group,MAPPED,
 SR3B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,D,8,SEC3_B,measured pin dump: pin name -> pad group,MAPPED,
-R27,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R27,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R27,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,GB4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R27,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,VG4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 SR4B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,G,4,GB4,measured pin dump: pin name -> pad group,MAPPED,
 SR4B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 SR4B,3. Four synchronous rectifier groups,BSC010N04LS6,C534278,PG-TDSON-8-FL_L5.0-W6.0-P1.27-LS6.2-BL,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -129,10 +129,10 @@ QH,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-
 QH,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,D,7,VIN_P,measured pin dump: pin name -> pad group,MAPPED,
 QH,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,D,8,VIN_P,measured pin dump: pin name -> pad group,MAPPED,
 QH,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,D,9,VIN_P,measured pin dump: pin name -> pad group,MAPPED,
-R18,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GH,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R18,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,SW,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R4,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,GH,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R4,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GH_DRV,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R18,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GH,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R18,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,SW,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R4,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,GH,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R4,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GH_DRV,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,G,4,GL,measured pin dump: pin name -> pad group,MAPPED,
 QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,S,1,PGND,measured pin dump: pin name -> pad group,MAPPED,
 QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,S,2,PGND,measured pin dump: pin name -> pad group,MAPPED,
@@ -142,36 +142,36 @@ QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-
 QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,D,7,SW,measured pin dump: pin name -> pad group,MAPPED,
 QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,D,8,SW,measured pin dump: pin name -> pad group,MAPPED,
 QL,1. Input and half bridge,CSD19531Q5A,C2760462,DFN-8_L5.8-W4.9-P1.27-LS6.0-BL-1,D,9,SW,measured pin dump: pin name -> pad group,MAPPED,
-R19,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GL,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R19,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R5,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,GL,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R5,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GL_DRV,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-C5,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,HB,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C5,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,SW,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
+R19,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GL,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R19,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R5,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N2,2,GL,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R5,1. Input and half bridge,0603WAF1002T5E,C25804,R0603,N1,1,GL_DRV,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C5,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,HB,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C5,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,SW,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 D_BT,"5. Bias, overcurrent and start-up",BAT54WS,C168799,SOD-323_L1.8-W1.3-LS2.5-RD,K,1,HB,measured pin dump: diode A/K -> pad,MAPPED,PLACEHOLDER SOD-323 BAT54WS; the BOM calls for a 0603 >=100 V part
 D_BT,"5. Bias, overcurrent and start-up",BAT54WS,C168799,SOD-323_L1.8-W1.3-LS2.5-RD,A,2,VCC12,measured pin dump: diode A/K -> pad,MAPPED,PLACEHOLDER SOD-323 BAT54WS; the BOM calls for a 0603 >=100 V part
-C12,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,OC,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C12,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-R16,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OC,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R16,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R17,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OC,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R17,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-C11,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C11,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-R15,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R15,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OCD,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+C12,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,OC,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C12,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R16,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OC,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R16,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R17,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OC,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R17,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C11,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N1,1,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C11,"5. Bias, overcurrent and start-up",CL10B104KB8NNNC,C1591,C0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R15,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N2,2,OC1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R15,"5. Bias, overcurrent and start-up",0603WAF1002T5E,C25804,R0603,N1,1,OCD,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 R3,2. Resonant tank and T1-T4,0603WAF1002T5E,C25804,R0603,N1,1,OCD,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but the 0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the resistance is frozen and the package/MPN are TO SELECT"
 R3,2. Resonant tank and T1-T4,0603WAF1002T5E,C25804,R0603,N2,2,OCM,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but the 0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the resistance is frozen and the package/MPN are TO SELECT"
-C10,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C10,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C6,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C6,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,N1,1,SS,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C7,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C7,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C8,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C8,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG2,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C9,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
-C9,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG3,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 100 nF; value is TO ASSIGN
+C10,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C10,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG4,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C6,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C6,4. Control: UCC25600 / UCC27282,CL10B104KB8NNNC,C1591,C0603,N1,1,SS,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C7,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C7,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG1,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C8,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C8,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG2,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C9,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+C9,3. Four synchronous rectifier groups,CL10B104KB8NNNC,C1591,C0603,N1,1,REG3,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 Cin,1. Input and half bridge,CL10B104KB8NNNC,C1591,C0603,N,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 100 nF 0603; the design is a 20 uF input bank (TO SELECT)
 Cin,1. Input and half bridge,CL10B104KB8NNNC,C1591,C0603,P,1,VIN_P,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 100 nF 0603; the design is a 20 uF input bank (TO SELECT)
 Cout,6. Output interface,CL10B104KB8NNNC,C1591,C0603,N,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 100 nF 0603; the design is 15 x 470 uF (TO SELECT)
@@ -180,8 +180,8 @@ J_IN,1. Input and half bridge,KF128-5.08-2P-AA,C474952,CONN-TH_P5.08_KF128-5.08-
 J_IN,1. Input and half bridge,KF128-5.08-2P-AA,C474952,CONN-TH_P5.08_KF128-5.08-2P,P1,1,VIN_P,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,
 J_OUT,6. Output interface,MX126-5.0-02P-GN01-Cu-S-A,C5188434,CONN-TH_2P-P5.00_MX126-5.0-GN01-02P-CU-S-A,N,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,
 J_OUT,6. Output interface,MX126-5.0-02P-GN01-Cu-S-A,C5188434,CONN-TH_2P-P5.00_MX126-5.0-GN01-02P-CU-S-A,P,1,VOUT,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,
-R2,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R2,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N1,1,RT,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R2,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N2,2,PGND,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R2,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,N1,1,RT,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 T4,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,PRI_B,PRI_B,PGND,logical terminal name equals native symbol pin number; physical terminal drawing NOT verified,OPEN - REASON GIVEN,PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified
 T4,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,PRI_A,PRI_A,PRI_34,logical terminal name equals native symbol pin number; physical terminal drawing NOT verified,OPEN - REASON GIVEN,PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified
 T4,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,SEC_A,SEC_A,SEC4_A,logical terminal name equals native symbol pin number; physical terminal drawing NOT verified,OPEN - REASON GIVEN,PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified
@@ -234,22 +234,22 @@ T3,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,PRI_B
 T3,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,SEC_A,SEC_A,SEC3_A,logical terminal name equals native symbol pin number; physical terminal drawing NOT verified,OPEN - REASON GIVEN,PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified
 T3,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,SEC_B,SEC_B,SEC3_B,logical terminal name equals native symbol pin number; physical terminal drawing NOT verified,OPEN - REASON GIVEN,PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified
 T3,2. Resonant tank and T1-T4,DCX_XFMR_5P,,XFMR-TH_5P-L20.5-W18.0-P3.25-TL,CTAP,CTAP,VOUT,logical terminal name equals native symbol pin number; physical terminal drawing NOT verified,OPEN - REASON GIVEN,PLACEHOLDER footprint XFMR-TH_5P (5 pads); physical terminal->pad map NOT verified
-R28,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC1_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R28,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD1_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R29,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC1_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R29,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD1_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R30,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC2_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R30,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD2_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R31,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC2_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R31,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD2_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R32,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC3_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R32,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD3_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R33,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC3_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R33,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD3_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R34,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R34,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R35,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
-R35,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,PLACEHOLDER 0603 10k; value is TO ASSIGN
+R28,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC1_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R28,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD1_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R29,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC1_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R29,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD1_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R30,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC2_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R30,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD2_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R31,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC2_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R31,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD2_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R32,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC3_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R32,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD3_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R33,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC3_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R33,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD3_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R34,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R34,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD4_A,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R35,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N1,1,SEC4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
+R35,3. Four synchronous rectifier groups,0603WAF1002T5E,C25804,R0603,N2,2,VD4_B,"two-terminal legend N1/N2, A/K, P/N -> 1/2",MAPPED,"PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 R7,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,1,RUN,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (EN pull-down), MPN TO ASSIGN"
 R7,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,2,PGND,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,"PLACEHOLDER 0603 10k; BOM value frozen (EN pull-down), MPN TO ASSIGN"
 R8,4. Control: UCC25600 / UCC27282,0603WAF1002T5E,C25804,R0603,,1,VCC12,BOM peripheral; net from design/v1/pin_connections.csv,MAPPED,PLACEHOLDER 0603 10k symbol for a 1k RUN jumper; MPN TO ASSIGN

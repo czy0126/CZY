@@ -1,0 +1,232 @@
+{
+  "status": "VALUE_ECO_PLAN",
+  "source": "hardware/dcx_main/placeholder_eco.json",
+  "executor": "TOOL_NATIVE_VALUE_ECO",
+  "template": "hardware/dcx_main/gen/value_eco.js",
+  "scope": "Value property only. The placed library device and its footprint are not changed by this batch; every other row is a GUI step.",
+  "count": 37,
+  "edits": [
+    {
+      "ref": "C6",
+      "from": "100nF",
+      "to": "10nF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 10nF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C7",
+      "from": "100nF",
+      "to": "2.2uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C8",
+      "from": "100nF",
+      "to": "2.2uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C9",
+      "from": "100nF",
+      "to": "2.2uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C10",
+      "from": "100nF",
+      "to": "2.2uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C11",
+      "from": "100nF",
+      "to": "47nF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 47nF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C12",
+      "from": "100nF",
+      "to": "10nF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 10nF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C13",
+      "from": "100nF",
+      "to": "1nF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1nF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C101",
+      "from": "100nF",
+      "to": "1uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C103",
+      "from": "100nF",
+      "to": "1uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C105",
+      "from": "100nF",
+      "to": "1uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C107",
+      "from": "100nF",
+      "to": "1uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C109",
+      "from": "100nF",
+      "to": "1uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "C111",
+      "from": "100nF",
+      "to": "1uF",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1uF with the LCSC Part Name unchanged (CL10B104KB8NNNC)"
+    },
+    {
+      "ref": "R1",
+      "from": "10kΩ",
+      "to": "5.36kΩ",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 5.36kΩ with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R2",
+      "from": "10kΩ",
+      "to": "976Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 976Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R4",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R5",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R8",
+      "from": "10kΩ",
+      "to": "1kΩ",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1kΩ with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R15",
+      "from": "10kΩ",
+      "to": "1kΩ",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 1kΩ with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R17",
+      "from": "10kΩ",
+      "to": "24kΩ",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 24kΩ with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R20",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R21",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R22",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R23",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R24",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R25",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R26",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R27",
+      "from": "10kΩ",
+      "to": "2.2Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 2.2Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R28",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R29",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R30",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R31",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R32",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R33",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R34",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    },
+    {
+      "ref": "R35",
+      "from": "10kΩ",
+      "to": "0Ω",
+      "acceptance": "re-run gen/read_native_inventory.js and require Value 0Ω with the LCSC Part Name unchanged (0603WAF1002T5E)"
+    }
+  ]
+}

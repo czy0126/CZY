@@ -199,14 +199,21 @@ PERIPHERALS: dict[str, dict[str, object]] = {
 # the part the design calls for.  Saying so on every row keeps the review sheet
 # from reading like a finished BOM.
 PLACEHOLDER: dict[str, str] = {
-    "Lr": "PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP32 3-turn / 1.444 mm gap part",
+    # The 10 mm-era screen chose an ELP32 3-turn / 1.444 mm part.  The 16 mm D1
+    # policy moved Lr to ELP38, where 3 turns need a 2.165 mm gap -- outside the
+    # published 0.10-2.00 mm grinding range -- so the frozen part is 2 turns.
+    "Lr": ("PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP38_I38 2-turn / "
+           "0.9461 mm gap / Isat 119.0 A part (see hardware/dcx_main/placeholder_eco.json)"),
     "Cr": "PLACEHOLDER 100 nF 0603; the design value is 620 nF film (TO SELECT)",
     "Cin": "PLACEHOLDER 100 nF 0603; the design is a 20 uF input bank (TO SELECT)",
     "Cout": "PLACEHOLDER 100 nF 0603; the design is 15 x 470 uF (TO SELECT)",
     "D_BT": "PLACEHOLDER SOD-323 BAT54WS; the BOM calls for a 0603 >=100 V part",
 }
 for _r in ("R1", "R2", "R4", "R5", "R15", "R16", "R17", "R18", "R19"):
-    PLACEHOLDER[_r] = "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+    # The deck (Rdt/Rrt/Rf/Rd1/Rd2/RgsH/RgsL) or the register fixes every one of
+    # these, so only the MPN is open -- the numbers live in placeholder_eco.json
+    # rather than being restated here, which is how the two drifted apart before.
+    PLACEHOLDER[_r] = "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 # R3 is the OC burden: the BOM freezes 10 ohm, but the 0805 0.125 W part is
 # ruled out by the measured 125.7 mW continuous burden, so package and MPN are
 # back to selection while the resistance is not.
@@ -214,9 +221,11 @@ PLACEHOLDER["R3"] = ("PLACEHOLDER 0603 10k; BOM freezes a 10 ohm OC burden, but 
                      "0805 0.125 W part fails at 125.7 mW (mean(V^2)/R), so the "
                      "resistance is frozen and the package/MPN are TO SELECT")
 for _n in range(20, 36):
-    PLACEHOLDER[f"R{_n}"] = "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+    # R20-R27 are the eight external 2.2 ohm SR gate resistors, R28-R35 the eight
+    # 0 ohm drain Kelvin links the pin table requires; both sets are fixed.
+    PLACEHOLDER[f"R{_n}"] = "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 for _n in (5, 6, 7, 8, 9, 10, 11, 12):
-    PLACEHOLDER[f"C{_n}"] = "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+    PLACEHOLDER[f"C{_n}"] = "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
 del _r, _n
 
 

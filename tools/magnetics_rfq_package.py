@@ -88,6 +88,26 @@ def preferred_core(stage_id: str) -> str:
     return core
 
 
+def frozen_lr_core(stage_id: str = D1) -> dict:
+    """The one Lr core and turn count the manufacturing page freezes.
+
+    Shared with the responsibility join so the two cannot freeze different
+    turn counts.  A turn count earns the freeze only by satisfying both
+    screens at once: it fits the published grinding range *and* holds
+    0.9*Bsat at the measured peaks paired with that turn count's own inductance.
+    """
+    lr = _json(BOM / "lr_design.json")
+    preferred = preferred_core(stage_id)
+    design = next(c for c in lr["catalogue_cores"]["cores"] if c["id"] == preferred)
+    usable = [t for t in design["turns"]
+              if t["passes_margin_at_paired_peaks"] and t["gap_inside_published_validity"]]
+    if not usable:
+        raise SystemExit(f"{preferred}: no turn count both fits the grinding range "
+                         f"and holds 0.9*Bsat at the measured peaks")
+    return {"stage": stage_id, "id": preferred, "design": design,
+            "turn": usable[0], "tank": lr["tank"]}
+
+
 def row(label: str, value: object, source: str, unit: str = "", digits: int = 3) -> dict:
     return {"label": label, "value": value, "unit": unit, "digits": digits, "source": source}
 

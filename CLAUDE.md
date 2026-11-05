@@ -800,6 +800,50 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   （U2.6=EN 叫 `RUN`，HI/LI 叫 `GD1`/`GD2`，`12V_P` 叫 `VCC12`），
   `test_every_peripheral_net_is_a_net_the_golden_netlist_already_uses` 锁住这一点。
 
+### 原生主板的取值 ECO（`tools/native_value_eco.py`）
+
+`hardware/dcx_main/placeholder_eco.json` 把 61 个占位按"主板能对它做什么"分类，
+`value_eco.js` 只执行 `NATIVE_VALUE_EDIT` 一类——因为这是编辑器 API 唯一能完成的一类。
+**批次已跑完（2026-11-05）**：37 行取值写进了唯一原生工程并落盘，
+`ECO class` 从 **12 / 37 / 12** 变成 **49（ALREADY_CONFORMS）/ 0 / 12（NATIVE_DEVICE_CHANGE）**，
+剩下 12 行（C5、Cin、Cout、Cr、D_BT、Lr、CT、R3 与 T1–T4）必须 GUI 换器件/封装。
+
+- **`component_decision_register.json` 是生成物，手改会被静默回滚**：`tools/d1_sourcing_register.py`
+  从 `design/v3/bom/bom_draft.csv` 取 `existing_value_or_rating`、从 `pin_footprint_review.csv`
+  取引脚状态重写它。要改结论先改 `bom_draft.csv`（手工维护、无生成器）再重跑。
+  这一条踩过一次：手改 34 行 `issues` 后差异消失得无影无踪。
+- **`--path` 打开的工程保存回它自己的路径，不是 `%APP_PROJECT_DIR%`**：上面那条
+  "保存到 `D:\workshop\LCEDA-Pro\projects\...eprj2` 再 `cp` 进仓库"只对**按名字打开**的工程成立。
+  这次按 `--path hardware/dcx_main/dcx_main_board.eprj2` 打开，`save()` 直接把仓库里那份
+  从 2 338 816 写成 2 355 200 字节（防抖约 20 s），而 `projects` 里那份纹丝不动。
+  当时盯着错的文件看，差点把成功的保存判成失败——**判据要盯被打开的那个路径**。
+- **按路径打开时工程 uuid 不稳定**：同一个文件三次打开给出三个 uuid
+  （`f7433cc3…`、`0054c1e0…`，探针副本又是另一个），所以身份判据只能是 `friendlyName`（文件主干）。
+  `read_native_inventory.js` 里旧注释说"两次打开稳定"，结论对但理由错，已改。
+- **`sch_PrimitiveComponent.modify(id, {otherProperty})` 整表替换**：只传部分键会把
+  `LCSC Part Name`/`Datasheet`/`JLCPCB Part Class` 等厂家属性清空。必须传**完整的现有表**、
+  只改 `Value`。原语 id 取 `getState_PrimitiveId`（`getState_Id`/`getState_Uuid` 也可能答，
+  但本 build 上答的是它）。
+- **写完必须用新句柄读回**：同一原语的 `getState_OtherProperty()` 是取句柄时的**快照**，
+  在同一个 invoke 里 `modify()` 之后立刻读会读到旧值。实测一次 37 行的批次报了
+  **37 个 `EDIT_FAILED`**，而重新 `getAll()` 一看 37 个值全对；单独的自检把这条钉死：
+  把 R4 改回 `10kΩ` 后新句柄读到 `10kΩ`、写它的那个句柄仍读 `2.2Ω`。
+  所以 `value_eco.js` 的校验是**第二遍**遍历新 `getAll()`，且拿"发出去的那张表"当期望值
+  （`attribute_loss` 与它逐键比），不是拿写之前的快照比。
+- **GBK 命令行带不了 `Ω`（U+03A9）**：`--code` 里出现字面 Ω 会被转成代理项并
+  `UnicodeEncodeError`。`native_value_eco.render()` 用 `json.dumps(..., ensure_ascii=True)`
+  把正文渲染成纯 ASCII（`\u03a9`），`test_the_body_is_pure_ascii_...` 锁住。
+- **执行完之后计划文件就是"执行记录"，不能再按"等于现算的清单"判新鲜**：
+  `build()` 现在为空（那 37 行已变 `ALREADY_CONFORMS`），若仍要求 plan == build()，
+  一次成功的运行会把自己的记录判成过期。`stale_reason()` 因此接受两种状态：
+  与 ECO 表一致（执行前），或**每一条编辑都等于落盘后主板的读数**（执行后）。
+  `--write-plan` 在"记录非空且主板逐条匹配"时**拒绝**用空计划覆盖它。
+- 核对链：`python tools/native_value_eco.py --check` 打印
+  `executed record current: all 37 edits read back from the saved board`；
+  原始读数在 `hardware/dcx_main/gen/native_inventory_raw.json`（**文件是整个 CLI 信封
+  `{ok,value,logs,durationMs}`**，不是里面那个 `value`——写错会让 `placeholder_eco` 报
+  `is not an inventory dump: None`）。
+
 ## 单对真实 SR 关断验证板（`pcb/sr_fault_validation`）
 
 `tools/make_sr_fault_board.py` 是 D0 之后的下一实物：**一对真实 UCC24624 + 两只

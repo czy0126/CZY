@@ -33,6 +33,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import main_board_schematic as schematic
+from magnetics_rfq_package import frozen_lr_core
 
 ROOT = Path(__file__).resolve().parent.parent
 HW = ROOT / "hardware/dcx_main"
@@ -43,6 +44,7 @@ LIB = ROOT / "models/sr_timing_v3_3.lib"
 GOLDEN = ROOT / "design/v3/pcb/board_netlist.csv"
 REGISTER = HW / "component_decision_register.json"
 PIN_REVIEW = HW / "pin_footprint_review.csv"
+INVENTORY = HW / "gen/native_inventory_raw.json"
 RFQ = HW / "rfq"
 OUT_JSON = HW / "placeholder_eco.json"
 OUT_CSV = HW / "placeholder_eco.csv"
@@ -78,6 +80,26 @@ def _si(text: str) -> float:
     return float(text)
 
 
+def schematic_si(text: str | None) -> float | None:
+    """Parse the schematic's own value style: ``10kΩ``, ``2.2Ω``, ``220nF``.
+
+    The native project writes the part value as ``<number><multiplier><unit>``
+    with no space, and the unit is sometimes the ohm sign and sometimes ``F``.
+    Only the multiplier changes the number, so stripping the unit first keeps
+    ohms, farads and henries in one function -- the ref decides which quantity
+    is being compared, never the string.
+    """
+    if not text:
+        return None
+    body = text.strip()
+    while body and body[-1] in "FΩΩ":
+        body = body[:-1]
+    try:
+        return _si(body)
+    except ValueError:
+        return None
+
+
 def deck_element(name: str) -> list[str]:
     """Tokens of the deck line whose first token is ``name``.
 
@@ -95,7 +117,6 @@ def deck_element(name: str) -> list[str]:
 def _sources() -> dict[str, dict]:
     """role -> the artefact that fixes its value, with the numbers recomputed."""
     mag = _json(MAG)
-    lr = _json(BOM / "lr_design.json")
     ct = _json(BOM / "ct_design.json")
     cout = _json(BOM / "cout_bank.json")
     cr = _json(BOM / "cr_stress.json")
@@ -104,8 +125,11 @@ def _sources() -> dict[str, dict]:
 
     bank = cout["banks"][0]
     burden_run = burden["results"]["runs"][0]
-    three = next(c for c in lr["candidates"] if c["turns"] == 3)
     as_built = ct["as_built"]
+    # One freeze, one source: the manufacturing page picks the Lr core and turn
+    # count through the same helper, so the join cannot quote a different part.
+    lr = frozen_lr_core()
+    lr_tank, lr_turn = lr["tank"], lr["turn"]
 
     cf = _si(deck_element("Cf")[3])
     rf = _si(deck_element("Rf")[3])
@@ -135,11 +159,15 @@ def _sources() -> dict[str, dict]:
             "value": f"centre-leg gap {mag['gap_mm']:.4f} mm from AL; Lm 10 uH, 3:1:1",
             "numbers": {"gap_mm": mag["gap_mm"]}},
         "resonant inductor": {
-            "source": "design/v3/bom/lr_design.json:tank,candidates[3 turns]",
-            "value": (f"tank total {lr['tank']['total_target_h'] * 1e6:.3f} uH external, "
-                      f"3 turns, gap {three['gap_mm']:.4f} mm, Isat {three['isat_a']:.1f} A"),
-            "numbers": {"total_h": lr["tank"]["total_target_h"],
-                        "gap_mm": three["gap_mm"], "isat_a": three["isat_a"]}},
+            "source": f"design/v3/bom/lr_design.json:catalogue_cores[{lr['id']}].turns + tank",
+            "value": (f"external L {lr_tank['external_target_h'] * 1e6:.3f} uH = tank "
+                      f"{lr_tank['total_target_h'] * 1e6:.3f} uH less the modelled "
+                      f"{lr_tank['leakage_model_h'] * 1e6:.3f} uH leakage; {lr['id']} "
+                      f"{lr_turn['turns']} turns, gap {lr_turn['gap_mm']:.4f} mm, "
+                      f"Isat {lr_turn['isat_a_amin']:.1f} A (Amin)"),
+            "numbers": {"external_h": lr_tank["external_target_h"],
+                        "total_h": lr_tank["total_target_h"],
+                        "gap_mm": lr_turn["gap_mm"], "isat_a": lr_turn["isat_a_amin"]}},
         "over-current CT": {
             "source": "design/v3/bom/ct_design.json:as_built",
             "value": (f"{as_built['turns_ratio']:.0f}:1, burden {as_built['burden_ohm']:.1f} ohm, "
@@ -197,6 +225,191 @@ def _sources() -> dict[str, dict]:
             "source": f"{lib}:150 (8.7/3.1 ohm drive)",
             "value": "2.2 ohm external; 6.5/0.9 ohm UCC24624 + 2.2 = the model's 8.7/3.1",
             "numbers": {"drive_on_ohm": 8.7, "drive_off_ohm": 3.1, "external_ohm": 2.2}},
+    }
+
+
+# ---------------------------------------------------------------- ECO batch
+#
+# The review asked to apply the standard-device batch to the one native
+# project rather than update a CSV and leave the board on its old parts.  That
+# needs three facts per row and none of them may be guessed:
+#
+#   * what the board holds now -- ``gen/native_inventory_raw.json``, a read-only
+#     dump of the running editor (Value, footprint name, library device);
+#   * what it must hold        -- a deck element, the register's frozen number,
+#     or PERIPHERALS for the 17 the deck does not model;
+#   * whether that is a value change or a device change.
+#
+# A value change touches only ``otherProperty.Value``.  The library device is
+# what a BOM export emits, so the edit leaves it in place -- recorded as a
+# residual risk below, not glossed over.
+ECO_EXECUTOR = {
+    "ALREADY_CONFORMS": "NONE_BOARD_MPN_ONLY",
+    "NATIVE_VALUE_EDIT": "TOOL_NATIVE_VALUE_ECO",
+    "NATIVE_DEVICE_CHANGE": "GUI_DEVICE_SWAP",
+}
+
+# refs whose target value the SPICE deck models by name, so the number is read
+# off the deck rather than retyped here
+DECK_BACKED = {
+    "R1": "Rdt", "R2": "Rrt", "R3": "Rbur", "R15": "Rf", "R16": "Rd1",
+    "R17": "Rd2", "R18": "RgsH", "R19": "RgsL",
+    "C5": "Cbt", "C6": "Css", "C11": "Cf", "C12": "Coc",
+}
+
+# target values with neither a deck element nor a schematic entry: the number
+# is the register's frozen value and no computed artefact fixes it
+FIXED: dict[str, tuple[float, str]] = {"R4": (2.2, "ohm"), "R5": (2.2, "ohm")}
+for _ref in (f"R{i}" for i in range(20, 28)):
+    FIXED[_ref] = (2.2, "ohm")  # SR gate resistor, external
+for _ref in (f"R{i}" for i in range(28, 36)):
+    FIXED[_ref] = (0.0, "ohm")  # SR drain Kelvin link
+for _ref in ("C7", "C8", "C9", "C10"):
+    FIXED[_ref] = (2.2e-6, "farad")  # UCC24624 REG capacitor per its datasheet
+del _ref
+
+# refs whose package or device is wrong whatever the value is.  A value edit
+# cannot fix these: the placed library device is the orderable part.
+DEVICE = {
+    "C5": ("0805", "220 nF >= 25 V bootstrap capacitor; the 0603 placeholder cannot hold the value"),
+    "R3": ("0805 or larger",
+           "10 ohm burden dissipates 125.7 mW continuous = 100.6 % of a 0.125 W 0805 "
+           "before derating, so the resistance stays frozen and the package must move"),
+    "Cin": ("48 V bank", "the board carries one 0603 symbol for the whole input bank"),
+    "Cout": ("polymer SMD bank", "the board carries one 0603 symbol for fifteen 470 uF parts"),
+    "Cr": ("film", "0.62 uF film bank; the 0603 placeholder is not a film part"),
+    "D_BT": ("SOD-323", ">=100 V standoff: the placed BAT54WS is a 30 V part"),
+    "Lr": ("ELP38", "custom 2-turn ELP38 inductor; no 10 mm SMD inductor holds 1.0 uH at 84 A"),
+    "CT": ("4-terminal custom", "current transformer; the present two-pad footprint is invalid"),
+    "T1": ("ELP32 3:1:1", "custom wound transformer on the ELP32 kit"),
+    "T2": ("ELP32 3:1:1", "custom wound transformer on the ELP32 kit"),
+    "T3": ("ELP32 3:1:1", "custom wound transformer on the ELP32 kit"),
+    "T4": ("ELP32 3:1:1", "custom wound transformer on the ELP32 kit"),
+}
+
+SIZE_CODES = ("0201", "0402", "0603", "0805", "1206", "1210", "2010", "2512")
+
+
+@lru_cache(maxsize=None)
+def _native() -> dict[str, dict]:
+    """ref -> the live board's own reading, straight out of the inventory dump."""
+    if not INVENTORY.is_file():
+        raise SystemExit(
+            f"{INVENTORY} is missing: run hardware/dcx_main/gen/read_native_inventory.js "
+            "against the native project (read-only; the header of that file has the two CLI calls)")
+    value = _json(INVENTORY).get("value") or {}
+    if value.get("status") != "INVENTORY":
+        raise SystemExit(f"{INVENTORY} is not an inventory dump: {value.get('status')!r}")
+    return {c["ref"]: c for c in value["components"]}
+
+
+def package_code(name: str | None) -> str | None:
+    """Chip size code of a footprint name; anything else compares verbatim.
+
+    The native board names footprints ``R0603``/``C0603`` while the register
+    writes ``0603``, so the size code is the comparable part.
+    """
+    if not name:
+        return None
+    for code in SIZE_CODES:
+        if code in name:
+            return code
+    return name
+
+
+def display(si: float, quantity: str) -> str:
+    """Write a value in the native project's own style: ``5.36kΩ``, ``220nF``."""
+    def trim(x: float) -> str:
+        return f"{x:.6g}"
+
+    if quantity == "ohm":
+        return f"{trim(si / 1e3)}kΩ" if abs(si) >= 1e3 else f"{trim(si)}Ω"
+    if abs(si) >= 1e-6:
+        return f"{trim(si / 1e-6)}uF"
+    return f"{trim(si / 1e-9)}nF"
+
+
+def target(ref: str, role: str) -> dict:
+    """What the board must hold at ``ref``: SI value, style, package and source."""
+    value_si: float | None = None
+    source = ""
+
+    if ref in DECK_BACKED:
+        element = DECK_BACKED[ref]
+        value_si = _si(deck_element(element)[3])
+        source = f"{DECK.name}:{element}"
+    elif ref in FIXED:
+        value_si = FIXED[ref][0]
+        source = "component_decision_register.json (frozen value, no computed artefact)"
+    elif ref in schematic.PERIPHERALS:
+        part = schematic.PERIPHERALS[ref]
+        value_si = schematic_si(part["value"])
+        source = "tools/main_board_schematic.py:PERIPHERALS"
+
+    package, why = DEVICE.get(ref, (None, ""))
+    if package and not source:
+        source = "component_decision_register.json (device, not a value)"
+    quantity = "ohm" if ref.startswith("R") else "farad"
+    return {
+        "value_si": value_si,
+        "value": None if value_si is None else display(value_si, quantity),
+        "package": package,
+        "why": why or source,
+        "source": source,
+    }
+
+
+def eco(ref: str, role: str) -> dict:
+    """Classify one ref against the live board and write its acceptance test."""
+    native = _native().get(ref, {})
+    footprint = (native.get("footprint") or {}).get("name") or None
+    device = (native.get("component") or {}).get("name") or None
+    native_si = schematic_si(native.get("value"))
+    want = target(ref, role)
+
+    if want["package"] and package_code(want["package"]) != package_code(footprint):
+        klass = "NATIVE_DEVICE_CHANGE"
+    elif want["value_si"] is None or native_si is None:
+        klass = "NATIVE_DEVICE_CHANGE"
+    elif abs(want["value_si"] - native_si) <= 1e-9 * max(1.0, abs(want["value_si"])):
+        klass = "ALREADY_CONFORMS"
+    else:
+        klass = "NATIVE_VALUE_EDIT"
+
+    acceptance = {
+        "ALREADY_CONFORMS":
+            f"no edit: the board already reads {native.get('value')} ({device}); "
+            f"only the BOM MPN is open",
+        "NATIVE_VALUE_EDIT":
+            f"re-run gen/read_native_inventory.js and require Value {want['value']} "
+            f"with the LCSC Part Name unchanged ({device})",
+        "NATIVE_DEVICE_CHANGE":
+            f"the package/device must be swapped in the editor (a value edit cannot do it); "
+            f"accept when the inventory shows {want['package']}",
+    }[klass]
+    risk = {
+        "ALREADY_CONFORMS": "the placed device and its MPN stay the register's open item",
+        "NATIVE_VALUE_EDIT":
+            f"the library device stays {device}, so the BOM still lists that part: the value "
+            f"edit moves what is printed on the board and in the schematic, not what is ordered",
+        "NATIVE_DEVICE_CHANGE":
+            "not executable through the editor API: the swap is a GUI step, then re-inventory",
+    }[klass]
+
+    return {
+        "native_value": native.get("value"),
+        "native_value_si": native_si,
+        "native_package": footprint,
+        "native_device": device,
+        "target_value": want["value"],
+        "target_value_si": want["value_si"],
+        "target_package": want["package"],
+        "eco_target_source": want["why"],
+        "eco_class": klass,
+        "eco_executor": ECO_EXECUTOR[klass],
+        "eco_acceptance": acceptance,
+        "placed_device_unchanged": klass != "NATIVE_DEVICE_CHANGE",
+        "eco_residual_risk": risk,
     }
 
 
@@ -285,6 +498,7 @@ def rows() -> list[dict]:
             "decision_owner": item["decision_owner"],
             "reviewer": item["reviewer"],
             "verified_mpn": item["verified_mpn"],
+            **eco(ref, role),
         })
     return out
 
@@ -297,6 +511,7 @@ def build() -> dict:
         "by_netlist_governance": {},
         "by_blocked_on": {},
         "by_native_pin_review": {},
+        "by_eco_class": {},
         "traced_requirements": sum(1 for r in rs if r["requirement_source"]),
         "untraced_requirements": sum(1 for r in rs if not r["requirement_source"]),
         "with_decision_owner": sum(1 for r in rs if r["decision_owner"]),
@@ -305,7 +520,8 @@ def build() -> dict:
     for key, bucket in (("priority", "by_priority"),
                         ("netlist_governance", "by_netlist_governance"),
                         ("blocked_on", "by_blocked_on"),
-                        ("native_pin_review", "by_native_pin_review")):
+                        ("native_pin_review", "by_native_pin_review"),
+                        ("eco_class", "by_eco_class")):
         for row in rs:
             counts[bucket][row[key]] = counts[bucket].get(row[key], 0) + 1
 
@@ -331,15 +547,29 @@ def build() -> dict:
             r["native_pin_review_scope"] == "LOGICAL_TERMINAL_NAME_ONLY"
             for r in rs if r["blocked_on"] == "MAGNETIC_PHYSICAL_TERMINAL_DRAWING"),
         "every_row_carries_a_next_action": all(r["next_action"].strip() for r in rs),
+        "every_row_is_classified_against_the_live_board": all(
+            r["eco_class"] in ECO_EXECUTOR and r["eco_executor"] == ECO_EXECUTOR[r["eco_class"]]
+            for r in rs),
+        "a_value_edit_never_targets_the_value_the_board_already_has": all(
+            abs(r["target_value_si"] - r["native_value_si"])
+            > 1e-9 * max(1.0, abs(r["target_value_si"]))
+            for r in rs if r["eco_class"] == "NATIVE_VALUE_EDIT"),
+        "a_row_whose_package_changes_is_never_a_value_edit": all(
+            r["eco_class"] == "NATIVE_DEVICE_CHANGE" for r in rs
+            if r["target_package"] and package_code(r["target_package"]) != package_code(r["native_package"])),
+        "no_row_claims_the_placed_device_changes_when_only_its_value_does": all(
+            r["placed_device_unchanged"] is (r["eco_class"] != "NATIVE_DEVICE_CHANGE") for r in rs),
     }
     return {"status": STATUS, "counts": counts, "checks": checks, "rows": rs}
 
 
 def to_csv(rs: list[dict]) -> str:
     columns = ["ref", "priority", "part_role", "netlist_governance", "native_pin_review",
-               "native_pin_review_scope", "native_open_pins", "requirement_source",
-               "requirement", "blocked_on", "next_action", "decision_owner", "reviewer",
-               "verified_mpn"]
+               "native_pin_review_scope", "native_open_pins",
+               "eco_class", "eco_executor", "native_value", "native_package", "native_device",
+               "target_value", "target_package", "eco_acceptance", "eco_residual_risk",
+               "requirement_source", "requirement", "blocked_on", "next_action",
+               "decision_owner", "reviewer", "verified_mpn"]
     lines = [",".join(columns)]
     for row in rs:
         cells = []
@@ -373,6 +603,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"netlist governance: {counts['by_netlist_governance']}")
     print(f"blocked on: {counts['by_blocked_on']}")
     print(f"native pin review: {counts['by_native_pin_review']}")
+    print(f"ECO class: {counts['by_eco_class']}")
     print(f"owners assigned: {counts['with_decision_owner']}  "
           f"verified MPNs: {counts['with_verified_mpn']}")
     if "--write" in args:

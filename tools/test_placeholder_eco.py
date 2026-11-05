@@ -83,13 +83,26 @@ def test_the_transformer_gap_is_recomputed_from_the_magnetics_package(by_ref):
     assert by_ref["T1"]["requirement"].startswith("centre-leg gap")
 
 
-def test_the_inductor_requirement_is_the_three_turn_candidate(by_ref):
+def test_the_inductor_requirement_is_the_frozen_two_turn_elp38(by_ref):
+    """Lr froze on ELP38 at two turns; the old ELP32 three-turn screen is history.
+
+    The ELP32 3-turn part is what the 10 mm-era screen chose.  The 16 mm policy
+    moved Lr to ELP38, and there three turns need a 2.165 mm gap -- outside the
+    published 0.10-2.00 mm grinding range -- so the frozen part is two turns.
+    """
+    frozen = eco.frozen_lr_core()
     lr = source_json("lr_design.json")
     three = next(c for c in lr["candidates"] if c["turns"] == 3)
     numbers = by_ref["Lr"]["requirement_numbers"]
+    assert frozen["id"] == "ELP38_I38"
+    assert frozen["turn"]["turns"] == 2
     assert numbers["total_h"] == pytest.approx(lr["tank"]["total_target_h"])
-    assert numbers["gap_mm"] == pytest.approx(three["gap_mm"])
-    assert numbers["isat_a"] == pytest.approx(three["isat_a"])
+    assert numbers["external_h"] == pytest.approx(lr["tank"]["external_target_h"])
+    assert numbers["gap_mm"] == pytest.approx(frozen["turn"]["gap_mm"])
+    assert numbers["isat_a"] == pytest.approx(frozen["turn"]["isat_a_amin"])
+    # the superseded ELP32 part must not come back through this row
+    assert numbers["gap_mm"] != pytest.approx(three["gap_mm"])
+    assert "ELP38_I38" in by_ref["Lr"]["requirement_source"]
 
 
 def test_the_ct_trip_current_is_recomputed_from_ct_design(by_ref):
@@ -219,6 +232,90 @@ def test_every_row_carries_a_next_action_without_inventing_a_part(built):
     assert len(untraced) == 12
     for row in untraced:
         assert "no computed requirement exists" in row["next_action"], row["ref"]
+
+
+# ---------------------------------------------------------------- ECO batch
+def test_every_row_is_classified_against_the_live_board(by_ref):
+    """The class is computed from what the board holds, not chosen by hand.
+
+    ``gen/native_inventory_raw.json`` is the read-only dump of the running
+    editor, so a row's class says something about the board rather than about
+    the register's intentions.
+    """
+    executor = {"ALREADY_CONFORMS": "NONE_BOARD_MPN_ONLY",
+                "NATIVE_VALUE_EDIT": "TOOL_NATIVE_VALUE_ECO",
+                "NATIVE_DEVICE_CHANGE": "GUI_DEVICE_SWAP"}
+    for row in by_ref.values():
+        assert row["eco_class"] in executor, row["ref"]
+        assert row["eco_executor"] == executor[row["eco_class"]], row["ref"]
+        assert row["eco_acceptance"].strip(), row["ref"]
+        # The board's own reading is reported for every row, blank included:
+        # a magnetic with no Value property reads None, never a guess.
+        assert "native_value" in row and "native_package" in row, row["ref"]
+
+
+def test_the_eco_classes_partition_the_placeholders(built):
+    """The split moved after the native value ECO ran; it must not move back.
+
+    Before the batch this was 12 conforming / 37 value edits / 12 device
+    changes.  The 37 were applied to the native board, so they joined the
+    conforming group and only the MPN is still open on them.
+    """
+    counts = built["counts"]["by_eco_class"]
+    assert sum(counts.values()) == 61
+    assert counts["ALREADY_CONFORMS"] == 49
+    assert counts.get("NATIVE_VALUE_EDIT", 0) == 0
+    # The 8 whose package or device is wrong (C5, Cin, Cout, Cr, D_BT, Lr, CT,
+    # R3) and the four transformers -- the only rows left for the GUI.
+    assert counts["NATIVE_DEVICE_CHANGE"] == 12
+
+
+def test_a_row_whose_package_must_change_is_never_a_value_edit(by_ref):
+    """R3's resistance is frozen but its 0805 0.125 W part is ruled out by
+    125.7 mW, so the row is a device change even though 10 ohm is also new."""
+    assert by_ref["R3"]["eco_class"] == "NATIVE_DEVICE_CHANGE"
+    assert by_ref["R3"]["target_package"] != "0603"
+    for ref in ("C5", "Cin", "Cout", "Cr", "D_BT", "Lr", "CT", "T1", "T2", "T3", "T4"):
+        assert by_ref[ref]["eco_class"] == "NATIVE_DEVICE_CHANGE", ref
+
+
+def test_a_value_edit_target_is_really_different_from_the_board(by_ref):
+    """A "value edit" that matches the board would be a no-op dressed up as work."""
+    for row in by_ref.values():
+        if row["eco_class"] == "NATIVE_VALUE_EDIT":
+            assert row["target_value_si"] is not None, row["ref"]
+            assert abs(row["target_value_si"] - row["native_value_si"]) > 1e-9 * max(
+                1.0, abs(row["target_value_si"])), row["ref"]
+
+
+def test_every_deck_modelled_target_is_the_deck_element(by_ref):
+    """The register text and the SPICE deck must not disagree.
+
+    Twelve of the sixty-one are modelled in the deck by name; for those the
+    target read off the register has to equal the deck's own number, otherwise
+    one of the two has drifted and the ECO would print the wrong value.
+    """
+    for ref, element in (("R1", "Rdt"), ("R2", "Rrt"), ("R3", "Rbur"),
+                         ("R15", "Rf"), ("R16", "Rd1"), ("R17", "Rd2"),
+                         ("R18", "RgsH"), ("R19", "RgsL"),
+                         ("C5", "Cbt"), ("C6", "Css"), ("C11", "Cf"), ("C12", "Coc")):
+        target = by_ref[ref]["target_value_si"]
+        assert target == pytest.approx(eco._si(eco.deck_element(element)[3])), ref
+
+
+def test_an_applied_value_edit_is_not_read_as_a_part_change(by_ref):
+    """The library device is what a BOM exports; a value edit cannot swap it.
+
+    The batch has run, so the rows to check are the ones the committed plan
+    actually edited.  Selecting on ``NATIVE_VALUE_EDIT`` would now select
+    nothing and assert nothing.
+    """
+    plan = json.loads((eco.HW / "gen/value_eco_plan.json").read_text(encoding="utf-8"))
+    edited = [by_ref[e["ref"]] for e in plan["edits"]]
+    assert len(edited) == 37
+    for row in edited:
+        assert row["placed_device_unchanged"] is True, row["ref"]
+        assert "device" in row["eco_residual_risk"].lower() or "BOM" in row["eco_residual_risk"]
 
 
 # ---------------------------------------------------------------- artefacts

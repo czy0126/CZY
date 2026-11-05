@@ -12,7 +12,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -202,7 +202,7 @@
       "current_package": "0603",
       "source_path": "sim/v2/startup_ct_fault_drv.cir",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -278,7 +278,7 @@
       "current_package": "0603",
       "source_path": "docs/续接任务书_真实控制与SR.md",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -316,7 +316,7 @@
       "current_package": "0805",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -335,7 +335,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -354,7 +354,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -373,7 +373,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -392,7 +392,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 100 nF; value is TO ASSIGN"
+        "PLACEHOLDER 0603 100 nF; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -501,12 +501,12 @@
       "ref": "Lr",
       "priority": "P0",
       "part_role": "resonant inductor",
-      "existing_value_or_rating": "1.0 uH external (trim to 1.00 uH tank total minus measured leakage); 13.9 A steady, 22.5 A startup (physical deck), 84.0 A @1.0 uH and 104.2 A @0.875 uH fault-to-trip; ELP32 N97 3 turns 1.44 mm gap (2 turns gives 0.351 T > Bsat 0.310 T, eliminated)",
+      "existing_value_or_rating": "L_external = 0.920 uH (1.000 uH tank total less the modelled 0.080 uH leakage; the 1.000 uH figure is the sizing ceiling, not the winding target); 13.9 A steady, 22.5 A startup (physical deck), 84.0 A @1.0 uH and 104.2 A @0.875 uH fault-to-trip; frozen on TDK ELP38_I38 N97 2 turns / 0.9461 mm gap, Isat 119.0 A (Amin), worst paired flux 0.2349 T = 75.8 % of Bsat. Supersedes the ELP32 3-turn / 1.444 mm choice, which was screened against a 10 mm total height: its 2-turn variant reached 0.351 T > Bsat, and on ELP38 the same 3 turns need 2.165 mm, outside the published 0.10-2.00 mm grinding range",
       "current_mpn": "TO SELECT",
       "current_package": "-",
       "source_path": "docs/续接任务书_真实控制与SR.md",
       "issues": [
-        "PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP32 3-turn / 1.444 mm gap part"
+        "PLACEHOLDER 10 uH SMD inductor; the design is a custom ELP38_I38 2-turn / 0.9461 mm gap / Isat 119.0 A part (see hardware/dcx_main/placeholder_eco.json)"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -525,7 +525,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -563,7 +563,7 @@
       "current_package": "0603",
       "source_path": "sim/v2/startup_ct_fault_drv.cir",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -582,7 +582,7 @@
       "current_package": "0603",
       "source_path": "sim/v2/startup_ct_fault_drv.cir",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -601,7 +601,7 @@
       "current_package": "0603",
       "source_path": "sim/v2/startup_ct_fault_drv.cir",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -620,7 +620,7 @@
       "current_package": "0603",
       "source_path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -639,7 +639,7 @@
       "current_package": "0603",
       "source_path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -658,7 +658,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -677,7 +677,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -696,7 +696,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -715,7 +715,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -734,7 +734,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -753,7 +753,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -772,7 +772,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -791,7 +791,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -810,7 +810,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -829,7 +829,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -848,7 +848,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -886,7 +886,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -905,7 +905,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -924,7 +924,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -943,7 +943,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -962,7 +962,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -981,7 +981,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -1000,7 +1000,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,
@@ -1019,7 +1019,7 @@
       "current_package": "0603",
       "source_path": "pin_connections.csv",
       "issues": [
-        "PLACEHOLDER 0603 10k; value is TO ASSIGN"
+        "PLACEHOLDER 0603 10k; design value frozen (see placeholder_eco.json), MPN TO ASSIGN"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
       "verified_mpn": null,

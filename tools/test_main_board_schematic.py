@@ -103,12 +103,24 @@ def test_placing_the_same_pad_twice_with_different_nets_is_rejected(monkeypatch)
 
 
 def test_the_review_sheet_says_which_parts_are_placeholders():
-    p = plan()
-    notes = {r["ref"]: r["note"] for r in p["review_rows"]}
-    assert notes["Lr"].startswith("PLACEHOLDER")
-    assert "ELP32" in notes["Lr"]
+    """The note must name the *frozen* magnetic part, not the superseded one.
+
+    Lr moved from a 10 mm-era ELP32 3-turn screen to ELP38 (two turns: three
+    would need a 2.165 mm gap, outside the 0.10-2.00 mm grinding range).  The
+    numbers are read from the same helper the RFQ sheet and the responsibility
+    join use, so the sheet cannot drift back to the old part on its own.
+    """
+    from magnetics_rfq_package import frozen_lr_core
+
+    frozen = frozen_lr_core()
+    note = {r["ref"]: r["note"] for r in plan()["review_rows"]}["Lr"]
+    assert note.startswith("PLACEHOLDER")
+    assert frozen["id"] in note, note
+    assert f"{frozen['turn']['gap_mm']:.4f} mm" in note, note
+    assert "Isat" in note, note
+    assert "ELP32" not in note, note
     # a part that is genuinely the design part carries no placeholder note
-    assert notes["U1"] == ""
+    assert {r["ref"]: r["note"] for r in plan()["review_rows"]}["U1"] == ""
 
 
 def test_golden_netlist_pin_count_is_still_193():

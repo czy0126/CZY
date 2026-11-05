@@ -204,17 +204,12 @@ def transformer(ref: str) -> dict:
 
 
 def inductor() -> dict:
-    lr = _json(BOM / "lr_design.json")
-    tank = lr["tank"]
+    frozen = rfq.frozen_lr_core()
+    tank = frozen["tank"]
     candidates = rfq.lr_core_candidates()
     preferred = candidates["preferred"]
-    design = next(c for c in lr["catalogue_cores"]["cores"] if c["id"] == preferred)
-    usable = [t for t in design["turns"]
-              if t["passes_margin_at_paired_peaks"] and t["gap_inside_published_validity"]]
-    if not usable:
-        raise SystemExit(f"{preferred}: no turn count both fits the grinding range "
-                         f"and holds 0.9*Bsat at the measured peaks")
-    turn = usable[0]
+    design = frozen["design"]
+    turn = frozen["turn"]
     turns = turn["turns"]
     external = tank["external_target_h"]
     al_nh = tank["total_target_h"] / turns**2 * 1e9
