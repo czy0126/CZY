@@ -27,10 +27,10 @@ R6,23k,Resistor_SMD:R_0603_1608Metric,,2.5 V * 2/25 = 0.200 V; gate-sum threshol
 R7,2k,Resistor_SMD:R_0603_1608Metric,,divider bottom,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C10,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,threshold bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 J3,CT secondary,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,<=20 V peak,CT 24/35-turn secondary; this board IS the burden path,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D5,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S1 -> cathode OCD (deck D1),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:112,1
-D6,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S2 -> cathode OCD (deck D2),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113,1
-D7,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S1 (deck D3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:114,1
-D8,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S2 (deck D4),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:115,1
+D5,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S1 -> cathode OCD (deck D1),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:112,1
+D6,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S2 -> cathode OCD (deck D2),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113,1
+D7,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S1 (deck D3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:114,1
+D8,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S2 (deck D4),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:115,1
 R8,10R 1%,Resistor_SMD:R_0805_2012Metric,0.25 W,burden Rbur (main R3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118,1
 R9,1k,Resistor_SMD:R_0603_1608Metric,,Rf (main R15),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:119,1
 C11,47nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Cf (main C11),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120,1
@@ -119,50 +119,50 @@ R48,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_
 R56,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C32,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R66,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D9,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D9,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R49,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R57,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C33,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R67,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D10,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D10,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R50,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R58,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C34,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R68,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D11,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D11,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R51,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R59,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C35,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R69,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D12,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D12,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R52,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R60,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C36,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R70,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D13,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D13,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R53,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R61,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C37,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R71,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D14,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D14,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R54,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R62,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C38,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R72,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D15,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D15,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R55,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
 R63,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C39,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
 R73,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D16,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D16,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R64,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C40,4nF,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = 4 nF,,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:Cgh,1
 R74,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D17,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"gate max detector, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D17,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"gate max detector, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R65,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C41,4nF,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = 4 nF,,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:Cgh,1
 R75,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
-D18,BAT54,Diode_SMD:D_SOD-123,30 V 200 mA,"gate max detector, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D18,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"gate max detector, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R76,22k,Resistor_SMD:R_0603_1608Metric,,"divider top.  With the ten 1k branches this bounds the comparator input by a ratio, not by a knee voltage: at most 2.629 V at 12 V and 3.286 V at the 15 V TVS standoff",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R77,6.2k,Resistor_SMD:R_0603_1608Metric,,divider bottom: 3.5 V * 28.3k / 6.2k = 15.98 V of gate rail before the LM393 input reaches its common-mode limit,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 J4,TG_HI/TG_LO/TG_SR,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm,,bench gate drive; all eight SR channels share TG_SR as in the deck,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
