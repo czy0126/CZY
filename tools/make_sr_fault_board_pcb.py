@@ -1994,9 +1994,9 @@ def normalise_fab_text_line_endings(directory: Path) -> list[str]:
         original = path.read_bytes()
         # Refuse an accidentally binary file; no silent corruption of drill
         # or pick-and-place exports merely because its extension was expected.
-        if b"\\x00" in original:
+        if bytes([0]) in original:
             raise ValueError(f"{path.name}: binary content in textual fab export")
-        fixed = original.replace(b"\\r\\n", b"\\n")
+        fixed = original.replace(bytes([13, 10]), bytes([10]))
         if fixed != original:
             path.write_bytes(fixed)
             changed.append(path.name)
