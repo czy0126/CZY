@@ -373,10 +373,23 @@ def test_the_generated_report_is_current(parts, report):
     assert on_disk == report
 
 
-def test_the_erc_report_is_clean_and_not_stale():
+def test_the_committed_erc_is_clean_and_source_has_a_hash_identity():
+    """Git checkout destroys mtimes; archived ERC is *cached*, not a fresh run.
+
+    Keep live-generator mtime checks, but bind checked-in schematic to the
+    manufacturing index's expected hash instead of checkout file ordering.
+    A fresh KiCad GUI/CLI ERC is still required before manufacturing approval.
+    """
+    import hashlib
+
     sch = OUT / "sr_fault_validation.kicad_sch"
-    violations = board.erc_violations(OUT / "erc.json", newer_than=sch)
-    assert violations == []
+    report = json.loads((OUT / "erc.json").read_text(encoding="utf-8"))
+    assert report["source"] == sch.name
+    assert board.erc_violations(OUT / "erc.json") == []
+    index = json.loads((board.ROOT / "pcb/manufacturing/index.json").read_text())
+    entry = next(x for x in index["boards"] if x["id"] == "sr_fault_validation")
+    assert entry["schematic_sha256"] == hashlib.sha256(sch.read_bytes()).hexdigest()
+    assert entry["flags"]["fabrication_approved"] is False
 
 
 def test_the_netlist_contains_the_critical_nets():
