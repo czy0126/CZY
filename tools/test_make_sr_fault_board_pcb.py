@@ -209,9 +209,12 @@ def test_each_drain_pin_owns_a_land(placed):
 
 
 def test_a_pad_the_schematic_never_names_stays_netless(board_text):
-    """SOT-23 is the three-pin package for a two-pin zener: pad 3 exists and is
-    left unconnected.  Unused copper is fine; copper tied to an undeclared net
-    would not be -- that is how a stray short gets onto a board."""
+    """SOT-23 is the three-pin package for a two-pin transistor: the spare pad
+    is a solderable surface with no net.  Unused copper is fine; copper tied to
+    an undeclared net would not be -- that is how a stray short gets onto a
+    board.  (D40 used to be the example here, which is exactly why it went
+    unnoticed that its *third* pad was carrying the cathode; the clamp now sits
+    on a two-pad land and is checked by the test below.)"""
     table = {p.ref: p for p in sch.parts() if p.footprint}
     spare = 0
     for ref, _, _, _, pads in _footprints(board_text):
@@ -224,6 +227,50 @@ def test_a_pad_the_schematic_never_names_stays_netless(board_text):
             assert pad["net"] is None, (ref, pad["number"])
             spare += 1
     assert spare, "no unused pad anywhere: the assertion above checked nothing"
+
+
+def _band_pad(lib_id: str) -> tuple[str, float]:
+    """The pad that sits under the footprint's cathode band, and that band's x.
+
+    The marking is read out of the vendored ``.kicad_mod``: the band is the one
+    vertical ``F.SilkS`` line (the body outline contributes horizontal ones plus
+    two vertical ends, so the band is the *shorter* vertical).  Reading the
+    library is the point -- a part's polarity is a physical marking, not
+    something the generator may assert about itself.
+    """
+    text = pcb.stock_text(lib_id)
+    verticals = []
+    for a, b, c, d in re.findall(
+            r"\(fp_line\s*\(start ([-\d.]+) ([-\d.]+)\)\s*\(end ([-\d.]+) ([-\d.]+)\)."
+            r"*?\(layer \"F\.SilkS\"\)", text, re.S):
+        if a == c:
+            verticals.append((float(a), abs(float(d) - float(b))))
+    band_x, _ = min(verticals, key=lambda v: v[1])
+    pads = [(num, float(x)) for num, x, _ in re.findall(
+        r"\(pad \"(\d+)\"[^(]*\(at ([-\d.]+) ([-\d.]+)\)", text)]
+    assert len(pads) == 2, (lib_id, pads)
+    return min(pads, key=lambda p: abs(p[1] - band_x))
+
+
+def test_the_shutdown_clamp_cathode_has_a_pad_and_lands_on_the_gate(board_text):
+    """D40 must conduct: the banded pad is the cathode, and it goes to FAULT_G.
+
+    On the previous SOT-23 land the symbol's pin 1 (K) reached pad 1 while the
+    BZX84 die puts its cathode on pin 3, so ``FAULT_G`` was tied to an anode and
+    ``PGND`` to a no-connect -- a clamp that never clamps, on the board whose
+    job is to validate the crowbar.  A two-pad package makes the band the only
+    sane reference, so the pin-to-pad mapping is settled by the marking.
+    """
+    d40 = next(p for p in sch.parts() if p.ref == "D40")
+    band, band_x = _band_pad(d40.footprint)
+    assert band == "1", f"the band sits over pad {band}, not pad 1"
+    assert d40.nets["1"] == "FAULT_G"
+    assert d40.nets["2"] == "PGND"
+    on_board = next(pads for ref, _, _, _, pads in _footprints(board_text)
+                    if ref == "D40")
+    assert {pad["number"]: pad["net"] for pad in on_board} == {
+        "1": "FAULT_G", "2": "PGND"}
+    assert band_x < 0, "the band is drawn on the -x end; pad 1 must be there too"
 
 
 def test_every_pad_net_index_points_at_the_right_name(board_text):
@@ -418,12 +465,16 @@ def test_the_committed_fill_report_covers_every_pour():
 
 @pytest.mark.skipif(not (OUT / "fill.json").exists(), reason="no fill.json in this checkout")
 def test_the_corridors_keep_their_copper():
-    """Route pressure is what makes the pours conductors, so the retention is the
+    """Keeping a pour whole is what makes it a conductor, so the retention is the
     thing to lock.  With signals routed across the corridors the fills kept
-    2.5 %-65 % of their outlines; with ``keep_clear`` they keep 79 %-94 % and the
-    two secondary corridors come out as a single patch each.  A threshold well
-    below the measured values leaves room for a KiCad fill-algorithm change
-    without letting the corridors quietly go back to being slits.
+    2.5 %-65 % of their outlines; with ``keep_clear`` pressure they kept 79 %-94 %
+    -- until a footprint change moved one PGND track across the output band and
+    VOUT fell to 11.3 %, because a price only wins when the detour costs more
+    than the crossing.  The band is now a barrier (``Pour.barrier``) and every
+    pour keeps 75 %-98 % as a single patch.  The threshold stays at 0.70: it is
+    well below the measured values, which leaves room for a KiCad fill-algorithm
+    change without letting the corridors quietly go back to being slits, and it
+    is not lowered to accommodate a bad route.
     """
     data = json.loads((OUT / "fill.json").read_text(encoding="utf-8"))
     for net, pour in data["pours"].items():

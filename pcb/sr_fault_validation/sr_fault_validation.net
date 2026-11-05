@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\sr_fault_validation\\sr_fault_validation.kicad_sch")
-		(date "2026-11-05T22:13:21")
+		(date "2026-11-06T05:06:40")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -824,17 +824,17 @@
 		)
 		(comp
 			(ref "D40")
-			(value "BZX84C5V1")
-			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "input clamp; cathode on FAULT_G")
+			(value "5V1")
+			(footprint "Diode_SMD:D_SOD-123")
+			(description "input clamp; two-pad land so the cathode (pad 1, the banded end) actually reaches FAULT_G -- an SOT-23 land left pad 3, which is where a BZX84 puts its cathode, as spare copper.  MPN TO_SELECT: no 5.1 V zener datasheet is in the repository")
 			(fields
 				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
+					(name "Footprint") "Diode_SMD:D_SOD-123")
 				(field
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "input clamp; cathode on FAULT_G")
+					(name "Description") "input clamp; two-pad land so the cathode (pad 1, the banded end) actually reaches FAULT_G -- an SOT-23 land left pad 3, which is where a BZX84 puts its cathode, as spare copper.  MPN TO_SELECT: no 5.1 V zener datasheet is in the repository")
 			)
 			(libsource
 				(lib "Device")

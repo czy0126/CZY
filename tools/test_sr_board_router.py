@@ -306,7 +306,7 @@ def test_a_pour_corridor_costs_every_net_but_its_owner():
     """The corridor is charged, not blocked: the owner routes through it free,
     every other net pays, and the charge lives only on the zone's layer."""
     outline = [(0.0, 0.0), (4.0, 0.0), (4.0, 2.0), (0.0, 2.0)]
-    router = rt.Router([], 10.0, 10.0, [], keep_clear={0: [(outline, 5)]})
+    router = rt.Router([], 10.0, 10.0, [], keep_clear={0: [(outline, 5, 0)]})
 
     owner = router._zone_cost(5)
     assert not any(owner[0]), "the pour's own net must not be charged"
@@ -316,6 +316,70 @@ def test_a_pour_corridor_costs_every_net_but_its_owner():
     assert foreign[0][inside] == rt.ZONE_PRESSURE
     assert foreign[0][outside] == 0
     assert not any(foreign[1]), "the corridor is on F.Cu only"
+
+
+def test_the_top_priority_pour_keeps_the_cells_it_will_fill():
+    """KiCad fills the highest-priority zone of an overlap and carves the lower
+
+    one out of it.  Charging the top zone's owner for the lower zone's corridor
+    makes it route around copper it is about to own -- measured on the SR board,
+    the output plane bought a 130 mm detour instead of a 100 mm run through the
+    band it fills, and the fill lost the middle 88 % of its outline.
+    """
+    band = [(0.0, 0.0), (8.0, 0.0), (8.0, 2.0), (0.0, 2.0)]     # priority 2
+    plane = [(0.0, 0.0), (8.0, 0.0), (8.0, 8.0), (0.0, 8.0)]    # priority 0
+    router = rt.Router([], 10.0, 10.0, [],
+                       keep_clear={0: [(plane, 5, 0), (band, 7, 2)]})
+    overlap = router._index(16, 8)                  # (2.0, 1.0): both zones
+    plane_only = router._index(16, 40)              # (2.0, 5.0): plane only
+
+    assert router._zone_cost(7)[0][overlap] == 0, \
+        "the top-priority pour owns its own cells"
+    assert router._zone_cost(5)[0][overlap] == rt.ZONE_PRESSURE, \
+        "the lower-priority pour is carved out of the overlap"
+    assert router._zone_cost(7)[0][plane_only] == rt.ZONE_PRESSURE, \
+        "outside the band the plain corridor still charges"
+
+
+# ------------------------------------------------------------ barrier corridors
+BAND = [(0.0, 4.0), (20.0, 4.0), (20.0, 6.0), (0.0, 6.0)]
+
+
+def test_a_barrier_corridor_may_only_be_crossed_on_the_other_layer():
+    """A pressure is a preference and cannot express "this pour stays whole".
+
+    Measured on the validation board: crossing the 5.5 mm output band costs
+    about 260 steps at ``ZONE_PRESSURE`` and every detour around a 100 mm band
+    is longer, so the ground net paid it and the band's fill lost 88 % of its
+    outline to island removal.  A barrier states the requirement instead; the
+    other layer is still free, so the net crosses by via instead of by cutting.
+    """
+    pads = [pad("A", "1", 7, 10.0, 2.0, layers=(1,)),
+            pad("B", "1", 7, 10.0, 8.0, layers=(1,))]
+    result = rt.route(pads, 20.0, 10.0, [], widths={7: 0.25}, order=[7],
+                      keep_clear={1: [(BAND, 5, 2)]}, barrier_nets=frozenset({5}))
+
+    assert result.unrouted == [], result.failures
+    assert result.barrier_crossings == []
+    cut = [s for s in result.segments
+           if s.layer == 1 and min(s.y0, s.y1) < 6.0 and max(s.y0, s.y1) > 4.0]
+    assert cut == [], f"B.Cu copper inside the barrier band: {cut}"
+
+
+def test_a_pad_that_sits_inside_a_barrier_falls_back_and_says_so():
+    """Barriers are not absolute: an unreachable pad is worse than a cut pour.
+
+    The fallback is reported rather than absorbed into a cost, so the caller can
+    tell "this connection crossed the pour" from "nothing was in the way".
+    """
+    pads = [pad("A", "1", 7, 10.0, 2.0, layers=(1,)),
+            pad("B", "1", 7, 10.0, 5.0, layers=(1,))]
+    result = rt.route(pads, 20.0, 10.0, [], widths={7: 0.25}, order=[7],
+                      keep_clear={1: [(BAND, 5, 2)]}, barrier_nets=frozenset({5}))
+
+    assert result.unrouted == [], result.failures
+    # Same (new pad, already-connected pad) order as ``RouteResult.failures``.
+    assert result.barrier_crossings == [("7", "B.1", "A.1")]
 
 
 # ---------------------------------------------------------------- escape reserve

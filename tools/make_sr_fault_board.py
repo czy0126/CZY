@@ -499,9 +499,12 @@ def fault_parts() -> list[Part]:
         Part("R40", "Device:R", f"{R_FAULT_SERIES / 1e3:g}k", "Resistor_SMD:R_0603_1608Metric",
              58, 250, {"1": "FAULT_IN", "2": "FAULT_G"}, "1/10 W",
              "series limit into the clamp"),
-        Part("D40", "Device:D_Zener", "BZX84C5V1", "Package_TO_SOT_SMD:SOT-23",
+        Part("D40", "Device:D_Zener", "5V1", "Diode_SMD:D_SOD-123",
              58, 272, {"1": "FAULT_G", "2": "PGND"}, "5.1 V",
-             "input clamp; cathode on FAULT_G"),
+             "input clamp; two-pad land so the cathode (pad 1, the banded end) "
+             "actually reaches FAULT_G -- an SOT-23 land left pad 3, which is "
+             "where a BZX84 puts its cathode, as spare copper.  MPN TO_SELECT: "
+             "no 5.1 V zener datasheet is in the repository"),
         Part("R41", "Device:R", f"{R_FAULT_PULLDOWN / 1e3:g}k", "Resistor_SMD:R_0603_1608Metric",
              74, 272, {"1": "FAULT_G", "2": "PGND"}, "1/10 W",
              "default = no fault (fail-open input); 10k * 1nF = 10 us input filter"),

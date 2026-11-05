@@ -11,22 +11,36 @@ What it is not
 --------------
 **Not released.**  The five power nets in ``POURS`` carry a zone outline and
 the fills have been measured (``fill.json``, written by ``--check`` from a
-copy kicad-cli refilled): between 79 % and 94 % of each outline survives, as a
-single patch per corridor, because the router now charges every other net for
-crossing a corridor (``Router._zone_cost``).  Before that pressure existed the
-same board kept 2.5 %-65 %: a signal crossing the outline cuts the fill in two,
-and ``island_removal_mode 0`` deletes the half that reaches no pad, so the pour
-looked present and carried nothing.  What the corridors still are not is a
-*quoted* conductor on their own: the fill is a build product and is not in the
-board file, so the current is quoted against the routed escape (``power_path
-.escape_rating``) in two separate bases -- an adiabatic I2t for one fault pulse,
-an IPC-2221 chart for a continuous current -- and the via barrel binds the
-pulse number at either copper weight.  The power path, the remaining work and
-the three false flags (`routed` here means "every net connected", never
-"released") are all in ``sr_fault_validation_pcb.json``.  ``--fab`` exports
-gerbers, drill and position into ``fab/`` with a manifest that binds every file
-to the board hash and repeats the rating as a stated limit; it is a package,
-not an approval, and the two approval flags stay false.
+copy kicad-cli refilled): between 75 % and 98 % of each outline survives, as a
+single patch per corridor.  Two different mechanisms buy that, and the second
+one exists because the first was measurably not enough:
+
+* ``Router._zone_cost`` charges every other net for crossing a corridor, so
+  routing prefers to go around or via to the other layer;
+* the VOUT band is declared a *barrier* (``Pour.barrier``), so on its own layer
+  its cells are a wall, not a price.  A price only wins when the detour costs
+  more than the charge, and crossing the 5.5 mm band is 44 cells -- about 260
+  steps at ``ZONE_PRESSURE 6`` -- cheaper than any detour along a 100 mm
+  corridor.  Measured with the pressure alone, a single PGND track crossed the
+  band and the fill kept 11.3 % of it.
+
+The barrier is not absolute: a pad inside a corridor cannot be reached any
+other way, so a connection that must cross is made and recorded in
+``routing.barrier_crossings`` rather than left unrouted.  Before either
+mechanism existed the same board kept 2.5 %-65 %: a signal crossing the outline
+cuts the fill in two, and ``island_removal_mode 0`` deletes the half that
+reaches no pad, so the pour looked present and carried nothing.  What the
+corridors still are not is a *quoted* conductor on their own: the fill is a
+build product and is not in the board file, so the current is quoted against
+the routed escape (``power_path.escape_rating``) in two separate bases -- an
+adiabatic I2t for one fault pulse, an IPC-2221 chart for a continuous current
+-- and the via barrel binds the pulse number at either copper weight.  The
+power path, the remaining work and the three false flags (`routed` here means
+"every net connected", never "released") are all in
+``sr_fault_validation_pcb.json``.  ``--fab`` exports gerbers, drill and
+position into ``fab/`` with a manifest that binds every file to the board hash
+and repeats the rating as a stated limit; it is a package, not an approval, and
+the two approval flags stay false.
 
 Why placement is worth doing before routing
 -------------------------------------------
@@ -223,6 +237,12 @@ class Pour:
     priority: int
     outline: tuple[tuple[float, float], ...]
     why: str
+    # Blocked for every other net rather than merely charged; see
+    # ``router.Router._zone_barrier``.  Only the band needs it: it is the one
+    # pour with no pad of its own inside the outline (``fill.json`` reports
+    # 0/0), so its survival depends on whatever tracks happen to run in it,
+    # and a single foreign crossing costs the whole middle of the band.
+    barrier: bool = False
 
 
 # Why pours at all.  At 1 oz copper and a 10 degC rise the IPC-2221 chart puts
@@ -234,10 +254,10 @@ class Pour:
 # a routing that crossed them, every crossing track slit an outline and
 # ``island_removal_mode 0`` deleted the parts that reached no pad: measured,
 # 2.5 %-65 % of each outline survived (fill.json) and the two secondary
-# corridors did not even contain the lands they serve.  The fix is route
-# pressure, not more copper -- ``keep_clear()`` below hands the outlines to the
-# router, which charges every other net for crossing, and the fills went to
-# 79 %-94 % as one patch each.  Ampacity itself is still unquoted: see
+# corridors did not even contain the lands they serve.  The fix is routing, not
+# more copper: ``keep_clear()`` hands the outlines to the router as pressure and
+# ``barrier_nets()`` hands the output band to it as a wall, and the fills went
+# to 75 %-98 % as one patch each.  Ampacity itself is still unquoted: see
 # ``power_path`` and ``remaining_work``.
 #
 # Shapes and layers, read off the placement:
@@ -286,7 +306,8 @@ POURS: tuple[Pour, ...] = (
     Pour("VOUT", "B.Cu", 2,
          ((20.0, 40.0), (122.0, 40.0), (122.0, 45.5), (20.0, 45.5)),
          "centre tap to output terminal along the J3/J2 row; its lower edge "
-         "meets the pads and its body passes above the J3.4 return pin"),
+         "meets the pads and its body passes above the J3.4 return pin",
+         barrier=True),
     Pour("SEC_A", "F.Cu", 1,
          ((15.0, 33.0), (43.0, 33.0), (43.0, 45.5), (15.0, 45.5)),
          "corridor from J3.1 up to the Q1 drain; stops 1 mm short of SR_SRC, "
@@ -881,7 +902,7 @@ def route_plan(pads: list[router.Pad], names: list[str]) -> tuple[dict[int, floa
     return widths, order
 
 
-def keep_clear(names: list[str]) -> dict[int, list[tuple[list[tuple[float, float]], int]]]:
+def keep_clear(names: list[str]) -> dict[int, list[tuple[list[tuple[float, float]], int, int]]]:
     """The pour corridors, as route pressure: every other net pays to cross one.
 
     Measured before this existed, the fills kept 2.5 %-65.2 % of their outlines
@@ -890,13 +911,22 @@ def keep_clear(names: list[str]) -> dict[int, list[tuple[list[tuple[float, float
     reaches no pad of its net, and a single 0.25 mm signal crossing a corridor
     is enough to cut off the rest of it.  Routing the signals around, or onto the
     other layer, is what turns the corridor back into a conductor.
+
+    The priority travels with the outline: the VOUT band and the PGND plane
+    overlap on B.Cu, and only the higher-priority zone fills there.
     """
     index = {name: i for i, name in enumerate(names)}
-    out: dict[int, list[tuple[list[tuple[float, float]], int]]] = {0: [], 1: []}
+    out: dict[int, list[tuple[list[tuple[float, float]], int, int]]] = {0: [], 1: []}
     for pour in POURS:
         layer = 0 if pour.layer == "F.Cu" else 1
-        out[layer].append((list(pour.outline), index[pour.net]))
+        out[layer].append((list(pour.outline), index[pour.net], pour.priority))
     return out
+
+
+def barrier_nets(names: list[str]) -> frozenset[int]:
+    """Pour nets whose corridor copper may not cross; see ``Pour.barrier``."""
+    index = {name: i for i, name in enumerate(names)}
+    return frozenset(index[p.net] for p in POURS if p.barrier)
 
 
 @functools.lru_cache(maxsize=4)
@@ -907,7 +937,8 @@ def _route_cached(placed: tuple[Placed, ...]) -> router.RouteResult:
     widths, order = route_plan(pads, names)
     return router.route(pads, BOARD_W_MM, BOARD_D_MM, list(MOUNTING_HOLES),
                         widths=widths, order=order,
-                        keep_clear=keep_clear(names))
+                        keep_clear=keep_clear(names),
+                        barrier_nets=barrier_nets(names))
 
 
 def route(placed: list[Placed] | None = None) -> router.RouteResult:
@@ -1111,6 +1142,11 @@ def routing_report(placed: list[Placed], result: router.RouteResult | None = Non
         "connections_attempted": result.connections_attempted,
         "unrouted_nets": [names[int(n)] if n.isdigit() else n for n in result.unrouted],
         "failures": [[f[0], f[1], f[2]] for f in result.failures],
+        # Connections that had to enter a barrier corridor because no other
+        # path existed.  Reported, not hidden: a cut pour is a real cost and
+        # the next layout change is the one that has to pay it.
+        "barrier_crossings": [[names[int(c[0])] if c[0].isdigit() else c[0], c[1], c[2]]
+                              for c in result.barrier_crossings],
         "clearance_violations": clashes,
         "width_mm": {"signal": ROUTE_SIGNAL_MM, "power": ROUTE_POWER_MM},
         "power_nets": sorted(POWER_NETS),

@@ -31,6 +31,7 @@ from __future__ import annotations
 import heapq
 import math
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 
 import make_sr_fault_board as sch
@@ -56,6 +57,12 @@ RIP_MAX_VICTIMS = 6        # cap so one rip-up stays cheap and local
 
 _NUM = r"(-?\d+(?:\.\d+)?)"
 _DIRECTIONS = ((1, 0), (-1, 0), (0, 1), (0, -1))
+
+# One pour corridor: its outline, the net that owns it, and its fill priority.
+# The priority is KiCad's number -- the higher zone fills first and the lower
+# one is carved out of the overlap -- so it decides which net owns a cell.
+Zone = tuple[list[tuple[float, float]], int, int]
+KeepClear = dict[int, list[Zone]]
 
 
 @dataclass(frozen=True)
@@ -111,6 +118,9 @@ class RouteResult:
     vias: list[Via] = field(default_factory=list)
     unrouted: list[str] = field(default_factory=list)
     failures: list[tuple[str, str, str]] = field(default_factory=list)
+    # Connections that were made only by entering a corridor declared a
+    # barrier; see ``Router.route_net``.
+    barrier_crossings: list[tuple[str, str, str]] = field(default_factory=list)
     connections_attempted: int = 0
     connections_made: int = 0
 
@@ -126,6 +136,7 @@ class _NetRoute:
     segments: list[Segment] = field(default_factory=list)
     vias: list[Via] = field(default_factory=list)
     failures: list[tuple[str, str]] = field(default_factory=list)   # pad pairs
+    crossings: list[tuple[str, str]] = field(default_factory=list)  # barrier entries
     attempted: int = 0
 
     @property
@@ -386,11 +397,12 @@ class Router:
     def __init__(self, pads: list[Pad], width_mm: float, depth_mm: float,
                  holes: list[tuple[float, float]], *,
                  pitch: float = PITCH_MM,
-                 keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None,
+                 keep_clear: KeepClear | None = None,
                  escape_mm: float = ESCAPE_MM,
                  rip_corridor: bool = False,
                  dir_penalty: float = 0.0,
-                 t_junction: bool = False
+                 t_junction: bool = False,
+                 barrier_nets: frozenset[int] | None = None
                  ) -> None:
         self.pads = pads
         self.width_mm = width_mm
@@ -423,12 +435,21 @@ class Router:
         # run, which on a 118-pad ground net lays 117 long parallel traces where
         # a hand router would lay short spurs off one spine.
         self.t_junction = t_junction
-        # ``keep_clear[layer]`` is ``(outline, net)`` pairs: cells inside the
-        # outline cost extra for every net but ``net``.  This is how a pour
-        # corridor stays a corridor -- a track that crosses it splits the fill,
-        # and a split fill is deleted as an island unless it touches a pad.
+        # ``keep_clear[layer]`` is ``(outline, net, priority)`` triples: cells
+        # inside the outline cost extra for every net but the one that ends up
+        # owning the cell.  This is how a pour corridor stays a corridor -- a
+        # track that crosses it splits the fill, and a split fill is deleted as
+        # an island unless it touches a pad.  The priority matters because the
+        # zones overlap: see ``_zone_cost``.
         self.keep_clear = keep_clear or {}
+        # Nets whose pour corridors are walls rather than prices.  A pressure is
+        # a preference: it wins when the detour is longer than the charge, which
+        # is exactly the wrong answer for a band that has to stay continuous.
+        # See ``_zone_barrier`` and ``route_net``.
+        self.barrier_nets = barrier_nets or frozenset()
         self._zone_cache: dict[int, list[bytearray]] = {}
+        self._barrier_cache: dict[int, list[list[int]] | None] = {}
+        self._owners: list[dict[int, tuple[int, set[int]]]] | None = None
         self.nx = int(round(width_mm / pitch)) + 1
         self.ny = int(round(depth_mm / pitch)) + 1
         self.n = self.nx * self.ny
@@ -561,6 +582,42 @@ class Router:
                 self._stamp_disc(buf, el.point[0], el.point[1], spacing)
         return buf
 
+    def _zone_cells(self, outline: list[tuple[float, float]]) -> Iterator[int]:
+        """Grid indices whose centre falls inside ``outline``."""
+        xs = [p[0] for p in outline]
+        ys = [p[1] for p in outline]
+        i0 = max(0, int(math.floor(min(xs) / self.pitch)))
+        i1 = min(self.nx - 1, int(math.ceil(max(xs) / self.pitch)))
+        j0 = max(0, int(math.floor(min(ys) / self.pitch)))
+        j1 = min(self.ny - 1, int(math.ceil(max(ys) / self.pitch)))
+        for j in range(j0, j1 + 1):
+            y = j * self.pitch
+            for i in range(i0, i1 + 1):
+                if _point_in_polygon(outline, i * self.pitch, y):
+                    yield self._index(i, j)
+
+    def _zone_owners(self) -> list[dict[int, tuple[int, set[int]]]]:
+        """Cell -> ``(priority, owners at that priority)``, per layer.
+
+        KiCad fills the highest-priority zone covering a cell and carves the
+        lower ones out of it, so a cell belongs to the top priority's owners and
+        to nobody else.  Both the pressure and the barrier are defined on this
+        map rather than on the raw outlines; computing it once keeps the two
+        from disagreeing about who owns an overlap.
+        """
+        if self._owners is None:
+            top: list[dict[int, tuple[int, set[int]]]] = [{}, {}]
+            for layer, zones in self.keep_clear.items():
+                for outline, owner, priority in zones:
+                    for idx in self._zone_cells(outline):
+                        held = top[layer].get(idx)
+                        if held is None or priority > held[0]:
+                            top[layer][idx] = (priority, {owner})
+                        elif priority == held[0]:
+                            held[1].add(owner)
+            self._owners = top
+        return self._owners
+
     def _zone_cost(self, net: int) -> list[bytearray]:
         """Per-cell extra cost for routing ``net`` through a pour corridor.
 
@@ -570,28 +627,64 @@ class Router:
         net.  Pressure buys the same geometry without that failure mode: a
         12.5 mm crossing costs 100 steps, a detour around the corridor costs
         the detour's length, and the search takes whichever is shorter.
+
+        A cell belongs to the highest-priority pour that covers it, because
+        that is the one KiCad fills; the lower ones are carved out of the
+        overlap.  A net that owns the top zone of a cell will get copper there,
+        so charging it for the lower zone underneath would send it around
+        copper it is about to own.  Measured on the SR board: the output plane
+        paid the ground plane's pressure for the band it fills, bought a 130 mm
+        detour instead of a 100 mm run through that band, and the fill lost the
+        middle 88 % of its outline to island removal.
+
+        The pressure alone does not settle the case it was added for.  Crossing
+        the 5.5 mm output band is 44 cells, about 260 steps at
+        ``ZONE_PRESSURE``, and a detour around a
+        100 mm band costs more, so a foreign track still cut it.  That is what
+        ``_zone_barrier`` is for; this cost stays as the ordering rule for
+        everything else.
         """
         cached = self._zone_cache.get(net)
         if cached is not None:
             return cached
         cost = [bytearray(self.n), bytearray(self.n)]
-        for layer, zones in self.keep_clear.items():
-            for outline, owner in zones:
-                if owner == net:
-                    continue
-                xs = [p[0] for p in outline]
-                ys = [p[1] for p in outline]
-                i0 = max(0, int(math.floor(min(xs) / self.pitch)))
-                i1 = min(self.nx - 1, int(math.ceil(max(xs) / self.pitch)))
-                j0 = max(0, int(math.floor(min(ys) / self.pitch)))
-                j1 = min(self.ny - 1, int(math.ceil(max(ys) / self.pitch)))
-                for j in range(j0, j1 + 1):
-                    y = j * self.pitch
-                    for i in range(i0, i1 + 1):
-                        if _point_in_polygon(outline, i * self.pitch, y):
-                            cost[layer][self._index(i, j)] = ZONE_PRESSURE
+        for layer, cells in enumerate(self._zone_owners()):
+            for idx, (_, owners) in cells.items():
+                if net not in owners:
+                    cost[layer][idx] = ZONE_PRESSURE
         self._zone_cache[net] = cost
         return cost
+
+    def _zone_barrier(self, net: int) -> list[list[int]] | None:
+        """Cells ``net`` may not enter, or ``None`` if nothing is barred.
+
+        Only the corridors of ``barrier_nets`` are barred, and only on their own
+        layer, so a net that must get from one side to the other still has the
+        other layer plus a via at each end.
+
+        Why a wall and not a bigger price: a pour is a conductor only while its
+        fill is continuous, and ``island_removal_mode 0`` deletes every piece
+        that reaches none of the net's own copper -- one foreign track across a
+        band removes everything it cut off.  Measured on the validation board,
+        the ground net paid the pressure and the output band kept 11 % of its
+        outline.  Raising the price to the point where the detour wins instead
+        makes the search explore the whole board (unfinished after 15 minutes,
+        against 3 at the shipped value), so the requirement is stated as a
+        blocked cell and not as a large number.
+        """
+        if not self.barrier_nets:
+            return None
+        if net in self._barrier_cache:
+            return self._barrier_cache[net]
+        wall: list[list[int]] = [[], []]
+        for layer, cells in enumerate(self._zone_owners()):
+            for idx, (_, owners) in cells.items():
+                if net in owners or not (owners & self.barrier_nets):
+                    continue
+                wall[layer].append(idx)
+        barred: list[list[int]] | None = wall if any(wall) else None
+        self._barrier_cache[net] = barred
+        return barred
 
     def _inside_board(self, i: int, j: int, radius: float) -> bool:
         margin = EDGE_CLEARANCE_MM + radius
@@ -842,9 +935,24 @@ class Router:
             target = self._pad_cells(dst_pad, radius)
             if tree:
                 target |= self._near_cells(tree, dst_pad)
-            path = self._search(blocked, via_blocked, self._via_keepout(),
-                                radius, source, target, self._zone_cost(net))
+            wall = self._zone_barrier(net)
             route.attempted += 1
+            path = None
+            if wall is not None:
+                path = self._search(_with_wall(blocked, wall),
+                                    _with_wall(via_blocked, wall),
+                                    self._via_keepout(), radius, source, target,
+                                    self._zone_cost(net))
+            if path is None:
+                # A barred corridor is a requirement, not a guarantee: a pad
+                # that sits inside one cannot be reached any other way, and an
+                # unrouted pad is worse than a cut pour.  Record it so the
+                # caller can see which connection it was.
+                path = self._search(blocked, via_blocked, self._via_keepout(),
+                                    radius, source, target, self._zone_cost(net))
+                if path is not None and wall is not None:
+                    route.crossings.append(
+                        (f"{src_pad.ref}.{src_pad.number}", f"{dst_pad.ref}.{dst_pad.number}"))
             if path is None:
                 route.failures.append(
                     (f"{src_pad.ref}.{src_pad.number}", f"{dst_pad.ref}.{dst_pad.number}"))
@@ -977,6 +1085,7 @@ class Router:
             if route.failures:
                 out.unrouted.append(str(net))
                 out.failures.extend((str(net), a, b) for a, b in route.failures)
+            out.barrier_crossings.extend((str(net), a, b) for a, b in route.crossings)
         out.segments = _merge(out.segments)
         return out
 
@@ -984,31 +1093,46 @@ class Router:
 def route(pads: list[Pad], width_mm: float, depth_mm: float,
           holes: list[tuple[float, float]], *,
           widths: dict[int, float], order: list[int],
-          keep_clear: dict[int, list[tuple[list[tuple[float, float]], int]]] | None = None,
+          keep_clear: KeepClear | None = None,
           escape_mm: float = ESCAPE_MM,
           rip_corridor: bool = False,
           dir_penalty: float = 0.0,
-          t_junction: bool = False
+          t_junction: bool = False,
+          barrier_nets: frozenset[int] | None = None
           ) -> RouteResult:
     """Route ``order`` (net indices) with the given widths, then repair failures.
 
-    ``keep_clear`` discourages every net but the owner's from routing through a
-    pour corridor; see ``Router._zone_cost``.  ``escape_mm`` is the room kept
-    around a pad whose net is still unrouted; see ``Router.__init__``.
+    ``keep_clear`` discourages every net but the cell's owner from routing
+    through a pour corridor; see ``Router._zone_cost``.  ``escape_mm`` is the
+    room kept around a pad whose net is still unrouted; see ``Router.__init__``.
     ``rip_corridor`` widens the repair pass from the endpoints of a failed
     connection to its whole run; see ``Router._rip_victims``.  ``dir_penalty``
     gives each layer a grain, F.Cu horizontal and B.Cu vertical; see
     ``Router.__init__``.  ``t_junction`` lets a pad tap the net's own copper
     instead of running a fresh path to a connected pad; see
-    ``Router.route_net``.
+    ``Router.route_net``.  ``barrier_nets`` names the pours whose corridors are
+    walls rather than prices -- copper may not enter them at all unless the
+    connection has no other way, and those connections come back in
+    ``RouteResult.barrier_crossings``; see ``Router._zone_barrier``.
     """
     router = Router(pads, width_mm, depth_mm, holes, keep_clear=keep_clear,
                     escape_mm=escape_mm, rip_corridor=rip_corridor,
-                    dir_penalty=dir_penalty, t_junction=t_junction)
+                    dir_penalty=dir_penalty, t_junction=t_junction,
+                    barrier_nets=barrier_nets)
     for net in order:
         router.route_net(net, widths[net])
     router.rip_up(order, widths)
     return router.result(order)
+
+
+def _with_wall(grids: list[bytearray], wall: list[list[int]]) -> list[bytearray]:
+    """The obstacle grids plus every barred cell, as a fresh copy."""
+    out = [bytearray(g) for g in grids]
+    for layer, cells in enumerate(wall):
+        grid = out[layer]
+        for idx in cells:
+            grid[idx] = 1
+    return out
 
 
 def _merge(segments: list[Segment]) -> list[Segment]:

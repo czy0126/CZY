@@ -22,6 +22,7 @@ import math
 import pytest
 
 import make_sr_fault_board as board
+import make_sr_fault_board_pcb as pcb
 
 OUT = board.OUT
 
@@ -110,7 +111,16 @@ def test_the_fault_input_filter_is_not_milliseconds(parts):
 
 def test_the_fault_input_has_a_default_low_and_a_clamp(parts):
     assert by_ref(parts, "R41").nets["2"] == "PGND"
-    assert by_ref(parts, "D40").value.startswith("BZX84C5V1")
+    d40 = by_ref(parts, "D40")
+    assert d40.value.startswith("5V1")
+    # ``Part.nets`` maps *symbol* pins, and ``validate()`` requires that key set
+    # to equal the symbol's pin numbers exactly -- so a two-pin zener can only
+    # ever reach pads 1 and 2 of its footprint.  The SOT-23 land this part sat
+    # on until 2026-11-06 therefore left pad 3 (the cathode, and the third pin of
+    # the package) as spare copper: the clamp was an open circuit, and the
+    # netless-pad test in the PCB module blessed it as "intentional".
+    assert pcb.pad_numbers(d40.footprint) == ["1", "2"]
+    assert d40.nets == {"1": "FAULT_G", "2": "PGND"}
 
 
 # ---------------------------------------------------------------- arithmetic

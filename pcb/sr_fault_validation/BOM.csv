@@ -36,7 +36,7 @@ JP2,FORCE1 low,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,shunt
 JP3,FORCE2 low,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,shunt = force VD2 low,,,TO_SELECT,,1
 J4,FAULT/STATUS,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,"3.3/5 V CMOS or open-drain, active high","pin 1 = fault request, pin 3 = open-drain status",,,TO_SELECT,,1
 R40,1k,Resistor_SMD:R_0603_1608Metric,1/10 W,series limit into the clamp,,,TO_SELECT,,1
-D40,BZX84C5V1,Package_TO_SOT_SMD:SOT-23,5.1 V,input clamp; cathode on FAULT_G,,,TO_SELECT,,1
+D40,5V1,Diode_SMD:D_SOD-123,5.1 V,"input clamp; two-pad land so the cathode (pad 1, the banded end) actually reaches FAULT_G -- an SOT-23 land left pad 3, which is where a BZX84 puts its cathode, as spare copper.  MPN TO_SELECT: no 5.1 V zener datasheet is in the repository",,,TO_SELECT,,1
 R41,10k,Resistor_SMD:R_0603_1608Metric,1/10 W,default = no fault (fail-open input); 10k * 1nF = 10 us input filter,,,TO_SELECT,,1
 C40,1nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,10 us; a 1 ms debounce would dominate every other delay,,,TO_SELECT,,1
 Q40,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain status: low while the fault is asserted,,,TO_SELECT,,1
