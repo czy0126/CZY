@@ -1,0 +1,37 @@
+AOS AO3400A -- official manufacturer catalog and Rev 3.1 data-sheet index
+Verification date: 2026-11-05
+Manufacturer: Alpha & Omega Semiconductor (AOS)
+Official product: https://www.aosmd.com/products/mosfets/low-voltage-mosfets-12v-30v/ao3400a
+Official data sheet: https://www.aosmd.com/res/data_sheets/AO3400A.pdf
+Document revision: Rev 3.1, July 2023
+
+Part number: AO3400A (not AO3400)
+Package: SOT-23, 3 terminals
+Pin function, bottom view: 1=G, 2=S, 3=D.
+Configuration: single N-channel enhancement MOSFET
+VDS rating: 30 V
+VGS absolute maximum: +/-12 V
+RDS(on) maximum at VGS=2.5 V: 48 milliohm, specified at ID=3 A
+RDS(on) maximum at VGS=4.5 V: 32 milliohm, specified at ID=5 A
+ID continuous at TA=25 C: 5.7 A
+ID continuous at TA=70 C: 4.7 A
+Pulsed drain current IDM: 30 A, subject to OEM pulse/thermal limitations
+Pd at TA=25 C: 1.4 W (depends on thermal test board)
+Ciss: 630 pF (typical)
+Qg: 6 nC at VGS=4.5 V (typical)
+
+Applicability to Q41 REG crowbar bench:
+- Existing PCB footprint Package_TO_SOT_SMD:SOT-23 and KiCad Q_NMOS_GSD
+  have the nominal G=1/S=2/D=3 mapping for AO3400A, and 30 V rating.
+- Datasheet guarantees <0.1 ohm at VGS=2.5 V under its specified conditions
+  at 25 C, so it is a useful purchasing/first-article candidate.
+- This does NOT guarantee RDS(on) <0.1 ohm at elevated temperature or at
+  an arbitrary current, nor does IDM=30 A guarantee 14.8 W pulse survivability.
+- Circuit gate drive under different fault input amplitude, temperature,
+  current pulse shape, source shift, repeated fault and REG charging current
+  still requires measured VGS and a OEM SOA/thermal review.
+- Selection improves procurement traceability; NOT authorized for fabrication
+  or power-stage fault shutdown until real test data and approved reviews.
+
+Text here is a short factual extraction and paraphrase, not a replacement
+for the linked original OEM data sheet and package drawing.
