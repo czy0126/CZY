@@ -118,6 +118,20 @@ def test_the_gate_discharge_starts_at_the_driver_supply_not_the_gate_rating():
     assert sr["with_driver_ns_is_a_floor"] is True
 
 
+def test_the_detector_path_is_the_branch_resistor_not_the_gate_resistor():
+    """A dead driver leaves the gate two paths to ground: its 10k pull-down and
+    the detector's 1k + BAT54 + 22k/6.2k = 29.2k.  That 1k sits between the gate
+    and its diode; the 2.2 ohm gate resistor sits between the driver and the
+    gate and is not in this path at all.  Substituting one for the other reads
+    7.38k instead of 7.45k -- small, but it is the number the docs quote."""
+    for channel in ("sr", "primary"):
+        stage = budget.build()["stages"]["gate_discharge"][channel]
+        assert stage["detector_branch_ohm"] == pytest.approx(29.2e3, rel=0.001)
+        assert stage["detector_branch_ref"].startswith("R")
+        assert stage["gate_resistor_ohm"] < 10.0  # the 2.2 ohm, not the 1k
+        assert stage["pulldown_ohm"] == pytest.approx(7.45e3, rel=0.001)
+
+
 # -------------------------------------------------- what the budget cannot know
 def test_the_budget_names_what_it_cannot_know():
     stages = budget.build()["stages"]

@@ -196,6 +196,30 @@ def permit_rail_release(parts: dict) -> dict:
     }
 
 
+def _detector_branch_resistor(parts, gate_net: str):
+    """The 1k from a gate to its BAT54 -- the detector's own path to ground.
+
+    Found by topology, not by reference or value: a resistor from the gate to a
+    node that a Schottky ties to GSMAX.  The series element inside this branch
+    is *not* the 2.2 ohm gate resistor, which sits between the driver and the
+    gate and is not in the gate-to-ground path at all; adding it instead of this
+    1k understates the fall by 0.9 %.
+    """
+    by_net: dict[str, list] = {}
+    for part in parts.values():
+        for node in part.nets.values():
+            by_net.setdefault(node, []).append(part)
+    for part in parts.values():
+        if part.lib != "Device:R" or gate_net not in part.nets.values():
+            continue
+        other = next(n for n in part.nets.values() if n != gate_net)
+        if any(neighbour.lib == "Device:D_Schottky"
+               and "GSMAX" in neighbour.nets.values()
+               for neighbour in by_net.get(other, [])):
+            return part
+    return None
+
+
 def gate_discharge(parts: dict, gate_net: str) -> dict:
     """Time for one gate to fall below VGS(th) with and without a live driver.
 
@@ -214,19 +238,23 @@ def gate_discharge(parts: dict, gate_net: str) -> dict:
     series = [p for p in parts.values() if p.lib == "Device:R"
               and gate_net in p.nets.values()
               and "PGND" not in p.nets.values()]
-    if not load or not pulldown or not series:
+    detector_resistor = _detector_branch_resistor(parts, gate_net)
+    if not load or not pulldown or not series or detector_resistor is None:
         raise SystemExit(f"{gate_net}: the part table no longer shows a load, a "
-                         "pull-down and a series gate resistor")
+                         "pull-down, a series gate resistor and a detector branch")
     r_pull = board.resistance(pulldown[0].value)
     r_gate = board.resistance(series[0].value)
-    detector_branch = r_gate + board.resistance(board.part_value("R76")) + \
-        board.resistance(board.part_value("R77"))
+    detector_branch = (board.resistance(detector_resistor.value)
+                       + board.resistance(board.part_value("R76"))
+                       + board.resistance(board.part_value("R77")))
     r_effective = _parallel(r_pull, detector_branch)
     log_term = math.log(DRIVER_VDD_V / SR_VGS_TH_MIN_V)
     return {
         "gate_net": gate_net,
         "gate_load_nf": load * 1e9,
         "gate_resistor_ohm": r_gate,
+        "detector_branch_ref": detector_resistor.ref,
+        "detector_branch_ohm": detector_branch,
         "pulldown_ohm": r_effective,
         "gate_high_v": DRIVER_VDD_V,
         "to_vgs_th_min_v": SR_VGS_TH_MIN_V,
