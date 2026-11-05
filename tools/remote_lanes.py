@@ -183,7 +183,7 @@ def prepare_lanes(root: str, deck: str, count: int) -> list[str]:
     """
     if count < 1 or count > 32:
         raise ValueError("concurrent lane count must be between 1 and 32")
-    if os.path.isabs(deck) or ".." in deck.replace("\\\\", "/").split("/"):
+    if os.path.isabs(deck) or ".." in deck.replace(chr(92), "/").split("/"):
         raise ValueError("deck must be relative to --root without parent traversal")
     source = os.path.abspath(os.path.join(root, deck))
     root_abs = os.path.abspath(root)
