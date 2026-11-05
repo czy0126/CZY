@@ -111,3 +111,44 @@ def test_the_committed_drawing_is_current(svg):
     still looks like an instruction."""
     assert draw.OUT.is_file(), f"{draw.OUT} is missing -- run --fab"
     assert draw.OUT.read_text(encoding="utf-8") == svg
+
+
+# ---------------------------------------------------------------- second board
+def test_a_second_board_gets_its_own_title_and_outline_size(placed, table):
+    """The sheet is reused, not copied: one code path draws every board."""
+    w, d = 52.0, 38.0
+    text = draw.svg(placed, table, title="Some other module", board_mm=(w, d))
+    assert "Some other module" in text
+    assert draw.DEFAULT_TITLE not in text
+    assert f'class="outline" x="{(draw.PAGE_W_MM - w) / 2:g}"' in text
+    assert f'width="{w:g}" height="{d:g}"' in text
+
+
+def test_the_outline_stays_centred_when_the_board_size_changes(placed, table):
+    """A left-anchored outline would push a narrow board into the page margin."""
+    for w in (52.0, 132.0):
+        text = draw.svg(placed, table, board_mm=(w, 38.0))
+        assert f'x="{(draw.PAGE_W_MM - w) / 2:g}"' in text, w
+
+
+def test_a_second_board_gets_its_own_document_title(placed, table):
+    """The ``<title>`` element is what a screen reader announces and what a
+    grep finds; a default left in place would name the SR board in another
+    board's file even though the printed heading was changed."""
+    text = draw.svg(placed, table, title="Some other module",
+                    doc_title="Some other module -- assembly drawing")
+    assert "Some other module -- assembly drawing</title>" in text
+    assert "SR fault validation board" not in text
+
+
+def test_the_title_is_escaped(placed, table):
+    """A title with an ampersand must not make the SVG unparseable."""
+    assert "A &amp; B" in draw.svg(placed, table, title="A & B")
+
+
+def test_the_default_sheet_is_still_the_sr_board(placed, table):
+    """Parameterising the header must not have moved the committed drawing."""
+    assert draw.svg(placed, table) == draw.svg(
+        placed, table, title=draw.DEFAULT_TITLE,
+        board_mm=(board.BOARD_W_MM, board.BOARD_D_MM),
+        footprint_note=draw.DEFAULT_FOOTPRINT_NOTE)

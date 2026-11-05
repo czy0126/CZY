@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 import pytest
 
@@ -141,3 +142,71 @@ def test_the_honesty_flags_stay_false(result):
     assert report["hardware_built"] is False
     assert report["fabrication_approved"] is False
     assert "NOT_HARDWARE" in report["evidence_level"]
+
+
+# ---------------------------------------------------------------- fab package
+def output_arg(cmd: list[str]) -> str:
+    """The path after ``-o`` -- not the last argument, which is the board."""
+    assert "-o" in cmd, cmd
+    return cmd[cmd.index("-o") + 1]
+
+
+def test_the_position_file_is_named_after_this_board():
+    """Two packages unpacked side by side must not share a position file."""
+    cmds = board.srpcb.fab_commands(Path("kicad-cli"), OUT / board.BOARD, board.FAB,
+                                    prefix=board.POS_PREFIX)
+    assert output_arg(cmds["position"]).endswith(f"{board.POS_PREFIX}-pos.csv")
+
+
+def test_the_sr_board_keeps_its_own_position_filename_by_default():
+    cmds = board.srpcb.fab_commands(Path("kicad-cli"), Path("b.kicad_pcb"), Path("out"))
+    assert output_arg(cmds["position"]).endswith("sr_fault_validation-pos.csv")
+
+
+@pytest.fixture(scope="module")
+def manifest() -> dict:
+    path = OUT / "fab/manifest.json"
+    if not path.is_file():
+        pytest.skip("fab/ has not been exported -- run --fab")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def test_the_manifest_hashes_the_board_it_names(manifest):
+    assert manifest["board"] == board.BOARD
+    assert manifest["board_sha256"] == board.srpcb._sha256(OUT / board.BOARD)
+
+
+def test_every_file_in_the_package_is_hashed_and_nothing_missing(manifest):
+    """A file nobody hashed is a file nobody can tell was changed."""
+    on_disk = {p.name for p in board.FAB.iterdir()
+               if p.is_file() and p.name != "manifest.json"}
+    assert {f["name"] for f in manifest["files"]} == on_disk
+    for entry in manifest["files"]:
+        path = board.FAB / entry["name"]
+        assert entry["bytes"] == path.stat().st_size, entry["name"]
+        assert entry["sha256"] == board.srpcb._sha256(path), entry["name"]
+
+
+def test_the_package_reports_the_layers_it_actually_plotted(manifest):
+    """kicad-cli drops an undeclared layer silently, so ask for both numbers."""
+    assert manifest["plotted_layers"] == manifest["layers"]
+    assert {"F.Mask", "B.Mask", "F.Paste", "B.Paste"} <= set(manifest["plotted_layers"])
+
+
+def test_the_package_is_not_an_approval(manifest):
+    assert manifest["flags"] == {"hardware_built": False,
+                                 "fabrication_approved": False}
+    assert any("not an approval" in line for line in manifest["what_this_is_not"])
+
+
+def test_the_package_does_not_claim_a_conductor_rating(manifest):
+    """No power path on this module: say so rather than leave the field blank."""
+    assert manifest["current_rating"]["status"] == "NOT_RATED"
+    assert manifest["current_rating"]["why"].strip()
+
+
+def test_the_assembly_drawing_in_the_package_describes_this_board(manifest):
+    text = (board.FAB / "assembly.svg").read_text(encoding="utf-8")
+    assert "TLV3501 fast-overcurrent ECO module" in text
+    assert "SR fault validation board" not in text
+    assert f'width="{board.BOARD_W_MM:g}"' in text

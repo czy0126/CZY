@@ -117,6 +117,28 @@ def run_tests() -> int:
     return subprocess.call([sys.executable, "-m", "pytest", "tools", "-q"], cwd=ROOT)
 
 
+# Pages that only re-state committed artefacts.  They need no kicad-cli: a
+# stale one is a reader following a hash or a command that no longer applies,
+# so they are checked here rather than left to whoever opens the file next.
+VIEWS = [
+    ("bench-board manufacturing index", ["tools/manufacturing_index.py", "--check"]),
+    ("main-board remaining dependencies",
+     ["tools/remaining_dependencies.py", "--check"]),
+]
+
+
+def check_views() -> list[str]:
+    problems = []
+    for label, command in VIEWS:
+        proc = subprocess.run([sys.executable, str(ROOT / command[0]), *command[1:]],
+                              cwd=ROOT, capture_output=True, encoding="utf-8",
+                              errors="replace")
+        if proc.returncode != 0:
+            output = (proc.stderr or proc.stdout).strip().splitlines()
+            problems.append(f"{label}: {output[-1] if output else 'failed'}")
+    return problems
+
+
 def regenerate() -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "manifest.json"
@@ -146,10 +168,17 @@ def main(argv: list[str] | None = None) -> int:
         print("re-run: python tools/current_manifest.py --scope v3 "
               "--json design/v3/manifest_current_candidate.json", file=sys.stderr)
         return 1
+    stale_views = check_views()
+    if stale_views:
+        print("generated views are stale:", file=sys.stderr)
+        for line in stale_views:
+            print(f"  - {line}", file=sys.stderr)
+        return 1
+    suffix = f"; v3 manifest is current; {len(VIEWS)} generated views are current"
     if args.skip_tests:
-        print("ci: tests skipped; v3 manifest is current")
+        print(f"ci: tests skipped{suffix}")
     else:
-        print("ci: offline suite passed; v3 manifest is current")
+        print(f"ci: offline suite passed{suffix}")
     return 0
 
 

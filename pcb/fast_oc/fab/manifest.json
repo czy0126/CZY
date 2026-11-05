@@ -1,0 +1,112 @@
+{
+  "board": "fast_oc.kicad_pcb",
+  "board_sha256": "95b5b480cfe323ef9aee4717f3db2d5f79f9763469fca377fdfb42751896c014",
+  "kicad_cli": "10.0.6",
+  "copper_weight_oz": 1,
+  "layers": [
+    "F.Cu",
+    "B.Cu",
+    "F.Paste",
+    "B.Paste",
+    "F.Silkscreen",
+    "B.Silkscreen",
+    "F.Mask",
+    "B.Mask",
+    "Edge.Cuts"
+  ],
+  "plotted_layers": [
+    "F.Cu",
+    "B.Cu",
+    "F.Paste",
+    "B.Paste",
+    "F.Silkscreen",
+    "B.Silkscreen",
+    "F.Mask",
+    "B.Mask",
+    "Edge.Cuts"
+  ],
+  "excluded_from_position": [],
+  "files": [
+    {
+      "name": "assembly.svg",
+      "bytes": 14681,
+      "sha256": "4aac6162224ea4b78016e5ece37d658ea407ac0b91421dc76cdb740b17e63a2f"
+    },
+    {
+      "name": "fast_oc-B_Cu.gbl",
+      "bytes": 11124,
+      "sha256": "2ce36f468ad4ea0eebca6c49d41331613b9b469c68bb4438193a0e17e6ff38db"
+    },
+    {
+      "name": "fast_oc-B_Mask.gbs",
+      "bytes": 846,
+      "sha256": "7ecfb43748d98666abffd40d1251d319dea26043ffe484bbeefe170f42c01403"
+    },
+    {
+      "name": "fast_oc-B_Paste.gbp",
+      "bytes": 467,
+      "sha256": "163cbf50dec2e66f93226703ccf312533356e564c206231902b5e2abb2e066d4"
+    },
+    {
+      "name": "fast_oc-B_Silkscreen.gbo",
+      "bytes": 468,
+      "sha256": "5a471558138b3caf6da4c77039ec29b222b95f0a876a8aae7ecc65ee8cdc4449"
+    },
+    {
+      "name": "fast_oc-Edge_Cuts.gm1",
+      "bytes": 640,
+      "sha256": "5afaed8b1e68dafcde928be3fdc2ea1834a6f67a960464271ec1a3fcd8351edb"
+    },
+    {
+      "name": "fast_oc-F_Cu.gtl",
+      "bytes": 21934,
+      "sha256": "218a1ef1a8b8e3a1f31d6a6014479fce46699fe38c3d1363e737aa6c7ef42fc4"
+    },
+    {
+      "name": "fast_oc-F_Mask.gts",
+      "bytes": 3669,
+      "sha256": "8461b9c7dd0553c30c386efeaea50a3b173df53782e9e556b1bd463716a60268"
+    },
+    {
+      "name": "fast_oc-F_Paste.gtp",
+      "bytes": 2904,
+      "sha256": "0d56952c78807047a95b49f6c590b528a4a2c9f157552603a4c1259f52fc5030"
+    },
+    {
+      "name": "fast_oc-F_Silkscreen.gto",
+      "bytes": 34315,
+      "sha256": "64db2692827d7ce3b1423e5c3c4d17098a3093aeeca6336fb30b4d31a9e314a4"
+    },
+    {
+      "name": "fast_oc-job.gbrjob",
+      "bytes": 2745,
+      "sha256": "2d501dd3686fd590b4841ad61fa97672f6a26af621b4fb622d4285b97b1dcc0a"
+    },
+    {
+      "name": "fast_oc-pos.csv",
+      "bytes": 1258,
+      "sha256": "98912deadeda34deb7f6be316bb01b00616f72f7a7fc0ba1de9f8a77d115db48"
+    },
+    {
+      "name": "fast_oc.drl",
+      "bytes": 1098,
+      "sha256": "a3c52fbc8a58bbb7278a0152400ee42cedbf7532fe0910c58c53658a8a91a64a"
+    }
+  ],
+  "current_rating": {
+    "status": "NOT_RATED",
+    "why": "every net on this module is a signal. The only current-carrying path is the 5 V rail and the OCD node, both supplied by the harness at a few mA, so no board-level conductor rating was computed."
+  },
+  "what_this_is": "gerbers, drill, a position file and an assembly drawing for a TLV3501 fast-overcurrent comparator module: one comparator, one 2N7002 open-drain pull-down and their passives.",
+  "what_this_is_not": [
+    "not an approval to build: hardware_built and fabrication_approved are false",
+    "a latch: the fast-trip output follows current.  Latching lives in D0's CD4013, not here",
+    "a complete protection channel: the 5 V rail and the OCD node come from the harness, and losing 5 V releases FAST_TRIP rather than tripping it",
+    "a thermal or EMC review: DRC covers copper only",
+    "a checked drawing: assembly.svg is generated from the same placement table as the copper, so the two cannot disagree -- but it has not been compared with a physical first article"
+  ],
+  "flags": {
+    "hardware_built": false,
+    "fabrication_approved": false
+  }
+}

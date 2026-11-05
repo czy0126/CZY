@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 
+import ci_check
 from ci_check import MANIFEST, compare_manifests, main
 
 
@@ -118,6 +119,23 @@ def test_skip_tests_does_not_claim_the_suite_passed(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "suite passed" not in out
     assert "manifest is current" in out
+
+
+def test_a_stale_view_fails_the_run(monkeypatch, capsys):
+    """The two view pages only copy committed numbers; a stale one sends the
+    reader after a hash or a command that no longer applies."""
+    committed = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    monkeypatch.setattr("ci_check.regenerate", lambda: committed)
+    monkeypatch.setattr("ci_check.check_views", lambda: ["index: stale: pcb/manufacturing"])
+    assert main(["--skip-tests"]) == 1
+    assert "generated views are stale" in capsys.readouterr().err
+
+
+def test_every_view_is_a_python_tool_that_exists():
+    for label, command in ci_check.VIEWS:
+        assert command[0].startswith("tools/"), label
+        assert (ci_check.ROOT / command[0]).is_file(), label
+        assert command[-1] == "--check", label
 
 
 def test_checkout_changes_mtime_without_changing_content():

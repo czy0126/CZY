@@ -68,14 +68,14 @@ def _short(lib_id: str) -> str:
     return lib_id.split(":", 1)[-1]
 
 
-def _callout(p, part, index: int) -> list[str]:
+def _callout(p, part, index: int, offset_x: float = OFFSET_X_MM) -> list[str]:
     """One part: its courtyard box, a numbered callout, and a DNP mark."""
     x0, y0, x1, y1 = p.rect
     w, d = max(x1 - x0, 0.4), max(y1 - y0, 0.4)
-    cx, cy = x0 + w / 2 + OFFSET_X_MM, y0 + d / 2 + OFFSET_Y_MM
+    cx, cy = x0 + w / 2 + offset_x, y0 + d / 2 + OFFSET_Y_MM
     cls = "part dnp" if part.dnp else "part"
     lines = [f'  <g class="{cls}" data-ref="{escape(part.ref)}">',
-             f'    <rect class="body" x="{x0 + OFFSET_X_MM:g}" y="{y0 + OFFSET_Y_MM:g}"'
+             f'    <rect class="body" x="{x0 + offset_x:g}" y="{y0 + OFFSET_Y_MM:g}"'
              f' width="{w:g}" height="{d:g}"/>']
     # A bubble instead of live text: an 0805 body is 1.6 x 0.8 mm and the
     # reference would not be legible at 1:1 wherever it was put.
@@ -99,17 +99,44 @@ def _row(index: int, ref: str, part, x: float, y: float) -> str:
     return f'  <g class="{cls}">' + "".join(cells) + "</g>"
 
 
-def svg(placed: list, table: dict | None = None) -> str:
+DEFAULT_TITLE = ("SR fault validation board (PCB-FAB-01) -- assembly and DNP "
+                 "drawing, 1:1 top side")
+# The <title> element is the SVG's document title (window/tab text, screen
+# readers).  It is separate from the printed heading above: that one carries the
+# board number and the scale, this one is the short name, and the committed SR
+# drawing has said exactly this since it was first generated.
+DEFAULT_DOC_TITLE = "SR fault validation board -- assembly and DNP drawing"
+DEFAULT_FOOTPRINT_NOTE = ("Footprints are vendored from hardware/stock_footprints "
+                          "(sha256 in PROVENANCE.md) except dcx:BSC010N04LS6, which is "
+                          "drawn from the datasheet land pattern.")
+
+
+def svg(placed: list, table: dict | None = None, *,
+        title: str = DEFAULT_TITLE,
+        doc_title: str = DEFAULT_DOC_TITLE,
+        board_mm: tuple[float, float] | None = None,
+        footprint_note: str = DEFAULT_FOOTPRINT_NOTE) -> str:
     """The drawing, as text.  ``placed`` and ``table`` must come from the board
-    generator -- a second part list would be a second source of truth."""
+    generator -- a second part list would be a second source of truth.
+
+    ``title``/``doc_title``/``board_mm``/``footprint_note`` exist so a second
+    board can reuse the sheet instead of growing a copy of it.  Their defaults
+    are the SR board's own values, which keeps ``fab/assembly.svg``
+    byte-identical: a parameterised header must not silently move the committed
+    drawing.  ``doc_title`` is the ``<title>`` element; leaving it at the
+    default would put the SR board's name inside another board's file, where a
+    screen reader and every grep would still find it.
+    """
     table = table if table is not None else board._table()
+    w_mm, d_mm = board_mm if board_mm is not None else (BOARD_W_MM, BOARD_D_MM)
+    offset_x = (PAGE_W_MM - w_mm) / 2
     order = sorted((p for p in placed if p.ref in table), key=lambda p: board._natural(p.ref))
     dnp = [r for r, part in table.items() if part.dnp]
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{PAGE_W_MM:g}mm" '
         f'height="{PAGE_H_MM:g}mm" viewBox="0 0 {PAGE_W_MM:g} {PAGE_H_MM:g}">',
-        '  <title>SR fault validation board -- assembly and DNP drawing</title>',
+        f'  <title>{escape(doc_title)}</title>',
         "  <style>",
         "    text{font-family:'DejaVu Sans',Arial,sans-serif;fill:#1a1a1a}",
         "    .page{fill:#ffffff} .outline{fill:none;stroke:#111;stroke-width:0.35}",
@@ -125,13 +152,12 @@ def svg(placed: list, table: dict | None = None) -> str:
         "    .row.dnp{fill:#b00020;font-weight:bold} .idx{fill:#666;text-anchor:end}",
         "  </style>",
         f'  <rect class="page" x="0" y="0" width="{PAGE_W_MM:g}" height="{PAGE_H_MM:g}"/>',
-        '  <text class="title" x="22" y="9">SR fault validation board (PCB-FAB-01) -- '
-        'assembly and DNP drawing, 1:1 top side</text>',
-        f'  <rect class="outline" x="{OFFSET_X_MM:g}" y="{OFFSET_Y_MM:g}" '
-        f'width="{BOARD_W_MM:g}" height="{BOARD_D_MM:g}"/>',
+        f'  <text class="title" x="22" y="9">{escape(title)}</text>',
+        f'  <rect class="outline" x="{offset_x:g}" y="{OFFSET_Y_MM:g}" '
+        f'width="{w_mm:g}" height="{d_mm:g}"/>',
     ]
     for index, p in enumerate(order, start=1):
-        lines += _callout(p, table[p.ref], index)
+        lines += _callout(p, table[p.ref], index, offset_x)
     notes = [
         f"  <text class=\"note\" x=\"22\" y=\"114\">Scale 1:1 at A4. All {len(order)} placements "
         f"are on F.Cu (top side); the board is single-sided assembly.</text>",
@@ -141,9 +167,7 @@ def svg(placed: list, table: dict | None = None) -> str:
         "  <text class=\"note\" x=\"22\" y=\"124\">Not an approval: hardware_built and "
         "fabrication_approved are false. DRC covers copper only -- no thermal, EMC or "
         "first-article review has been done.</text>",
-        "  <text class=\"note\" x=\"22\" y=\"129\">Footprints are vendored from "
-        "hardware/stock_footprints (sha256 in PROVENANCE.md) except dcx:BSC010N04LS6, "
-        "which is drawn from the datasheet land pattern.</text>",
+        f"  <text class=\"note\" x=\"22\" y=\"129\">{escape(footprint_note)}</text>",
     ]
     lines += notes
     header = ["Ref", "Value", "Footprint", "Status"]

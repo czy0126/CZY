@@ -60,6 +60,9 @@ python tools/make_sr_fault_board_pcb.py --fab     # 同上，缺 kicad-cli 时�
 python tools/assembly_drawing.py --check          # 装配/DNP 图（A4 1:1）：重生成并与 fab/assembly.svg 比对
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
 python tools/make_fast_oc_pcb.py --check          # 该模块的布线板：重生成 + kicad-cli DRC（需 KiCad 10.0，缺了 SystemExit）
+python tools/make_fast_oc_pcb.py --fab            # 同上 + 导出 pcb/fast_oc/fab/（13 个散列文件、9 层、assembly.svg、manifest）
+python tools/manufacturing_index.py --check       # 四块实验板的制造目录 pcb/manufacturing/{index.json,README.md}（--write 重生成）
+python tools/remaining_dependencies.py --check    # 主板剩余依赖表 hardware/dcx_main/remaining_dependencies.{json,md}（--write 重生成）
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
 python tools/magnetics_manufacturing_input.py --write  # 加工输入页：每件冻结一个候选 + 首件判据 + 空白回填
 python tools/magnetics_manufacturing_input.py --check  # 页面是否过期（与 --write 同源，只比字节）
@@ -926,6 +929,10 @@ SEC_A/SEC_B/SR_SRC 在 F.Cu）。`routed` 因此是 true，但
 空缺焊盘与漏订件在图上一样。图与铜同源，因此不会互相矛盾，也不需要 KiCad。
 `export_fab()` 里是**惰性 import**（`assembly_drawing` 反过来 import 本模块取件表）。
 清单的 `files` 必须覆盖 `fab/` 下每个文件，测试逐名比对——未列入即无人哈希过。
+**复用这张图纸时要连 `<title>` 一起换**：`svg()` 的标题参数只管印在页上的那行，
+`<title>` 元素（窗口标题、读屏、grep 都能看到）第一版是写死的 SR 板名，于是 fast-OC 的
+`assembly.svg` 里同时出现两块的板名。现在有独立参数 `doc_title`，默认值仍是 SR 板的原字面量，
+所以已提交的 `pcb/sr_fault_validation/fab/assembly.svg` **逐字节未变**（参数化时验证过）。
 
 **kicad-cli 只绘板文件 `(layers)` 表里声明过的层，没声明的静默丢弃**（退出码 0、
 无消息、无输出行），焊盘上写着 `(layers "F.Cu" "F.Mask" "F.Paste")` 也不算数。
@@ -1121,7 +1128,36 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 
 **本机 `PostToolUse` 钩子会对编辑过的 `.py` 跑 `ruff check --fix`，它会删掉"暂时未使用"的 import**：
 先加 `import x`、下一次编辑才写用法的分步做法会被吃掉（`make_fast_oc_eco.py` 与它的测试都撞过）。
-要么一次写完 import + 用法，要么在用法落地后再补 import。
+要么一次写完 import + 用法，要么在用法落地后再补 import。`make_fast_oc_pcb.py` 加 `--fab` 时
+**同一个坑又踩了一次**：`import subprocess` 与 `from pathlib import Path` 分两步加，写 `export_fab`
+之前就被删掉，首跑 `NameError`。
+
+## 实验板制造目录与主板剩余依赖（两张视图）
+
+两张都是**视图，不是审核**——只搬用已提交工件的数字（哈希、文件数、旗标、阻塞项），
+不做任何设计判断，也**不能**把任何一项变绿。48 小时路线第 5 项明确"不再新增综合审计框架"，
+所以两者都只读上游、只在自己过期时失败。
+
+- **`pcb/manufacturing/{index.json,README.md}`**（`tools/manufacturing_index.py`）：四块实验板的
+  固定表（`sr_fault_validation` / `fast_oc` 有完整制造包，`d0_protection` / `control_validation`
+  只有原理图）。**表是写死的，不靠遍历 `pcb/`**：新出现的目录不该自动获得"已知板"的地位，
+  消失的板必须让 `--check` 变红。状态四选一：`SCHEMATIC_ONLY` / `NO_FAB_PACKAGE` /
+  `FAB_PACKAGE_STALE` / `FAB_PACKAGE_PRESENT`，过期由三条判据得出：manifest 的 `board_sha256`
+  与提交板不符、manifest 文件清单与实际目录不符、`plotted_layers != layers`。
+  **manifest 缺 `flags` 时按 false 读**（`_flags()`）：缺席正是未批准的包混成已批准的路径。
+- **`hardware/dcx_main/remaining_dependencies.{json,md}`**（`tools/remaining_dependencies.py`）：
+  把 `d1_fabrication_gate.json` 的 6 个阻塞项逐一配上**实物/数据出口**（`VENDOR_DRAWING` /
+  `PART_SELECTION` / `GUI_DEVICE_CHANGE` / `ROUTING` / `BENCH_MEASUREMENT` / `SIGNED_REVIEW`），
+  数字全部从 gate 与 `placeholder_eco.json` 读，不重算。两个 12 是**不同的两组**：
+  `NATIVE_DEVICE_CHANGE`（C5/CT/Cin/Cout/Cr/D_BT/Lr/R3/T1–T4，要 GUI 换器件）与
+  `requirement is None` 的 12 行（C7–C10、R28–R35，先定义需求再选型）。证据文件名必须与
+  `manual_evidence` 逐字相同——差一个字，读者就会去造一个 gate 永远不看的文件。
+  `uncovered_blockers` 为空是**工具表**的不变量，不是设计结论。
+- 两者都进了 `tools/ci_check.py` 的 `VIEWS`（`--skip-tests` 也查），因为它们只读提交文件、
+  不需要 kicad-cli；过期的一页会让读者照着一个失效的哈希或命令去做事。
+- **`counts` 里三个字段是"名字的列表"不是计数**：`magnetics_missing_physical_pads`、
+  `refs_with_placeholders`、`bom_rows_not_selected` 都是 list。直接插进 f-string 会把 30 个
+  字典印进化后的段落里（`remaining_dependencies` 第一版就这么印了），要 `len(...)`。
 
 ## 磁件询价单（`hardware/dcx_main/rfq/`）
 

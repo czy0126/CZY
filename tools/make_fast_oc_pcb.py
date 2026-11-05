@@ -19,7 +19,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import uuid
+from pathlib import Path
 
 import make_fast_oc_eco as eco
 import make_sr_fault_board_pcb as srpcb
@@ -28,6 +30,12 @@ import sr_board_router as router
 OUT = eco.OUT
 BOARD = "fast_oc.kicad_pcb"
 REPORT = "fast_oc_pcb.json"
+FAB = OUT / "fab"
+FAB_MANIFEST = FAB / "manifest.json"
+# The position CSV carries the board's own stem.  Two packages that shared one
+# filename would overwrite each other the moment both were unpacked together.
+POS_PREFIX = "fast_oc"
+COPPER_WEIGHT_OZ = 1        # the process the package asks for, same as the SR board
 NS = uuid.UUID("2d7b6c55-1c8e-4a72-9d0f-3b1e5c8a6f24")
 
 # 52 x 38 mm leaves room for four M3 holes and still fits in a 60 mm envelope.
@@ -346,10 +354,107 @@ def write() -> dict:
     (OUT / "fast_oc.kicad_pro").write_text(project_file(), encoding="utf-8")
     (OUT / "fp-lib-table").write_text(fp_lib_table(), encoding="utf-8")
     return {"placed": placed, "result": result}
-    return {"placed": placed, "result": result}
 
 
-def check() -> None:
+def _table() -> dict:
+    """ref -> part, the same table the schematic generator produced."""
+    return {p.ref: p for p in eco.parts() if p.footprint}
+
+
+def export_fab(cli: Path, version: str, data: dict) -> dict:
+    """Write ``pcb/fast_oc/fab/``: gerbers, drill, position file, drawing, manifest.
+
+    Reuses the SR board's ``fab_commands`` so both bench boards ship the same
+    three exports from one implementation.  What differs is the *content* of the
+    manifest, because a fabricator receives the zip and not the repository.
+
+    The manifest deliberately carries no conductor rating: this module has no
+    power path.  An empty field would read as "not computed yet"; an explicit
+    NOT_RATED with the reason is the honest statement.
+    """
+    board_path = OUT / BOARD
+    drc = OUT / "drc.json"
+    if not drc.is_file():
+        raise SystemExit("drc.json is missing: run --check before --fab")
+    if drc.stat().st_mtime < board_path.stat().st_mtime:
+        raise SystemExit("drc.json is older than the board -- it describes a different "
+                         "design; run --check again")
+
+    FAB.mkdir(parents=True, exist_ok=True)
+    for stale in FAB.iterdir():
+        if stale.is_file():
+            stale.unlink()
+    for name, argv in srpcb.fab_commands(cli, board_path, FAB, prefix=POS_PREFIX).items():
+        proc = subprocess.run(argv, capture_output=True, encoding="utf-8", errors="replace")
+        if proc.returncode != 0:
+            raise SystemExit(f"kicad-cli {name} export failed (exit {proc.returncode}): "
+                             f"{(proc.stderr or proc.stdout).strip()}")
+
+    # Same reasoning as the SR board: kicad-cli draws the silkscreen, which has
+    # the references wherever layout left them and cannot mark a part DNP, so
+    # the drawing comes from the placement table the copper was built from.
+    import assembly_drawing
+    (FAB / "assembly.svg").write_text(
+        assembly_drawing.svg(
+            data["placed"], _table(),
+            title=("TLV3501 fast-overcurrent ECO module -- assembly drawing, "
+                   "1:1 top side"),
+            doc_title="TLV3501 fast-overcurrent ECO module -- assembly drawing",
+            board_mm=(BOARD_W_MM, BOARD_D_MM),
+            footprint_note=("Footprints are vendored from hardware/stock_footprints "
+                            "(sha256 in PROVENANCE.md). This module has no "
+                            "datasheet-drawn land pattern.")),
+        encoding="utf-8", newline="\n")
+
+    srpcb.check_plotted_layers(FAB)
+    dnp = {p.ref for p in _table().values() if p.dnp}
+    # Named explicitly: the default is the SR board's DNP set, which would check
+    # this package against another board's parts.
+    srpcb.check_position_excludes_dnp(FAB / f"{POS_PREFIX}-pos.csv", dnp)
+
+    files = sorted(p for p in FAB.iterdir() if p.is_file() and p.name != FAB_MANIFEST.name)
+    if not files:
+        raise SystemExit("the fabrication export wrote no files")
+    manifest = {
+        "board": BOARD,
+        "board_sha256": srpcb._sha256(board_path),
+        "kicad_cli": version,
+        "copper_weight_oz": COPPER_WEIGHT_OZ,
+        "layers": srpcb.FAB_GERBER_LAYERS.split(","),
+        "plotted_layers": srpcb.plotted_layers(FAB),
+        "excluded_from_position": sorted(dnp),
+        "files": [{"name": p.name, "bytes": p.stat().st_size, "sha256": srpcb._sha256(p)}
+                  for p in files],
+        "current_rating": {
+            "status": "NOT_RATED",
+            "why": "every net on this module is a signal. The only current-carrying "
+                   "path is the 5 V rail and the OCD node, both supplied by the "
+                   "harness at a few mA, so no board-level conductor rating was "
+                   "computed.",
+        },
+        "what_this_is": "gerbers, drill, a position file and an assembly drawing for a "
+                        "TLV3501 fast-overcurrent comparator module: one comparator, "
+                        "one 2N7002 open-drain pull-down and their passives.",
+        "what_this_is_not": [
+            "not an approval to build: hardware_built and fabrication_approved "
+            "are false",
+            "a latch: the fast-trip output follows current.  Latching lives in D0's "
+            "CD4013, not here",
+            "a complete protection channel: the 5 V rail and the OCD node come from "
+            "the harness, and losing 5 V releases FAST_TRIP rather than tripping it",
+            "a thermal or EMC review: DRC covers copper only",
+            "a checked drawing: assembly.svg is generated from the same placement "
+            "table as the copper, so the two cannot disagree -- but it has not been "
+            "compared with a physical first article",
+        ],
+        "flags": {"hardware_built": False, "fabrication_approved": False},
+    }
+    FAB_MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                            encoding="utf-8", newline="\n")
+    return manifest
+
+
+def check(fab: bool = False) -> None:
     cli = srpcb.find_kicad_cli()
     if cli is None:
         raise SystemExit("kicad-cli not found: DRC cannot be reproduced")
@@ -369,14 +474,23 @@ def check() -> None:
     (OUT / REPORT).write_text(
         json.dumps(report(data["placed"], data["result"], drc),
                    ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if fab:
+        version = subprocess.run([str(cli), "--version"], capture_output=True,
+                                 encoding="utf-8", errors="replace", check=False).stdout.strip()
+        manifest = export_fab(cli, version, data)
+        print(f"fab: {len(manifest['files'])} files, "
+              f"{len(manifest['plotted_layers'])} plotted layers -> {FAB}")
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--check", action="store_true")
+    ap.add_argument("--check", action="store_true",
+                    help="regenerate, run kicad-cli DRC and rewrite the report")
+    ap.add_argument("--fab", action="store_true",
+                    help="like --check, and write pcb/fast_oc/fab/ (needs kicad-cli)")
     args = ap.parse_args()
-    if args.check:
-        check()
+    if args.check or args.fab:
+        check(fab=args.fab)
     else:
         write()
         (OUT / REPORT).write_text(

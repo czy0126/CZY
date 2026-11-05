@@ -1,0 +1,109 @@
+{
+  "status": "BENCH_BOARD_MANUFACTURING_INDEX",
+  "generated_by": "tools/manufacturing_index.py",
+  "note": "A view over committed artefacts, not an approval: it copies each board's own hashes and flags and makes no judgement about the design.  hardware_built and fabrication_approved stay false for every board.",
+  "boards": [
+    {
+      "id": "sr_fault_validation",
+      "title": "Single-pair UCC24624 SR fault-shutdown validation board",
+      "what": "Two BSC010N04LS6 driven by one real UCC24624, a fault interface and a REG crowbar.  Its purpose is to measure how one SR pair behaves when a fault command arrives, not to pass the converter's current.",
+      "generator": "python tools/make_sr_fault_board_pcb.py --fab",
+      "schematic": "pcb/sr_fault_validation/sr_fault_validation.kicad_sch",
+      "board": "pcb/sr_fault_validation/sr_fault_validation.kicad_pcb",
+      "fab": "pcb/sr_fault_validation/fab",
+      "schematic_sha256": "3fa163ccc2f25c59829bd24036e4506c7d63b0a6eddc8274c468fc0dee9b0439",
+      "board_sha256": "9e887e960d4d2e69e5becb88ae792415c77c2b0f68f12cee43f221ad2ce12ab0",
+      "manifest": "pcb/sr_fault_validation/fab/manifest.json",
+      "manifest_sha256": "9d7496b2a8f4ca95cc191852f6c21df43277a597cba814800310bf7bf2780a17",
+      "kicad_cli": "10.0.6",
+      "copper_weight_oz": 1,
+      "files": 13,
+      "layers": [
+        "F.Cu",
+        "B.Cu",
+        "F.Paste",
+        "B.Paste",
+        "F.Silkscreen",
+        "B.Silkscreen",
+        "F.Mask",
+        "B.Mask",
+        "Edge.Cuts"
+      ],
+      "flags": {
+        "hardware_built": false,
+        "fabrication_approved": false
+      },
+      "manifest_board_sha256": "9e887e960d4d2e69e5becb88ae792415c77c2b0f68f12cee43f221ad2ce12ab0",
+      "status": "FAB_PACKAGE_PRESENT"
+    },
+    {
+      "id": "fast_oc",
+      "title": "TLV3501 fast-overcurrent ECO module",
+      "what": "One TLV3501 comparator and a 2N7002 open-drain pull-down that make the overcurrent channel fast by replacing the three RC filters, not the comparator.  It does not latch.",
+      "generator": "python tools/make_fast_oc_pcb.py --fab",
+      "schematic": "pcb/fast_oc/fast_oc.kicad_sch",
+      "board": "pcb/fast_oc/fast_oc.kicad_pcb",
+      "fab": "pcb/fast_oc/fab",
+      "schematic_sha256": "721598b016e098128eff50c4075f4354b42970e14a90c31ae6fae41a1cb539b6",
+      "board_sha256": "95b5b480cfe323ef9aee4717f3db2d5f79f9763469fca377fdfb42751896c014",
+      "manifest": "pcb/fast_oc/fab/manifest.json",
+      "manifest_sha256": "609f9b553d4b0c581efb4884603f32f3dc76edf7b55bf09b3de3a974fb727c8c",
+      "kicad_cli": "10.0.6",
+      "copper_weight_oz": 1,
+      "files": 13,
+      "layers": [
+        "F.Cu",
+        "B.Cu",
+        "F.Paste",
+        "B.Paste",
+        "F.Silkscreen",
+        "B.Silkscreen",
+        "F.Mask",
+        "B.Mask",
+        "Edge.Cuts"
+      ],
+      "flags": {
+        "hardware_built": false,
+        "fabrication_approved": false
+      },
+      "manifest_board_sha256": "95b5b480cfe323ef9aee4717f3db2d5f79f9763469fca377fdfb42751896c014",
+      "status": "FAB_PACKAGE_PRESENT"
+    },
+    {
+      "id": "d0_protection",
+      "title": "D0 ten-channel protection logic board",
+      "what": "CD4013 fault latches, the ten-way sum comparator and the ACK token, with the POR folded into the latch.  Schematic and ERC only.",
+      "generator": "python tools/make_d0_protection_board.py --check",
+      "schematic": "pcb/d0_protection/d0_protection.kicad_sch",
+      "board": null,
+      "fab": null,
+      "schematic_sha256": "ca84c8886e0ed548d7deec46e0a80f2d6c1cf7f60955e53b40a1d2b7af3308af",
+      "status": "SCHEMATIC_ONLY",
+      "not_fabricable_because": [
+        "no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper"
+      ]
+    },
+    {
+      "id": "control_validation",
+      "title": "UCC25600 / UCC24624 control validation board",
+      "what": "The controller and SR driver wired to their passives so the timing, RT/DT and dead-time assumptions can be measured before the power stage exists.  Schematic and ERC only.",
+      "generator": "python tools/make_control_board.py --check",
+      "schematic": "pcb/control_validation/control_validation.kicad_sch",
+      "board": null,
+      "fab": null,
+      "schematic_sha256": "2ceb88c789f0b5c33a7f3d0ed1f0a59306c4ad849c25d0312c45285462dde2dc",
+      "status": "SCHEMATIC_ONLY",
+      "not_fabricable_because": [
+        "no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper"
+      ]
+    }
+  ],
+  "reproduce": [
+    "python tools/make_sr_fault_board_pcb.py --fab",
+    "python tools/make_fast_oc_pcb.py --fab",
+    "python tools/make_d0_protection_board.py --check",
+    "python tools/make_control_board.py --check"
+  ],
+  "not_here": "the main board has no copper; its remaining dependencies are in hardware/dcx_main/remaining_dependencies.md",
+  "requires": "The two `--fab` commands need KiCad's kicad-cli.  Without it the committed packages can be inspected and hashed, but not rebuilt."
+}

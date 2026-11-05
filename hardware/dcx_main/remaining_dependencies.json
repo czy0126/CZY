@@ -1,0 +1,175 @@
+{
+  "status": "MAIN_BOARD_REMAINING_DEPENDENCIES",
+  "generated_by": "tools/remaining_dependencies.py",
+  "note": "A view over d1_fabrication_gate.json and placeholder_eco.json: every count below is copied from those two files, not re-derived.  release_approved stays false; this page cannot make it true.",
+  "source": {
+    "gate": {
+      "path": "hardware/dcx_main/d1_fabrication_gate.json",
+      "sha256": "d159d01bab583b8669568a5a4cd22d2a914474dbf78b214098da40b61c8dad58",
+      "status": "NOT_FOR_FAB",
+      "release_approved": false
+    },
+    "eco": {
+      "path": "hardware/dcx_main/placeholder_eco.json",
+      "sha256": "36db41d01b99eb74976a32ac4cbbfb78fa0c6b12727def2a1c02e05968f102f4"
+    }
+  },
+  "summary": {
+    "blocking_checks": 6,
+    "checks_total": 11,
+    "exits": 7,
+    "magnetics_without_a_physical_pad": 5,
+    "placeholders": 61,
+    "bom_rows_not_selected": 30,
+    "refs_needing_a_device_swap": 12,
+    "refs_without_a_requirement": 12,
+    "refs_with_a_verified_mpn": 0
+  },
+  "exit_kinds": {
+    "VENDOR_DRAWING": "a supplier returns a drawing",
+    "PART_SELECTION": "an MPN is chosen and recorded against a requirement",
+    "GUI_DEVICE_CHANGE": "a person swaps the device in the LCEDA editor",
+    "ROUTING": "copper is drawn and passes DRC",
+    "BENCH_MEASUREMENT": "a bench run produces data",
+    "SIGNED_REVIEW": "a named reviewer signs an evidence file"
+  },
+  "exits": [
+    {
+      "id": "magnetics_physical_pads",
+      "gate_check": "all_golden_refs_and_magnetic_physical_pads_verified",
+      "blocked_by": "5 magnetics have a logical terminal name and no vendor pad number: CT, T1, T2, T3, T4.  The name matching a net is not the same as the terminal existing.",
+      "refs": [
+        "CT",
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "exit_kind": "VENDOR_DRAWING",
+      "exit": "the vendor terminal drawing, answering vendor_terminal_request.json.  Then fill physical_pad/physical_pad_map_verified per terminal, re-export the native netlist, and re-run the gate.",
+      "next_command": "python tools/d1_fabrication_gate.py --write"
+    },
+    {
+      "id": "part_selection",
+      "gate_check": "no_electrical_placeholders_or_unselected_bom",
+      "blocked_by": "61 refs carry PLACEHOLDER and 30 BOM rows are TO SELECT; 0 have an MPN traced to a datasheet in this repository.  49 of the 61 have a requirement a candidate can be checked against; 12 do not.",
+      "refs_without_a_requirement": [
+        "C10",
+        "C7",
+        "C8",
+        "C9",
+        "R28",
+        "R29",
+        "R30",
+        "R31",
+        "R32",
+        "R33",
+        "R34",
+        "R35"
+      ],
+      "bom_rows_not_selected": [
+        "T1-T4",
+        "Lr",
+        "CT",
+        "Cr",
+        "Cin",
+        "Cout",
+        "J_OUT",
+        "J_IN",
+        "D_CT1-D_CT4",
+        "D_BT",
+        "R18",
+        "R19",
+        "R1",
+        "R2",
+        "R3",
+        "R4 R5",
+        "R20-R27",
+        "R28-R35",
+        "R7 R8 R9 R10",
+        "C13",
+        "C101-C112",
+        "C5",
+        "C6",
+        "C7-C10",
+        "R15",
+        "R16",
+        "R17",
+        "C11",
+        "C12",
+        "PS1"
+      ],
+      "exit_kind": "PART_SELECTION",
+      "exit": "one MPN per row, recorded with a datasheet in references/datasheets/ (the same rule the bench boards follow).  For the 12 untraced refs the first step is defining the requirement, not choosing a part: there is nothing to check a candidate against.",
+      "next_command": "python tools/placeholder_eco.py --write"
+    },
+    {
+      "id": "native_device_change",
+      "gate_check": "no_electrical_placeholders_or_unselected_bom",
+      "blocked_by": "12 refs cannot be fixed by editing a value: C5, CT, Cin, Cout, Cr, D_BT, Lr, R3, T1, T2, T3, T4.  Their devices or packages are wrong, and the editor API cannot swap a device -- the value ECO can.",
+      "refs": [
+        "C5",
+        "CT",
+        "Cin",
+        "Cout",
+        "Cr",
+        "D_BT",
+        "Lr",
+        "R3",
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "exit_kind": "GUI_DEVICE_CHANGE",
+      "exit": "a GUI session that deletes and replaces those twelve devices in the one native project, then a re-export of the native netlist.  native_value_eco.py already reports them as ALREADY_CONFORMS for value; nothing in this repository can perform the swap.",
+      "next_command": "python tools/native_value_eco.py --check"
+    },
+    {
+      "id": "native_erc",
+      "gate_check": "native_erc_evidence",
+      "blocked_by": "native_erc_approved.json is absent (manual_evidence.native_erc)",
+      "evidence_file": "hardware/dcx_main/native_erc_approved.json",
+      "exit_kind": "SIGNED_REVIEW",
+      "exit": "run ERC on the native project with --severity-all and zero violations, write the evidence file with the report path, its sha256 and the reviewer.  An ERC report nobody signed is the same as no report.",
+      "next_command": null
+    },
+    {
+      "id": "routed_pcb",
+      "gate_check": "routed_pcb_to_schematic_evidence",
+      "blocked_by": "the main board has no copper: the repository holds a schematic, a netlist and a placement plan, and no PCB",
+      "evidence_file": "hardware/dcx_main/pcb_to_schematic_verified.json",
+      "exit_kind": "ROUTING",
+      "exit": "a routed board whose DRC reports zero unconnected items, then pcb_to_schematic_verified.json binding board hash, netlist hash and the DRC report.  Unconnected items live in the DRC's second top-level array, not in violations.",
+      "next_command": null
+    },
+    {
+      "id": "fab_package",
+      "gate_check": "manufacturing_package_evidence",
+      "blocked_by": "no gerbers, drill, position file or package manifest exist for the main board",
+      "evidence_file": "hardware/dcx_main/fabrication_approval.json",
+      "exit_kind": "SIGNED_REVIEW",
+      "exit": "the package exported from the routed board (the two bench boards show the shape), then fabrication_approval.json.  A package that can be ordered is exactly the artefact mistaken for an approved one.",
+      "next_command": null
+    },
+    {
+      "id": "protection_signoff",
+      "gate_check": "independent_fault_shutdown_design_evidence",
+      "blocked_by": "the protection channel has SPICE evidence and two bench boards, but no measured first-article result for the main board",
+      "evidence_file": "hardware/dcx_main/protection_design_approved.json",
+      "exit_kind": "BENCH_MEASUREMENT",
+      "exit": "build and run the D0 and fast-OC bench boards (pcb/manufacturing/), record the measured stop time, then protection_design_approved.json from protection_design_approval_TEMPLATE.json.  The SPICE number is a floor, not a worst case: D0's common logic is not modelled.",
+      "next_command": null
+    }
+  ],
+  "blocking_checks": [
+    "all_golden_refs_and_magnetic_physical_pads_verified",
+    "no_electrical_placeholders_or_unselected_bom",
+    "native_erc_evidence",
+    "routed_pcb_to_schematic_evidence",
+    "manufacturing_package_evidence",
+    "independent_fault_shutdown_design_evidence"
+  ],
+  "not_here": "the bench boards are in pcb/manufacturing/README.md; the placeholder-by-placeholder next actions are in hardware/dcx_main/placeholder_eco.csv",
+  "uncovered_blockers": []
+}

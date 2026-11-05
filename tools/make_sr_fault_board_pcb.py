@@ -1896,7 +1896,8 @@ def measure_and_record(cli: Path, version: str) -> None:
         raise SystemExit(f"the pours did not fill as designed: {bad}")
 
 
-def fab_commands(cli: Path, board: Path, out: Path) -> dict[str, list[str]]:
+def fab_commands(cli: Path, board: Path, out: Path,
+                 prefix: str = "sr_fault_validation") -> dict[str, list[str]]:
     """The three exports that make a fabrication package.
 
     ``--check-zones`` on the gerbers is the one that matters.  The committed
@@ -1904,6 +1905,11 @@ def fab_commands(cli: Path, board: Path, out: Path) -> dict[str, list[str]]:
     empty pours next to a DRC run that refilled them -- the package would
     disagree with its own evidence.  The position file excludes the DNP parts:
     they have lands but are not placed, which is what "do not populate" means.
+
+    ``prefix`` names the position CSV.  It defaults to this board's own stem so
+    the committed ``fab/`` stays byte-identical; a second board passes its own
+    rather than sharing a filename that would overwrite the first board's file
+    if both packages were ever unpacked together.
     """
     return {
         "gerbers": [str(cli), "pcb", "export", "gerbers", "--check-zones",
@@ -1912,7 +1918,7 @@ def fab_commands(cli: Path, board: Path, out: Path) -> dict[str, list[str]]:
                   "-u", "mm", "-o", str(out), str(board)],
         "position": [str(cli), "pcb", "export", "pos", "--format", "csv",
                      "--units", "mm", "--exclude-dnp",
-                     "-o", str(out / "sr_fault_validation-pos.csv"), str(board)],
+                     "-o", str(out / f"{prefix}-pos.csv"), str(board)],
     }
 
 
@@ -1951,15 +1957,18 @@ def position_refs(path: Path) -> set[str]:
         return {row["Ref"] for row in csv.DictReader(fh)}
 
 
-def check_position_excludes_dnp(path: Path) -> None:
+def check_position_excludes_dnp(path: Path, dnp: set[str] | None = None) -> None:
     """Fail, naming the part, when a DNP part is still in the position file.
 
     ``--exclude-dnp`` reads the footprint's ``(attr ... dnp)``, not the part
     table.  The first package was exported with the flag on a board where no
     footprint carried it, so the ten DNP parts -- the gate clamps that are
     meant to stay unpopulated -- went into the CSV a machine follows.
+
+    ``dnp`` defaults to *this* board's DNP set; another board passes its own so
+    the guard names that board's parts instead of silently checking SR ones.
     """
-    leaked = sorted(position_refs(path) & _dnp_refs())
+    leaked = sorted(position_refs(path) & (_dnp_refs() if dnp is None else dnp))
     if leaked:
         raise SystemExit(
             f"{path.name} still places the DNP part(s) {', '.join(leaked)}.  "
