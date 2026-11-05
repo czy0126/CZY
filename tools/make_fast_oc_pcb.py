@@ -390,6 +390,7 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
             raise SystemExit(f"kicad-cli {name} export failed (exit {proc.returncode}): "
                              f"{(proc.stderr or proc.stdout).strip()}")
 
+    srpcb.normalise_fab_text_line_endings(FAB)
     # Same reasoning as the SR board: kicad-cli draws the silkscreen, which has
     # the references wherever layout left them and cannot mark a part DNP, so
     # the drawing comes from the placement table the copper was built from.
