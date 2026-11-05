@@ -163,9 +163,10 @@ def build_symbols() -> dict[str, str]:
         block = extract_symbol(libs / lib, name)
         block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
         symbols[lib_id] = block
-    # Two-pin shunt reference.  The stock LM4040DBZ symbols use ``extends`` and
-    # the SOT-23 third pin is NC, so a two-pin symbol is enough and avoids a
-    # derivative-symbol lookup that this generator would have to resolve.
+    # Two-pin shunt reference.  The TI DBZ SOT-23 pin 3 is marked '*' (not NC),
+    # and TI permits it to float OR connect to pin 2 (anode), recommending
+    # anode in strong EMI.  This two-pin bench symbol leaves pad 3 unconnected:
+    # one reason OEM/first-article electrical review remains mandatory.
     symbols["FASTOC:LM4040"] = custom_symbol(
         "FASTOC:LM4040",
         [Pin("1", "K", 2.54, 0, 180, "power_out"),
