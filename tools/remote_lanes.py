@@ -143,20 +143,20 @@ def check_lane(state: dict, deck: str, now: float, t0: float,
             state["when"] = now + 3
             return "wait"
         cpu = cpu_of(proc.pid)
-        if cpu is None:
-            return "run"
         size = os.path.getsize(raw_path) if os.path.isfile(raw_path) else 0
         if size > state.get("raw_size", 0):
             # A writer may be busy flushing gigabytes of RAW while CPU is idle.
             # Treat byte growth as work, but an empty/unchanged file is NOT liveness.
             state["raw_size"], state["cpu_at"] = size, now
-        if cpu - state["cpu"] >= CPU_MIN_GROWTH_S:
+        if cpu is not None and cpu - state["cpu"] >= CPU_MIN_GROWTH_S:
             state["cpu"], state["cpu_at"] = cpu, now
         elif now - state["cpu_at"] > CPU_STALL_S:
             proc.kill()
             proc.wait()
             state["kills"] += 1
-            state["last_failure"] = "CPU and RAW output remained stalled"
+            state["last_failure"] = (
+                "CPU counter unavailable and RAW output stalled"
+                if cpu is None else "CPU and RAW output remained stalled")
             state["proc"] = None
             state["when"] = now + 3
             return "wait"
