@@ -128,13 +128,13 @@ def test_lanes_are_siblings_one_level_under_sim(tmp_path: Path) -> None:
 def write_completed_artifacts(deck: Path, *, value: bytes = b"42") -> None:
     raw, log = artifact_paths(str(deck))
     Path(raw).write_bytes(
-        b"Title: test\\nDate: now\\nPlotname: Transient Analysis\\n"
-        b"Flags: real\\nNo. Variables: 2\\nNo. Points: 1\\n"
-        b"Variables:\\n0 time time\\n1 V(out) voltage\\nValues:\\n"
-        b"0\\t0\\n" + value + b"\\n"
+        b"Title: test\nDate: now\nPlotname: Transient Analysis\n"
+        b"Flags: real\nNo. Variables: 2\nNo. Points: 1\n"
+        b"Variables:\n0 time time\n1 V(out) voltage\nValues:\n"
+        b"0\t0\n" + value + b"\n"
     )
     Path(log).write_text(
-        "LTspice 26.0.2 for Windows\\nTotal elapsed time: 0.125 seconds.\\n",
+        "LTspice 26.0.2 for Windows\nTotal elapsed time: 0.125 seconds.\n",
         encoding="utf-8",
     )
 
@@ -149,16 +149,16 @@ def test_completed_artifacts_requires_real_ascii_points_and_finished_log(tmp_pat
     assert completed_artifacts(str(deck))[0] is False
     write_completed_artifacts(deck)
     assert completed_artifacts(str(deck))[0]
-    Path(log).write_text("Start Time: now\\n")
+    Path(log).write_text("Start Time: now\n")
     assert "completion" in completed_artifacts(str(deck))[1]
     write_completed_artifacts(deck)
-    Path(raw).write_bytes(b"Title: ok\\nDate: now\\n")
+    Path(raw).write_bytes(b"Title: ok\nDate: now\n")
     assert "ASCII raw" in completed_artifacts(str(deck))[1]
     write_completed_artifacts(deck)
     Path(raw).write_bytes(Path(raw).read_bytes().replace(b"No. Points: 1", b"No. Points: 0"))
     assert not completed_artifacts(str(deck))[0]
     write_completed_artifacts(deck)
-    Path(log).write_text("Total elapsed time: 1 seconds.\\nFatal Error: solver failed\\n")
+    Path(log).write_text("Total elapsed time: 1 seconds.\nFatal Error: solver failed\n")
     assert not completed_artifacts(str(deck))[0]
 
 
