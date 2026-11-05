@@ -90,7 +90,7 @@ def test_exported_netlist_and_assembly_do_not_use_generic_bat54_package():
 
 
 def test_manufacturing_index_is_bound_to_the_corrected_board_hash_and_not_released():
-    index = json.loads((pcb.ROOT / "pcb/manufacturing/index.json").read_text())
+    index = json.loads((eco.ROOT / "pcb/manufacturing/index.json").read_text())
     row = next(r for r in index["boards"] if r["id"] == "fast_oc")
     manifest = json.loads(pcb.FAB_MANIFEST.read_text())
     assert row["board_sha256"] == manifest["board_sha256"]
