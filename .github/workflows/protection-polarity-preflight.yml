@@ -1,0 +1,30 @@
+name: protection-polarity-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'tools/make_fast_oc_eco.py'
+      - 'tools/make_d0_protection_board.py'
+      - 'tools/test_make_fast_oc_eco.py'
+      - 'tools/test_fast_oc_integration_safety.py'
+      - 'docs/D1_EXECUTION_KIT/34_TLV3501快速过流ECO模块.md'
+      - '.github/workflows/protection-polarity-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  active-low-interface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install fast test dependencies
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Check complementary fault polarities and disconnected harness
+        run: |
+          python -m pytest -q tools/test_make_fast_oc_eco.py -k 'push_pull_output_reaches_fast_trip_only_through_the_nmos or netlist_contains_every_module_net'
+          python -m pytest -q tools/test_fast_oc_integration_safety.py -k 'harness_pins_and_opposite_trip_polarities_are_not_shorted or open_wire_requests_fault'
+
+# Fast unit gates only. A green result is not native ERC/DRC, fabrication release,
+# ten-channel measured VGS shutdown, or system-level electrical safety evidence.
