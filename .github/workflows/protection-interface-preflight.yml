@@ -1,0 +1,27 @@
+name: protection-interface-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'tools/test_make_fast_oc_eco.py'
+      - 'tools/make_fast_oc_eco.py'
+      - 'tools/make_d0_protection_board.py'
+      - 'tools/test_fast_oc_integration_safety.py'
+      - '.github/workflows/protection-interface-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  active-low-fault-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'pytest>=8,<10'
+      - name: Verify fast-OC module and D0 polarity contract
+        run: |
+          python -m pytest -q tools/test_make_fast_oc_eco.py -k 'open_drain_fast_ext_n_is_separate_from_legacy_active_high_fast_trip or netlist_contains_every_module_net'
+          python -m pytest -q tools/test_fast_oc_integration_safety.py -k 'harness_pins_and_opposite_trip_polarities_are_not_shorted or open_wire_requests_fault'
+
+# This lightweight safety contract does not substitute full ERC/DRC, hardware VGS or 100-A checkout.
