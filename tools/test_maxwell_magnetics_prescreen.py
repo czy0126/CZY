@@ -61,7 +61,7 @@ def test_material_bh_csv_must_be_monotonic_and_reach_screen_range(tmp_path):
     f = tmp_path / "n97.csv"
     f.write_text(
         "H_A_per_m,B_T\n0,0\n100,0.10\n200,0.15\n400,0.21\n"
-        "600,0.27\n800,0.29\n", encoding="utf-8")
+        "600,0.27\n800,0.34\n", encoding="utf-8")
     assert runner.check_bh_csv(f) == []
     f.write_text("H_A_per_m,B_T\n0,0\n200,0.1\n100,0.2\n",
                  encoding="utf-8")
@@ -76,3 +76,23 @@ def test_config_has_separate_cad_cases_and_all_currents():
     assert 104.17 in cfg["solved_currents_a"]
     assert cfg["aedt_material_name"] == "N97_100C_BH_CONCEPT_REVIEWED"
     assert all(c["step_file"] is None for c in cfg["cases"])
+
+def test_bh_input_is_accepted_in_pyaedt_h_then_b_units():
+    rows = [
+        {"H_A_per_m": "0", "B_T": "0"},
+        {"H_A_per_m": "500", "B_T": "0.2"},
+    ]
+    assert runner.bh_pairs_for_pyaedt(rows) == [[0.0, 0.0], [500.0, 0.2]]
+
+
+def test_bh_csv_requires_origin_valid_slope_and_2turn_field_range(tmp_path):
+    f = tmp_path / "bh.csv"
+    prefix = "H_A_per_m,B_T\n"
+    # Data below a 2-turn RFQ flux estimate is not enough for a conclusion.
+    f.write_text(prefix+"0,0\n100,0.01\n200,0.03\n300,0.11\n400,0.20\n500,0.29\n", encoding="utf-8")
+    assert any("0.32T" in msg for msg in runner.check_bh_csv(f))
+    # Nonphysical origin and negative differential permeability must fail.
+    f.write_text(prefix+"0,0.005\n100,0.10\n200,0.2\n300,0.3\n400,0.33\n500,0.35\n", encoding="utf-8")
+    assert any("begin" in msg for msg in runner.check_bh_csv(f))
+    f.write_text(prefix+"0,0\n100,0.10\n200,0.20\n300,0.30\n400,0.30000001\n500,0.33\n", encoding="utf-8")
+    assert any("mu0" in msg for msg in runner.check_bh_csv(f))
