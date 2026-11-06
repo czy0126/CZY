@@ -463,3 +463,24 @@ def test_observations_cite_a_datasheet_or_the_board_scope(report):
     for obs in report["observations"]:
         assert obs["evidence"].strip(), obs["id"]
         assert obs["status"] in {"DESIGN_DECISION", "DESIGN_ESTIMATE", "BOUNDARY"}, obs["id"]
+
+
+def test_q41_ladder_crossing_agrees_with_independent_time_integration():
+    # Integrate the two physical nodes to test the analytic response, including R40.
+    t = board.q41_selection()["turn_on_estimate"]
+    va = vb = elapsed = 0.0
+    dt = 0.2e-9
+    rg = board.R_CROWBAR_GATE + board.Q41_RG_MAX
+    while vb < t["assumed_plateau_v"] and elapsed < 20e-6:
+        da = ((3.3-va)/board.R_FAULT_SERIES - va/board.R_FAULT_PULLDOWN
+              - (va-vb)/rg) / board.FAULT_RC_C
+        db = (va-vb) / (rg * board.Q41_CISS_TYP)
+        va += da * dt
+        vb += db * dt
+        elapsed += dt
+    assert elapsed == pytest.approx(t["time_to_plateau_s"], rel=0.002)
+    b = board.delay_budget()["sr_branch"]
+    assert b["input_rc_s"] == 0
+    assert b["crowbar_fet_turn_on_s"] == pytest.approx(t["total_estimate_s"])
+    assert t["total_estimate_s"] > 1e-6
+    assert t["is_upper_bound"] is False

@@ -434,8 +434,8 @@ def system_delay() -> dict:
     branch wins by an order of magnitude: the UCC24624 does not let go of VG
     until REG has fallen through UVLO.
 
-    The SR board's own 10 us fault-input RC is excluded -- it belongs to that
-    validation board's front end, not to the main board's latch output.
+    The actual SR board input ladder is included in Q41 turn-on exactly once.
+    The former 10 us standalone RC subtraction does not apply.
     """
     if not SR_BOARD.is_file():
         raise SystemExit(f"{SR_BOARD} is missing; run tools/make_sr_fault_board.py first")
@@ -469,13 +469,16 @@ def system_delay() -> dict:
             "reg_to_uvlo_s": branch["reg_to_uvlo_s"],
             "vg_active_low_s": branch["vg_active_low_s"],
             "excluded_input_rc_s": branch["input_rc_s"],
-            "excluded_input_rc_reason": "the 10 us RC is the validation board's front end, "
-                                        "not the main board's fault path",
+            "excluded_input_rc_reason": "none excluded: actual C40/R40/R41 are included in Q41 turn-on",
         },
         "primary_branch_s": primary_branch,
         "slowest_branch": "sr" if sr_branch > primary_branch else "primary",
         "system_floor_s": module_floor,
         "existing_system_floor_s": existing_floor,
+        "estimate_not_guaranteed_lower_bound": True,
+        "model_scope": "Legacy floor field names retained; Q41 uses typical nonlinear-device "
+                       "approximations. These totals are neither measured nor guaranteed bounds. "
+                       "Applies to the actual SR validation input ladder; another harness needs a new budget.",
         "system_improvement_factor": existing_floor / module_floor,
         "note": "the 121x module figure is a detection-only comparison; against the whole "
                 "machine the comparator change is worth the ratio below, because the REG "
@@ -521,7 +524,8 @@ def backfeed() -> dict:
         I = OCD/R_TOP - (V_rail + VF_D2) * (1/R_TOP + 1/R_BOT),
 
     which peaks at V_rail = 0.  Compare that with the comparator's own
-    quiescent current: the rail cannot be brought to its 2.7 V minimum, and
+    maximum quiescent current only as a load sensitivity, NOT a minimum load.
+    It cannot prove the rail stays below its 2.7 V minimum, and
     below that minimum no datasheet number governs the output.  "Not
     specified" is exactly the condition that must not be written as "healthy"
     or as "passed", so the rail is isolated and the healthy pull-up is
@@ -550,9 +554,12 @@ def backfeed() -> dict:
         "available_current_basis": f"{cm_limit_a:.1f} A common-mode limit "
                                    f"({ocd_at_cm_limit:.1f} V burden), rail at 0 V",
         "comparator_quiescent_max_a": IQ_MAX,
-        "shortfall_factor": IQ_MAX / available_at_cm,
+        "max_iq_to_available_ratio_assumption": IQ_MAX / available_at_cm,
+        "minimum_load_known": False,
+        "rail_cannot_start_proven": False,
         "rail_minimum_v": RAIL_MIN_V,
-        "ocd_needed_to_hold_rail_minimum_a": ocd_for_min_rail,
+        "ocd_for_rail_minimum_assuming_max_iq_a": ocd_for_min_rail,
+        "load_sensitivity_note": "5 mA is a maximum, not a minimum; this is not a no-start threshold",
         "rail_state_below_minimum": "UNSPECIFIED - the TLV3501 datasheet stops at "
                                     "2.7 V, so neither the output level nor the "
                                     "supply current is bounded there",
@@ -889,7 +896,7 @@ def report(ps: list[Part]) -> dict:
         "limits": [
             "module only; the CT, rectifier and burden stay on D0",
             "the system stop is NOT set by this comparator: the SR branch waits for REG to "
-            "fall through UVLO, so the whole-machine floor is quoted in system_delay",
+            "fall through UVLO, so the whole-machine incomplete estimate is quoted in system_delay",
             "D0's CD4013 latch propagation is not modelled, so system_delay totals are floors",
             "the module rail is isolated by D3, but the isolated rail can still be "
             "backfed through D2; its state below 2.7 V is unspecified and the bench "
@@ -1059,7 +1066,7 @@ def main() -> None:
     print(f"wrote {OUT / 'fast_oc.json'}")
     sd = system_delay()
     print(f"module delay {sd['detection_module_s'] * 1e6:.2f} us + decode/latch "
-          f"{sd['common_logic_s'] * 1e6:.2f} us; whole-machine floor "
+          f"{sd['common_logic_s'] * 1e6:.2f} us; whole-machine incomplete estimate "
           f"{sd['system_floor_s'] * 1e6:.1f} us (slowest branch: {sd['slowest_branch']}), "
           f"{sd['system_improvement_factor']:.1f}x vs the filtered path")
     if args.check:

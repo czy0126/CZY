@@ -226,7 +226,7 @@ def test_every_part_that_needs_power_is_behind_d3(parts):
         assert by_ref(parts, ref).nets == {"1": "V5I", "2": "PGND"}, ref
 
 
-def test_the_backfeed_current_is_far_below_the_comparator_quiescent(report):
+def test_backfeed_max_load_sensitivity_is_not_a_no_start_proof(report):
     """Recomputed from the divider, not copied from the report.
 
     The available current peaks with the rail at 0 V; it is the divider
@@ -236,9 +236,11 @@ def test_the_backfeed_current_is_far_below_the_comparator_quiescent(report):
     expected = (bf["common_mode_burden_v"] / board.R_TOP
                 - board.VF_D3 * (1 / board.R_TOP + 1 / board.R_BOT))
     assert bf["available_current_at_design_max_a"] == pytest.approx(expected, rel=1e-3)
-    assert bf["shortfall_factor"] > 10
-    assert bf["ocd_needed_to_hold_rail_minimum_a"] > 10 * max(board.KNOWN_PEAKS_A.values())
+    assert bf["max_iq_to_available_ratio_assumption"] > 10
+    assert bf["ocd_for_rail_minimum_assuming_max_iq_a"] > 10 * max(board.KNOWN_PEAKS_A.values())
     assert "UNSPECIFIED" in bf["rail_state_below_minimum"]
+    assert bf["minimum_load_known"] is False
+    assert bf["rail_cannot_start_proven"] is False
 
 
 def test_the_verification_matrix_is_unexecuted_and_covers_the_review_cases(report):
@@ -343,16 +345,16 @@ def test_the_shutdown_branch_comes_from_the_sr_board_report(report):
     assert sr["max_branch_s"] - sd["sr_branch_s"] == pytest.approx(branch["input_rc_s"])
 
 
-def test_the_sr_front_end_rc_is_not_charged_to_the_main_board(report):
+def test_the_sr_front_end_is_counted_once_inside_q41_turn_on(report):
     sd = report["system_delay"]
     terms = sd["sr_branch_terms"]
-    assert terms["excluded_input_rc_s"] == pytest.approx(10e-6)
-    assert "validation board" in terms["excluded_input_rc_reason"]
-    # The charged branch is exactly the three terms, with the RC kept aside.
+    assert terms["excluded_input_rc_s"] == pytest.approx(0.0)
+    assert "included in Q41" in terms["excluded_input_rc_reason"]
+    # The input ladder is inside turn-on, not an additional RC delay.
     summed = (terms["crowbar_fet_turn_on_s"] + terms["reg_to_uvlo_s"]
               + terms["vg_active_low_s"])
     assert sd["sr_branch_s"] == pytest.approx(summed)
-    assert sd["sr_branch_s"] < terms["excluded_input_rc_s"] * 2
+    assert terms["crowbar_fet_turn_on_s"] > 50e-9
 
 
 def test_the_common_logic_is_read_from_the_d0_budget(report):

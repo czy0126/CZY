@@ -389,12 +389,17 @@
     "rds_used_ohm": 0.048,
     "rds_basis": "3.0 V sits between the 2.5 and 4.5 V datasheet columns; the 2.5 V maximum is used because interpolation is not a guarantee and the 4.5 V column does not apply",
     "turn_on_estimate": {
-      "gate_rc_s": 6.5835e-08,
-      "time_to_threshold_s": 4.347462664661239e-08,
-      "miller_crossing_s": 2.3512500000000004e-07,
+      "gate_rc_s": 6.385622727272727e-07,
+      "source_thevenin_ohm": 909.0909090909091,
+      "time_to_plateau_s": 2.033381030067639e-06,
+      "total_estimate_s": 4.313960575522184e-06,
+      "includes_input_filter": true,
+      "is_upper_bound": false,
+      "time_to_threshold_s": 1.0360159934351096e-06,
+      "miller_crossing_s": 2.280579545454546e-06,
       "assumed_plateau_v": 2.2,
       "peak_switch_power_w": 25.48441449031171,
-      "linear_ramp_energy_upper_bound_j": 3.5499741811541813e-06,
+      "linear_ramp_energy_estimate_j": 5.49693797007355e-05,
       "status": "ESTIMATE from datasheet typ Ciss/Qgd and an assumed Miller plateau; no SOA curve at this crossing is digitised in the repository, so turn-on stress is UNVERIFIED"
     },
     "stress_check": {
@@ -512,18 +517,21 @@
   },
   "delay_budget": {
     "detection_common": {
-      "fault_input_rc_s": 1e-05,
+      "fault_input_rc_s": 0.0,
+      "note_filter": "C40 is included once in Q41 two-node turn-on estimate",
       "comparator": "not on this board; the fault input is a logic signal",
       "note": "the SR branch starts when FAULT_IN is valid"
     },
     "sr_branch": {
-      "input_rc_s": 1e-05,
-      "crowbar_fet_turn_on_s": 5e-08,
+      "input_rc_s": 0.0,
+      "input_filter_included_in_turn_on": true,
+      "crowbar_fet_turn_on_s": 4.313960575522184e-06,
+      "crowbar_fet_turn_on_basis": "C40/Ciss two-node ladder plus assumed Miller plateau; not worst case",
       "reg_to_uvlo_s": 1.2107039324825803e-05,
       "reg_to_uvlo_basis": "3.63 V turn-off threshold (slowest of 3.63/4.0/4.25 V), AO3400A Rds(on) 0.048 ohm at 2.5 V VGS",
       "reg_to_uvlo_with_reg_current_limit_s": 1.3098774888732325e-05,
       "vg_active_low_s": 1.635e-08,
-      "total_s": 2.2173389324825802e-05,
+      "total_s": 1.6437349900347986e-05,
       "dominant_term": "reg_to_uvlo_s"
     },
     "primary_branch_reference": {
@@ -534,7 +542,7 @@
       "ucc27282_fall_time_1n8_s": 1e-08,
       "total_s": 1.2899999999999997e-06
     },
-    "max_branch_s": 2.2173389324825802e-05,
+    "max_branch_s": 1.6437349900347986e-05,
     "slowest_branch": "sr",
     "is_worst_case": false,
     "not_worst_case_reasons": [
@@ -596,7 +604,7 @@
     {
       "id": "SR-09",
       "finding": "A 3.3 V harness gives Q41 only 3.0 V of gate drive, so the BOM's Rds(on) <= 0.1 ohm has to be quoted at that voltage or the harness has to drive 5 V.",
-      "evidence": "R40/R41 divider into the Q41 gate; Q41 MPN not selected",
+      "evidence": "R40/R41 divider into the Q41 gate; Q41 AO3400A selected, transient qualification open",
       "status": "DESIGN_DECISION"
     }
   ],

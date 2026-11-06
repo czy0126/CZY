@@ -908,14 +908,34 @@ def q41_selection() -> dict:
     vg = 3.3 * R_FAULT_PULLDOWN / (R_FAULT_SERIES + R_FAULT_PULLDOWN)   # 3.0 V
     rds_used = Q41_RDS_MAX[2.5]
     assert 2.5 <= vg < 4.5, "the 3.3 V harness has to land between two datasheet columns"
-    tau_g = (R_CROWBAR_GATE + Q41_RG_MAX) * Q41_CISS_TYP
-    t_th = tau_g * math.log(vg / (vg - Q41_VGS_TH_MAX))
-    # Miller crossing: the gate drive has to move Qgd while the drain falls.
-    # The plateau is taken at Vth + 0.75 V (i.e. barely above threshold); a
-    # higher plateau lowers the drive current and lengthens the crossing.
+    r_source = R_FAULT_SERIES * R_FAULT_PULLDOWN / (R_FAULT_SERIES + R_FAULT_PULLDOWN)
+    r_gate = R_CROWBAR_GATE + Q41_RG_MAX
+    tau_g = (r_source + r_gate) * Q41_CISS_TYP
+    # Exact step response of the linear C40 / Ciss two-node ladder, not
+    # two independently added RC delays. Ciss is typical and voltage-dependent.
+    trace = (1 / r_source + 1 / r_gate) / FAULT_RC_C + 1 / (r_gate * Q41_CISS_TYP)
+    determinant = 1 / (r_source * r_gate * FAULT_RC_C * Q41_CISS_TYP)
+    fast = (trace + math.sqrt(trace * trace - 4 * determinant)) / 2
+    slow = determinant / fast
+    def crossing(target):
+        lo, hi = 0.0, 100 / slow
+        for _ in range(80):
+            mid = (lo + hi) / 2
+            voltage = vg * (1 - (fast * math.exp(-slow * mid)
+                                  - slow * math.exp(-fast * mid)) / (fast - slow))
+            if voltage < target:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
+    t_th = crossing(Q41_VGS_TH_MAX)
     plateau = Q41_VGS_TH_MAX + 0.75
-    i_drive = (vg - plateau) / (R_CROWBAR_GATE + Q41_RG_MAX)
+    t_plateau = crossing(plateau)
+    i_drive = (vg - plateau) / (r_source + r_gate)
     t_miller = Q41_QGD_TYP / i_drive
+    # Add a quasi-static Miller interval to the linear ladder estimate.
+    # This is neither a nonlinear MOSFET model nor a guaranteed upper bound.
+    turn_on = t_plateau + t_miller
     peak_a = VREG_TYP / (R_CROWBAR + RDS_SELECTED)
     return {
         "ref": "Q41",
@@ -938,12 +958,17 @@ def q41_selection() -> dict:
                       "guarantee and the 4.5 V column does not apply",
         "turn_on_estimate": {
             "gate_rc_s": tau_g,
+            "source_thevenin_ohm": r_source,
+            "time_to_plateau_s": t_plateau,
+            "total_estimate_s": turn_on,
+            "includes_input_filter": True,
+            "is_upper_bound": False,
             "time_to_threshold_s": t_th,
             "miller_crossing_s": t_miller,
             "assumed_plateau_v": plateau,
             "peak_switch_power_w": VREG_TYP * peak_a,
-            "linear_ramp_energy_upper_bound_j":
-                0.5 * VREG_TYP * peak_a * (t_th + t_miller),
+            "linear_ramp_energy_estimate_j":
+                0.5 * VREG_TYP * peak_a * turn_on,
             "status": "ESTIMATE from datasheet typ Ciss/Qgd and an assumed Miller "
                       "plateau; no SOA curve at this crossing is digitised in the "
                       "repository, so turn-on stress is UNVERIFIED",
@@ -1138,17 +1163,21 @@ def delay_budget() -> dict:
     """
     c = crowbar()
     gd = gate_discharge()
-    sr = FAULT_RC_S + 50e-9 + c["time_to_uvlo_s"] + gd["active_sink_time_s"]
+    turn_on = q41_selection()["turn_on_estimate"]["total_estimate_s"]
+    sr = turn_on + c["time_to_uvlo_s"] + gd["active_sink_time_s"]
     primary = 500e-9 + 750e-9 + 30e-9 + 10e-9
     return {
         "detection_common": {
-            "fault_input_rc_s": FAULT_RC_S,
+            "fault_input_rc_s": 0.0,
+            "note_filter": "C40 is included once in Q41 two-node turn-on estimate",
             "comparator": "not on this board; the fault input is a logic signal",
             "note": "the SR branch starts when FAULT_IN is valid",
         },
         "sr_branch": {
-            "input_rc_s": FAULT_RC_S,
-            "crowbar_fet_turn_on_s": 50e-9,
+            "input_rc_s": 0.0,
+            "input_filter_included_in_turn_on": True,
+            "crowbar_fet_turn_on_s": turn_on,
+            "crowbar_fet_turn_on_basis": "C40/Ciss two-node ladder plus assumed Miller plateau; not worst case",
             "reg_to_uvlo_s": c["time_to_uvlo_s"],
             "reg_to_uvlo_basis": f"3.63 V turn-off threshold (slowest of "
                                  f"3.63/4.0/4.25 V), {Q41_MPN} Rds(on) "
@@ -1260,7 +1289,7 @@ def observations() -> list[dict]:
                        f"{input_default()['gate_drive']['fault_g_v_at_3v3']:.1f} V of "
                        "gate drive, so the BOM's Rds(on) <= 0.1 ohm has to be quoted "
                        "at that voltage or the harness has to drive 5 V.",
-            "evidence": "R40/R41 divider into the Q41 gate; Q41 MPN not selected",
+            "evidence": "R40/R41 divider into the Q41 gate; Q41 AO3400A selected, transient qualification open",
             "status": "DESIGN_DECISION",
         },
     ]
