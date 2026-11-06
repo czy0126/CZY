@@ -2839,7 +2839,7 @@
 		(property "Value" "NMOS 30V IDM>=3A" (at 73.66 304.1 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 73.66 292.1 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
 		(property "Datasheet" "" (at 73.66 292.1 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
-		(property "Description" "REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event" (at 73.66 292.1 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+		(property "Description" "REG crowbar AO3400A candidate; target Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event" (at 73.66 292.1 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
 		(pin "1" (uuid "ac0c8a82-938b-5621-9824-facc72c0bc0f"))
 		(pin "2" (uuid "97116f53-2892-59ac-89af-ba43a92a49c2"))
 		(pin "3" (uuid "726d1f86-6b53-55c6-9890-7cbd220ab7c5"))

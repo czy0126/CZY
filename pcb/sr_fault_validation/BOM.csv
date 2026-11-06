@@ -42,7 +42,7 @@ C40,1nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,10 us; a 1 ms debounce woul
 Q40,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain status: low while the fault is asserted,,2N7002LT1G,references/datasheets/2n7002lt1g_onsemi_oem_parameters.txt,,1
 R42,100k,Resistor_SMD:R_0603_1608Metric,1/10 W,status default low; the external pull-up sees this 100k to PGND,,,TO_SELECT,,1
 R43,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,crowbar gate resistor,,,TO_SELECT,,1
-Q41,NMOS 30V IDM>=3A,Package_TO_SOT_SMD:SOT-23,"30 V, IDM >= 3 A","REG crowbar; MPN TO SELECT, Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event",,AO3400A,references/datasheets/ao3400a_oem_parameters.txt,,1
+Q41,NMOS 30V IDM>=3A,Package_TO_SOT_SMD:SOT-23,"30 V, IDM >= 3 A",REG crowbar AO3400A candidate; target Rds(on) <= 0.1 ohm at 3.0 V VGS; absorbs 0.030 mJ per event,,AO3400A,references/datasheets/ao3400a_oem_parameters.txt,,1
 R44,4.7R 0.5W,Resistor_SMD:R_1206_3216Metric,0.5 W pulse,"sets the discharge tau with Q41; 0.094 mJ / 14.8 W peak per event at the 1.5 ohm placeholder, single-pulse rating UNVERIFIED",,,TO_SELECT,,1
 R45,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,VG1 clamp gate resistor,,,TO_SELECT,,1
 Q42,NMOS clamp DNP,Package_TO_SOT_SMD:SOT-23,30 V,optional VG1 clamp; contention test only,yes,,TO_SELECT,,1

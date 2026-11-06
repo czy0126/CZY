@@ -1976,6 +1976,33 @@ def check_position_excludes_dnp(path: Path, dnp: set[str] | None = None) -> None
             f"part table has to be written onto the board as well.")
 
 
+# Normalise kicad-cli's Windows CRLF Gerber/drill/position outputs to LF
+# BEFORE hashing.  Git auto-CRLF otherwise silently rewrites their bytes
+# after commit: both validation board manifests were already stale in checkout.
+# These are textual numerical tooling formats, NOT PCB geometry changes.
+FAB_TEXT_SUFFIXES = {
+    ".gbl", ".gbs", ".gbp", ".gbo", ".gm1", ".gtl", ".gts", ".gtp",
+    ".gto", ".gbrjob", ".drl", ".csv",
+}
+
+
+def normalise_fab_text_line_endings(directory: Path) -> list[str]:
+    changed: list[str] = []
+    for path in sorted(directory.iterdir()):
+        if not path.is_file() or path.suffix.lower() not in FAB_TEXT_SUFFIXES:
+            continue
+        original = path.read_bytes()
+        # Refuse an accidentally binary file; no silent corruption of drill
+        # or pick-and-place exports merely because its extension was expected.
+        if bytes([0]) in original:
+            raise ValueError(f"{path.name}: binary content in textual fab export")
+        fixed = original.replace(bytes([13, 10]), bytes([10]))
+        if fixed != original:
+            path.write_bytes(fixed)
+            changed.append(path.name)
+    return changed
+
+
 def export_fab(cli: Path, version: str, data: dict) -> dict:
     """Write ``fab/`` and the manifest that says what the package is.
 
@@ -2006,6 +2033,7 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
         if proc.returncode != 0:
             raise SystemExit(f"kicad-cli {name} export failed (exit {proc.returncode}): "
                              f"{(proc.stderr or proc.stdout).strip()}")
+    normalise_fab_text_line_endings(FAB)
     # The assembly drawing is built from the placement table, not plotted from
     # the board: kicad-cli draws the silkscreen, which has the references
     # wherever layout left them and cannot mark a part "DNP".  Imported here

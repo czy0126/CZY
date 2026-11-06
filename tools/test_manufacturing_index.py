@@ -90,6 +90,53 @@ def test_a_manifest_hashed_from_another_board_is_stale(tmp_path):
     assert any("different board" in why for why in row["not_fabricable_because"])
 
 
+def test_a_file_that_exists_but_has_a_wrong_hash_is_a_stale_package(tmp_path):
+    """A valid PCB and filenames do not authenticate Gerber payload bytes."""
+    (tmp_path / "b.kicad_sch").write_text("sch", encoding="utf-8")
+    board = tmp_path / "b.kicad_pcb"
+    board.write_text("board", encoding="utf-8")
+    fab = tmp_path / "fab"
+    fab.mkdir()
+    gerber = fab / "a.gbr"
+    gerber.write_bytes(b"G04 real gerber\\n")
+    (fab / "manifest.json").write_text(json.dumps({
+        "board_sha256": index._sha256(board),
+        "files": [{
+            "name": "a.gbr",
+            "bytes": len(gerber.read_bytes()),
+            "sha256": "0" * 64,
+        }],
+        "layers": ["F.Cu"], "plotted_layers": ["F.Cu"],
+    }), encoding="utf-8")
+    result = index.entry(spec_for(str(tmp_path)))
+    assert result["status"] == "FAB_PACKAGE_STALE"
+    assert any("sha256 differs" in issue for issue in result["not_fabricable_because"])
+
+
+def test_manifest_line_endings_changed_after_export_fails_by_length(tmp_path):
+    (tmp_path / "b.kicad_sch").write_text("sch", encoding="utf-8")
+    board = tmp_path / "b.kicad_pcb"
+    board.write_text("board", encoding="utf-8")
+    fab = tmp_path / "fab"
+    fab.mkdir()
+    gerber = fab / "a.gbr"
+    gerber.write_bytes(b"X10D01*\\nM02*\\n")
+    original = b"X10D01*\\r\\nM02*\\r\\n"
+    import hashlib
+    (fab / "manifest.json").write_text(json.dumps({
+        "board_sha256": index._sha256(board),
+        "files": [{
+            "name": "a.gbr", "bytes": len(original),
+            "sha256": hashlib.sha256(original).hexdigest(),
+        }],
+        "layers": ["F.Cu"], "plotted_layers": ["F.Cu"],
+    }), encoding="utf-8")
+    result = index.entry(spec_for(str(tmp_path)))
+    assert result["status"] == "FAB_PACKAGE_STALE"
+    assert any("bytes differ" in issue for issue in result["not_fabricable_because"])
+    assert any("sha256 differs" in issue for issue in result["not_fabricable_because"])
+
+
 def test_a_file_nobody_listed_makes_the_package_stale(tmp_path):
     (tmp_path / "b.kicad_sch").write_text("sch", encoding="utf-8")
     (tmp_path / "b.kicad_pcb").write_text("board", encoding="utf-8")

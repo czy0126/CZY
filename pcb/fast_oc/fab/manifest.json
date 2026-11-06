@@ -1,6 +1,6 @@
 {
   "board": "fast_oc.kicad_pcb",
-  "board_sha256": "09e76c66804d092a8905efd79fb41c9ae2f60b9aecc3a4806d5f7e3d824d5f15",
+  "board_sha256": "3c72c54d6b212e435c702a843cad5af5a15d27b1c08400681e0ce60fc4b650b7",
   "kicad_cli": "10.0.6",
   "copper_weight_oz": 1,
   "layers": [
@@ -29,68 +29,68 @@
   "files": [
     {
       "name": "assembly.svg",
-      "bytes": 14683,
-      "sha256": "07f132803e1c6eb158117258e133abd0b9d486d1712e903914232312cd99417c"
+      "bytes": 14695,
+      "sha256": "a037327f686406f3ac6b690a1f12a1a6e95d9447f6b6b918f8eb8dc15808c5b0"
     },
     {
       "name": "fast_oc-B_Cu.gbl",
-      "bytes": 11127,
-      "sha256": "62abcf351851a090081760d26e8620f6a227c88b583ef6dd00f2f051572b5992"
+      "bytes": 10662,
+      "sha256": "94329777abd76ba5c266ccf4245da4dd96cc3314fe3280cf939c29586714e1d9"
     },
     {
       "name": "fast_oc-B_Mask.gbs",
-      "bytes": 846,
-      "sha256": "da1b6a1e32f124402562b868e8b92857b1096130a259eba97f0829167d9bfba6"
+      "bytes": 807,
+      "sha256": "88146754edcbe6e3779764f1e65e6a2031176914c8eec1ba54d0ffe8664f6cef"
     },
     {
       "name": "fast_oc-B_Paste.gbp",
-      "bytes": 467,
-      "sha256": "9a799dd812ddc8f89c571da31cf858064082f243b324e525d347cda169617533"
+      "bytes": 452,
+      "sha256": "279c61f568aa51f6b2c64222a3d0cd301e5b48b4e5cdae768666af31001a972e"
     },
     {
       "name": "fast_oc-B_Silkscreen.gbo",
-      "bytes": 468,
-      "sha256": "99c5b0b164ff331ace1654d0a46d51741f2ded7f533a37b6035144dee3ac899e"
+      "bytes": 453,
+      "sha256": "85f4c32a699105fb8c7fd8c178c0cb51aabb1079cc7e17b9564c0edb211ca8c7"
     },
     {
       "name": "fast_oc-Edge_Cuts.gm1",
-      "bytes": 640,
-      "sha256": "171d0fc2b038c44f095688a6c3f22b71ab525347ff0aa9cb0752544156f0478b"
+      "bytes": 614,
+      "sha256": "c8b88815b5689c48da5e937d82b19c7cd7070f5705f76f722c88581b8e1cd45f"
     },
     {
       "name": "fast_oc-F_Cu.gtl",
-      "bytes": 21940,
-      "sha256": "ea6f5a29059437a47627cfdc1197578a497a32b66c478247d460fc1035352f24"
+      "bytes": 20990,
+      "sha256": "4578826131bff66b50d8ea34d50c559a908f2723ee032a0dba5e4a3f10c495ba"
     },
     {
       "name": "fast_oc-F_Mask.gts",
-      "bytes": 3669,
-      "sha256": "bcbc51205f0c2bb89bfb01250d7fb5b9cb34a6256dd7e6b58aa0ef5e5e9eeb19"
+      "bytes": 3501,
+      "sha256": "5eb4fe1aa09d28a7c9e87caa58bf775b2c7fe17b559553f05ca828b013c41759"
     },
     {
       "name": "fast_oc-F_Paste.gtp",
-      "bytes": 2904,
-      "sha256": "3725b29d55c6c7c7a0aca548be9ed8bcde7682c209016c9a0ec1eaf086e0c0de"
+      "bytes": 2786,
+      "sha256": "b07c47b6f5ec8295862d2c3c7002bb5f84be66271c89f33038820a8522b3eaf3"
     },
     {
       "name": "fast_oc-F_Silkscreen.gto",
-      "bytes": 34315,
-      "sha256": "ecbe78d89bd63f0f4f42631043960634fb643e183ecbb94d78c3a6112afb61a8"
+      "bytes": 32878,
+      "sha256": "5ddba111ebe20ea16e387a42af63f5777ce719c0347941ba19ab369cf6eeb494"
     },
     {
       "name": "fast_oc-job.gbrjob",
-      "bytes": 2745,
-      "sha256": "8687c3f45d94a352fc22f8441da97cf0de0b3b29593f625362e75f58f0e6f04f"
+      "bytes": 2620,
+      "sha256": "8a639f5858be728986d37a9f165300832628787913a34af8b82bf9b4dc396b44"
     },
     {
       "name": "fast_oc-pos.csv",
-      "bytes": 1259,
-      "sha256": "a60fcf1e9101efe92c478bb0fc7f3d0289d298b27ded8072d5a3810ddfe288a3"
+      "bytes": 1252,
+      "sha256": "9d998e8577d3dc4a9fad4dc9770a7a663f27a35b4e9d07dce5e4caaf1f9bac23"
     },
     {
       "name": "fast_oc.drl",
-      "bytes": 1098,
-      "sha256": "6c923b6db06f52230acb6386fc78d0b60c0373c8d823a37cf2600c0f020ed75c"
+      "bytes": 1034,
+      "sha256": "0eda174745610b2c071b699de65d4d919cfe183051636b33da1d1071be0b0e37"
     }
   ],
   "current_rating": {
@@ -108,5 +108,7 @@
   "flags": {
     "hardware_built": false,
     "fabrication_approved": false
-  }
+  },
+  "fab_snapshot_basis": "CACHED_KICAD_10_PLOT_VALUE_ONLY_CHANGED",
+  "fresh_kicad_erc_drc_gerber_run": false
 }

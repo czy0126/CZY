@@ -45,75 +45,75 @@
     },
     {
       "name": "sr_fault_validation-B_Cu.gbl",
-      "bytes": 163193,
-      "sha256": "ab779a788bbf4498f3a395065fb9781f03cd8d226c8c7d5626125db87f0ab746"
+      "bytes": 156644,
+      "sha256": "d8a8fa327a4e8affc962e16468f2a01ef74d825386284d721d00d5fae667599c"
     },
     {
       "name": "sr_fault_validation-B_Mask.gbs",
-      "bytes": 2066,
-      "sha256": "7e77f638fe135ce3a5ae3f588a40cf1ea88ee3aad7e5ecbd6c9566e8ed59f1f1"
+      "bytes": 1970,
+      "sha256": "5a365348fe3231138df79b1d7f398510a651dc7169776c01fe732d2cba0b189d"
     },
     {
       "name": "sr_fault_validation-B_Paste.gbp",
-      "bytes": 479,
-      "sha256": "c98fa0c2c50a33facfebac7154dc825d1f64e84a61139ecd70f5b6fbd048e70b"
+      "bytes": 464,
+      "sha256": "8e69d925a46e967fbf5056de0b0687628d5fabacfd17d919f7a3f66131c51618"
     },
     {
       "name": "sr_fault_validation-B_Silkscreen.gbo",
-      "bytes": 480,
-      "sha256": "db86b7170ec6f6806c1f3a9aae163f9d85e8db4429401bf9a52c9158edf64849"
+      "bytes": 465,
+      "sha256": "5c132b2080fbf6418bfe5f37bd2b8f2f70ed1c348f7828471b3a730fce0367f7"
     },
     {
       "name": "sr_fault_validation-Edge_Cuts.gm1",
-      "bytes": 656,
-      "sha256": "4c0a0af02f48db1c31a8fc93968cf9d2253ca3a450be7af919e926bb6df4d196"
+      "bytes": 630,
+      "sha256": "957f8357f2df122670eac3059cbe263deed062c1d21001fe58acd7e48af31c64"
     },
     {
       "name": "sr_fault_validation-F_Cu.gtl",
-      "bytes": 158457,
-      "sha256": "917bb196f42c88056c2e797c45c138953de32368c9078f7ac0ad55ce3ae018d1"
+      "bytes": 151916,
+      "sha256": "b191dd666e767334cb000d1561f5879cec49f0e4e703113912befd7317f09a8e"
     },
     {
       "name": "sr_fault_validation-F_Mask.gts",
-      "bytes": 8043,
-      "sha256": "87bf62cf25e2bce3ffdbeb8a0dff7f0adf610c12bed2f4b9ce05b409cdec5f20"
+      "bytes": 7652,
+      "sha256": "3585f936fc5beea75fa27cace20db41d19539f39e09c1c77662647e5dcd1f450"
     },
     {
       "name": "sr_fault_validation-F_Paste.gtp",
-      "bytes": 6729,
-      "sha256": "e831d9025bcf7ceee4c1db60737f29d473032f13632051ba531e7ff9c986eb74"
+      "bytes": 6435,
+      "sha256": "710a501882f253669827c19c54fbfddb0d2a114894740980bc2b4117cf5ee2e2"
     },
     {
       "name": "sr_fault_validation-F_Silkscreen.gto",
-      "bytes": 121172,
-      "sha256": "d00479b60ee625859d9d82ec8d52770a656b14bfe7a3f14cc54da5ee94e1bfb2"
+      "bytes": 116210,
+      "sha256": "c22a4e09e9ee2f0df4b5ce40940340134e55c6e02a7a46bca43376de887e1d66"
     },
     {
       "name": "sr_fault_validation-job.gbrjob",
-      "bytes": 2925,
-      "sha256": "53d900c67ea8fb8810e4fd98536c171c4658089a4decd84e1fe2b4b44f2220cd"
+      "bytes": 2798,
+      "sha256": "1d0caae44c3eaf0c5dc79abe78da36687251d623cafdf1245bc32797d285274b"
     },
     {
       "name": "sr_fault_validation-pos.csv",
-      "bytes": 3004,
-      "sha256": "8643f2a6c9bf88b8f39392faa4ce2a3053ce08be089368280eb98193401383b9"
+      "bytes": 2962,
+      "sha256": "36d2bd9939cc75b7e86600f3c1801bbd834fd714d5daea94d3aad94b3f7b0789"
     },
     {
       "name": "sr_fault_validation.drl",
-      "bytes": 3462,
-      "sha256": "6a3f3c019a5b1f482bd266c43ba211a5b0aa55e2f10383caf2fce1cdc1fdaaec"
+      "bytes": 3248,
+      "sha256": "19c34ee594dbc24b381b41220192c78e86a4af7e44cfa004d7bf253b54b9945a"
     }
   ],
   "current_rating": {
     "nets": {
       "SEC_A": {
-        "pour_right_mm": 43.0,
+        "pour_right_mm": 43,
         "drain_land_left_mm": 46.87,
         "escape_box_mm": [
-          42.0,
+          42,
           47.37,
           31.5,
-          47.0
+          47
         ],
         "tracks": 1,
         "vias": 2,
@@ -176,10 +176,10 @@
         }
       },
       "SEC_B": {
-        "pour_right_mm": 43.0,
+        "pour_right_mm": 43,
         "drain_land_left_mm": 46.87,
         "escape_box_mm": [
-          42.0,
+          42,
           47.37,
           44.5,
           67.5
@@ -282,10 +282,10 @@
       },
       "barrel_plating_mm": 0.02,
       "board_thickness_mm": 1.6,
-      "pulse_rise_k": 50.0,
+      "pulse_rise_k": 50,
       "chart_rises_k": [
-        10.0,
-        20.0
+        10,
+        20
       ],
       "copper_density_g_per_mm3": 0.00896,
       "copper_heat_capacity_j_per_g_k": 0.385,
@@ -338,5 +338,7 @@
   "flags": {
     "hardware_built": false,
     "fabrication_approved": false
-  }
+  },
+  "fab_snapshot_basis": "CACHED_KICAD_10_PLOT_VALUE_ONLY_CHANGED",
+  "fresh_kicad_erc_drc_gerber_run": false
 }
