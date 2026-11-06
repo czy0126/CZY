@@ -167,6 +167,10 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
         "open_items": [
             "IREGSC is specified at VVDD = 12 V; the board runs 15 V and the "
             "short-circuit current there is not specified",
+            "IVDDRUN is also a 12 V number, so the 22.5 mW quiescent term is "
+            "slightly low at 15 V; it is the smallest term in the budget",
+            "gate charge during the ~12 us transition is not in the steady-state "
+            "sum; it is a single event of order Qg(sync)*VREG per FET",
             "RthJA is a JEDEC-board, still-air number; the validation board is small and "
             "its mounted value is unverified",
             "the die thermal impedance Zth(t) is not in the datasheet, so no transient "
