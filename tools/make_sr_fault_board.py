@@ -308,11 +308,20 @@ def rename_symbol(block: str, lib_id: str) -> str:
 
 
 def build_symbols() -> dict[str, str]:
-    libs = symbol_libs()
+    # Frozen embedded symbols are sufficient for offline consistency checks,
+    # NOT a fresh KiCad ERC or a manufacturer terminal audit.
+    cli = kicad_cli()
+    libs = symbol_libs() if cli is not None else None
+    source_schematic = OUT / "sr_fault_validation.kicad_sch"
+    if libs is None and not source_schematic.is_file():
+        raise SystemExit("KiCad symbols unavailable: install kicad-cli or provide the committed schematic")
     symbols: dict[str, str] = {}
     for lib_id, (lib, name) in STANDARD.items():
-        block = extract_symbol(libs / lib, name)
-        block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
+        if libs is None:
+            block = extract_symbol(source_schematic, lib_id)
+        else:
+            block = extract_symbol(libs / lib, name)
+            block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
         symbols[lib_id] = block
     ucc = [
         Pin("1", "VG1", 7.62, 2.54, 180, "output"),
