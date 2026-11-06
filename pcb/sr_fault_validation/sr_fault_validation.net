@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\sr_fault_validation\\sr_fault_validation.kicad_sch")
-		(date "2026-11-06T09:55:16")
+		(date "2026-11-06T23:28:17")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -2151,9 +2151,9 @@
 		)
 		(comp
 			(ref "R44")
-			(value "4.7R 0.5W")
+			(value "4.7R 0.75W HP")
 			(footprint "Resistor_SMD:R_1206_3216Metric")
-			(description "sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), single-pulse rating UNVERIFIED")
+			(description "sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), CRCW-HP conditional pulse screen; hardware qualification UNVERIFIED")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
@@ -2161,7 +2161,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), single-pulse rating UNVERIFIED")
+					(name "Description") "sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), CRCW-HP conditional pulse screen; hardware qualification UNVERIFIED")
 			)
 			(libsource
 				(lib "Device")

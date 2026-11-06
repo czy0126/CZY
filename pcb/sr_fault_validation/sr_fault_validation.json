@@ -355,13 +355,100 @@
       "1_per_s_w": 0.0001227430192712721,
       "10_per_s_w": 0.001227430192712721,
       "100_per_s_w": 0.01227430192712721,
-      "continuous_rating_w": 0.5,
-      "rate_at_continuous_rating_per_s": 4073.551416353537,
-      "basis": "thermal average = released energy x rate; the single-pulse surge, not this average, is the binding limit"
+      "continuous_rating_w": 0.75,
+      "rate_at_continuous_rating_per_s": 6110.327124530306,
+      "basis": "UVLO-only capacitor energy x rate; NOT a repetition approval. Full hold/injection is in r44_selection"
     },
     "r44_pulse_rating_j": null,
     "q41_thermal": null,
-    "temperature_note": "no vendor pulse curve for the 1206 and no Q41 thermal model in this repository: single-pulse capability and temperature rise are UNVERIFIED, not assumed"
+    "temperature_note": "CRCW-HP vendor curve is archived and conditionally screened; mounted temperature rise and Q41 thermal behavior remain UNVERIFIED",
+    "energy_scope": "legacy values end at UVLO; r44_selection integrates full hold"
+  },
+  "r44_selection": {
+    "mpn": "CRCW12064R70FKEAHP",
+    "source": "references/datasheets/vishay_crcwhpe3_20260317.pdf",
+    "source_evidence": {
+      "source_url": "https://www.vishay.com/docs/20043/crcwhpe3.pdf",
+      "source_pdf": "references/datasheets/vishay_crcwhpe3_20260317.pdf",
+      "sha256": "05ddd1c41a40ef98f365816d90a9a39a97d5e8ac60ed17153a1c0aed348e1d4b",
+      "revision": "17-Mar-2026",
+      "page_1_based": 5,
+      "method": "PDF vector ordinate, visually matched to CRCW1206-HP legend; graph readout, not vendor numeric table",
+      "duration_s": 0.0001,
+      "single": {
+        "top_y_pt": 153.31,
+        "bottom_y_pt": 286.63,
+        "curve_y_pt": 197.293,
+        "readout_w": 104.84966729233244
+      },
+      "continuous": {
+        "top_y_pt": 390.07,
+        "bottom_y_pt": 523.39,
+        "curve_y_pt": 436.682,
+        "readout_w": 79.84545958822844
+      },
+      "axis_power_top_w": 10000.0,
+      "axis_power_bottom_w": 0.01,
+      "conservative_screen_w": 60.0,
+      "reading_uncertainty_fraction": 0.2
+    },
+    "selection_status": "SELECTED_CONDITIONAL_SCREEN_ONLY",
+    "qualified": false,
+    "footprint": "Resistor_SMD:R_1206_3216Metric",
+    "continuous_p70_w": 0.75,
+    "continuous_rating_condition": "Rth <= 110 K/W; mounted PCB thermal resistance unverified",
+    "land_comparison_mm": {
+      "vendor_reflow_gap": 1.5,
+      "vendor_pad_xy": [
+        1.05,
+        1.8
+      ],
+      "stock_gap": 1.8,
+      "stock_pad_xy": [
+        1.125,
+        1.75
+      ],
+      "status": "compatible overlap, not identical to vendor land; assembly check open"
+    },
+    "assumptions": {
+      "r_tolerance": 0.01,
+      "c_upper_multiplier": 1.2,
+      "rds_ohm": 0.1,
+      "injection_a": 0.095,
+      "initial_reg_v": 11.9,
+      "note": "C tolerance, Rds and constant injection are screening assumptions, not full-temperature guarantees"
+    },
+    "pulse_envelope": {
+      "duration_s": 0.0001,
+      "peak_w": 30.434128519234903,
+      "curve_screen_w": 60.0,
+      "margin": 1.9714709413177034,
+      "passes_assumed_envelope": true,
+      "tau_max_s": 1.3377719999999999e-05,
+      "tail_power_w": 0.04415959031438456,
+      "not_energy_equivalent_width": true
+    },
+    "energy": {
+      "capacitor_full_discharge_j": 0.0001954218,
+      "capacitor_r44_share_j_without_injection": 0.00019135051250000003,
+      "r44_with_injection_j_by_hold_ms": {
+        "10": 0.00062934743794,
+        "100": 0.004446922437940001,
+        "1000": 0.042622672437940004
+      },
+      "integration_scope": "entire hold, not stopped at REG UVLO"
+    },
+    "hold_sensitivity": {
+      "r44_dc_w": 0.042417500000000004,
+      "reg_equilibrium_v": 0.45599999999999996,
+      "controller_regulator_w": 1.38168,
+      "note": "95 mA is specified at a different REG voltage; no indefinite crowbar approval"
+    },
+    "open_items": [
+      "actual REG current and controller dissipation throughout latched fault",
+      "mounted thermal resistance, temperature derating and repetition profile",
+      "Q41 transient SOA and measured shutdown waveforms"
+    ]
   },
   "q41_selection": {
     "ref": "Q41",
@@ -411,7 +498,7 @@
     "open_items": [
       "SOA at the 11 V turn-on crossing is not checked against a vendor curve",
       "self-heating and the Rds(on) temperature coefficient are not modelled",
-      "repeated-pulse capability of R44 is not checked (no vendor curve)",
+      "R44 has a conditional vendor-curve screen; actual repetition and thermal behavior remain open",
       "the 3.3 V harness gives a 3.0 V gate; a 5 V harness would allow the 4.5 V column, but that column is not used here"
     ],
     "qualified": false
@@ -611,8 +698,8 @@
   "limits": [
     "low-energy validation board, <=10 A and <=5 V output",
     "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
-    "Q41 is selected as AO3400A (datasheet in references/) but not qualified: SOA at the turn-on crossing, self-heating and the R44 pulse curve are open",
-    "no vendor pulse curve for R44 and no Q41 thermal model; pulse capability and temperature rise are unverified",
+    "Q41 is selected as AO3400A (datasheet in references/) but not qualified: SOA at the turn-on crossing, self-heating and actual R44 repetition/hold conditions are open",
+    "R44 vendor-curve screen is conditional and no Q41 thermal model exists; pulse capability and temperature rise are unverified",
     "FAULT_IN defaults to no crowbar: a lost fault source is not a shutdown",
     "a clean ERC only says the drawing agrees with itself"
   ]

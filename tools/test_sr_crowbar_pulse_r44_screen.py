@@ -23,7 +23,8 @@ def test_ao3400a_candidate_increases_r44_peak_vs_legacy_model():
     q41 = next(p for p in b.parts() if p.ref == "Q41")
     r44 = next(p for p in b.parts() if p.ref == "R44")
     assert q41.mpn == "AO3400A"
-    assert "0.5W" in r44.value
+    assert r44.mpn == "CRCW12064R70FKEAHP"
+    assert "0.75W" in r44.value and "HP" in r44.value
     # AOS OEM max Rds(on)=48mOhm @ Vgs=2.5V, Id=3A, 25C.
     # This is a conditioned illustrative case, NOT temperature max or SOA.
     candidate_rds_ohm = 0.048

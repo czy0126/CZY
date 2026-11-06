@@ -274,6 +274,16 @@ def test_every_mpn_in_the_bom_is_traced_to_a_datasheet_in_the_repository(parts):
             continue
         path = board.ROOT / part.mpn_source
         assert path.is_file(), f"{part.ref}: {part.mpn_source} does not exist"
+        if part.ref == "R44":
+            # A configurable resistor family gives an ordering grammar, not
+            # every possible resistance code. Validate that grammar explicitly;
+            # never read compressed PDF bytes as if they were ordering text.
+            assert part.mpn == "CRCW1206" + "4R70" + "F" + "K" + "EA" + "HP"
+            assert part.mpn_source == board.r44_selection.SOURCE
+            text = path.with_suffix(".txt").read_text(encoding="utf-8")
+            for token in ("CRCW1206", "± 1 %", "± 100 ppm/K", "EA", "HP"):
+                assert token in text
+            continue
         assert part.mpn in path.read_text(encoding="utf-8", errors="replace"), part.ref
 
 

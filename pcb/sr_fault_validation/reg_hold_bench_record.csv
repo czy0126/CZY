@@ -1,0 +1,5 @@
+﻿case_id,purpose,bias_v,bias_limit_a,fault_amplitude_v,fault_width_us,repeat_hz,executed,board_revision,ambient_c,waveform_path,vdd_min_v,reg_min_v,rc_g_peak_v,vg1_off_us,vg2_off_us,bias_peak_a,bias_mean_a,case_temp_start_c,case_temp_end_c,current_limit_hit,unexpected_restart,stop_reason,result
+H0,bias only; no main power,15,,3.3,0,0,false,,,,,,,,,,,,,,,,
+H1,100us shutdown pulse; main power disconnected,15,,3.3,100,0,false,,,,,,,,,,,,,,,,
+H2,10ms hold only after H1 evidence reviewed,15,,3.3,10000,0,false,,,,,,,,,,,,,,,,
+H3,100ms conditional hold; not automatically approved,15,,3.3,100000,0,false,,,,,,,,,,,,,,,,

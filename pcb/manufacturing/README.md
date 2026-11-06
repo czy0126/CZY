@@ -21,8 +21,8 @@ board they claim to describe.
 
 Two BSC010N04LS6 driven by one real UCC24624, a fault interface and a REG crowbar.  Its purpose is to measure how one SR pair behaves when a fault command arrives, not to pass the converter's current.
 
-Package: `pcb/sr_fault_validation/fab/` (manifest `83c0cc86377d460610da30b4bf89fe34e69e34e92e544821007f288be0331366`)
-Board: `pcb/sr_fault_validation/sr_fault_validation.kicad_pcb` (`60de176e815f286c2f51c8b50ff844b3f064459d53e633cae68ed87b4ec17dc0`)
+Package: `pcb/sr_fault_validation/fab/` (manifest `8e0351a0fa1370c460f9bbbe7f28521285f3ce7a3cb975b22c6698532a288611`)
+Board: `pcb/sr_fault_validation/sr_fault_validation.kicad_pcb` (`849bef79b5f2c12ce8ea762d6332b34340ec01eb93276667bb0cf76695304382`)
 Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask, Edge.Cuts
 
 ### `fast_oc` -- TLV3501 fast-overcurrent ECO module

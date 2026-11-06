@@ -43,7 +43,7 @@ Q40,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain status: low while the fault
 R42,100k,Resistor_SMD:R_0603_1608Metric,1/10 W,status default low; the external pull-up sees this 100k to PGND,,,TO_SELECT,,1
 R43,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,crowbar gate resistor,,,TO_SELECT,,1
 Q41,AO3400A,Package_TO_SOT_SMD:SOT-23,"30 V, 5.7 A, IDM 30 A","REG crowbar; 3.0 V gate from a 3.3 V harness, Rds(on) <= 0.048 ohm at 2.5 V VGS (max, 25 C); absorbs 0.001 mJ per event; selected, not qualified (see report q41_selection)",,AO3400A,references/datasheets/ao3400a.txt,,1
-R44,4.7R 0.5W,Resistor_SMD:R_1206_3216Metric,0.5 W pulse,"sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), single-pulse rating UNVERIFIED",,,TO_SELECT,,1
+R44,4.7R 0.75W HP,Resistor_SMD:R_1206_3216Metric,0.75 W conditional; pulse screen,"sets the discharge tau with Q41; 0.123 mJ / 25.2 W peak per event (4.9 us equivalent), CRCW-HP conditional pulse screen; hardware qualification UNVERIFIED",,CRCW12064R70FKEAHP,references/datasheets/vishay_crcwhpe3_20260317.pdf,,1
 R45,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,VG1 clamp gate resistor,,,TO_SELECT,,1
 Q42,NMOS clamp DNP,Package_TO_SOT_SMD:SOT-23,30 V,optional VG1 clamp; contention test only,yes,,TO_SELECT,,1
 R47,0R DNP,Resistor_SMD:R_0805_2012Metric,1/4 W,clamp link: fitting this removes U1's ability to hold VG1 high,yes,,TO_SELECT,,1

@@ -60,6 +60,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 
 from main_board_mechanical import find_kicad_cli
+import r44_selection
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "pcb" / "sr_fault_validation"
@@ -538,12 +539,13 @@ def fault_parts() -> list[Part]:
              f"{Q41_RDS_MAX[2.5]:.3f} ohm at 2.5 V VGS (max, 25 C); absorbs "
              f"{crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event; selected, not "
              f"qualified (see report q41_selection)", mpn=Q41_MPN, mpn_source=Q41_MPN_SOURCE),
-        Part("R44", "Device:R", "4.7R 0.5W", "Resistor_SMD:R_1206_3216Metric",
-             92, 292, {"1": "REG", "2": "REG_CROW"}, "0.5 W pulse",
+        Part("R44", "Device:R", "4.7R 0.75W HP", "Resistor_SMD:R_1206_3216Metric",
+             92, 292, {"1": "REG", "2": "REG_CROW"}, "0.75 W conditional; pulse screen",
              f"sets the discharge tau with Q41; {crowbar_pulse()['r44_energy_j'] * 1e3:.3f} mJ / "
              f"{crowbar_pulse()['r44_peak_power_w']:.1f} W peak per event "
              f"({crowbar_pulse()['r44_equivalent_pulse_width_s'] * 1e6:.1f} us equivalent), "
-             f"single-pulse rating UNVERIFIED"),
+             f"CRCW-HP conditional pulse screen; hardware qualification UNVERIFIED",
+             mpn=r44_selection.MPN, mpn_source=r44_selection.SOURCE),
         Part("R45", "Device:R", "100R", "Resistor_SMD:R_0603_1608Metric",
              58, 312, {"1": "FAULT_G", "2": "VC1_G"}, "1/10 W", "VG1 clamp gate resistor"),
         Part("Q42", "Transistor_FET:Q_NMOS_GSD", "NMOS clamp DNP",
@@ -870,11 +872,9 @@ def crowbar() -> dict:
 def crowbar_pulse() -> dict:
     """Energy and power the crowbar puts into R44 and Q41, per event and per rate.
 
-    The 1206's 0.5 W rating is a *continuous* rating.  At any plausible
-    repetition rate the thermal average is microwatts, so the binding limit is
-    the single-pulse surge -- and this repository has no vendor pulse curve and
-    no Q41 thermal model, so that limit is reported as unverified rather than
-    assumed.
+    The selected HP rating is conditional on mounted thermal resistance.
+    This legacy table stops at UVLO; full hold/injection and the vendor curve
+    screen are in r44_selection. Neither is hardware qualification.
     """
     c = crowbar()
     released = c["energy_released_to_uvlo_j"]
@@ -896,16 +896,15 @@ def crowbar_pulse() -> dict:
             "1_per_s_w": r44_energy * 1,
             "10_per_s_w": r44_energy * 10,
             "100_per_s_w": r44_energy * 100,
-            "continuous_rating_w": 0.5,
-            "rate_at_continuous_rating_per_s": 0.5 / r44_energy,
-            "basis": "thermal average = released energy x rate; the single-pulse "
-                     "surge, not this average, is the binding limit",
+            "continuous_rating_w": r44_selection.P70_W,
+            "rate_at_continuous_rating_per_s": r44_selection.P70_W / r44_energy,
+            "basis": "UVLO-only capacitor energy x rate; NOT a repetition approval. Full hold/injection is in r44_selection",
         },
         "r44_pulse_rating_j": None,
         "q41_thermal": None,
-        "temperature_note": "no vendor pulse curve for the 1206 and no Q41 thermal "
-                            "model in this repository: single-pulse capability and "
-                            "temperature rise are UNVERIFIED, not assumed",
+        "temperature_note": "CRCW-HP vendor curve is archived and conditionally screened; "
+                            "mounted temperature rise and Q41 thermal behavior remain UNVERIFIED",
+        "energy_scope": "legacy values end at UVLO; r44_selection integrates full hold",
     }
 
 
@@ -994,7 +993,7 @@ def q41_selection() -> dict:
         "open_items": [
             "SOA at the 11 V turn-on crossing is not checked against a vendor curve",
             "self-heating and the Rds(on) temperature coefficient are not modelled",
-            "repeated-pulse capability of R44 is not checked (no vendor curve)",
+            "R44 has a conditional vendor-curve screen; actual repetition and thermal behavior remain open",
             "the 3.3 V harness gives a 3.0 V gate; a 5 V harness would allow the "
             "4.5 V column, but that column is not used here",
         ],
@@ -1321,6 +1320,8 @@ def report(ps: list[Part]) -> dict:
         "states": states(),
         "crowbar": crowbar(),
         "crowbar_pulse": crowbar_pulse(),
+        "r44_selection": r44_selection.screen(r=R_CROWBAR, v=VREG_MAX,
+            c=C_REG_BYPASS+C_REG_HF, injection=IREGLIM_MAX_A, rds=RDS_BOM_TARGET, vdd=VDD_NOM),
         "q41_selection": q41_selection(),
         "input_default": input_default(),
         "vdd_cut": vdd_cut(),
@@ -1332,8 +1333,8 @@ def report(ps: list[Part]) -> dict:
             "low-energy validation board, <=10 A and <=5 V output",
             "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
             f"Q41 is selected as {Q41_MPN} (datasheet in references/) but not qualified: "
-            "SOA at the turn-on crossing, self-heating and the R44 pulse curve are open",
-            "no vendor pulse curve for R44 and no Q41 thermal model; pulse "
+            "SOA at the turn-on crossing, self-heating and actual R44 repetition/hold conditions are open",
+            "R44 vendor-curve screen is conditional and no Q41 thermal model exists; pulse "
             "capability and temperature rise are unverified",
             "FAULT_IN defaults to no crowbar: a lost fault source is not a shutdown",
             "a clean ERC only says the drawing agrees with itself",
