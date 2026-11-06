@@ -193,3 +193,4 @@
 |  | `counts` 里三个字段是"名字的列表"不是计数，要 `len(...)` | 改视图工具 | BOARDS.md §实验板制造目录 |
 |  | 磁件询价单放 `hardware/dcx_main/rfq/`，不放 `design/v3/magnetics/` | 加询价单 | MAGNETICS_BOM.md §磁件询价单 |
 |  | `staged_magnetics_16mm_rfq.csv` 的 3.65 mm 与设计包 3.51 mm 是两个口径，不许互改 | 改高度表 | MAGNETICS_BOM.md §磁件询价单 |
+|  | 文本文件的 SHA256 必须经 `text_identity.sha256_file()`（CRLF→LF）；裸 `read_bytes()` 哈希会让 LF 检出的 CI 红 | 给文本记哈希 | TRAPS.md §已知工具陷阱 |

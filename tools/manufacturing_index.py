@@ -24,9 +24,10 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
+
+from text_identity import sha256_file
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "pcb/manufacturing"
@@ -86,11 +87,8 @@ BOARDS: list[dict] = [
 
 
 def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    """Canonical (LF) identity: the same file hashes the same on CI and here."""
+    return sha256_file(path)
 
 
 def _flags(manifest: dict) -> dict:

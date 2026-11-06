@@ -19,9 +19,10 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
+
+from text_identity import sha256_file
 
 ROOT = Path(__file__).resolve().parent.parent
 GATE = ROOT / "hardware/dcx_main/d1_fabrication_gate.json"
@@ -42,11 +43,8 @@ EXIT_KINDS = {
 
 
 def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    """Canonical (LF) identity: the same file hashes the same on CI and here."""
+    return sha256_file(path)
 
 
 def _refs(rows: list[dict], pred) -> list[str]:

@@ -29,6 +29,8 @@ import re
 from datetime import date
 from pathlib import Path
 
+from text_identity import canonical_bytes
+
 ROOT = Path(__file__).resolve().parent.parent
 
 V3_SOURCES = {
@@ -519,18 +521,10 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-# Text sources are hashed after CRLF -> LF so a checkout with core.autocrlf=true
-# reproduces the manifest CI generates from LF bytes.  Anything else (notably
-# .raw) keeps its byte identity: RAWs are binary evidence, not sources.
-TEXT_SUFFIXES = frozenset({
-    ".cir", ".csv", ".inc", ".json", ".kicad_pcb", ".kicad_pro", ".kicad_sch",
-    ".lib", ".md", ".net", ".py", ".sch", ".sub", ".svg", ".tsv", ".txt", ".yaml", ".yml",
-})
-
-
-def canonical_bytes(path: Path) -> bytes:
-    data = path.read_bytes()
-    return data.replace(b"\r\n", b"\n") if path.suffix.lower() in TEXT_SUFFIXES else data
+# Text sources are hashed after CRLF -> LF (see text_identity) so a checkout
+# with core.autocrlf=true reproduces the manifest CI generates from LF bytes.
+# Anything else (notably .raw) keeps its byte identity: RAWs are binary
+# evidence, not sources.
 
 
 def entry(path: str, kind: str) -> dict[str, object]:

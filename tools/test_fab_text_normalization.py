@@ -6,16 +6,16 @@ This check makes identical bytes reproducible across Windows and Linux.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 
 import pytest
 
 import make_sr_fault_board_pcb as sr
+from text_identity import sha256_file
 
 
 def _sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return sha256_file(path)
 
 
 @pytest.mark.parametrize("name", ["x.gbl", "x.gbrjob", "x.drl", "x.csv"])

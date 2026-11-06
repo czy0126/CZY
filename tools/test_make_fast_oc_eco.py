@@ -481,7 +481,7 @@ def test_the_generated_report_is_current(parts, report):
 
 def test_the_committed_erc_is_clean_and_schematic_source_is_pinned():
     """Git checkout mtime is not the time KiCad last ran on the schematic."""
-    import hashlib
+    from text_identity import sha256_file
 
     sch = OUT / "fast_oc.kicad_sch"
     report = json.loads((OUT / "erc.json").read_text(encoding="utf-8"))
@@ -489,7 +489,7 @@ def test_the_committed_erc_is_clean_and_schematic_source_is_pinned():
     assert board.erc_violations(OUT / "erc.json") == []
     index = json.loads((board.ROOT / "pcb/manufacturing/index.json").read_text())
     entry = next(x for x in index["boards"] if x["id"] == "fast_oc")
-    assert entry["schematic_sha256"] == hashlib.sha256(sch.read_bytes()).hexdigest()
+    assert entry["schematic_sha256"] == sha256_file(sch)
     assert entry["flags"]["fabrication_approved"] is False
 
 
