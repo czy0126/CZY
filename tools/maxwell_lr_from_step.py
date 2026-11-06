@@ -165,7 +165,7 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
         new_desktop=True, non_graphical=False,
     )
     try:
-        ok = app.import_3d_cad(str(step), import_free_surfaces=True)
+        ok = app.modeler.import_3d_cad(str(step), import_free_surfaces=True)
         if not ok:
             raise RuntimeError("STEP import failed")
         available = set(app.modeler.object_names)
