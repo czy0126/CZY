@@ -18,7 +18,7 @@ MAPS = {
     "fast_oc": {"U1": "TLV3501AIDBVR", "U2": "LM4040D25IDBZR",
                 "D1": "BAT54ZFILM", "D2": "BAT54ZFILM"},
     "d0_protection": {f"D{n}": "BAT54ZFILM" for n in range(5, 19)},
-    "sr_fault_validation": {"Q40": "2N7002LT1G", "Q41": "AO3400A"},
+    "sr_fault_validation": {"Q40": "2N7002", "Q41": "NMOS 30V IDM>=3A"},
 }
 BOARDS = ("fast_oc", "sr_fault_validation")
 
@@ -111,7 +111,7 @@ def run() -> None:
             board_mm=(fast_pcb.BOARD_W_MM, fast_pcb.BOARD_D_MM),
             footprint_note=("Footprints are vendored from hardware/stock_footprints "
                             "(sha256 in PROVENANCE.md). This module has no "
-                            "bulk-energy circuit or latch; verify before assembly."),
+                            "datasheet-drawn land pattern."),
         ), encoding="utf-8", newline="\n")
     assembly_drawing.write(sr_pcb.FAB / "assembly.svg")
     for kind in BOARDS:
