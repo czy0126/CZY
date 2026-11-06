@@ -1,0 +1,24 @@
+onsemi 2N7002LT1G -- manufacturer verified small-signal MOSFET
+Verification date: 2026-11-05
+OEM source (Rev 11, June 2024):
+https://www.onsemi.com/download/data-sheet/pdf/2n7002l-d.pdf
+
+Orderable device: 2N7002LT1G, SOT-23, lead-free tape-and-reel
+2N7002LT3G and 2N7002LT7G are distinct reel pack sizes and not silently
+interchanged in the exact OEM MPN field.
+SOT23 Case 318 Style 21: pin 1 GATE, pin 2 SOURCE, pin 3 DRAIN
+MOSFET N channel small-signal
+VDS maximum: 60 V
+ID maximum: 115 mA under the OEM board/temperature conditions
+RDS(on) maximum: 7.5 ohm at 10 V gate and 500 mA pulse test
+
+Application to Q40 of the UCC24624 bench fixture:
+- Status indicator open-drain Q40, pins 1=FAULT_G, 2=PGND, 3=FAULT_N,
+  matches the native KiCad Q_NMOS_GSD and SOT23 footprint.
+- Q40 is NOT the REG discharge/crowbar power FET Q41.
+- Verify external status pullup voltage, resulting drain current and
+  off-state leakage on the real assembled board.
+- OEM source verifies footprint and family only; not hardware release.
+
+Short factual data-sheet reference, with official URL rather than a fabricated
+manufacturer document.
