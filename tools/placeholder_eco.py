@@ -120,7 +120,7 @@ def _sources() -> dict[str, dict]:
     ct = _json(BOM / "ct_design.json")
     cout = _json(BOM / "cout_bank.json")
     cr = _json(BOM / "cr_stress.json")
-    passive = _json(BOM / "passive_requirements.json")
+    cin = _json(BOM / "cin_bank.json")
     burden = _json(BOM / "oc_burden_pulse.json")
 
     bank = cout["banks"][0]
@@ -187,10 +187,15 @@ def _sources() -> dict[str, dict]:
             "numbers": {"capacitance_f": cr["capacitance_f"], "v_max_v": cr["v_max_v"],
                         "esr_ceiling_ohm": cr["esr_ceiling_ohm"]}},
         "48 V input capacitor bank": {
-            "source": "design/v3/bom/passive_requirements.json:cin",
-            "value": (f"bridge AC RMS {passive['cin']['bridge_ac_rms_a']:.4f} A at 200 kHz "
+            "source": "design/v3/bom/cin_bank.json:requirements",
+            "value": (f"bridge AC RMS {cin['requirements']['bridge_ac_rms_a_at_worst_measured_load']:.4f} A "
+                      f"at 200 kHz at the 120 A overload point "
+                      f"({cin['requirements']['bridge_ac_rms_a_at_100a']:.4f} A at the rated 100 A); "
+                      f"{cin['requirements']['ipri_peak_a']:.4f} A repetitive peak "
                       f"(not the 0.227 A through Cin, whose source impedance is 1 mohm)"),
-            "numbers": {"bridge_ac_rms_a": passive["cin"]["bridge_ac_rms_a"]}},
+            "numbers": {"bridge_ac_rms_a": cin["requirements"]["bridge_ac_rms_a_at_worst_measured_load"],
+                        "bridge_ac_rms_a_at_100a": cin["requirements"]["bridge_ac_rms_a_at_100a"],
+                        "ipri_peak_a": cin["requirements"]["ipri_peak_a"]}},
         "OC burden resistor": {
             "source": ("design/v3/bom/ct_design.json:as_built.burden_ohm + "
                        "oc_burden_pulse.json:runs[0]"),

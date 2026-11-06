@@ -1,0 +1,310 @@
+{
+  "status": "sizing only; no capacitor datasheet exists in the repository, so every per-part figure is a requirement, not a selected part",
+  "sources": {
+    "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
+    "published_100a": "design/v3/bom/passive_requirements.json",
+    "tank": "design/v3/bom/lr_design.json"
+  },
+  "deck": {
+    "element": "Cin vin 0 20u Rser=5m",
+    "positive_node": "vin",
+    "negative_node": "0",
+    "capacitance_f": 1.9999999999999998e-05,
+    "esr_ohm": 0.005
+  },
+  "frequency_hz": 200622.0,
+  "vin_v": 48.0,
+  "measurements": [
+    {
+      "raw": "sr_tank_dual_v33_ss_1ms_100a_cin.raw",
+      "window_us": [
+        7.704687,
+        117.363517
+      ],
+      "bridge_mean_a": 4.153217920419545,
+      "bridge_rms_a": 6.745809329902742,
+      "bridge_ac_rms_a": 5.315705449035795,
+      "bridge_ac_rms_without_switching_spikes_a": 5.244717435667603,
+      "bridge_ac_peak_model_a": 365.76509981269055,
+      "spike_sample_share": 0.0022240460412993697,
+      "i2t_in_spike_samples_pct": 2.7003864860910203,
+      "ipri_peak_a": 13.88141992151438,
+      "cin_ac_rms_a": 0.22713142748444662
+    },
+    {
+      "raw": "sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+      "window_us": [
+        7.6445,
+        117.3105
+      ],
+      "bridge_mean_a": 5.040565294786461,
+      "bridge_rms_a": 8.114242315397412,
+      "bridge_ac_rms_a": 6.358744362056101,
+      "bridge_ac_rms_without_switching_spikes_a": 6.137095713774071,
+      "bridge_ac_peak_model_a": 383.47056508915625,
+      "spike_sample_share": 0.00486342551369137,
+      "i2t_in_spike_samples_pct": 6.904811226697713,
+      "ipri_peak_a": 15.59279526345215,
+      "cin_ac_rms_a": 0.3472779532759407
+    },
+    {
+      "raw": "sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
+      "window_us": [
+        7.631583516341496,
+        117.2982368985085
+      ],
+      "bridge_mean_a": 4.948401130542177,
+      "bridge_rms_a": 8.006404233729214,
+      "bridge_ac_rms_a": 6.294111137017363,
+      "bridge_ac_rms_without_switching_spikes_a": 6.066170764674634,
+      "bridge_ac_peak_model_a": 396.6090046932897,
+      "spike_sample_share": 0.006121989410895989,
+      "i2t_in_spike_samples_pct": 7.170981656186634,
+      "ipri_peak_a": 15.42599287497502,
+      "cin_ac_rms_a": 0.3468845270448749
+    }
+  ],
+  "requirements": {
+    "bridge_ac_rms_a_at_100a": 5.315705449035795,
+    "bridge_ac_rms_a_at_worst_measured_load": 6.358744362056101,
+    "ipri_peak_a": 15.59279526345215,
+    "note": "size the bank at the worst measured load; the 100 A figure is the rated point and the 120 A runs are the over-load candidates that are already in the evidence set"
+  },
+  "esr_budget": {
+    "dissipation_w": 1.0,
+    "bank_esr_ceiling_ohm": 0.024731887871890026,
+    "note": "self-chosen, same 1 W rule as the Cout bank; the repository defines no input-ripple or input-capacitor ESR limit"
+  },
+  "ripple_table": [
+    {
+      "capacitance_f": 4.7e-06,
+      "xc_ohm": 0.1687888359668403,
+      "z_ohm": 0.1688628767581582,
+      "dv_rms_v": 1.0737558655465127,
+      "dv_pp_sinusoidal_v": 3.03704021546708,
+      "dv_pp_percent_of_vin": 6.327167115556416,
+      "dv_pp_without_esr_v": 3.0357085736927925,
+      "esr_loss_w": 0.2021681493099013
+    },
+    {
+      "capacitance_f": 1e-05,
+      "xc_ohm": 0.07933075290441494,
+      "z_ohm": 0.0794881648824612,
+      "dv_rms_v": 0.505444920296536,
+      "dv_pp_sinusoidal_v": 1.4296141226318986,
+      "dv_pp_percent_of_vin": 2.978362755483122,
+      "dv_pp_without_esr_v": 1.4267830296356123,
+      "esr_loss_w": 0.2021681493099013
+    },
+    {
+      "capacitance_f": 2e-05,
+      "xc_ohm": 0.03966537645220747,
+      "z_ohm": 0.03997927074241518,
+      "dv_rms_v": 0.254217962432447,
+      "dv_pp_sinusoidal_v": 0.719036980541641,
+      "dv_pp_percent_of_vin": 1.497993709461752,
+      "dv_pp_without_esr_v": 0.7133915148178062,
+      "esr_loss_w": 0.2021681493099013
+    },
+    {
+      "capacitance_f": 2.2e-05,
+      "xc_ohm": 0.03605943313837043,
+      "z_ohm": 0.03640443267324197,
+      "dv_rms_v": 0.2314864810148283,
+      "dv_pp_sinusoidal_v": 0.6547426419143844,
+      "dv_pp_percent_of_vin": 1.3640471706549675,
+      "dv_pp_without_esr_v": 0.6485377407434603,
+      "esr_loss_w": 0.2021681493099013
+    },
+    {
+      "capacitance_f": 4.7e-05,
+      "xc_ohm": 0.01687888359668403,
+      "z_ohm": 0.01760388342015503,
+      "dv_rms_v": 0.11193859444820367,
+      "dv_pp_sinusoidal_v": 0.31661015684326255,
+      "dv_pp_percent_of_vin": 0.6596044934234636,
+      "dv_pp_without_esr_v": 0.30357085736927925,
+      "esr_loss_w": 0.2021681493099013
+    },
+    {
+      "capacitance_f": 0.0001,
+      "xc_ohm": 0.007933075290441493,
+      "z_ohm": 0.009377296175540869,
+      "dv_rms_v": 0.05962782918755074,
+      "dv_pp_sinusoidal_v": 0.1686529694638011,
+      "dv_pp_percent_of_vin": 0.3513603530495856,
+      "dv_pp_without_esr_v": 0.14267830296356124,
+      "esr_loss_w": 0.2021681493099013
+    }
+  ],
+  "per_part_examples": [
+    {
+      "values_f": [
+        2e-05
+      ],
+      "n_parts": 1,
+      "total_f": 2e-05,
+      "per_part": [
+        {
+          "c_f": 2e-05,
+          "share_frac": 1.0,
+          "irms_a": 6.358744362056101,
+          "esr_max_ohm": 0.024731887871890026
+        }
+      ],
+      "max_part_irms_a": 6.358744362056101
+    },
+    {
+      "values_f": [
+        1e-05,
+        1e-05
+      ],
+      "n_parts": 2,
+      "total_f": 2e-05,
+      "per_part": [
+        {
+          "c_f": 1e-05,
+          "share_frac": 0.5,
+          "irms_a": 3.1793721810280506,
+          "esr_max_ohm": 0.04946377574378005
+        },
+        {
+          "c_f": 1e-05,
+          "share_frac": 0.5,
+          "irms_a": 3.1793721810280506,
+          "esr_max_ohm": 0.04946377574378005
+        }
+      ],
+      "max_part_irms_a": 3.1793721810280506
+    },
+    {
+      "values_f": [
+        2.2e-05,
+        4.7e-06
+      ],
+      "n_parts": 2,
+      "total_f": 2.67e-05,
+      "per_part": [
+        {
+          "c_f": 2.2e-05,
+          "share_frac": 0.8239700374531835,
+          "irms_a": 5.2394148301585854,
+          "esr_max_ohm": 0.04946377574378005
+        },
+        {
+          "c_f": 4.7e-06,
+          "share_frac": 0.1760299625468165,
+          "irms_a": 1.119329531897516,
+          "esr_max_ohm": 0.04946377574378005
+        }
+      ],
+      "max_part_irms_a": 5.2394148301585854
+    },
+    {
+      "values_f": [
+        4.7e-06,
+        4.7e-06,
+        4.7e-06,
+        4.7e-06
+      ],
+      "n_parts": 4,
+      "total_f": 1.88e-05,
+      "per_part": [
+        {
+          "c_f": 4.7e-06,
+          "share_frac": 0.25,
+          "irms_a": 1.5896860905140253,
+          "esr_max_ohm": 0.0989275514875601
+        },
+        {
+          "c_f": 4.7e-06,
+          "share_frac": 0.25,
+          "irms_a": 1.5896860905140253,
+          "esr_max_ohm": 0.0989275514875601
+        },
+        {
+          "c_f": 4.7e-06,
+          "share_frac": 0.25,
+          "irms_a": 1.5896860905140253,
+          "esr_max_ohm": 0.0989275514875601
+        },
+        {
+          "c_f": 4.7e-06,
+          "share_frac": 0.25,
+          "irms_a": 1.5896860905140253,
+          "esr_max_ohm": 0.0989275514875601
+        }
+      ],
+      "max_part_irms_a": 1.5896860905140253
+    },
+    {
+      "values_f": [
+        2.2e-05,
+        2.2e-05
+      ],
+      "n_parts": 2,
+      "total_f": 4.4e-05,
+      "per_part": [
+        {
+          "c_f": 2.2e-05,
+          "share_frac": 0.5,
+          "irms_a": 3.1793721810280506,
+          "esr_max_ohm": 0.04946377574378005
+        },
+        {
+          "c_f": 2.2e-05,
+          "share_frac": 0.5,
+          "irms_a": 3.1793721810280506,
+          "esr_max_ohm": 0.04946377574378005
+        }
+      ],
+      "max_part_irms_a": 3.1793721810280506
+    }
+  ],
+  "checks": {
+    "the_deck_runs_the_capacitor_the_probe_raws_were_taken_on": true,
+    "the_published_100a_requirement_is_reproduced": true,
+    "the_worst_case_is_not_below_the_design_load": true,
+    "every_table_row_is_computed_from_the_same_current": true,
+    "no_part_is_named": true
+  },
+  "results": {
+    "bridge_ac_rms_a_at_100a": 5.315705449035795,
+    "bridge_ac_rms_a_at_worst_measured_load": 6.358744362056101,
+    "worst_measured_load_raw": "sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+    "requirement_rise_from_100a_pct": 19.62183426114217,
+    "ipri_peak_a_at_100a": 13.88141992151438,
+    "ipri_peak_a_at_worst_measured_load": 15.59279526345215,
+    "current_through_the_modelled_capacitor_a": 0.22713142748444662,
+    "share_of_the_bridge_ripple_the_model_puts_in_the_capacitor_pct": 4.272836967022797,
+    "peak_sample_a": 383.47056508915625,
+    "spike_sample_share": 0.00486342551369137,
+    "i2t_in_spike_samples_pct": 6.904811226697713,
+    "ac_rms_with_spikes_clipped_to_20a_a": 6.137095713774071,
+    "capacitance_at_the_simulated_point_f": 1.9999999999999998e-05,
+    "ripple_at_the_simulated_point_pp_v": 0.7190369805416412,
+    "ripple_at_the_simulated_point_percent_of_vin": 1.4979937094617526,
+    "ripple_with_esr_removed_pp_v": 0.7133915148178064,
+    "esr_for_a_1w_budget_ohm": 0.024731887871890026,
+    "esr_of_the_simulated_bank_ohm": 0.005,
+    "esr_loss_of_the_simulated_bank_w": 0.2021681493099013,
+    "capacitance_is_not_the_binding_constraint": true,
+    "the_repetitive_peak_is_ipri_not_the_model_spike": true,
+    "fault_window_input_current_is_not_measured": true,
+    "inrush_is_not_modelled": true,
+    "the_capacitor_share_depends_on_the_source_impedance": {
+      "0.01_ohm": 0.2000829514207666,
+      "0.1_ohm": 0.7143914914660214,
+      "1_ohm": 0.9615576272843641
+    }
+  },
+  "no_capacitor_datasheet_in_repository": true,
+  "caveats": [
+    "first-harmonic estimate at the 200.622 kHz clock: the real waveform is a duty-cycle pulse plus the switch-node capacitance charge, so the table is a magnitude, not a waveform",
+    "the model has no package inductance, so the switch-node capacitance discharges in about a nanosecond; the peak sample is an artifact and the honest repetitive peak is I(Lr) PEAK",
+    "ESR is the model's Rser, not a part specification; ESR at 200 kHz differs from the 120 Hz value",
+    "parallel resonance between a bulk electrolytic and ceramics is not modelled",
+    "the fault windows do not save I(Cin)/I(Rin), so fault-window input current is unknown",
+    "cold-start inrush is not modelled either: the 8 ms cold deck saves other probes"
+  ]
+}

@@ -1,6 +1,6 @@
 ref,priority,function,required_value_or_rating,existing_package,previous_mpn,proposed_mpn,manufacturer_datasheet_uri,actual_package,pad_map_reviewed,electrical_stress_accepted,lead_time_or_stock,owner,reviewer,decision
 CT,P0,over-current CT,100:1; 1 V Level-1 VOC; as built 10 ohm burden + 24/35 divider reads 0.573 V at 13.86 A and trips at 24.2 A (measured); core B/Bsat 0.7 %,-,TO SELECT,,,,NO,NO,,,,PENDING
-Cin,P0,48 V input capacitor bank,48 V bus; >=5.32 A RMS at 200 kHz (bridge ripple); 13.9 A pulses,-,TO SELECT,,,,NO,NO,,,,PENDING
+Cin,P0,48 V input capacitor bank,48 V bus; >=6.36 A AC RMS at 200 kHz at the 120 A overload point (5.32 A at the rated 100 A); 15.6 A repetitive peak,-,TO SELECT,,,,NO,NO,,,,PENDING
 Cout,P0,output capacitor bank,"15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=52.5 A RMS; bank ESR <=0.2 mohm; part data unverified",polymer SMD,TO SELECT,,,,NO,NO,,,,PENDING
 Cr,P0,resonant capacitor,0.62 uF; peak v_Cr 41.4 V (reconstructed) vs 100 V rated = 2.42x; 9.45 A RMS at 200.6 kHz; bank ESR <=11.2 mohm for 1 W,film,TO SELECT,,,,NO,NO,,,,PENDING
 D_BT,P0,bootstrap diode,">=100 V reverse - HB is 60 V against VCC12 12 V when QH is on, so 48 V; If avg 9.6 mA (Qg 48 nC datasheet max x 200.6 kHz; the deck's 4 nF Cgh gives the same 48 nC); droop 218 mV on 220 nF; peak ~0.4 A recharge spike is derived, NOT measured - the deck's Bgh is a source to sw, so Cbt is never loaded",0603,TO SELECT,,,,NO,NO,,,,PENDING

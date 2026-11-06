@@ -846,9 +846,10 @@ NOT_PLACED_REASONS: dict[str, tuple[str, str]] = {
         ("HELD_BACK",
          "a 20 uF input bank is required and its package is TO SELECT, so the review "
          "row's 100 nF 0603 is a placeholder for a part nobody has chosen; the bank "
-         "has to carry 5.316 A AC RMS through the high-side switch "
-         "(passive_requirements.json:cin.bridge_ac_rms_a 5.3157), and that number, "
-         "not the outline, is what picks the part"),
+         "has to carry 6.3587 A AC RMS through the high-side switch at the 120 A "
+         "overload point (5.3157 A at the rated 100 A, "
+         "cin_bank.json:requirements.bridge_ac_rms_a_at_worst_measured_load), and "
+         "that number, not the outline, is what picks the part"),
 }
 NOT_PLACED_DEFAULT = (
     "NOT_THIS_BOARD",

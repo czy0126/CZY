@@ -20,6 +20,8 @@ python tools/lr_design.py --json design/v3/bom/lr_design.json   # Lr 匝数/气�
 python tools/transformer_flux.py --json design/v3/magnetics/transformer_flux_100a.json
     # 变压器磁通由副边实测电压积分（T1/T4 各半），不是方波公式；需 313 MB 100 A raw
 python tools/cout_bank.py --json design/v3/bom/cout_bank.json   # Cout 并联数量与主导约束
+python tools/cr_bank.py --json design/v3/bom/cr_bank.json   # Cr 容值带/配平耦合/容差与 E12 落点
+python tools/cin_bank.py --json design/v3/bom/cin_bank.json # 输入电流要求/纹波表/ESR 预算（读三条 _cin raw）
 python tools/cr_stress.py --json design/v3/bom/cr_stress.json   # 由 I(Lr) 积分重建 v_Cr
 python tools/ct_design.py --json design/v3/bom/ct_design.json  # CT 传递链/负载与分压（10 Ω 已冻结）
 python tools/oc_network_check.py --raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.raw \
@@ -496,6 +498,43 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   ESR 要 15 只；按容量算会少买 6 只，整组 ESR 变 0.33 mΩ。`bank ESR = 单只/N` 只对电容本体成立，
   不含铺铜分布电阻。**0.2 mΩ 是模型 `Rser` 的值，不是规格**——项目没有 Vout 纹波上限定义，
   取 0.1 mΩ 数量翻倍到 30 只。见 `tools/cout_bank.py`。
+- **Cr 是带，不是"≥0.62 µF"，而且卡住它的不是时钟而是 Lr 窗口**：腔必须工作在谐振点以下
+  （M≈1.9），所以 `fr = 1/(2π√(L·C))` 要高于 200.622 kHz，而设计点 1.0 µH×620 nF 只给出
+  **202.127 kHz（0.75 %，折合电容 1.5 %）**。只按时钟算的上限是 **629.3 nF**，更紧的是
+  **620 nF = 100 A 点唯一跑过的容值**；下限 **574.1 nF** 来自配平窗口用尽（总感 1.08 µH），
+  合起来 **574.1–620.0 nF**。两个边是两种失效方式：超上限没有实跑数据，低于下限外置件
+  要超过 1.0 µH 的选型上限。**配平不是可选项**：外置件按名义 1.0 µH 进场（总感 1.08 µH）时
+  fr = **194.5 kHz，低于时钟**。配平式 `L_ext = 6.2e-13/C − L_leak`；620 nF 在 80 nH / 125 nH
+  两个漏感端正好给出实跑过的 **0.920 / 0.875 µH**。
+  **带内不是"同一个腔"**：L·C 固定只保住频率，`Z0 = √(L/C) = L/√(LC)` 随电感走，带底 Z0
+  **1.372 Ω 对 1.270 Ω 高 8 %**，任何落点都要自己跑一次。
+  **E12 没有单件落在带里**（560 < 574.1、680 > 620）：两件 150+470 = 620 nF 正好，
+  但**纹波按容值分配不按只数均分**，470 nF 那只要 **7.16 A RMS**（按四只均分会错读成 4.73 A）；
+  要把单件压到 3.4 A 以下要三件以上，`100×5+120` 是 1.83 A。等容方案 4×150 = 600 nF（−3.23 %）。
+  **容差规则 `标称 ≤ 620/(1+t)`**：±1 % 613.9 / ±2 % 607.8 / ±5 % 590.5 可用，**±10 % 563.6 nF
+  低于带底 ⇒ ±10 % 件根本无法满足配平规则**（仓里那句"±10 % 摆幅吃得下"说的是耐压，不是频率）。
+  **仓库里没有电容数据手册**，所以每只件的 RMS/ESR 都是**要求**不是选型，JSON 不写 MPN
+  （`no_capacitor_datasheet_in_repository: true`）。见 `tools/cr_bank.py` 与 BOM 草案 §3.2.1。
+- **Cin 的选型点是 120 A 的 6.36 A，不是 BOM 行里的 5.32 A，而电容值根本不是约束**：六个 `_cin`
+  探针 deck 的 `Cin` 行逐字节相同（`Cin vin 0 20u Rser=5m`），所以半桥输入电流可以直接比：
+  48 V/100 A **5.3157 A**（额定点，与 `passive_requirements.json` 的 `cin.bridge_ac_rms_a` 逐位相同）、
+  48 V/120 A **6.3587 A（+19.62 %）**、50 V/120 A 6.2941 A（+18.41 %）。**两行是两个电路**：
+  100 A 探针 deck 是 `LR_TOTAL=.92u`，110/120 A 是 `1u`，不许写成同一条曲线的两点。
+  200.6 kHz 下 20 µF 的容抗 39.67 mΩ，6.36 A 给出 **0.719 V pp = 48 V 的 1.50 %**；4.7 µF 才 6.33 %
+  ⇒ 项目没有输入纹波上限，电容值只是后果。**真正卡住的是纹波电流额定与重复峰值**：1 W 预算下
+  整组 ESR 上限 **24.73 mΩ**（模型 5 mΩ ⇒ 0.202 W），重复峰值取 `I(Lr)` 的 **15.59 A**。
+  **原始波形里的 383 A 是伪影**：0.0049 % 采样点、占总 I²t **6.90 %**，截到 20 A 后 RMS 只掉
+  **3.49 %**（6.1371 A）——与 `I(SH)`/`I(SL)` 776 A 尖峰同类（无封装电感，`Cdh+Cdl` 在 ~1 ns 内放电），
+  额定用整条波形 RMS（保守）、峰值用 `I(Lr)`，**绝不拿 383 A 选型**。
+  **并联按容值分电流**：22+4.7 µF 的组是 5.239 / 1.119 A，按只数均分会读成 3.18 A（低 39 %）。
+  `V(oc)` 那条同名的"模型假象"教训不适用：这里 0.227 A 是**源阻抗**（1 mΩ）造成的，
+  `I(Rin)−I(Cin)` 才是电容真正要供的电流。见 `tools/cin_bank.py` 与 BOM 草案 §3.4.1。
+  **选型点已从 5.32 A 改成 6.36 A，并顺着上面那五个 `--write` 传到了采购件**：`bom_draft.csv`
+  的 Cin 行、`placeholder_eco.json` 的 `requirement`、`supplier_seed_61.csv` 与
+  `supplier_component_selection_template.csv` 现在都写"6.36 A @120 A 过载点（额定 100 A 是 5.32 A）；
+  15.6 A 重复峰值"。仓库里 `stress_50v_120a.json` 早就公布 6.2941 A 而 BOM 行还写 5.32 A，
+  这个不一致是靠"按额定点买会只剩 16 % 余量"发现的——**两个证据集里的负载点不同**，
+  不是两个测量打架。`tools/test_placeholder_eco.py` 同时断言两个数都在（差一个就红）。
 - **100 A 能量账只在同一窗口内成立**：`energy_ledger_100a.py` 用 16 个门极周期的 raw
   直接积分，`Pin(source)=48·mean(I(Rin))`、`Pout=mean(Vout²/RL)`，逐项损耗 11.117 W、
   Pin−Pout 11.025 W、残差 −0.091 W（目标 0.2 W）。CT 整流桥+负载 0.186 W 是最后补齐的一项。
@@ -863,6 +902,13 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   从 `design/v3/bom/bom_draft.csv` 取 `existing_value_or_rating`、从 `pin_footprint_review.csv`
   取引脚状态重写它。要改结论先改 `bom_draft.csv`（手工维护、无生成器）再重跑。
   这一条踩过一次：手改 34 行 `issues` 后差异消失得无影无踪。
+  **改一行 BOM 要求要顺着五个 `--write` 重跑，顺序不能换**：`d1_sourcing_register.py`（读
+  `bom_draft.csv` 的 `value_or_rating` → 寄存器的 `existing_value_or_rating`，`source` →
+  `source_path`；**`basis` 列根本没人读**，改它只是给人看的）→ `d1_reference_kit.py`（两张
+  seed）→ `export_d1_vendor_packets.py`（无旗时 `SystemExit("stale template: …")`）→
+  `verify_vendor_candidate_matrix.py`（61 行候选矩阵）→ `placeholder_eco.py`。少跑一步的后果
+  是供应商拿到旧数量，而 `ci_check --skip-tests` 只看得见 `remaining_dependencies` 这类视图，
+  看不见这几张 CSV。
 - **`--path` 打开的工程保存回它自己的路径，不是 `%APP_PROJECT_DIR%`**：上面那条
   "保存到 `D:\workshop\LCEDA-Pro\projects\...eprj2` 再 `cp` 进仓库"只对**按名字打开**的工程成立。
   这次按 `--path hardware/dcx_main/dcx_main_board.eprj2` 打开，`save()` 直接把仓库里那份

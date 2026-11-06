@@ -1,0 +1,349 @@
+{
+  "status": "sizing only; no capacitor datasheet exists in the repository, so every per-part figure is a requirement, not a selected part",
+  "sources": {
+    "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
+    "cr_stress": "design/v3/bom/cr_stress.json",
+    "lr_design": "design/v3/bom/lr_design.json"
+  },
+  "requirements": {
+    "capacitance_f": 6.2e-07,
+    "v_rated_v": 100.0,
+    "v_max_v": 41.35863497778051,
+    "rating_margin": 2.4178747691678883,
+    "irms_a": 9.450157142630292,
+    "i_pk_a": 13.88141992151438,
+    "esr_ceiling_ohm": 0.01119752238884695,
+    "p_allow_w": 1.0,
+    "leakage_model_h": 8e-08
+  },
+  "tuning": {
+    "lc_product_s2": 6.2e-13,
+    "resonant_hz": 202126.979853788,
+    "clock_hz": 200622.0,
+    "c_max_f": 6.2e-07,
+    "c_min_f": 5.74074074074074e-07,
+    "c_clock_ceiling_f": 6.293368356381339e-07,
+    "l_total_tested_h": [
+      1e-06,
+      1.08e-06
+    ],
+    "l_external_tested_h": [
+      8.75e-07,
+      1e-06
+    ],
+    "basis": "the band is a trim-feasibility band, not a set of interchangeable tanks. Upper bound: the design inductance, i.e. the 620 nF the 100 A point runs. Lower bound: a 1.0 uH external part (the sizing top of the trim window) at the model leakage, total 1.08 uH. The clock alone would allow up to 629.3 nF, so the inductor window is the binding bound."
+  },
+  "tolerance_rule": [
+    {
+      "tolerance": 0.01,
+      "max_nominal_f": 6.138613861386138e-07
+    },
+    {
+      "tolerance": 0.02,
+      "max_nominal_f": 6.07843137254902e-07
+    },
+    {
+      "tolerance": 0.05,
+      "max_nominal_f": 5.904761904761904e-07
+    },
+    {
+      "tolerance": 0.1,
+      "max_nominal_f": 5.636363636363635e-07
+    }
+  ],
+  "landings_in_band": 422,
+  "landings": [
+    {
+      "values_nf": [
+        150,
+        470
+      ],
+      "n_parts": 2,
+      "total_f": 6.2e-07,
+      "delta_frac": 0.0,
+      "external_trim_h": 9.2e-07,
+      "per_part": [
+        {
+          "c_f": 1.5000000000000002e-07,
+          "share_frac": 0.24193548387096778,
+          "irms_a": 2.2863283409589417,
+          "ipk_a": 3.358408045527673,
+          "esr_max_ohm": 0.0223950447776939,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 4.7000000000000005e-07,
+          "share_frac": 0.7580645161290324,
+          "irms_a": 7.16382880167135,
+          "ipk_a": 10.523011875986708,
+          "esr_max_ohm": 0.0223950447776939,
+          "v_rated_min_v": 100.0
+        }
+      ],
+      "max_part_irms_a": 7.16382880167135,
+      "equal_parts": false
+    },
+    {
+      "values_nf": [
+        180,
+        220,
+        220
+      ],
+      "n_parts": 3,
+      "total_f": 6.2e-07,
+      "delta_frac": 0.0,
+      "external_trim_h": 9.2e-07,
+      "per_part": [
+        {
+          "c_f": 1.8000000000000002e-07,
+          "share_frac": 0.2903225806451613,
+          "irms_a": 2.7435940091507307,
+          "ipk_a": 4.0300896546332075,
+          "esr_max_ohm": 0.033592567166540854,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 2.2e-07,
+          "share_frac": 0.3548387096774194,
+          "irms_a": 3.3532815667397813,
+          "ipk_a": 4.925665133440587,
+          "esr_max_ohm": 0.033592567166540854,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 2.2e-07,
+          "share_frac": 0.3548387096774194,
+          "irms_a": 3.3532815667397813,
+          "ipk_a": 4.925665133440587,
+          "esr_max_ohm": 0.033592567166540854,
+          "v_rated_min_v": 100.0
+        }
+      ],
+      "max_part_irms_a": 3.3532815667397813,
+      "equal_parts": false
+    },
+    {
+      "values_nf": [
+        100,
+        120,
+        180,
+        220
+      ],
+      "n_parts": 4,
+      "total_f": 6.2e-07,
+      "delta_frac": 0.0,
+      "external_trim_h": 9.2e-07,
+      "per_part": [
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.0447900895553878,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.2000000000000002e-07,
+          "share_frac": 0.19354838709677422,
+          "irms_a": 1.8290626727671533,
+          "ipk_a": 2.6867264364221386,
+          "esr_max_ohm": 0.0447900895553878,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.8000000000000002e-07,
+          "share_frac": 0.2903225806451613,
+          "irms_a": 2.7435940091507307,
+          "ipk_a": 4.0300896546332075,
+          "esr_max_ohm": 0.0447900895553878,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 2.2e-07,
+          "share_frac": 0.3548387096774194,
+          "irms_a": 3.3532815667397813,
+          "ipk_a": 4.925665133440587,
+          "esr_max_ohm": 0.0447900895553878,
+          "v_rated_min_v": 100.0
+        }
+      ],
+      "max_part_irms_a": 3.3532815667397813,
+      "equal_parts": false
+    },
+    {
+      "values_nf": [
+        100,
+        100,
+        120,
+        150,
+        150
+      ],
+      "n_parts": 5,
+      "total_f": 6.2e-07,
+      "delta_frac": 0.0,
+      "external_trim_h": 9.2e-07,
+      "per_part": [
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.05598761194423475,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.05598761194423475,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.2000000000000002e-07,
+          "share_frac": 0.19354838709677422,
+          "irms_a": 1.8290626727671533,
+          "ipk_a": 2.6867264364221386,
+          "esr_max_ohm": 0.05598761194423475,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.5000000000000002e-07,
+          "share_frac": 0.24193548387096778,
+          "irms_a": 2.2863283409589417,
+          "ipk_a": 3.358408045527673,
+          "esr_max_ohm": 0.05598761194423475,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.5000000000000002e-07,
+          "share_frac": 0.24193548387096778,
+          "irms_a": 2.2863283409589417,
+          "ipk_a": 3.358408045527673,
+          "esr_max_ohm": 0.05598761194423475,
+          "v_rated_min_v": 100.0
+        }
+      ],
+      "max_part_irms_a": 2.2863283409589417,
+      "equal_parts": false
+    },
+    {
+      "values_nf": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        120
+      ],
+      "n_parts": 6,
+      "total_f": 6.2e-07,
+      "delta_frac": 0.0,
+      "external_trim_h": 9.2e-07,
+      "per_part": [
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.06718513433308171,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.06718513433308171,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.06718513433308171,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.06718513433308171,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.0000000000000001e-07,
+          "share_frac": 0.16129032258064518,
+          "irms_a": 1.524218893972628,
+          "ipk_a": 2.2389386970184484,
+          "esr_max_ohm": 0.06718513433308171,
+          "v_rated_min_v": 100.0
+        },
+        {
+          "c_f": 1.2000000000000002e-07,
+          "share_frac": 0.19354838709677422,
+          "irms_a": 1.8290626727671533,
+          "ipk_a": 2.6867264364221386,
+          "esr_max_ohm": 0.06718513433308171,
+          "v_rated_min_v": 100.0
+        }
+      ],
+      "max_part_irms_a": 1.8290626727671533,
+      "equal_parts": false
+    }
+  ],
+  "landing_shortlist_rule": "one row per part count: closest to the design capacitance, then the least ripple on any single part. The full enumeration is a tool run away, not a file.",
+  "recommended": {
+    "values_nf": [
+      150,
+      470
+    ],
+    "total_f": 6.2e-07,
+    "reason": "lands exactly on the design capacitance with the fewest parts, so the Lr trim target stays the nominal 0.92 uH external; the parts are unequal, so ripple divides 470:150 rather than equally, and the 470 nF part carries 7.16 A rms"
+  },
+  "equal_parts_option": {
+    "values_nf": [
+      150,
+      150,
+      150,
+      150
+    ],
+    "total_f": 6.000000000000001e-07,
+    "delta_frac": -0.03225806451612889,
+    "max_part_irms_a": 2.3625392856575727,
+    "reason": "one line item instead of two, at the cost of landing below the design capacitance and therefore moving the Lr trim inside the simulated window"
+  },
+  "checks": {
+    "deck_capacitance_matches_the_stress_run": true,
+    "deck_external_inductance_matches_the_tank_target": true,
+    "the_design_product_reproduces_the_tank_frequency": true,
+    "every_landing_is_inside_the_band": true,
+    "every_landing_keeps_fr_above_the_clock": true
+  },
+  "results": {
+    "c_band_f": [
+      5.74074074074074e-07,
+      6.2e-07
+    ],
+    "fr_without_retune_at_the_band_bottom_hz": 210056.51921232705,
+    "fr_untrimmed_with_a_nominal_1u0_part_hz": 194496.77704845092,
+    "every_landing_keeps_the_trim_inside_the_simulated_window": true,
+    "the_design_point_has_no_upward_capacitance_headroom": true,
+    "five_percent_parts_need_a_lower_nominal": true,
+    "ten_percent_parts_have_no_landing_in_the_band": true,
+    "the_100_a_point_is_only_simulated_at_the_design_capacitance": true,
+    "tank_impedance_ohm_at_design": 1.270001270001905,
+    "tank_impedance_ohm_at_band_bottom": 1.3716013716020574,
+    "tank_impedance_ratio_at_band_bottom": 1.08
+  },
+  "no_capacitor_datasheet_in_repository": true,
+  "caveats": [
+    "ripple divides in proportion to capacitance only while the parts are still capacitive at 200 kHz; above their self-resonance the split follows impedance, which is not modelled",
+    "bank ESR = part ESR / N ignores interconnect resistance; at 2-3 parts that is small but unmeasured",
+    "the 100 A operating point was simulated at 620 nF and 1.0 uH total only; a landing at 600 nF changes the tank gain at the fixed clock and needs its own run before it replaces the design point",
+    "self-heating, dV/dt rating and lifetime of the film parts are not modelled anywhere here",
+    "the capacitance band assumes the Lr trim window 0.875-1.0 uH external is the evidence window; a total inductance outside 1.0-1.08 uH has not been run at the 100 A point"
+  ]
+}

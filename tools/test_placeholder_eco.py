@@ -127,10 +127,18 @@ def test_the_resonant_capacitor_numbers_are_recomputed(by_ref):
     assert numbers["esr_ceiling_ohm"] == pytest.approx(cr["esr_ceiling_ohm"])
 
 
-def test_the_input_capacitor_requirement_is_the_bridge_current_not_the_cin_current(by_ref):
+def test_the_input_capacitor_requirement_is_the_bridge_current_at_the_worst_load(by_ref):
+    bank = source_json("cin_bank.json")["requirements"]
     cin = source_json("passive_requirements.json")["cin"]
     numbers = by_ref["Cin"]["requirement_numbers"]
-    assert numbers["bridge_ac_rms_a"] == pytest.approx(cin["bridge_ac_rms_a"])
+    # Sizing point is the worst measured load (the 120 A overload candidate), not
+    # the rated 100 A point, which stays visible as the second number.
+    assert numbers["bridge_ac_rms_a"] == pytest.approx(bank["bridge_ac_rms_a_at_worst_measured_load"])
+    assert numbers["bridge_ac_rms_a_at_100a"] == pytest.approx(bank["bridge_ac_rms_a_at_100a"])
+    assert numbers["bridge_ac_rms_a_at_100a"] == pytest.approx(cin["bridge_ac_rms_a"])
+    assert numbers["bridge_ac_rms_a"] > numbers["bridge_ac_rms_a_at_100a"]
+    assert numbers["ipri_peak_a"] == pytest.approx(bank["ipri_peak_a"])
+    # Still the bridge current, never the 0.227 A through Cin behind a 1 mohm source.
     assert numbers["bridge_ac_rms_a"] > 10 * cin["cin_rms_ac_a"]
 
 

@@ -844,7 +844,10 @@ def test_each_ref_this_board_leaves_out_is_named_with_its_own_reason():
     assert rows["Cin"]["category"] == "HELD_BACK"
     assert "20 uF" in rows["Cin"]["why"], rows["Cin"]["why"]
     assert "TO SELECT" in rows["Cin"]["why"]
-    assert "5.316" in rows["Cin"]["why"]        # passive_requirements.json:cin.bridge_ac_rms_a
+    # Both ends of the requirement: the 120 A overload point sizes the bank, and
+    # the rated 100 A figure stays named so the two cannot drift apart.
+    assert "6.3587" in rows["Cin"]["why"]        # cin_bank.json:requirements
+    assert "5.3157" in rows["Cin"]["why"]        # passive_requirements.json:cin.bridge_ac_rms_a
     assert "R3" not in excluded
 
     # Everything left really is control, drive or decoupling and may share one

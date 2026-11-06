@@ -792,16 +792,18 @@
       "ref": "Cin",
       "priority": "P0",
       "part_role": "48 V input capacitor bank",
-      "existing_value_or_rating": "48 V bus; >=5.32 A RMS at 200 kHz (bridge ripple); 13.9 A pulses",
+      "existing_value_or_rating": "48 V bus; >=6.36 A AC RMS at 200 kHz at the 120 A overload point (5.32 A at the rated 100 A); 15.6 A repetitive peak",
       "current_package": "-",
       "netlist_governance": "GOLDEN_NETLIST",
       "native_pin_review": "MAPPED",
       "native_pin_review_scope": "PIN_TO_PAD",
       "native_open_pins": [],
-      "requirement_source": "design/v3/bom/passive_requirements.json:cin",
-      "requirement": "bridge AC RMS 5.3157 A at 200 kHz (not the 0.227 A through Cin, whose source impedance is 1 mohm)",
+      "requirement_source": "design/v3/bom/cin_bank.json:requirements",
+      "requirement": "bridge AC RMS 6.3587 A at 200 kHz at the 120 A overload point (5.3157 A at the rated 100 A); 15.5928 A repetitive peak (not the 0.227 A through Cin, whose source impedance is 1 mohm)",
       "requirement_numbers": {
-        "bridge_ac_rms_a": 5.315705449035795
+        "bridge_ac_rms_a": 6.358744362056101,
+        "bridge_ac_rms_a_at_100a": 5.315705449035795,
+        "ipri_peak_a": 15.59279526345215
       },
       "untraced_reason": null,
       "blocked_on": "MANUFACTURER_EVIDENCE",

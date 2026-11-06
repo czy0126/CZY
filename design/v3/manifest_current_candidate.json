@@ -448,6 +448,20 @@
       "sha256": "12e9bb53460450b43f47aff9b2ea5cb6b810230da78012c49259dff04e364e5b"
     },
     {
+      "path": "tools/cr_bank.py",
+      "kind": "script",
+      "bytes": 17801,
+      "mtime": 1793922647.9707575,
+      "sha256": "be8d6931a5d0ac1bd8da9eabbf6c3daa24427329b59e438a11b46d8ed9713187"
+    },
+    {
+      "path": "tools/cin_bank.py",
+      "kind": "script",
+      "bytes": 15002,
+      "mtime": 1793923119.94633,
+      "sha256": "18a8dcc61a443e5357cc4574f513a25ae37316571d31c71919efb2c87eddf483"
+    },
+    {
       "path": "tools/cr_stress.py",
       "kind": "script",
       "bytes": 5314,
@@ -576,9 +590,9 @@
     {
       "path": "tools/current_manifest.py",
       "kind": "script",
-      "bytes": 52046,
-      "mtime": 1793823792.991605,
-      "sha256": "98eebe27cbe2b6fce037ac69afb77f31cc062b55ae4d1a42c79dbbfee535c151"
+      "bytes": 52387,
+      "mtime": 1793923165.2884436,
+      "sha256": "85428b95d4ec398b9e7bcf7720e594fc94ac53b8f08ce20c76ffe26c91b33c24"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
@@ -635,6 +649,20 @@
       "bytes": 2481,
       "mtime": 1793467295.0897992,
       "sha256": "25d4d94bb9f869a0bc4bd552437220cf4f292cee697b9db25eca663a5788d838"
+    },
+    {
+      "path": "tools/test_cr_bank.py",
+      "kind": "script",
+      "bytes": 8873,
+      "mtime": 1793922638.2237813,
+      "sha256": "3643f73ed30970fef282e86b0685284b9ff334443233cff0e67590013d56972c"
+    },
+    {
+      "path": "tools/test_cin_bank.py",
+      "kind": "script",
+      "bytes": 7782,
+      "mtime": 1793923076.552589,
+      "sha256": "e04d2357aad3699ae8d109c75e26df83722ace7b17be5385fdbd5e7ec505732e"
     },
     {
       "path": "tools/test_cr_stress.py",
@@ -1099,6 +1127,20 @@
       "sha256": "8de75f1cb3759b3b492c675adc9780616a9ef0623ab2e886942a1bb89b21fea0"
     },
     {
+      "path": "design/v3/bom/cr_bank.json",
+      "kind": "result",
+      "bytes": 11193,
+      "mtime": 1793922750.4016006,
+      "sha256": "6172097489b9e7cfacbde08fe73ce4427ecee98d237f8d4d218c75e664103fb6"
+    },
+    {
+      "path": "design/v3/bom/cin_bank.json",
+      "kind": "result",
+      "bytes": 10366,
+      "mtime": 1793923131.9076073,
+      "sha256": "5a57fe43b9681276b8f7a96c06c2c47c935096ba58bd3222ebd38bfe11eb6979"
+    },
+    {
       "path": "design/v3/bom/cr_stress.json",
       "kind": "result",
       "bytes": 651,
@@ -1143,9 +1185,9 @@
     {
       "path": "design/v3/bom/bom_draft.csv",
       "kind": "result",
-      "bytes": 7565,
-      "mtime": 1793848192.8450675,
-      "sha256": "280ca05322bfac21de15ed8a19ccd0512523d8c371898c806ff2ab38866cb573"
+      "bytes": 7619,
+      "mtime": 1793923392.0333822,
+      "sha256": "2ee38625cb5693bbde4a067a2b9dd933ef9a7dba0a5ec46884ea0af308dcfcca"
     },
     {
       "path": "design/v3/pcb/board_netlist.csv",
@@ -1556,9 +1598,9 @@
     {
       "path": "design/v3/bom/功率级元件需求与BOM草案_2026-11-01.md",
       "kind": "doc",
-      "bytes": 29425,
-      "mtime": 1793693284.324268,
-      "sha256": "1398fc130228dc79b67f274ff4379d82774497356c3c9c193d36a8240dbb48f6"
+      "bytes": 36953,
+      "mtime": 1793923401.1149697,
+      "sha256": "14f28db80d2a3eb28fbbff9dbb58d476fa2e31b2427c0546ed83863ef0e96cc3"
     },
     {
       "path": "design/v3/pcb/主功率板连接网表_2026-11-01.md",
@@ -2460,6 +2502,8 @@
     "python tools/passive_requirements.py --cin-raw sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.raw --json design/v3/bom/passive_requirements.json",
     "python tools/lr_design.py --json design/v3/bom/lr_design.json",
     "python tools/cout_bank.py --json design/v3/bom/cout_bank.json",
+    "python tools/cr_bank.py --json design/v3/bom/cr_bank.json",
+    "python tools/cin_bank.py --json design/v3/bom/cin_bank.json",
     "python tools/cr_stress.py --json design/v3/bom/cr_stress.json",
     "python tools/ct_design.py --json design/v3/bom/ct_design.json",
     "/d/ADI/LTspice/LTspice.exe -b -ascii sim/v3/sr_tank_dual_v33_ss_1ms_100a_ct10.cir",
