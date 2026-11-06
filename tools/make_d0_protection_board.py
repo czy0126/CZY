@@ -294,10 +294,19 @@ def rename_symbol(block: str, lib_id: str) -> str:
 
 
 def build_symbols() -> dict[str, str]:
+    # Offline generator uses native cached KiCad symbol blocks when CLI is
+    # unavailable; this checks source consistency, NOT fresh GUI ERC.
     symbols: dict[str, str] = {}
-    libs = symbol_libs()
+    cli = kicad_cli()
+    libs = symbol_libs() if cli is not None else None
+    source_schematic = OUT / "d0_protection.kicad_sch"
+    if libs is None and not source_schematic.is_file():
+        raise SystemExit("KiCad symbols unavailable: install KiCad or provide committed schematic")
     for lib_id, (lib, name) in STANDARD.items():
-        symbols[lib_id] = rename_symbol(extract_symbol(libs / lib, name), lib_id)
+        if libs is None:
+            symbols[lib_id] = extract_symbol(source_schematic, lib_id)
+        else:
+            symbols[lib_id] = rename_symbol(extract_symbol(libs / lib, name), lib_id)
     symbols["UCC27524:UCC27524ADR"] = custom_symbol(
         "UCC27524:UCC27524ADR",
         [Pin("1", "ENA", -8.89, 5.08, 0, "input"),
