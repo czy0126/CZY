@@ -46,6 +46,53 @@ def test_cout_rfq_does_not_promote_unverified_2p5v_ideal_esr():
         c["output_cap_bank_esr_budget_mohm"])
 
 
+def test_every_capacitor_rfq_quotes_the_sizing_point_not_the_rated_one():
+    """The RFQ asks suppliers for a rating; asking at the rated point understates it.
+
+    This file is the supplier ask, and it still quoted 52.48 / 5.32 / 9.45 A --
+    the rated 100 A points -- after ``cout_bank``, ``cin_bank`` and ``cr_bank``
+    had each moved to the 120 A overload.  Those three numbers are 6.8 %, 19.6 %
+    and 18.8 % low, so the ask has to follow the bank JSONs rather than the
+    rated-point artefacts they replaced.
+    """
+    _, rows = perf.build()
+    by_group = {r["group"]: r for r in rows}
+    cout = json.loads((perf.ROOT / "design/v3/bom/cout_bank.json")
+                      .read_text(encoding="utf-8"))["requirements"]
+    cin = json.loads((perf.ROOT / "design/v3/bom/cin_bank.json")
+                     .read_text(encoding="utf-8"))["requirements"]
+    cr = json.loads((perf.ROOT / "design/v3/bom/cr_bank.json")
+                    .read_text(encoding="utf-8"))["requirements"]
+    passive = json.loads((perf.ROOT / "design/v3/bom/passive_requirements.json")
+                         .read_text(encoding="utf-8"))
+    cases = [
+        ("Cout_bank_high_voltage", cout["irms_a"],
+         passive["cout_ripple"]["ripple_rms_a"]),
+        ("Cin_high_ripple", cin["bridge_ac_rms_a_at_worst_measured_load"],
+         cin["bridge_ac_rms_a_at_100a"]),
+        ("Cr_resonant_low_loss", cr["irms_a"],
+         cr["sizing_points"]["rated_100a"]["i_rms_a"]),
+    ]
+    for group, worst, rated in cases:
+        assert worst > rated, group
+        evidence = by_group[group]["evidence"]
+        assert f"{worst:.2f}A" in evidence, group
+        assert f"({rated:.2f}A at the rated 100A" in evidence, group
+
+
+def test_the_cout_rfq_ripple_reaches_the_bank_requirement():
+    j, rows = perf.build()
+    sizing = json.loads((perf.ROOT / "design/v3/bom/cout_bank.json")
+                        .read_text(encoding="utf-8"))["requirements"]["irms_a"]
+    c = j["capacitors"]
+    assert c["output_model_ripple_rms_a"] == pytest.approx(sizing, abs=1e-6)
+    assert c["output_model_ripple_rms_rated_a"] < c["output_model_ripple_rms_a"]
+    assert c["output_ripple_target_rms_a"] == pytest.approx(
+        sizing * perf.COUT_RIPPLE_MARGIN, abs=1e-6)
+    cout_row = next(r for r in rows if r["group"] == "Cout_bank_high_voltage")
+    assert f"{sizing * perf.COUT_RIPPLE_MARGIN:.2f}Arms" in cout_row["unlimited_cost_request"]
+
+
 def test_sr_observation_is_low_current_late_latch_not_safe_shutdown():
     p = perf.build()[0]["sr_protection"]
     assert p["48v_A_gates_high_at_end"] == ["1A", "2A", "3A", "4A"]

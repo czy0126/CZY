@@ -124,9 +124,36 @@ def test_per_part_current_follows_capacitance_not_the_part_count():
     # unequal parts split by capacitance: 470/620 carries three quarters of the ripple
     assert shares[470]["share_frac"] == pytest.approx(470 / 620, rel=1e-12)
     assert shares[150]["share_frac"] == pytest.approx(150 / 620, rel=1e-12)
-    # so the big part needs a 7.16 A rating, not the 4.73 A an equal-share guess gives
-    assert shares[470]["irms_a"] == pytest.approx(9.450157142630292 * 470 / 620, rel=1e-9)
-    assert shares[150]["irms_a"] == pytest.approx(9.450157142630292 * 150 / 620, rel=1e-9)
+    # so the big part needs an 8.51 A rating, not the 5.61 A an equal-share guess gives
+    assert shares[470]["irms_a"] == pytest.approx(11.222294795311669 * 470 / 620, rel=1e-9)
+    assert shares[150]["irms_a"] == pytest.approx(11.222294795311669 * 150 / 620, rel=1e-9)
+
+
+def test_the_requirement_is_the_worst_measured_load_not_the_rated_one():
+    """The 120 A overload run is in the evidence set, so it sets the requirement.
+
+    The 100 A point is the one the tank was designed at and the one the band is
+    built around, but it is not the worst ripple or the worst ESR headroom that
+    has actually been run.  Sizing on it would let a bank through that dissipates
+    twice its 1 W budget at 120 A.
+    """
+    data = report()
+    req = data["requirements"]
+    points = req["sizing_points"]
+    assert set(points) == {"rated_100a", "overload_120a"}
+    assert req["sized_at"] == points["overload_120a"]["source"]
+    assert points["rated_100a"]["source"] == "design/v3/bom/cr_stress.json"
+    assert req["irms_a"] == pytest.approx(points["overload_120a"]["i_rms_a"])
+    assert req["irms_a"] > points["rated_100a"]["i_rms_a"]
+    assert req["v_max_v"] == pytest.approx(points["overload_120a"]["v_max_v"])
+    # the ESR ceiling is the number that decides how many parts the bank takes,
+    # and it is the one that moves most: 11.2 -> 7.94 mohm
+    assert req["esr_ceiling_ohm"] == pytest.approx(points["overload_120a"]["esr_ceiling_ohm"])
+    assert req["esr_ceiling_ohm"] < points["rated_100a"]["esr_ceiling_ohm"]
+    assert data["checks"]["the_requirement_is_the_worst_measured_load"] is True
+    # p_allow_w * 1 W / i_rms^2 is exactly what the ceiling is
+    assert req["esr_ceiling_ohm"] == pytest.approx(
+        req["p_allow_w"] / req["irms_a"] ** 2, rel=1e-12)
 
 
 def test_equal_parts_share_equally_and_land_below_target():
@@ -191,5 +218,8 @@ def test_the_physical_results_are_not_in_the_checks_block():
         "the_design_product_reproduces_the_tank_frequency",
         "every_landing_is_inside_the_band",
         "every_landing_keeps_fr_above_the_clock",
+        # structural: the scalar requirement must be the max of the published
+        # sizing points, so a new run cannot leave the keys quoting the old one
+        "the_requirement_is_the_worst_measured_load",
     }
     assert "c_band_f" in data["results"]

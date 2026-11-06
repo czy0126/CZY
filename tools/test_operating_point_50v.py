@@ -19,6 +19,8 @@ from pathlib import Path
 
 import pytest
 
+import steady_stress
+
 ROOT = Path(__file__).resolve().parent.parent
 PP = ROOT / "design/v3/power_priority"
 MOTHER = ROOT / "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.cir"
@@ -90,14 +92,32 @@ def test_the_oc_pin_is_below_the_trip_and_above_zero(key: str):
 
 
 @pytest.mark.parametrize("key", CASES)
-def test_the_cout_ripple_is_rebuilt_with_a_checked_mean(key: str):
+def test_the_cout_ripple_states_how_it_was_obtained(key: str):
+    """These two decks save I(Cout); the 100 A deck does not.
+
+    ``Cout`` is one lumped element in the model, so the saved trace *is* the whole
+    bank current and the pair-2/3 symmetry assumption drops out of the number.
+    The four-SR ×2 reconstruction stays published beside it because the current
+    peaks still rest on that assumption -- it reads 1.1-1.2 % high, which is the
+    price of the ×2 and not a second measurement.
+    """
     c = load(CASES[key]["stress"])["cout_ripple"]
-    assert "symmetric" in c["reconstruction"]
     assert c["ripple_rms_a"] > 0.0
     assert c["ripple_pk_a"] >= c["ripple_rms_a"]
-    # The reconstruction only carries the four SR currents; the CT burden is
-    # missing from it.  A large mean error means the sign or the x2 is wrong,
-    # not that the capacitor behaves differently.
+    assert c["reconstruction"] in {steady_stress.MEASURED_COUT,
+                                   steady_stress.RECONSTRUCTED_FROM_SR}
+    if c["reconstruction"] == steady_stress.MEASURED_COUT:
+        # KCL: in steady state the capacitor carries no DC, so its own mean is
+        # the check that the probe is on the bank and not on a load branch.
+        assert abs(c["cap_mean_a"]) < 0.005 * c["load_mean_a"]
+        # The reconstruction is biased high by the ×2, never low; a few percent
+        # is the whole expected gap, so a sign error still fails here.
+        ratio = c["ripple_rms_reconstructed_a"] / c["ripple_rms_a"]
+        assert 1.0 < ratio < 1.03
+        assert c["ripple_pk_reconstructed_a"] > c["ripple_pk_a"]
+    # ``mean_check_pct`` belongs to the reconstruction branch (the one the current
+    # peaks still use): it only carries the four SR currents, so a large error
+    # means the sign or the ×2 is wrong, not that the capacitor behaves differently.
     assert abs(c["mean_check_pct"]) < 0.5
 
 

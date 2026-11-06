@@ -417,7 +417,8 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   四组同相驱动，纹波电流相加：100 A 点为 52.48 A RMS，不是交错后的 √4×单组。
 - 输入侧同理但结论相反：`sim/v3/..._100a_cin.cir`（只在 `.save` 末尾加 `I(Cin) I(Rin)`）
   实测 I(Cin) 交流 RMS 仅 **0.227 A**，因为模型电源是 48 V 串 1 mΩ，而 20 µF 在 200 kHz 是 40 mΩ
-  ——纹波走电源不走电容。**这个 0.227 A 不能当选型依据**；选型用半桥输入电流交流 RMS **5.316 A**
+  ——纹波走电源不走电容。**这个 0.227 A 不能当选型依据**；选型用半桥输入电流交流 RMS
+  **6.36 A（120 A 过载点；额定 100 A 点是 5.316 A，低 19.6 %）**
   （KCL `I(Rin) − I(Cin)`，RMS 6.746 A）。校验：I_bridge 在 47.6 % 采样点等于 I(Lr)、48.9 % 上为 0，
   且 RMS ≈ √D·Ipri_rms。任何"输入电容纹波"数字先问一句：源阻抗是多少。
 - `|I(Lr)|` 的稳态峰值 13.88 A **不是** Lr 的电流规格：冷启动 36.07 A、短路 65 A（OC 13 µs）/
@@ -498,6 +499,34 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   ESR 要 15 只；按容量算会少买 6 只，整组 ESR 变 0.33 mΩ。`bank ESR = 单只/N` 只对电容本体成立，
   不含铺铜分布电阻。**0.2 mΩ 是模型 `Rser` 的值，不是规格**——项目没有 Vout 纹波上限定义，
   取 0.1 mΩ 数量翻倍到 30 只。见 `tools/cout_bank.py`。
+- **Cout 的 RMS 选型点也是 120 A 过载点（56.06 A），不是额定点的 52.48 A**（2026-11-06，与 Cin/Cr
+  同一类缺陷的第四例）。三个点并列公布：额定 100 A **52.4783 A**、48 V/120 A **55.5808 A**、
+  50 V/120 A **56.0619 A**，标量键取最大者。**三个点不是同一种测量**：两条 120 A 的 `_cin` deck
+  的 `.save` 块带 `I(Cout)`，而模型里输出电容是一只集总元件，所以那条波形就是整组电流（**实测**）；
+  100 A 的 59 变量 raw 没有这个探针，只能由四路 SR 电流按 pair 2/3 对称 ×2 **重建**，实测比重建
+  低 1.11–1.30 %。`_sizing_point()` 每个点带 `method`，`METHOD_OFFSET_SAFETY = 5.0` 要求"赢家超过
+  额定点的幅度 > 5× 方法偏差"——实际 6.83 % 对 1.30 %（5.26 倍），且偏差偏向输家，所以排序保守。
+  **15 只 ESR 银行不动**（0.2/3 mΩ 恒 15，容量 9、RMS 5），只有 Chemi-Con 那款的 `counts.rms` 从 9
+  变 10。**四个点不是一条曲线**：100 A 探针 deck 是 `LR_TOTAL=.92u` / 4 mF，110/120 A 是 `1u` /
+  7.05 mF，点间差异混了负载、腔与容值——48 V/110 A 实测 51.34 A 反而**低于**额定点的重建 52.48 A，
+  不要按电流插值。**文档里由同一电流导出的两格必须满足 `I_rms²·R_esr`**：110 A 记录的 Cout ESR
+  0.527 W 只与 51.34 A 相容，据此抓出原先 52.08 A 那格从没重算过（52.08²×0.2 mΩ = 0.543 W）；
+  47.41 A 与 52.08 A 在仓库里都**没有生成它们的工件**，是手抄链。**RMS 必须梯形时间加权**，
+  按采样点 `mean(x²)` 会因为边沿堆采样读高约 6.2 %。`stress_*.json` 必须与它自己的 ledger 用同一
+  窗口（`steady_stress.stress_block` 在头里有 `I(Cout)` 时改走实测分支，并把重建值留在旁边）；
+  `passive_requirements.py` 不带 `--cin-raw` 时**不产出 `cin` 块**，别把旧块当当前值。
+- **选型点改完之后，对外工件会继续引用旧数，因为它把要求抄成了字面量**：`performance_first_component_rfq.csv`
+  三行（Cout/Cin/Cr）在三个 bank 都搬到 120 A 过载点之后仍写着 52.48 / 5.32 / 9.45 A
+  （低 6.8 % / 19.6 % / 18.8 %），Cout 那行的采购目标也因此停在 `>=78.72Arms`。现在三行都从
+  `cout_bank`/`cin_bank`/`cr_bank` 的 `requirements` 取值，标量旁保留额定点作对照；
+  `d1_delivery_tasks.csv` 的 `PERF-02` 验收数由 `test_the_performance_first_ripple_target_is_the_one_the_rfq_quotes`
+  与 RFQ 行绑在同一算式上（两边都不许再写死）。**教训是"改一个要求要顺着每个复述它的工件走"**——
+  工具的注记说得再清楚，供应商看到的仍是 CSV。
+- **`mean_check_pct` 属于重建分支，即使主值已经是实测**：`steady_stress.stress_block()` 在有
+  `I(Cout)` 时把 `ripple_rms_a` 换成实测、把四路 ×2 重建留在 `ripple_rms_reconstructed_a`，
+  但 `mean_check_pct`（`idc` 对 `avg(Vout)/RL`）仍然描述**重建**那一路，因为电流峰值还在用它；
+  实测分支自己的 KCL 检查是 `cap_mean_a`（稳态电容不承担直流）。50 V 两个点实测
+  1.11–1.21 % 高于重建，比值落在 (1, 1.03) 内，方向反过来就是 ×2 符号错。
 - **Cr 是带，不是"≥0.62 µF"，而且卡住它的不是时钟而是 Lr 窗口**：腔必须工作在谐振点以下
   （M≈1.9），所以 `fr = 1/(2π√(L·C))` 要高于 200.622 kHz，而设计点 1.0 µH×620 nF 只给出
   **202.127 kHz（0.75 %，折合电容 1.5 %）**。只按时钟算的上限是 **629.3 nF**，更紧的是
@@ -515,6 +544,29 @@ JSON/Markdown 本身是 UTF-8，不受影响，只有 `print` 会炸——而炸
   低于带底 ⇒ ±10 % 件根本无法满足配平规则**（仓里那句"±10 % 摆幅吃得下"说的是耐压，不是频率）。
   **仓库里没有电容数据手册**，所以每只件的 RMS/ESR 都是**要求**不是选型，JSON 不写 MPN
   （`no_capacitor_datasheet_in_repository: true`）。见 `tools/cr_bank.py` 与 BOM 草案 §3.2.1。
+- **Cr 的 ESR 上限按 120 A 过载点算，不是 100 A 额定点**（2026-11-06，与 Cin 同一类缺陷）：
+  `cr_bank.json:requirements` 现在同时公布 `sizing_points.rated_100a` 与 `.overload_120a`
+  （两者都是实测 raw：`design/v3/bom/cr_stress.json` 与 `design/v3/power_priority/cr_stress_48v_120a.json`），
+  标量键取 `i_rms_a` 较大的那个：**11.2223 A / 44.4442 V / 7.9403 mΩ** 对 **9.4502 / 41.3586 / 11.1975**
+  （+18.8 % / +7.5 % / −29 %）。决定并联只数的是 ESR，按 100 A 买会在过载点自热约 **2 倍**预算。
+  **per-part 电流按容值比例跟着放大**：470 nF 那件 7.16 → **8.51 A**，"单件压到 3.4 A 以下"的门槛
+  因此从四件挪到 **五件**；两件均分的**错读是 5.61 A**（11.22/2），旧文档写的 4.73 A 连口径都错了。
+  上电检查表的 **S0-10 改读 `cr_bank`**（`cr_esr`），S4 的 Cr 峰值/RMS 两行仍引 `cr_stress.json`
+  ——那一行本来就写着"100 A 时"。结构检查 `the_requirement_is_the_worst_measured_load`
+  要求标量键等于 `sizing_points` 里的最大值，新跑一个点不会悄悄留下旧数。
+  **这一类到此闭合**（2026-11-06）：`cout_bank.py` 的 `irms_a` 早就是 120 A 的
+  **56.0619 A**（50 V 过载点实测），`rated_100a` 只作对照；两条 120 A 的 `_cin` deck 本身就
+  存了 `I(Cout)`，所以**不需要**再拿 pair1/pair4 重做 KCL 重建（只有 100 A 的 59 变量 raw 缺探针）。
+  本文件曾写"还剩一处没搬，120 A 值仓库里还没有"——那是把对照值当成了标量键，**读标量键之前先看
+  `sizing_points`**。**Lr 是最后搬的一处**（2026-11-06）：`lr_design.py` 拆成
+  `IRMS_RATED_A = 9.450157` / `IRMS_A = 11.222295`，`loss_w` 改为 120 A 过载点
+  （3 匝 **0.3150 W**），`loss_w_at_rated_100a` 并排放在旁边（0.2234 W，低 1.41 倍）；
+  `report()` 带 `copper_loss_basis` 块，控制台印 `loss@120A=`。两个数都是**同一个电流**
+  在 Lr 与 Cr 里流过，`test_the_copper_loss_current_is_the_one_the_cr_bank_quotes` 拿
+  `cr_bank.json` 逐值回查，漂了就是一次静默的 1.41 倍。**对外工件同样要跟着走**：
+  `hardware/dcx_main/rfq/Lr.md` 原先只印 `铜损（3 匝） 0.2234 W`，现在是
+  `铜损（3 匝，120 A 过载点）` 与 `铜损（3 匝，额定 100 A 点）` 两行
+  （`test_the_inductor_copper_loss_is_quoted_at_the_overload_point` 锁住）。
 - **Cin 的选型点是 120 A 的 6.36 A，不是 BOM 行里的 5.32 A，而电容值根本不是约束**：六个 `_cin`
   探针 deck 的 `Cin` 行逐字节相同（`Cin vin 0 20u Rser=5m`），所以半桥输入电流可以直接比：
   48 V/100 A **5.3157 A**（额定点，与 `passive_requirements.json` 的 `cin.bridge_ac_rms_a` 逐位相同）、
@@ -1344,7 +1396,9 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 对外工件、不是设计包的一部分。
 
 - **没有数据的字段写 `UNKNOWN` 并在该单第 11 节重列，不许填一个看起来合理的值**；
-  当前 37 处，其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
+  处数由工具自己数（`main()` 扫全部 section 的 `value`，`--write` 末尾印出来；现在 **50 处**），
+  **不要手抄成一个常量**——本文件曾写"37 处"，那 13 处差额全是后来加的 UNKNOWN 行。
+  其中 CT 的完整高度、三件的环境温度、全部物理端子图与焊盘号都是它。
 - **高度限值从 `d1_staged_target_policy.json` 读，不许再写死**：本工具原先把
   `HEIGHT_LIMIT_MM = 10.0` 印在每张单上，而 policy（2026-11-04）把 D1 定为 16 mm、
   D2 16 mm、D3 10 mm，并把 D1 的首选磁芯直接写成 `ELP38_I38`。T1–T4 与 Lr 现在同时

@@ -22,6 +22,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ascii_raw_window import read_window
 from magnetics_design import OP_100
+from steady_stress import RECONSTRUCTED_FROM_SR
 
 RAW = "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw"
 SR_CURRENTS = ["I(VSa1)", "I(VSb1)", "I(VSa4)", "I(VSb4)"]
@@ -32,7 +33,12 @@ def trapezoid_mean(y: np.ndarray, t: np.ndarray) -> float:
 
 
 def capacitor_ripple(t: np.ndarray, secondary_total: np.ndarray) -> dict[str, float]:
-    """Split the summed secondary current into DC load and capacitor current."""
+    """Split the summed secondary current into DC load and capacitor current.
+
+    The 100 A deck does not save ``I(Cout)``, so this number is a reconstruction
+    and says so: the same label the overload records carry when their own deck
+    saves the trace and the label is replaced by the measured one.
+    """
     idc = trapezoid_mean(secondary_total, t)
     icap = secondary_total - idc
     return {
@@ -40,6 +46,7 @@ def capacitor_ripple(t: np.ndarray, secondary_total: np.ndarray) -> dict[str, fl
         "ripple_rms_a": float(np.sqrt(trapezoid_mean(icap * icap, t))),
         "secondary_pp_a": float(secondary_total.max() - secondary_total.min()),
         "ripple_pk_a": float(np.abs(icap).max()),
+        "reconstruction": RECONSTRUCTED_FROM_SR,
     }
 
 

@@ -66,7 +66,12 @@ CLOCK_KHZ = 200.622        # measured switching frequency of the 100 A deck
 MEAN_TURN_M = 0.060        # same ELP32 mean turn as the transformers
 FOIL_W_M = 0.018
 FOIL_T_M = 0.1e-3
-IRMS_A = 9.45014
+# Tank current RMS, from ``design/v3/bom/cr_bank.json`` -- the same current flows
+# through Lr and Cr.  The headline value is the 120 A overload point because that is
+# the worst measured load in the evidence set; foil loss goes as I^2, so quoting the
+# rated 100 A point would understate it by 1.41x.
+IRMS_RATED_A = 9.450157
+IRMS_A = 11.222295
 
 
 def peak_flux_t(inductance_h: float, current_a: float, turns: int, ae_m2: float) -> float:
@@ -136,6 +141,7 @@ def candidate(inductance_h: float, turns: int, frequency_hz: float = 200.622e3) 
     limit = SATURATION_MARGIN * bsat
     isat = saturation_current_a(inductance_h, turns, ae, bsat)
     wind = winding_loss(turns, frequency_hz, IRMS_A)
+    wind_rated = winding_loss(turns, frequency_hz, IRMS_RATED_A)
     return {
         "turns": turns,
         "gap_mm": gap * 1e3,
@@ -146,6 +152,7 @@ def candidate(inductance_h: float, turns: int, frequency_hz: float = 200.622e3) 
         "passes_fast_oc": flux["fault_fast_oc_13us"] <= limit,
         "passes_slow_oc": flux["fault_slow_oc_51us"] <= limit,
         **wind,
+        "loss_w_at_rated_100a": wind_rated["loss_w"],
     }
 
 
@@ -270,6 +277,14 @@ def report(inductance_h: float = LR_TARGET_H) -> dict[str, object]:
                     "on the first article; the 1.0 uH sizing value above is the conservative "
                     "top of that window, not the value to wind.",
         },
+        "copper_loss_basis": {
+            "current_a": IRMS_A,
+            "at": "120 A overload point (tank current RMS, from cr_bank.json)",
+            "rated_100a_a": IRMS_RATED_A,
+            "note": "foil loss is I_rms^2 * R_ac.  loss_w is quoted at the overload because "
+                    "that is the worst measured load; loss_w_at_rated_100a sits beside it "
+                    "because I^2 makes the rated point read 1.41x low",
+        },
         "candidates": rows,
         "catalogue_cores": catalogue_core_design(inductance_h),
         "min_turns_fast_oc": None if not fast else fast[0]["turns"],
@@ -292,7 +307,7 @@ def main() -> None:
         print(f"N={row['turns']} gap={row['gap_mm']:.3f} mm  "
               f"B(65A)={row['flux_t']['fault_fast_oc_13us']:.3f} T  "
               f"B(74A)={row['flux_t']['fault_slow_oc_51us']:.3f} T  "
-              f"Isat={row['isat_a']:.1f} A  loss={row['loss_w']:.3f} W  "
+              f"Isat={row['isat_a']:.1f} A  loss@120A={row['loss_w']:.3f} W  "
               f"13us={'PASS' if row['passes_fast_oc'] else 'fail'} "
               f"51us={'PASS' if row['passes_slow_oc'] else 'fail'}")
     print(f"min turns from the measured physical peaks: {data['physical_peaks']['min_turns_all']}")

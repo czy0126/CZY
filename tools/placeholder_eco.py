@@ -119,7 +119,7 @@ def _sources() -> dict[str, dict]:
     mag = _json(MAG)
     ct = _json(BOM / "ct_design.json")
     cout = _json(BOM / "cout_bank.json")
-    cr = _json(BOM / "cr_stress.json")
+    crb = _json(BOM / "cr_bank.json")["requirements"]
     cin = _json(BOM / "cin_bank.json")
     burden = _json(BOM / "oc_burden_pulse.json")
 
@@ -181,11 +181,14 @@ def _sources() -> dict[str, dict]:
                       f"esr {bank['counts']['esr']})"),
             "numbers": {"n": bank["n"], "esr_ohm": bank["bank_esr_ohm"]}},
         "resonant capacitor": {
-            "source": "design/v3/bom/cr_stress.json",
-            "value": (f"{cr['capacitance_f'] * 1e6:.2f} uF, v_max {cr['v_max_v']:.2f} V, "
-                      f"{cr['i_rms_a']:.2f} A RMS, bank ESR <= {cr['esr_ceiling_ohm'] * 1e3:.2f} mohm"),
-            "numbers": {"capacitance_f": cr["capacitance_f"], "v_max_v": cr["v_max_v"],
-                        "esr_ceiling_ohm": cr["esr_ceiling_ohm"]}},
+            "source": "design/v3/bom/cr_bank.json:requirements",
+            "value": (f"{crb['capacitance_f'] * 1e6:.2f} uF, v_max {crb['v_max_v']:.2f} V at the 120 A "
+                      f"overload point ({crb['sizing_points']['rated_100a']['v_max_v']:.2f} V at the rated "
+                      f"100 A), {crb['irms_a']:.2f} A RMS ({crb['sizing_points']['rated_100a']['i_rms_a']:.2f} A "
+                      f"at 100 A), bank ESR <= {crb['esr_ceiling_ohm'] * 1e3:.2f} mohm "
+                      f"({crb['sizing_points']['rated_100a']['esr_ceiling_ohm'] * 1e3:.2f} mohm at 100 A)"),
+            "numbers": {"capacitance_f": crb["capacitance_f"], "v_max_v": crb["v_max_v"],
+                        "esr_ceiling_ohm": crb["esr_ceiling_ohm"]}},
         "48 V input capacitor bank": {
             "source": "design/v3/bom/cin_bank.json:requirements",
             "value": (f"bridge AC RMS {cin['requirements']['bridge_ac_rms_a_at_worst_measured_load']:.4f} A "

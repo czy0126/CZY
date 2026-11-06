@@ -56,6 +56,12 @@
     "clock_khz": 200.622,
     "note": "the deck's LR_TOTAL is the external part; add the leakage to get the tank total.  Trim the external part to LR_TOTAL_H - measured leakage on the first article; the 1.0 uH sizing value above is the conservative top of that window, not the value to wind."
   },
+  "copper_loss_basis": {
+    "current_a": 11.222295,
+    "at": "120 A overload point (tank current RMS, from cr_bank.json)",
+    "rated_100a_a": 9.450157,
+    "note": "foil loss is I_rms^2 * R_ac.  loss_w is quoted at the overload because that is the worst measured load; loss_w_at_rated_100a sits beside it because I^2 makes the rated point read 1.41x low"
+  },
   "candidates": [
     {
       "turns": 1,
@@ -74,7 +80,8 @@
       "r_dc_ohm": 0.0007423333333333333,
       "fr": 1.0111891416021934,
       "r_ac_ohm": 0.0007506394061160283,
-      "loss_w": 0.06703596177125772
+      "loss_w": 0.09453545554582064,
+      "loss_w_at_rated_100a": 0.0670362029554889
     },
     {
       "turns": 2,
@@ -93,7 +100,8 @@
       "r_dc_ohm": 0.0014846666666666667,
       "fr": 1.0531357950317657,
       "r_ac_ohm": 0.0015635556103571614,
-      "loss_w": 0.13963356209271108
+      "loss_w": 0.1969140451353953,
+      "loss_w_at_rated_100a": 0.13963406447102314
     },
     {
       "turns": 3,
@@ -112,7 +120,8 @@
       "r_dc_ohm": 0.002227,
       "fr": 1.1230468840810528,
       "r_ac_ohm": 0.0025010254108485046,
-      "loss_w": 0.22335443951455575
+      "loss_w": 0.3149789028124779,
+      "loss_w_at_rated_100a": 0.223355243106648
     },
     {
       "turns": 4,
@@ -131,7 +140,8 @@
       "r_dc_ohm": 0.0029693333333333334,
       "fr": 1.2209224087500548,
       "r_ac_ohm": 0.0036253256057151625,
-      "loss_w": 0.3237602325869874
+      "loss_w": 0.45657316262082254,
+      "loss_w_at_rated_100a": 0.32376139742240884
     }
   ],
   "catalogue_cores": {

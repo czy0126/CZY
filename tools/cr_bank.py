@@ -36,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 REPO = Path(__file__).resolve().parent.parent
 DECK = REPO / "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir"
 CR_STRESS = REPO / "design/v3/bom/cr_stress.json"
+CR_STRESS_OVERLOAD = REPO / "design/v3/power_priority/cr_stress_48v_120a.json"
 LR_DESIGN = REPO / "design/v3/bom/lr_design.json"
 
 # E12 capacitance values that film capacitors are actually sold in, in nF.
@@ -160,20 +161,46 @@ def band_landings(tuning_data: dict[str, object], values_nf: tuple[int, ...], ma
     return landings
 
 
-def default_requirements() -> dict[str, float]:
-    """The electrical envelope the 100 A point puts on the bank."""
-    stress = json.loads(CR_STRESS.read_text(encoding="utf-8"))
-    tank = json.loads(LR_DESIGN.read_text(encoding="utf-8"))["tank"]
+def _sizing_point(path: Path) -> dict[str, object]:
+    """The four bank-level stresses one operating point puts on the resonant capacitor."""
+    stress = json.loads(path.read_text(encoding="utf-8"))
     return {
-        "capacitance_f": stress["capacitance_f"],
-        "v_rated_v": stress["v_rated_v"],
+        "source": str(path.relative_to(REPO)).replace("\\", "/"),
+        "raw": stress["raw"],
+        "i_rms_a": stress["i_rms_a"],
+        "i_pk_a": stress["i_pk_a"],
         "v_max_v": stress["v_max_v"],
         "rating_margin": stress["rating_margin"],
-        "irms_a": stress["i_rms_a"],
-        "i_pk_a": stress["i_pk_a"],
         "esr_ceiling_ohm": stress["esr_ceiling_ohm"],
-        "p_allow_w": stress["p_allow_w"],
+    }
+
+
+def default_requirements() -> dict[str, object]:
+    """The electrical envelope the worst measured load puts on the bank.
+
+    The rated 100 A point is the one the tank was designed at, but it is not the
+    worst one that has been run: the 48 V/120 A overload candidate is in the
+    evidence set and puts 18.8 % more ripple through `Cr`, which tightens the
+    self-heating ESR ceiling by 29 %.  Sizing on the 100 A figure would size the
+    bank 41 % too loose on the number that decides how many parts it takes.  Both
+    points are published so neither can be quoted as if it were the other.
+    """
+    rated = _sizing_point(CR_STRESS)
+    overload = _sizing_point(CR_STRESS_OVERLOAD)
+    worst = max((rated, overload), key=lambda point: point["i_rms_a"])
+    tank = json.loads(LR_DESIGN.read_text(encoding="utf-8"))["tank"]
+    return {
+        "capacitance_f": json.loads(CR_STRESS.read_text(encoding="utf-8"))["capacitance_f"],
+        "v_rated_v": json.loads(CR_STRESS_OVERLOAD.read_text(encoding="utf-8"))["v_rated_v"],
+        "v_max_v": worst["v_max_v"],
+        "rating_margin": worst["rating_margin"],
+        "irms_a": worst["i_rms_a"],
+        "i_pk_a": worst["i_pk_a"],
+        "esr_ceiling_ohm": worst["esr_ceiling_ohm"],
+        "p_allow_w": json.loads(CR_STRESS.read_text(encoding="utf-8"))["p_allow_w"],
         "leakage_model_h": tank["leakage_model_h"],
+        "sized_at": worst["source"],
+        "sizing_points": {"rated_100a": rated, "overload_120a": overload},
     }
 
 
@@ -245,6 +272,7 @@ def report() -> dict[str, object]:
                   "figure is a requirement, not a selected part",
         "sources": {"deck": str(DECK.relative_to(REPO)).replace("\\", "/"),
                     "cr_stress": str(CR_STRESS.relative_to(REPO)).replace("\\", "/"),
+                    "cr_stress_overload": str(CR_STRESS_OVERLOAD.relative_to(REPO)).replace("\\", "/"),
                     "lr_design": str(LR_DESIGN.relative_to(REPO)).replace("\\", "/")},
         "requirements": requirements,
         "tuning": {
@@ -269,9 +297,12 @@ def report() -> dict[str, object]:
         "recommended": {
             "values_nf": all_landings[0]["values_nf"],
             "total_f": all_landings[0]["total_f"],
+            "max_part_irms_a": all_landings[0]["max_part_irms_a"],
             "reason": "lands exactly on the design capacitance with the fewest parts, so the Lr trim target "
-                      "stays the nominal 0.92 uH external; the parts are unequal, so ripple divides 470:150 "
-                      "rather than equally, and the 470 nF part carries 7.16 A rms",
+                      "stays the nominal 0.92 uH external; the parts are unequal, so ripple divides in "
+                      "proportion to capacitance rather than equally, and the "
+                      f"{max(all_landings[0]['per_part'], key=lambda part: part['irms_a'])['c_f'] * 1e9:.0f} nF "
+                      f"part carries {all_landings[0]['max_part_irms_a']:.2f} A rms",
         },
         "equal_parts_option": {
             "values_nf": equal_option["values_nf"],
@@ -288,6 +319,11 @@ def report() -> dict[str, object]:
                 abs(params["LR_TOTAL"] - lr["tank"]["external_target_h"]) < 1e-18,
             "the_design_product_reproduces_the_tank_frequency":
                 abs(1.0 / (2.0 * math.pi * math.sqrt(data["lc_product_s2"])) - data["resonant_hz"]) < 1.0,
+            # structural, not physical: the requirement block must be the worst measured
+            # point, so a new run added to `sizing_points` cannot leave the scalar keys
+            # quoting the rated one
+            "the_requirement_is_the_worst_measured_load": requirements["irms_a"] == max(
+                point["i_rms_a"] for point in requirements["sizing_points"].values()),
             "every_landing_is_inside_the_band": all(
                 data["c_min_f"] - 1e-15 <= landing["total_f"] <= data["c_max_f"] + 1e-15
                 for landing in all_landings),

@@ -6,12 +6,15 @@ the tests pin that identity and the two OC-delay cases that it decides.
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
 import pytest
 
 from lr_design import (
+    IRMS_A,
+    IRMS_RATED_A,
     LK_MODEL_H,
     LR_TARGET_H,
     LR_TOTAL_H,
@@ -110,6 +113,27 @@ def test_winding_loss_scales_with_current_squared():
     doubled = winding_loss(2, 200.622e3, 2 * 9.45014)
     assert abs(doubled["loss_w"] - 4.0 * base["loss_w"]) < 1e-9
     assert base["loss_w"] < 0.447   # the deck's lumped 5 mohm Rser is conservative
+
+
+def test_the_quoted_copper_loss_is_the_overload_point_not_the_rating():
+    """The same sizing-point defect as Cout/Cin/Cr: the headline loss was computed
+    at the rated 100 A tank current while the 120 A overload candidate is already in
+    the evidence set.  Loss goes as I^2, so the rating understates it by 1.41x."""
+    row = candidate(1.0e-6, 3)
+    assert row["loss_w"] == pytest.approx(IRMS_A ** 2 * row["r_ac_ohm"], rel=1e-12)
+    assert row["loss_w_at_rated_100a"] == pytest.approx(
+        IRMS_RATED_A ** 2 * row["r_ac_ohm"], rel=1e-12)
+    assert row["loss_w"] > 1.40 * row["loss_w_at_rated_100a"]
+
+
+def test_the_copper_loss_current_is_the_one_the_cr_bank_quotes():
+    """Structural invariant: the Lr tank current and the Cr current are the same
+    current.  A literal here that drifts from ``cr_bank.json`` is a silent 1.41x."""
+    cr = json.loads((Path(__file__).resolve().parent.parent
+                     / "design/v3/bom/cr_bank.json").read_text(encoding="utf-8"))
+    assert IRMS_A == pytest.approx(cr["requirements"]["irms_a"], rel=1e-6)
+    assert IRMS_RATED_A == pytest.approx(
+        cr["requirements"]["sizing_points"]["rated_100a"]["i_rms_a"], rel=1e-6)
 
 
 # --- the measured physical peaks decide the turn count ---------------------

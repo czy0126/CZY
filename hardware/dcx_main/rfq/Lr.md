@@ -63,7 +63,8 @@
 
 | 项目 | 值 | 出处 |
 |---|---|---|
-| 铜损（3 匝） | 0.2234 W | lr_design.json:candidates[3 匝].loss_w = Irms^2 * R_ac |
+| 铜损（3 匝，120 A 过载点） | 0.3150 W | lr_design.json:candidates[3 匝].loss_w = Irms^2 * R_ac，其中 Irms 取 120 A 过载点的 11.2223 A（与 Cr 同一个电流） |
+| 铜损（3 匝，额定 100 A 点） | 0.2234 W | lr_design.json:candidates[3 匝].loss_w_at_rated_100a（9.4502 A RMS；I^2 使额定点比过载点低 1.41 倍） |
 | 磁芯损耗 | UNKNOWN | lr_design.json 只算铜损；Lr 的磁芯损耗未建模 |
 | 口径 | Dowell 一维模型，含邻近效应；不是量热值 | lr_design.json |
 

@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
+
+import performance_first_design as perf
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS = ROOT / "hardware/dcx_main/d1_delivery_tasks.csv"
@@ -73,3 +76,22 @@ def test_performance_first_not_fab_release_depends_on_high_margin_hardware():
         assert lookup[key]["status"] in {"blocked", "in_progress"}
         assert lookup[key]["acceptance"]
     assert lookup["THERM-01"]["status"] == "deferred"
+
+
+def test_the_performance_first_ripple_target_is_the_one_the_rfq_quotes():
+    """PERF-02 and the RFQ row state the same requirement; they must not drift.
+
+    The delivery task used to repeat a literal (>=78.72Arms) that no artefact
+    produced, while the RFQ computed it from the rated-point ripple.  Both are
+    now derived from ``cout_bank.json``'s sizing point, so the test recomputes
+    the target from that bank instead of trusting either file's text.
+    """
+    bank = json.loads((ROOT / "design/v3/bom/cout_bank.json")
+                      .read_text(encoding="utf-8"))["requirements"]
+    target = bank["irms_a"] * perf.COUT_RIPPLE_MARGIN
+    assert target > bank["irms_a"]
+    lookup = {r["id"]: r for r in tasks()}
+    assert f">={target:.2f}Arms" in lookup["PERF-02"]["acceptance"]
+    _, rows = perf.build()
+    cout = next(r for r in rows if r["group"] == "Cout_bank_high_voltage")
+    assert f"{target:.2f}Arms" in cout["unlimited_cost_request"]

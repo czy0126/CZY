@@ -51,6 +51,7 @@ SOURCES = {
     "ct": "design/v3/bom/ct_design.json",
     "cout": "design/v3/bom/cout_bank.json",
     "cr": "design/v3/bom/cr_stress.json",
+    "cr_bank": "design/v3/bom/cr_bank.json",
     "conn": "design/v3/bom/connector_budget.json",
     "op": "design/v3/magnetics/operating_point_100a.json",
     "mag": "design/v3/magnetics/magnetics_design.json",
@@ -95,7 +96,11 @@ def criteria(data: dict[str, dict]) -> dict[str, str]:
         "ambient_50": f"{thermal['max_ambient_c_100a']['rth_50_k_per_w']:.1f} °C",
         "cr_peak": f"{cr['v_max_v']:.1f} V",
         "cr_rms": f"{cr['i_rms_a']:.2f} A",
-        "cr_esr": f"{cr['esr_ceiling_ohm'] * 1e3:.1f} mΩ",
+        # The bank ESR ceiling is a selection criterion, so it comes from the bank
+        # sizing rather than from the rated-point stress run: at the 120 A overload
+        # the same 1 W allows 29 % less ESR, and a bank bought against the 100 A
+        # number would dissipate ~2x its budget there.
+        "cr_esr": f"{data['cr_bank']['requirements']['esr_ceiling_ohm'] * 1e3:.1f} mΩ",
         "cout_n": f"{bank['n']}",
         "cout_esr": f"{bank['bank_esr_ohm'] * 1e3:.2f} mΩ",
         "gap": f"{mag['gap_mm']:.3f} mm",
@@ -138,8 +143,8 @@ def _stage_s0(c: dict[str, str]) -> dict[str, object]:
           "成品最高点（高度规）", "hardware"),
         i(f"气隙 {c['gap']}、四套 Lm 一致性", "首件实测回填", "magnetics_design",
           "漏感实测前不冻结 Lr 料号", "中柱（千分尺）+ 3 匝 LCR", "hardware"),
-        i(f"Cr 整组 ESR ≤ {c['cr_esr']}", f"≤ {c['cr_esr']}（1 W 允许）", "cr_stress",
-          "换低 ESR 并联", "Cr 两端（LCR 200 kHz）", "hardware"),
+        i(f"Cr 整组 ESR ≤ {c['cr_esr']}", f"≤ {c['cr_esr']}（1 W 允许，按 120 A 过载点）",
+          "cr_bank", "换低 ESR 并联", "Cr 两端（LCR 200 kHz）", "hardware"),
     ]}
 
 
@@ -242,7 +247,11 @@ LABELS = {
     "oc_pin": "OC 脚电平（额定点）", "oc_at": "对应原边峰值", "trip": "过流门槛",
     "compliance": "CT 合规电压", "boot_reverse": "自举二极管反压",
     "sr_loss": "SR 单管损耗 @100 A", "tj_limit": "结温上限", "ambient_50": "Rth 50 K/W 最高环境",
-    "cr_peak": "Cr 峰值电压", "cr_rms": "Cr 电流 RMS", "cr_esr": "Cr 整组 ESR 上限",
+    # Label the basis: the peak and RMS come from ``cr_stress.json`` (the 100 A
+    # point), the ESR ceiling from ``cr_bank.json`` (the 120 A overload).  Printed
+    # unlabelled side by side they read as one operating point, which they are not.
+    "cr_peak": "Cr 峰值电压（100 A 点）", "cr_rms": "Cr 电流 RMS（100 A 点）",
+    "cr_esr": "Cr 整组 ESR 上限（120 A 过载点）",
     "cout_n": "输出电容只数", "cout_esr": "整组 ESR", "gap": "气隙",
     "height": "高度最坏值", "pins": "网表引脚数",
     "startup_peak": "冷启动原边峰值（48 V）", "startup_peak_12v": "冷启动原边峰值（12 V 线性折算）",

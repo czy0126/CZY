@@ -3,8 +3,114 @@
   "requirements": {
     "capacitance_f": 0.004,
     "esr_ohm": 0.0002,
-    "irms_a": 52.4783,
-    "note": "capacitance and ESR are the values the 100 A model runs with; RMS is measured from the four SR currents"
+    "irms_a": 56.061937679462794,
+    "sized_at": "design/v3/power_priority/stress_50v_120a.json",
+    "sizing_points": {
+      "rated_100a": {
+        "source": "design/v3/bom/passive_requirements.json",
+        "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
+        "window_us": [
+          7.704687,
+          117.363517
+        ],
+        "load_mean_a": 99.75156894071463,
+        "ripple_rms_a": 52.478279189636574,
+        "ripple_pk_a": 122.92980178175202,
+        "mean_check_pct": -0.07319942179142172,
+        "method": "four SR currents, pairs 2/3 assumed symmetric (×2)"
+      },
+      "overload_48v_120a": {
+        "source": "design/v3/power_priority/stress_48v_120a.json",
+        "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+        "window_us": [
+          7.64454748375398,
+          117.3104548150325
+        ],
+        "load_mean_a": 121.67721383777155,
+        "ripple_rms_a": 55.58079304753917,
+        "ripple_pk_a": 142.23423667429103,
+        "mean_check_pct": 0.007290532852720781,
+        "method": "measured I(Cout) over the same window",
+        "ripple_rms_reconstructed_a": 56.30295283101508,
+        "method_offset_frac": 0.012992973721303924
+      },
+      "overload_50v_120a": {
+        "source": "design/v3/power_priority/stress_50v_120a.json",
+        "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
+        "window_us": [
+          7.631583516341496,
+          117.2982368985085
+        ],
+        "load_mean_a": 119.27393283584837,
+        "ripple_rms_a": 56.061937679462794,
+        "ripple_pk_a": 141.50822939062994,
+        "mean_check_pct": 0.004879897083679795,
+        "method": "measured I(Cout) over the same window",
+        "ripple_rms_reconstructed_a": 56.75011492161337,
+        "method_offset_frac": 0.012275302471442595
+      }
+    },
+    "note": "capacitance and ESR are the values the model runs with; RMS is the largest of the measured loads, taken from I(Cout) where the deck saves it and from the four-SR reconstruction at the rated point, which does not"
+  },
+  "checks": {
+    "the_requirement_is_the_worst_measured_load": true,
+    "every_sizing_point_traces_to_a_committed_artifact": true,
+    "every_reconstruction_agrees_with_vout_over_rl": true,
+    "every_sizing_point_names_its_method": true,
+    "the_rated_point_loses_by_more_than_the_method_offset": true,
+    "every_bank_meets_the_requirements_at_the_worst_load": true
+  },
+  "results": {
+    "worst_ripple_rms_a": 56.061937679462794,
+    "ripple_point_spread_frac": 0.0682884146577337,
+    "worst_over_rated_frac": 0.06828841465773361,
+    "method_offset_max_frac": 0.012992973721303924,
+    "esr_loss_w_at_model_esr": 0.6285881712751941,
+    "banks": [
+      {
+        "part": "KEMET A720V477M2R5APE003",
+        "n": 15,
+        "governed_by": "esr",
+        "counts": {
+          "capacitance": 9,
+          "esr": 15,
+          "rms": 5
+        },
+        "rms_count_at_overload": 5,
+        "rms_count_at_rated_load": 5,
+        "per_part_ripple_a": 3.7374625119641864,
+        "per_part_ripple_margin": 3.1277905698260597
+      },
+      {
+        "part": "KEMET A798D477M2R5PTE006",
+        "n": 30,
+        "governed_by": "esr",
+        "counts": {
+          "capacitance": 9,
+          "esr": 30,
+          "rms": 9
+        },
+        "rms_count_at_overload": 9,
+        "rms_count_at_rated_load": 9,
+        "per_part_ripple_a": 1.8687312559820932,
+        "per_part_ripple_margin": 3.4568908607487336
+      },
+      {
+        "part": "Chemi-Con APSF2R5ELL471MF08S",
+        "n": 25,
+        "governed_by": "esr",
+        "counts": {
+          "capacitance": 9,
+          "esr": 25,
+          "rms": 10
+        },
+        "rms_count_at_overload": 10,
+        "rms_count_at_rated_load": 9,
+        "per_part_ripple_a": 2.2424775071785117,
+        "per_part_ripple_margin": 2.6310185859671735
+      }
+    ],
+    "the_esr_governed_bank_size_changes_at_the_overload": false
   },
   "banks": [
     {
@@ -44,7 +150,7 @@
       "counts": {
         "capacitance": 9,
         "esr": 25,
-        "rms": 9
+        "rms": 10
       },
       "n": 25,
       "governed_by": "esr",
@@ -61,6 +167,7 @@
   "caveats": [
     "bank ESR = part ESR / N assumes zero interconnect resistance; at N>=15 the copper spreading resistance is not negligible and is not modelled here",
     "0.2 mohm is the value the simulation ran with, not a specified limit; at 0.1 mohm the count doubles",
-    "part data is a vendor page summary; capacitance at 2 V bias, ESR at temperature and end of life are not included"
+    "part data is a vendor page summary; capacitance at 2 V bias, ESR at temperature and end of life are not included",
+    "the rated point ran with the 4 mF model capacitance and both overload points with the 7.05 mF candidate value; the ripple current is the difference of the measured SR and load currents, so the capacitance does not enter it, but the voltage ripple does and is not comparable across the three points"
   ]
 }

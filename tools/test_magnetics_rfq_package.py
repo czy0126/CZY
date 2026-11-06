@@ -203,6 +203,22 @@ def test_the_inductor_al_and_gap_come_from_the_three_turn_candidate():
     assert find(dev, "inductance", "饱和电流 Isat")["value"] == pytest.approx(three["isat_a"])
 
 
+def test_the_inductor_copper_loss_is_quoted_at_the_overload_point(devs):
+    """Same sizing-point defect as Cout/Cin/Cr: the sheet printed the foil loss
+    computed at the rated 100 A tank current while the 120 A overload is already
+    measured.  Loss goes as I^2, so that read 1.41x low.  Both points are printed
+    now, and the headline is the overload."""
+    lr = json.loads((BOM / "lr_design.json").read_text(encoding="utf-8"))
+    three = next(c for c in lr["candidates"] if c["turns"] == 3)
+    dev = devs["Lr"]
+    overload = find(dev, "loss", "铜损（3 匝，120 A 过载点）")
+    rated = find(dev, "loss", "铜损（3 匝，额定 100 A 点）")
+    assert overload["value"] == pytest.approx(three["loss_w"])
+    assert rated["value"] == pytest.approx(three["loss_w_at_rated_100a"])
+    assert overload["value"] > 1.40 * rated["value"]
+    assert "120 A" in overload["source"]
+
+
 def test_the_inductor_fault_current_is_above_the_rated_peak(devs):
     dev = devs["Lr"]
     rated = find(dev, "currents", "稳态峰值 @100 A")["value"]

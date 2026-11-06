@@ -3,18 +3,40 @@
   "sources": {
     "deck": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir",
     "cr_stress": "design/v3/bom/cr_stress.json",
+    "cr_stress_overload": "design/v3/power_priority/cr_stress_48v_120a.json",
     "lr_design": "design/v3/bom/lr_design.json"
   },
   "requirements": {
     "capacitance_f": 6.2e-07,
     "v_rated_v": 100.0,
-    "v_max_v": 41.35863497778051,
-    "rating_margin": 2.4178747691678883,
-    "irms_a": 9.450157142630292,
-    "i_pk_a": 13.88141992151438,
-    "esr_ceiling_ohm": 0.01119752238884695,
+    "v_max_v": 44.44419678943724,
+    "rating_margin": 2.250012537604602,
+    "irms_a": 11.222294795311669,
+    "i_pk_a": 15.59279526345215,
+    "esr_ceiling_ohm": 0.007940295301530318,
     "p_allow_w": 1.0,
-    "leakage_model_h": 8e-08
+    "leakage_model_h": 8e-08,
+    "sized_at": "design/v3/power_priority/cr_stress_48v_120a.json",
+    "sizing_points": {
+      "rated_100a": {
+        "source": "design/v3/bom/cr_stress.json",
+        "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
+        "i_rms_a": 9.450157142630292,
+        "i_pk_a": 13.88141992151438,
+        "v_max_v": 41.35863497778051,
+        "rating_margin": 2.4178747691678883,
+        "esr_ceiling_ohm": 0.01119752238884695
+      },
+      "overload_120a": {
+        "source": "design/v3/power_priority/cr_stress_48v_120a.json",
+        "raw": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+        "i_rms_a": 11.222294795311669,
+        "i_pk_a": 15.59279526345215,
+        "v_max_v": 44.44419678943724,
+        "rating_margin": 2.250012537604602,
+        "esr_ceiling_ohm": 0.007940295301530318
+      }
+    }
   },
   "tuning": {
     "lc_product_s2": 6.2e-13,
@@ -66,21 +88,21 @@
         {
           "c_f": 1.5000000000000002e-07,
           "share_frac": 0.24193548387096778,
-          "irms_a": 2.2863283409589417,
-          "ipk_a": 3.358408045527673,
-          "esr_max_ohm": 0.0223950447776939,
+          "irms_a": 2.7150713214463718,
+          "ipk_a": 3.7724504669642305,
+          "esr_max_ohm": 0.015880590603060636,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 4.7000000000000005e-07,
           "share_frac": 0.7580645161290324,
-          "irms_a": 7.16382880167135,
-          "ipk_a": 10.523011875986708,
-          "esr_max_ohm": 0.0223950447776939,
+          "irms_a": 8.507223473865299,
+          "ipk_a": 11.820344796487921,
+          "esr_max_ohm": 0.015880590603060636,
           "v_rated_min_v": 100.0
         }
       ],
-      "max_part_irms_a": 7.16382880167135,
+      "max_part_irms_a": 8.507223473865299,
       "equal_parts": false
     },
     {
@@ -97,29 +119,29 @@
         {
           "c_f": 1.8000000000000002e-07,
           "share_frac": 0.2903225806451613,
-          "irms_a": 2.7435940091507307,
-          "ipk_a": 4.0300896546332075,
-          "esr_max_ohm": 0.033592567166540854,
+          "irms_a": 3.2580855857356457,
+          "ipk_a": 4.526940560357076,
+          "esr_max_ohm": 0.023820885904590954,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 2.2e-07,
           "share_frac": 0.3548387096774194,
-          "irms_a": 3.3532815667397813,
-          "ipk_a": 4.925665133440587,
-          "esr_max_ohm": 0.033592567166540854,
+          "irms_a": 3.9821046047880118,
+          "ipk_a": 5.532927351547537,
+          "esr_max_ohm": 0.023820885904590954,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 2.2e-07,
           "share_frac": 0.3548387096774194,
-          "irms_a": 3.3532815667397813,
-          "ipk_a": 4.925665133440587,
-          "esr_max_ohm": 0.033592567166540854,
+          "irms_a": 3.9821046047880118,
+          "ipk_a": 5.532927351547537,
+          "esr_max_ohm": 0.023820885904590954,
           "v_rated_min_v": 100.0
         }
       ],
-      "max_part_irms_a": 3.3532815667397813,
+      "max_part_irms_a": 3.9821046047880118,
       "equal_parts": false
     },
     {
@@ -137,37 +159,37 @@
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.0447900895553878,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.03176118120612127,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.2000000000000002e-07,
           "share_frac": 0.19354838709677422,
-          "irms_a": 1.8290626727671533,
-          "ipk_a": 2.6867264364221386,
-          "esr_max_ohm": 0.0447900895553878,
+          "irms_a": 2.1720570571570974,
+          "ipk_a": 3.017960373571384,
+          "esr_max_ohm": 0.03176118120612127,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.8000000000000002e-07,
           "share_frac": 0.2903225806451613,
-          "irms_a": 2.7435940091507307,
-          "ipk_a": 4.0300896546332075,
-          "esr_max_ohm": 0.0447900895553878,
+          "irms_a": 3.2580855857356457,
+          "ipk_a": 4.526940560357076,
+          "esr_max_ohm": 0.03176118120612127,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 2.2e-07,
           "share_frac": 0.3548387096774194,
-          "irms_a": 3.3532815667397813,
-          "ipk_a": 4.925665133440587,
-          "esr_max_ohm": 0.0447900895553878,
+          "irms_a": 3.9821046047880118,
+          "ipk_a": 5.532927351547537,
+          "esr_max_ohm": 0.03176118120612127,
           "v_rated_min_v": 100.0
         }
       ],
-      "max_part_irms_a": 3.3532815667397813,
+      "max_part_irms_a": 3.9821046047880118,
       "equal_parts": false
     },
     {
@@ -186,45 +208,45 @@
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.05598761194423475,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.03970147650765159,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.05598761194423475,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.03970147650765159,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.2000000000000002e-07,
           "share_frac": 0.19354838709677422,
-          "irms_a": 1.8290626727671533,
-          "ipk_a": 2.6867264364221386,
-          "esr_max_ohm": 0.05598761194423475,
+          "irms_a": 2.1720570571570974,
+          "ipk_a": 3.017960373571384,
+          "esr_max_ohm": 0.03970147650765159,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.5000000000000002e-07,
           "share_frac": 0.24193548387096778,
-          "irms_a": 2.2863283409589417,
-          "ipk_a": 3.358408045527673,
-          "esr_max_ohm": 0.05598761194423475,
+          "irms_a": 2.7150713214463718,
+          "ipk_a": 3.7724504669642305,
+          "esr_max_ohm": 0.03970147650765159,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.5000000000000002e-07,
           "share_frac": 0.24193548387096778,
-          "irms_a": 2.2863283409589417,
-          "ipk_a": 3.358408045527673,
-          "esr_max_ohm": 0.05598761194423475,
+          "irms_a": 2.7150713214463718,
+          "ipk_a": 3.7724504669642305,
+          "esr_max_ohm": 0.03970147650765159,
           "v_rated_min_v": 100.0
         }
       ],
-      "max_part_irms_a": 2.2863283409589417,
+      "max_part_irms_a": 2.7150713214463718,
       "equal_parts": false
     },
     {
@@ -244,53 +266,53 @@
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.06718513433308171,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.04764177180918191,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.06718513433308171,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.04764177180918191,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.06718513433308171,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.04764177180918191,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.06718513433308171,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.04764177180918191,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.0000000000000001e-07,
           "share_frac": 0.16129032258064518,
-          "irms_a": 1.524218893972628,
-          "ipk_a": 2.2389386970184484,
-          "esr_max_ohm": 0.06718513433308171,
+          "irms_a": 1.8100475476309144,
+          "ipk_a": 2.514966977976153,
+          "esr_max_ohm": 0.04764177180918191,
           "v_rated_min_v": 100.0
         },
         {
           "c_f": 1.2000000000000002e-07,
           "share_frac": 0.19354838709677422,
-          "irms_a": 1.8290626727671533,
-          "ipk_a": 2.6867264364221386,
-          "esr_max_ohm": 0.06718513433308171,
+          "irms_a": 2.1720570571570974,
+          "ipk_a": 3.017960373571384,
+          "esr_max_ohm": 0.04764177180918191,
           "v_rated_min_v": 100.0
         }
       ],
-      "max_part_irms_a": 1.8290626727671533,
+      "max_part_irms_a": 2.1720570571570974,
       "equal_parts": false
     }
   ],
@@ -301,7 +323,8 @@
       470
     ],
     "total_f": 6.2e-07,
-    "reason": "lands exactly on the design capacitance with the fewest parts, so the Lr trim target stays the nominal 0.92 uH external; the parts are unequal, so ripple divides 470:150 rather than equally, and the 470 nF part carries 7.16 A rms"
+    "max_part_irms_a": 8.507223473865299,
+    "reason": "lands exactly on the design capacitance with the fewest parts, so the Lr trim target stays the nominal 0.92 uH external; the parts are unequal, so ripple divides in proportion to capacitance rather than equally, and the 470 nF part carries 8.51 A rms"
   },
   "equal_parts_option": {
     "values_nf": [
@@ -312,13 +335,14 @@
     ],
     "total_f": 6.000000000000001e-07,
     "delta_frac": -0.03225806451612889,
-    "max_part_irms_a": 2.3625392856575727,
+    "max_part_irms_a": 2.805573698827917,
     "reason": "one line item instead of two, at the cost of landing below the design capacitance and therefore moving the Lr trim inside the simulated window"
   },
   "checks": {
     "deck_capacitance_matches_the_stress_run": true,
     "deck_external_inductance_matches_the_tank_target": true,
     "the_design_product_reproduces_the_tank_frequency": true,
+    "the_requirement_is_the_worst_measured_load": true,
     "every_landing_is_inside_the_band": true,
     "every_landing_keeps_fr_above_the_clock": true
   },

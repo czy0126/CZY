@@ -35,12 +35,15 @@
   },
   "cout_ripple": {
     "load_mean_a": 119.27393283584837,
-    "ripple_rms_a": 56.75011492161337,
-    "ripple_pk_a": 143.16455883045398,
+    "ripple_rms_a": 56.061937679462794,
+    "ripple_pk_a": 141.50822939062994,
     "mean_check_pct": 0.004879897083679795,
-    "reconstruction": "four SR currents, pairs 2/3 assumed symmetric (×2)"
+    "reconstruction": "measured I(Cout) over the same window",
+    "cap_mean_a": 0.005820083010931747,
+    "ripple_rms_reconstructed_a": 56.75011492161337,
+    "ripple_pk_reconstructed_a": 143.16455883045398
   },
-  "note": "sr_vds is the saved drain-node voltage because every SR source is the shared sgnd node.  Only pairs 1 and 4 are instrumented, so current peaks and the Cout ripple carry the symmetry assumption, not a sharing result.",
+  "note": "sr_vds is the saved drain-node voltage because every SR source is the shared sgnd node.  I(Cout) is saved, so the ripple RMS is measured directly and the four-SR ×2 reconstruction is published beside it; current peaks still rest on the symmetry assumption.",
   "input": {
     "source_mean_a": 4.948427467961838,
     "bridge_mean_a": 4.948401130542177,

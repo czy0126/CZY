@@ -12,7 +12,6 @@ import argparse
 import csv
 import io
 import json
-import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -49,6 +48,8 @@ def build() -> tuple[dict, list[dict[str, str]]]:
     passive = _load(ROOT / "design/v3/bom/passive_requirements.json")
     lr = _load(ROOT / "design/v3/bom/lr_design.json")
     capbank = _load(ROOT / "design/v3/bom/cout_bank.json")
+    cinbank = _load(ROOT / "design/v3/bom/cin_bank.json")
+    crbank = _load(ROOT / "design/v3/bom/cr_bank.json")
     cad = _load(HW / "d1_fabrication_gate.json")
     if hot50["solver_prefix_only"] is not True:
         raise ValueError("fault evidence regime changed: revalidate high-current margin")
@@ -64,7 +65,27 @@ def build() -> tuple[dict, list[dict[str, str]]]:
         return inductance_max_h * design_current / (turns * ae_mm2 * 1e-6)
     def min_ae(turns: int) -> float:
         return inductance_max_h * design_current / (turns * limit_t) * 1e6
-    r_ripple = float(passive["cout_ripple"]["ripple_rms_a"])
+    # The ripple requirement is the worst measured load, not the rated one: the
+    # 120 A overload points save I(Cout) directly, the 100 A deck only carries the
+    # four-SR reconstruction.  cout_bank.json already states which point won, so
+    # read its answer rather than re-deriving it from the rated-point JSON.
+    r_ripple_rated = float(passive["cout_ripple"]["ripple_rms_a"])
+    r_ripple = float(capbank["requirements"]["irms_a"])
+    if r_ripple <= r_ripple_rated:
+        raise ValueError("cout_bank no longer sizes the ripple above the rated point")
+    r_target = r_ripple * COUT_RIPPLE_MARGIN
+    # Same rule for the two banks sized in the previous stage.  Asking a supplier
+    # for the rated-point number is what put Cout 6.8 % low; Cin and Cr would be
+    # 19.6 % and 18.8 % low, so the evidence column quotes the overload point and
+    # keeps the rated figure only as context.
+    cin_ripple = float(cinbank["requirements"]["bridge_ac_rms_a_at_worst_measured_load"])
+    cin_ripple_rated = float(cinbank["requirements"]["bridge_ac_rms_a_at_100a"])
+    cr_ripple = float(crbank["requirements"]["irms_a"])
+    cr_ripple_rated = float(crbank["requirements"]["sizing_points"]["rated_100a"]["i_rms_a"])
+    if cin_ripple <= cin_ripple_rated:
+        raise ValueError("cin_bank no longer sizes the ripple above the rated point")
+    if cr_ripple <= cr_ripple_rated:
+        raise ValueError("cr_bank no longer sizes the ripple above the rated point")
     baseline = next(row for row in capbank["banks"]
                     if row["part"] == "KEMET A720V477M2R5APE003")
     high_at_end = probe48["results"]["devices_high_at_end"]
@@ -110,7 +131,8 @@ def build() -> tuple[dict, list[dict[str, str]]]:
             "output_vrating_preferred_v": COUT_VRATED_PREFERRED,
             "output_bank_c_min_mf": _r(float(baseline["bank_capacitance_f"]) * 1e3),
             "output_model_ripple_rms_a": _r(r_ripple),
-            "output_ripple_target_rms_a": _r(r_ripple * COUT_RIPPLE_MARGIN),
+            "output_model_ripple_rms_rated_a": _r(r_ripple_rated),
+            "output_ripple_target_rms_a": _r(r_target),
             "output_esr_including_copper_target_mohm": COUT_ESR_TOTAL_MOHM,
             "output_copper_and_joint_budget_mohm": COUT_PCB_ESR_BUDGET_MOHM,
             "output_cap_bank_esr_budget_mohm": _r(
@@ -175,16 +197,20 @@ def build() -> tuple[dict, list[dict[str, str]]]:
             "avoid unverified single large gap; width/area may grow not height",
             "Independent distributed-gap/low-fringing vendor electromagnetic model and first-article L(I)"),
         row("Cout_bank_high_voltage",
-            f"baseline 15x470uF/2.5V nominal; 52.48A RMS, 7.05mF, ideal 0.2mOhm",
-            ">=4V rated, 6.3V preferred if <=10mm; >=7.05mF; "
-            "bank ripple >=78.72Arms; ESR bank <=0.07mOhm at operating frequency/temperature",
+            f"baseline 15x470uF/2.5V nominal; {r_ripple:.2f}A RMS at the 50V/120A overload "
+            f"({r_ripple_rated:.2f}A at the rated 100A, a four-SR reconstruction), "
+            "7.05mF, ideal 0.2mOhm",
+            f">=4V rated, 6.3V preferred if <=10mm; >=7.05mF; "
+            f"bank ripple >={r_target:.2f}Arms; ESR bank <=0.07mOhm at operating frequency/temperature",
             "Original datasheets; actual PCB copper/joints <=0.03mOhm; overshoot/ripple/reliability and envelope"),
         row("Cin_high_ripple",
-            "100A model 5.316A bridge AC ripple; ideal 1mOhm source distorts capacitor current",
+            f"{cin_ripple:.2f}A bridge AC ripple at the 120A overload "
+            f"({cin_ripple_rated:.2f}A at the rated 100A); ideal 1mOhm source distorts capacitor current",
             "RFQ >=8A RMS at ~200kHz with sufficient DC-bus transient voltage derating",
             "Manufacturer ripple/impedance at operating frequency and temperature; realistic source impedance deck"),
         row("Cr_resonant_low_loss",
-            "100A model 9.45A RMS, reconstructed Vpk 41.36V",
+            f"{cr_ripple:.2f}A RMS at the 120A overload ({cr_ripple_rated:.2f}A at the rated 100A), "
+            f"reconstructed Vpk {float(crbank['requirements']['v_max_v']):.2f}V",
             "RFQ >15A RMS and >=100V rated film or equivalent; prioritize low ESR/ESL and flatter profile",
             "Temperature/frequency ESR, self resonance, actual 50V/120A stress and physical mounting"),
         row("SR_MOSFET_and_drive",

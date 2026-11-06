@@ -1,0 +1,55 @@
+{
+  "raw": "sim\\v3\\sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
+  "window_us": [
+    7.64454748375398,
+    117.3104548150325
+  ],
+  "vin_v": 48.0,
+  "rl_ohm": 0.0169,
+  "evidence_level": "SIMULATED_ONLY / NOT_RATED",
+  "vout_avg_v": 1.8786152815185988,
+  "vout_pp_mv": 41.20579779465694,
+  "pout_w": 208.83490643459277,
+  "iout_from_v_a": 111.16066754547923,
+  "ipri_rms_a": 10.267052521204706,
+  "ipri_pk_a": 14.35143067090576,
+  "oc": {
+    "mean_v": 0.6364146300050812,
+    "max_v": 0.6369110453856949,
+    "trip_level_v": 1.0,
+    "latch_level_v": 2.0,
+    "margin_to_trip": 0.6369110453856949
+  },
+  "sr_gate": {
+    "min_v": -0.6466264639772447,
+    "max_v": 10.9629507073029
+  },
+  "sr_vds": {
+    "max_v": 5.510592495907964,
+    "min_v": -1.526198436283843,
+    "reference": "drain against sgnd; the SR source in these decks is sgnd"
+  },
+  "sr_current": {
+    "forward_peak_a": 42.98609737173963,
+    "reverse_peak_a": 5.340588459316677
+  },
+  "cout_ripple": {
+    "load_mean_a": 111.00990886189064,
+    "ripple_rms_a": 51.34167196604133,
+    "ripple_pk_a": 131.92513664541963,
+    "mean_check_pct": -0.13562232659938975,
+    "reconstruction": "measured I(Cout) over the same window",
+    "cap_mean_a": -0.1507587866630585,
+    "ripple_rms_reconstructed_a": 51.94968870619589,
+    "ripple_pk_reconstructed_a": 133.46142311644414
+  },
+  "note": "sr_vds is the saved drain-node voltage because every SR source is the shared sgnd node.  I(Cout) is saved, so the ripple RMS is measured directly and the four-SR ×2 reconstruction is published beside it; current peaks still rest on the symmetry assumption.",
+  "input": {
+    "source_mean_a": 4.602345786253571,
+    "bridge_mean_a": 4.6023133345595975,
+    "bridge_ac_rms_a": 5.850780675455952,
+    "cin_mean_a": 3.2451693973225787e-05,
+    "cin_ac_rms_a": 0.3310736933334672,
+    "note": "KCL bridge current = I(Rin) - I(Cin); the AC RMS has the window mean removed.  The 20 uF capacitor sees only cin_ac_rms, and that depends on the modelled source impedance."
+  }
+}

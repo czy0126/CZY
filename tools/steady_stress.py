@@ -31,6 +31,8 @@ OC_LATCH_V = 2.0
 NODES = ("a1", "b1", "a4", "b4")
 GATES = ("ga1", "gb1", "ga4", "gb4")
 BRANCHES = (1, 4)
+RECONSTRUCTED_FROM_SR = "four SR currents, pairs 2/3 assumed symmetric (×2)"
+MEASURED_COUT = "measured I(Cout) over the same window"
 
 
 def _mean(t: np.ndarray, x: np.ndarray) -> float:
@@ -58,8 +60,42 @@ def stress_block(t: np.ndarray, data: dict[str, np.ndarray], rl: float) -> dict[
     # Pairs 2/3 are not instrumented; the ×2 is the model-symmetry assumption.
     secondary = 2.0 * -(data["I(VSa1)"] + data["I(VSb1)"] + data["I(VSa4)"] + data["I(VSb4)"])
     idc = _mean(t, secondary)
-    icap = secondary - idc
+    recon = secondary - idc
     iout_v = _mean(t, vout) / rl
+
+    ripple: dict[str, object] = {
+        "load_mean_a": idc,
+        "ripple_rms_a": _rms(t, recon),
+        "ripple_pk_a": float(np.abs(recon).max()),
+        "mean_check_pct": 100.0 * (idc - iout_v) / iout_v,
+        "reconstruction": RECONSTRUCTED_FROM_SR,
+    }
+    # A deck that saves I(Cout) measures the whole bank: one lumped element, so
+    # KCL leaves nothing out and the symmetry assumption drops out of the number.
+    # The reconstruction stays published because the current peaks still use it.
+    if "I(Cout)" in data:
+        icout = data["I(Cout)"]
+        cap_mean = _mean(t, icout)
+        measured = icout - cap_mean
+        ripple.update({
+            "ripple_rms_a": _rms(t, measured),
+            "ripple_pk_a": float(np.abs(measured).max()),
+            "cap_mean_a": cap_mean,
+            "ripple_rms_reconstructed_a": _rms(t, recon),
+            "ripple_pk_reconstructed_a": float(np.abs(recon).max()),
+            "reconstruction": MEASURED_COUT,
+        })
+    measured_cout = "I(Cout)" in data
+
+    note = ("sr_vds is the saved drain-node voltage because every SR source is "
+            "the shared sgnd node.")
+    if measured_cout:
+        note += ("  I(Cout) is saved, so the ripple RMS is measured directly and the "
+                 "four-SR ×2 reconstruction is published beside it; current peaks "
+                 "still rest on the symmetry assumption.")
+    else:
+        note += ("  Only pairs 1 and 4 are instrumented, so current peaks and the "
+                 "Cout ripple carry the symmetry assumption, not a sharing result.")
 
     out: dict[str, object] = {
         "vout_avg_v": _mean(t, vout),
@@ -82,17 +118,8 @@ def stress_block(t: np.ndarray, data: dict[str, np.ndarray], rl: float) -> dict[
             "reference": "drain against sgnd; the SR source in these decks is sgnd",
         },
         "sr_current": {"forward_peak_a": fwd, "reverse_peak_a": rev},
-        "cout_ripple": {
-            "load_mean_a": idc,
-            "ripple_rms_a": float(np.sqrt(max(_mean(t, icap * icap), 0.0))),
-            "ripple_pk_a": float(np.abs(icap).max()),
-            "mean_check_pct": 100.0 * (idc - iout_v) / iout_v,
-            "reconstruction": "four SR currents, pairs 2/3 assumed symmetric (×2)",
-        },
-        "note": "sr_vds is the saved drain-node voltage because every SR source "
-                "is the shared sgnd node.  Only pairs 1 and 4 are instrumented, "
-                "so current peaks and the Cout ripple carry the symmetry "
-                "assumption, not a sharing result.",
+        "cout_ripple": ripple,
+        "note": note,
     }
     if "I(Rin)" in data and "I(Cin)" in data:
         bridge = data["I(Rin)"] - data["I(Cin)"]
@@ -132,6 +159,8 @@ def main() -> int:
         available, _ = read_header(handle)
     if "I(Rin)" in available and "I(Cin)" in available:
         names += ["I(Rin)", "I(Cin)"]
+    if "I(Cout)" in available:
+        names += ["I(Cout)"]
     t, data = read_window(args.raw, names, args.from_us * 1e-6, args.to_us * 1e-6)
     if t.size < 3:
         raise SystemExit("window contains too few points")

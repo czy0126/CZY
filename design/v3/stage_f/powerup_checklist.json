@@ -20,7 +20,7 @@
     "ambient_50": "79.1 °C",
     "cr_peak": "41.4 V",
     "cr_rms": "9.45 A",
-    "cr_esr": "11.2 mΩ",
+    "cr_esr": "7.9 mΩ",
     "cout_n": "15",
     "cout_esr": "0.20 mΩ",
     "gap": "0.121 mm",
@@ -114,9 +114,9 @@
           "source_type": "hardware"
         },
         {
-          "check": "Cr 整组 ESR ≤ 11.2 mΩ",
-          "criterion": "≤ 11.2 mΩ（1 W 允许）",
-          "source": "cr_stress",
+          "check": "Cr 整组 ESR ≤ 7.9 mΩ",
+          "criterion": "≤ 7.9 mΩ（1 W 允许，按 120 A 过载点）",
+          "source": "cr_bank",
           "action": "换低 ESR 并联",
           "test_state": "power_off",
           "measurement_location": "Cr 两端（LCR 200 kHz）",

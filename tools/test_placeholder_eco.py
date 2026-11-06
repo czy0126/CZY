@@ -120,11 +120,26 @@ def test_the_output_bank_count_is_the_esr_governed_one(by_ref):
 
 
 def test_the_resonant_capacitor_numbers_are_recomputed(by_ref):
+    """The row quotes the bank sizing, which is the worst measured load.
+
+    ``cr_stress.json`` is the rated 100 A point.  It is still in the evidence set
+    and still the point the tank was designed at, but the 120 A overload run puts
+    18.8 % more ripple through Cr and 29 % less ESR headroom, so sizing on the
+    100 A figure would buy a bank that self-heats twice its budget there.
+    """
     cr = source_json("cr_stress.json")
+    overload = json.loads(
+        (eco.ROOT / "design/v3/power_priority/cr_stress_48v_120a.json").read_text(encoding="utf-8"))
+    bank = source_json("cr_bank.json")["requirements"]
     numbers = by_ref["Cr"]["requirement_numbers"]
     assert numbers["capacitance_f"] == pytest.approx(cr["capacitance_f"])
-    assert numbers["v_max_v"] == pytest.approx(cr["v_max_v"])
-    assert numbers["esr_ceiling_ohm"] == pytest.approx(cr["esr_ceiling_ohm"])
+    assert numbers["v_max_v"] == pytest.approx(bank["v_max_v"])
+    assert numbers["esr_ceiling_ohm"] == pytest.approx(bank["esr_ceiling_ohm"])
+    # the quoted figures are the overload run, not the rated one, and both are named
+    assert bank["v_max_v"] == pytest.approx(overload["v_max_v"])
+    assert bank["esr_ceiling_ohm"] == pytest.approx(overload["esr_ceiling_ohm"])
+    assert bank["esr_ceiling_ohm"] < cr["esr_ceiling_ohm"]
+    assert f"{cr['esr_ceiling_ohm'] * 1e3:.2f} mohm at 100 A" in by_ref["Cr"]["requirement"]
 
 
 def test_the_input_capacitor_requirement_is_the_bridge_current_at_the_worst_load(by_ref):
