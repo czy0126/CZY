@@ -18,6 +18,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -48,15 +49,27 @@ def check_bh_csv(path: Path) -> list[str]:
             rows = list(csv.DictReader(handle))
         if len(rows) < 6:
             errors.append("BH curve needs >=6 measured/digitized samples")
-        previous_h, previous_b = -float("inf"), -float("inf")
-        for r in rows:
+        previous_h, previous_b = None, None
+        for index, r in enumerate(rows):
             h, b = float(r["H_A_per_m"]), float(r["B_T"])
-            if h < 0 or b < 0 or h <= previous_h or b <= previous_b:
-                errors.append("BH requires strictly increasing positive H and B")
+            if not math.isfinite(h) or not math.isfinite(b) or h < 0 or b < 0:
+                errors.append("BH CSV requires finite non-negative H and B")
                 break
+            if index == 0 and (h != 0 or b != 0):
+                errors.append("normal BH curve must begin at (H=0,B=0)")
+                break
+            if previous_h is not None:
+                dh, db = h - previous_h, b - previous_b
+                if dh <= 0 or db <= 0:
+                    errors.append("BH requires strictly increasing H and B")
+                    break
+                # Maxwell normal BH requires slope not below vacuum mu0.
+                if db / dh < 4 * math.pi * 1e-7:
+                    errors.append("normal BH slope must not drop below mu0")
+                    break
             previous_h, previous_b = h, b
-        if previous_b < 0.25:
-            errors.append("BH curve does not extend to 0.25T screening range")
+        if previous_b is not None and previous_b < 0.32:
+            errors.append("BH data must reach >=0.32T for the 2-turn RFQ case")
     except (ValueError, KeyError, OSError) as exc:
         errors.append("BH CSV invalid: " + str(exc))
     return errors
@@ -93,6 +106,14 @@ def blockers(config: dict, case: dict) -> list[str]:
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def bh_pairs_for_pyaedt(rows: list[dict]) -> list[list[float]]:
+    """Use labeled input rows in the [H(A/m), B(T)] order of PyAEDT docs.
+
+    Separation from Ansys lets CI check unit ordering independently.
+    """
+    return [[float(row["H_A_per_m"]), float(row["B_T"])] for row in rows]
 
 
 def build(config: dict, case: dict, *, solve: bool, output: Path,
@@ -143,8 +164,7 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
         # CSV instead of requiring a manually preloaded AEDT library item.
         # PyAEDT expects magnetization entries ordered [H (A/m), B (T)].
         with bh.open(encoding="utf-8-sig", newline="") as stream:
-            points = [[float(row["H_A_per_m"]), float(row["B_T"])]
-                      for row in csv.DictReader(stream)]
+            points = bh_pairs_for_pyaedt(list(csv.DictReader(stream)))
         mat = app.materials.add_material(material)
         if not mat:
             raise RuntimeError("cannot register N97 BH material")
@@ -199,10 +219,19 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
                     raise RuntimeError("winding current update failed")
                 if not app.analyze_setup(name=setup.name):
                     raise RuntimeError("Maxwell solver failed at " + str(amp))
+                # Store real solver artifacts, without reporting unparsed
+                # matrices as verified inductance or material certification.
+                matrix_path = output / ("matrix_" + str(amp).replace(".", "p") + "A.csv")
+                if not app.export_matrix(
+                    matrix_name="Lr_Matrix", output_file=str(matrix_path)
+                ) or not matrix_path.is_file() or matrix_path.stat().st_size == 0:
+                    raise RuntimeError("matrix export missing for current " + str(amp))
                 statuses.append({
                     "current_a": amp, "solver_returned": True,
+                    "matrix_file": matrix_path.name,
+                    "matrix_sha256": sha256(matrix_path),
                     "L_diff_uH": None, "B_local_peak_T": None,
-                    "validity": "NEEDS_MATRIX_AND_FIELD_EXPORT_AND_MESH_CHECK",
+                    "validity": "RAW_MATRIX_ONLY_NEEDS_BH_AND_MESH_CONVERGENCE",
                 })
             (output / "run_manifest.json").write_text(
                 json.dumps({
