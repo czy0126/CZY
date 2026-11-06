@@ -174,6 +174,26 @@ def entry(spec: dict) -> dict:
                         f"{sorted(on_disk)}")
     if manifest.get("plotted_layers") != manifest.get("layers"):
         problems.append("the plotted layers are not the requested layers")
+    entries = manifest.get("files") or []
+    if len(entries) != len(listed):
+        problems.append("the manifest has duplicate fabrication filenames")
+    # A file count and a board hash alone do NOT validate Gerbers. Two full
+    # Windows exports were committed with CRLF->LF normalization; every
+    # filename still existed and the index incorrectly displayed PRESENT.
+    # Validate the *actual bytes in Git* before telling procurement a package
+    # exists. This never grants electrical/fabrication approval.
+    for item in entries:
+        name = item.get("name")
+        if not isinstance(name, str) or name in ("", ".", "..") or Path(name).name != name:
+            problems.append(f"invalid/untrusted file name in manifest: {name!r}")
+            continue
+        actual = fab / name
+        if not actual.is_file():
+            continue  # already caught by listed != on_disk
+        if actual.stat().st_size != item.get("bytes"):
+            problems.append(f"{name}: bytes differ from committed file")
+        if _sha256(actual) != item.get("sha256"):
+            problems.append(f"{name}: sha256 differs from committed file")
     row["status"] = "FAB_PACKAGE_STALE" if problems else "FAB_PACKAGE_PRESENT"
     if problems:
         row["not_fabricable_because"] = problems

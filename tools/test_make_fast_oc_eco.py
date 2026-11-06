@@ -5,8 +5,8 @@ The interesting claims are not "the generator ran".  They are:
 * the comparator's shutdown pin is held LOW -- on a TLV3501 a high SHDN
   *disables* the part, so the obvious "tie it to the supply" wiring produces a
   fast comparator that never switches;
-* the push-pull output cannot reach FAST_EXT_N except through the open-drain
-  NMOS; D0 receives the independent active-low signal at J10.4;
+* the push-pull output cannot reach FAST_TRIP except through the open-drain
+  NMOS, because D0's FAST_TRIP is a wired-OR node;
 * the 1 us input pole plus the 12 ns over-temperature comparator delay is
   recomputed from the datasheet constants, not copied out of the report.
 
@@ -62,9 +62,13 @@ def test_no_two_different_parts_share_a_pin_tip(parts, symbols):
 
 
 def test_the_comparator_and_the_open_drain_stage_are_present(parts):
-    assert by_ref(parts, "U1").value == "TLV3501AIDBV"
-    assert by_ref(parts, "U2").value == "LM4040DBZ-2.5"
+    assert by_ref(parts, "U1").value == "TLV3501AIDBVR"
+    assert by_ref(parts, "U2").value == "LM4040D25IDBZR"
     assert by_ref(parts, "Q1").value == "2N7002"
+    assert by_ref(parts, "D1").value == "BAT54ZFILM"
+    assert by_ref(parts, "D2").value == "BAT54ZFILM"
+    assert all(by_ref(parts, ref).footprint == "Diode_SMD:D_SOD-123"
+               for ref in ("D1", "D2"))
 
 
 def _pads_in(footprint: str) -> int:
@@ -101,14 +105,14 @@ def test_shutdown_is_pulled_low_because_high_disables_the_comparator(parts, repo
 
 
 def test_the_push_pull_output_reaches_fast_trip_only_through_the_nmos(parts, report):
-    """The module retains its active-low open-drain output, separate from U3B.
-    The only path is U1.5 -> R5 -> Q1 gate -> Q1.3.
+    """D0's FAST_TRIP is a wired-OR of open-drain drivers; a push-pull output
+    tied to it would fight U3B.  The only path is U1.5 -> R5 -> Q1 gate -> Q1.3.
     """
-    members = report["net_map"]["FAST_EXT_N"]
+    members = report["net_map"]["FAST_TRIP"]
     assert "Q1.3" in members
     assert "U1.5" not in members
     assert by_ref(parts, "R5").nets == {"1": "OUT", "2": "Q1G"}
-    assert by_ref(parts, "Q1").nets["3"] == "FAST_EXT_N"
+    assert by_ref(parts, "Q1").nets["3"] == "FAST_TRIP"
 
 
 def test_the_input_protection_is_two_diodes_and_a_series_divider(parts):
@@ -279,15 +283,24 @@ def test_the_generated_report_is_current(parts, report):
     assert on_disk == report
 
 
-def test_the_erc_report_is_clean_and_not_stale():
+def test_the_committed_erc_is_clean_and_schematic_source_is_pinned():
+    """Git checkout mtime is not the time KiCad last ran on the schematic."""
+    import hashlib
+
     sch = OUT / "fast_oc.kicad_sch"
-    assert board.erc_violations(OUT / "erc.json", newer_than=sch) == []
+    report = json.loads((OUT / "erc.json").read_text(encoding="utf-8"))
+    assert report["source"] == sch.name
+    assert board.erc_violations(OUT / "erc.json") == []
+    index = json.loads((board.ROOT / "pcb/manufacturing/index.json").read_text())
+    entry = next(x for x in index["boards"] if x["id"] == "fast_oc")
+    assert entry["schematic_sha256"] == hashlib.sha256(sch.read_bytes()).hexdigest()
+    assert entry["flags"]["fabrication_approved"] is False
 
 
 def test_the_netlist_contains_every_module_net():
     text = (OUT / "fast_oc.net").read_text(encoding="utf-8")
     for net in ("V5", "PGND", "OCD", "INP", "REF", "OUT", "Q1G",
-                "SHDN", "FAST_EXT_N"):
+                "SHDN", "FAST_TRIP"):
         assert f'(name "/{net}")' in text, net
 
 
