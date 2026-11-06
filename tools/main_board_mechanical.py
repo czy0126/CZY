@@ -505,13 +505,15 @@ def parts() -> tuple[Part, ...]:
                              f"datasheets/ao3400a.txt); qualified is false there -- "
                              f"turn-on SOA, self-heating and R44 repetitive pulse "
                              f"are still open"))
-        out.append(Part(f"R{52 + i}", "4.7R 0.5W", R1206_W, R1206_D, R1206_H,
+        out.append(Part(f"R{52 + i}", "4.7R 0.75W HP", R1206_W, R1206_D, R1206_H,
                         x_c + CROWBAR_R_DX, CROWBAR_ROW_Y,
                         "validation-board", R1206_FP,
-                        note=f"REG{i} -> REG_CROW{i} crowbar resistor. 122.7 uJ, "
-                             f"25.2 W peak on the validation board; the 1206 pulse "
-                             f"curve is not in the repository, so this is a "
-                             f"screening ratio and not a qualification"))
+                        note=f"REG{i} -> REG_CROW{i} crowbar resistor; the validation "
+                             f"board's CRCW12064R70FKEAHP (0.75 W at Rth <= 110 K/W). "
+                             f"122.7 uJ, 25.2 W peak there against the 60 W repeated "
+                             f"pulse screen; conditional screening, not qualification. "
+                             f"The long-hold limit is the UCC24624's thermal bound "
+                             f"(tools/reg_hold.py), not this resistor"))
     # Row 2b -- one SR controller per pair, centred on the pair it drives (doc
     # 34, package C: "紧接着连接选定的实际硬件关断电路").  Placing U3-U6 needs no
     # ECO: the golden netlist, the BOM row "U3-U6" and theme section 3 already

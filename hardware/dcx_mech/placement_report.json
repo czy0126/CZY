@@ -332,7 +332,7 @@
     },
     {
       "ref": "R53",
-      "value": "4.7R 0.5W",
+      "value": "4.7R 0.75W HP",
       "evidence": "validation-board",
       "w_mm": 4.56,
       "d_mm": 2.26,
@@ -340,7 +340,7 @@
       "x_mm": 14.8,
       "y_mm": 67.0,
       "rot_deg": 0.0,
-      "note": "REG1 -> REG_CROW1 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+      "note": "REG1 -> REG_CROW1 crowbar resistor; the validation board's CRCW12064R70FKEAHP (0.75 W at Rth <= 110 K/W). 122.7 uJ, 25.2 W peak there against the 60 W repeated pulse screen; conditional screening, not qualification. The long-hold limit is the UCC24624's thermal bound (tools/reg_hold.py), not this resistor"
     },
     {
       "ref": "Q52",
@@ -356,7 +356,7 @@
     },
     {
       "ref": "R54",
-      "value": "4.7R 0.5W",
+      "value": "4.7R 0.75W HP",
       "evidence": "validation-board",
       "w_mm": 4.56,
       "d_mm": 2.26,
@@ -364,7 +364,7 @@
       "x_mm": 52.8,
       "y_mm": 67.0,
       "rot_deg": 0.0,
-      "note": "REG2 -> REG_CROW2 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+      "note": "REG2 -> REG_CROW2 crowbar resistor; the validation board's CRCW12064R70FKEAHP (0.75 W at Rth <= 110 K/W). 122.7 uJ, 25.2 W peak there against the 60 W repeated pulse screen; conditional screening, not qualification. The long-hold limit is the UCC24624's thermal bound (tools/reg_hold.py), not this resistor"
     },
     {
       "ref": "Q53",
@@ -380,7 +380,7 @@
     },
     {
       "ref": "R55",
-      "value": "4.7R 0.5W",
+      "value": "4.7R 0.75W HP",
       "evidence": "validation-board",
       "w_mm": 4.56,
       "d_mm": 2.26,
@@ -388,7 +388,7 @@
       "x_mm": 90.8,
       "y_mm": 67.0,
       "rot_deg": 0.0,
-      "note": "REG3 -> REG_CROW3 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+      "note": "REG3 -> REG_CROW3 crowbar resistor; the validation board's CRCW12064R70FKEAHP (0.75 W at Rth <= 110 K/W). 122.7 uJ, 25.2 W peak there against the 60 W repeated pulse screen; conditional screening, not qualification. The long-hold limit is the UCC24624's thermal bound (tools/reg_hold.py), not this resistor"
     },
     {
       "ref": "Q54",
@@ -404,7 +404,7 @@
     },
     {
       "ref": "R56",
-      "value": "4.7R 0.5W",
+      "value": "4.7R 0.75W HP",
       "evidence": "validation-board",
       "w_mm": 4.56,
       "d_mm": 2.26,
@@ -412,7 +412,7 @@
       "x_mm": 128.8,
       "y_mm": 67.0,
       "rot_deg": 0.0,
-      "note": "REG4 -> REG_CROW4 crowbar resistor. 122.7 uJ, 25.2 W peak on the validation board; the 1206 pulse curve is not in the repository, so this is a screening ratio and not a qualification"
+      "note": "REG4 -> REG_CROW4 crowbar resistor; the validation board's CRCW12064R70FKEAHP (0.75 W at Rth <= 110 K/W). 122.7 uJ, 25.2 W peak there against the 60 W repeated pulse screen; conditional screening, not qualification. The long-hold limit is the UCC24624's thermal bound (tools/reg_hold.py), not this resistor"
     },
     {
       "ref": "U3",
