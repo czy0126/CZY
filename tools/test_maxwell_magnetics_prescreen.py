@@ -96,3 +96,22 @@ def test_bh_csv_requires_origin_valid_slope_and_2turn_field_range(tmp_path):
     assert any("begin" in msg for msg in runner.check_bh_csv(f))
     f.write_text(prefix+"0,0\n100,0.10\n200,0.20\n300,0.30\n400,0.30000001\n500,0.33\n", encoding="utf-8")
     assert any("mu0" in msg for msg in runner.check_bh_csv(f))
+
+def test_maxwell_matrix_export_has_documented_txt_extension(tmp_path):
+    """Maxwell3d.export_matrix does not support a CSV filename."""
+    p = runner.matrix_export_path(tmp_path, 121.515)
+    assert p.name == "matrix_121p515A.txt"
+    assert p.suffix == ".txt"
+    assert p.parent == tmp_path
+
+
+def test_maxwell_inputs_pin_config_geometry_and_bh_bytes(tmp_path):
+    cfg, step, bh = (tmp_path / name for name in ("contract.json", "geom.step", "curve.csv"))
+    cfg.write_text('{"case": 1}', encoding="utf-8")
+    step.write_text("ISO-10303-21; CONCEPT", encoding="utf-8")
+    bh.write_text("H_A_per_m,B_T\\n0,0\\n", encoding="utf-8")
+    original = runner.source_sha256_evidence(cfg, step, bh)
+    assert set(original) == {"config_sha256", "step_sha256", "bh_sha256"}
+    cfg.write_text('{"case": 2}', encoding="utf-8")
+    assert original["config_sha256"] != runner.source_sha256_evidence(cfg, step, bh)["config_sha256"]
+    assert original["step_sha256"] == runner.sha256(step)
