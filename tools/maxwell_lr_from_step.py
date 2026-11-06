@@ -108,6 +108,20 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def matrix_export_path(output: Path, current_a: float) -> Path:
+    """Maxwell3d.export_matrix requires a .txt output, not .csv."""
+    return output / ("matrix_" + str(current_a).replace(".", "p") + "A.txt")
+
+
+def source_sha256_evidence(contract: Path, geometry: Path, bh: Path) -> dict:
+    """Tie all solver evidence to exact input bytes, not just path names."""
+    return {
+        "config_sha256": sha256(contract),
+        "step_sha256": sha256(geometry),
+        "bh_sha256": sha256(bh),
+    }
+
+
 def bh_pairs_for_pyaedt(rows: list[dict]) -> list[list[float]]:
     """Use labeled input rows in the [H(A/m), B(T)] order of PyAEDT docs.
 
@@ -134,7 +148,7 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
     input_evidence = {
         "case": case["id"], "source": CONFIG.relative_to(ROOT).as_posix(),
         "manufacturer_geometry_verified": config["approval"].get("manufacturer_geometry_verified", False),
-        "step_sha256": sha256(step), "bh_sha256": sha256(bh),
+        **source_sha256_evidence(CONFIG, step, bh),
         "solver": "Ansys Maxwell 3D Magnetostatic",
         "meaning": "CAD/source provenance only, NOT an L(I) answer",
         "concept_model": True,
@@ -221,9 +235,11 @@ def build(config: dict, case: dict, *, solve: bool, output: Path,
                     raise RuntimeError("Maxwell solver failed at " + str(amp))
                 # Store real solver artifacts, without reporting unparsed
                 # matrices as verified inductance or material certification.
-                matrix_path = output / ("matrix_" + str(amp).replace(".", "p") + "A.csv")
+                matrix_path = matrix_export_path(output, amp)
                 if not app.export_matrix(
-                    matrix_name="Lr_Matrix", output_file=str(matrix_path)
+                    matrix_name="Lr_Matrix",
+                    output_file=str(matrix_path),
+                    setup=setup.name,
                 ) or not matrix_path.is_file() or matrix_path.stat().st_size == 0:
                     raise RuntimeError("matrix export missing for current " + str(amp))
                 statuses.append({
