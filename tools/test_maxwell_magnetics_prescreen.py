@@ -96,3 +96,36 @@ def test_bh_csv_requires_origin_valid_slope_and_2turn_field_range(tmp_path):
     assert any("begin" in msg for msg in runner.check_bh_csv(f))
     f.write_text(prefix+"0,0\n100,0.10\n200,0.20\n300,0.30\n400,0.30000001\n500,0.33\n", encoding="utf-8")
     assert any("mu0" in msg for msg in runner.check_bh_csv(f))
+
+
+def test_export_matrix_uses_the_documented_txt_extension(tmp_path):
+    """PyAEDT Maxwell3d.export_matrix only supports .txt files."""
+    export = runner.matrix_export_path(tmp_path, 121.515)
+    assert export.name == "matrix_121p515A.txt"
+    assert export.suffix == ".txt"
+
+
+def test_solver_manifest_binds_config_cad_and_bh_bytes(tmp_path):
+    contract = tmp_path / "contract.json"
+    geometry = tmp_path / "Lr.stp"
+    bh = tmp_path / "N97.csv"
+    contract.write_text('{"version":1}', encoding="utf-8")
+    geometry.write_text("ISO-10303-21;", encoding="utf-8")
+    bh.write_text("H_A_per_m,B_T\\n0,0\\n", encoding="utf-8")
+    baseline = runner.source_sha256_evidence(contract, geometry, bh)
+    assert set(baseline) == {"config_sha256", "step_sha256", "bh_sha256"}
+    contract.write_text('{"version":2}', encoding="utf-8")
+    changed = runner.source_sha256_evidence(contract, geometry, bh)
+    assert changed["config_sha256"] != baseline["config_sha256"]
+    assert changed["step_sha256"] == baseline["step_sha256"]
+    assert changed["bh_sha256"] == baseline["bh_sha256"]
+
+
+def test_maxwell_solution_requires_original_matrix_not_claimed_analytic():
+    """Guard the output contract when replacing the estimator with a field solution."""
+    import inspect
+    source = inspect.getsource(runner.build)
+    assert 'matrix_path = matrix_export_path(output, amp)' in source
+    assert 'setup=setup.name' in source
+    assert '"L_diff_uH": None, "B_local_peak_T": None' in source
+    assert 'app.import_3d_cad(' in source

@@ -100,6 +100,16 @@ def _newline(text: str) -> str:
     return "\r\n" if "\r\n" in text else "\n"
 
 
+def read_text_exact(path: Path) -> str:
+    """Read UTF-8 verbatim, with no universal-newline translation.
+
+    ``Path.read_text(newline=...)`` only accepts ``newline`` from Python 3.13;
+    CI pins 3.12, where the keyword raises ``TypeError``.  Reading bytes and
+    decoding is the same operation as ``newline=""``: CRLF stays CRLF.
+    """
+    return path.read_bytes().decode("utf-8")
+
+
 def split_block(text: str) -> tuple[str, str, str]:
     """Return (before, block, after); the block includes both marker lines."""
     if text.count(BEGIN) != 1 or text.count(END) != 1:
@@ -118,7 +128,7 @@ def desired_block(rows: list[dict[str, str]], nl: str) -> str:
 
 def write(quiet: bool = False) -> int:
     rows = index_rows()
-    text = HUB.read_text(encoding="utf-8", newline="")
+    text = read_text_exact(HUB)
     nl = _newline(text)
     before, current, after = split_block(text)
     block = desired_block(rows, nl)
@@ -145,7 +155,7 @@ def check_homes(rows: list[dict[str, str]]) -> list[str]:
 
 def check() -> int:
     rows = index_rows()
-    text = HUB.read_text(encoding="utf-8", newline="")
+    text = read_text_exact(HUB)
     nl = _newline(text)
     _, current, _ = split_block(text)
     block = desired_block(rows, nl)

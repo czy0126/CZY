@@ -446,7 +446,7 @@ def test_committed_erc_is_clean_and_schematic_matches_manufacturing_index():
     The recorded ERC must be clean and pinned to the exact schematic bytes;
     an actual fresh ERC still requires the matching KiCad executable.
     """
-    import hashlib
+    from text_identity import sha256_file
 
     sch = OUT / "sr_fault_validation.kicad_sch"
     cached = json.loads((OUT / "erc.json").read_text(encoding="utf-8"))
@@ -454,7 +454,7 @@ def test_committed_erc_is_clean_and_schematic_matches_manufacturing_index():
     assert board.erc_violations(OUT / "erc.json") == []
     index = json.loads((board.ROOT / "pcb/manufacturing/index.json").read_text())
     entry = next(x for x in index["boards"] if x["id"] == "sr_fault_validation")
-    assert entry["schematic_sha256"] == hashlib.sha256(sch.read_bytes()).hexdigest()
+    assert entry["schematic_sha256"] == sha256_file(sch)
     assert entry["flags"]["fabrication_approved"] is False
 
 

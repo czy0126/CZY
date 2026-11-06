@@ -11,6 +11,22 @@
 
 ## 已知工具陷阱（已修，勿回归）
 
+- **提交物里给文本文件记的 SHA256 必须按 LF 规范字节算**：Git 存 LF，而 Windows 工作区可能是 CRLF
+  （`core.autocrlf=true`，或 KiCad 把 `.kicad_sch` / `.kicad_pcb` 重新写成 CRLF）。
+  按 `read_bytes()` 原样哈希会让 CI（LF 检出）和本地（CRLF）对同一文件得出不同值：
+  `pcb/manufacturing/index.json` 的 4 个 `schematic_sha256`、fast_oc 的 `board_sha256`，
+  以及 `pcb/fast_oc/fab/manifest.json` 的 board 哈希都曾因此只在 CI 上红。
+  现在统一走 `tools/text_identity.py` 的 `sha256_file()`（文本 CRLF→LF，二进制保持原字节；
+  后缀表也住在那里）。**任何新的"文本文件记哈希"都改用它。**
+
+- **`Path.read_text(newline=...)` 是 Python 3.13 才有的参数**：开发机是 3.13，而
+  `.github/workflows/ci.yml` 固定 `python-version: "3.12"`，于是 `tools/agent_docs.py`
+  与 `tools/test_agent_docs.py` 在 CI 上以
+  `TypeError: Path.read_text() got an unexpected keyword argument 'newline'` 红掉
+  （test_agent_docs 7 个用例）。要保留 CRLF 原样读取就用 `agent_docs.read_text_exact()`
+  （bytes → utf-8），它等价于 `newline=""` 且 3.12 可用。
+  `Path.write_text(newline=)` 是 3.10 起就有的，不受影响。
+
 - `primary_freq_khz()` 原先把整个 raw 的 `V(sw)` 边沿取中位数，再按窗口门极周期过滤；
   在 8 ms 冷启动上四行都返回同一个 248.86 kHz。现支持 `t0/t1` 窗口参数，
   回归测试 `test_primary_freq_respects_window_bounds`。

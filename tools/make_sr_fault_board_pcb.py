@@ -68,7 +68,6 @@ import argparse
 import collections
 import csv
 import functools
-import hashlib
 import json
 import math
 import re
@@ -80,6 +79,7 @@ from pathlib import Path
 import make_sr_fault_board as sch
 import sr_board_router as router
 from main_board_mechanical import find_kicad_cli
+from text_identity import FAB_TEXT_SUFFIXES, sha256_file
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "pcb" / "sr_fault_validation"
@@ -1959,11 +1959,8 @@ def fab_commands(cli: Path, board: Path, out: Path,
 
 
 def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    """Canonical (LF) identity: the same file hashes the same on CI and here."""
+    return sha256_file(path)
 
 
 def plotted_layers(out: Path) -> list[str]:
@@ -2016,10 +2013,7 @@ def check_position_excludes_dnp(path: Path, dnp: set[str] | None = None) -> None
 # BEFORE hashing.  Git auto-CRLF otherwise silently rewrites their bytes
 # after commit: both validation board manifests were already stale in checkout.
 # These are textual numerical tooling formats, NOT PCB geometry changes.
-FAB_TEXT_SUFFIXES = {
-    ".gbl", ".gbs", ".gbp", ".gbo", ".gm1", ".gtl", ".gts", ".gtp",
-    ".gto", ".gbrjob", ".drl", ".csv",
-}
+# The suffix set lives in text_identity, next to the canonical hash itself.
 
 
 def normalise_fab_text_line_endings(directory: Path) -> list[str]:

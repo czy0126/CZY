@@ -84,14 +84,14 @@ def test_committed_drc_is_a_cached_report_bound_to_the_current_board():
     A zero cached DRC remains necessary but NOT sufficient: only running
     kicad-cli again in the CAD environment proves the current board passes.
     """
-    import hashlib
+    from text_identity import sha256_file
 
     actual = json.loads((OUT / "drc.json").read_text(encoding="utf-8"))
     assert actual["source"] == board.BOARD
     assert not actual["violations"] and not actual["unconnected_items"]
     assert not actual["schematic_parity"]
     manifest = json.loads((board.FAB / "manifest.json").read_text())
-    sha = hashlib.sha256((OUT / board.BOARD).read_bytes()).hexdigest()
+    sha = sha256_file(OUT / board.BOARD)
     assert manifest["board_sha256"] == sha
     assert manifest["flags"]["fabrication_approved"] is False
 

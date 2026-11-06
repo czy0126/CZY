@@ -49,7 +49,7 @@ def test_a_crlf_checkout_still_matches(tree: Path) -> None:
     # CRLF while a developer's work tree may be LF.  The projection must use
     # whichever newline the file already has, or every Windows run would drift.
     def crlf(p: Path) -> None:
-        text = p.read_text(encoding="utf-8", newline="")
+        text = ad.read_text_exact(p)
         p.write_text(text.replace("\r\n", "\n").replace("\n", "\r\n"),
                      encoding="utf-8", newline="")
 
@@ -63,7 +63,7 @@ def test_a_crlf_checkout_still_matches(tree: Path) -> None:
 
 def test_a_hand_edited_hot_row_fails(tree: Path) -> None:
     hub = tree / "CLAUDE.md"
-    text = hub.read_text(encoding="utf-8", newline="")
+    text = ad.read_text_exact(hub)
     _, block, _ = ad.split_block(text)
     # Edit inside the generated block only: the same sentence also appears in
     # §一的 prose table, and prose is allowed to be hand-written.
@@ -89,7 +89,7 @@ def test_write_is_idempotent(tree: Path) -> None:
 
 def test_write_restores_a_corrupted_block(tree: Path) -> None:
     hub = tree / "CLAUDE.md"
-    text = hub.read_text(encoding="utf-8", newline="")
+    text = ad.read_text_exact(hub)
     _, block, _ = ad.split_block(text)
     hub.write_text(text.replace(block, ad.BEGIN + ad._newline(text) + ad.END), encoding="utf-8", newline="")
     assert ad.check() == 1
@@ -106,7 +106,7 @@ def test_a_row_with_the_wrong_column_count_is_an_error(tree: Path) -> None:
 
 def test_a_missing_marker_pair_is_an_error(tree: Path) -> None:
     hub = tree / "CLAUDE.md"
-    text = hub.read_text(encoding="utf-8", newline="")
+    text = ad.read_text_exact(hub)
     hub.write_text(text.replace(ad.END, ""), encoding="utf-8", newline="")
     with pytest.raises(SystemExit, match="exactly one"):
         ad.check()
