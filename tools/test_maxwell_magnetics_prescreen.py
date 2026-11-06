@@ -115,3 +115,10 @@ def test_maxwell_inputs_pin_config_geometry_and_bh_bytes(tmp_path):
     cfg.write_text('{"case": 2}', encoding="utf-8")
     assert original["config_sha256"] != runner.source_sha256_evidence(cfg, step, bh)["config_sha256"]
     assert original["step_sha256"] == runner.sha256(step)
+
+def test_maxwell_step_import_is_on_geometry_modeler_not_application():
+    """Modeler3D.import_3d_cad is the documented method, not Maxwell3d.import_3d_cad."""
+    import inspect
+    body = inspect.getsource(runner.build)
+    assert "app.modeler.import_3d_cad(" in body
+    assert "ok = app.import_3d_cad(" not in body
