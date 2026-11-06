@@ -289,7 +289,7 @@
       ],
       "copper_density_g_per_mm3": 0.00896,
       "copper_heat_capacity_j_per_g_k": 0.385,
-      "copper_rho_20c_ohm_mm": 0.0000172,
+      "copper_rho_20c_ohm_mm": 1.72e-05,
       "copper_alpha_per_k": 0.00393,
       "ipc2221_k_external": 0.048
     },
@@ -338,5 +338,7 @@
   "flags": {
     "hardware_built": false,
     "fabrication_approved": false
-  }
+  },
+  "fab_snapshot_basis": "CACHED_KICAD_10_PLOT_VALUE_ONLY_CHANGED",
+  "fresh_kicad_erc_drc_gerber_run": false
 }

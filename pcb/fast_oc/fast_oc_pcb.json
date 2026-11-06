@@ -19,11 +19,7 @@
   "connections_made": 42,
   "unrouted": [],
   "longest_single_net_span_mm": 44.01,
-  "drc": {
-    "violations": 0,
-    "unconnected_items": 0,
-    "schematic_parity": 0
-  },
+  "drc": null,
   "limits": [
     "a routed, DRC-clean board says the netlist reached copper; it does not say the module works",
     "no latch, no isolation and no reverse-supply protection beyond D2",
