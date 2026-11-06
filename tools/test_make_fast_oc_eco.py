@@ -5,8 +5,9 @@ The interesting claims are not "the generator ran".  They are:
 * the comparator's shutdown pin is held LOW -- on a TLV3501 a high SHDN
   *disables* the part, so the obvious "tie it to the supply" wiring produces a
   fast comparator that never switches;
-* the push-pull output cannot reach FAST_TRIP except through the open-drain
-  NMOS, because D0's FAST_TRIP is a wired-OR node;
+* the module's open-drain NMOS only pulls FAST_EXT_N LOW; it must never
+  directly drive D0's legacy active-HIGH FAST_TRIP; the receiving D0 uses
+  U11F inversion and U19 OR to merge these opposite-polarity paths;
 * the 1 us input pole plus the 12 ns over-temperature comparator delay is
   recomputed from the datasheet constants, not copied out of the report.
 
@@ -104,15 +105,28 @@ def test_shutdown_is_pulled_low_because_high_disables_the_comparator(parts, repo
     assert "V5" not in report["net_map"]["SHDN"]
 
 
-def test_the_push_pull_output_reaches_fast_trip_only_through_the_nmos(parts, report):
-    """D0's FAST_TRIP is a wired-OR of open-drain drivers; a push-pull output
-    tied to it would fight U3B.  The only path is U1.5 -> R5 -> Q1 gate -> Q1.3.
+def test_open_drain_fast_ext_n_is_separate_from_legacy_active_high_fast_trip(parts, report):
+    """The fast-OC output is LOW-on-fault; D0 legacy FAST_TRIP is HIGH-on-fault.
+
+    Shorting them can clamp the old LM393 path and silently defeat protection.
+    The module must expose FAST_EXT_N only and leave inversion/OR to the D0 PCB.
     """
-    members = report["net_map"]["FAST_TRIP"]
+    members = report["net_map"]["FAST_EXT_N"]
     assert "Q1.3" in members
     assert "U1.5" not in members
+    assert "FAST_TRIP" not in report["net_map"]
     assert by_ref(parts, "R5").nets == {"1": "OUT", "2": "Q1G"}
-    assert by_ref(parts, "Q1").nets["3"] == "FAST_TRIP"
+    assert by_ref(parts, "Q1").nets["3"] == "FAST_EXT_N"
+    assert by_ref(parts, "J1").nets["4"] == "FAST_EXT_N"
+    # D0 must invert FAST_EXT_N then combine it with legacy FAST_TRIP.
+    import make_d0_protection_board as d0
+    parts_d0 = d0.parts()
+    inverter = next(p for p in parts_d0 if p.ref == "U11" and p.unit == 6)
+    logic_or = next(p for p in parts_d0 if p.ref == "U19" and p.unit == 1)
+    assert inverter.nets == {"13": "FAST_EXT_N", "12": "FAST_EXT_H"}
+    assert logic_or.nets == {
+        "1": "FAST_TRIP", "2": "FAST_EXT_H", "3": "FAST_COMBINED"
+    }
 
 
 def test_the_input_protection_is_two_diodes_and_a_series_divider(parts):
@@ -300,8 +314,9 @@ def test_the_committed_erc_is_clean_and_schematic_source_is_pinned():
 def test_the_netlist_contains_every_module_net():
     text = (OUT / "fast_oc.net").read_text(encoding="utf-8")
     for net in ("V5", "PGND", "OCD", "INP", "REF", "OUT", "Q1G",
-                "SHDN", "FAST_TRIP"):
+                "SHDN", "FAST_EXT_N"):
         assert f'(name "/{net}")' in text, net
+    assert '(name "/FAST_TRIP")' not in text
 
 
 def test_the_honesty_flags_stay_false(report):
