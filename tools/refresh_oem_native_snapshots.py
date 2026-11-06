@@ -82,7 +82,10 @@ def run() -> None:
         "make_sr_fault_board.py",
         "make_d0_protection_board.py",
         "make_fast_oc_pcb.py",
-        "make_sr_fault_board_pcb.py",
+        # SR Q40/Q41 now have exact MPN fields but keep the same native
+        # Value, footprints and nets. Regenerating its 71-part routed PCB
+        # merely to repin a BOM would burn minutes and can change copper.
+        # A fresh SR geometry generation belongs to a separate KiCad gate.
     ]
     for name in generators:
         print("Regenerate", name, flush=True)
