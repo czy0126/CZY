@@ -1,6 +1,6 @@
 # Fast-OC 快速过流验证 PCB：真实订货型号与装配停止条件（2026-11-05）
 
-**工程状态：可编辑 KiCad 原理图 + 已布线验证小板 + Gerber/钻孔/坐标齐全；没有实物测量、没有制造/装配批准。** `fab/manifest.json` 的 `fabrication_approved=false` 必须保持。仅有零 ERC/DRC 不代表“型号能贴上”或“保护有效”。
+**工程状态：可编辑 KiCad 原理图 + 已布线验证小板 + Gerber/钻孔/坐标齐全；没有实物测量、没有制造/装配批准。仓库中已有的早期缓存 Gerber 仅用于文件审查，修订后的实际 KiCad 10 ERC/DRC/制造输出尚待重新执行。** `fab/manifest.json` 的 `fabrication_approved=false` 必须保持。仅有零 ERC/DRC 不代表“型号能贴上”或“保护有效”。
 
 ## OEM 核对后，已直接落进源生成器、原理图、PCB、BOM、网表和装配文件的四个实体位号
 
@@ -22,8 +22,8 @@
 
 - 首先冻结其余22个器件的实际采购号/允许的经审查等效件，把制造厂、温度、电压/电流降额、0.2 mm线距/0.3 mm孔径与装配板材确认写入回件，不允许只写`BAT54`等大族名称。
 - 在 KiCad GUI 重新打开原生PCB，人工核对U1 DBV6脚、U2 DBZ3脚、D1/D2 SOD123阴极方向与实物封装；导出真实ERC/DRC、Gerber与装配坐标后与`fab/manifest.json` 哈希再对一次。**本次代码已同步更改位号价值属性和受影响的文件哈希，但没有替代这个GUI步骤。**
-- 将快速过流模块的`OCD/V5/PGND/FAST_TRIP`四线接到真正D0锁存，使用**低能量试验**测量比较器输出、欠压、输入过冲、最慢总关断延迟；FAST_TRIP开漏电平不能独自构成完整硬件保护。保护/制造标志在这些测量前保持false。
+- 将快速过流模块的`OCD/V5/PGND/FAST_EXT_N`四线接到 D0 的 J10.4 专用低有效输入，由 U11F 反相为 FAST_EXT_H，经 U19 与旧版**高有效** FAST_TRIP 做 OR，再进入锁存；**绝不可将 fast_oc J1.4 直接连至 D0 TP8/FAST_TRIP**，否则可能抑制既有过流保护。实际接线后，使用**低能量试验**测量比较器输出、欠压、输入过冲、最慢总关断延迟；FAST_TRIP开漏电平不能独自构成完整硬件保护。保护/制造标志在这些测量前保持false。
 
 检验入口：`python -m pytest tools/test_fast_oc_vendor_ordering.py tools/test_make_fast_oc_eco.py tools/test_make_fast_oc_pcb.py -q`；`python tools/manufacturing_index.py --check`；`python tools/ci_check.py`。
 
-本次修改 **F.Cu/B.Cu、阻焊、钻孔几何未改**，因为纠正的是有相同焊盘几何的实际采购料号，不是接线ECO。未来重跑 `python tools/make_fast_oc_pcb.py --fab` 要以正式现场Kicad版本重新生成并校验新哈希；不要混用不同批次的Gerber/装配BOM。
+本次设计仅修改可订货器件值，原来的 **F.Cu/B.Cu、阻焊、钻孔几何尚待复测确认**，因为纠正的是有相同焊盘几何的实际采购料号，不是接线ECO。未来重跑 `python tools/make_fast_oc_pcb.py --fab` 要以正式现场Kicad版本重新生成并校验新哈希；不要混用不同批次的Gerber/装配BOM。
