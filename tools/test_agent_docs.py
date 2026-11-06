@@ -44,6 +44,23 @@ def test_the_hot_zone_has_exactly_the_starred_rules() -> None:
         assert any(rule in line for line in hot), rule
 
 
+def test_a_crlf_checkout_still_matches(tree: Path) -> None:
+    # CI checks out with core.autocrlf, so the hub and the index arrive as
+    # CRLF while a developer's work tree may be LF.  The projection must use
+    # whichever newline the file already has, or every Windows run would drift.
+    def crlf(p: Path) -> None:
+        text = p.read_text(encoding="utf-8", newline="")
+        p.write_text(text.replace("\r\n", "\n").replace("\n", "\r\n"),
+                     encoding="utf-8", newline="")
+
+    crlf(tree / "CLAUDE.md")
+    for md in (tree / "docs" / "agent").glob("*.md"):
+        crlf(md)
+    assert ad.check() == 0
+    assert ad.write(quiet=True) == 0
+    assert ad.check() == 0
+
+
 def test_a_hand_edited_hot_row_fails(tree: Path) -> None:
     hub = tree / "CLAUDE.md"
     text = hub.read_text(encoding="utf-8", newline="")
