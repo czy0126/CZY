@@ -56,9 +56,12 @@ C_REG = 2.2e-6 + 100e-9
 
 # A deliberate bench choice, not a datasheet value: the fault experiments run
 # with the main power off, so the bias only has to carry IVDDRUN plus the gate
-# charge of a normally switching pair.  40 mA is below the 50 C allowed current
-# and above that idle/run load; the record row has to carry the actual ambient.
-BENCH_BIAS_LIMIT_A = 40e-3
+# charge of a normally switching pair.  30 mA is well below the 50 C allowed
+# current and above that idle/run load.  40 mA was the first choice and is
+# rejected here: at 40 mA the JEDEC-board Rth already gives 91.7 C, so a
+# mounted Rth only 1.5x worse would sit exactly on the 125 C limit -- no
+# margin at all.  The record row has to carry the actual ambient.
+BENCH_BIAS_LIMIT_A = 30e-3
 
 
 def equilibrium_vreg(current_a: float, r_total: float) -> float:
@@ -92,10 +95,14 @@ def thermal(current_a: float, r_total: float, vdd: float, ambient_c: float) -> d
 
 
 def allowed_current_a(vdd: float, r_total: float, ambient_c: float) -> float:
-    """Largest steady crowbar current that keeps TJ <= TJ_MAX at ``ambient_c``.
+    """Largest steady crowbar current that keeps TJ <= TJ_MAX *if* Rth is the
+    datasheet's JEDEC-board 108.4 C/W.
 
     Solves (VDD - I*R)*I + VDD*IVDDRUN = (TJ_MAX - Tamb)/Rth for the lower root.
-    Returns 0.0 when the quiescent load alone already reaches the limit.
+    Returns 0.0 when the quiescent load alone already reaches the limit.  This
+    is an upper bound under an optimistic Rth, not a safe operating value: a
+    mounted board usually has a worse junction-to-ambient path, and the
+    datasheet gives no Zth(t), so there is no transient allowance either.
     """
     allowance = (TJ_MAX_C - ambient_c) / RTH_JA_C_PER_W - vdd * IVDD_RUN_MAX_A
     if allowance <= 0:
@@ -132,13 +139,19 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
             "short_circuit_13ma": sc_anchor,
         },
         "allowed_continuous_current_a": allowed,
+        "allowed_continuous_basis": (
+            "upper bound under the datasheet RthJA (JEDEC board, still air); a "
+            "mounted board is usually worse, and there is no Zth(t) for a "
+            "transient allowance -- do not read the table as a safe value"),
         "bench_bias_limit": {
             "chosen_a": BENCH_BIAS_LIMIT_A,
             "margin_at_25_c": allowed["25"] / BENCH_BIAS_LIMIT_A,
             "margin_at_50_c": allowed["50"] / BENCH_BIAS_LIMIT_A,
             "basis": "main power off during the fault experiments; the bias "
                      "carries IVDDRUN (1.5 mA max) plus the gate charge of a "
-                     "normally switching pair, not a 100 A load",
+                     "normally switching pair, not a 100 A load.  40 mA was "
+                     "rejected: at 40 mA a mounted Rth 1.5x worse than the "
+                     "JEDEC value would sit exactly on the 125 C limit",
             "rule": "record the actual ambient and limit in reg_hold_bench_record.csv; "
                     "if the ambient is above 50 C, lower the limit to the table value",
         },
@@ -162,13 +175,21 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
                 "the long hold; the crowbar alone is not a long-hold answer",
                 "a bias cut must be latched and reset only deliberately, and the gate "
                 "state and re-arm sequence have to be re-checked, not assumed",
+                "cutting the bias is not enough by itself: the recorded pass condition "
+                "for the bias-cut experiment is that VDD does not come back up through "
+                "the SR drains or the output (row H5), because a raised VDD can look "
+                "like a reset or hold the IC half-alive",
             ],
         },
         "open_items": [
             "IREGSC is specified at VVDD = 12 V; the board runs 15 V and the "
             "short-circuit current there is not specified",
-            "IVDDRUN is also a 12 V number, so the 22.5 mW quiescent term is "
-            "slightly low at 15 V; it is the smallest term in the budget",
+            "IVDDRUN is the datasheet maximum (1.5 mA) but still a 12 V number, so "
+            "the 22.5 mW quiescent term is slightly low at 15 V; it is the smallest "
+            "term in the budget",
+            "R44 itself dissipates I^2*R = 42 mW at 95 mA; the 1.4 W figure is the "
+            "controller's, not the resistor's, and the resistor's resistance drift "
+            "at that level is not modelled (it changes the equilibrium by <1%)",
             "gate charge during the ~12 us transition is not in the steady-state "
             "sum; it is a single event of order Qg(sync)*VREG per FET",
             "RthJA is a JEDEC-board, still-air number; the validation board is small and "
