@@ -16,7 +16,8 @@ not with a behavioural model:
    provides a REG crowbar as the primary shutdown and leaves the VG clamp as a
    DNP option so its contention can be measured instead of assumed.  The
    crowbar delay is quoted at the 3.63 V turn-off threshold (the slow end) and
-   is labelled an estimate: the regulator keeps sourcing and no part is chosen.
+   is labelled an estimate: the regulator keeps sourcing; AO3400A has been
+   selected, but its 3 V gate drive and pulse capability remain unverified.
 
 2. Is cutting VDD sufficient?
    JP1 removes VDD while the bias supply stays alive.  The board's JSON puts
@@ -514,7 +515,7 @@ def fault_parts() -> list[Part]:
              58, 292, {"1": "FAULT_G", "2": "RC_G"}, "1/10 W", "crowbar gate resistor"),
         Part("Q41", "Transistor_FET:Q_NMOS_GSD", "NMOS 30V IDM>=3A",
              "Package_TO_SOT_SMD:SOT-23", 74, 292, {"1": "RC_G", "2": "PGND", "3": "REG_CROW"},
-             "30 V, IDM >= 3 A", f"REG crowbar; MPN TO SELECT, Rds(on) <= {RDS_BOM_TARGET:g} ohm "
+             "30 V, IDM >= 3 A", f"REG crowbar AO3400A candidate; target Rds(on) <= {RDS_BOM_TARGET:g} ohm "
              f"at 3.0 V VGS; absorbs {crowbar_pulse()['fet_energy_j'] * 1e3:.3f} mJ per event",
              mpn="AO3400A",
              mpn_source="references/datasheets/ao3400a_oem_parameters.txt"),
@@ -831,13 +832,13 @@ def crowbar() -> dict:
                 "crowbar pulls it down; the constant-current column is a "
                 "sensitivity, not a guaranteed bound",
                 "no component tolerance band is applied to R44 or the REG capacitors",
-                "Q41 has no selected MPN, so its Rds(on) at the actual gate voltage "
-                "is a placeholder",
+                "Q41 AO3400A is selected, but hot Rds(on) at the actual gate voltage "
+                "is unverified",
                 "turn-on propagation of Q41 and the UVLO-to-VG transient are not modelled",
             ],
         },
-        "note": "Rds(on) is a placeholder for a 2N7002-class part; the BOM asks "
-                "for <=0.1 ohm and IDM>=3 A at an unspecified gate voltage",
+        "note": "The legacy 1.5 ohm Rds(on) case is a model sensitivity, not AO3400A OEM data; design asks "
+                "for <=0.1 ohm and IDM>=3 A at actual approx 3 V VGS, unverified on hardware",
     }
 
 
@@ -1171,7 +1172,7 @@ def observations() -> list[dict]:
                        f"{input_default()['gate_drive']['fault_g_v_at_3v3']:.1f} V of "
                        "gate drive, so the BOM's Rds(on) <= 0.1 ohm has to be quoted "
                        "at that voltage or the harness has to drive 5 V.",
-            "evidence": "R40/R41 divider into the Q41 gate; Q41 MPN not selected",
+            "evidence": "R40/R41 divider into the Q41 gate; Q41 AO3400A selected; pulse/3V margin not measured",
             "status": "DESIGN_DECISION",
         },
     ]
@@ -1200,7 +1201,7 @@ def report(ps: list[Part]) -> dict:
         "limits": [
             "low-energy validation board, <=10 A and <=5 V output",
             "no thermal model; Rds(on) and Ciss are datasheet typical/max, not measured",
-            "Q41 has no selected MPN; its Rds(on) is a placeholder, so the crowbar "
+            "AO3400A is selected; 1.5 ohm Rds(on) remains a legacy model, and the crowbar "
             "delay is a scenario table, not a single guaranteed number",
             "no vendor pulse curve for R44 and no Q41 thermal model; pulse "
             "capability and temperature rise are unverified",
