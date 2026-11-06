@@ -1,0 +1,20 @@
+# Canonical LF for KiCad numeric fabrication exports and source snapshots.
+# Git checkout CRLF conversion must not invalidate PCB/manifest SHA256 claims.
+pcb/**/*.gbl text eol=lf
+pcb/**/*.gbs text eol=lf
+pcb/**/*.gbp text eol=lf
+pcb/**/*.gbo text eol=lf
+pcb/**/*.gm1 text eol=lf
+pcb/**/*.gtl text eol=lf
+pcb/**/*.gts text eol=lf
+pcb/**/*.gtp text eol=lf
+pcb/**/*.gto text eol=lf
+pcb/**/*.gbrjob text eol=lf
+pcb/**/*.drl text eol=lf
+pcb/**/*.csv text eol=lf
+pcb/**/*.svg text eol=lf
+pcb/**/*.kicad_pcb text eol=lf
+pcb/**/*.kicad_sch text eol=lf
+pcb/**/*.net text eol=lf
+pcb/**/*.rpt text eol=lf
+pcb/**/*.json text eol=lf

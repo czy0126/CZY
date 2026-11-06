@@ -1,0 +1,40 @@
+name: maxwell-magnetics-prescreen
+
+on:
+  pull_request:
+    paths:
+      - 'tools/maxwell_magnetics_prescreen.py'
+      - 'tools/maxwell_lr_from_step.py'
+      - 'tools/test_maxwell_magnetics_prescreen.py'
+      - 'design/v3/maxwell/**'
+      - 'design/v3/bom/lr_design.json'
+      - '.github/workflows/maxwell-magnetics-prescreen.yml'
+  workflow_dispatch:
+
+jobs:
+  analytic-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test runner
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Source backed prescreen and validation
+        run: |
+          python -m pytest tools/test_maxwell_magnetics_prescreen.py -q
+          python tools/maxwell_magnetics_prescreen.py --out /tmp/elp38_prescreen.json
+          python tools/maxwell_lr_from_step.py --check --case ELP38_Lr_2turn_0920uH
+      - name: Check Maxwell metadata never claims success
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('/tmp/elp38_prescreen.json').read_text())
+          assert x['maxwell_executed'] is False
+          assert x['fab_release'] is False
+          assert len(x['cases']) == 4
+          PY
+
+# This workflow performs analytic checks only; it does not run Maxwell.

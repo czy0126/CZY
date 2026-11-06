@@ -1,6 +1,6 @@
 {
   "board": "fast_oc.kicad_pcb",
-  "board_sha256": "c88a1b1add5c2f88a16cbdd7bd734c9dc4ce397c9ed1cd1a6192456d2d91d81b",
+  "board_sha256": "1b9ef4b1354edaca704c3bbd871fef478c32e4f869a5eae72e453f7a4d393b67",
   "kicad_cli": "10.0.6",
   "copper_weight_oz": 1,
   "layers": [
@@ -29,68 +29,68 @@
   "files": [
     {
       "name": "assembly.svg",
-      "bytes": 15154,
-      "sha256": "8d075b3084a1b8bfdb90a701461a2dd90749557d1ff115ad042249d7d2533c19"
+      "bytes": 15156,
+      "sha256": "cd77a9f7d6babbb1e1e5a67b6881371fb287f4ea050f772d573b8c7b4f58a07a"
     },
     {
       "name": "fast_oc-B_Cu.gbl",
-      "bytes": 10909,
-      "sha256": "bb06e5dadf5ad1e2ca202383a9c557e7a6c8201e759b3519bc5ab82db854f1ca"
+      "bytes": 10454,
+      "sha256": "9a8617b128e8faa1b79ee6d7b1ab35ebc47116dd3f7f3823e59b85937a296b95"
     },
     {
       "name": "fast_oc-B_Mask.gbs",
-      "bytes": 846,
-      "sha256": "94d163635a7e16b40268102585e7722d3064deab0a4aea7c547becf228745bd9"
+      "bytes": 807,
+      "sha256": "be4d05dfa33ada958372acfa9d85cee10cb9e9014e3a79b25970477724944192"
     },
     {
       "name": "fast_oc-B_Paste.gbp",
-      "bytes": 467,
-      "sha256": "52f56a062d856bba432d28fb290e43d69de4a7f21a22da40d2008f154a3b7549"
+      "bytes": 452,
+      "sha256": "3fa05251d69c850dbedb3233518d6e9f0524848cbf71e3fb85aab1e6013cca20"
     },
     {
       "name": "fast_oc-B_Silkscreen.gbo",
-      "bytes": 468,
-      "sha256": "a00b329e6cfc7f70c56e0bbe8d794ddc2e6d50729562eaf482d6122954e76db0"
+      "bytes": 453,
+      "sha256": "7db4f1894c6cf162e022f2acd0a1013f2a785692332dc3dea6f9d795a303001b"
     },
     {
       "name": "fast_oc-Edge_Cuts.gm1",
-      "bytes": 640,
-      "sha256": "3bbfb41ae995b09778f26f882a7c819c12eaec0ec4d89b1f1e238670fb928664"
+      "bytes": 614,
+      "sha256": "61bd5accf1a4843cb6d2cf9b80bf27e212cb61d4fc5fa80dc79018687e659450"
     },
     {
       "name": "fast_oc-F_Cu.gtl",
-      "bytes": 23132,
-      "sha256": "275edac93b9a4278fdad0269b7518e3141741e371c467d902fe2071bb5711432"
+      "bytes": 22129,
+      "sha256": "cd1d8d39d193e6ee2775b539acfd9e6da6126959324d92546e8f67e74b8d3413"
     },
     {
       "name": "fast_oc-F_Mask.gts",
-      "bytes": 3737,
-      "sha256": "113a7b5f3917ad02f81851227d52a6739a2dbff21206b8c777423e567d462b58"
+      "bytes": 3565,
+      "sha256": "03afd72e1a2d2269913420428f68150d39de8bb37bac6bd716f5373a384ae8d4"
     },
     {
       "name": "fast_oc-F_Paste.gtp",
-      "bytes": 2972,
-      "sha256": "625e32185fe3daf9594da16ab228d4791845583bc06d44209f36750bcad76c77"
+      "bytes": 2850,
+      "sha256": "1e6bf94a6b037ee5c7ecf2e23aa88527c5d8086f04b58f00a211b180f31c279a"
     },
     {
       "name": "fast_oc-F_Silkscreen.gto",
-      "bytes": 35623,
-      "sha256": "6ddc3d3a432b5a19e124085685b9b89dab4a7e4ada75286c09840233259150d3"
+      "bytes": 34129,
+      "sha256": "05d0d2306e8368672cae2975c93b64197c3c55915ab7c527f9cac9b728d6e479"
     },
     {
       "name": "fast_oc-job.gbrjob",
-      "bytes": 2745,
-      "sha256": "96dd6b9c2bf4ac5f382fd383726bb17f161bbe1f3a3a1877ea842c3b0df7048e"
+      "bytes": 2620,
+      "sha256": "a82ad80fa60b3227dca51ab86d6529e7183a96a56f5a745f22f42385d836aaca"
     },
     {
       "name": "fast_oc-pos.csv",
-      "bytes": 1321,
-      "sha256": "e1eaf6db74daa6ff5936c6f3807a0947a53c628b297744e39b304fa7480e7042"
+      "bytes": 1303,
+      "sha256": "c1b3307254dcb691638c6ba3a770acb326ec1550c66d31387bc90f3ba2493428"
     },
     {
       "name": "fast_oc.drl",
-      "bytes": 1129,
-      "sha256": "b0151759d8cd58a644db830b8220edf260f2c719c76413aa9956587daabfea66"
+      "bytes": 1063,
+      "sha256": "ac1118bb0e72f5cf09c385366b8adcaf848e396c146b10d17a90c803c78e7063"
     }
   ],
   "current_rating": {
@@ -101,7 +101,7 @@
   "what_this_is_not": [
     "not an approval to build: hardware_built and fabrication_approved are false",
     "a latch: the fast-trip output follows current.  Latching lives in D0's CD4013, not here",
-    "a complete protection channel: the 5 V rail and the OCD node come from the harness, and losing 5 V releases FAST_EXT_N rather than tripping it",
+    "a complete protection channel: the 5 V rail and the OCD node come from the harness, and losing 5 V releases FAST_TRIP rather than tripping it",
     "a thermal or EMC review: DRC covers copper only",
     "a checked drawing: assembly.svg is generated from the same placement table as the copper, so the two cannot disagree -- but it has not been compared with a physical first article"
   ],

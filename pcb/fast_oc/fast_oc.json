@@ -253,7 +253,7 @@
     "shutdown_logic": "SHDN low enables; within 0.9 V of V+ disables",
     "quiescent_current_max_a": 0.005,
     "loss_of_5v": "D3 keeps the backfeed off the connector and R7 is the only element that can raise FAST_EXT_N; with J1.1 at 0 V the receiver's 100k holds the line low through Q1 or R7's open top. The rail itself can still be backfed through D2, so the state is proved by the bench matrix, not by this note",
-    "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum operating current is not in this repository"
+    "minimum_reference_current": "UNVERIFIED - the LM4040D25IDBZR minimum operating current is not in this repository"
   },
   "backfeed": {
     "problem": "with J1.1 open, D2 turns the OCD divider into a supply for the dead rail; R7 was referenced to that rail, so the healthy level depended on the backfeed",
@@ -498,7 +498,7 @@
     "the system stop is NOT set by this comparator: the SR branch waits for REG to fall through UVLO, so the whole-machine incomplete estimate is quoted in system_delay",
     "D0's CD4013 latch propagation is not modelled, so system_delay totals are floors",
     "the module rail is isolated by D3, but the isolated rail can still be backfed through D2; its state below 2.7 V is unspecified and the bench matrix that would pin it down is UNEXECUTED",
-    "the LM4040DBZ-2.5 minimum operating current is unverified, so the low-supply corner is not characterised",
+    "the LM4040D25IDBZR minimum operating current is unverified, so the low-supply corner is not characterised",
     "a clean ERC only says the drawing agrees with itself"
   ]
 }

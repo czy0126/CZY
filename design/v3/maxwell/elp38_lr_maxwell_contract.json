@@ -1,0 +1,73 @@
+{
+  "schema": "CZY_MAXWELL3D_LR_CAD_CONTRACT_V1",
+  "design_intent": "Lr only; ELP38 + I38 N97; 2-turn and 3-turn are alternative geometries, not a single shared STEP",
+  "model_status": "NO_ACTUAL_STEP_OR_BH; ENGINEER_RECONSTRUCTED_CAD_ACCEPTED_FOR_CONCEPT_ONLY",
+  "maxwell_solution": "Magnetostatic",
+  "manufacturer_core": "TDK ELP 38/8/25 + I 38/4/25 N97",
+  "source_design": "design/v3/bom/lr_design.json",
+  "frequency_khz": 200.622,
+  "temperature_c": 100,
+  "solved_currents_a": [
+    0.5,
+    13.88142,
+    22.53,
+    84.02,
+    104.17,
+    121.515
+  ],
+  "cases": [
+    {
+      "id": "ELP38_Lr_2turn_0920uH",
+      "turns": 2,
+      "target_inductance_uh": 0.92,
+      "analytic_gap_mm": 1.031,
+      "step_file": null
+    },
+    {
+      "id": "ELP38_Lr_3turn_0920uH",
+      "turns": 3,
+      "target_inductance_uh": 0.92,
+      "analytic_gap_mm": 2.356,
+      "step_file": null
+    },
+    {
+      "id": "ELP38_Lr_2turn_1000uH",
+      "turns": 2,
+      "target_inductance_uh": 1,
+      "analytic_gap_mm": 0.946,
+      "step_file": null
+    },
+    {
+      "id": "ELP38_Lr_3turn_1000uH",
+      "turns": 3,
+      "target_inductance_uh": 1,
+      "analytic_gap_mm": 2.165,
+      "step_file": null
+    }
+  ],
+  "cad_body_names": {
+    "core": "ELP38_FERRITE",
+    "plate": "I38_FERRITE",
+    "winding_terminal_sheet": "LR_COIL_TERMINAL",
+    "winding_copper": "LR_FOIL_COPPER"
+  },
+  "aedt_material_name": "N97_100C_BH_CONCEPT_REVIEWED",
+  "n97_bh_100c_csv": null,
+  "approval": {
+    "winding_direction_confirmed": false,
+    "cad_gap_matches_case": false,
+    "geometry_source_reviewed_for_concept": false,
+    "bh_curve_source_reviewed_for_concept": false,
+    "manufacturer_geometry_verified": false
+  },
+  "numerical_acceptance": {
+    "maxwell_inductance_mesh_change_percent": 2,
+    "target_l_at_low_bias_tolerance_percent": 10,
+    "max_local_b_field_t": "REPORT_MEASURED_FROM_FIELD_NOT_SET_HERE",
+    "differential_l_at_121_515a_uh": "REPORT_UNQUALIFIED",
+    "winding_loss_ac_at_200_622khz_w": "SECOND_SOLVER_AC_EDDY_REQUIRED"
+  },
+  "hardware_fabrication_approved": false,
+  "geometry_source_policy": "Engineer-reconstructed catalogue geometry is allowed for exploratory Maxwell. Manufacturer STEP is NOT a prerequisite. Record geometry/differences; manufacturer CAD is needed for final signoff.",
+  "material_source_policy": "Digitized/approximated BH may be used with explicit provenance for concept; actual 100C nonlinear BH is required for high-current signoff. Solver must never equate concept with measured."
+}

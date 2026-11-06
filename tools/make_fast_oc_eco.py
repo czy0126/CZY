@@ -125,7 +125,7 @@ D12_VENDOR_PAD_W = 0.85
 D12_VENDOR_PAD_H = 0.85
 D12_VENDOR_GAP = 2.5
 
-VREF = 2.5                 # V, LM4040DBZ-2.5
+VREF = 2.5                 # V, TI LM4040D25IDBZR
 R_TOP = 30e3               # ohm, OCD -> IN+
 R_BOT = 15e3               # ohm, IN+ -> PGND
 C_IN = 100e-12             # F, IN+ to PGND
@@ -191,15 +191,24 @@ STANDARD = {
 
 
 def build_symbols() -> dict[str, str]:
-    libs = symbol_libs()
+    # Offline tests validate frozen embedded symbols, not current OEM KiCad
+    # symbol libraries. Real ERC and footprint checks still need kicad-cli.
+    cli = kicad_cli()
+    libs = symbol_libs() if cli is not None else None
+    source_schematic = OUT / "fast_oc.kicad_sch"
+    if libs is None and not source_schematic.is_file():
+        raise SystemExit("KiCad symbols unavailable: supply kicad-cli or a committed schematic")
     symbols: dict[str, str] = {}
     for lib_id, (lib, name) in STANDARD.items():
-        block = extract_symbol(libs / lib, name)
-        block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
+        if libs is None:
+            block = extract_symbol(source_schematic, lib_id)
+        else:
+            block = extract_symbol(libs / lib, name)
+            block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
         symbols[lib_id] = block
-    # Two-pin shunt reference.  The stock LM4040DBZ symbols use ``extends`` and
-    # the SOT-23 third pin is NC, so a two-pin symbol is enough and avoids a
-    # derivative-symbol lookup that this generator would have to resolve.
+    # LM4040 DBZ pin 3 is marked '*' by TI and can float or connect to
+    # the anode (preferred in noisy environments); it is NOT a guaranteed NC.
+    # A two-pin symbol leaves physical SOT-23 pad 3 intentionally floating.
     symbols["FASTOC:LM4040"] = custom_symbol(
         "FASTOC:LM4040",
         [Pin("1", "K", 2.54, 0, 180, "power_out"),
@@ -209,7 +218,7 @@ def build_symbols() -> dict[str, str]:
 
 
 # ------------------------------------------------------------------ parts
-# SOT-23 is a three-pad land: it fits the two-pin shunt reference (pin 3 is NC)
+# SOT-23 has 3 pads; the LM4040D25IDBZR pin 3 is intentionally floated (NOT NC)
 # and the 2N7002.  The TLV3501AIDBV is the six-pin DBV package and must NOT
 # share this constant -- a shared constant is how a six-pin part ended up with
 # a three-pad land while ERC (which ignores footprints) stayed green.
@@ -231,15 +240,15 @@ def parts() -> list[Part]:
              {"1": "V5I", "2": "PGND"}, rating="16 V X7R", note="supply bulk, module side of D3"),
         Part("C2", "Device:C", "100nF/16V", "Capacitor_SMD:C_0603_1608Metric", 74, 48,
              {"1": "V5I", "2": "PGND"}, rating="16 V X7R", note="at U1 pin 4"),
-        Part("U1", "Comparator:TLV3501AIDBV", "TLV3501AIDBV",
+        Part("U1", "Comparator:TLV3501AIDBV", "TLV3501AIDBVR",
              "Package_TO_SOT_SMD:SOT-23-6", 90, 80,
              {"1": "REF", "2": "PGND", "3": "INP", "4": "V5I",
               "5": "OUT", "6": "SHDN"},
              rating="2.7-5.5 V",
              note="pin 1 = IN-, pin 3 = IN+, pin 6 = SHDN tied LOW to enable"),
-        Part("U2", "FASTOC:LM4040", "LM4040DBZ-2.5", SMD, 62, 100,
+        Part("U2", "FASTOC:LM4040", "LM4040D25IDBZR", SMD, 62, 100,
              {"1": "REF", "2": "PGND"}, rating="2.5 V",
-             note="shunt reference; pin 3 of the SOT-23 is NC"),
+             note="TI DBZ pin3: float or connect to anode; for EMI prefer anode"),
         Part("R1", "Device:R", "2.4k", "Resistor_SMD:R_0603_1608Metric", 50, 92,
              {"1": "V5I", "2": "REF"},
              note="reference bias, (4.6-2.5)/2.4k = 0.88 mA"),
@@ -508,7 +517,7 @@ def supply() -> dict:
                       "receiver's 100k holds the line low through Q1 or R7's open "
                       "top. The rail itself can still be backfed through D2, so "
                       "the state is proved by the bench matrix, not by this note",
-        "minimum_reference_current": "UNVERIFIED - the LM4040DBZ-2.5 minimum "
+        "minimum_reference_current": "UNVERIFIED - the LM4040D25IDBZR minimum "
                                      "operating current is not in this repository",
     }
 
@@ -901,7 +910,7 @@ def report(ps: list[Part]) -> dict:
             "the module rail is isolated by D3, but the isolated rail can still be "
             "backfed through D2; its state below 2.7 V is unspecified and the bench "
             "matrix that would pin it down is UNEXECUTED",
-            "the LM4040DBZ-2.5 minimum operating current is unverified, so the "
+            "the LM4040D25IDBZR minimum operating current is unverified, so the "
             "low-supply corner is not characterised",
             "a clean ERC only says the drawing agrees with itself",
         ],

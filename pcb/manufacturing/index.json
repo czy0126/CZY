@@ -14,7 +14,7 @@
       "schematic_sha256": "2ec111bf13d7da7928ad9fbf7b36f2a50349f1fabf7de6d811213c344ea610ef",
       "board_sha256": "60de176e815f286c2f51c8b50ff844b3f064459d53e633cae68ed87b4ec17dc0",
       "manifest": "pcb/sr_fault_validation/fab/manifest.json",
-      "manifest_sha256": "da5fe19d1ae91f0fe83f3ec4b1c7a9eae6ed3cfd9cfdd0e94d566dd894818275",
+      "manifest_sha256": "83c0cc86377d460610da30b4bf89fe34e69e34e92e544821007f288be0331366",
       "kicad_cli": "10.0.6",
       "copper_weight_oz": 1,
       "files": 13,
@@ -44,10 +44,10 @@
       "schematic": "pcb/fast_oc/fast_oc.kicad_sch",
       "board": "pcb/fast_oc/fast_oc.kicad_pcb",
       "fab": "pcb/fast_oc/fab",
-      "schematic_sha256": "ea718527598a1998eb711b2adbbb299e424a00d15c8249e7db0ffcb69463a506",
-      "board_sha256": "c88a1b1add5c2f88a16cbdd7bd734c9dc4ce397c9ed1cd1a6192456d2d91d81b",
+      "schematic_sha256": "bdfe85a37c71a3fd8d7bf6eea55e5c570ef3f4df309bcb7b7ab73779255072e6",
+      "board_sha256": "1b9ef4b1354edaca704c3bbd871fef478c32e4f869a5eae72e453f7a4d393b67",
       "manifest": "pcb/fast_oc/fab/manifest.json",
-      "manifest_sha256": "ecf098b18eb9b8e22c0a8dd2d642fcb0f3345f7108d0ae8f22f9774d5aeffee6",
+      "manifest_sha256": "124650006d98540af68e24427b862f17ea47af8b02efae0bedb48f51f871972a",
       "kicad_cli": "10.0.6",
       "copper_weight_oz": 1,
       "files": 13,
@@ -66,7 +66,7 @@
         "hardware_built": false,
         "fabrication_approved": false
       },
-      "manifest_board_sha256": "c88a1b1add5c2f88a16cbdd7bd734c9dc4ce397c9ed1cd1a6192456d2d91d81b",
+      "manifest_board_sha256": "1b9ef4b1354edaca704c3bbd871fef478c32e4f869a5eae72e453f7a4d393b67",
       "status": "FAB_PACKAGE_PRESENT"
     },
     {
@@ -77,7 +77,7 @@
       "schematic": "pcb/d0_protection/d0_protection.kicad_sch",
       "board": null,
       "fab": null,
-      "schematic_sha256": "771cee47236f479230dbd265b9c6ca040861c1729b0d6c8e5b03e65c0ab235b4",
+      "schematic_sha256": "566e87a5f642b9c7874162b8850113e4345f7fd413110f538a80d47097fed368",
       "status": "SCHEMATIC_ONLY",
       "not_fabricable_because": [
         "no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper"

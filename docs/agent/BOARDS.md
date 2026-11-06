@@ -347,7 +347,7 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   本模块指向 84.83 / 97.44 / 101.26 A 的严重故障。改分压就改这个次序，测试会红。
 - 共模上限对应 **144 A**，绝对最大值对应 **159 A**；已发布的峰值全部在共模内。
 - **5 V 丢失 = 失去快速保护，不是误跳闸**：R6 把 Q1 栅极拉到地，FAST_TRIP 释放。
-  LM4040DBZ-2.5 的最小工作电流本仓库没有，低压拐点标 UNVERIFIED，不许填数字。
+  LM4040D25IDBZR 的最小工作电流本仓库没有，低压拐点标 UNVERIFIED，不许填数字。
 - **本模块不锁存**，锁存在 D0 的 CD4013。单独使用时输出跟随电流。
 - 生成器复用 `make_sr_fault_board` 的解析/校验helper（`Part`/`Pin`/`custom_symbol`/
   `extract_symbol`/`pin_tips`/`validate*`/`erc_violations`），UUID 命名空间与件表是本板自己的，

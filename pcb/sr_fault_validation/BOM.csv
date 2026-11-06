@@ -39,7 +39,7 @@ R40,1k,Resistor_SMD:R_0603_1608Metric,1/10 W,series limit into the clamp,,,TO_SE
 D40,5V1,Diode_SMD:D_SOD-123,5.1 V,"input clamp; two-pad land so the cathode (pad 1, the banded end) actually reaches FAULT_G -- an SOT-23 land left pad 3, which is where a BZX84 puts its cathode, as spare copper.  MPN TO_SELECT: no 5.1 V zener datasheet is in the repository",,,TO_SELECT,,1
 R41,10k,Resistor_SMD:R_0603_1608Metric,1/10 W,default = no fault (fail-open input); 10k * 1nF = 10 us input filter,,,TO_SELECT,,1
 C40,1nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,10 us; a 1 ms debounce would dominate every other delay,,,TO_SELECT,,1
-Q40,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain status: low while the fault is asserted,,,TO_SELECT,,1
+Q40,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,open-drain status: low while the fault is asserted,,2N7002LT1G,references/datasheets/2n7002lt1g_onsemi_oem_parameters.txt,,1
 R42,100k,Resistor_SMD:R_0603_1608Metric,1/10 W,status default low; the external pull-up sees this 100k to PGND,,,TO_SELECT,,1
 R43,100R,Resistor_SMD:R_0603_1608Metric,1/10 W,crowbar gate resistor,,,TO_SELECT,,1
 Q41,AO3400A,Package_TO_SOT_SMD:SOT-23,"30 V, 5.7 A, IDM 30 A","REG crowbar; 3.0 V gate from a 3.3 V harness, Rds(on) <= 0.048 ohm at 2.5 V VGS (max, 25 C); absorbs 0.001 mJ per event; selected, not qualified (see report q41_selection)",,AO3400A,references/datasheets/ao3400a.txt,,1

@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\fast_oc\\fast_oc.kicad_sch")
-		(date "2026-11-06T09:59:37")
+		(date "2026-11-06T11:47:51")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -1387,7 +1387,7 @@
 		)
 		(comp
 			(ref "U1")
-			(value "TLV3501AIDBV")
+			(value "TLV3501AIDBVR")
 			(footprint "Package_TO_SOT_SMD:SOT-23-6")
 			(description "pin 1 = IN-, pin 3 = IN+, pin 6 = SHDN tied LOW to enable")
 			(fields
@@ -1453,9 +1453,9 @@
 		)
 		(comp
 			(ref "U2")
-			(value "LM4040DBZ-2.5")
+			(value "LM4040D25IDBZR")
 			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "shunt reference; pin 3 of the SOT-23 is NC")
+			(description "TI DBZ pin3: float or connect to anode; for EMI prefer anode")
 			(fields
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
@@ -1463,7 +1463,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "shunt reference; pin 3 of the SOT-23 is NC")
+					(name "Description") "TI DBZ pin3: float or connect to anode; for EMI prefer anode")
 			)
 			(libsource
 				(lib "FASTOC")

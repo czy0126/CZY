@@ -21,7 +21,7 @@ board they claim to describe.
 
 Two BSC010N04LS6 driven by one real UCC24624, a fault interface and a REG crowbar.  Its purpose is to measure how one SR pair behaves when a fault command arrives, not to pass the converter's current.
 
-Package: `pcb/sr_fault_validation/fab/` (manifest `da5fe19d1ae91f0fe83f3ec4b1c7a9eae6ed3cfd9cfdd0e94d566dd894818275`)
+Package: `pcb/sr_fault_validation/fab/` (manifest `83c0cc86377d460610da30b4bf89fe34e69e34e92e544821007f288be0331366`)
 Board: `pcb/sr_fault_validation/sr_fault_validation.kicad_pcb` (`60de176e815f286c2f51c8b50ff844b3f064459d53e633cae68ed87b4ec17dc0`)
 Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask, Edge.Cuts
 
@@ -29,8 +29,8 @@ Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask
 
 One TLV3501 comparator and a 2N7002 open-drain pull-down that make the overcurrent channel fast by replacing the three RC filters, not the comparator.  It does not latch.
 
-Package: `pcb/fast_oc/fab/` (manifest `ecf098b18eb9b8e22c0a8dd2d642fcb0f3345f7108d0ae8f22f9774d5aeffee6`)
-Board: `pcb/fast_oc/fast_oc.kicad_pcb` (`c88a1b1add5c2f88a16cbdd7bd734c9dc4ce397c9ed1cd1a6192456d2d91d81b`)
+Package: `pcb/fast_oc/fab/` (manifest `124650006d98540af68e24427b862f17ea47af8b02efae0bedb48f51f871972a`)
+Board: `pcb/fast_oc/fast_oc.kicad_pcb` (`1b9ef4b1354edaca704c3bbd871fef478c32e4f869a5eae72e453f7a4d393b67`)
 Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask, Edge.Cuts
 
 ### `d0_protection` -- D0 ten-channel protection logic board

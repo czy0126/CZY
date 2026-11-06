@@ -16,7 +16,8 @@ not with a behavioural model:
    provides a REG crowbar as the primary shutdown and leaves the VG clamp as a
    DNP option so its contention can be measured instead of assumed.  The
    crowbar delay is quoted at the 3.63 V turn-off threshold (the slow end) and
-   is labelled an estimate: the regulator keeps sourcing and no part is chosen.
+   is labelled an estimate: the regulator keeps sourcing; AO3400A has been
+   selected, but its 3 V gate drive and pulse capability remain unverified.
 
 2. Is cutting VDD sufficient?
    JP1 removes VDD while the bias supply stays alive.  The board's JSON puts
@@ -323,11 +324,20 @@ def rename_symbol(block: str, lib_id: str) -> str:
 
 
 def build_symbols() -> dict[str, str]:
-    libs = symbol_libs()
+    # Frozen embedded symbols are sufficient for offline consistency checks,
+    # NOT a fresh KiCad ERC or a manufacturer terminal audit.
+    cli = kicad_cli()
+    libs = symbol_libs() if cli is not None else None
+    source_schematic = OUT / "sr_fault_validation.kicad_sch"
+    if libs is None and not source_schematic.is_file():
+        raise SystemExit("KiCad symbols unavailable: install kicad-cli or provide the committed schematic")
     symbols: dict[str, str] = {}
     for lib_id, (lib, name) in STANDARD.items():
-        block = extract_symbol(libs / lib, name)
-        block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
+        if libs is None:
+            block = extract_symbol(source_schematic, lib_id)
+        else:
+            block = extract_symbol(libs / lib, name)
+            block = block.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
         symbols[lib_id] = block
     ucc = [
         Pin("1", "VG1", 7.62, 2.54, 180, "output"),
@@ -513,7 +523,9 @@ def fault_parts() -> list[Part]:
              "10 us; a 1 ms debounce would dominate every other delay"),
         Part("Q40", "Transistor_FET:Q_NMOS_GSD", "2N7002",
              "Package_TO_SOT_SMD:SOT-23", 74, 250, {"1": "FAULT_G", "2": "PGND", "3": "FAULT_N"},
-             "60 V", "open-drain status: low while the fault is asserted"),
+             "60 V", "open-drain status: low while the fault is asserted",
+             mpn="2N7002LT1G",
+             mpn_source="references/datasheets/2n7002lt1g_onsemi_oem_parameters.txt"),
         Part("R42", "Device:R", f"{R_STATUS_PULLDOWN / 1e3:g}k", "Resistor_SMD:R_0603_1608Metric",
              90, 250, {"1": "FAULT_N", "2": "PGND"}, "1/10 W",
              "status default low; the external pull-up sees this 100k to PGND"),

@@ -294,10 +294,19 @@ def rename_symbol(block: str, lib_id: str) -> str:
 
 
 def build_symbols() -> dict[str, str]:
+    # Offline generator uses native cached KiCad symbol blocks when CLI is
+    # unavailable; this checks source consistency, NOT fresh GUI ERC.
     symbols: dict[str, str] = {}
-    libs = symbol_libs()
+    cli = kicad_cli()
+    libs = symbol_libs() if cli is not None else None
+    source_schematic = OUT / "d0_protection.kicad_sch"
+    if libs is None and not source_schematic.is_file():
+        raise SystemExit("KiCad symbols unavailable: install KiCad or provide committed schematic")
     for lib_id, (lib, name) in STANDARD.items():
-        symbols[lib_id] = rename_symbol(extract_symbol(libs / lib, name), lib_id)
+        if libs is None:
+            symbols[lib_id] = extract_symbol(source_schematic, lib_id)
+        else:
+            symbols[lib_id] = rename_symbol(extract_symbol(libs / lib, name), lib_id)
     symbols["UCC27524:UCC27524ADR"] = custom_symbol(
         "UCC27524:UCC27524ADR",
         [Pin("1", "ENA", -8.89, 5.08, 0, "input"),
@@ -409,16 +418,16 @@ def ct_parts() -> list[Part]:
              "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm", 40, 130,
              {"1": "CT_S1", "2": "CT_S2"}, rating="<=20 V peak",
              note="CT 24/35-turn secondary; this board IS the burden path"),
-        Part("D5", "Device:D_Schottky", "BAT54", sch, 62, 118,
+        Part("D5", "Device:D_Schottky", "BAT54ZFILM", sch, 62, 118,
              {"1": "OCD", "2": "CT_S1"}, rating="30 V 200 mA",
              note="bridge: anode CT_S1 -> cathode OCD (deck D1)", source=f"{DECK}:{deck_line('D1')}"),
-        Part("D6", "Device:D_Schottky", "BAT54", sch, 62, 142,
+        Part("D6", "Device:D_Schottky", "BAT54ZFILM", sch, 62, 142,
              {"1": "OCD", "2": "CT_S2"}, rating="30 V 200 mA",
              note="bridge: anode CT_S2 -> cathode OCD (deck D2)", source=f"{DECK}:{deck_line('D2')}"),
-        Part("D7", "Device:D_Schottky", "BAT54", sch, 78, 118,
+        Part("D7", "Device:D_Schottky", "BAT54ZFILM", sch, 78, 118,
              {"1": "CT_S1", "2": "OCM"}, rating="30 V 200 mA",
              note="bridge: anode OCM -> cathode CT_S1 (deck D3)", source=f"{DECK}:{deck_line('D3')}"),
-        Part("D8", "Device:D_Schottky", "BAT54", sch, 78, 142,
+        Part("D8", "Device:D_Schottky", "BAT54ZFILM", sch, 78, 142,
              {"1": "CT_S2", "2": "OCM"}, rating="30 V 200 mA",
              note="bridge: anode OCM -> cathode CT_S2 (deck D4)", source=f"{DECK}:{deck_line('D4')}"),
         Part("R8", "Device:R", "10R 1%", "Resistor_SMD:R_0805_2012Metric", 100, 130,
@@ -771,7 +780,7 @@ def gate_load_parts() -> list[Part]:
                  402, 292 + 9 * index, {"1": gate, "2": branch},
                  note="gate-max branch: in series with D so the diode drop is set by a "
                       "current this 1k fixes, and so ten gate nodes never share copper"),
-            Part(f"D{9 + index}", "Device:D_Schottky", "BAT54", "Diode_SMD:D_SOD-123",
+            Part(f"D{9 + index}", "Device:D_Schottky", "BAT54ZFILM", "Diode_SMD:D_SOD-123",
                  426, 292 + 9 * index, {"1": "GSMAX", "2": branch}, rating="30 V 200 mA",
                  note="anode on the gate branch, cathode on GSMAX: only the highest gate "
                       "forward-biases its diode"),
@@ -788,7 +797,7 @@ def gate_load_parts() -> list[Part]:
             Part(f"R{74 + index}", "Device:R", "1k", "Resistor_SMD:R_0603_1608Metric",
                  444, 292 + 9 * index, {"1": gate, "2": branch},
                  note="gate-max branch, primary pair"),
-            Part(f"D{17 + index}", "Device:D_Schottky", "BAT54", "Diode_SMD:D_SOD-123",
+            Part(f"D{17 + index}", "Device:D_Schottky", "BAT54ZFILM", "Diode_SMD:D_SOD-123",
                  456, 292 + 9 * index, {"1": "GSMAX", "2": branch}, rating="30 V 200 mA",
                  note="gate max detector, primary pair"),
         ]

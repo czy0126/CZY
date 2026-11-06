@@ -1,0 +1,41 @@
+name: oem-value-only-native-refresh
+on:
+  push:
+    branches: [fix/d1-oem-fab-safe-integration-20261106]
+    paths:
+      - 'tools/make_fast_oc_eco.py'
+      - 'tools/make_sr_fault_board.py'
+      - 'tools/make_d0_protection_board.py'
+      - 'tools/refresh_oem_native_snapshots.py'
+      - '.github/workflows/oem-value-only-native-refresh.yml'
+permissions:
+  contents: write
+jobs:
+  regenerate-cached-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - name: Regenerate native snapshots only if copper and footprints match exactly
+        run: python tools/refresh_oem_native_snapshots.py --write
+      - name: Prove polarity, BOM, native integrity, and manufacturing index consistency
+        run: |
+          python -m pytest tools/test_fast_oc_integration_safety.py tools/test_d0_oem_bat54z.py tools/test_fast_oc_vendor_ordering.py tools/test_fab_text_normalization.py tools/test_manufacturing_index.py -q
+          python tools/manufacturing_index.py --check
+      - name: Commit value-only snapshots; never claim newly run KiCad 10 ERC/DRC
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pcb/d0_protection pcb/fast_oc pcb/sr_fault_validation pcb/manufacturing
+          git diff --cached --stat
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore(fab): refresh OEM native snapshots without KiCad; approvals remain false'
+            git push
+          fi
+
+# Not manufacturing approval. Full KiCad 10 GUI ERC/DRC and regenerated plots still required.

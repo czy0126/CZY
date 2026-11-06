@@ -390,6 +390,7 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
             raise SystemExit(f"kicad-cli {name} export failed (exit {proc.returncode}): "
                              f"{(proc.stderr or proc.stdout).strip()}")
 
+    srpcb.normalise_fab_text_line_endings(FAB)
     # Same reasoning as the SR board: kicad-cli draws the silkscreen, which has
     # the references wherever layout left them and cannot mark a part DNP, so
     # the drawing comes from the placement table the copper was built from.
@@ -441,7 +442,7 @@ def export_fab(cli: Path, version: str, data: dict) -> dict:
             "a latch: the fast-trip output follows current.  Latching lives in D0's "
             "CD4013, not here",
             "a complete protection channel: the 5 V rail and the OCD node come from "
-            "the harness, and losing 5 V releases FAST_EXT_N rather than tripping it",
+            "the harness, and losing 5 V releases FAST_TRIP rather than tripping it",
             "a thermal or EMC review: DRC covers copper only",
             "a checked drawing: assembly.svg is generated from the same placement "
             "table as the copper, so the two cannot disagree -- but it has not been "
