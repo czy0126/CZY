@@ -442,12 +442,90 @@
       "r44_dc_w": 0.042417500000000004,
       "reg_equilibrium_v": 0.45599999999999996,
       "controller_regulator_w": 1.38168,
-      "note": "95 mA is specified at a different REG voltage; no indefinite crowbar approval"
+      "note": "95 mA is the VREG=8 V current-limit anchor; the VREG=0 short-circuit anchor and the allowed-current table are in tools/reg_hold.py; no indefinite crowbar approval"
     },
     "open_items": [
       "actual REG current and controller dissipation throughout latched fault",
       "mounted thermal resistance, temperature derating and repetition profile",
       "Q41 transient SOA and measured shutdown waveforms"
+    ]
+  },
+  "reg_hold": {
+    "datasheet": {
+      "file": "references/datasheets/ucc24624.txt",
+      "rth_ja_c_per_w": 108.4,
+      "tj_max_c": 125.0,
+      "tj_abs_max_c": 150.0,
+      "ireg_lim": {
+        "min_a": 0.041,
+        "typ_a": 0.06,
+        "max_a": 0.095,
+        "condition": "VVDD = 12 V, VREG = 8 V"
+      },
+      "ireg_sc": {
+        "min_a": 0.0045,
+        "typ_a": 0.0095,
+        "max_a": 0.013,
+        "condition": "VVDD = 12 V, VREG = 0 V"
+      },
+      "foldback_curve_specified": false
+    },
+    "board": {
+      "vdd_v": 15.0,
+      "r_total_ohm": 4.748,
+      "c_reg_f": 2.3e-06,
+      "tau_s": 1.0920400000000001e-05
+    },
+    "anchors": {
+      "current_limit_95ma": {
+        "current_a": 0.095,
+        "vreg_eq_v": 0.45106,
+        "controller_w": 1.4046493,
+        "rise_k": 152.26398412,
+        "tj_c": 177.26398412,
+        "within_tj_max": false,
+        "within_tj_abs_max": false
+      },
+      "short_circuit_13ma": {
+        "current_a": 0.013,
+        "vreg_eq_v": 0.061724,
+        "controller_w": 0.216697588,
+        "rise_k": 23.4900185392,
+        "tj_c": 48.4900185392,
+        "within_tj_max": true,
+        "within_tj_abs_max": true
+      }
+    },
+    "allowed_continuous_current_a": {
+      "25": 0.06118561432569395,
+      "40": 0.05161893024043576,
+      "50": 0.04527427871919267,
+      "70": 0.03266303948379757
+    },
+    "bench_bias_limit": {
+      "chosen_a": 0.04,
+      "margin_at_25_c": 1.5296403581423488,
+      "margin_at_50_c": 1.1318569679798167,
+      "basis": "main power off during the fault experiments; the bias carries IVDDRUN (1.5 mA max) plus the gate charge of a normally switching pair, not a 100 A load",
+      "rule": "record the actual ambient and limit in reg_hold_bench_record.csv; if the ambient is above 50 C, lower the limit to the table value"
+    },
+    "decision": {
+      "sustained_crowbar_approved": false,
+      "measured": false,
+      "worst_case_summary": "at the 95 mA current-limit anchor the IC dissipates 1.405 W, i.e. 152 K above ambient (177 C at 25 C), above TJ max",
+      "foldback_summary": "at the 13 mA short-circuit anchor it would dissipate 0.217 W and reach 48 C at 25 C, but the datasheet does not specify the curve between 8 V and 0 V",
+      "required": [
+        "measure I_REG against V_REG at the board's 15 V bias before any hold longer than the bench limit (row H4)",
+        "keep the REG crowbar: it is the only path that crosses UVLO in ~12 us",
+        "if the foldback is not proven on the bench, add a latched bias cut for the long hold; the crowbar alone is not a long-hold answer",
+        "a bias cut must be latched and reset only deliberately, and the gate state and re-arm sequence have to be re-checked, not assumed"
+      ]
+    },
+    "open_items": [
+      "IREGSC is specified at VVDD = 12 V; the board runs 15 V and the short-circuit current there is not specified",
+      "RthJA is a JEDEC-board, still-air number; the validation board is small and its mounted value is unverified",
+      "the die thermal impedance Zth(t) is not in the datasheet, so no transient hold time can be derived, only the steady-state bound",
+      "no hardware was available this round: every number here is a datasheet bound or arithmetic"
     ]
   },
   "q41_selection": {

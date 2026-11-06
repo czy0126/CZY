@@ -61,6 +61,7 @@ from pathlib import Path
 
 from main_board_mechanical import find_kicad_cli
 import r44_selection
+import reg_hold
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "pcb" / "sr_fault_validation"
@@ -1322,6 +1323,7 @@ def report(ps: list[Part]) -> dict:
         "crowbar_pulse": crowbar_pulse(),
         "r44_selection": r44_selection.screen(r=R_CROWBAR, v=VREG_MAX,
             c=C_REG_BYPASS+C_REG_HF, injection=IREGLIM_MAX_A, rds=RDS_BOM_TARGET, vdd=VDD_NOM),
+        "reg_hold": reg_hold.analysis(vdd=VDD_NOM, r_total=R_CROWBAR + RDS_SELECTED),
         "q41_selection": q41_selection(),
         "input_default": input_default(),
         "vdd_cut": vdd_cut(),

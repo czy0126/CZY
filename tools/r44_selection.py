@@ -59,7 +59,10 @@ def screen(*, r=4.7, v=11.9, c=2.3e-6, injection=0.095, rds=0.1, vdd=15.0):
         "hold_sensitivity": {"r44_dc_w": injection**2*r,
                              "reg_equilibrium_v": injection*rt,
                              "controller_regulator_w": max(vdd-injection*rt, 0)*injection,
-                             "note": "95 mA is specified at a different REG voltage; no indefinite crowbar approval"},
+                             "note": "95 mA is the VREG=8 V current-limit anchor; the "
+                                     "VREG=0 short-circuit anchor and the allowed-current "
+                                     "table are in tools/reg_hold.py; no indefinite "
+                                     "crowbar approval"},
         "open_items": ["actual REG current and controller dissipation throughout latched fault",
                        "mounted thermal resistance, temperature derating and repetition profile",
                        "Q41 transient SOA and measured shutdown waveforms"],

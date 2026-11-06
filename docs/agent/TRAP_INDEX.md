@@ -131,6 +131,8 @@
 |  | SR 板主关断是 REG 撬棒（12.11 µs），不是切 VDD、也不是门极钳位 | SR 板任何结论 | BOARDS.md §单对真实 SR |
 |  | Q41 的 RDS 取慢的那一列 0.048 Ω；`q41_selection.qualified` 恒 false | SR 板 | BOARDS.md §单对真实 SR |
 |  | R44 的能量/峰值在 4.748 Ω 下（122.7 µJ / 25.23 W），不是 1.5 Ω 占位的 14.8 W | SR 板 | BOARDS.md §单对真实 SR |
+|  | 撬棒是 REG 稳压器的**线性负载**：稳态电流由芯片定，95 mA 锚点 Tj 177 °C ⇒ 持续撬棒不批准 | 引用保持结论 | BOARDS.md §单对真实 SR |
+|  | 折返曲线在 VREG 8→0 V 之间**未规定**；不能拿 13 mA 短路锚点当长期保持值 | 算保持 | BOARDS.md §单对真实 SR |
 |  | 故障输入默认是**不撬棒**（fail-open）；状态输出 3.0 V 是下拉端分压 | SR 板接口 | BOARDS.md §单对真实 SR |
 | ★ | **MPN 只在仓库有数据手册时写，其余一律 `TO_SELECT`** | 任何 BOM | BOARDS.md §单对真实 SR |
 |  | 门极钳位默认 DNP；`VG1` 网络恰好 4 个成员，不许并入第二个驱动 | SR 板 | BOARDS.md §单对真实 SR |
