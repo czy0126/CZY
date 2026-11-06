@@ -363,6 +363,11 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 - 共模上限对应 **144 A**，绝对最大值对应 **159 A**；已发布的峰值全部在共模内。
 - **5 V 丢失 = 失去快速保护，不是误跳闸**：R6 把 Q1 栅极拉到地，FAST_TRIP 释放。
   LM4040D25IDBZR 的最小工作电流本仓库没有，低压拐点标 UNVERIFIED，不许填数字。
+- **反灌八场景是待执行表，不是结果**（2026-11-07 仍无硬件）：`fast_oc.json` 的
+  `backfeed_verification` 是 `status = UNEXECUTED` / `hardware = none`，八个 `cases`
+  每条 `executed: false`、`result: null`，另附夹具、仪器与待测信号表。D3 隔离 V5I、R7 上拉接
+  连接器 V5 就是针对 BF-04（J1.1 开路 + OCD 15 V）。**`result` 留空不是缺陷**——填"预期值"
+  会被读成测量；执行后逐场景落原始记录，才允许讨论"通过"。
 - **本模块不锁存**，锁存在 D0 的 CD4013。单独使用时输出跟随电流。
 - 生成器复用 `make_sr_fault_board` 的解析/校验helper（`Part`/`Pin`/`custom_symbol`/
   `extract_symbol`/`pin_tips`/`validate*`/`erc_violations`），UUID 命名空间与件表是本板自己的，
