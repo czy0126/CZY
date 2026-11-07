@@ -1,0 +1,22 @@
+{
+  "evidence_level": "HYPOTHETICAL_BEHAVIOURAL_COUNTEREXAMPLE",
+  "device_corner_qualified": false,
+  "hardware_qualified": false,
+  "conditions": {
+    "input_v": 15,
+    "backfeed_source_v": 16,
+    "pass_switch_vt": 0.6,
+    "follower_vt": 2.5,
+    "hysteresis": 0.3
+  },
+  "deck_sha256": "5665ae7a0a484f39ced159c3c08daab829d4fa16031da2a993da288b1f39cc83",
+  "log_sha256": "286a52e192854c5285f59383643c9cdad699f9ff3cd3795c642828041988a8aa",
+  "measures": {
+    "reverse_edge_input_max": 0.736029565334,
+    "reverse_r57_power": 4.95145902552,
+    "i_vdd_in_min": 0.616656005383,
+    "vdd_sr_reverse": 15.9042701721,
+    "vmid_reverse": 15.8734378815
+  },
+  "passes_100ua_screen": false
+}

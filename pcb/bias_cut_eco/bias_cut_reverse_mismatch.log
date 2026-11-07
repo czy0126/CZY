@@ -1,0 +1,31 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\pcb\bias_cut_eco\bias_cut_reverse_mismatch.cir
+Start Time: Sat Nov  7 12:26:19 2026
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Changing Tseed to 1e-11
+Changing Tseed to 1e-13
+Changing Tseed to 1e-10
+Changing Tseed to 1e-14
+Changing Tseed to 1e-09
+Changing Tseed to 1e-15
+Changing Tseed to 1e-08
+Changing Tseed to 1e-16
+Changing Tseed to 1e-07
+Changing Tseed to 1e-17
+Changing Tseed to 1e-06
+Changing Tseed to 1e-18
+Total elapsed time: 0.104 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\pcb\bias_cut_eco\bias_cut_reverse_mismatch.cir
+
+reverse_edge_input_max: MAX(I(V1) )=0.736029565334 FROM 0.0004 TO 0.00045
+reverse_r57_power: AVG((V(VDD_SR,VDD_DIS)*I(R57)) )=4.95145902552 FROM 0.00045 TO 0.00095
+i_vdd_in_min: MIN(I(V1) )=0.616656005383 FROM 0.00045 TO 0.00095
+vdd_sr_reverse: V(VDD_SR) =15.9042701721 at 0.0007
+vmid_reverse: V(VMID) =15.8734378815 at 0.0007
