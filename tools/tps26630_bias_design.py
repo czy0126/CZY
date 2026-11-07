@@ -95,6 +95,51 @@ def ramp(*, cap_f: float, dvd_cap_f: float, vin_v: float) -> dict:
     }
 
 
+def sr_gate_drive_budget() -> dict:
+    """Rate a *possible* shared 15V SR supply against the existing D1 BOM.
+
+    This is an input sizing scenario. It is not permission to tie together
+    all controller VSS references, and uses vendor *typical* MOSFET gate charge.
+    """
+    import make_sr_fault_board as sr
+    bom_path = ROOT / "design/v3/bom/bom_draft.csv"
+    source_path = ROOT / "design/v3/bom/lr_design.json"
+    with bom_path.open(encoding="utf-8-sig", newline="") as source:
+        rows = list(csv.DictReader(source))
+    def qty(ref):
+        matching = [row for row in rows if row.get("ref") == ref]
+        if len(matching) != 1:
+            raise ValueError("D1 BOM exact reference not found: " + ref)
+        return int(matching[0]["qty"])
+    n_sr = qty("SR1A-SR4B")
+    n_drivers = qty("U3-U6")
+    clk_khz = float(json.loads(source_path.read_text(encoding="utf-8"))["tank"]["clock_khz"])
+    freq_hz = clk_khz * 1000
+    if not 0 < freq_hz < 1e6:
+        raise ValueError("unexpected D1 clock frequency")
+    iq_a = n_drivers * sr.IVDD_RUN_MAX
+    gate_charge_current_a = n_sr * sr.QG_TYP_10V * freq_hz
+    budget_a = iq_a + gate_charge_current_a
+    return {
+        "scenario": "POSSIBLE_SHARED_15V_BIAS_WITH_COMMON_RETURN_NOT_CONFIRMED",
+        "sr_fets": n_sr, "ucc24624_drivers": n_drivers,
+        "freq_hz": freq_hz, "qg_typ_at_10v_c": sr.QG_TYP_10V,
+        "ivdd_run_max_at_datasheet_condition_a_per_controller": sr.IVDD_RUN_MAX,
+        "gate_charge_current_typ_a": gate_charge_current_a,
+        "controller_run_current_anchor_a": iq_a,
+        "combined_nominal_screen_a": budget_a,
+        "ratio_of_nominal_0p6a_limit_to_screen": (18_000 / R_ILIM_OHM) / budget_a,
+        "not_a_worst_case_bound": True,
+        "requires_common_ground_and_regenerable_bias_check": True,
+        "model_limitations": [
+            "gate charge 67nC is typical at 10V; actual switching/timing, temperature and gate-charge variations not bounded",
+            "IVDD_RUN_MAX source condition differs from whole-system 15V loading; four controllers require independent VSS reference approval",
+            "fast Q41/R44 REG crowbar might draw below 0.6A, so only a latched SHDN can terminate sustained controller dissipation",
+            "no auxiliary VDD, turn-off or SR drain backfeed conditions are certified",
+        ],
+    }
+
+
 def report() -> dict:
     divider = resistance_divider_thresholds(
         R_UVLO_TOP, R_UVLO_MID, R_OVP_BOTTOM)
@@ -122,6 +167,7 @@ def report() -> dict:
             "r_ovp_bottom_ohm": R_OVP_BOTTOM,
             **divider, **nominal,
         },
+        "possible_full_d1_sr_gate_drive": sr_gate_drive_budget(),
         "sensitivity": {
             **divider_sensitivity(),
             "cap_total_assumed_max_f": CAP_STRESS_F,
