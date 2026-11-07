@@ -8,6 +8,7 @@ from dataclasses import replace
 import argparse
 import csv
 import hashlib
+import ltspice_windows_evidence as input_hash
 import json
 import subprocess
 import make_bias_cut_eco as base
@@ -95,7 +96,14 @@ CASES = {
 
 
 def digest(p):
-    return hashlib.sha256(p.read_bytes()).hexdigest()
+    """Hash LTspice simulated input CRLF and evidence log bytes separately.
+
+    Existing Rev-B reports record actual Windows CRLF deck hashes.
+    Git normalizes .cir source line endings to LF; do not forge a new log.
+    """
+    if p.suffix.lower() == ".cir":
+        return input_hash.original_windows_deck_sha256(p)
+    return input_hash.actual_file_sha256(p)
 
 
 def generate():
