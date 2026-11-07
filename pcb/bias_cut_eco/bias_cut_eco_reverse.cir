@@ -1,0 +1,42 @@
+* Bias-cut ECO reverse-blocking check: switch off, VDD_SR back-fed to 18 V
+* Behavioural switch model; the body-diode orientation is the point.
+.param VDD=15
+V1 VDD_IN 0 {VDD}
+V5S V5_IND 0 5
+VREV VREV_SRC 0 18
+VREV_CTL VREV_CTL 0 PWL(0 0 0.4m 0 0.401m 5 1.0m 5 1.001m 0)
+SREV VREV_SRC VDD_SR VREV_CTL 0 SWREV
+.model SWREV SW(Ron=0.1 Roff=1Meg Vt=2.5 Vh=0.2)
+* Latch deliberately held set: ENABLE=0, switch off.
+B_ENABLE ENABLE 0 V=0
+R50 VDD_IN BC_GATE 100k
+S52 BC_GATE 0 ENABLE 0 SWEN
+* Roff=1G: a 2N7002 leaks nA off, so a 1 Meg off-resistance would load the
+* 100k pull-up and read as a permanent fault in the mock.
+.model SWEN SW(Ron=2 Roff=1G Vt=2.5 Vh=0.2)
+* Q55 source follower plus D50 in series with its drain.  The channel is off
+* while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
+* the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
+S55 VDD_SR BC_FB VDD_SR VDD_IN SVP
+.model SVP SW(Ron=0.05 Roff=1Meg Vt=1.5 Vh=0.3)
+D55B BC_FB VDD_SR DBODY
+D50 BC_FB BC_GATE DBAT
+.model DBAT D(Is=1e-8 N=1.05 Rs=0.5)
+S50 VDD_IN VMID VDD_IN BC_GATE SWPM
+S51 VDD_SR VMID VDD_SR BC_GATE SWPM
+.model SWPM SW(Ron=0.05 Roff=1Meg Vt=1.5 Vh=0.3)
+D50B VMID VDD_IN DBODY
+D51B VMID VDD_SR DBODY
+.model DBODY D(Is=1e-12 N=1.2 Rs=0.05)
+R57 VDD_SR VDD_DIS 47
+B_ENN ENABLE_N 0 V=5
+S54 VDD_DIS 0 ENABLE_N 0 SWEN
+R58 VDD_SR 0 100k
+C54 VDD_SR 0 3.3u
+R62 VDD_SR 0 1k
+.tran 0 2m 0 0.1u uic
+.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) I(V1) I(VREV)
+.meas TRAN i_vdd_in_min MIN I(V1) FROM 0.45m TO 0.95m
+.meas TRAN vdd_sr_reverse FIND V(VDD_SR) AT=0.7m
+.meas TRAN vmid_reverse FIND V(VMID) AT=0.7m
+.end

@@ -1,0 +1,85 @@
+* Bias-cut ECO sequence: default off -> explicit reset -> fault -> hold -> reset
+* Behavioural logic and switch model; NOT device-accurate, NOT thermal.
+.param VDD=15 V5=5
+V1 VDD_IN 0 {VDD}
+V5S V5_IND 0 {V5}
+VPERMIT PERMIT_EXT 0 5
+* The POR time constant is R56 * C53 = 100k * 100nF = 10 ms, so POR crosses the
+* 2.5 V CMOS threshold at 10 ms * ln(5/2.5) = 6.9 ms.  The first reset is placed
+* at 10 ms, after POR has decayed; a reset during POR would be correctly ignored.
+VRESET RESET_EXT 0 PWL(0 0 10m 0 10.001m 5 10.01m 5 10.011m 0
++ 25m 0 25.001m 5 25.01m 5 25.011m 0)
+VFAULT FAULT_IN 0 PWL(0 0 15m 0 15.001m 5 15.1m 5 15.101m 0)
+R63 PERMIT_EXT PERMIT 1k
+R60 PERMIT 0 100k
+R64 RESET_EXT RESET_CMD 1k
+R55 RESET_CMD 0 100k
+R65 FAULT_IN FAULT_G 1k
+R61 FAULT_G 0 100k
+R56 POR 0 100k
+C53 POR V5_IND 100n ic=0
+R54 V5_IND FLT_N 100k
+S53 FLT_N 0 FAULT_G 0 SWLOG
+.model SWLOG SW(Ron=10 Roff=1Meg Vt=2.5 Vh=0.2)
+B_FLTH FLT_H 0 V=if(V(FLT_N)<2.5,5,0)
+B_SET SET_LATCH 0 V=if(V(FLT_H)>2.5 | V(POR)>2.5,5,0)
+B_RST RST_EFF 0 V=if(V(RESET_CMD)>2.5 & V(FLT_N)>2.5,5,0)
+C_L LATCHED 0 1n
+R_L LATCHED 0 1G
+B_L 0 LATCHED I=if(V(SET_LATCH)>2.5,(5-V(LATCHED))/1k,
++ if(V(RST_EFF)>2.5,(0-V(LATCHED))/1k,0))
+B_LN LATCHED_N 0 V=5-V(LATCHED)
+B_EN ENABLE 0 V=if(V(PERMIT)>2.5 & V(LATCHED_N)>2.5,5,0)
+B_ENN ENABLE_N 0 V=if(V(ENABLE)>2.5,0,5)
+R50 VDD_IN BC_GATE 100k
+S52 BC_GATE 0 ENABLE 0 SWEN
+* Roff=1G: a 2N7002 leaks nA off, so a 1 Meg off-resistance would load the
+* 100k pull-up and read as a permanent fault in the mock.
+.model SWEN SW(Ron=2 Roff=1G Vt=2.5 Vh=0.2)
+* Q55 source follower plus D50 in series with its drain.  The channel is off
+* while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
+* the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
+S55 VDD_SR BC_FB VDD_SR VDD_IN SVP
+.model SVP SW(Ron=0.05 Roff=1Meg Vt=1.5 Vh=0.3)
+D55B BC_FB VDD_SR DBODY
+D50 BC_FB BC_GATE DBAT
+.model DBAT D(Is=1e-8 N=1.05 Rs=0.5)
+S50 VDD_IN VMID VDD_IN BC_GATE SWPM
+S51 VDD_SR VMID VDD_SR BC_GATE SWPM
+.model SWPM SW(Ron=0.05 Roff=1Meg Vt=1.5 Vh=0.3)
+D50B VMID VDD_IN DBODY
+D51B VMID VDD_SR DBODY
+.model DBODY D(Is=1e-12 N=1.2 Rs=0.05)
+R57 VDD_SR VDD_DIS 47
+S54 VDD_DIS 0 ENABLE_N 0 SWEN
+R58 VDD_SR 0 100k
+C54 VDD_SR 0 3.3u
+R62 VDD_SR 0 1k
+.tran 0 30m 0 0.1u uic
+.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(ENABLE) V(ENABLE_N)
++ V(LATCHED) V(SET_LATCH) V(RST_EFF) V(FLT_N) V(POR) I(V1)
+* 8 ms   POR has decayed (tau = 100k * 100nF = 10 ms, threshold ~6.9 ms):
+*        the latch is still set from power-up and the bias is off.
+* 13 ms  the 10 ms reset pulse has cleared the latch; the bias is on.
+* 16 ms  1 ms after the 15 ms fault; the active discharge has emptied C54.
+* 20 ms  the fault is gone but the latch persists: no auto-reset.
+* 28 ms  the 25 ms explicit reset has re-enabled the bias.
+* Windowed statistics, not point samples: a relaxation around a switch
+* threshold shows up as a slow oscillation that a single sample can miss.
+.meas TRAN vdd_sr_default_off MAX V(VDD_SR) FROM 7.5m TO 9.5m
+.meas TRAN vdd_sr_enabled MIN V(VDD_SR) FROM 12m TO 14m
+.meas TRAN vdd_sr_after_fault MAX V(VDD_SR) FROM 16m TO 17m
+.meas TRAN vdd_sr_held_off MAX V(VDD_SR) FROM 19m TO 24m
+.meas TRAN vdd_sr_recovered MIN V(VDD_SR) FROM 27m TO 29.5m
+.meas TRAN latched_after_fault FIND V(LATCHED) AT=20m
+.meas TRAN enable_after_fault FIND V(ENABLE) AT=20m
+* The input current must fall to the R58 bleed after the cut, and come back
+* after the explicit reset.  MIN over a window is the right statistic here:
+* it shows the current actually reached the off state, not just a sample.
+.meas TRAN i_vdd_in_off_min MIN I(V1) FROM 17.5m TO 24m
+.meas TRAN i_vdd_in_on_min MIN I(V1) FROM 27m TO 29.5m
+* Off-state node voltages.  These are the two nodes that told the story when
+* the gate network was wrong: BC_GATE must sit at VDD_IN and VMID must not.
+.meas TRAN gate_off FIND V(BC_GATE) AT=8m
+.meas TRAN vmid_off FIND V(VMID) AT=8m
+.end

@@ -1,0 +1,106 @@
+{
+  "status": "RUN",
+  "host": "winsrv",
+  "ltspice": "26.0.2",
+  "deck_sha256": {
+    "bias_cut_eco.cir": "407abd154074ae80832767ad3d6c416a606658d3b306533edaba28b272ad7712",
+    "bias_cut_eco_reverse.cir": "44c5ffb067df7c220230868f3059875c757472381af110d502c0284fd5f8e63d"
+  },
+  "measured": {
+    "sequence": {
+      "vdd_sr_default_off": 0.000676934804228,
+      "vdd_sr_enabled": 14.9984836717,
+      "vdd_sr_after_fault": 0.0236206565002,
+      "vdd_sr_held_off": 0.000676934884411,
+      "vdd_sr_recovered": 14.9984836717,
+      "latched_after_fault": 4.97555740303,
+      "enable_after_fault": 0.0,
+      "i_vdd_in_off_min": -1.45137126507e-05,
+      "i_vdd_in_on_min": -0.0153132801357,
+      "gate_off": 14.9974972518,
+      "vmid_off": 0.511344808212
+    },
+    "reverse": {
+      "i_vdd_in_min": 2.99747483378e-05,
+      "vdd_sr_reverse": 17.9615267096,
+      "vmid_reverse": 15.4512226946
+    }
+  },
+  "checks": [
+    {
+      "name": "default_off_v",
+      "value": 0.000676934804228,
+      "ok": true,
+      "why": "power-up with POR set must leave the SR bias off"
+    },
+    {
+      "name": "enabled_v",
+      "value": 14.9984836717,
+      "ok": true,
+      "why": "an explicit reset with PERMIT must pass the full 15 V rail"
+    },
+    {
+      "name": "after_fault_v",
+      "value": 0.0236206565002,
+      "ok": true,
+      "why": "the fault must cut the bias, not merely lower it"
+    },
+    {
+      "name": "held_off_v",
+      "value": 0.000676934884411,
+      "ok": true,
+      "why": "with the fault gone and no reset the bias must stay off"
+    },
+    {
+      "name": "recovered_v",
+      "value": 14.9984836717,
+      "ok": true,
+      "why": "an explicit reset must restore the bias"
+    },
+    {
+      "name": "latched_after_fault_v",
+      "value": 4.97555740303,
+      "ok": true,
+      "why": "the latch, not the fault input, is what holds the bias off"
+    },
+    {
+      "name": "enable_after_fault_v",
+      "value": 0.0,
+      "ok": true,
+      "why": "ENABLE must be low while latched"
+    },
+    {
+      "name": "off_input_current_a",
+      "value": 1.45137126507e-05,
+      "ok": true,
+      "why": "the cut must remove the load current; only leakage remains"
+    },
+    {
+      "name": "on_input_current_a",
+      "value": 0.0153132801357,
+      "ok": true,
+      "why": "the enabled state must carry the bench load (~15 mA)"
+    },
+    {
+      "name": "gate_off_v",
+      "value": 14.9974972518,
+      "ok": true,
+      "why": "R50 must hold the gate at VDD_IN with the switch off"
+    },
+    {
+      "name": "reverse_current_a",
+      "value": 2.99747483378e-05,
+      "ok": true,
+      "why": "back-fed VDD_SR=18 V must not conduct through the switch; the only path is the R50 bleed"
+    },
+    {
+      "name": "reverse_vdd_sr_v",
+      "value": 17.9615267096,
+      "ok": true,
+      "why": "the back-fed node holds 18 V: a conducting pass pair would drag it toward VDD_IN"
+    }
+  ],
+  "all_checks_pass": true,
+  "evidence_level": "BEHAVIOURAL_SIMULATION_NOT_HARDWARE",
+  "note": "behavioural switch and logic model; this is not a device model, not a thermal model, and not a hardware measurement"
+}

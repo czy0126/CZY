@@ -1,0 +1,725 @@
+{
+  "kind": "BIAS_CUT_ECO",
+  "evidence_level": "GENERATED_SCHEMATIC_AND_NETLIST_NOT_HARDWARE",
+  "hardware_built": false,
+  "hardware_qualified": false,
+  "thermal_qualified": false,
+  "simulation_status": "RUN",
+  "simulation": {
+    "host": "winsrv",
+    "ltspice": "26.0.2",
+    "deck_sha256": {
+      "bias_cut_eco.cir": "407abd154074ae80832767ad3d6c416a606658d3b306533edaba28b272ad7712",
+      "bias_cut_eco_reverse.cir": "44c5ffb067df7c220230868f3059875c757472381af110d502c0284fd5f8e63d"
+    },
+    "measured": {
+      "sequence": {
+        "vdd_sr_default_off": 0.000676934804228,
+        "vdd_sr_enabled": 14.9984836717,
+        "vdd_sr_after_fault": 0.0236206565002,
+        "vdd_sr_held_off": 0.000676934884411,
+        "vdd_sr_recovered": 14.9984836717,
+        "latched_after_fault": 4.97555740303,
+        "enable_after_fault": 0.0,
+        "i_vdd_in_off_min": -1.45137126507e-05,
+        "i_vdd_in_on_min": -0.0153132801357,
+        "gate_off": 14.9974972518,
+        "vmid_off": 0.511344808212
+      },
+      "reverse": {
+        "i_vdd_in_min": 2.99747483378e-05,
+        "vdd_sr_reverse": 17.9615267096,
+        "vmid_reverse": 15.4512226946
+      }
+    },
+    "checks": [
+      {
+        "name": "default_off_v",
+        "value": 0.000676934804228,
+        "ok": true,
+        "why": "power-up with POR set must leave the SR bias off"
+      },
+      {
+        "name": "enabled_v",
+        "value": 14.9984836717,
+        "ok": true,
+        "why": "an explicit reset with PERMIT must pass the full 15 V rail"
+      },
+      {
+        "name": "after_fault_v",
+        "value": 0.0236206565002,
+        "ok": true,
+        "why": "the fault must cut the bias, not merely lower it"
+      },
+      {
+        "name": "held_off_v",
+        "value": 0.000676934884411,
+        "ok": true,
+        "why": "with the fault gone and no reset the bias must stay off"
+      },
+      {
+        "name": "recovered_v",
+        "value": 14.9984836717,
+        "ok": true,
+        "why": "an explicit reset must restore the bias"
+      },
+      {
+        "name": "latched_after_fault_v",
+        "value": 4.97555740303,
+        "ok": true,
+        "why": "the latch, not the fault input, is what holds the bias off"
+      },
+      {
+        "name": "enable_after_fault_v",
+        "value": 0.0,
+        "ok": true,
+        "why": "ENABLE must be low while latched"
+      },
+      {
+        "name": "off_input_current_a",
+        "value": 1.45137126507e-05,
+        "ok": true,
+        "why": "the cut must remove the load current; only leakage remains"
+      },
+      {
+        "name": "on_input_current_a",
+        "value": 0.0153132801357,
+        "ok": true,
+        "why": "the enabled state must carry the bench load (~15 mA)"
+      },
+      {
+        "name": "gate_off_v",
+        "value": 14.9974972518,
+        "ok": true,
+        "why": "R50 must hold the gate at VDD_IN with the switch off"
+      },
+      {
+        "name": "reverse_current_a",
+        "value": 2.99747483378e-05,
+        "ok": true,
+        "why": "back-fed VDD_SR=18 V must not conduct through the switch; the only path is the R50 bleed"
+      },
+      {
+        "name": "reverse_vdd_sr_v",
+        "value": 17.9615267096,
+        "ok": true,
+        "why": "the back-fed node holds 18 V: a conducting pass pair would drag it toward VDD_IN"
+      }
+    ],
+    "all_checks_pass": true,
+    "evidence_level": "BEHAVIOURAL_SIMULATION_NOT_HARDWARE",
+    "note": "behavioural switch and logic model; this is not a device model, not a thermal model, and not a hardware measurement",
+    "status": "RUN"
+  },
+  "part_instances": 63,
+  "physical_parts": 43,
+  "nets": 23,
+  "pmos_selection": {
+    "mpn": "TO_SELECT",
+    "reason": "no P-channel MOSFET datasheet in references/datasheets; external acquisition is blocked in this environment, and a fabricated orderable code is worse than an empty one",
+    "requirements": {
+      "vds_min_v": 30,
+      "vgs_abs_max_v": 20,
+      "id_continuous_min_a": 1.0,
+      "id_pulsed_min_a": 3.0,
+      "rds_on_max_ohm_at_vgs_minus_10v": 0.1,
+      "ciss_max_pf": 100,
+      "vgs_th_abs_max_v": 2.5,
+      "package": "SOT-23 or SOT-323",
+      "body_diode": "standard P-MOS body diode, drain-to-source; the common-drain pair must present opposing diodes"
+    },
+    "why": {
+      "vds": "15 V rail plus back-fed VDD_SR; 30 V gives 2x margin",
+      "id_pulsed": "C54 (3.3 uF) charges through the switch at turn-on; the supply and wiring set the peak, so the part must have pulsed headroom. No soft-start is fitted.",
+      "ciss": "R50 turn-off is 100k * Ciss; at 100 pF the gate crosses Vth in ~14 us, after the ~12 us crowbar has already crossed REG UVLO",
+      "rds_on": "the SR bias is ~15 mA; 0.1 ohm is 1.5 mV, not a thermal constraint, but keeps the pass drop negligible",
+      "vgs_th": "Q55 is a source follower driven by VDD_IN; it can only lift the gate when the back-fed VDD_SR exceeds VDD_IN by more than |Vth|. With a 3 V backfeed the part has to be a logic-level P-MOS, |Vth| <= 2.5 V at the quoted test current, or Q51 stays partly on"
+    },
+    "not_acceptable": "BSS84-class parts are not automatically acceptable: no datasheet is held, and the 3.3 uF turn-on pulse is outside a small-signal default assumption."
+  },
+  "integration": {
+    "cut_points": {
+      "VDD_IN": "existing SR board VDD_IN, after D2 (SS34)",
+      "VDD_SR": "existing SR board VDD node; JP1 stays between VDD_SR and VDD as a service disconnect, not as the protection",
+      "FAULT_G": "existing R40/R41/C40 node, shared with the Q41/R44 crowbar",
+      "PGND": "existing SR board PGND"
+    },
+    "preserved_fast_path": "Q41 + R44 remain directly driven by FAULT_G. This module does not include, bypass, or delay them.",
+    "removed_from_module_when_integrated": [
+      "C54",
+      "R62"
+    ],
+    "five_volt_source": "J7 must be fed from a 5 V rail that survives the SR bias cut. If that rail is lost, the P-MOS gate is pulled to VDD_IN by R50, so the bias is removed (fail-safe), but the latch is also unpowered."
+  },
+  "truth_table": [
+    {
+      "fault": false,
+      "permit": false,
+      "reset": false,
+      "por": false,
+      "latched_prev": false,
+      "latched": false,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": false,
+      "por": false,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": false,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": false,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": true,
+      "por": false,
+      "latched_prev": false,
+      "latched": false,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": true,
+      "por": false,
+      "latched_prev": true,
+      "latched": false,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": true,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": false,
+      "reset": true,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": false,
+      "por": false,
+      "latched_prev": false,
+      "latched": false,
+      "enable": true
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": false,
+      "por": false,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": false,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": false,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": true,
+      "por": false,
+      "latched_prev": false,
+      "latched": false,
+      "enable": true
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": true,
+      "por": false,
+      "latched_prev": true,
+      "latched": false,
+      "enable": true
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": true,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": false,
+      "permit": true,
+      "reset": true,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": false,
+      "por": false,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": false,
+      "por": false,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": false,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": false,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": true,
+      "por": false,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": true,
+      "por": false,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": true,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": false,
+      "reset": true,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": false,
+      "por": false,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": false,
+      "por": false,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": false,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": false,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": true,
+      "por": false,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": true,
+      "por": false,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": true,
+      "por": true,
+      "latched_prev": false,
+      "latched": true,
+      "enable": false
+    },
+    {
+      "fault": true,
+      "permit": true,
+      "reset": true,
+      "por": true,
+      "latched_prev": true,
+      "latched": true,
+      "enable": false
+    }
+  ],
+  "net_map": {
+    "BC_FB": [
+      "D50.2",
+      "Q55.3"
+    ],
+    "BC_GATE": [
+      "D50.1",
+      "Q50.1",
+      "Q51.1",
+      "Q52.3",
+      "R50.2",
+      "TP23.1"
+    ],
+    "ENABLE": [
+      "Q52.1",
+      "R52.1",
+      "TP24.1",
+      "U50.3",
+      "U52.4"
+    ],
+    "ENABLE_N": [
+      "Q54.1",
+      "TP25.1",
+      "U50.4"
+    ],
+    "FAULT_G": [
+      "Q53.1",
+      "R61.1",
+      "R65.2",
+      "TP31.1"
+    ],
+    "FAULT_IN": [
+      "J8.1",
+      "R65.1"
+    ],
+    "FLT_H": [
+      "U50.2",
+      "U53.1"
+    ],
+    "FLT_N": [
+      "Q53.3",
+      "R54.2",
+      "TP28.1",
+      "U50.1",
+      "U52.2"
+    ],
+    "LATCHED": [
+      "TP26.1",
+      "U51.1"
+    ],
+    "LATCHED_N": [
+      "TP27.1",
+      "U51.2",
+      "U52.6"
+    ],
+    "PERMIT": [
+      "R60.1",
+      "R63.2",
+      "U52.5"
+    ],
+    "PERMIT_EXT": [
+      "J7.3",
+      "R63.1"
+    ],
+    "PGND": [
+      "#FLG4.1",
+      "C51.2",
+      "C52.2",
+      "C54.2",
+      "J6.3",
+      "J6.4",
+      "J7.2",
+      "J8.2",
+      "Q52.2",
+      "Q53.2",
+      "Q54.2",
+      "R52.2",
+      "R55.2",
+      "R56.2",
+      "R58.2",
+      "R60.2",
+      "R61.2",
+      "R62.2",
+      "TP32.1",
+      "U50.11",
+      "U50.13",
+      "U50.5",
+      "U50.7",
+      "U50.9",
+      "U51.10",
+      "U51.11",
+      "U51.3",
+      "U51.5",
+      "U51.7",
+      "U51.8",
+      "U51.9",
+      "U52.12",
+      "U52.13",
+      "U52.7",
+      "U52.8",
+      "U52.9",
+      "U53.12",
+      "U53.13",
+      "U53.5",
+      "U53.6",
+      "U53.7",
+      "U53.8",
+      "U53.9"
+    ],
+    "POR": [
+      "C53.1",
+      "R56.1",
+      "TP29.1",
+      "U53.2"
+    ],
+    "RESET_CMD": [
+      "R55.1",
+      "R64.2",
+      "U52.1"
+    ],
+    "RESET_EXT": [
+      "J7.4",
+      "R64.1"
+    ],
+    "RST_EFF": [
+      "U51.4",
+      "U52.3"
+    ],
+    "SET_LATCH": [
+      "U51.6",
+      "U53.3"
+    ],
+    "V5_IND": [
+      "#FLG3.1",
+      "C51.1",
+      "C52.1",
+      "C53.2",
+      "J7.1",
+      "R54.1",
+      "TP30.1",
+      "U50.14",
+      "U51.14",
+      "U52.14",
+      "U53.14"
+    ],
+    "VDD_DIS": [
+      "Q54.3",
+      "R57.2"
+    ],
+    "VDD_IN": [
+      "#FLG1.1",
+      "J6.1",
+      "Q50.2",
+      "Q55.1",
+      "R50.1",
+      "TP21.1"
+    ],
+    "VDD_SR": [
+      "#FLG2.1",
+      "C54.1",
+      "J6.2",
+      "Q51.2",
+      "Q55.2",
+      "R57.1",
+      "R58.1",
+      "R62.1",
+      "TP22.1"
+    ],
+    "VMID": [
+      "Q50.3",
+      "Q51.3"
+    ]
+  },
+  "observations": [
+    {
+      "item": "default state",
+      "finding": "R50 pulls BC_GATE to VDD_IN, R52 pulls ENABLE low, and R60 pulls PERMIT low. A floating or unpowered control domain leaves the switch off.",
+      "evidence": "topology + truth_table"
+    },
+    {
+      "item": "set dominates reset",
+      "finding": "SET = FLT_H OR POR is evaluated before RST_EFF; a fault that is still present cannot be cleared by RESET_CMD.",
+      "evidence": "step() exhaustive enumeration"
+    },
+    {
+      "item": "no auto-reset",
+      "finding": "when SET and RST_EFF are both false the latch holds. A fault that disappears does not restore the bias.",
+      "evidence": "truth_table rows with fault=False, por=False, reset=False"
+    },
+    {
+      "item": "reverse blocking",
+      "finding": "Q50/Q51 share a drain (VMID) so their body diodes oppose. With the switch off, neither body diode conducts from VDD_IN or VDD_SR into VMID. Q55 + D50 pull the gate up with VDD_SR when VDD_SR is back-fed above VDD_IN, and D50 also blocks Q55's body diode in the off state. Residual: VDD_SR -> Q55 -> D50 -> R50 -> VDD_IN is ~30 uA at VDD_SR=18 V; it is a bleed in the safe direction, not switch conduction.",
+      "evidence": "topology + reverse deck"
+    },
+    {
+      "item": "local capacitor discharge",
+      "finding": "when ENABLE is low, ENABLE_N is high and Q54+R57 discharge VDD_SR; R58 is the passive bleed if the 5 V domain is lost. 47 ohm * 3.3 uF is 155 us, ~220 us to 3.63 V.",
+      "evidence": "topology + sequence deck"
+    },
+    {
+      "item": "fault input default",
+      "finding": "R61 pulls FAULT_G low, so a disconnected fault source reads as no-fault. This is the existing fail-open input policy and is deliberately opposite to the fail-safe bias cut; they are different circuits, see docs/2026-11-06_REG保持热边界与偏置关断审核.md section 4.",
+      "evidence": "topology + report"
+    },
+    {
+      "item": "timing split",
+      "finding": "the crowbar crosses REG UVLO in ~12.11 us (existing estimate); the 5 V logic adds <1 us; the gate network adds ~14 us; the local discharge adds ~220 us. The crowbar is the fast path, the bias cut is the long-hold path.",
+      "evidence": "arithmetic; the gate time uses an assumed 60 pF Ciss"
+    },
+    {
+      "item": "what is not proven",
+      "finding": "no hardware, no thermal sign-off, no measured reverse backfeed into VDD/REG, no SOA for the P-MOS turn-on pulse.",
+      "evidence": "report flags"
+    }
+  ],
+  "requirements": [
+    {
+      "requirement": "always-on 15 V input",
+      "implementation": "J6.1 VDD_IN; Q50 source; R50 pull-up",
+      "status": "TOPOLOGY_ONLY"
+    },
+    {
+      "requirement": "controlled SR bias output",
+      "implementation": "VDD_SR at J6.2; Q51 source; C54/R62 bench load",
+      "status": "TOPOLOGY_ONLY"
+    },
+    {
+      "requirement": "independent 5 V fault latch",
+      "implementation": "J7.1 V5_IND; U51 CD4013B; R56/C53 POR",
+      "status": "TOPOLOGY_ONLY"
+    },
+    {
+      "requirement": "PERMIT interface",
+      "implementation": "J7.3; R63/R60; U52B",
+      "status": "TOPOLOGY_ONLY"
+    },
+    {
+      "requirement": "default off",
+      "implementation": "R50 pulls BC_GATE high; R52 pulls ENABLE low; R60 pulls PERMIT low; POR sets the latch",
+      "status": "TOPOLOGY_AND_TRUTH_TABLE"
+    },
+    {
+      "requirement": "reverse blocking",
+      "implementation": "Q50/Q51 common drain VMID; Q55 source follower + D50 lift the gate only when VDD_SR > VDD_IN",
+      "status": "TOPOLOGY_AND_REVERSE_DECK; residual ~30 uA bleed documented"
+    },
+    {
+      "requirement": "local capacitor discharge",
+      "implementation": "Q54 + R57; R58 passive bleed",
+      "status": "TOPOLOGY_ONLY"
+    },
+    {
+      "requirement": "preserve the fast REG crowbar",
+      "implementation": "Q41/R44 stay on the SR board, directly driven by FAULT_G",
+      "status": "NOT_MODIFIED"
+    },
+    {
+      "requirement": "latch and gate discharge survive SR bias loss",
+      "implementation": "the latch and Q54 are supplied from V5_IND, not VDD_SR",
+      "status": "TOPOLOGY_ONLY"
+    },
+    {
+      "requirement": "explicit reset",
+      "implementation": "RESET_CMD AND FLT_N; set-dominant; no auto-reset",
+      "status": "TOPOLOGY_AND_TRUTH_TABLE"
+    },
+    {
+      "requirement": "backfeed measured at VDD/REG",
+      "implementation": "H5 hardware capture; this ECO only provides the reverse deck for the switch",
+      "status": "OPEN"
+    }
+  ],
+  "open_items": [
+    "P-MOS is TO_SELECT; no P-channel datasheet in the repository",
+    "no hardware build, no thermal measurement",
+    "no measured VDD/REG backfeed; H5 remains NOT_READY",
+    "P-MOS turn-on inrush and SOA are not checked against a vendor curve",
+    "the 14 us gate turn-off uses an assumed 60 pF Ciss; recompute for the selected part",
+    "the 5 V domain must be independent of the SR bias; its source is not part of this schematic",
+    "over-voltage backfeed while the switch is ON is not handled by this ECO"
+  ]
+}
