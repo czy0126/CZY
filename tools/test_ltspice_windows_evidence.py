@@ -41,10 +41,14 @@ def test_cr_only_or_non_spice_files_are_not_silently_normalized(tmp_path):
         h.original_windows_deck_sha256(deck)
     other = tmp_path / "data.log"
     other.write_text("real log\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="only"):
-        h.original_windows_deck_sha256(other)
+    assert h.original_windows_deck_sha256(other) == hashlib.sha256(
+        b"real log\r\n").hexdigest()
     assert h.actual_file_sha256(other) == hashlib.sha256(
         other.read_bytes()).hexdigest()
+    unsupported = tmp_path / "probe.raw"
+    unsupported.write_bytes(b"binary\r\n")
+    with pytest.raises(ValueError, match="only"):
+        h.original_windows_deck_sha256(unsupported)
 
 
 def test_rev_b_original_report_shas_bind_complete_decks_not_new_waveforms():
@@ -58,7 +62,7 @@ def test_rev_b_original_report_shas_bind_complete_decks_not_new_waveforms():
         assert deck.read_text(encoding="utf-8") == rev.deck(**case), name
         assert report["cases"][name]["deck_sha256"] == (
             h.original_windows_deck_sha256(deck)), name
-        assert report["cases"][name]["log_sha256"] == h.actual_file_sha256(log)
+        assert report["cases"][name]["log_sha256"] == h.original_windows_deck_sha256(log)
 
 
 def test_rev_b_timing_original_report_hashes_bind_complete_decks_and_logs():
