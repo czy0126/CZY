@@ -82,8 +82,12 @@ def design_inputs() -> dict:
             raise ValueError("C54 in deck is not the reviewed 11.1uF equivalent bank")
         if not re.search(r"^\s*(?:S54|Q54)\s+VDD_DIS\s+0\s+ENABLE_N\s+0\s+", deck, re.M):
             raise ValueError("Q54 fault-enable model changed: refresh safety analysis")
-    if c54.value.lower().replace(" ", "") != "11.1uf":
-        raise ValueError("C54 schematic value differs from both deck models")
+    # C54 is a *bank equivalent*, not an orderable 11.1uF single capacitor.
+    # The schematic deliberately says "11.1uF/25V equivalent".
+    schematic_c = positive_number(
+        c54.value, r"^(\d+(?:\.\d+)?)uF(?:/.*)?$", "C54 schematic bank") * 1e-6
+    if not math.isclose(schematic_c, model_c, rel_tol=1e-5):
+        raise ValueError("C54 schematic equivalent differs from both deck models")
 
     nominal_v = positive_number(seq, r"^\.param\s+VDD=(\d+(?:\.\d+)?)\s*$",
                                 "15V supply")
