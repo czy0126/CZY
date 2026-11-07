@@ -75,15 +75,15 @@
 <text class="small" x="1383" y="436">Existing SR board; verify bias</text>
 <!-- block Q2 -->
 <rect class="shadow" x="240" y="462" width="327" height="152" rx="10"/>
-<text class="h" x="259" y="491">Q2  BSS138IXTSA1</text>
+<text class="h" x="259" y="491">Q2  BSS138-7-F</text>
 <text class="s" x="259" y="515">Fast B_GATE pull-down N-FET</text>
 <text class="pin" x="259" y="541">D(3) → B_GATE</text>
 <text class="pin" x="259" y="566">G(1) ← U1 DRV</text>
 <text class="pin" x="259" y="591">S(2) → VIN_SYS</text>
 <path class="wire" d="M567 541 H598 V418 H636"/>
 <path class="wire" d="M567 566 H613 V461 H636"/>
-<text class="small" x="240" y="640">Q2: 32 pF Ciss typical; TI asks ≤50 pF.</text>
-<text class="small" x="240" y="659">Maximum Ciss not yet OEM-confirmed.</text>
+<text class="small" x="240" y="640">Q2: Ciss 50 pF MAX at 10 V VDS (OEM).</text>
+<text class="small" x="240" y="659">Ciss design-guaranteed only @25C, 10V VDS.</text>
 <!-- lower panel -->
 <rect class="ok" x="55" y="715" width="985" height="170" rx="9"/>
 <text class="h" x="78" y="745">FUNCTION 2: Analog configuration — verify in native schematic</text>
