@@ -10,7 +10,8 @@
     "continuous_13ma_anchor_stays_below_tj": true,
     "continuous_95ma_anchor_exceeds_tj": true,
     "continuous_source_requires_circuit_change": true,
-    "old_95ma_number_is_not_a_15v_guarantee": true
+    "old_95ma_number_is_not_a_15v_guarantee": true,
+    "cut_delay_is_the_t3_delay_at_the_same_supply": true
   },
   "results": {
     "finite_capacitor": {
@@ -237,25 +238,25 @@
     },
     "input_switch_delay": {
       "short_circuit_13ma": {
-        "delay_s": 1.336e-05,
+        "delay_s": 1.961477430247756e-05,
         "supply_v": 15.75,
         "anchor_a": 0.013,
         "v_reg_v": 0.061724,
         "ucc_w": 0.227572588,
         "q41_r44_w": 0.000802412,
-        "ucc_j": 3.04036977568e-06,
-        "q41_r44_j": 1.072022432e-08,
+        "ucc_j": 4.463784951050712e-06,
+        "q41_r44_j": 1.573913027759962e-08,
         "cap_energy_untouched": true
       },
       "current_limit_95ma": {
-        "delay_s": 1.336e-05,
+        "delay_s": 1.961477430247756e-05,
         "supply_v": 15.75,
         "anchor_a": 0.095,
         "v_reg_v": 0.45106,
         "ucc_w": 1.4770243,
         "q41_r44_w": 0.042850700000000005,
-        "ucc_j": 1.9733044648e-05,
-        "q41_r44_j": 5.724853520000001e-07,
+        "ucc_j": 2.8971498283774906e-05,
+        "q41_r44_j": 8.405068092031752e-07,
         "cap_energy_untouched": true
       }
     },
@@ -314,7 +315,10 @@
       "hold_ms_95ma": 1.2758999999999276,
       "hold_ms_13ma": 6.792200000005075,
       "ucc_energy_mj": 1.1628558417551877,
-      "delay_energy_uj_95ma": 19.733044648,
+      "cut_delay_us_15v75": 19.61477430247756,
+      "cut_delay_us_14v25": 29.67994490999772,
+      "rev_a_measured_cut_us": 13.360000000000001,
+      "delay_energy_uj_95ma": 28.971498283774906,
       "continuous_24v_13ma_w": 0.347197588,
       "continuous_24v_95ma_w": 2.2731493,
       "continuous_24v_95ma_tj_c": 271.40938412,
@@ -323,7 +327,8 @@
   },
   "decision": {
     "finite_source_conclusion": "bounded: the 11.1 uF releases ~1.29 mJ, independent of the foldback anchor.  The UCC24624 absorbs 0.95-1.16 mJ of it; at the 13 mA anchor R57 competes for more of the energy and shortens the hold.  The anchor sets the duration (1.3 ms at 95 mA, 6.8 ms at 13 mA) and therefore the power.  A single event is energy-bounded, not thermally proven (no Zth(t) in the datasheet).",
-    "input_delay_conclusion": "negligible at the measured 13.36 us cut: ~20 uJ at the 95 mA anchor, two orders below the capacitor energy.",
+    "input_delay_conclusion": "still negligible, but no longer quoted at Rev A's measured 13.36 us: Rev B's cut is slower because the DMP3098L gate capacitance beats the 10x smaller R50.  The delay is now taken from ``bias_cut_timing.cut_delay`` at the same supply the energy is evaluated at (19.6 us at 15.75 V), giving ~29 uJ at the 95 mA anchor: still well below the capacitor energy, because the input current during that window is ~40 mA.",
+    "cut_delay_source": "T3 owns the number (tools/bias_cut_timing.py).  Rev A's 13.36 us was measured through a 60 pF placeholder gate; the real Ciss max is 1008 pF, and R50 shrank 100k -> 10k, so the delay grew.  Any report that still quotes 13.36 us for Rev B is quoting Rev A.",
     "continuous_source_conclusion": "NOT closed and NOT closable by analysis.  At 24 V the 13 mA anchor gives 0.35 W (Tj 63 C) but the 95 mA anchor gives 2.27 W (Tj 271 C); the datasheet does not specify the foldback curve, so neither is the answer.",
     "required_change": "do not increase R57.  R57 only drains the local capacitor and cannot reduce a source that keeps injecting.  Either (a) measure IREG versus VREG at the board's own bias (row H4) and accept the measured operating point, or (b) remove the dependence on holding REG low: add a gate-source clamp on each SR FET driven by the 5 V latch domain so the gates are off regardless of REG.",
     "old_95ma_is_an_anchor": "IREGLIM (95 mA) and IREGSC (13 mA) are specified at VVDD = 12 V.  The board runs 15 V and the 24 V backfeed is a third condition; neither current is a 15 V or 24 V guarantee.",

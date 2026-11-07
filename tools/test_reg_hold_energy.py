@@ -61,6 +61,19 @@ def test_the_input_delay_energy_is_the_product_of_power_and_delay():
     assert row["cap_energy_untouched"] is True
 
 
+def test_the_cut_delay_is_imported_from_t3_at_the_same_supply():
+    """T3 owns the cut delay; a constant here would silently go stale."""
+    row = e.input_delay(anchor_a=95e-3)
+    assert row["delay_s"] == e.vdd_cut_delay_s(row["supply_v"])
+    # Rev B is slower than Rev A's measured 13.36 us despite the smaller R50.
+    assert row["delay_s"] > e.REV_A_MEASURED_CUT_S
+    # A lower input is the slower corner, so delay and power must pair.
+    assert e.vdd_cut_delay_s(14.25) > e.vdd_cut_delay_s(15.75)
+    summary = e.report()["results"]["summary"]
+    assert summary["cut_delay_us_15v75"] == pytest.approx(e.vdd_cut_delay_s(15.75) * 1e6)
+    assert summary["rev_a_measured_cut_us"] == pytest.approx(13.36)
+
+
 def test_the_continuous_source_is_reported_as_unbounded_and_anchor_dependent():
     low = e.continuous_injection(24.0, 13e-3)
     high = e.continuous_injection(24.0, 95e-3)

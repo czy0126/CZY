@@ -7,8 +7,12 @@ one answer:
 1. **Finite capacitor.**  The bias is cut, no external source feeds VDD_SR.
     The energy is fixed by the capacitor; what changes is how fast it leaves
     and therefore the *power* in the UCC24624.  A repeat-rate limit follows.
-2. **Input switch delay.**  The bias cut is not instant (measured 13.36 us in
-   the Rev A ECO).  During that window the input still feeds the regulator.
+2. **Input switch delay.**  The bias cut is not instant.  Rev A measured
+   13.36 us through a 60 pF placeholder gate; Rev B's real 1008 pF ``Ciss``
+   makes it longer even with R50 at 10 k.  The delay is therefore imported
+   from ``bias_cut_timing.cut_delay`` at the same supply as the energy, not
+   carried as a constant here.  During that window the input still feeds the
+   regulator.
 3. **Continuous external injection.**  Something holds VDD_SR up.  The series
    diode blocks it from the input but cannot remove it.  The regulator then
    feeds the REG crowbar forever; the energy is unbounded and the only
@@ -32,6 +36,7 @@ import json
 import math
 from pathlib import Path
 
+import bias_cut_timing
 import reg_hold
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,7 +54,7 @@ VREGOFF_MAX_V = 3.63             # REG UVLO turn-off, min column of 3.63/4/4.25
 IVDD_RUN_MAX_A = reg_hold.IVDD_RUN_MAX_A
 IVDD_STBY_MAX_A = 200e-6
 IREG_ANCHORS_A = {"short_circuit_13ma": 13e-3, "current_limit_95ma": 95e-3}
-VDD_CUT_DELAY_S = 13.36e-6       # Rev A ECO measured cut; Rev B not re-measured
+REV_A_MEASURED_CUT_S = 13.36e-6  # Rev A ECO; superseded, kept for comparison only
 VDD_IN_MAX_V = 15.75
 VDD_IN_NOM_V = 15.0
 BACKFEED_V = 24.0                # the case in the report; 18 V is the milder one
@@ -133,9 +138,22 @@ def finite_capacitor(v0: float = VDD_IN_MAX_V, anchor_a: float = IREG_ANCHORS_A[
     }
 
 
-def input_delay(delay_s: float = VDD_CUT_DELAY_S, anchor_a: float = IREG_ANCHORS_A[
+def vdd_cut_delay_s(supply_v: float = VDD_IN_MAX_V) -> float:
+    """Rev B bias-cut delay, evaluated at the same supply as the energy.
+
+    The delay and the power must come from one operating point: a longer delay
+    at a lower input voltage is not the same event as a shorter one at 15.75 V.
+    T3 owns this number (``bias_cut_timing.cut_delay``); 13.36 us was Rev A's
+    measured value with a 60 pF placeholder gate, which the real part loses to.
+    """
+    return bias_cut_timing.cut_delay(supply_v)["delay_to_13v5_s"]
+
+
+def input_delay(delay_s: float | None = None, anchor_a: float = IREG_ANCHORS_A[
         "current_limit_95ma"], supply_v: float = VDD_IN_MAX_V) -> dict:
     """Energy delivered by the still-connected input before the cut lands."""
+    if delay_s is None:
+        delay_s = vdd_cut_delay_s(supply_v)
     v_reg = anchor_a * R_CROWBAR_TOTAL_OHM
     p_ucc = (supply_v - v_reg) * anchor_a + supply_v * IVDD_RUN_MAX_A
     p_r44 = anchor_a * anchor_a * R_CROWBAR_TOTAL_OHM
@@ -216,6 +234,9 @@ def report() -> dict:
             "continuous_95ma_anchor_exceeds_tj": not worst_injection["within_tj_max"],
             "continuous_source_requires_circuit_change": True,
             "old_95ma_number_is_not_a_15v_guarantee": True,
+            "cut_delay_is_the_t3_delay_at_the_same_supply": all(
+                row["delay_s"] == vdd_cut_delay_s(row["supply_v"])
+                for row in delay.values()),
         },
         "results": {
             "finite_capacitor": finite,
@@ -227,6 +248,9 @@ def report() -> dict:
                 "hold_ms_95ma": finite["current_limit_95ma"]["hold_s"] * 1e3,
                 "hold_ms_13ma": finite["short_circuit_13ma"]["hold_s"] * 1e3,
                 "ucc_energy_mj": finite["current_limit_95ma"]["energy"]["ucc24624_j"] * 1e3,
+                "cut_delay_us_15v75": vdd_cut_delay_s() * 1e6,
+                "cut_delay_us_14v25": vdd_cut_delay_s(14.25) * 1e6,
+                "rev_a_measured_cut_us": REV_A_MEASURED_CUT_S * 1e6,
                 "delay_energy_uj_95ma": delay["current_limit_95ma"]["ucc_j"] * 1e6,
                 "continuous_24v_13ma_w": best_injection["ucc_w"],
                 "continuous_24v_95ma_w": worst_injection["ucc_w"],
@@ -243,8 +267,20 @@ def report() -> dict:
                 "13 mA) and therefore the power.  A single event is energy-bounded, "
                 "not thermally proven (no Zth(t) in the datasheet)."),
             "input_delay_conclusion": (
-                "negligible at the measured 13.36 us cut: ~20 uJ at the 95 mA "
-                "anchor, two orders below the capacitor energy."),
+                "still negligible, but no longer quoted at Rev A's measured "
+                f"{REV_A_MEASURED_CUT_S * 1e6:.2f} us: Rev B's cut is slower because "
+                "the DMP3098L gate capacitance beats the 10x smaller R50.  The delay "
+                "is now taken from ``bias_cut_timing.cut_delay`` at the same supply "
+                f"the energy is evaluated at ({vdd_cut_delay_s() * 1e6:.1f} us at "
+                f"{VDD_IN_MAX_V} V), giving ~"
+                f"{delay['current_limit_95ma']['ucc_j'] * 1e6:.0f} uJ at the 95 mA "
+                "anchor: still well below the capacitor energy, because the input "
+                "current during that window is ~40 mA."),
+            "cut_delay_source": (
+                "T3 owns the number (tools/bias_cut_timing.py).  Rev A's 13.36 us "
+                "was measured through a 60 pF placeholder gate; the real Ciss max "
+                "is 1008 pF, and R50 shrank 100k -> 10k, so the delay grew.  Any "
+                "report that still quotes 13.36 us for Rev B is quoting Rev A."),
             "continuous_source_conclusion": (
                 "NOT closed and NOT closable by analysis.  At 24 V the 13 mA anchor "
                 f"gives {best_injection['ucc_w']:.2f} W (Tj "
