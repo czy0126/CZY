@@ -88,7 +88,7 @@ def deck(case: str, mode: str, parent: str | None = None) -> str:
     new = ("\n".join(out) + "\n")
     heading = (
         f"* PoC case {case} SR_{mode.upper()} (load R={CASES[(case, mode)]} ohm)\n"
-        f"* AUTO-GENERATED from {PARENT.relative_to(ROOT)}; NO hardware verification.\n"
+        f"* AUTO-GENERATED from {PARENT.relative_to(ROOT).as_posix()}; NO hardware verification.\n"
         "* SR_OFF uses ideal gate clamps and MOSFET calibrated body diodes; "
         "NOT a qualified clamp circuit.\n"
         "* Rated current and voltage may differ radically in this fixed-ratio light-load model.\n"
