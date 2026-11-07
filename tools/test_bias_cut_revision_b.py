@@ -1,6 +1,7 @@
 """Electrical regressions and evidence identity for the candidate, not approval."""
 import json
 import bias_cut_revision_b as b
+import ltspice_windows_evidence as transport
 
 
 def test_series_blocking_has_no_output_to_gate_bypass():
@@ -22,7 +23,14 @@ def test_evidence_matches_generated_decks_and_cannot_approve_hardware():
         deck=b.OUT/f'{name}.cir'
         assert deck.read_text(encoding='utf-8')==b.deck(**kwargs)
         assert report['cases'][name]['deck_sha256']==b.digest(deck)
-        assert report['cases'][name]['log_sha256']==b.digest(b.OUT/f'{name}.log')
+        verified = transport.verify_committed_log_measurements(
+            b.OUT / f'{name}.log',
+            report['cases'][name]['measures'],
+            report['cases'][name]['log_sha256'],
+            b.base.parse_meas,
+        )
+        assert verified['measurements_exactly_match']
+        assert not verified['hardware_qualified']
     assert all(report['checks'].values())
 
 
