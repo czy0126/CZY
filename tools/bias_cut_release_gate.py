@@ -166,7 +166,9 @@ def assess() -> dict:
         blockers.append("sequence/reverse simulation manifest missing")
         run = {}
     else:
-        run = json.loads(SIM.read_text(encoding="utf-8"))
+        # The source-of-truth generator compares its recorded deck hashes with
+        # *current* deck text. A historical JSON saying RUN is not sufficient.
+        run = eco.sim_run()
         if run.get("status") != "RUN":
             blockers.append("sequence/reverse simulation manifest is not an approved RUN")
         if not run.get("all_checks_pass"):
@@ -189,6 +191,12 @@ def assess() -> dict:
         reverse_case = {}
     else:
         reverse_case = json.loads(MISMATCH.read_text(encoding="utf-8"))
+        # Historical hypothetical counterexamples are informative only when
+        # bound to the current input deck. Drift must fail closed.
+        import bias_cut_reverse_corner
+        expected = eco.sha256(bias_cut_reverse_corner.deck())
+        if reverse_case.get("deck_sha256") != expected:
+            blockers.append("hypothetical reverse mismatch record is stale for the current deck")
         if reverse_case.get("passes_100ua_screen") is not False:
             blockers.append("hypothetical reverse mismatch evidence absent or incorrectly marked pass")
         blockers.append("reverse blocking fails in the hypothetical 16V threshold-mismatch scenario; OEM corners needed")
@@ -202,7 +210,7 @@ def assess() -> dict:
             blockers.append("real H1/H5 oscilloscope and bias backfeed evidence not yet qualified")
 
     return {
-        "status": "BLOCKED_NOT_FOR_FAB" if blockers else "SOURCE_REVIEW_REQUIRED",
+        "status": "BLOCKED_NOT_FOR_FAB" if blockers else "HUMAN_SIGNOFF_REQUIRED",
         "fab_release": False,
         "hardware_qualified": False,
         "inputs": d,
@@ -230,7 +238,10 @@ def main() -> int:
         report = {"status": "BLOCKED_INVALID_SOURCE",
                   "fab_release": False, "blocks": [str(exc)]}
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    if args.require_release and report["status"] != "SOURCE_REVIEW_REQUIRED":
+    # No code path in this review tool can manufacture a human hardware
+    # signature. Even zero calculation blockers would still need real H1/H5,
+    # full OEM/SOA evidence, and an external signed fabrication gate.
+    if args.require_release and report.get("fab_release") is not True:
         return 2
     return 0 if report["status"] != "BLOCKED_INVALID_SOURCE" else 2
 
