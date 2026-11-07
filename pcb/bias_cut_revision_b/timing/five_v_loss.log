@@ -1,0 +1,23 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\work\t3_20261107\five_v_loss.cir
+Start Time: Sat Nov  7 23:33:34 2026
+solver = Normal
+Maximum thread count: 64
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 3.047 seconds.
+
+Files loaded:
+C:\work\t3_20261107\five_v_loss.cir
+
+vdd_sr_max: MAX(V(VDD_SR))=13.2619562149 FROM 0 TO 0.02
+vdd_sr_min: MIN(V(VDD_SR))=-0.113462664187 FROM 0 TO 0.02
+i_r59_peak: MAX(I(R59))=0.624614655972 FROM 0 TO 0.02
+gate_off_max: MAX(V(BC_GATE))=14.9998369217 FROM 0 TO 0.02
+vdd_sr_on: MIN(V(VDD_SR) )=13.2557549477 FROM 0.01 TO 0.0119
+t_cut_5vloss: INTEG((if(V(BC_GATE)<13.5,1,0)) )=2.30533753169e-05 FROM 0.012 TO 0.0125
+i_overlap_5vloss: MAX(I(R59) )=0.0406340360641 FROM 0.012 TO 0.0122
+vdd_sr_3ms_after_loss: V(VDD_SR) =3.95245808486 at 0.015
+vdd_sr_6ms_after_loss: V(VDD_SR) =3.81497736872 at 0.018

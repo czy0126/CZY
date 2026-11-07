@@ -1,0 +1,70 @@
+* T3 five_v_loss: bias on, then the 5 V domain disappears
+* Behavioural switches, datasheet-max logic delays, RC gate model.
+* NOT device-accurate, NOT a thermal model, NOT hardware.
+V1 VDD_IN 0 15
+V5S V5_IND 0 PWL(0 5 0.011999 5 0.012 0)
+VPERMIT PERMIT_EXT 0 PWL(0 0 0.0005 5)
+VRESET RESET_EXT 0 PWL(0 0 0.007999 0 0.008 5 0.00801 5 0.008011 0)
+VFAULT FAULT_IN 0 0
+* --- 5 V control domain: behavioural gates with datasheet MAX delays ---
+* LOGIC_OK forces every gate output low when the 5 V domain is unpowered.
+* That is the fail-safe reading, not a claim about an unpowered CD4xxx output.
+R63 PERMIT_EXT PERMIT 1k
+R60 PERMIT 0 100k
+R64 RESET_EXT RESET_CMD 1k
+R55 RESET_CMD 0 100k
+R65 FAULT_IN FAULT_G 1k
+R61 FAULT_G 0 100k
+R56 POR 0 100k
+C53 POR V5_IND 100n ic=0
+R54 V5_IND FLT_N 100k
+S53 FLT_N 0 FAULT_G 0 SWLOG
+.model SWLOG SW(Ron=10 Roff=1Meg Vt=2.5 Vh=0.2)
+B_OK LOGIC_OK 0 V=if(V(V5_IND)>4.5,1,0)
+B_FLTH FLT_H 0 V=delay(if(V(FLT_N)<2.5,5,0),110n)*V(LOGIC_OK)
+B_SET SET_LATCH 0 V=delay(if(V(FLT_H)>2.5 | V(POR)>2.5,5,0),250n)*V(LOGIC_OK)
+B_SETN SET_N 0 V=delay(if(V(SET_LATCH)>2.5,0,5),110n)*V(LOGIC_OK)
+B_RST RST_EFF 0 V=delay(if(V(RESET_CMD)>2.5 & V(SET_N)>2.5,5,0),250n)*V(LOGIC_OK)
+* Latch starts CLEARED (ic=0).  Rev A preinitialised it to "set"; that is the
+* exact assumption T3 is not allowed to make.
+C_L LATCHED 0 100p ic=0
+R_L LATCHED 0 10G
+B_L 0 LATCHED I=if(V(SET_LATCH)>2.5,(5-V(LATCHED))/1k,
++ if(V(RST_EFF)>2.5,(0-V(LATCHED))/1k,0))
+B_LN LATCHED_N 0 V=delay(if(V(SET_LATCH)>2.5 & V(RST_EFF)>2.5,5,5-V(LATCHED)),400n)*V(LOGIC_OK)
+B_EN_RAW ENABLE_RAW 0 V=if(V(PERMIT)>2.5 & V(LATCHED_N)>2.5,5,0)
+B_EN ENABLE 0 V=delay(if(V(ENABLE_RAW)>2.5 & V(SET_N)>2.5,5,0),250n)*V(LOGIC_OK)
+B_ENN ENABLE_N 0 V=delay(if(V(ENABLE)>2.5,0,5),110n)*V(LOGIC_OK)
+* --- Rev B power path: one P-MOS, one series resistor, one blocking diode ---
+R50 VDD_IN BC_GATE 10k
+S52 BC_GATE 0 ENABLE 0 SWEN
+.model SWEN SW(Ron=2 Roff=1G Vt=1.5 Vh=0.5)
+* Gate model: 900 pF + 108 pF = 1008 pF = DMP3098L Ciss MAX.  RC model only.
+CGS BC_GATE VDD_IN 900p ic=0
+CGD BC_GATE VMID 108p ic=0
+S50 VDD_IN VMID VDD_IN BC_GATE SWPM
+.model SWPM SW(Ron=0.2 Roff=1Meg Vt=2.0 Vh=0.2)
+D50B VMID VDD_IN DBODY
+.model DBODY D(Is=1e-12 N=1.2 Rs=0.05)
+R59 VMID VMID2 22
+D50 VMID2 VDD_SR D50MOD
+.model D50MOD D(Is=1e-9 N=1.8 Rs=0.5)
+R57 VDD_SR VDD_DIS 2.2k
+S54 VDD_DIS 0 ENABLE_N 0 SWEN
+R58 VDD_SR 0 100k
+C54 VDD_SR 0 11.1u ic=0
+* Stand-in for the UCC24624 supply current: T1's worst-case branch current
+* above the REG UVLO floor, standby below it.
+BLOAD VDD_SR 0 I=0.2m+40.3m/(1+exp(-(V(VDD_SR)-4.13)/0.05))
+.tran 0 20m 0 50n uic
+.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(ENABLE) V(ENABLE_N) V(LATCHED) V(SET_LATCH) V(RST_EFF) V(V5_IND) V(POR) V(FAULT_IN) V(PERMIT_EXT) V(RESET_EXT) I(V1) I(R59)
+.meas TRAN vdd_sr_max MAX V(VDD_SR)
+.meas TRAN vdd_sr_min MIN V(VDD_SR)
+.meas TRAN i_r59_peak MAX I(R59)
+.meas TRAN gate_off_max MAX V(BC_GATE)
+.meas TRAN vdd_sr_on MIN V(VDD_SR) FROM 10m TO 11.9m
+.meas TRAN t_cut_5vloss INTEG (if(V(BC_GATE)<13.5,1,0)) FROM 12m TO 12.5m
+.meas TRAN i_overlap_5vloss MAX I(R59) FROM 12m TO 12.2m
+.meas TRAN vdd_sr_3ms_after_loss FIND V(VDD_SR) AT=15m
+.meas TRAN vdd_sr_6ms_after_loss FIND V(VDD_SR) AT=18m
+.end

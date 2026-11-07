@@ -1,0 +1,24 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\work\t3_20261107\permit_withdraw.cir
+Start Time: Sat Nov  7 23:33:48 2026
+solver = Normal
+Maximum thread count: 64
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 2.701 seconds.
+
+Files loaded:
+C:\work\t3_20261107\permit_withdraw.cir
+
+vdd_sr_max: MAX(V(VDD_SR))=13.2619581223 FROM 0 TO 0.022
+vdd_sr_min: MIN(V(VDD_SR))=-0.113462664187 FROM 0 TO 0.022
+i_r59_peak: MAX(I(R59))=0.624614655972 FROM 0 TO 0.022
+gate_off_max: MAX(V(BC_GATE))=14.9998369217 FROM 0 TO 0.022
+vdd_sr_on: MIN(V(VDD_SR) )=13.2557549477 FROM 0.01 TO 0.0119
+t_cut_permit: INTEG((if(V(BC_GATE)<13.5,1,0)) )=2.37002419118e-05 FROM 0.012 TO 0.0125
+i_overlap_permit: MAX(I(R59) )=0.0410978123546 FROM 0.012 TO 0.0122
+vdd_sr_after_withdraw: V(VDD_SR) =3.76981698966 at 0.0155
+vdd_sr_restored: MIN(V(VDD_SR) )=13.2618532181 FROM 0.019 TO 0.0219
+latched_during_withdraw: V(LATCHED) =0 at 0.0155

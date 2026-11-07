@@ -56,3 +56,19 @@
   与 `test_the_period_walk_touches_only_its_own_window`（记录下标越界即红）。
   **教训**：任何"每周期"的量，构造也必须限制在窗口内，不能只限制积分。
 
+- **差动控制的 `SW` 的 `Vt` 符号**：`S50 VDD_IN VMID VDD_IN BC_GATE SWPM` 的控制量是
+  `V(VDD_IN) - V(BC_GATE)`，恒 ≥ 0，所以 `.model SWPM SW(... Vt=2.0 ...)` 正号才是
+  "|Vgs| > 2 V 才闭合"。T3 第一版写成 `Vt=-2.0`，开关常闭、VDD_SR 在 1 ms 就到 12.87 V，
+  而 ENABLE 只高了 1.09 µs——物理不可能，才反查到符号。**判据：先算控制量的符号范围。**
+- **`.meas` 碰到一个不在 `.save` 里的节点会中止整份测量列表**（`Voltage not found`），
+  不是只丢那一条。加了新 `.meas` 就先确认它读的每个节点都在 `SAVE` 里；否则整份 log
+  只剩前面的几条，看起来像"跑到一半崩了"。
+- **测传播延迟用 `INTEG(if(V(BC_GATE)<13.5,1,0)) FROM a TO b`，不要用 TRIG/TARG 的 RISE 计数**：
+  初值点在 LTspice 里贡献一次边沿，`RISE=2` 会落回 t≈0，得到 3.66e-7 这种"延迟"。
+  窗口积分与窗口长度无关，也不会被 t=0 的假边沿骗。
+- **`MAX(-I(V1))` 抓的是理想开关的纳秒门极尖峰**，不是电阻电流：T3 曾把 4.67 A 当成浪涌，
+  实际限流电阻上只有约 0.62 A。量哪个器件的电流就用 `MAX I(<ref>)`。
+- **分段负载写成硬 `if(V(x)>Vth,I1,I0)` 会让慢上电 deck 报
+  "Convergence Failure: Time step too small ... trouble with instance BLOAD"**；
+  用 `I=I0+I1/(1+exp(-(V(x)-Vth)/0.05))` 平滑后一次通过。
+
