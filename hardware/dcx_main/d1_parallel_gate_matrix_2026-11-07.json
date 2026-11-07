@@ -1,0 +1,156 @@
+{
+  "title": "CZY D1 six-lane parallel gates",
+  "version": "2026-11-07",
+  "baseline": "feat/d1-fab-package",
+  "milestone_status_policy": "MANUAL_EVIDENCE_REQUIRED_NOT_CI_APPROVABLE",
+  "all_hardware_release": false,
+  "specification": {
+    "vin_nom_v": 48,
+    "ratio": "24:1",
+    "rated_target_a": 100,
+    "vout_ideal_ratio_v": 2,
+    "vout_loaded_at_100a_sim_approx_v": 1.89,
+    "height_target_mm": 16,
+    "strict_2v_plusminus2pct_confirmed": false,
+    "d2_target_a": 120,
+    "d3_height_target_mm": 10
+  },
+  "gates": [
+    {
+      "gate_id": "M0_5A",
+      "name": "5 A model-only SR on/off A/B",
+      "nature": "SIMULATION_ONLY",
+      "prerequisite_task_ids": [
+        "A01",
+        "A02"
+      ],
+      "human_evidence": [
+        "authentic LTspice 5A ON and OFF .raw/.log tied to SHA",
+        "measured Vout, Iout, resonant peak and body-diode current",
+        "model out-of-range/overvoltage flags resolved"
+      ],
+      "hardware_power_on_authorized": false,
+      "ready": false
+    },
+    {
+      "gate_id": "M0_10A",
+      "name": "10 A model-only next comparison",
+      "nature": "SIMULATION_ONLY",
+      "prerequisite_task_ids": [
+        "A03",
+        "A04"
+      ],
+      "human_evidence": [
+        "verified 5A source checks and condition review",
+        "authentic LTspice 10A ON and OFF result files",
+        "model quality/corner report"
+      ],
+      "hardware_power_on_authorized": false,
+      "ready": false
+    },
+    {
+      "gate_id": "M1",
+      "name": "physical low-energy power-stage proof with SR hardware disabled",
+      "nature": "HARDWARE_LOW_ENERGY_SAFETY_REVIEW",
+      "prerequisite_gate_ids": [
+        "M0_5A"
+      ],
+      "prerequisite_task_ids": [
+        "B04",
+        "D01",
+        "D06",
+        "F03"
+      ],
+      "human_evidence": [
+        "real transformer T1-T4/CT/Lr DOT and insulation mapping or representative validated independent fixture",
+        "real SR VGS off at all critical MOSFETs; ideal software clamp not accepted",
+        "source-limited isolated fixture with documented power/energy limit, stop and safe probe plan",
+        "body-diode SOA and thermal capacity checked at actual trial voltage/current",
+        "engineering supervisor authorized controlled test"
+      ],
+      "hardware_power_on_authorized": false,
+      "ready": false
+    },
+    {
+      "gate_id": "M2",
+      "name": "real active SR low-energy commutation",
+      "nature": "HARDWARE_LOW_ENERGY_SR",
+      "prerequisite_gate_ids": [
+        "M1",
+        "M0_10A"
+      ],
+      "prerequisite_task_ids": [
+        "D05",
+        "E05"
+      ],
+      "human_evidence": [
+        "successful genuine H1/H5 REG/VDD/VGS and external reverse-source tests",
+        "real ten-gate fault set/reset/open wire/bias loss and no re-enable",
+        "revised reverse-aware discharge and 15 V eFuse OEM thermal/startup corners",
+        "loss/reverse current and temperature measured at allowed low energy"
+      ],
+      "hardware_power_on_authorized": false,
+      "ready": false
+    },
+    {
+      "gate_id": "M3",
+      "name": "D1 48 V 24:1 ~2 V 100 A continuous prototype",
+      "nature": "HIGH_CURRENT_HARDWARE",
+      "prerequisite_gate_ids": [
+        "M2"
+      ],
+      "prerequisite_task_ids": [
+        "C05",
+        "F04",
+        "B04",
+        "D05",
+        "E05"
+      ],
+      "human_evidence": [
+        "manufacturing physical pad/DOT mapping and signed GUI ERC/DRC",
+        "current-capable busbar/pour/vias, 4-wire contact resistance and temperature verified",
+        "magnetics nonlinear L(I), core/copper losses, thermal and no saturation at fault corners",
+        "staged 25/50/75/100 A real measurements under reviewed safe setup",
+        "measured efficiency including bias and thermal-stable rating with 16mm mechanics",
+        "explicit actual Vout acceptance envelope for 100 A not assumed ideal 2V"
+      ],
+      "hardware_power_on_authorized": false,
+      "ready": false
+    }
+  ],
+  "existing_artifacts": [
+    {
+      "ref": "PR54",
+      "link": "https://github.com/czy0126/CZY/pull/54",
+      "scope": "independent model-only low current decks",
+      "ci": "focused preflight success; full CI not yet confirmed"
+    },
+    {
+      "ref": "PR53",
+      "link": "https://github.com/czy0126/CZY/pull/53",
+      "scope": "SR fab silkscreen/manifest byte normalization",
+      "ci": "not claimed merged or validated; needs actual artifact consistency"
+    },
+    {
+      "ref": "PR52",
+      "link": "https://github.com/czy0126/CZY/pull/52",
+      "scope": "15V eFuse OEM schematic draft",
+      "ci": "focused preflight success; full CI failed due upstream SR fab files; not fab-ready"
+    },
+    {
+      "ref": "PR51",
+      "link": "https://github.com/czy0126/CZY/pull/51",
+      "scope": "reverse discharge safety release analysis",
+      "ci": "draft; cannot authorize manufacturing"
+    }
+  ],
+  "nonblocking_by_policy": [
+    "100A ledger residual in Issue #6 must not delay A/B modeling, magnetic RFQ or low-energy bench",
+    "D2 120A and D3 10mm not first-article prerequisites",
+    "supplier responses do not block PCB 100A current-path topology drafts but block physical pad freeze",
+    "1ms VDD_SR discharge threshold not a prerequisite for unpowered/simulation-only SR_OFF model work; full REG/VGS safety remains required",
+    "generic zero DRC errors on 0.8mm draft tracks do not establish 100A ampacity",
+    "no release gate can be set ready by simulation or unit tests alone"
+  ],
+  "last_review_note": "Snapshot based on repository reviewed on 2026-11-07; actual supplier replies, Windows CI and hardware evidence must be rechecked before any status is changed."
+}
