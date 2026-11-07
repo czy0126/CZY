@@ -120,3 +120,20 @@ def test_oem_bss138_max_capacitance_not_typical_infineon_value():
     assert "MAX 50pF" in q2["value"] and "@VDS10V" in q2["value"]
     assert q2["fab_qualified"] == "false"
     assert q2["source_url"] == "https://www.diodes.com/datasheet/download/BSS138.pdf"
+
+
+def test_full_d1_eight_synchronous_mosfets_and_four_24624_sizing_reads_live_bom():
+    import make_sr_fault_board as sr
+    result = d.report()["possible_full_d1_sr_gate_drive"]
+    assert result["sr_fets"] == 8
+    assert result["ucc24624_drivers"] == 4
+    assert result["freq_hz"] == pytest.approx(200622)
+    expected_gate = 8 * sr.QG_TYP_10V * 200622
+    expected_idle = 4 * sr.IVDD_RUN_MAX
+    assert result["gate_charge_current_typ_a"] == pytest.approx(expected_gate)
+    assert result["combined_nominal_screen_a"] == pytest.approx(
+        expected_gate + expected_idle)
+    assert 0.11 < result["combined_nominal_screen_a"] < 0.12
+    assert 5.2 < result["ratio_of_nominal_0p6a_limit_to_screen"] < 5.4
+    assert result["requires_common_ground_and_regenerable_bias_check"] is True
+    assert result["not_a_worst_case_bound"] is True
