@@ -74,7 +74,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 
 | 工序 | 下一项实际交付 | 验收边界 |
 |---|---|---|
-| A 原生 CAD | 用本包引脚表画 TPS26630 RGE24、CSD19537Q3、Diodes BSS138-7-F、分压、CdVdT、ILIM、SHDN，完成原生 ERC/网表/封装检查 | 原生网表脚号与 CSV 一致、ERC 问题解决、曝光焊盘实际映射正确；当前尚未完成 |
+| A 原生 CAD | **已生成** KiCad 原生草案（17 个器件实例），并由 Python 逐脚核对 36 个 OEM 引脚和模拟分压、SHDN 等网标签；下一步须在 KiCad10 正式运行 ERC / netlist 并落地 U1/Q1 真实 footprint | 现阶段仅为源级净表一致性验证，**正式 KiCad ERC/封装未核准**，不能投板 |
 | B 器件模型 | 选用 TI/TINA 或 PSpice 模型，逐个跑 14.25/15/15.75V、16/18V 外灌、输入丢失、故障/复位/5V掉电、15µF容差与温度 | 证明限流、反灌、Vgs和SOA，并记录仿真 hash；当前不冒充已跑 |
 | C 放电拓扑 | 采用 reverse-aware 或单次能量受限放电，不长期让 47Ω承受18V外灌 | 明确 Rdis 脉冲功率/脉宽/重复率与后续 VDD_SR 是否仍被强制抬高；反例先于布板 |
 | D 实物验证 | EVM 或工程样板、同步获取 H1/H5 真实原始示波器数据及偏置电流 | 证明 REG、VGS、VDD 和反馈在真实门极受激励后保持正确；无实测则不通过 |
