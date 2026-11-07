@@ -98,10 +98,10 @@ CASES = {
 def digest(p):
     """Hash LTspice simulated input CRLF and evidence log bytes separately.
 
-    Existing Rev-B reports record actual Windows CRLF deck hashes.
-    Git normalizes .cir source line endings to LF; do not forge a new log.
+    Existing Rev-B reports record actual Windows CRLF deck *and log* hashes.
+    Git normalizes text line endings to LF; no new simulation is claimed.
     """
-    if p.suffix.lower() == ".cir":
+    if p.suffix.lower() in {".cir", ".log"}:
         return input_hash.original_windows_deck_sha256(p)
     return input_hash.actual_file_sha256(p)
 
