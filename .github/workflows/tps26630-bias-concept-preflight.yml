@@ -6,6 +6,7 @@ on:
       - 'hardware/sr_bias_efuse_proposal/**'
       - 'tools/tps26630_bias_design.py'
       - 'tools/test_tps26630_bias_design.py'
+      - 'tools/test_tps26630_native_draft.py'
       - '.github/workflows/tps26630-bias-concept-preflight.yml'
   workflow_dispatch:
 
@@ -20,7 +21,7 @@ jobs:
       - name: Run lightweight source-backed checks
         run: |
           python -m pip install 'pytest>=8,<10'
-          python -m pytest -q tools/test_tps26630_bias_design.py
+          python -m pytest -q tools/test_tps26630_bias_design.py tools/test_tps26630_native_draft.py
           python tools/tps26630_bias_design.py --check > /tmp/tps26630_concept.json
           python - <<'PY'
           import json
