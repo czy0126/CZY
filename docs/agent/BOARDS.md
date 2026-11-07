@@ -421,7 +421,7 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
   `ENABLE` 由 R52 下拉 = 控制域断开读成"偏置断开"（fail-safe）。既有失败安全策略没有改。
 - **P-MOS（Q50/Q51/Q55）一律 `TO_SELECT`**：仓库没有 P 沟道数据手册。三条硬约束——
   `Vds ≥ 30 V`、`Id 脉冲 ≥ 3 A`（无软启动，3.3 µF 上电经开关充电）、**`\|Vth\| ≤ 2.5 V` 逻辑电平**
-  （Q55 要在 3 V 反向余量下动作）；`Ciss ≤ 100 pF` 决定 14 µs 关断，选定料号后重算。
+  （Q55 要在 3 V 反向余量下动作）；`Ciss ≤ 100 pF` 决定关断时间（deck 里 60 pF 时实测 13.36 µs），选定料号后重算。
 - **deck 与运行靠 sha256 绑定**：`sim_run.json` 存两份 deck 的哈希，改了 deck 不重跑 ⇒
   `sim_run()` 返回 `STALE`，`report.json` 的 `simulation_status` 跟着变；`--record-run` 重记。
 

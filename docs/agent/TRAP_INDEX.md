@@ -16,6 +16,7 @@
 | ★ | 远端 LTspice 用 `D:\ADI\LTspice-26.0.2\LTspice.exe`；`D:\ADI\LTspice\LTspice.exe` 是 26.1.1，不得用 | 起远端仿真 | ENVIRONMENT.md §远端仿真主机 |
 | ★ | 并行必须由 `schtasks` 起（sshd 的 Job Object 上限 3，第 4 个退 0 且不写盘） | 并行仿真 | ENVIRONMENT.md §远端仿真主机 |
 |  | 经 `schtasks` 跑的树放 `C:\work\...`（令牌受限）；不要为此放宽暂存树 ACL | 建并行暂存 | ENVIRONMENT.md §远端仿真主机 |
+|  | 远端 `.bat` 别用 `sed` 改：替换文本里的 `\b` 是退格，`cd` 路径被吃 ⇒ 任务"结果 0"却没有 log/raw | 写远端批量脚本 | ENVIRONMENT.md §远端仿真主机 |
 |  | 暂存用 Python `tarfile` 解包，不用远端 `tar.exe`（GBK 下中文路径乱码） | 上传代码 | ENVIRONMENT.md §远端仿真主机 |
 | ★ | deck 的 `../../models` 只在 `sim/` 下一层解析 ⇒ 并行 lane 必须是 `v3` 的兄弟目录 | 放新 deck / lane | ENVIRONMENT.md §远端仿真主机 |
 |  | 判活看进程 CPU 时间是否增长与 raw 是否出现；正常运行时 ASCII raw 结束前是 0 字节 | 判仿真死活 | ENVIRONMENT.md §远端仿真主机 |
@@ -42,6 +43,8 @@
 |  | 行为级 MOS mock 必须显式画体二极管；漏掉它，源极跟随器会在整个关断期从栅极倒灌（13.295 V） | 写 mock | SIMULATION.md §行为级 mock |
 |  | `SW(... Roff=1Meg)` 会加载 100k 上拉并把分压读成 13.679 V；mock 2N7002 用 `Roff=1G` | 写 mock | SIMULATION.md §行为级 mock |
 |  | 判据用窗内 MAX/MIN，不用 `FIND ... AT=` 单点：弛张振荡会藏在采样点之间 | 写 deck 判据 | SIMULATION.md §行为级 mock |
+|  | `uic` 下节点都从 0 V 起：被上拉/稳态握住的节点要给电容 `ic=`，否则 mock 造出只存在于模型的开通脉冲（14.97 V） | 写 mock | SIMULATION.md §行为级 mock |
+|  | `TARG` 搜整条时间轴、`t=0` 也算一次穿越 ⇒ 延迟可为负；数值落在判据带里也要读 log 的 `FROM/TO` 列 | 写 `.meas` 延迟 | SIMULATION.md §行为级 mock |
 |  | 48 V/120 A 候选账本要 `--no-step-check`（仓库唯一 2 ns raw 属 100 A deck） | 跑候选账本 | SIMULATION.md §仿真文件 |
 |  | 1 ms 母 deck 只存 pair1/pair4 的电流；`iout_sum_a` 是 2/4 组之和，`iout_from_v_a` 才是总输出 | 提输出电流 | SIMULATION.md §仿真文件 |
 |  | hotfault 两个 deck 的 `.tran` / PWL 行是唯一真值，窗口从文本解析，不要手抄 | 改故障 deck | SIMULATION.md §仿真文件 |
