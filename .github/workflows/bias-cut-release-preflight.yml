@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/bias_cut_release_gate.py'
       - 'tools/test_bias_cut_release_gate.py'
+      - 'pcb/bias_cut_eco/OEM_POWER_PATH_CANDIDATES.md'
       - 'tools/make_bias_cut_eco.py'
       - 'pcb/bias_cut_eco/sim_run.json'
       - 'pcb/bias_cut_eco/bias_cut_reverse_mismatch.json'
