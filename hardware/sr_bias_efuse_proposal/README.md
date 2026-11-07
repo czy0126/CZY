@@ -1,6 +1,6 @@
 # D1 | 15 V SR 偏置电源改版候选：TPS26630 + 外部反灌阻断
 
-**状态：OEM_SOURCED_CONCEPT_NOT_FOR_FAB。** 本设计包为现有 pcb/bias_cut_eco 提供下一版原生 KiCad 图的真实厂家料号、引脚、计算和参考电路；它**不是**原生 KiCad 工程，也不是硬件、ERC 或投板批准。
+**状态：OEM_SOURCED_NATIVE_KICAD_DRAFT_NOT_FOR_FAB。** 本包已包含独立可编辑 KiCad 原生原理图草案与工程文件，以及真实厂家料号、引脚、计算和参考电路；**尚未运行原生 KiCad ERC、未补齐 U1/Q1 物理封装、没有 PCB 或硬件，不具备投板批准**。
 
 ## 1. 设计架构与决策
 
@@ -16,6 +16,7 @@
 ## 2. 可编辑示意图及实际引脚
 
 - [可编辑矢量电路示意](tps26630_reference_concept.svg)
+- [可编辑原生 KiCad 原理图草案](native/tps26630_sr_bias_concept.kicad_sch) / [KiCad 工程文件](native/tps26630_sr_bias_concept.kicad_pro)；两份文件为 **NOT_FOR_FAB**；U1 EP 仅以符号 25 作为临时映射，厂商真实曝光焊盘号/焊盘必须复核，不得直接投板
 - [U1/Q1/Q2 厂商逐脚连接表](tps26630_pinmap.csv) — **本包唯一 CAD 引脚映射输入**
 - [器件与报价候选清单](component_candidates.csv)
 
@@ -87,3 +88,10 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 5. 对照备选 TI LM7480（反灌阻断，但不等于 eFuse 有限流）：https://www.ti.com/product/LM7480
 
 **任何源文件中出现的“能画图/料号已知”都不等于 SOA、热、磁件或 PCB 制造已批准。**
+
+## 6. 已生成的原生 KiCad 工程的实际边界（2026-11-07）
+
+- `native/tps26630_sr_bias_concept.kicad_sch` 和同名 `.kicad_pro` 是 **可编辑的原生 KiCad 文件**，含 TPS26630、Q1/Q2、分压网络、限流、dVdT、CIN 和 ENABLE_5V 接口；没有复制旧的常通电 47Ω 放电电阻。自检见 `tools/test_tps26630_native_draft.py`。
+- 原生 U1 用 **临时符号 25 代表厂商 EP**，CSV 仍保存 `EP`；当前不提供已验证的 TPS26630 RGE24 及 CSD19537Q3 DQG8 的真实 footprint，避免把一个看似能导出网表的文件误认为可以组装。
+- 该草案没有经过本次会话可访问的 KiCad 10 ERC/网表导出、没有正式 KiCad PCB、没有过流/反灌器件级瞬态仿真、没有 H1/H5 实测；**不能用于下单**。
+- 用户可直接在 KiCad 中打开项目，补充厂商 land pattern、运行全严重度 ERC，导出 netlist 并与 `tps26630_pinmap.csv` 逐脚比对；不要擅自为 NC 脚和暴露焊盘指定实体铜面/网络。
