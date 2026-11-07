@@ -1,8 +1,8 @@
 """One directory that says what each bench board is and how to rebuild it.
 
-Five declared bench boards live under ``pcb/``. Two have a fabrication package (a
+Six declared bench designs live under ``pcb/``. Two have a fabrication package (a
 routed board plus gerbers, drill, position file, assembly drawing and a
-manifest); the other three are schematics with ERC evidence and no copper. A
+manifest); the other four are schematics with ERC evidence and no copper. A
 reader who has the repository but not the history cannot tell which is which
 from the directory listing -- ``fab/manifest.json`` is the only file that says
 so, and its absence has to mean "not made yet" rather than "look harder".
@@ -39,8 +39,18 @@ README = OUT / "README.md"
 # standing of "known board", and a board that disappears must fail the check.
 BOARDS: list[dict] = [
     {
+        "id": "bias_cut_revision_b",
+        "title": "Revision B SR bias-cut candidate: series diode and startup resistor",
+        "what": "Candidate schematic only; replaces revision A power-path proposal. "
+                "Behavioural power-path screens do not qualify REG hold energy, real control or hardware.",
+        "generator": "python tools/bias_cut_revision_b.py",
+        "schematic": "pcb/bias_cut_revision_b/bias_cut_revision_b.kicad_sch",
+        "board": None,
+        "fab": None,
+    },
+    {
         "id": "bias_cut_eco",
-        "title": "SR bias-cut ECO with external SET/reset interlock",
+        "title": "Revision A SR bias-cut ECO: historical, failed stress review",
         "what": "Native schematic and behavioural simulation only. PMOS selection, "
                 "startup, gate propagation and reverse-voltage sweep remain unqualified.",
         "generator": "python tools/make_bias_cut_eco.py --check",

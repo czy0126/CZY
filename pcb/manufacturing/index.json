@@ -4,8 +4,22 @@
   "note": "A view over committed artefacts, not an approval: it copies each board's own hashes and flags and makes no judgement about the design.  hardware_built and fabrication_approved stay false for every board.",
   "boards": [
     {
+      "id": "bias_cut_revision_b",
+      "title": "Revision B SR bias-cut candidate: series diode and startup resistor",
+      "what": "Candidate schematic only; replaces revision A power-path proposal. Behavioural power-path screens do not qualify REG hold energy, real control or hardware.",
+      "generator": "python tools/bias_cut_revision_b.py",
+      "schematic": "pcb/bias_cut_revision_b/bias_cut_revision_b.kicad_sch",
+      "board": null,
+      "fab": null,
+      "schematic_sha256": "bb95e322595a6ab383a4ed8a8cb399666038481ace487fa32759f975d8284741",
+      "status": "SCHEMATIC_ONLY",
+      "not_fabricable_because": [
+        "no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper"
+      ]
+    },
+    {
       "id": "bias_cut_eco",
-      "title": "SR bias-cut ECO with external SET/reset interlock",
+      "title": "Revision A SR bias-cut ECO: historical, failed stress review",
       "what": "Native schematic and behavioural simulation only. PMOS selection, startup, gate propagation and reverse-voltage sweep remain unqualified.",
       "generator": "python tools/make_bias_cut_eco.py --check",
       "schematic": "pcb/bias_cut_eco/bias_cut_eco.kicad_sch",
@@ -113,6 +127,7 @@
     }
   ],
   "reproduce": [
+    "python tools/bias_cut_revision_b.py",
     "python tools/make_bias_cut_eco.py --check",
     "python tools/make_sr_fault_board_pcb.py --fab",
     "python tools/make_fast_oc_pcb.py --fab",

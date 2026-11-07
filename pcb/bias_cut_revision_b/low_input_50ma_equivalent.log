@@ -1,0 +1,21 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\pcb\bias_cut_revision_b\low_input_50ma_equivalent.cir
+Start Time: Sat Nov  7 23:07:25 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.192 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\pcb\bias_cut_revision_b\low_input_50ma_equivalent.cir
+
+input_peak: MIN(I(VIN))=-0.608793199062 FROM 0 TO 0.1
+reverse_peak: MAX(I(VIN) )=-0.0518368147314 FROM 0.005 TO 0.019
+enabled_v: AVG(V(VDD_SR) )=12.4139033311 FROM 0.018 TO 0.019
+discharge_power: MAX((V(VDD_SR,DIS)*V(VDD_SR,DIS)/2200) )=0.00107992431205 FROM 0.025 TO 0.095
+residual_v: V(VDD_SR) =5.28718544501e-07 at 0.095
+limiter_energy: INTEG((V(PASS_OUT,D_ANODE)*V(PASS_OUT,D_ANODE)/22) )=0.0012937940916 FROM 0.001 TO 0.005

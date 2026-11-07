@@ -10,6 +10,7 @@ board they claim to describe.
 
 | board | status | files | copper | flags | rebuild |
 |---|---|---|---|---|---|
+| `bias_cut_revision_b` | SCHEMATIC_ONLY | 0 | - | - | `python tools/bias_cut_revision_b.py` |
 | `bias_cut_eco` | SCHEMATIC_ONLY | 0 | - | - | `python tools/make_bias_cut_eco.py --check` |
 | `sr_fault_validation` | FAB_PACKAGE_PRESENT | 13 | 1 oz | built=False, approved=False | `python tools/make_sr_fault_board_pcb.py --fab` |
 | `fast_oc` | FAB_PACKAGE_PRESENT | 13 | 1 oz | built=False, approved=False | `python tools/make_fast_oc_pcb.py --fab` |
@@ -18,7 +19,14 @@ board they claim to describe.
 
 ## What each board is
 
-### `bias_cut_eco` -- SR bias-cut ECO with external SET/reset interlock
+### `bias_cut_revision_b` -- Revision B SR bias-cut candidate: series diode and startup resistor
+
+Candidate schematic only; replaces revision A power-path proposal. Behavioural power-path screens do not qualify REG hold energy, real control or hardware.
+
+Not fabricable today:
+- no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper
+
+### `bias_cut_eco` -- Revision A SR bias-cut ECO: historical, failed stress review
 
 Native schematic and behavioural simulation only. PMOS selection, startup, gate propagation and reverse-voltage sweep remain unqualified.
 
@@ -58,6 +66,7 @@ Not fabricable today:
 ## Rebuilding a package
 
 ```
+python tools/bias_cut_revision_b.py
 python tools/make_bias_cut_eco.py --check
 python tools/make_sr_fault_board_pcb.py --fab
 python tools/make_fast_oc_pcb.py --fab
