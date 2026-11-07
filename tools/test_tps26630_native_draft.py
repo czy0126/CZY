@@ -109,9 +109,12 @@ def test_no_vendor_footprint_has_been_falsely_approved():
         assert f'(lib_id "{lib}")' in source
     # Both custom components have blank Footprint properties (the symbol's
     # cached library footprint is also blank). Never claim ERC/PCB signoff.
+    found = {}
+    for m in re.finditer(r'\(symbol \(lib_id "([^"]+)"\)', source):
+        block = source[m.start():d0.block_end(source, m.start())]
+        reference = re.search(r'\(property "Reference" "([^"]+)"', block)
+        if reference is not None:
+            found[reference.group(1)] = block
     for ref in ("U1", "Q1"):
-        m = re.search(
-            rf'\(symbol \(lib_id "[^"]+"\).*?\(property "Reference" "{ref}"'
-            rf'.*?\(property "Value" "[^"]+"\).*?'
-            rf'\(property "Footprint" ""', source, flags=re.S)
-        assert m, ref
+        assert ref in found
+        assert '(property "Footprint" ""' in found[ref], ref
