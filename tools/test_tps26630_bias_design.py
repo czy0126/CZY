@@ -90,3 +90,33 @@ def test_1ms_discharge_requirement_remains_blocked_by_separate_design():
     assert r["readiness"]["discharge_redesign_completed"] is False
     assert any("R57" in b for b in r["blocking_decisions"])
     assert r["readiness"]["h1_h5_scope_complete"] is False
+
+
+def test_five_divider_and_shutdown_resistors_are_orderable_not_generic_values():
+    import csv
+    with d.BOM.open(encoding="utf-8", newline="") as stream:
+        entries = {row["ref"]: row for row in csv.DictReader(stream)}
+    exact = {
+        "RUV_TOP": "CRCW0603909KFKEA",
+        "RUV_MID": "CRCW060335K7FKEA",
+        "ROV_BOT": "CRCW060364K9FKEA",
+        "R_EN_PD": "CRCW0603100KFKEA",
+        "R_EN_SER": "CRCW06031K00FKEA",
+    }
+    assert {r: entries[r]["mpn"] for r in exact} == exact
+    assert all(entries[r]["fab_qualified"] == "false" for r in exact)
+    evidence = d.check_files()
+    assert evidence["selected_divider_and_enable_resistors"] == 5
+    assert evidence["q2_ciss_oem_max_at_vds10v_pf"] == 50
+
+
+def test_oem_bss138_max_capacitance_not_typical_infineon_value():
+    import csv
+    with d.BOM.open(encoding="utf-8", newline="") as stream:
+        entries = {row["ref"]: row for row in csv.DictReader(stream)}
+    q2 = entries["Q2"]
+    assert q2["mpn"] == "BSS138-7-F"
+    assert q2["manufacturer"] == "Diodes Incorporated"
+    assert "MAX 50pF" in q2["value"] and "@VDS10V" in q2["value"]
+    assert q2["fab_qualified"] == "false"
+    assert q2["source_url"] == "https://www.diodes.com/datasheet/download/BSS138.pdf"
