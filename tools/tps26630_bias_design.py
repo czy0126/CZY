@@ -109,7 +109,7 @@ def report() -> dict:
                    "evm": "https://www.ti.com/lit/ug/slvubi8.pdf"},
         "device": {
             "u1": "TPS26630RGET", "q1": "CSD19537Q3T",
-            "q2": "BSS138IXTSA1", "package": "RGE24 + thermal pad",
+            "q2": "BSS138-7-F", "package": "RGE24 + thermal pad",
             "configuration": "external reverse-block FET and Q2, MODE open, "
                              "SHDN externally pulled low for default off",
         },
@@ -155,7 +155,7 @@ def report() -> dict:
 
 
 # Rev G Figure 5-1, Figure 8-7; Q1 TI SLPS549B Figure 3-1;
-# Q2 Infineon BSS138I 2025-09-30 Figure / Table 1.
+# Q2 Diodes Inc BSS138 Rev25 Figure pinout / Table Electrical Characteristics; Ciss max50pF @VDS10V.
 EXPECTED = {
     ("U1", "1"): "EFUSE_IN", ("U1", "2"): "EFUSE_IN",
     ("U1", "3"): "BGATE", ("U1", "4"): "DRV",
@@ -192,7 +192,7 @@ def check_files() -> dict:
     with BOM.open(encoding="utf-8", newline="") as f:
         parts = {row["ref"]: row for row in csv.DictReader(f)}
     for ref, mpn in (("U1", "TPS26630RGET"),
-                     ("Q1", "CSD19537Q3T"), ("Q2", "BSS138IXTSA1")):
+                     ("Q1", "CSD19537Q3T"), ("Q2", "BSS138-7-F")):
         if parts.get(ref, {}).get("mpn") != mpn:
             raise ValueError(f"{ref}: OEM MPN not matching schematic source")
         if not parts[ref].get("source_url", "").startswith("https://"):
