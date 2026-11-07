@@ -84,3 +84,14 @@ def test_manifest_never_fabricates_ltspice_or_power_on_signoff():
         "5a_on", "5a_off", "10a_on", "10a_off"
     }
     assert all(not c["LTspice_simulated"] for c in report["cases"].values())
+
+
+def test_provenance_header_is_platform_independent_for_windows_and_linux():
+    # KiCad/LTspice decks are committed with a stable POSIX source-path label.
+    for case, mode in poc.CASES:
+        line = poc.deck(case, mode).splitlines()[1]
+        assert line == (
+            "* AUTO-GENERATED from sim/v3/sr_tank_dual_v33_cold_phys.cir; "
+            "NO hardware verification."
+        )
+        assert "\\\\" not in line
