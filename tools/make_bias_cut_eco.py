@@ -438,8 +438,10 @@ def pmos_selection() -> dict:
             "id_pulsed": "C54 (3.3 uF) charges through the switch at turn-on; "
                          "the supply and wiring set the peak, so the part must "
                          "have pulsed headroom. No soft-start is fitted.",
-            "ciss": "R50 turn-off is 100k * Ciss; at 100 pF the gate crosses "
-                    "Vth in ~14 us, after the ~12 us crowbar has already crossed REG UVLO",
+            "ciss": "R50 turn-off is 100k * Ciss: the deck measures 13.4 us at "
+                    "60 pF, so the 100 pF limit gives ~22 us. The fast path is "
+                    "the Q41/R44 crowbar (~12 us); this cut is the 100 us-scale "
+                    "path (section 7), so tens of us is the design point, not a race",
             "rds_on": "the SR bias is ~15 mA; 0.1 ohm is 1.5 mV, not a "
                       "thermal constraint, but keeps the pass drop negligible",
             "vgs_th": "Q55 is a source follower driven by VDD_IN; it can only "
