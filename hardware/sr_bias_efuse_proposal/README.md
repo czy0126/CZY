@@ -95,3 +95,16 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 - 原生 U1 用 **临时符号 25 代表厂商 EP**，CSV 仍保存 `EP`；当前不提供已验证的 TPS26630 RGE24 及 CSD19537Q3 DQG8 的真实 footprint，避免把一个看似能导出网表的文件误认为可以组装。
 - 该草案没有经过本次会话可访问的 KiCad 10 ERC/网表导出、没有正式 KiCad PCB、没有过流/反灌器件级瞬态仿真、没有 H1/H5 实测；**不能用于下单**。
 - 用户可直接在 KiCad 中打开项目，补充厂商 land pattern、运行全严重度 ERC，导出 netlist 并与 `tps26630_pinmap.csv` 逐脚比对；不要擅自为 NC 脚和暴露焊盘指定实体铜面/网络。
+
+
+## 7. 与 D1 主功率级关联的 SR 栅驱动电流核算
+
+tools/tps26630_bias_design.py 的 possible_full_d1_sr_gate_drive 读取主板 design/v3/bom/bom_draft.csv：**U3–U6 = 4 颗 UCC24624、SR1A–SR4B = 8 颗同步整流 MOSFET**，并引用 lr_design.json 的 200.622 kHz。tools/make_sr_fault_board.py 摘取 Infineon BSC010N04LS6 的**典型 Qg=67 nC @ Vgs=10 V**与 TI UCC24624 **IVDD_RUN_MAX=1.5 mA**，但两者各自手册条件不同。
+
+如果**四路驱动的 VSS 参考与 15 V 偏置域能够经工程核对共用**，初步平均电流筛选：
+
+- 8 × 67 nC × 200.622 kHz ≈ **0.1075 A**；
+- 4 × 1.5 mA ≈ **0.0060 A**；
+- 合计 ≈ **0.1135 A**，TPS26630 的 0.6 A 名义限流与该初步值之比约 **5.3**。这是**典型门极电荷加手册运行电流锚点**，绝不是全温最大值；不含器件散布、死区、热、实际门极电荷和辅助 15 V 负载。
+
+**重要**：eFuse 0.6 A 名义限流不能自动解决 UCC24624 持续 REG 撬棒的芯片内部耗散。必须依靠独立 5 V 故障锁存后的 SHDN 长保持断电，并保留每路 Q41/R44 的快速 REG 关断。四路共地可行性必须先在原生主板 VSS/PGND、中心抽头与绝缘规则中复核；若不满足则应分区供电，不得盲目共用。
