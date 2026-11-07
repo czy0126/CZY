@@ -1,0 +1,29 @@
+name: d1-parallel-execution-plan-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'docs/D1_EXECUTION_KIT/37_六线并行推进_关键路径与验收_2026-11-07.md'
+      - 'hardware/dcx_main/d1_parallel_execution_2026-11-07.csv'
+      - 'hardware/dcx_main/d1_parallel_gate_matrix_2026-11-07.json'
+      - 'tools/check_d1_parallel_execution.py'
+      - 'tools/test_check_d1_parallel_execution.py'
+      - '.github/workflows/d1-parallel-plan-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  dependency-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate lanes, ownership, dependencies, gates
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/check_d1_parallel_execution.py
+          python -m pytest -q tools/test_check_d1_parallel_execution.py
+
+# Green means plan schema is internally consistent, not that ANY physical
+# test, EDA/ERC, vendor response, PCB, waveform, SOA or fab gate passed.
