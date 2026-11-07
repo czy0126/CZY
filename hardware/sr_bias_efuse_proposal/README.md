@@ -7,7 +7,7 @@
 现有 Q50/Q51/Q55 的 P-MOS 尚未定型、反向截止取决于阈值协调：行为级 16 V 阈值失配示例有约 0.617 A 反灌；旧仿真约 169 A 理想浪涌模型没有对应器件 SOA。Q54+R57=47Ω/0.25W 在外源持续 18 V 时耗散约 6.315 W。现有逻辑测试成功不能抵销这些问题。
 
 因此分三个功能设计：
-- **电源通路**：TPS26630RGET 内置限流高边 FET + Q1 CSD19537Q3T 外部反灌阻断 N-FET + Q2 BSS138IXTSA1 栅极快速下拉 FET。
+- **电源通路**：TPS26630RGET 内置限流高边 FET + Q1 CSD19537Q3T 外部反灌阻断 N-FET + Q2 BSS138-7-F 栅极快速下拉 FET。
 - **故障快速关断与锁存**：原 SR 板的 FAULT_G→Q41/R44→REG UVLO 保留；独立 5 V 故障锁存的 ENABLE_5V 接 U1.SH​​DN，控制掉电默认关断。TPS26630 MODE 引脚保持开路选择过载锁断，不取代外部故障锁存。
 - **电容放电**：**未完成**。本方案绝不将持续通电的 Q54+47Ω/0.25W 搬到新板并声称通过。需要独立的逆流检测/能量受限放电设计，验证外部反灌与 H1/H5。
 
@@ -60,7 +60,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 |---|---|---|
 | U1 | **TPS26630RGET** | TI active，RGE 24 pin VQFN；非 RGE 24 的型号不能用同一引脚表 |
 | Q1 | **CSD19537Q3T** | TI EVM Q1 参考型号的小卷带后缀，100V、10V 栅压下 Rds(on) max 14.5mΩ；DQG8 封装 |
-| Q2 | **BSS138IXTSA1** | Infineon BSS138I OPN，SOT23，60V、Vgs±20V、Ciss **典型** 32pF；TI 要求 Q2 Ciss≤50pF，厂家是否有 **最大** 规格仍需确认 |
+| Q2 | **BSS138-7-F** | Diodes Inc BSS138，SOT23，50V、Vgs±20V、Ciss **最大 50pF**（仅 VDS=10V、25°C、1MHz；设计保证，非逐颗测试）；超出该测试条件仍需验证 |
 | CIN | **C3216X7R2A105K160AA** | TDK 1µF/100V X7R 1206，TI EVM 物料表 |
 | CdVdT | **C0603C223K4RACTU** | KEMET 22nF/16V X7R，TI EVM 物料表；直流偏压有效容值待查 |
 | RILIM | **CRCW060330K0FKEA** | Vishay Dale 30kΩ±1% 0603，可采购料号，但本板热/焊盘尚未验证 |
@@ -83,7 +83,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 1. TI TPS2663x datasheet Rev.G SLVSE94G (2024-06) Figure5-1/Table5-1/Figure8-7/Eq1–3/8–10：https://www.ti.com/lit/ds/symlink/tps2663.pdf
 2. TI TPS26630-33EVM User's Guide Rev.A SLVUBI8A (2019-03) Figure11 / Table12：https://www.ti.com/lit/ug/slvubi8a/slvubi8a.pdf
 3. TI CSD19537Q3 100V MOSFET Rev.B SLPS549B Figure3-1：https://www.ti.com/lit/ds/symlink/csd19537q3.pdf
-4. Infineon BSS138I Rev.2.3 (2025-09-30), actual pins and Ciss typical：https://www.infineon.com/assets/row/public/documents/24/49/infineon-bss138i-datasheet-en.pdf
+4. Diodes Inc BSS138 Rev.25-2 (2024-06), actual pins, Ciss MAX 50pF at 10V/25C, guaranteed by design：https://www.infineon.com/assets/row/public/documents/24/49/infineon-bss138i-datasheet-en.pdf
 5. 对照备选 TI LM7480（反灌阻断，但不等于 eFuse 有限流）：https://www.ti.com/product/LM7480
 
 **任何源文件中出现的“能画图/料号已知”都不等于 SOA、热、磁件或 PCB 制造已批准。**
