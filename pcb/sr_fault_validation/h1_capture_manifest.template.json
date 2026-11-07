@@ -1,0 +1,25 @@
+{
+  "capture_kind": "not_captured",
+  "board_revision": "",
+  "instrument": "",
+  "scope_bandwidth_hz": null,
+  "probe_mapping": {
+    "t_s": "common timebase in seconds",
+    "fault_v": "FAULT_IN relative PGND",
+    "vdd_v": "U1 pin7 relative pin2 PGND",
+    "reg_v": "U1 pin3 relative pin2 PGND",
+    "vgs1_v": "Q1 gate minus actual source, differential",
+    "vgs2_v": "Q2 gate minus actual source, differential",
+    "vd1_v": "U1 pin4 relative pin5 VSS",
+    "vd2_v": "U1 pin6 relative pin5 VSS",
+    "bias_a": "measured bias input current A",
+    "psu_cc": "synchronized current-limit indicator 0/1; do not fill zero without evidence"
+  },
+  "bias_limit_a": 0.03,
+  "capture_csv": "H1_NOT_CAPTURED.csv",
+  "notes": [
+    "Do not relabel synthetic tests as hardware.",
+    "Keep two-channel VD stimulus active; pretrigger >=10us, hold >=100us, dt <=0.1us.",
+    "25us deadline is an engineering target; this check does not qualify thermal behavior or power commutation."
+  ]
+}

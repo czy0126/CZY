@@ -1,4 +1,4 @@
-"""UCC24624 hold-state thermal bound while the REG crowbar stays latched.
+"""UCC24624 hold-state thermal scenarios while the REG crowbar stays latched.
 
 Why this module exists
 ----------------------
@@ -8,7 +8,7 @@ for 10/100/1000 ms?  The board's crowbar is a linear load on the UCC24624
 internal linear regulator, so its steady current is set by the regulator, not
 by the 4.7 ohm resistor.
 
-Two datasheet anchors bound that current (references/datasheets/ucc24624.txt,
+Two datasheet anchors describe current at specific test conditions (references/datasheets/ucc24624.txt,
 7.5 Electrical Characteristics, page 6):
 
     IREGLIM  41 / 60 / 95 mA   at VVDD = 12 V, VREG = 8 V
@@ -19,13 +19,13 @@ must fold back somewhere between 8 V and 0 V -- but the curve itself is not
 specified.  A crowbar that stays at the 95 mA limit settles at
 VREG = 95 mA * 4.748 ohm = 0.45 V and makes the IC dissipate 1.4 W; the same
 IC at 13 mA dissipates 0.22 W.  The datasheet says both endpoints exist; it
-does not say which one the crowbar lands on, so the worst case is 1.4 W and
-that is above the 125 C junction limit.
+does not say which one the crowbar lands on, so 1.4 W is a sensitivity scenario, NOT a bound at 15 V.
+The corresponding JEDEC-board steady-state temperature exceeds 125 C.
 
 Thermal numbers (7.4 Thermal Information and 7.1 Absolute Maximum Ratings):
 
     RthJA = 108.4 C/W (D, 8-pin SOIC, JEDEC board, still air)
-    TJ max = 125 C (recommended operating and absolute maximum)
+    TJ max = 125 C (recommended operating and absolute maximum); storage max = 150 C
 
 This module does not choose a circuit.  It reports the two anchors, the
 bias-current limit each ambient implies, and the design requirements that
@@ -43,7 +43,8 @@ DATASHEET = "references/datasheets/ucc24624.txt"
 # UCC24624 datasheet, page 6 (7.5) and pages 4-5 (7.1/7.4).
 RTH_JA_C_PER_W = 108.4
 TJ_MAX_C = 125.0
-TJ_ABS_MAX_C = 150.0
+TJ_ABS_MAX_C = 125.0
+STORAGE_MAX_C = 150.0
 IREGLIM_MAX_A = 95e-3
 IREG_SC_MAX_A = 13e-3
 IVDD_RUN_MAX_A = 1.5e-3
@@ -100,8 +101,8 @@ def allowed_current_a(vdd: float, r_total: float, ambient_c: float) -> float:
 
     Solves (VDD - I*R)*I + VDD*IVDDRUN = (TJ_MAX - Tamb)/Rth for the lower root.
     Returns 0.0 when the quiescent load alone already reaches the limit.  This
-    is an upper bound under an optimistic Rth, not a safe operating value: a
-    mounted board usually has a worse junction-to-ambient path, and the
+    is an upper bound under an optimistic Rth, not a safe operating value: the
+    mounted board has an unmeasured junction-to-ambient path, and the
     datasheet gives no Zth(t), so there is no transient allowance either.
     """
     allowance = (TJ_MAX_C - ambient_c) / RTH_JA_C_PER_W - vdd * IVDD_RUN_MAX_A
@@ -121,11 +122,14 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
     ambients = (25.0, 40.0, 50.0, 70.0)
     allowed = {f"{a:.0f}": allowed_current_a(vdd, r_total, a) for a in ambients}
     return {
+        "status": "CONDITIONAL_SCENARIOS_NOT_15V_BOUNDS",
+        "hardware_qualified": False,
         "datasheet": {
             "file": DATASHEET,
             "rth_ja_c_per_w": RTH_JA_C_PER_W,
             "tj_max_c": TJ_MAX_C,
             "tj_abs_max_c": TJ_ABS_MAX_C,
+            "storage_max_c": STORAGE_MAX_C,
             "ireg_lim": {"min_a": 41e-3, "typ_a": 60e-3, "max_a": IREGLIM_MAX_A,
                          "condition": "VVDD = 12 V, VREG = 8 V"},
             "ireg_sc": {"min_a": 4.5e-3, "typ_a": 9.5e-3, "max_a": IREG_SC_MAX_A,
@@ -140,32 +144,35 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
         },
         "allowed_continuous_current_a": allowed,
         "allowed_continuous_basis": (
-            "upper bound under the datasheet RthJA (JEDEC board, still air); a "
-            "mounted board is usually worse, and there is no Zth(t) for a "
-            "transient allowance -- do not read the table as a safe value"),
+            "conditional equation result at the JEDEC RthJA; actual mounted RthJA is unknown. "
+            "Neither a 15 V current bound nor a safe limit or transient hold time"),
         "bench_bias_limit": {
             "chosen_a": BENCH_BIAS_LIMIT_A,
             "margin_at_25_c": allowed["25"] / BENCH_BIAS_LIMIT_A,
             "margin_at_50_c": allowed["50"] / BENCH_BIAS_LIMIT_A,
-            "basis": "main power off during the fault experiments; the bias "
+            "not_a_safe_current_guarantee": True,
+            "requires_actual_vdd_and_cc_trace": True,
+            "basis": "initial instrument setting only; main power off during the fault experiments; the bias "
                      "carries IVDDRUN (1.5 mA max) plus the gate charge of a "
                      "normally switching pair, not a 100 A load.  40 mA was "
                      "rejected: at 40 mA a mounted Rth 1.5x worse than the "
                      "JEDEC value would sit exactly on the 125 C limit",
             "rule": "record the actual ambient and limit in reg_hold_bench_record.csv; "
-                    "if the ambient is above 50 C, lower the limit to the table value",
+                    "do not automatically set current from the conditional thermal table. "
+                    "Record actual VDD and PSU current-limit state: a drooping rail or CC "
+                    "event cannot validate shutdown at regulated 15 V. No hold duration is approved",
         },
         "decision": {
             "sustained_crowbar_approved": False,
             "measured": False,
-            "worst_case_summary": (
+            "scenario_summary": (
                 f"at the 95 mA current-limit anchor the IC dissipates "
                 f"{limit_anchor['controller_w']:.3f} W, i.e. {limit_anchor['rise_k']:.0f} K "
-                f"above ambient ({limit_anchor['tj_c']:.0f} C at 25 C), above TJ max"),
+                f"above ambient ({limit_anchor['tj_c']:.0f} C at {ambient_c:g} C), above TJ max in the 25 C reference case; not a 15 V bound"),
             "foldback_summary": (
                 f"at the 13 mA short-circuit anchor it would dissipate "
                 f"{sc_anchor['controller_w']:.3f} W and reach "
-                f"{sc_anchor['tj_c']:.0f} C at 25 C, but the datasheet does not "
+                f"{sc_anchor['tj_c']:.0f} C at {ambient_c:g} C, but the datasheet does not "
                 "specify the curve between 8 V and 0 V"),
             "required": [
                 "measure I_REG against V_REG at the board's 15 V bias before any hold "
@@ -184,9 +191,7 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
         "open_items": [
             "IREGSC is specified at VVDD = 12 V; the board runs 15 V and the "
             "short-circuit current there is not specified",
-            "IVDDRUN is the datasheet maximum (1.5 mA) but still a 12 V number, so "
-            "the 22.5 mW quiescent term is slightly low at 15 V; it is the smallest "
-            "term in the budget",
+            "IVDDRUN is specified at 12 V; its value at 15 V is not bounded by this calculation",
             "R44 itself dissipates I^2*R = 42 mW at 95 mA; the 1.4 W figure is the "
             "controller's, not the resistor's, and the resistor's resistance drift "
             "at that level is not modelled (it changes the equilibrium by <1%)",
@@ -197,6 +202,6 @@ def analysis(vdd: float = VDD_NOM, r_total: float = R_CROWBAR + RDS_Q41,
             "the die thermal impedance Zth(t) is not in the datasheet, so no transient "
             "hold time can be derived, only the steady-state bound",
             "no hardware was available this round: every number here is a datasheet "
-            "bound or arithmetic",
+            "condition-specific value or arithmetic, not a 15 V bound",
         ],
     }

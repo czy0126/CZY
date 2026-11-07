@@ -1,7 +1,7 @@
 ﻿case_id,purpose,bias_v,bias_limit_a,fault_amplitude_v,fault_width_us,repeat_hz,executed,board_revision,ambient_c,waveform_path,vdd_min_v,reg_min_v,rc_g_peak_v,vg1_off_us,vg2_off_us,bias_peak_a,bias_mean_a,case_temp_start_c,case_temp_end_c,current_limit_hit,unexpected_restart,stop_reason,result
 H0,bias only; no main power,15,0.030,3.3,0,0,false,,,,,,,,,,,,,,,,
-H1,100us shutdown pulse; main power disconnected,15,0.030,3.3,100,0,false,,,,,,,,,,,,,,,,
+H1,100us fault with continued VD stimulus; pre-started REG and exercised VGS; regulated 15V and no CC required,15,0.030,3.3,100,0,false,,,,,,,,,,,,,,,,
 H2,10ms hold only after H1 evidence reviewed,15,0.030,3.3,10000,0,false,,,,,,,,,,,,,,,,
 H3,100ms conditional hold; not automatically approved,15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
-H4,"REG foldback sweep: I_REG vs V_REG at 15 V bias, steps 10/20/30 mA (40 mA only after a measured Rth); stop at TJ 125 C",15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
-H5,latched bias cut: VDD must not be raised back through the SR drains or the output; record VDD/REG/VG1/VG2 and re-arm,15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
+H4,characterization only: record actual VDD/REG/current; CC or VDD sag cannot establish regulated-15V foldback; no safe hold duration derived,15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
+H5,"PLANNED bias-cut ECO, not implemented: capture VDD/REG/VGS and backfeed/re-arm after an actual circuit exists",15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,

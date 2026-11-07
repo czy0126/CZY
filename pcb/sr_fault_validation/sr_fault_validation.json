@@ -451,11 +451,14 @@
     ]
   },
   "reg_hold": {
+    "status": "CONDITIONAL_SCENARIOS_NOT_15V_BOUNDS",
+    "hardware_qualified": false,
     "datasheet": {
       "file": "references/datasheets/ucc24624.txt",
       "rth_ja_c_per_w": 108.4,
       "tj_max_c": 125.0,
-      "tj_abs_max_c": 150.0,
+      "tj_abs_max_c": 125.0,
+      "storage_max_c": 150.0,
       "ireg_lim": {
         "min_a": 0.041,
         "typ_a": 0.06,
@@ -502,18 +505,20 @@
       "50": 0.04527427871919267,
       "70": 0.03266303948379757
     },
-    "allowed_continuous_basis": "upper bound under the datasheet RthJA (JEDEC board, still air); a mounted board is usually worse, and there is no Zth(t) for a transient allowance -- do not read the table as a safe value",
+    "allowed_continuous_basis": "conditional equation result at the JEDEC RthJA; actual mounted RthJA is unknown. Neither a 15 V current bound nor a safe limit or transient hold time",
     "bench_bias_limit": {
       "chosen_a": 0.03,
       "margin_at_25_c": 2.0395204775231317,
       "margin_at_50_c": 1.5091426239730892,
-      "basis": "main power off during the fault experiments; the bias carries IVDDRUN (1.5 mA max) plus the gate charge of a normally switching pair, not a 100 A load.  40 mA was rejected: at 40 mA a mounted Rth 1.5x worse than the JEDEC value would sit exactly on the 125 C limit",
-      "rule": "record the actual ambient and limit in reg_hold_bench_record.csv; if the ambient is above 50 C, lower the limit to the table value"
+      "not_a_safe_current_guarantee": true,
+      "requires_actual_vdd_and_cc_trace": true,
+      "basis": "initial instrument setting only; main power off during the fault experiments; the bias carries IVDDRUN (1.5 mA max) plus the gate charge of a normally switching pair, not a 100 A load.  40 mA was rejected: at 40 mA a mounted Rth 1.5x worse than the JEDEC value would sit exactly on the 125 C limit",
+      "rule": "record the actual ambient and limit in reg_hold_bench_record.csv; do not automatically set current from the conditional thermal table. Record actual VDD and PSU current-limit state: a drooping rail or CC event cannot validate shutdown at regulated 15 V. No hold duration is approved"
     },
     "decision": {
       "sustained_crowbar_approved": false,
       "measured": false,
-      "worst_case_summary": "at the 95 mA current-limit anchor the IC dissipates 1.405 W, i.e. 152 K above ambient (177 C at 25 C), above TJ max",
+      "scenario_summary": "at the 95 mA current-limit anchor the IC dissipates 1.405 W, i.e. 152 K above ambient (177 C at 25 C), above TJ max in the 25 C reference case; not a 15 V bound",
       "foldback_summary": "at the 13 mA short-circuit anchor it would dissipate 0.217 W and reach 48 C at 25 C, but the datasheet does not specify the curve between 8 V and 0 V",
       "required": [
         "measure I_REG against V_REG at the board's 15 V bias before any hold longer than the bench limit (row H4)",
@@ -525,12 +530,12 @@
     },
     "open_items": [
       "IREGSC is specified at VVDD = 12 V; the board runs 15 V and the short-circuit current there is not specified",
-      "IVDDRUN is the datasheet maximum (1.5 mA) but still a 12 V number, so the 22.5 mW quiescent term is slightly low at 15 V; it is the smallest term in the budget",
+      "IVDDRUN is specified at 12 V; its value at 15 V is not bounded by this calculation",
       "R44 itself dissipates I^2*R = 42 mW at 95 mA; the 1.4 W figure is the controller's, not the resistor's, and the resistor's resistance drift at that level is not modelled (it changes the equilibrium by <1%)",
       "gate charge during the ~12 us transition is not in the steady-state sum; it is a single event of order Qg(sync)*VREG per FET",
       "RthJA is a JEDEC-board, still-air number; the validation board is small and its mounted value is unverified",
       "the die thermal impedance Zth(t) is not in the datasheet, so no transient hold time can be derived, only the steady-state bound",
-      "no hardware was available this round: every number here is a datasheet bound or arithmetic"
+      "no hardware was available this round: every number here is a datasheet condition-specific value or arithmetic, not a 15 V bound"
     ]
   },
   "q41_selection": {

@@ -89,7 +89,7 @@ def test_the_bench_limit_sits_between_the_idle_load_and_the_thermal_limit():
 def test_no_sustained_crowbar_is_approved_and_the_actions_say_why():
     decision = reg_hold.analysis()["decision"]
     assert decision["sustained_crowbar_approved"] is False
-    assert "above TJ max" in decision["worst_case_summary"]
+    assert "above TJ max" in decision["scenario_summary"]
     assert len(decision["required"]) >= 4
     assert any("crowbar" in item for item in decision["required"])
     assert any("bias cut" in item for item in decision["required"])
@@ -107,3 +107,13 @@ def test_the_result_is_arithmetic_not_a_power_supply_design():
     assert data["open_items"]
     assert any("no hardware" in item for item in data["open_items"])
     assert math.isfinite(data["board"]["tau_s"])
+
+
+def test_storage_limit_is_not_a_junction_operating_limit():
+    assert reg_hold.TJ_ABS_MAX_C == 125.0
+    assert reg_hold.STORAGE_MAX_C == 150.0
+    data = reg_hold.analysis()
+    assert data["status"] == "CONDITIONAL_SCENARIOS_NOT_15V_BOUNDS"
+    assert data["bench_bias_limit"]["requires_actual_vdd_and_cc_trace"] is True
+    assert data["bench_bias_limit"]["not_a_safe_current_guarantee"] is True
+    assert "do not automatically" in data["bench_bias_limit"]["rule"]
