@@ -76,7 +76,7 @@ def test_current_mpn_are_concepts_not_fabrication_authorizations():
     r = d.report()
     assert r["device"] == {
         "u1": "TPS26630RGET", "q1": "CSD19537Q3T",
-        "q2": "BSS138IXTSA1", "package": "RGE24 + thermal pad",
+        "q2": "BSS138-7-F", "package": "RGE24 + thermal pad",
         "configuration": (
             "external reverse-block FET and Q2, MODE open, "
             "SHDN externally pulled low for default off"
