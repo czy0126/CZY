@@ -5,6 +5,8 @@ on:
     paths:
       - 'tools/poc_low_current_decks.py'
       - 'tools/test_poc_low_current_decks.py'
+      - 'tools/run_poc_low_current.py'
+      - 'tools/test_run_poc_low_current.py'
       - 'sim/v3/poc_5a_sr_on.cir'
       - 'sim/v3/poc_5a_sr_off.cir'
       - 'sim/v3/poc_10a_sr_on.cir'
@@ -25,7 +27,8 @@ jobs:
       - name: Check all 4 cold-start model snapshots against current D1 source
         run: |
           python tools/poc_low_current_decks.py --check
-          python -m pytest -q tools/test_poc_low_current_decks.py
+          python -m pytest -q tools/test_poc_low_current_decks.py tools/test_run_poc_low_current.py
+          python tools/run_poc_low_current.py --check
           python - <<'PY'
           import sys
           from pathlib import Path
