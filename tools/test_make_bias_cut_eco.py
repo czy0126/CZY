@@ -66,6 +66,38 @@ def test_power_on_sets_the_latch_even_with_reset_asserted():
     assert enable is False
 
 
+def test_native_gate_connections_inhibit_reset_and_enable_during_set():
+    # Exercise the actual pin maps, including Qbar=HIGH (the dangerous
+    # CD4013 output state when both asynchronous inputs are high).
+    from itertools import product
+    for fault, por, reset, permit, qbar in product((False, True), repeat=5):
+        nets = dict(FLT_H=fault, POR=por, RESET_CMD=reset,
+                    PERMIT=permit, LATCHED_N=qbar)
+        for ref, unit, inputs, output, operation in (
+            ("U53", 1, ("1", "2"), "3", any),
+            ("U50", 3, ("5",), "6", lambda x: not x[0]),
+            ("U52", 1, ("1", "2"), "3", all),
+            ("U52", 2, ("5", "6"), "4", all),
+            ("U52", 3, ("8", "9"), "10", all),
+        ):
+            part = one(ref, unit)
+            nets[part.nets[output]] = operation([nets[part.nets[p]] for p in inputs])
+        latch = one("U51")
+        assert not (nets[latch.nets["6"]] and nets[latch.nets["4"]])
+        if fault or por:
+            assert nets[one("Q52").nets["1"]] is False
+
+
+def test_bench_capacitance_matches_sr_board_and_load_rating_is_raised():
+    import make_sr_fault_board as sr
+    assert sr.C_VDD_TOTAL == pytest.approx(11.1e-6)
+    assert "11.1uF" in one("C54").value
+    for deck in (eco.sequence_deck(), eco.reverse_deck()):
+        assert "C54 VDD_SR 0 11.1u" in deck
+    assert one("R62").footprint == eco.R1206
+    assert "0.5 W" in one("R62").rating
+
+
 # ---------------------------------------------------------------- topology
 def test_default_off_network_is_present():
     r50 = one("R50")
@@ -142,8 +174,8 @@ def test_the_module_does_not_replace_the_crowbar():
 
 def test_spare_cmos_units_have_grounded_inputs_and_open_outputs():
     by_unit = {(p.ref, p.unit): p for p in eco.parts()}
-    for ref, units in (("U50", (3, 4, 5, 6)), ("U51", (2,)),
-                       ("U52", (3, 4)), ("U53", (2, 3, 4))):
+    for ref, units in (("U50", (4, 5, 6)), ("U51", (2,)),
+                       ("U52", (4,)), ("U53", (2, 3, 4))):
         for unit in units:
             part = by_unit[(ref, unit)]
             for pin, net in part.nets.items():
@@ -216,6 +248,15 @@ def test_report_does_not_claim_qualification():
         "reverse blocking", "local capacitor discharge",
         "preserve the fast REG crowbar", "explicit reset",
     }
+
+
+def test_passing_logic_checks_cannot_hide_reverse_discharge_stress():
+    run = eco.sim_run()
+    assert run["design_ready"] is False
+    stress = run["stress_assessment"]
+    assert stress["reverse_r57_power_w"] > stress["r57_declared_continuous_w"]
+    assert stress["reverse_r57_within_declared_continuous_rating"] is False
+    assert stress["inrush_soa_qualified"] is False
 
 
 def test_report_open_items_include_the_hardware_gaps():

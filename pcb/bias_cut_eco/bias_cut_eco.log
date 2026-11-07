@@ -1,12 +1,11 @@
 LTspice 26.0.2 for Windows
-Circuit: C:\work\bias_cut_eco_20261107\bias_cut_eco.cir
-Start Time: Sat Nov  7 11:32:35 2026
+Circuit: D:\workshop\design_48v-2v\pcb\bias_cut_eco\bias_cut_eco.cir
+Start Time: Sat Nov  7 12:22:12 2026
 solver = Normal
-Maximum thread count: 64
+Maximum thread count: 24
 tnom = 27
 temp = 27
 method = trap
-AsciiRawFile = true
 Per .tran options, skipping operating point for transient analysis.
 Changing Tseed to 1e-11
 Changing Tseed to 1e-13
@@ -20,22 +19,25 @@ Changing Tseed to 1e-07
 Changing Tseed to 1e-17
 Changing Tseed to 1e-06
 Changing Tseed to 1e-18
-Total elapsed time: 7.384 seconds.
+Total elapsed time: 1.336 seconds.
 
 Files loaded:
-C:\work\bias_cut_eco_20261107\bias_cut_eco.cir
+D:\workshop\design_48v-2v\pcb\bias_cut_eco\bias_cut_eco.cir
 
-vdd_sr_default_off: MAX(V(VDD_SR) )=0.000676934804227 FROM 0.0075 TO 0.0095
-vdd_sr_enabled: MIN(V(VDD_SR) )=14.9984836717 FROM 0.012 TO 0.014
-vdd_sr_after_fault: MAX(V(VDD_SR) )=0.0257012895374 FROM 0.016 TO 0.017
-vdd_sr_held_off: MAX(V(VDD_SR) )=0.000676934891683 FROM 0.019 TO 0.024
-vdd_sr_recovered: MIN(V(VDD_SR) )=14.9984836717 FROM 0.027 TO 0.0295
-latched_after_fault: V(LATCHED) =4.97555740303 at 0.02
+vdd_sr_default_off: MAX(V(VDD_SR) )=0.00067693478195 FROM 0.0075 TO 0.0095
+vdd_sr_enabled: MIN(V(VDD_SR) )=14.9984836578 FROM 0.012 TO 0.014
+input_inrush_min: MIN(I(V1) )=-168.789703369 FROM 0.01 TO 0.0102
+sr_overlap: MAX((V(SET_LATCH)*V(RST_EFF)) )=0 FROM 0 TO 0.03
+por_reset_enable: MAX(V(ENABLE) )=0 FROM 0.00101 TO 0.00199
+vdd_sr_after_fault: MAX(V(VDD_SR) )=0.0477668605729 FROM 0.018 TO 0.019
+vdd_sr_held_off: MAX(V(VDD_SR) )=0.00751431682117 FROM 0.019 TO 0.024
+vdd_sr_recovered: MIN(V(VDD_SR) )=14.9984836578 FROM 0.027 TO 0.0295
+latched_after_fault: V(LATCHED) =4.97555756569 at 0.02
 enable_after_fault: V(ENABLE) =0 at 0.02
-i_vdd_in_off_min: MIN(I(V1) )=-1.45137126507e-05 FROM 0.0175 TO 0.024
-i_vdd_in_on_min: MIN(I(V1) )=-0.0153132801357 FROM 0.027 TO 0.0295
-gate_off: V(BC_GATE) =14.9974972518 at 0.008
-vmid_off: V(VMID) =0.511344808211 at 0.008
-vdd_sr_startup_max: MAX(V(VDD_SR) )=0.000675907518689 FROM 0 TO 0.001
-t_bias_cut=1.33573975912e-05 FROM 0.0150005 TO 0.0150138573976
-t_discharge=0.000232712698501 FROM 0.0150005 TO 0.0152332126985
+i_vdd_in_off_min: MIN(I(V1) )=-1.45137119034e-05 FROM 0.0175 TO 0.024
+i_vdd_in_on_min: MIN(I(V1) )=-0.015313279815 FROM 0.027 TO 0.0295
+gate_off: V(BC_GATE) =14.9974975586 at 0.008
+vmid_off: V(VMID) =0.511344790459 at 0.008
+vdd_sr_startup_max: MAX(V(VDD_SR) )=0.000578644976486 FROM 0 TO 0.001
+t_bias_cut=1.26635627447e-05 FROM 0.0150005 TO 0.0150131635627
+t_discharge=0.000747934694596 FROM 0.0150005 TO 0.0157484346946

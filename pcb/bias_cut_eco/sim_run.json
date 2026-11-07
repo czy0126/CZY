@@ -1,74 +1,95 @@
 {
   "status": "RUN",
-  "host": "winsrv",
+  "host": "local",
+  "log_sha256": {
+    "bias_cut_eco.log": "3babd5941449047e04cbe865e3cdcc6f3e71f0402ca7252f17660d0ff75d201a",
+    "bias_cut_eco_reverse.log": "30e71e3e2e4c6267a92757136bb917ea96bd89afaa1673ef2a5744127c7554c2"
+  },
   "ltspice": "26.0.2",
   "deck_sha256": {
-    "bias_cut_eco.cir": "66b36b35367c2b7c5fac4610546c95f4fb294989f45cfecc90aa23b4806ec751",
-    "bias_cut_eco_reverse.cir": "4c8b1b4a635154f5956ec48b780f4cb61fdf02293dcbf4d98f94b0ae8ea88a2d"
+    "bias_cut_eco.cir": "1336a3291f046cb237d5b10b42aa16c090a9fa8ac2f17eda36869f1a02a33174",
+    "bias_cut_eco_reverse.cir": "2d8869b630489d496cd9ad1554f2f283c2773f8f5a86961c1d8a69dfd6a7f8a1"
   },
   "measured": {
     "sequence": {
-      "vdd_sr_default_off": 0.000676934804227,
-      "vdd_sr_enabled": 14.9984836717,
-      "vdd_sr_after_fault": 0.0257012895374,
-      "vdd_sr_held_off": 0.000676934891683,
-      "vdd_sr_recovered": 14.9984836717,
-      "latched_after_fault": 4.97555740303,
+      "vdd_sr_default_off": 0.00067693478195,
+      "vdd_sr_enabled": 14.9984836578,
+      "input_inrush_min": -168.789703369,
+      "sr_overlap": 0.0,
+      "por_reset_enable": 0.0,
+      "vdd_sr_after_fault": 0.0477668605729,
+      "vdd_sr_held_off": 0.00751431682117,
+      "vdd_sr_recovered": 14.9984836578,
+      "latched_after_fault": 4.97555756569,
       "enable_after_fault": 0.0,
-      "i_vdd_in_off_min": -1.45137126507e-05,
-      "i_vdd_in_on_min": -0.0153132801357,
-      "gate_off": 14.9974972518,
-      "vmid_off": 0.511344808211,
-      "vdd_sr_startup_max": 0.000675907518689,
-      "t_bias_cut": 1.33573975912e-05,
-      "t_discharge": 0.000232712698501
+      "i_vdd_in_off_min": -1.45137119034e-05,
+      "i_vdd_in_on_min": -0.015313279815,
+      "gate_off": 14.9974975586,
+      "vmid_off": 0.511344790459,
+      "vdd_sr_startup_max": 0.000578644976486,
+      "t_bias_cut": 1.26635627447e-05,
+      "t_discharge": 0.000747934694596
     },
     "reverse": {
-      "i_vdd_in_min": 2.99747483378e-05,
-      "vdd_sr_reverse": 17.9615267096,
-      "vmid_reverse": 15.4512226941
+      "reverse_edge_input_max": 2.99747480312e-05,
+      "reverse_r57_power": 6.31527402643,
+      "i_vdd_in_min": 2.99747480312e-05,
+      "vdd_sr_reverse": 17.9615268707,
+      "vmid_reverse": 15.4512224197
     }
   },
   "checks": [
     {
+      "name": "sr_overlap",
+      "value": 0.0,
+      "ok": true,
+      "why": "SET and RESET must not both assert in ideal logic"
+    },
+    {
+      "name": "por_reset_enable",
+      "value": 0.0,
+      "ok": true,
+      "why": "POR/reset overlap must inhibit ENABLE"
+    },
+    {
       "name": "default_off_v",
-      "value": 0.000676934804227,
+      "value": 0.00067693478195,
       "ok": true,
       "why": "power-up with POR set must leave the SR bias off"
     },
     {
       "name": "startup_max_v",
-      "value": 0.000675907518689,
+      "value": 0.000578644976486,
       "ok": true,
-      "why": "the switch must never conduct before the first explicit reset; a non-zero value here means a model state element starts in the wrong state, not that the circuit misbehaves"
+      "why": "the switch must never conduct before the first explicit reset; this run uses preinitialized latch and gate; arbitrary startup is untested. A non-zero value here may indicate a startup issue; do not dismiss it as artificial"
     },
     {
       "name": "enabled_v",
-      "value": 14.9984836717,
+      "value": 14.9984836578,
       "ok": true,
       "why": "an explicit reset with PERMIT must pass the full 15 V rail"
     },
     {
       "name": "after_fault_v",
-      "value": 0.0257012895374,
+      "value": 0.0477668605729,
       "ok": true,
       "why": "the fault must cut the bias, not merely lower it"
     },
     {
       "name": "held_off_v",
-      "value": 0.000676934891683,
+      "value": 0.00751431682117,
       "ok": true,
       "why": "with the fault gone and no reset the bias must stay off"
     },
     {
       "name": "recovered_v",
-      "value": 14.9984836717,
+      "value": 14.9984836578,
       "ok": true,
       "why": "an explicit reset must restore the bias"
     },
     {
       "name": "latched_after_fault_v",
-      "value": 4.97555740303,
+      "value": 4.97555756569,
       "ok": true,
       "why": "the latch, not the fault input, is what holds the bias off"
     },
@@ -80,48 +101,57 @@
     },
     {
       "name": "off_input_current_a",
-      "value": 1.45137126507e-05,
+      "value": 1.45137119034e-05,
       "ok": true,
       "why": "the cut must remove the load current; only leakage remains"
     },
     {
       "name": "on_input_current_a",
-      "value": 0.0153132801357,
+      "value": 0.015313279815,
       "ok": true,
       "why": "the enabled state must carry the bench load (~15 mA)"
     },
     {
       "name": "gate_off_v",
-      "value": 14.9974972518,
+      "value": 14.9974975586,
       "ok": true,
       "why": "R50 must hold the gate at VDD_IN with the switch off"
     },
     {
       "name": "bias_cut_time_s",
-      "value": 1.33573975912e-05,
+      "value": 1.26635627447e-05,
       "ok": true,
       "why": "the gate must reach 15 V - |Vth| within tens of microseconds; R50 * 60 pF says ~14 us, and anything past 40 us means the gate node is being held by something else"
     },
     {
       "name": "discharge_time_s",
-      "value": 0.000232712698501,
+      "value": 0.000747934694596,
       "ok": true,
-      "why": "VDD_SR must reach the 3.63 V UCC24624 UVLO in a few hundred microseconds; 47 ohm * 3.3 uF says ~220 us"
+      "why": "VDD_SR reaches a 3.63 V reporting threshold with the 11.1 uF equivalent bank; not a REG/gate-off guarantee"
     },
     {
       "name": "reverse_current_a",
-      "value": 2.99747483378e-05,
+      "value": 2.99747480312e-05,
       "ok": true,
       "why": "back-fed VDD_SR=18 V must not conduct through the switch; the only path is the R50 bleed"
     },
     {
       "name": "reverse_vdd_sr_v",
-      "value": 17.9615267096,
+      "value": 17.9615268707,
       "ok": true,
       "why": "the back-fed node holds 18 V: a conducting pass pair would drag it toward VDD_IN"
     }
   ],
   "all_checks_pass": true,
+  "design_ready": false,
+  "stress_assessment": {
+    "reverse_r57_power_w": 6.31527402643,
+    "r57_declared_continuous_w": 0.25,
+    "reverse_r57_within_declared_continuous_rating": false,
+    "input_inrush_peak_a": 168.789703369,
+    "inrush_soa_qualified": false,
+    "scope": "all_checks_pass covers only the listed behavioural checks, not stress or hardware approval"
+  },
   "evidence_level": "BEHAVIOURAL_SIMULATION_NOT_HARDWARE",
   "note": "behavioural switch and logic model; this is not a device model, not a thermal model, and not a hardware measurement"
 }

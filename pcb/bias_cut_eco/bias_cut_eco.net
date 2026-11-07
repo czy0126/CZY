@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "D:\\workshop\\design_48v-2v\\pcb\\bias_cut_eco\\bias_cut_eco.kicad_sch")
-		(date "2026-11-07T11:29:29")
+		(date "2026-11-07T12:29:20")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -218,9 +218,9 @@
 		)
 		(comp
 			(ref "C54")
-			(value "3.3uF/25V")
+			(value "11.1uF/25V equivalent")
 			(footprint "Capacitor_SMD:C_1210_3225Metric")
-			(description "bench load equal to C1+C2+C3; remove when integrated, the real UCC24624 VDD capacitance is the load")
+			(description "equivalent bank of SR C1=10u + C2=1u + C3=100n; exact bank TO_SELECT; remove when integrated, the real UCC24624 VDD capacitance is the load")
 			(fields
 				(field
 					(name "Footprint") "Capacitor_SMD:C_1210_3225Metric")
@@ -228,7 +228,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "bench load equal to C1+C2+C3; remove when integrated, the real UCC24624 VDD capacitance is the load")
+					(name "Description") "equivalent bank of SR C1=10u + C2=1u + C3=100n; exact bank TO_SELECT; remove when integrated, the real UCC24624 VDD capacitance is the load")
 			)
 			(libsource
 				(lib "Device")
@@ -767,7 +767,7 @@
 			(ref "Q55")
 			(value "P-MOS TO_SELECT")
 			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(description "gate-follow source follower: gate at VDD_IN, source at VDD_SR, drain at BC_FB. Vgs is zero in normal operation, so it neither injects into the gate nor loads the enable pulldown; it conducts only when VDD_SR is back-fed above VDD_IN")
+			(description "gate-follow gate-follow PMOS: gate at VDD_IN, source at VDD_SR, drain at BC_FB. Vgs is zero in normal operation, so it neither injects into the gate nor loads the enable pulldown; it conducts only when VDD_SR is back-fed above VDD_IN")
 			(fields
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
@@ -775,7 +775,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "gate-follow source follower: gate at VDD_IN, source at VDD_SR, drain at BC_FB. Vgs is zero in normal operation, so it neither injects into the gate nor loads the enable pulldown; it conducts only when VDD_SR is back-fed above VDD_IN")
+					(name "Description") "gate-follow gate-follow PMOS: gate at VDD_IN, source at VDD_SR, drain at BC_FB. Vgs is zero in normal operation, so it neither injects into the gate nor loads the enable pulldown; it conducts only when VDD_SR is back-fed above VDD_IN")
 			)
 			(libsource
 				(lib "Transistor_FET")
@@ -1090,7 +1090,7 @@
 			(ref "R57")
 			(value "47R")
 			(footprint "Resistor_SMD:R_1206_3216Metric")
-			(description "active-discharge resistor; 47R * 3.3 uF = 155 us, 0.37 mJ per event")
+			(description "active-discharge resistor; 47R * 11.1 uF = 522 us, 1.25 mJ per event")
 			(fields
 				(field
 					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
@@ -1098,7 +1098,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "active-discharge resistor; 47R * 3.3 uF = 155 us, 0.37 mJ per event")
+					(name "Description") "active-discharge resistor; 47R * 11.1 uF = 522 us, 1.25 mJ per event")
 			)
 			(libsource
 				(lib "Device")
@@ -1304,17 +1304,17 @@
 		)
 		(comp
 			(ref "R62")
-			(value "1k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(description "bench load, ~15 mA at 15 V; remove when integrated")
+			(value "1k 0.5W min")
+			(footprint "Resistor_SMD:R_1206_3216Metric")
+			(description "0.225 W at 15 V; bench load, ~15 mA at 15 V; remove when integrated")
 			(fields
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
 				(field
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "bench load, ~15 mA at 15 V; remove when integrated")
+					(name "Description") "0.225 W at 15 V; bench load, ~15 mA at 15 V; remove when integrated")
 			)
 			(libsource
 				(lib "Device")
@@ -2169,9 +2169,9 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "d2bfd601-f5b0-5282-a0fb-aaa2ab06d992" "f830ee44-4ebe-506c-b274-2e1923494b00"
-				"43ce0bff-9f09-5a1f-a69c-eed6d9d1a24e" "57faed48-9f74-57ed-9f6f-4630fb33a885"
-				"47c41ed5-37f8-5745-86c1-dc032f082ab6" "4278deb0-3477-542a-b06f-9e933006a7c3"
+			(tstamps "d2bfd601-f5b0-5282-a0fb-aaa2ab06d992" "47c41ed5-37f8-5745-86c1-dc032f082ab6"
+				"57faed48-9f74-57ed-9f6f-4630fb33a885" "43ce0bff-9f09-5a1f-a69c-eed6d9d1a24e"
+				"f830ee44-4ebe-506c-b274-2e1923494b00" "4278deb0-3477-542a-b06f-9e933006a7c3"
 				"18c1afe2-77c7-5a74-b7a3-c00b72db0ad8"
 			)
 			(units
@@ -2258,7 +2258,7 @@
 			(ref "U51")
 			(value "CD4013BE")
 			(footprint "Package_DIP:DIP-14_W7.62mm")
-			(description "unit A: set-dominant latch; CLK=D=0 so only SET/RESET change it")
+			(description "unit A: external SET/reset interlock; simultaneous high is forbidden")
 			(fields
 				(field
 					(name "Footprint") "Package_DIP:DIP-14_W7.62mm")
@@ -2266,7 +2266,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "unit A: set-dominant latch; CLK=D=0 so only SET/RESET change it")
+					(name "Description") "unit A: external SET/reset interlock; simultaneous high is forbidden")
 			)
 			(libsource
 				(lib "4xxx")
@@ -2360,7 +2360,7 @@
 			(ref "U52")
 			(value "CD4081BE")
 			(footprint "Package_DIP:DIP-14_W7.62mm")
-			(description "unit A: reset is blocked while the fault is present")
+			(description "unit A: reset blocked during fault OR POR")
 			(fields
 				(field
 					(name "Footprint") "Package_DIP:DIP-14_W7.62mm")
@@ -2368,7 +2368,7 @@
 					(name "Datasheet")
 				)
 				(field
-					(name "Description") "unit A: reset is blocked while the fault is present")
+					(name "Description") "unit A: reset blocked during fault OR POR")
 			)
 			(libsource
 				(lib "4xxx")
@@ -2395,8 +2395,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "c42ae58c-7448-5dcc-9b51-272ec50988bb" "34f2e3ed-1366-5b01-8d82-d3ee0cda0d58"
-				"53ef0296-5c24-5090-a147-bc4caa48a1a3" "11d0ccaf-8709-5ecf-b0f5-fde9bba723e1"
+			(tstamps "c42ae58c-7448-5dcc-9b51-272ec50988bb" "53ef0296-5c24-5090-a147-bc4caa48a1a3"
+				"11d0ccaf-8709-5ecf-b0f5-fde9bba723e1" "34f2e3ed-1366-5b01-8d82-d3ee0cda0d58"
 				"00eda97e-908e-532a-85ca-5731afdc8377"
 			)
 			(units
@@ -2508,8 +2508,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "acf1d020-062d-5565-b0e2-f035112930a3" "785bf4be-ecbb-5db8-b567-b0f2fc8810e7"
-				"8b7ff5e9-f220-5f4f-a333-41f7bcb75ad2" "5eb108eb-1a81-5fb5-bf99-506ce03ea4f1"
+			(tstamps "acf1d020-062d-5565-b0e2-f035112930a3" "8b7ff5e9-f220-5f4f-a333-41f7bcb75ad2"
+				"5eb108eb-1a81-5fb5-bf99-506ce03ea4f1" "785bf4be-ecbb-5db8-b567-b0f2fc8810e7"
 				"0c352479-a6b7-5cba-8f26-ea2505c46833"
 			)
 			(units
@@ -3358,7 +3358,7 @@
 			)
 			(node
 				(ref "U52")
-				(pin "4")
+				(pin "10")
 				(pintype "output")
 			)
 		)
@@ -3386,6 +3386,21 @@
 		)
 		(net
 			(code "5")
+			(name "/ENABLE_RAW")
+			(class "Default")
+			(node
+				(ref "U52")
+				(pin "4")
+				(pintype "output")
+			)
+			(node
+				(ref "U52")
+				(pin "8")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "6")
 			(name "/FAULT_G")
 			(class "Default")
 			(node
@@ -3412,7 +3427,7 @@
 			)
 		)
 		(net
-			(code "6")
+			(code "7")
 			(name "/FAULT_IN")
 			(class "Default")
 			(node
@@ -3428,7 +3443,7 @@
 			)
 		)
 		(net
-			(code "7")
+			(code "8")
 			(name "/FLT_H")
 			(class "Default")
 			(node
@@ -3443,7 +3458,7 @@
 			)
 		)
 		(net
-			(code "8")
+			(code "9")
 			(name "/FLT_N")
 			(class "Default")
 			(node
@@ -3468,14 +3483,9 @@
 				(pin "1")
 				(pintype "input")
 			)
-			(node
-				(ref "U52")
-				(pin "2")
-				(pintype "input")
-			)
 		)
 		(net
-			(code "9")
+			(code "10")
 			(name "/LATCHED")
 			(class "Default")
 			(node
@@ -3492,7 +3502,7 @@
 			)
 		)
 		(net
-			(code "10")
+			(code "11")
 			(name "/LATCHED_N")
 			(class "Default")
 			(node
@@ -3514,7 +3524,7 @@
 			)
 		)
 		(net
-			(code "11")
+			(code "12")
 			(name "/PERMIT")
 			(class "Default")
 			(node
@@ -3534,7 +3544,7 @@
 			)
 		)
 		(net
-			(code "12")
+			(code "13")
 			(name "/PERMIT_EXT")
 			(class "Default")
 			(node
@@ -3550,7 +3560,7 @@
 			)
 		)
 		(net
-			(code "13")
+			(code "14")
 			(name "/PGND")
 			(class "Default")
 			(node
@@ -3663,11 +3673,6 @@
 			)
 			(node
 				(ref "U50")
-				(pin "5")
-				(pintype "input")
-			)
-			(node
-				(ref "U50")
 				(pin "7")
 				(pinfunction "VSS_7")
 				(pintype "power_in")
@@ -3736,16 +3741,6 @@
 				(pintype "power_in")
 			)
 			(node
-				(ref "U52")
-				(pin "8")
-				(pintype "input")
-			)
-			(node
-				(ref "U52")
-				(pin "9")
-				(pintype "input")
-			)
-			(node
 				(ref "U53")
 				(pin "12")
 				(pintype "input")
@@ -3783,7 +3778,7 @@
 			)
 		)
 		(net
-			(code "14")
+			(code "15")
 			(name "/POR")
 			(class "Default")
 			(node
@@ -3809,7 +3804,7 @@
 			)
 		)
 		(net
-			(code "15")
+			(code "16")
 			(name "/RESET_CMD")
 			(class "Default")
 			(node
@@ -3829,7 +3824,7 @@
 			)
 		)
 		(net
-			(code "16")
+			(code "17")
 			(name "/RESET_EXT")
 			(class "Default")
 			(node
@@ -3845,7 +3840,7 @@
 			)
 		)
 		(net
-			(code "17")
+			(code "18")
 			(name "/RST_EFF")
 			(class "Default")
 			(node
@@ -3861,9 +3856,14 @@
 			)
 		)
 		(net
-			(code "18")
+			(code "19")
 			(name "/SET_LATCH")
 			(class "Default")
+			(node
+				(ref "U50")
+				(pin "5")
+				(pintype "input")
+			)
 			(node
 				(ref "U51")
 				(pin "6")
@@ -3877,7 +3877,27 @@
 			)
 		)
 		(net
-			(code "19")
+			(code "20")
+			(name "/SET_N")
+			(class "Default")
+			(node
+				(ref "U50")
+				(pin "6")
+				(pintype "output")
+			)
+			(node
+				(ref "U52")
+				(pin "2")
+				(pintype "input")
+			)
+			(node
+				(ref "U52")
+				(pin "9")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "21")
 			(name "/V5_IND")
 			(class "Default")
 			(node
@@ -3938,7 +3958,7 @@
 			)
 		)
 		(net
-			(code "20")
+			(code "22")
 			(name "/VDD_DIS")
 			(class "Default")
 			(node
@@ -3954,7 +3974,7 @@
 			)
 		)
 		(net
-			(code "21")
+			(code "23")
 			(name "/VDD_IN")
 			(class "Default")
 			(node
@@ -3988,7 +4008,7 @@
 			)
 		)
 		(net
-			(code "22")
+			(code "24")
 			(name "/VDD_SR")
 			(class "Default")
 			(node
@@ -4037,7 +4057,7 @@
 			)
 		)
 		(net
-			(code "23")
+			(code "25")
 			(name "/VMID")
 			(class "Default")
 			(node
@@ -4054,17 +4074,7 @@
 			)
 		)
 		(net
-			(code "24")
-			(name "unconnected-(U50-Pad6)")
-			(class "Default")
-			(node
-				(ref "U50")
-				(pin "6")
-				(pintype "output+no_connect")
-			)
-		)
-		(net
-			(code "25")
+			(code "26")
 			(name "unconnected-(U50-Pad8)")
 			(class "Default")
 			(node
@@ -4074,7 +4084,7 @@
 			)
 		)
 		(net
-			(code "26")
+			(code "27")
 			(name "unconnected-(U50-Pad10)")
 			(class "Default")
 			(node
@@ -4084,7 +4094,7 @@
 			)
 		)
 		(net
-			(code "27")
+			(code "28")
 			(name "unconnected-(U50-Pad12)")
 			(class "Default")
 			(node
@@ -4094,7 +4104,7 @@
 			)
 		)
 		(net
-			(code "28")
+			(code "29")
 			(name "unconnected-(U51B-Q-Pad13)")
 			(class "Default")
 			(node
@@ -4105,23 +4115,13 @@
 			)
 		)
 		(net
-			(code "29")
+			(code "30")
 			(name "unconnected-(U51B-~{Q}-Pad12)")
 			(class "Default")
 			(node
 				(ref "U51")
 				(pin "12")
 				(pinfunction "~{Q}_12")
-				(pintype "output+no_connect")
-			)
-		)
-		(net
-			(code "30")
-			(name "unconnected-(U52-Pad10)")
-			(class "Default")
-			(node
-				(ref "U52")
-				(pin "10")
 				(pintype "output+no_connect")
 			)
 		)

@@ -18,7 +18,7 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * ic=15 = VDD_IN, the state R50 holds it in: under uic the node would
 * otherwise ramp up from 0 V through R50 over ~14 us (see the sequence deck).
 CG BC_GATE 0 60p ic=15
-* Q55 source follower plus D50 in series with its drain.  The channel is off
+* Q55 gate-follow PMOS plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
 S55 VDD_SR BC_FB VDD_SR VDD_IN SVP
@@ -36,10 +36,12 @@ R57 VDD_SR VDD_DIS 47
 B_ENN ENABLE_N 0 V=5
 S54 VDD_DIS 0 ENABLE_N 0 SWEN
 R58 VDD_SR 0 100k
-C54 VDD_SR 0 3.3u
+C54 VDD_SR 0 11.1u
 R62 VDD_SR 0 1k
 .tran 0 2m 0 0.1u uic
-.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) I(V1) I(VREV)
+.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(VDD_DIS) I(V1) I(VREV) I(R57)
+.meas TRAN reverse_edge_input_max MAX I(V1) FROM 0.4m TO 0.45m
+.meas TRAN reverse_r57_power AVG (V(VDD_SR,VDD_DIS)*I(R57)) FROM 0.45m TO 0.95m
 .meas TRAN i_vdd_in_min MIN I(V1) FROM 0.45m TO 0.95m
 .meas TRAN vdd_sr_reverse FIND V(VDD_SR) AT=0.7m
 .meas TRAN vmid_reverse FIND V(VMID) AT=0.7m

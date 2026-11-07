@@ -6,75 +6,96 @@
   "thermal_qualified": false,
   "simulation_status": "RUN",
   "simulation": {
-    "host": "winsrv",
+    "host": "local",
+    "log_sha256": {
+      "bias_cut_eco.log": "3babd5941449047e04cbe865e3cdcc6f3e71f0402ca7252f17660d0ff75d201a",
+      "bias_cut_eco_reverse.log": "30e71e3e2e4c6267a92757136bb917ea96bd89afaa1673ef2a5744127c7554c2"
+    },
     "ltspice": "26.0.2",
     "deck_sha256": {
-      "bias_cut_eco.cir": "66b36b35367c2b7c5fac4610546c95f4fb294989f45cfecc90aa23b4806ec751",
-      "bias_cut_eco_reverse.cir": "4c8b1b4a635154f5956ec48b780f4cb61fdf02293dcbf4d98f94b0ae8ea88a2d"
+      "bias_cut_eco.cir": "1336a3291f046cb237d5b10b42aa16c090a9fa8ac2f17eda36869f1a02a33174",
+      "bias_cut_eco_reverse.cir": "2d8869b630489d496cd9ad1554f2f283c2773f8f5a86961c1d8a69dfd6a7f8a1"
     },
     "measured": {
       "sequence": {
-        "vdd_sr_default_off": 0.000676934804227,
-        "vdd_sr_enabled": 14.9984836717,
-        "vdd_sr_after_fault": 0.0257012895374,
-        "vdd_sr_held_off": 0.000676934891683,
-        "vdd_sr_recovered": 14.9984836717,
-        "latched_after_fault": 4.97555740303,
+        "vdd_sr_default_off": 0.00067693478195,
+        "vdd_sr_enabled": 14.9984836578,
+        "input_inrush_min": -168.789703369,
+        "sr_overlap": 0.0,
+        "por_reset_enable": 0.0,
+        "vdd_sr_after_fault": 0.0477668605729,
+        "vdd_sr_held_off": 0.00751431682117,
+        "vdd_sr_recovered": 14.9984836578,
+        "latched_after_fault": 4.97555756569,
         "enable_after_fault": 0.0,
-        "i_vdd_in_off_min": -1.45137126507e-05,
-        "i_vdd_in_on_min": -0.0153132801357,
-        "gate_off": 14.9974972518,
-        "vmid_off": 0.511344808211,
-        "vdd_sr_startup_max": 0.000675907518689,
-        "t_bias_cut": 1.33573975912e-05,
-        "t_discharge": 0.000232712698501
+        "i_vdd_in_off_min": -1.45137119034e-05,
+        "i_vdd_in_on_min": -0.015313279815,
+        "gate_off": 14.9974975586,
+        "vmid_off": 0.511344790459,
+        "vdd_sr_startup_max": 0.000578644976486,
+        "t_bias_cut": 1.26635627447e-05,
+        "t_discharge": 0.000747934694596
       },
       "reverse": {
-        "i_vdd_in_min": 2.99747483378e-05,
-        "vdd_sr_reverse": 17.9615267096,
-        "vmid_reverse": 15.4512226941
+        "reverse_edge_input_max": 2.99747480312e-05,
+        "reverse_r57_power": 6.31527402643,
+        "i_vdd_in_min": 2.99747480312e-05,
+        "vdd_sr_reverse": 17.9615268707,
+        "vmid_reverse": 15.4512224197
       }
     },
     "checks": [
       {
+        "name": "sr_overlap",
+        "value": 0.0,
+        "ok": true,
+        "why": "SET and RESET must not both assert in ideal logic"
+      },
+      {
+        "name": "por_reset_enable",
+        "value": 0.0,
+        "ok": true,
+        "why": "POR/reset overlap must inhibit ENABLE"
+      },
+      {
         "name": "default_off_v",
-        "value": 0.000676934804227,
+        "value": 0.00067693478195,
         "ok": true,
         "why": "power-up with POR set must leave the SR bias off"
       },
       {
         "name": "startup_max_v",
-        "value": 0.000675907518689,
+        "value": 0.000578644976486,
         "ok": true,
-        "why": "the switch must never conduct before the first explicit reset; a non-zero value here means a model state element starts in the wrong state, not that the circuit misbehaves"
+        "why": "the switch must never conduct before the first explicit reset; this run uses preinitialized latch and gate; arbitrary startup is untested. A non-zero value here may indicate a startup issue; do not dismiss it as artificial"
       },
       {
         "name": "enabled_v",
-        "value": 14.9984836717,
+        "value": 14.9984836578,
         "ok": true,
         "why": "an explicit reset with PERMIT must pass the full 15 V rail"
       },
       {
         "name": "after_fault_v",
-        "value": 0.0257012895374,
+        "value": 0.0477668605729,
         "ok": true,
         "why": "the fault must cut the bias, not merely lower it"
       },
       {
         "name": "held_off_v",
-        "value": 0.000676934891683,
+        "value": 0.00751431682117,
         "ok": true,
         "why": "with the fault gone and no reset the bias must stay off"
       },
       {
         "name": "recovered_v",
-        "value": 14.9984836717,
+        "value": 14.9984836578,
         "ok": true,
         "why": "an explicit reset must restore the bias"
       },
       {
         "name": "latched_after_fault_v",
-        "value": 4.97555740303,
+        "value": 4.97555756569,
         "ok": true,
         "why": "the latch, not the fault input, is what holds the bias off"
       },
@@ -86,77 +107,87 @@
       },
       {
         "name": "off_input_current_a",
-        "value": 1.45137126507e-05,
+        "value": 1.45137119034e-05,
         "ok": true,
         "why": "the cut must remove the load current; only leakage remains"
       },
       {
         "name": "on_input_current_a",
-        "value": 0.0153132801357,
+        "value": 0.015313279815,
         "ok": true,
         "why": "the enabled state must carry the bench load (~15 mA)"
       },
       {
         "name": "gate_off_v",
-        "value": 14.9974972518,
+        "value": 14.9974975586,
         "ok": true,
         "why": "R50 must hold the gate at VDD_IN with the switch off"
       },
       {
         "name": "bias_cut_time_s",
-        "value": 1.33573975912e-05,
+        "value": 1.26635627447e-05,
         "ok": true,
         "why": "the gate must reach 15 V - |Vth| within tens of microseconds; R50 * 60 pF says ~14 us, and anything past 40 us means the gate node is being held by something else"
       },
       {
         "name": "discharge_time_s",
-        "value": 0.000232712698501,
+        "value": 0.000747934694596,
         "ok": true,
-        "why": "VDD_SR must reach the 3.63 V UCC24624 UVLO in a few hundred microseconds; 47 ohm * 3.3 uF says ~220 us"
+        "why": "VDD_SR reaches a 3.63 V reporting threshold with the 11.1 uF equivalent bank; not a REG/gate-off guarantee"
       },
       {
         "name": "reverse_current_a",
-        "value": 2.99747483378e-05,
+        "value": 2.99747480312e-05,
         "ok": true,
         "why": "back-fed VDD_SR=18 V must not conduct through the switch; the only path is the R50 bleed"
       },
       {
         "name": "reverse_vdd_sr_v",
-        "value": 17.9615267096,
+        "value": 17.9615268707,
         "ok": true,
         "why": "the back-fed node holds 18 V: a conducting pass pair would drag it toward VDD_IN"
       }
     ],
     "all_checks_pass": true,
+    "design_ready": false,
+    "stress_assessment": {
+      "reverse_r57_power_w": 6.31527402643,
+      "r57_declared_continuous_w": 0.25,
+      "reverse_r57_within_declared_continuous_rating": false,
+      "input_inrush_peak_a": 168.789703369,
+      "inrush_soa_qualified": false,
+      "scope": "all_checks_pass covers only the listed behavioural checks, not stress or hardware approval"
+    },
     "evidence_level": "BEHAVIOURAL_SIMULATION_NOT_HARDWARE",
     "note": "behavioural switch and logic model; this is not a device model, not a thermal model, and not a hardware measurement",
     "status": "RUN"
   },
   "part_instances": 63,
   "physical_parts": 43,
-  "nets": 23,
+  "nets": 25,
   "pmos_selection": {
     "mpn": "TO_SELECT",
-    "reason": "no P-channel MOSFET datasheet in references/datasheets; external acquisition is blocked in this environment, and a fabricated orderable code is worse than an empty one",
+    "reason": "no P-channel MOSFET datasheet in references/datasheets; device selection and transient verification remain incomplete",
     "requirements": {
       "vds_min_v": 30,
       "vgs_abs_max_v": 20,
       "id_continuous_min_a": 1.0,
       "id_pulsed_min_a": 3.0,
       "rds_on_max_ohm_at_vgs_minus_10v": 0.1,
-      "ciss_max_pf": 100,
+      "ciss_max_pf": null,
+      "gate_charge_timing_qualified": false,
       "vgs_th_abs_max_v": 2.5,
       "package": "SOT-23 or SOT-323",
       "body_diode": "standard P-MOS body diode, drain-to-source; the common-drain pair must present opposing diodes"
     },
     "why": {
       "vds": "15 V rail plus back-fed VDD_SR; 30 V gives 2x margin",
-      "id_pulsed": "C54 (3.3 uF) charges through the switch at turn-on; the supply and wiring set the peak, so the part must have pulsed headroom. No soft-start is fitted.",
-      "ciss": "R50 turn-off is 100k * Ciss: the deck measures 13.4 us at 60 pF, so the 100 pF limit gives ~22 us. The fast path is the Q41/R44 crowbar (~12 us); this cut is the 100 us-scale path (section 7), so tens of us is the design point, not a race",
+      "id_pulsed": "C54 (11.1 uF) charges through the switch at turn-on; the supply and wiring set the peak, so the part must have pulsed headroom. No soft-start is fitted.",
+      "ciss": "60 pF is an unqualified aggregate placeholder. Select real devices, include BOTH pass FET gate charges plus Q55/parasitics, and recompute turn-off and Q54 overlap; no artificial 100 pF procurement ceiling",
       "rds_on": "the SR bias is ~15 mA; 0.1 ohm is 1.5 mV, not a thermal constraint, but keeps the pass drop negligible",
-      "vgs_th": "Q55 is a source follower driven by VDD_IN; it can only lift the gate when the back-fed VDD_SR exceeds VDD_IN by more than |Vth|. With a 3 V backfeed the part has to be a logic-level P-MOS, |Vth| <= 2.5 V at the quoted test current, or Q51 stays partly on"
+      "vgs_th": "Q55 is a gate-follow PMOS driven by VDD_IN; it can only lift the gate when the back-fed VDD_SR exceeds VDD_IN by more than |Vth|. With a 3 V backfeed the part has to be a logic-level P-MOS, |Vth| <= 2.5 V at the quoted test current, or Q51 stays partly on"
     },
-    "not_acceptable": "BSS84-class parts are not automatically acceptable: no datasheet is held, and the 3.3 uF turn-on pulse is outside a small-signal default assumption."
+    "not_acceptable": "BSS84-class parts are not automatically acceptable: no datasheet is held, and the 11.1 uF turn-on pulse is outside a small-signal default assumption."
   },
   "integration": {
     "cut_points": {
@@ -480,12 +511,16 @@
       "R52.1",
       "TP24.1",
       "U50.3",
-      "U52.4"
+      "U52.10"
     ],
     "ENABLE_N": [
       "Q54.1",
       "TP25.1",
       "U50.4"
+    ],
+    "ENABLE_RAW": [
+      "U52.4",
+      "U52.8"
     ],
     "FAULT_G": [
       "Q53.1",
@@ -505,8 +540,7 @@
       "Q53.3",
       "R54.2",
       "TP28.1",
-      "U50.1",
-      "U52.2"
+      "U50.1"
     ],
     "LATCHED": [
       "TP26.1",
@@ -548,7 +582,6 @@
       "TP32.1",
       "U50.11",
       "U50.13",
-      "U50.5",
       "U50.7",
       "U50.9",
       "U51.10",
@@ -561,8 +594,6 @@
       "U52.12",
       "U52.13",
       "U52.7",
-      "U52.8",
-      "U52.9",
       "U53.12",
       "U53.13",
       "U53.5",
@@ -591,8 +622,14 @@
       "U52.3"
     ],
     "SET_LATCH": [
+      "U50.5",
       "U51.6",
       "U53.3"
+    ],
+    "SET_N": [
+      "U50.6",
+      "U52.2",
+      "U52.9"
     ],
     "V5_IND": [
       "#FLG3.1",
@@ -643,7 +680,7 @@
     },
     {
       "item": "set dominates reset",
-      "finding": "SET = FLT_H OR POR is evaluated before RST_EFF; a fault that is still present cannot be cleared by RESET_CMD.",
+      "finding": "SET = FLT_H OR POR drives U50C; SET_N blocks both RST_EFF and ENABLE. Static interlock is implemented; real propagation hazards remain open.",
       "evidence": "step() exhaustive enumeration"
     },
     {
@@ -653,12 +690,12 @@
     },
     {
       "item": "reverse blocking",
-      "finding": "Q50/Q51 share a drain (VMID) so their body diodes oppose. With the switch off, neither body diode conducts from VDD_IN or VDD_SR into VMID. Q55 + D50 pull the gate up with VDD_SR when VDD_SR is back-fed above VDD_IN, and D50 also blocks Q55's body diode in the off state. Residual: VDD_SR -> Q55 -> D50 -> R50 -> VDD_IN is ~30 uA at VDD_SR=18 V; it is a bleed in the safe direction, not switch conduction.",
+      "finding": "Q50/Q51 share a drain (VMID) so their body diodes oppose. With the switch off, neither body diode conducts from VDD_IN or VDD_SR into VMID. Q55 + D50 pull the gate up with VDD_SR when VDD_SR is back-fed above VDD_IN, and D50 also blocks Q55's body diode in the off state. Residual: VDD_SR -> Q55 -> D50 -> R50 -> VDD_IN is ~30 uA at VDD_SR=18 V with VDD_IN held at 15 V; this single point does not prove arbitrary reverse blocking or safe charging of an unpowered input.",
       "evidence": "topology + reverse deck"
     },
     {
       "item": "local capacitor discharge",
-      "finding": "when ENABLE is low, ENABLE_N is high and Q54+R57 discharge VDD_SR; R58 is the passive bleed if the 5 V domain is lost. 47 ohm * 3.3 uF is 155 us, ~220 us to 3.63 V.",
+      "finding": "when ENABLE is low, ENABLE_N is high and Q54+R57 discharge VDD_SR; R58 is the passive bleed if the 5 V domain is lost. 47 ohm * 11.1 uF is 522 us; VDD_SR threshold is a metric, not REG UVLO.",
       "evidence": "topology + sequence deck"
     },
     {
@@ -668,7 +705,7 @@
     },
     {
       "item": "timing split",
-      "finding": "the crowbar crosses REG UVLO in ~12.11 us (existing estimate); the 5 V logic adds <1 us; the gate network adds ~14 us; the local discharge adds ~220 us. The crowbar is the fast path, the bias cut is the long-hold path.",
+      "finding": "the crowbar crosses REG UVLO in ~12.11 us (existing estimate); logic propagation is unmodelled; the placeholder gate network adds ~13 us; the updated 11.1 uF discharge metric is ~0.75 ms. The crowbar is the fast path, the bias cut is the long-hold path.",
       "evidence": "arithmetic; the gate time uses an assumed 60 pF Ciss"
     },
     {
@@ -705,7 +742,7 @@
     },
     {
       "requirement": "reverse blocking",
-      "implementation": "Q50/Q51 common drain VMID; Q55 source follower + D50 lift the gate only when VDD_SR > VDD_IN",
+      "implementation": "Q50/Q51 common drain VMID; Q55 gate-follow PMOS + D50 lift the gate only when VDD_SR > VDD_IN",
       "status": "TOPOLOGY_AND_REVERSE_DECK; residual ~30 uA bleed documented"
     },
     {
@@ -725,7 +762,7 @@
     },
     {
       "requirement": "explicit reset",
-      "implementation": "RESET_CMD AND FLT_N; set-dominant; no auto-reset",
+      "implementation": "RESET_CMD AND SET_N; SET also masks ENABLE; propagation hazards still unverified",
       "status": "TOPOLOGY_AND_TRUTH_TABLE"
     },
     {
@@ -735,6 +772,10 @@
     }
   ],
   "open_items": [
+    "SET/reset gate propagation and slow ramps are unverified; CD4013 is not intrinsically SET dominant",
+    "Backfed VDD_SR drives Q54/R57 continuously: 18V across 47 ohm is approximately 6.9W, NOT a leakage-only condition; reverse test is not a thermal pass",
+    "Input inrush measurement is a behavioural result, not PMOS pulse/SOA qualification",
+    "60 pF and forced initial states are placeholders; startup and PMOS timing are not qualified",
     "P-MOS is TO_SELECT; no P-channel datasheet in the repository",
     "no hardware build, no thermal measurement",
     "no measured VDD/REG backfeed; H5 remains NOT_READY",

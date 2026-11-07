@@ -18,7 +18,7 @@ Topology (pin-level source of truth is ``parts()`` below):
 
     R50 pulls both gates to VDD_IN, so the switch is OFF when nobody drives it.
     Q52 pulls the gates low only when the 5 V logic says ENABLE.
-    Q55 is a source follower (gate at VDD_IN, source at VDD_SR) with D50 in
+    Q55 is a gate-follow PMOS (gate at VDD_IN, source at VDD_SR) with D50 in
     series with its drain: together they pull the gate up only when VDD_SR
     exceeds VDD_IN, so a back-fed VDD_SR cannot turn Q51 on.  Two simpler
     versions failed in the deck and are recorded so nobody re-derives them:
@@ -36,14 +36,14 @@ Topology (pin-level source of truth is ``parts()`` below):
     5 V domain (separate connector J7):
       FAULT_G -> Q53 -> FLT_N -> U50A -> FLT_H
       SET  = FLT_H OR POR              (U53A)
-      RST  = RESET_CMD AND FLT_N       (U52A)
-      U51A CD4013B, set-dominant, CLK=D=0
+      RST  = RESET_CMD AND SET_N       (U52A)
+      U51A CD4013B, external SET/reset interlock, CLK=D=0
       ENABLE = PERMIT AND /LATCHED     (U52B)
       ENABLE_N -> Q54 + R57 discharges VDD_SR; R58 is the passive bleed.
 
 ``TO_SELECT`` is a real outcome, not a placeholder to be filled silently: the
-repository holds no P-channel MOSFET datasheet and external datasheet
-acquisition is blocked in this environment.  The PMOS row therefore carries the
+PMOS selection is incomplete. Datasheet access is available; electrical
+qualification must precede naming an approved part.  The PMOS row therefore carries the
 selection requirements in ``pmos_selection()`` and no invented orderable code.
 
 Usage:
@@ -185,7 +185,7 @@ def power_switch_parts() -> list[Part]:
              "and turns off in ~14 us with 60 pF of gate capacitance"),
         Part("Q55", "Transistor_FET:Q_PMOS_GSD", "P-MOS TO_SELECT", SOT23, 105, 75,
              {"1": "VDD_IN", "2": "VDD_SR", "3": "BC_FB"}, "30 V",
-             "gate-follow source follower: gate at VDD_IN, source at VDD_SR, "
+             "gate-follow gate-follow PMOS: gate at VDD_IN, source at VDD_SR, "
              "drain at BC_FB. Vgs is zero in normal operation, so it neither "
              "injects into the gate nor loads the enable pulldown; it conducts "
              "only when VDD_SR is back-fed above VDD_IN",
@@ -206,7 +206,7 @@ def power_switch_parts() -> list[Part]:
              "second default-off: ENABLE is low if the logic is unpowered or floating"),
         Part("R57", "Device:R", "47R", R1206, 150, 60,
              {"1": "VDD_SR", "2": "VDD_DIS"}, "1/4 W, pulse",
-             "active-discharge resistor; 47R * 3.3 uF = 155 us, 0.37 mJ per event"),
+             "active-discharge resistor; 47R * 11.1 uF = 522 us, 1.25 mJ per event"),
         Part("Q54", "Transistor_FET:Q_NMOS_GSD", "AO3400A", SOT23, 150, 80,
              {"1": "ENABLE_N", "2": "PGND", "3": "VDD_DIS"}, "30 V 5.7 A",
              "local capacitor discharge; on whenever the bias is disabled",
@@ -214,13 +214,13 @@ def power_switch_parts() -> list[Part]:
         Part("R58", "Device:R", "100k", R0805, 170, 60,
              {"1": "VDD_SR", "2": "PGND"}, "1/10 W",
              "passive bleed, fail-safe when the 5 V domain is lost; tau ~330 ms"),
-        Part("C54", "Device:C", "3.3uF/25V", C1210, 185, 60,
+        Part("C54", "Device:C", "11.1uF/25V equivalent", C1210, 185, 60,
              {"1": "VDD_SR", "2": "PGND"}, "25 V X7R",
-             "bench load equal to C1+C2+C3; remove when integrated, the real "
+             "equivalent bank of SR C1=10u + C2=1u + C3=100n; exact bank TO_SELECT; remove when integrated, the real "
              "UCC24624 VDD capacitance is the load"),
-        Part("R62", "Device:R", "1k", R0805, 200, 60,
-             {"1": "VDD_SR", "2": "PGND"}, "1/10 W",
-             "bench load, ~15 mA at 15 V; remove when integrated"),
+        Part("R62", "Device:R", "1k 0.5W min", R1206, 200, 60,
+             {"1": "VDD_SR", "2": "PGND"}, "0.5 W minimum; MPN TO_SELECT",
+             "0.225 W at 15 V; bench load, ~15 mA at 15 V; remove when integrated"),
     ]
 
 
@@ -260,7 +260,7 @@ def level_shift_parts() -> list[Part]:
 
 
 def logic_parts() -> list[Part]:
-    """CD4069 inverter, CD4013 set-dominant latch, CD4081 AND, CD4071 OR."""
+    """CD4069 inverter, CD4013 latch with external SET/reset interlock, CD4081 AND, CD4071 OR."""
     return [
         Part("U50", "4xxx:4069", "CD4069UBE", DIP14, 200, 150,
              {"1": "FLT_N", "2": "FLT_H"}, "5 V",
@@ -276,17 +276,17 @@ def logic_parts() -> list[Part]:
         Part("U51", "4xxx:4013", "CD4013BE", DIP14, 300, 190,
              {"1": "LATCHED", "2": "LATCHED_N", "3": "PGND", "4": "RST_EFF",
               "5": "PGND", "6": "SET_LATCH"}, "5 V",
-             "unit A: set-dominant latch; CLK=D=0 so only SET/RESET change it",
+             "unit A: external SET/reset interlock; simultaneous high is forbidden",
              mpn="CD4013BE", mpn_source=DS_4013),
         Part("U51", "4xxx:4013", "CD4013BE", DIP14, 300, 190,
              {"7": "PGND", "14": "V5_IND"}, "5 V", "power unit", unit=3,
              mpn="CD4013BE", mpn_source=DS_4013),
         Part("U52", "4xxx:4081", "CD4081BE", DIP14, 260, 200,
-             {"1": "RESET_CMD", "2": "FLT_N", "3": "RST_EFF"}, "5 V",
-             "unit A: reset is blocked while the fault is present",
+             {"1": "RESET_CMD", "2": "SET_N", "3": "RST_EFF"}, "5 V",
+             "unit A: reset blocked during fault OR POR",
              mpn="CD4081BE", mpn_source=DS_4081),
         Part("U52", "4xxx:4081", "CD4081BE", DIP14, 260, 200,
-             {"4": "ENABLE", "5": "PERMIT", "6": "LATCHED_N"}, "5 V",
+             {"4": "ENABLE_RAW", "5": "PERMIT", "6": "LATCHED_N"}, "5 V",
              "unit B: bias on only when permitted and not latched", unit=2,
              mpn="CD4081BE", mpn_source=DS_4081),
         Part("U52", "4xxx:4081", "CD4081BE", DIP14, 260, 200,
@@ -318,7 +318,7 @@ def spare_parts() -> list[Part]:
     return [
         # CD4069UB: used A (1/2) and B (3/4); C-F are spares.
         Part("U50", "4xxx:4069", "CD4069UBE", DIP14, 200, 150,
-             {"5": "PGND", "6": NC}, "5 V", "spare inverter C", unit=3,
+             {"5": "SET_LATCH", "6": "SET_N"}, "5 V", "inverter C: masks reset and enable during SET", unit=3,
              mpn="CD4069UBE", mpn_source=DS_4069),
         Part("U50", "4xxx:4069", "CD4069UBE", DIP14, 200, 150,
              {"9": "PGND", "8": NC}, "5 V", "spare inverter D", unit=4,
@@ -337,8 +337,8 @@ def spare_parts() -> list[Part]:
              mpn="CD4013BE", mpn_source=DS_4013),
         # CD4081B: used A and B; C and D are spares.
         Part("U52", "4xxx:4081", "CD4081BE", DIP14, 260, 200,
-             {"8": "PGND", "9": "PGND", "10": NC}, "5 V",
-             "spare AND C; inputs grounded, output open", unit=3,
+             {"8": "ENABLE_RAW", "9": "SET_N", "10": "ENABLE"}, "5 V",
+             "AND C: SET directly inhibits enable", unit=3,
              mpn="CD4081BE", mpn_source=DS_4081),
         Part("U52", "4xxx:4081", "CD4081BE", DIP14, 260, 200,
              {"12": "PGND", "13": "PGND", "11": NC}, "5 V",
@@ -391,11 +391,11 @@ def step(fault: bool, permit: bool, reset: bool, por: bool, latched: bool) -> tu
     """One transition of the set-dominant latch and its enable gate.
 
     ``SET`` wins over ``RESET``; ``RESET`` is additionally gated by the fault
-    (``RST_EFF = RESET_CMD AND /FAULT``), so a fault that is still present can
+    (``RST_EFF = RESET_CMD AND /SET``), so a fault that is still present can
     never clear the latch.  ``ENABLE = PERMIT AND /LATCHED``.
     """
     set_ = bool(fault or por)
-    rst_eff = bool(reset and not fault)
+    rst_eff = bool(reset and not set_)
     new = True if set_ else (False if rst_eff else bool(latched))
     return new, bool(permit and not new)
 
@@ -419,15 +419,15 @@ def pmos_selection() -> dict:
     return {
         "mpn": "TO_SELECT",
         "reason": "no P-channel MOSFET datasheet in references/datasheets; "
-                  "external acquisition is blocked in this environment, and a "
-                  "fabricated orderable code is worse than an empty one",
+                  "device selection and transient verification remain incomplete",
         "requirements": {
             "vds_min_v": 30,
             "vgs_abs_max_v": 20,
             "id_continuous_min_a": 1.0,
             "id_pulsed_min_a": 3.0,
             "rds_on_max_ohm_at_vgs_minus_10v": 0.1,
-            "ciss_max_pf": 100,
+            "ciss_max_pf": None,
+            "gate_charge_timing_qualified": False,
             "vgs_th_abs_max_v": 2.5,
             "package": "SOT-23 or SOT-323",
             "body_diode": "standard P-MOS body diode, drain-to-source; the "
@@ -435,23 +435,22 @@ def pmos_selection() -> dict:
         },
         "why": {
             "vds": "15 V rail plus back-fed VDD_SR; 30 V gives 2x margin",
-            "id_pulsed": "C54 (3.3 uF) charges through the switch at turn-on; "
+            "id_pulsed": "C54 (11.1 uF) charges through the switch at turn-on; "
                          "the supply and wiring set the peak, so the part must "
                          "have pulsed headroom. No soft-start is fitted.",
-            "ciss": "R50 turn-off is 100k * Ciss: the deck measures 13.4 us at "
-                    "60 pF, so the 100 pF limit gives ~22 us. The fast path is "
-                    "the Q41/R44 crowbar (~12 us); this cut is the 100 us-scale "
-                    "path (section 7), so tens of us is the design point, not a race",
+            "ciss": "60 pF is an unqualified aggregate placeholder. Select real devices, "
+                    "include BOTH pass FET gate charges plus Q55/parasitics, and "
+                    "recompute turn-off and Q54 overlap; no artificial 100 pF procurement ceiling",
             "rds_on": "the SR bias is ~15 mA; 0.1 ohm is 1.5 mV, not a "
                       "thermal constraint, but keeps the pass drop negligible",
-            "vgs_th": "Q55 is a source follower driven by VDD_IN; it can only "
+            "vgs_th": "Q55 is a gate-follow PMOS driven by VDD_IN; it can only "
                       "lift the gate when the back-fed VDD_SR exceeds VDD_IN by "
                       "more than |Vth|. With a 3 V backfeed the part has to be a "
                       "logic-level P-MOS, |Vth| <= 2.5 V at the quoted test "
                       "current, or Q51 stays partly on",
         },
         "not_acceptable": "BSS84-class parts are not automatically acceptable: "
-                          "no datasheet is held, and the 3.3 uF turn-on pulse is "
+                          "no datasheet is held, and the 11.1 uF turn-on pulse is "
                           "outside a small-signal default assumption.",
     }
 
@@ -483,8 +482,8 @@ def observations() -> list[dict]:
                     "leaves the switch off.",
          "evidence": "topology + truth_table"},
         {"item": "set dominates reset",
-         "finding": "SET = FLT_H OR POR is evaluated before RST_EFF; a fault that "
-                    "is still present cannot be cleared by RESET_CMD.",
+         "finding": "SET = FLT_H OR POR drives U50C; SET_N blocks both RST_EFF and ENABLE. "
+                    "Static interlock is implemented; real propagation hazards remain open.",
          "evidence": "step() exhaustive enumeration"},
         {"item": "no auto-reset",
          "finding": "when SET and RST_EFF are both false the latch holds. A fault "
@@ -497,13 +496,13 @@ def observations() -> list[dict]:
                     "with VDD_SR when VDD_SR is back-fed above VDD_IN, and D50 "
                     "also blocks Q55's body diode in the off state. Residual: "
                     "VDD_SR -> Q55 -> D50 -> R50 -> VDD_IN is ~30 uA at "
-                    "VDD_SR=18 V; it is a bleed in the safe direction, not "
-                    "switch conduction.",
+                    "VDD_SR=18 V with VDD_IN held at 15 V; this single point does not "
+                    "prove arbitrary reverse blocking or safe charging of an unpowered input.",
          "evidence": "topology + reverse deck"},
         {"item": "local capacitor discharge",
          "finding": "when ENABLE is low, ENABLE_N is high and Q54+R57 discharge "
                     "VDD_SR; R58 is the passive bleed if the 5 V domain is lost. "
-                    "47 ohm * 3.3 uF is 155 us, ~220 us to 3.63 V.",
+                    "47 ohm * 11.1 uF is 522 us; VDD_SR threshold is a metric, not REG UVLO.",
          "evidence": "topology + sequence deck"},
         {"item": "fault input default",
          "finding": "R61 pulls FAULT_G low, so a disconnected fault source reads "
@@ -514,8 +513,8 @@ def observations() -> list[dict]:
          "evidence": "topology + report"},
         {"item": "timing split",
          "finding": "the crowbar crosses REG UVLO in ~12.11 us (existing estimate); "
-                    "the 5 V logic adds <1 us; the gate network adds ~14 us; the "
-                    "local discharge adds ~220 us. The crowbar is the fast path, "
+                    "logic propagation is unmodelled; the placeholder gate network adds ~13 us; "
+                    "the updated 11.1 uF discharge metric is ~0.75 ms. The crowbar is the fast path, "
                     "the bias cut is the long-hold path.",
          "evidence": "arithmetic; the gate time uses an assumed 60 pF Ciss"},
         {"item": "what is not proven",
@@ -694,7 +693,7 @@ VPERMIT PERMIT_EXT 0 5
 * The POR time constant is R56 * C53 = 100k * 100nF = 10 ms, so POR crosses the
 * 2.5 V CMOS threshold at 10 ms * ln(5/2.5) = 6.9 ms.  The first reset is placed
 * at 10 ms, after POR has decayed; a reset during POR would be correctly ignored.
-VRESET RESET_EXT 0 PWL(0 0 10m 0 10.001m 5 10.01m 5 10.011m 0
+VRESET RESET_EXT 0 PWL(0 0 1m 0 1.001m 5 2m 5 2.001m 0 10m 0 10.001m 5 10.01m 5 10.011m 0
 + 25m 0 25.001m 5 25.01m 5 25.011m 0)
 VFAULT FAULT_IN 0 PWL(0 0 15m 0 15.001m 5 15.1m 5 15.101m 0)
 R63 PERMIT_EXT PERMIT 1k
@@ -710,17 +709,17 @@ S53 FLT_N 0 FAULT_G 0 SWLOG
 .model SWLOG SW(Ron=10 Roff=1Meg Vt=2.5 Vh=0.2)
 B_FLTH FLT_H 0 V=if(V(FLT_N)<2.5,5,0)
 B_SET SET_LATCH 0 V=if(V(FLT_H)>2.5 | V(POR)>2.5,5,0)
-B_RST RST_EFF 0 V=if(V(RESET_CMD)>2.5 & V(FLT_N)>2.5,5,0)
-* ic=5: a real CD4013 comes up in an arbitrary state, but POR forces SET
-* within nanoseconds of V5 rising, so "set" is the state the circuit is
-* actually in.  Without it the node starts at 0, ENABLE is briefly high and
-* the switch conducts a 3.3 uF charge pulse that exists only in the model.
+B_SETN SET_N 0 V=if(V(SET_LATCH)>2.5,0,5)
+B_RST RST_EFF 0 V=if(V(RESET_CMD)>2.5 & V(SET_N)>2.5,5,0)
+* Preinitialized latch for this behavioural scenario only. This does NOT prove
+* arbitrary power-up, slow supply ramps, brownout or propagation timing.
 C_L LATCHED 0 1n ic=5
 R_L LATCHED 0 1G
 B_L 0 LATCHED I=if(V(SET_LATCH)>2.5,(5-V(LATCHED))/1k,
 + if(V(RST_EFF)>2.5,(0-V(LATCHED))/1k,0))
-B_LN LATCHED_N 0 V=5-V(LATCHED)
-B_EN ENABLE 0 V=if(V(PERMIT)>2.5 & V(LATCHED_N)>2.5,5,0)
+B_LN LATCHED_N 0 V=if(V(SET_LATCH)>2.5 & V(RST_EFF)>2.5,5,5-V(LATCHED))
+B_EN_RAW ENABLE_RAW 0 V=if(V(PERMIT)>2.5 & V(LATCHED_N)>2.5,5,0)
+B_EN ENABLE 0 V=if(V(ENABLE_RAW)>2.5 & V(SET_N)>2.5,5,0)
 B_ENN ENABLE_N 0 V=if(V(ENABLE)>2.5,0,5)
 R50 VDD_IN BC_GATE 100k
 S52 BC_GATE 0 ENABLE 0 SWEN
@@ -730,13 +729,10 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * 60 pF lumped Ciss on the gate.  This is a MODEL element, not a BOM part: the
 * switch model has no gate capacitance of its own, and without this the gate
 * node is instantaneous, so the turn-off delay could only be done on paper.
-* ic=15 (= VDD_IN): under uic every node starts at 0 V, so without it the gate
-* ramps up from 0 through R50 over ~14 us and both switches conduct during that
-* ramp - a charge pulse that exists only in the model and hides the real
-* startup state (it read as 14.97 V on VDD_SR and made the first TARG crossing
-* land at 12.6 us instead of at the fault).  Same reasoning as C_L below.
+* Preinitialized gate, with an unqualified 60 pF placeholder. Startup with
+* discharged gates or a rising supply needs separate device-level validation.
 CG BC_GATE 0 60p ic=15
-* Q55 source follower plus D50 in series with its drain.  The channel is off
+* Q55 gate-follow PMOS plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
 S55 VDD_SR BC_FB VDD_SR VDD_IN SVP
@@ -753,7 +749,7 @@ D51B VMID VDD_SR DBODY
 R57 VDD_SR VDD_DIS 47
 S54 VDD_DIS 0 ENABLE_N 0 SWEN
 R58 VDD_SR 0 100k
-C54 VDD_SR 0 3.3u
+C54 VDD_SR 0 11.1u
 R62 VDD_SR 0 1k
 .tran 0 30m 0 0.1u uic
 .save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(ENABLE) V(ENABLE_N)
@@ -761,14 +757,17 @@ R62 VDD_SR 0 1k
 * 8 ms   POR has decayed (tau = 100k * 100nF = 10 ms, threshold ~6.9 ms):
 *        the latch is still set from power-up and the bias is off.
 * 13 ms  the 10 ms reset pulse has cleared the latch; the bias is on.
-* 16 ms  1 ms after the 15 ms fault; the active discharge has emptied C54.
+* 18 ms  3 ms after fault; 11.1 uF is discharged. This window changed from 1 ms.
 * 20 ms  the fault is gone but the latch persists: no auto-reset.
 * 28 ms  the 25 ms explicit reset has re-enabled the bias.
 * Windowed statistics, not point samples: a relaxation around a switch
 * threshold shows up as a slow oscillation that a single sample can miss.
 .meas TRAN vdd_sr_default_off MAX V(VDD_SR) FROM 7.5m TO 9.5m
 .meas TRAN vdd_sr_enabled MIN V(VDD_SR) FROM 12m TO 14m
-.meas TRAN vdd_sr_after_fault MAX V(VDD_SR) FROM 16m TO 17m
+.meas TRAN input_inrush_min MIN I(V1) FROM 10m TO 10.2m
+.meas TRAN sr_overlap MAX (V(SET_LATCH)*V(RST_EFF)) FROM 0 TO 30m
+.meas TRAN por_reset_enable MAX V(ENABLE) FROM 1.01m TO 1.99m
+.meas TRAN vdd_sr_after_fault MAX V(VDD_SR) FROM 18m TO 19m
 .meas TRAN vdd_sr_held_off MAX V(VDD_SR) FROM 19m TO 24m
 .meas TRAN vdd_sr_recovered MIN V(VDD_SR) FROM 27m TO 29.5m
 .meas TRAN latched_after_fault FIND V(LATCHED) AT=20m
@@ -829,7 +828,7 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * ic=15 = VDD_IN, the state R50 holds it in: under uic the node would
 * otherwise ramp up from 0 V through R50 over ~14 us (see the sequence deck).
 CG BC_GATE 0 60p ic=15
-* Q55 source follower plus D50 in series with its drain.  The channel is off
+* Q55 gate-follow PMOS plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
 S55 VDD_SR BC_FB VDD_SR VDD_IN SVP
@@ -847,10 +846,12 @@ R57 VDD_SR VDD_DIS 47
 B_ENN ENABLE_N 0 V=5
 S54 VDD_DIS 0 ENABLE_N 0 SWEN
 R58 VDD_SR 0 100k
-C54 VDD_SR 0 3.3u
+C54 VDD_SR 0 11.1u
 R62 VDD_SR 0 1k
 .tran 0 2m 0 0.1u uic
-.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) I(V1) I(VREV)
+.save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(VDD_DIS) I(V1) I(VREV) I(R57)
+.meas TRAN reverse_edge_input_max MAX I(V1) FROM 0.4m TO 0.45m
+.meas TRAN reverse_r57_power AVG (V(VDD_SR,VDD_DIS)*I(R57)) FROM 0.45m TO 0.95m
 .meas TRAN i_vdd_in_min MIN I(V1) FROM 0.45m TO 0.95m
 .meas TRAN vdd_sr_reverse FIND V(VDD_SR) AT=0.7m
 .meas TRAN vmid_reverse FIND V(VMID) AT=0.7m
@@ -907,14 +908,16 @@ def sim_checks(seq: dict[str, float], rev: dict[str, float]) -> list[dict]:
         return mapping[key]
 
     return [
+        check("sr_overlap", need(seq, "sr_overlap"), need(seq, "sr_overlap") < 0.1, "SET and RESET must not both assert in ideal logic"),
+        check("por_reset_enable", need(seq, "por_reset_enable"), need(seq, "por_reset_enable") < 0.1, "POR/reset overlap must inhibit ENABLE"),
         check("default_off_v", need(seq, "vdd_sr_default_off"),
               need(seq, "vdd_sr_default_off") <= 0.05,
               "power-up with POR set must leave the SR bias off"),
         check("startup_max_v", need(seq, "vdd_sr_startup_max"),
               need(seq, "vdd_sr_startup_max") <= 0.5,
               "the switch must never conduct before the first explicit reset; "
-              "a non-zero value here means a model state element starts in the "
-              "wrong state, not that the circuit misbehaves"),
+              "this run uses preinitialized latch and gate; arbitrary startup is untested. A non-zero value here may indicate a "
+              "startup issue; do not dismiss it as artificial"),
         check("enabled_v", need(seq, "vdd_sr_enabled"),
               need(seq, "vdd_sr_enabled") >= 14.9,
               "an explicit reset with PERMIT must pass the full 15 V rail"),
@@ -948,9 +951,8 @@ def sim_checks(seq: dict[str, float], rev: dict[str, float]) -> list[dict]:
               "R50 * 60 pF says ~14 us, and anything past 40 us means the gate "
               "node is being held by something else"),
         check("discharge_time_s", need(seq, "t_discharge"),
-              100e-6 <= need(seq, "t_discharge") <= 500e-6,
-              "VDD_SR must reach the 3.63 V UCC24624 UVLO in a few hundred "
-              "microseconds; 47 ohm * 3.3 uF says ~220 us"),
+              500e-6 <= need(seq, "t_discharge") <= 1e-3,
+              "VDD_SR reaches a 3.63 V reporting threshold with the 11.1 uF equivalent bank; not a REG/gate-off guarantee"),
         check("reverse_current_a", abs(need(rev, "i_vdd_in_min")),
               abs(need(rev, "i_vdd_in_min")) <= 100e-6,
               "back-fed VDD_SR=18 V must not conduct through the switch; "
@@ -984,6 +986,9 @@ def record_run(seq_path: Path = SEQ_LOG, rev_path: Path = REV_LOG) -> None:
     The deck hashes are taken here, next to the logs, so a later edit to the
     deck invalidates the record instead of silently re-labelling old numbers.
     """
+    for log_path, deck_name in ((seq_path, "bias_cut_eco.cir"), (rev_path, "bias_cut_eco_reverse.cir")):
+        if log_path.stat().st_mtime_ns < (OUT / deck_name).stat().st_mtime_ns:
+            raise SystemExit(f"stale simulation log: {log_path}; rerun the generated deck")
     seq_text = seq_path.read_text(encoding="utf-8", errors="replace")
     rev_text = rev_path.read_text(encoding="utf-8", errors="replace")
     seq = parse_meas(seq_text)
@@ -993,12 +998,22 @@ def record_run(seq_path: Path = SEQ_LOG, rev_path: Path = REV_LOG) -> None:
     checks = sim_checks(seq, rev)
     payload = {
         "status": "RUN",
-        "host": "winsrv" if circuit and "C:\\work\\" in circuit.group(1) else "unknown",
+        "host": "winsrv" if circuit and "C:\\work\\" in circuit.group(1) else "local",
+        "log_sha256": {seq_path.name: sha256(seq_text), rev_path.name: sha256(rev_text)},
         "ltspice": version.group(1) if version else "unknown",
         "deck_sha256": {name: sha256(build()) for name, build in DECK_FILES.items()},
         "measured": {"sequence": seq, "reverse": rev},
         "checks": checks,
         "all_checks_pass": all(c["ok"] for c in checks),
+        "design_ready": False,
+        "stress_assessment": {
+            "reverse_r57_power_w": rev["reverse_r57_power"],
+            "r57_declared_continuous_w": 0.25,
+            "reverse_r57_within_declared_continuous_rating": rev["reverse_r57_power"] <= 0.25,
+            "input_inrush_peak_a": -seq["input_inrush_min"],
+            "inrush_soa_qualified": False,
+            "scope": "all_checks_pass covers only the listed behavioural checks, not stress or hardware approval",
+        },
         "evidence_level": "BEHAVIOURAL_SIMULATION_NOT_HARDWARE",
         "note": "behavioural switch and logic model; this is not a device model, "
                 "not a thermal model, and not a hardware measurement",
@@ -1047,7 +1062,7 @@ def report(ps: list[Part]) -> dict:
                                "R60 pulls PERMIT low; POR sets the latch",
              "status": "TOPOLOGY_AND_TRUTH_TABLE"},
             {"requirement": "reverse blocking",
-             "implementation": "Q50/Q51 common drain VMID; Q55 source follower "
+             "implementation": "Q50/Q51 common drain VMID; Q55 gate-follow PMOS "
                                "+ D50 lift the gate only when VDD_SR > VDD_IN",
              "status": "TOPOLOGY_AND_REVERSE_DECK; residual ~30 uA bleed documented"},
             {"requirement": "local capacitor discharge",
@@ -1060,7 +1075,7 @@ def report(ps: list[Part]) -> dict:
              "implementation": "the latch and Q54 are supplied from V5_IND, not VDD_SR",
              "status": "TOPOLOGY_ONLY"},
             {"requirement": "explicit reset",
-             "implementation": "RESET_CMD AND FLT_N; set-dominant; no auto-reset",
+             "implementation": "RESET_CMD AND SET_N; SET also masks ENABLE; propagation hazards still unverified",
              "status": "TOPOLOGY_AND_TRUTH_TABLE"},
             {"requirement": "backfeed measured at VDD/REG",
              "implementation": "H5 hardware capture; this ECO only provides the "
@@ -1068,6 +1083,10 @@ def report(ps: list[Part]) -> dict:
              "status": "OPEN"},
         ],
         "open_items": [
+            "SET/reset gate propagation and slow ramps are unverified; CD4013 is not intrinsically SET dominant",
+            "Backfed VDD_SR drives Q54/R57 continuously: 18V across 47 ohm is approximately 6.9W, NOT a leakage-only condition; reverse test is not a thermal pass",
+            "Input inrush measurement is a behavioural result, not PMOS pulse/SOA qualification",
+            "60 pF and forced initial states are placeholders; startup and PMOS timing are not qualified",
             "P-MOS is TO_SELECT; no P-channel datasheet in the repository",
             "no hardware build, no thermal measurement",
             "no measured VDD/REG backfeed; H5 remains NOT_READY",
@@ -1117,11 +1136,13 @@ def check() -> None:
                    ("C54", "1"), ("R62", "1"), ("J6", "2")},
         "VDD_IN": {("Q50", "2"), ("Q55", "1"), ("R50", "1"), ("J6", "1")},
         "VDD_DIS": {("R57", "2"), ("Q54", "3")},
-        "ENABLE": {("Q52", "1"), ("U50", "3"), ("U52", "4"), ("R52", "1")},
+        "ENABLE": {("Q52", "1"), ("U50", "3"), ("U52", "10"), ("R52", "1")},
+        "ENABLE_RAW": {("U52", "4"), ("U52", "8")},
+        "SET_N": {("U50", "6"), ("U52", "2"), ("U52", "9")},
         "ENABLE_N": {("Q54", "1"), ("U50", "4")},
-        "FLT_N": {("Q53", "3"), ("R54", "2"), ("U50", "1"), ("U52", "2")},
+        "FLT_N": {("Q53", "3"), ("R54", "2"), ("U50", "1")},
         "FLT_H": {("U50", "2"), ("U53", "1")},
-        "SET_LATCH": {("U53", "3"), ("U51", "6")},
+        "SET_LATCH": {("U53", "3"), ("U51", "6"), ("U50", "5")},
         "RST_EFF": {("U52", "3"), ("U51", "4")},
         "LATCHED": {("U51", "1")},
         "LATCHED_N": {("U51", "2"), ("U52", "6")},

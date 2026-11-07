@@ -3,15 +3,15 @@ J6,15V IN / SR BIAS OUT,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertic
 Q50,P-MOS TO_SELECT,Package_TO_SOT_SMD:SOT-23,30 V,"input-side pass device; source at VDD_IN, drain at VMID",,,TO_SELECT,,1
 Q51,P-MOS TO_SELECT,Package_TO_SOT_SMD:SOT-23,30 V,"output-side pass device; source at VDD_SR, drain at VMID; body diodes oppose Q50",,,TO_SELECT,,1
 R50,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,default-off pull-up; 100k keeps the VDD_SR->VDD_IN bleed at ~27 uA and turns off in ~14 us with 60 pF of gate capacitance,,,TO_SELECT,,1
-Q55,P-MOS TO_SELECT,Package_TO_SOT_SMD:SOT-23,30 V,"gate-follow source follower: gate at VDD_IN, source at VDD_SR, drain at BC_FB. Vgs is zero in normal operation, so it neither injects into the gate nor loads the enable pulldown; it conducts only when VDD_SR is back-fed above VDD_IN",,,TO_SELECT,,1
+Q55,P-MOS TO_SELECT,Package_TO_SOT_SMD:SOT-23,30 V,"gate-follow gate-follow PMOS: gate at VDD_IN, source at VDD_SR, drain at BC_FB. Vgs is zero in normal operation, so it neither injects into the gate nor loads the enable pulldown; it conducts only when VDD_SR is back-fed above VDD_IN",,,TO_SELECT,,1
 D50,BAT54W,Diode_SMD:D_SOD-123,30 V 200 mA,"pin 1 is the cathode; in series with Q55's drain. Without it Q55's body diode (anode = drain, cathode = source) conducts BC_GATE -> VDD_SR whenever R50 has the gate high, which is the whole off state: the deck read 13.3 V on a cut output",,BAT54W-E3-08,references/datasheets/bat54w.txt,,1
 Q52,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,pulls the P-MOS gates low only when the 5 V logic says ENABLE,,2N7002LT1G,references/datasheets/2n7002lt1g_onsemi_oem_parameters.txt,,1
 R52,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,second default-off: ENABLE is low if the logic is unpowered or floating,,,TO_SELECT,,1
-R57,47R,Resistor_SMD:R_1206_3216Metric,"1/4 W, pulse","active-discharge resistor; 47R * 3.3 uF = 155 us, 0.37 mJ per event",,,TO_SELECT,,1
+R57,47R,Resistor_SMD:R_1206_3216Metric,"1/4 W, pulse","active-discharge resistor; 47R * 11.1 uF = 522 us, 1.25 mJ per event",,,TO_SELECT,,1
 Q54,AO3400A,Package_TO_SOT_SMD:SOT-23,30 V 5.7 A,local capacitor discharge; on whenever the bias is disabled,,AO3400A,references/datasheets/ao3400a.txt,,1
 R58,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,"passive bleed, fail-safe when the 5 V domain is lost; tau ~330 ms",,,TO_SELECT,,1
-C54,3.3uF/25V,Capacitor_SMD:C_1210_3225Metric,25 V X7R,"bench load equal to C1+C2+C3; remove when integrated, the real UCC24624 VDD capacitance is the load",,,TO_SELECT,,1
-R62,1k,Resistor_SMD:R_0805_2012Metric,1/10 W,"bench load, ~15 mA at 15 V; remove when integrated",,,TO_SELECT,,1
+C54,11.1uF/25V equivalent,Capacitor_SMD:C_1210_3225Metric,25 V X7R,"equivalent bank of SR C1=10u + C2=1u + C3=100n; exact bank TO_SELECT; remove when integrated, the real UCC24624 VDD capacitance is the load",,,TO_SELECT,,1
+R62,1k 0.5W min,Resistor_SMD:R_1206_3216Metric,0.5 W minimum; MPN TO_SELECT,"0.225 W at 15 V; bench load, ~15 mA at 15 V; remove when integrated",,,TO_SELECT,,1
 J7,5V / PERMIT / RESET,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,"5 V, 10 mA",independent 5 V control domain; must survive the SR bias cut,,,TO_SELECT,,1
 R63,1k,Resistor_SMD:R_0805_2012Metric,1/10 W,series protection for the CMOS input,,,TO_SELECT,,1
 R60,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,default PERMIT low = bias off,,,TO_SELECT,,1
@@ -25,8 +25,8 @@ R61,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,"default no fault; opposite direc
 R54,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,open-drain fault pull-up,,,TO_SELECT,,1
 Q53,2N7002,Package_TO_SOT_SMD:SOT-23,60 V,level shifts the 5.1 V fault node into the 5 V CMOS domain,,2N7002LT1G,references/datasheets/2n7002lt1g_onsemi_oem_parameters.txt,,1
 U50,CD4069UBE,Package_DIP:DIP-14_W7.62mm,5 V,unit A: inverts the active-low fault node,,CD4069UBE,references/datasheets/cd4069ub.txt,,1
-U51,CD4013BE,Package_DIP:DIP-14_W7.62mm,5 V,unit A: set-dominant latch; CLK=D=0 so only SET/RESET change it,,CD4013BE,references/datasheets/cd4013b.txt,,1
-U52,CD4081BE,Package_DIP:DIP-14_W7.62mm,5 V,unit A: reset is blocked while the fault is present,,CD4081BE,references/datasheets/cd4081b.txt,,1
+U51,CD4013BE,Package_DIP:DIP-14_W7.62mm,5 V,unit A: external SET/reset interlock; simultaneous high is forbidden,,CD4013BE,references/datasheets/cd4013b.txt,,1
+U52,CD4081BE,Package_DIP:DIP-14_W7.62mm,5 V,unit A: reset blocked during fault OR POR,,CD4081BE,references/datasheets/cd4081b.txt,,1
 U53,CD4071BE,Package_DIP:DIP-14_W7.62mm,5 V,unit A: fault or power-on sets the latch,,CD4071BE,references/datasheets/cd4071b.txt,,1
 R56,100k,Resistor_SMD:R_0805_2012Metric,1/10 W,POR pull-down; C53 to V5 makes POR high at power-up,,,TO_SELECT,,1
 C53,100nF/16V,Capacitor_SMD:C_0805_2012Metric,16 V X7R,power-on set pulse: 100k * 100nF = 10 ms,,,TO_SELECT,,1

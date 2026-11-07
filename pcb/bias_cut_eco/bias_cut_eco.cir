@@ -7,7 +7,7 @@ VPERMIT PERMIT_EXT 0 5
 * The POR time constant is R56 * C53 = 100k * 100nF = 10 ms, so POR crosses the
 * 2.5 V CMOS threshold at 10 ms * ln(5/2.5) = 6.9 ms.  The first reset is placed
 * at 10 ms, after POR has decayed; a reset during POR would be correctly ignored.
-VRESET RESET_EXT 0 PWL(0 0 10m 0 10.001m 5 10.01m 5 10.011m 0
+VRESET RESET_EXT 0 PWL(0 0 1m 0 1.001m 5 2m 5 2.001m 0 10m 0 10.001m 5 10.01m 5 10.011m 0
 + 25m 0 25.001m 5 25.01m 5 25.011m 0)
 VFAULT FAULT_IN 0 PWL(0 0 15m 0 15.001m 5 15.1m 5 15.101m 0)
 R63 PERMIT_EXT PERMIT 1k
@@ -23,17 +23,17 @@ S53 FLT_N 0 FAULT_G 0 SWLOG
 .model SWLOG SW(Ron=10 Roff=1Meg Vt=2.5 Vh=0.2)
 B_FLTH FLT_H 0 V=if(V(FLT_N)<2.5,5,0)
 B_SET SET_LATCH 0 V=if(V(FLT_H)>2.5 | V(POR)>2.5,5,0)
-B_RST RST_EFF 0 V=if(V(RESET_CMD)>2.5 & V(FLT_N)>2.5,5,0)
-* ic=5: a real CD4013 comes up in an arbitrary state, but POR forces SET
-* within nanoseconds of V5 rising, so "set" is the state the circuit is
-* actually in.  Without it the node starts at 0, ENABLE is briefly high and
-* the switch conducts a 3.3 uF charge pulse that exists only in the model.
+B_SETN SET_N 0 V=if(V(SET_LATCH)>2.5,0,5)
+B_RST RST_EFF 0 V=if(V(RESET_CMD)>2.5 & V(SET_N)>2.5,5,0)
+* Preinitialized latch for this behavioural scenario only. This does NOT prove
+* arbitrary power-up, slow supply ramps, brownout or propagation timing.
 C_L LATCHED 0 1n ic=5
 R_L LATCHED 0 1G
 B_L 0 LATCHED I=if(V(SET_LATCH)>2.5,(5-V(LATCHED))/1k,
 + if(V(RST_EFF)>2.5,(0-V(LATCHED))/1k,0))
-B_LN LATCHED_N 0 V=5-V(LATCHED)
-B_EN ENABLE 0 V=if(V(PERMIT)>2.5 & V(LATCHED_N)>2.5,5,0)
+B_LN LATCHED_N 0 V=if(V(SET_LATCH)>2.5 & V(RST_EFF)>2.5,5,5-V(LATCHED))
+B_EN_RAW ENABLE_RAW 0 V=if(V(PERMIT)>2.5 & V(LATCHED_N)>2.5,5,0)
+B_EN ENABLE 0 V=if(V(ENABLE_RAW)>2.5 & V(SET_N)>2.5,5,0)
 B_ENN ENABLE_N 0 V=if(V(ENABLE)>2.5,0,5)
 R50 VDD_IN BC_GATE 100k
 S52 BC_GATE 0 ENABLE 0 SWEN
@@ -43,13 +43,10 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * 60 pF lumped Ciss on the gate.  This is a MODEL element, not a BOM part: the
 * switch model has no gate capacitance of its own, and without this the gate
 * node is instantaneous, so the turn-off delay could only be done on paper.
-* ic=15 (= VDD_IN): under uic every node starts at 0 V, so without it the gate
-* ramps up from 0 through R50 over ~14 us and both switches conduct during that
-* ramp - a charge pulse that exists only in the model and hides the real
-* startup state (it read as 14.97 V on VDD_SR and made the first TARG crossing
-* land at 12.6 us instead of at the fault).  Same reasoning as C_L below.
+* Preinitialized gate, with an unqualified 60 pF placeholder. Startup with
+* discharged gates or a rising supply needs separate device-level validation.
 CG BC_GATE 0 60p ic=15
-* Q55 source follower plus D50 in series with its drain.  The channel is off
+* Q55 gate-follow PMOS plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
 S55 VDD_SR BC_FB VDD_SR VDD_IN SVP
@@ -66,7 +63,7 @@ D51B VMID VDD_SR DBODY
 R57 VDD_SR VDD_DIS 47
 S54 VDD_DIS 0 ENABLE_N 0 SWEN
 R58 VDD_SR 0 100k
-C54 VDD_SR 0 3.3u
+C54 VDD_SR 0 11.1u
 R62 VDD_SR 0 1k
 .tran 0 30m 0 0.1u uic
 .save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(ENABLE) V(ENABLE_N)
@@ -74,14 +71,17 @@ R62 VDD_SR 0 1k
 * 8 ms   POR has decayed (tau = 100k * 100nF = 10 ms, threshold ~6.9 ms):
 *        the latch is still set from power-up and the bias is off.
 * 13 ms  the 10 ms reset pulse has cleared the latch; the bias is on.
-* 16 ms  1 ms after the 15 ms fault; the active discharge has emptied C54.
+* 18 ms  3 ms after fault; 11.1 uF is discharged. This window changed from 1 ms.
 * 20 ms  the fault is gone but the latch persists: no auto-reset.
 * 28 ms  the 25 ms explicit reset has re-enabled the bias.
 * Windowed statistics, not point samples: a relaxation around a switch
 * threshold shows up as a slow oscillation that a single sample can miss.
 .meas TRAN vdd_sr_default_off MAX V(VDD_SR) FROM 7.5m TO 9.5m
 .meas TRAN vdd_sr_enabled MIN V(VDD_SR) FROM 12m TO 14m
-.meas TRAN vdd_sr_after_fault MAX V(VDD_SR) FROM 16m TO 17m
+.meas TRAN input_inrush_min MIN I(V1) FROM 10m TO 10.2m
+.meas TRAN sr_overlap MAX (V(SET_LATCH)*V(RST_EFF)) FROM 0 TO 30m
+.meas TRAN por_reset_enable MAX V(ENABLE) FROM 1.01m TO 1.99m
+.meas TRAN vdd_sr_after_fault MAX V(VDD_SR) FROM 18m TO 19m
 .meas TRAN vdd_sr_held_off MAX V(VDD_SR) FROM 19m TO 24m
 .meas TRAN vdd_sr_recovered MIN V(VDD_SR) FROM 27m TO 29.5m
 .meas TRAN latched_after_fault FIND V(LATCHED) AT=20m
