@@ -11,6 +11,7 @@
 - 布局 pass 3：布线 + 铺铜（`tools/make_sr_fault_board_pcb.py` + `tools/sr_board_router.py`）
 - TLV3501 快速过流 ECO 模块（`pcb/fast_oc`）
 - 模块布线板（`pcb/fast_oc/fast_oc.kicad_pcb`，`tools/make_fast_oc_pcb.py`）
+- 偏置关断 ECO（`pcb/bias_cut_eco`，`tools/make_bias_cut_eco.py`）
 - 实验板制造目录与主板剩余依赖（两张视图）
 
 ## 单对真实 SR 关断验证板（`pcb/sr_fault_validation`）
@@ -400,6 +401,29 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 要么一次写完 import + 用法，要么在用法落地后再补 import。`make_fast_oc_pcb.py` 加 `--fab` 时
 **同一个坑又踩了一次**：`import subprocess` 与 `from pathlib import Path` 分两步加，写 `export_fab`
 之前就被删掉，首跑 `NameError`。
+
+## 偏置关断 ECO（`pcb/bias_cut_eco`，`tools/make_bias_cut_eco.py`）
+
+**原生电路 + 行为级仿真，不是硬件。** `evidence_level = BEHAVIOURAL_SIMULATION_NOT_HARDWARE`，
+`hardware_built` / `hardware_qualified` / `thermal_qualified` 三个旗标恒为 `false`，H5 仍 `NOT_READY`。
+完整叙述（含两次失败原型的实测数字、逐脚网络表、BOM、时序）在
+[`../../docs/2026-11-07_偏置关断ECO.md`](../../docs/2026-11-07_偏置关断ECO.md)。
+
+- **拓扑骨架**：`VDD_IN(Q50.S) — VMID(Q50.D=Q51.D) — VDD_SR(Q51.S)` 共漏背靠背，体二极管互相遮挡；
+  `R50 100k` 上拉栅极到 `VDD_IN` = 默认关断；`Q52` 只在 5 V 逻辑说 `ENABLE` 时下拉。
+- **栅极跟随是这套电路唯一的非显然处**：`VDD_SR` 被灌到 18 V 时栅极必须跟着更高那一轨，否则 Q51
+  自己的 `Vgs = −3 V` 会导通。可行解是 **Q55 源极跟随（栅=`VDD_IN`、源=`VDD_SR`、漏=`BC_FB`）
+  + D50 串在它漏极与栅极之间**。直接肖特基、以及只有跟随器没有 D50，两种都实测失败，
+  数字在 ECO 文档 §2.2，**别再重新推导**。
+- **集成不许动快速路径**：模块内不含 `Q41`/`R44`，`FAULT_G` 直连既有撬棒；`C54`/`R62` 是台架假负载，
+  集成时删掉，真实负载是 UCC24624 的 VDD 电容。`JP1` 只当服务断开，**不当保护**。
+- **两个输入默认方向相反，不是笔误**：`FAULT_G` 由 R61 下拉 = 故障源断开读成"无故障"（fail-open）；
+  `ENABLE` 由 R52 下拉 = 控制域断开读成"偏置断开"（fail-safe）。既有失败安全策略没有改。
+- **P-MOS（Q50/Q51/Q55）一律 `TO_SELECT`**：仓库没有 P 沟道数据手册。三条硬约束——
+  `Vds ≥ 30 V`、`Id 脉冲 ≥ 3 A`（无软启动，3.3 µF 上电经开关充电）、**`\|Vth\| ≤ 2.5 V` 逻辑电平**
+  （Q55 要在 3 V 反向余量下动作）；`Ciss ≤ 100 pF` 决定 14 µs 关断，选定料号后重算。
+- **deck 与运行靠 sha256 绑定**：`sim_run.json` 存两份 deck 的哈希，改了 deck 不重跑 ⇒
+  `sim_run()` 返回 `STALE`，`report.json` 的 `simulation_status` 跟着变；`--record-run` 重记。
 
 ## 实验板制造目录与主板剩余依赖（两张视图）
 

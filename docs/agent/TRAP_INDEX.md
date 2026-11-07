@@ -38,6 +38,10 @@
 | ★ | deck 在仿真运行期间被重新生成 ⇒ raw 与 deck 不是同一输入；比 mtime / `No. Variables` | 比对 raw | SIMULATION.md §仿真文件 |
 |  | 冷启动 raw 10.7 GB；只看尾部时 seek 到记录边界（31 行/点），不要整文件 load | 读冷启动 raw | SIMULATION.md §仿真文件 |
 | ★ | `.save` 是多行续行块；只在第一行尾部追加会丢后面 18 个探针 | 给 deck 加探针 | SIMULATION.md §仿真文件 |
+|  | 有 `.save` 行时 `.meas` 只能引用被保存的量：`I(R50)` 报 `Current not found`，同 log 里其它判据照常打印 | 写 deck 判据 | SIMULATION.md §行为级 mock |
+|  | 行为级 MOS mock 必须显式画体二极管；漏掉它，源极跟随器会在整个关断期从栅极倒灌（13.295 V） | 写 mock | SIMULATION.md §行为级 mock |
+|  | `SW(... Roff=1Meg)` 会加载 100k 上拉并把分压读成 13.679 V；mock 2N7002 用 `Roff=1G` | 写 mock | SIMULATION.md §行为级 mock |
+|  | 判据用窗内 MAX/MIN，不用 `FIND ... AT=` 单点：弛张振荡会藏在采样点之间 | 写 deck 判据 | SIMULATION.md §行为级 mock |
 |  | 48 V/120 A 候选账本要 `--no-step-check`（仓库唯一 2 ns raw 属 100 A deck） | 跑候选账本 | SIMULATION.md §仿真文件 |
 |  | 1 ms 母 deck 只存 pair1/pair4 的电流；`iout_sum_a` 是 2/4 组之和，`iout_from_v_a` 才是总输出 | 提输出电流 | SIMULATION.md §仿真文件 |
 |  | hotfault 两个 deck 的 `.tran` / PWL 行是唯一真值，窗口从文本解析，不要手抄 | 改故障 deck | SIMULATION.md §仿真文件 |
@@ -155,6 +159,9 @@
 |  | SOT-23 上放两脚稳压管 = 钳位开路（BZX84 阴极在 3 号脚） | fast-OC / SR | BOARDS.md §模块布线板 |
 |  | 生成器的 `check()` 有两条**互为反向**的守卫，缺一条会被净空表骗过 | 改板生成器 | BOARDS.md §布局 pass 3 |
 |  | 制造目录/剩余依赖是**视图不是审核**；表写死，不做设计判断 | 引用制造视图 | BOARDS.md §实验板制造目录 |
+|  | 偏置关断 ECO 不含 Q41/R44，集成时也不许绕过或延迟快速撬棒 | 集成偏置 ECO | BOARDS.md §偏置关断 ECO |
+|  | 反向灌入时栅极必须跟着更高那一轨，解是 Q55 跟随器 + D50；另有两种拓扑实测失败 | 改偏置 ECO | BOARDS.md §偏置关断 ECO |
+|  | Q55 必须是逻辑电平 P-MOS（`\|Vth\| ≤ 2.5 V`），否则 3 V 反向余量下 Q51 半开 | P-MOS 选型 | BOARDS.md §偏置关断 ECO |
 | ★ | 没有数据的字段写 `UNKNOWN`，不许填一个看起来合理的值 | 写询价单 | MAGNETICS_BOM.md §磁件询价单 |
 | ★ | 高度限值从 `d1_staged_target_policy.json` 读，不许写死 | 写询价单 | MAGNETICS_BOM.md §磁件询价单 |
 |  | ELP38 的气隙按它自己的 AL 重算（3 匝 2.1651 mm 出界 ⇒ Lr 按 2 匝报价） | Lr 套件 | MAGNETICS_BOM.md §磁件询价单 |
