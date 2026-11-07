@@ -199,8 +199,32 @@ def check_files() -> dict:
             raise ValueError(f"{ref}: lacks manufacturer evidence URL")
         if parts[ref].get("fab_qualified") != "false":
             raise ValueError(f"{ref}: candidate cannot claim fab qualified")
+    # 15V divider and SHDN controls are now actual Vishay orderable codes,
+    # instead of E-series values without verifiable purchase identifiers.
+    selected = {
+        "RUV_TOP": ("CRCW0603909KFKEA", "909k"),
+        "RUV_MID": ("CRCW060335K7FKEA", "35.7k"),
+        "ROV_BOT": ("CRCW060364K9FKEA", "64.9k"),
+        "R_EN_PD": ("CRCW0603100KFKEA", "100k"),
+        "R_EN_SER": ("CRCW06031K00FKEA", "1k"),
+    }
+    for ref, (mpn, nominal) in selected.items():
+        row = parts.get(ref, {})
+        if row.get("mpn") != mpn or not row.get("value", "").startswith(nominal):
+            raise ValueError(f"{ref}: exact resistor MPN/value drift")
+        if row.get("manufacturer") != "Vishay Dale":
+            raise ValueError(f"{ref}: resistor manufacturer not traceable")
+        if not row.get("source_url", "").startswith("https://"):
+            raise ValueError(f"{ref}: source URL missing")
+        if row.get("fab_qualified") != "false":
+            raise ValueError(f"{ref}: vendor candidate is not fab-qualified")
+    q2 = parts["Q2"]
+    if "50pF" not in q2.get("value", "") or "10V" not in q2.get("value", ""):
+        raise ValueError("Q2 50pF maximum is only evidenced at VDS=10V")
     return {"status": "INPUT_TABLES_CHECKED_NOT_FAB", "pins": len(seen),
-            "parts": len(parts), "fabrication_approved": False}
+            "parts": len(parts), "selected_divider_and_enable_resistors": len(selected),
+            "q2_ciss_oem_max_at_vds10v_pf": 50,
+            "fabrication_approved": False}
 
 
 def main() -> int:
