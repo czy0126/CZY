@@ -45,6 +45,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import ltspice_windows_evidence as input_hash
 import json
 import math
 import re
@@ -450,7 +451,14 @@ def parse_meas(text: str) -> dict[str, float]:
 
 
 def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """Rev-B Windows .cir evidence is CRLF; .log is strictly byte-hashed.
+
+    Preserves the actual recorded simulation SHA after Git LF checkout,
+    without inventing a fresh simulation or changing the waveform values.
+    """
+    if path.suffix.lower() == ".cir":
+        return input_hash.original_windows_deck_sha256(path)
+    return input_hash.actual_file_sha256(path)
 
 
 def checks(meas: dict[str, dict[str, float]]) -> dict[str, bool]:
