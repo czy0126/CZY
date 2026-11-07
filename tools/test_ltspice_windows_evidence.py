@@ -62,7 +62,14 @@ def test_rev_b_original_report_shas_bind_complete_decks_not_new_waveforms():
         assert deck.read_text(encoding="utf-8") == rev.deck(**case), name
         assert report["cases"][name]["deck_sha256"] == (
             h.original_windows_deck_sha256(deck)), name
-        assert report["cases"][name]["log_sha256"] == h.original_windows_deck_sha256(log)
+        transport = h.verify_committed_log_measurements(
+            log, report["cases"][name]["measures"],
+            report["cases"][name]["log_sha256"], rev.base.parse_meas)
+        assert transport["measurements_exactly_match"]
+        assert transport["hardware_qualified"] is False
+        assert transport["fabrication_approved"] is False
+        if not transport["original_log_bytes_verified"]:
+            assert transport["status"] == "MEASUREMENTS_MATCH_ORIGINAL_LOG_BYTES_UNAVAILABLE"
 
 
 def test_rev_b_timing_original_report_hashes_bind_complete_decks_and_logs():
