@@ -10,12 +10,20 @@ board they claim to describe.
 
 | board | status | files | copper | flags | rebuild |
 |---|---|---|---|---|---|
+| `bias_cut_eco` | SCHEMATIC_ONLY | 0 | - | - | `python tools/make_bias_cut_eco.py --check` |
 | `sr_fault_validation` | FAB_PACKAGE_PRESENT | 13 | 1 oz | built=False, approved=False | `python tools/make_sr_fault_board_pcb.py --fab` |
 | `fast_oc` | FAB_PACKAGE_PRESENT | 13 | 1 oz | built=False, approved=False | `python tools/make_fast_oc_pcb.py --fab` |
 | `d0_protection` | SCHEMATIC_ONLY | 0 | - | - | `python tools/make_d0_protection_board.py --check` |
 | `control_validation` | SCHEMATIC_ONLY | 0 | - | - | `python tools/make_control_board.py --check` |
 
 ## What each board is
+
+### `bias_cut_eco` -- SR bias-cut ECO with external SET/reset interlock
+
+Native schematic and behavioural simulation only. PMOS selection, startup, gate propagation and reverse-voltage sweep remain unqualified.
+
+Not fabricable today:
+- no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper
 
 ### `sr_fault_validation` -- Single-pair UCC24624 SR fault-shutdown validation board
 
@@ -50,6 +58,7 @@ Not fabricable today:
 ## Rebuilding a package
 
 ```
+python tools/make_bias_cut_eco.py --check
 python tools/make_sr_fault_board_pcb.py --fab
 python tools/make_fast_oc_pcb.py --fab
 python tools/make_d0_protection_board.py --check

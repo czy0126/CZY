@@ -4,4 +4,4 @@ H1,100us fault with continued VD stimulus; pre-started REG and exercised VGS; re
 H2,10ms hold only after H1 evidence reviewed,15,0.030,3.3,10000,0,false,,,,,,,,,,,,,,,,
 H3,100ms conditional hold; not automatically approved,15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
 H4,characterization only: record actual VDD/REG/current; CC or VDD sag cannot establish regulated-15V foldback; no safe hold duration derived,15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
-H5,"PLANNED bias-cut ECO, not implemented: capture VDD/REG/VGS and backfeed/re-arm after an actual circuit exists",15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,
+H5,"Native bias-cut ECO exists, NOT_QUALIFIED: reverse-threshold mismatch and R57 sustained dissipation unresolved; H5 requires revised circuit and real VDD/REG/VGS capture",15,0.030,3.3,100000,0,false,,,,,,,,,,,,,,,,

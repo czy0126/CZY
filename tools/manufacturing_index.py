@@ -1,8 +1,8 @@
 """One directory that says what each bench board is and how to rebuild it.
 
-Four boards live under ``pcb/``.  Two of them have a fabrication package (a
+Five declared bench boards live under ``pcb/``. Two have a fabrication package (a
 routed board plus gerbers, drill, position file, assembly drawing and a
-manifest); the other two are schematics with ERC evidence and no copper.  A
+manifest); the other three are schematics with ERC evidence and no copper. A
 reader who has the repository but not the history cannot tell which is which
 from the directory listing -- ``fab/manifest.json`` is the only file that says
 so, and its absence has to mean "not made yet" rather than "look harder".
@@ -38,6 +38,16 @@ README = OUT / "README.md"
 # directory that appears without an entry should not silently acquire the
 # standing of "known board", and a board that disappears must fail the check.
 BOARDS: list[dict] = [
+    {
+        "id": "bias_cut_eco",
+        "title": "SR bias-cut ECO with external SET/reset interlock",
+        "what": "Native schematic and behavioural simulation only. PMOS selection, "
+                "startup, gate propagation and reverse-voltage sweep remain unqualified.",
+        "generator": "python tools/make_bias_cut_eco.py --check",
+        "schematic": "pcb/bias_cut_eco/bias_cut_eco.kicad_sch",
+        "board": None,
+        "fab": None,
+    },
     {
         "id": "sr_fault_validation",
         "title": "Single-pair UCC24624 SR fault-shutdown validation board",
