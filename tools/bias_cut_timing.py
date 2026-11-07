@@ -451,12 +451,12 @@ def parse_meas(text: str) -> dict[str, float]:
 
 
 def sha256(path: Path) -> str:
-    """Rev-B Windows .cir evidence is CRLF; .log is strictly byte-hashed.
+    """Rev-B Windows .cir and .log evidence was recorded as CRLF.
 
     Preserves the actual recorded simulation SHA after Git LF checkout,
     without inventing a fresh simulation or changing the waveform values.
     """
-    if path.suffix.lower() == ".cir":
+    if path.suffix.lower() in {".cir", ".log"}:
         return input_hash.original_windows_deck_sha256(path)
     return input_hash.actual_file_sha256(path)
 
