@@ -36,7 +36,7 @@ FLT(14) optional open-drain monitor; IMON(13), PGOOD(16) unconnected
 PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 ~~~
 
-**关键极性**：依据 TI Figure 8-7，外部 Q1 源极接 VIN_SYS、漏极接 U1.IN，G 由 B_GATE 驱动。Q2 的源极接 VIN_SYS、漏极接 B_GATE、栅极接 DRV。Q1 DQG8 实体脚 1–3=S、4=G、5–8=D；Q2 BSS138I SOT23 1=G、2=S、3=D。TI TPS26630RGE 的 24 脚与 TPS26631PWP 20 脚**不能混用**；曝光焊盘 EP 的封装和热过孔尚需原生 CAD 校验。
+**关键极性**：依据 TI Figure 8-7，外部 Q1 源极接 VIN_SYS、漏极接 U1.IN，G 由 B_GATE 驱动。Q2 的源极接 VIN_SYS、漏极接 B_GATE、栅极接 DRV。Q1 DQG8 实体脚 1–3=S、4=G、5–8=D；Q2 BSS138-7-F SOT23 1=G、2=S、3=D。TI TPS26630RGE 的 24 脚与 TPS26631PWP 20 脚**不能混用**；曝光焊盘 EP 的封装和热过孔尚需原生 CAD 校验。
 
 ## 3. 参数初稿与公式
 
@@ -64,7 +64,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 | CIN | **C3216X7R2A105K160AA** | TDK 1µF/100V X7R 1206，TI EVM 物料表 |
 | CdVdT | **C0603C223K4RACTU** | KEMET 22nF/16V X7R，TI EVM 物料表；直流偏压有效容值待查 |
 | RILIM | **CRCW060330K0FKEA** | Vishay Dale 30kΩ±1% 0603，可采购料号，但本板热/焊盘尚未验证 |
-| 909k、35.7k、64.9k、SHDN上拉接口及下拉 | **TO_SELECT** | 电阻目标值已明确，须逐项回填准确型号和原厂数据手册 |
+| 909k、35.7k、64.9k、SHDN串联及下拉 | **已核实准确料号** | Rtop CRCW0603909KFKEA、Rmid CRCW060335K7FKEA、Rbot CRCW060364K9FKEA、SHDN R_EN_SER CRCW06031K00FKEA、SHDN R_EN_PD CRCW0603100KFKEA，均 Vishay Dale 0603 1%；仍需统一原生 PCB 焊盘和厂商公差验证 |
 | C_OUT 银行、反灌受限放电器件 | **TO_SELECT / EXISTING** | 不自动当作一颗 11.1µF 电容或一个已经验证的放电回路 |
 
 **优先购真实厂商评估板**：TI [TPS26630-33EVM](https://www.ti.com/tool/TPS26630-33EVM)，说明书 [SLVUBI8A](https://www.ti.com/lit/ug/slvubi8a/slvubi8a.pdf) 含原理图、布局、BOM、测试方法。该 EVM 默认 24 V 工业条件，**在 15 V 使用前必须调整 UVLO/OVP/限流/启动设定**，避免照抄原跳线。
@@ -73,7 +73,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 
 | 工序 | 下一项实际交付 | 验收边界 |
 |---|---|---|
-| A 原生 CAD | 用本包引脚表画 TPS26630 RGE24、CSD19537Q3、BSS138I、分压、CdVdT、ILIM、SHDN，完成原生 ERC/网表/封装检查 | 原生网表脚号与 CSV 一致、ERC 问题解决、曝光焊盘实际映射正确；当前尚未完成 |
+| A 原生 CAD | 用本包引脚表画 TPS26630 RGE24、CSD19537Q3、Diodes BSS138-7-F、分压、CdVdT、ILIM、SHDN，完成原生 ERC/网表/封装检查 | 原生网表脚号与 CSV 一致、ERC 问题解决、曝光焊盘实际映射正确；当前尚未完成 |
 | B 器件模型 | 选用 TI/TINA 或 PSpice 模型，逐个跑 14.25/15/15.75V、16/18V 外灌、输入丢失、故障/复位/5V掉电、15µF容差与温度 | 证明限流、反灌、Vgs和SOA，并记录仿真 hash；当前不冒充已跑 |
 | C 放电拓扑 | 采用 reverse-aware 或单次能量受限放电，不长期让 47Ω承受18V外灌 | 明确 Rdis 脉冲功率/脉宽/重复率与后续 VDD_SR 是否仍被强制抬高；反例先于布板 |
 | D 实物验证 | EVM 或工程样板、同步获取 H1/H5 真实原始示波器数据及偏置电流 | 证明 REG、VGS、VDD 和反馈在真实门极受激励后保持正确；无实测则不通过 |
@@ -83,7 +83,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 1. TI TPS2663x datasheet Rev.G SLVSE94G (2024-06) Figure5-1/Table5-1/Figure8-7/Eq1–3/8–10：https://www.ti.com/lit/ds/symlink/tps2663.pdf
 2. TI TPS26630-33EVM User's Guide Rev.A SLVUBI8A (2019-03) Figure11 / Table12：https://www.ti.com/lit/ug/slvubi8a/slvubi8a.pdf
 3. TI CSD19537Q3 100V MOSFET Rev.B SLPS549B Figure3-1：https://www.ti.com/lit/ds/symlink/csd19537q3.pdf
-4. Diodes Inc BSS138 Rev.25-2 (2024-06), actual pins, Ciss MAX 50pF at 10V/25C, guaranteed by design：https://www.infineon.com/assets/row/public/documents/24/49/infineon-bss138i-datasheet-en.pdf
+4. Diodes Inc BSS138 Rev.25-2 (2024-06), pin 1 Gate / 2 Source / 3 Drain; Ciss MAX 50pF at VDS=10V, 25C, 1MHz, guaranteed by design but not production tested：https://www.diodes.com/datasheet/download/BSS138.pdf
 5. 对照备选 TI LM7480（反灌阻断，但不等于 eFuse 有限流）：https://www.ti.com/product/LM7480
 
 **任何源文件中出现的“能画图/料号已知”都不等于 SOA、热、磁件或 PCB 制造已批准。**
