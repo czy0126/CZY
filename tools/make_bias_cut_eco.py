@@ -709,7 +709,11 @@ S53 FLT_N 0 FAULT_G 0 SWLOG
 B_FLTH FLT_H 0 V=if(V(FLT_N)<2.5,5,0)
 B_SET SET_LATCH 0 V=if(V(FLT_H)>2.5 | V(POR)>2.5,5,0)
 B_RST RST_EFF 0 V=if(V(RESET_CMD)>2.5 & V(FLT_N)>2.5,5,0)
-C_L LATCHED 0 1n
+* ic=5: a real CD4013 comes up in an arbitrary state, but POR forces SET
+* within nanoseconds of V5 rising, so "set" is the state the circuit is
+* actually in.  Without it the node starts at 0, ENABLE is briefly high and
+* the switch conducts a 3.3 uF charge pulse that exists only in the model.
+C_L LATCHED 0 1n ic=5
 R_L LATCHED 0 1G
 B_L 0 LATCHED I=if(V(SET_LATCH)>2.5,(5-V(LATCHED))/1k,
 + if(V(RST_EFF)>2.5,(0-V(LATCHED))/1k,0))
@@ -721,6 +725,15 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * Roff=1G: a 2N7002 leaks nA off, so a 1 Meg off-resistance would load the
 * 100k pull-up and read as a permanent fault in the mock.
 .model SWEN SW(Ron=2 Roff=1G Vt=2.5 Vh=0.2)
+* 60 pF lumped Ciss on the gate.  This is a MODEL element, not a BOM part: the
+* switch model has no gate capacitance of its own, and without this the gate
+* node is instantaneous, so the turn-off delay could only be done on paper.
+* ic=15 (= VDD_IN): under uic every node starts at 0 V, so without it the gate
+* ramps up from 0 through R50 over ~14 us and both switches conduct during that
+* ramp - a charge pulse that exists only in the model and hides the real
+* startup state (it read as 14.97 V on VDD_SR and made the first TARG crossing
+* land at 12.6 us instead of at the fault).  Same reasoning as C_L below.
+CG BC_GATE 0 60p ic=15
 * Q55 source follower plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
@@ -742,7 +755,7 @@ C54 VDD_SR 0 3.3u
 R62 VDD_SR 0 1k
 .tran 0 30m 0 0.1u uic
 .save V(VDD_IN) V(VDD_SR) V(VMID) V(BC_GATE) V(ENABLE) V(ENABLE_N)
-+ V(LATCHED) V(SET_LATCH) V(RST_EFF) V(FLT_N) V(POR) I(V1)
++ V(LATCHED) V(SET_LATCH) V(RST_EFF) V(FLT_N) V(POR) V(FAULT_IN) I(V1)
 * 8 ms   POR has decayed (tau = 100k * 100nF = 10 ms, threshold ~6.9 ms):
 *        the latch is still set from power-up and the bias is off.
 * 13 ms  the 10 ms reset pulse has cleared the latch; the bias is on.
@@ -767,6 +780,27 @@ R62 VDD_SR 0 1k
 * the gate network was wrong: BC_GATE must sit at VDD_IN and VMID must not.
 .meas TRAN gate_off FIND V(BC_GATE) AT=8m
 .meas TRAN vmid_off FIND V(VMID) AT=8m
+* Power-up invariant: the switch must never conduct before the first reset.
+* This is the check that caught the gate node starting at 0 V under uic; it is
+* what `vdd_sr_startup_max` guards now that both model state elements are
+* initialised (C_L to "set", CG to VDD_IN).
+.meas TRAN vdd_sr_startup_max MAX V(VDD_SR) FROM 0 TO 1m
+* Two delays measured from the fault edge instead of computed on paper.
+* The trigger is FAULT_IN, which rises exactly once.  Do NOT trigger on ENABLE:
+* with the latch starting at 0 (no ic= on C_L) ENABLE is briefly high at t=0
+* and its first fall is at 0.7 us, not at the fault - both delays then time the
+* power-up transient and still land inside any sane threshold.  That is how the
+* first version of these two measurements passed; the TO columns in the log are
+* what exposed it.  Check them, not just the number.
+* TARG is searched over the WHOLE run, not from the trigger onwards.  With the
+* gate initialised at VDD_IN it is already above 13.5 V at t=0, and LTspice
+* counts that initial point as the first crossing (TO came back as 1.8e-18, so
+* the delay read -15 ms).  RISE=2 is therefore the fault edge; the FROM/TO
+* columns are what prove which crossing was taken - always read them.
+.meas TRAN t_bias_cut TRIG V(FAULT_IN) VAL=2.5 RISE=1
++ TARG V(BC_GATE) VAL=13.5 RISE=2
+.meas TRAN t_discharge TRIG V(FAULT_IN) VAL=2.5 RISE=1
++ TARG V(VDD_SR) VAL=3.63 FALL=1
 .end
 """
 
@@ -789,6 +823,10 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * Roff=1G: a 2N7002 leaks nA off, so a 1 Meg off-resistance would load the
 * 100k pull-up and read as a permanent fault in the mock.
 .model SWEN SW(Ron=2 Roff=1G Vt=2.5 Vh=0.2)
+* 60 pF lumped Ciss on the gate.  This is a MODEL element, not a BOM part.
+* ic=15 = VDD_IN, the state R50 holds it in: under uic the node would
+* otherwise ramp up from 0 V through R50 over ~14 us (see the sequence deck).
+CG BC_GATE 0 60p ic=15
 * Q55 source follower plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.
@@ -836,11 +874,20 @@ def sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+# Two printed forms: `.meas ... STAT(...)` gives ``name: STAT(...)=value``, while
+# `.meas TRIG/TARG` gives ``name=value FROM a TO b`` with no colon and no unit.
+# The second form is what a two-edge delay looks like, and dropping it silently
+# loses exactly the measurements that have the least paper trail.
+_MEAS_STAT = re.compile(r"^([a-z_][a-z0-9_]*):.*?=\s*(-?[\d.]+(?:[eE][-+]?\d+)?)")
+_MEAS_DELAY = re.compile(
+    r"^([a-z_][a-z0-9_]*)=(-?[\d.]+(?:[eE][-+]?\d+)?)\s+FROM\s+\S+\s+TO\s+\S+")
+
+
 def parse_meas(text: str) -> dict[str, float]:
-    """Pull ``name: STAT(...)=value`` lines out of an LTspice .log tail."""
+    """Pull measurement values out of an LTspice .log tail."""
     out: dict[str, float] = {}
     for line in text.splitlines():
-        m = re.match(r"^([a-z_][a-z0-9_]*):.*?=\s*(-?[\d.]+(?:[eE][-+]?\d+)?)", line)
+        m = _MEAS_STAT.match(line) or _MEAS_DELAY.match(line)
         if m:
             out[m.group(1)] = float(m.group(2))
     return out
@@ -861,6 +908,11 @@ def sim_checks(seq: dict[str, float], rev: dict[str, float]) -> list[dict]:
         check("default_off_v", need(seq, "vdd_sr_default_off"),
               need(seq, "vdd_sr_default_off") <= 0.05,
               "power-up with POR set must leave the SR bias off"),
+        check("startup_max_v", need(seq, "vdd_sr_startup_max"),
+              need(seq, "vdd_sr_startup_max") <= 0.5,
+              "the switch must never conduct before the first explicit reset; "
+              "a non-zero value here means a model state element starts in the "
+              "wrong state, not that the circuit misbehaves"),
         check("enabled_v", need(seq, "vdd_sr_enabled"),
               need(seq, "vdd_sr_enabled") >= 14.9,
               "an explicit reset with PERMIT must pass the full 15 V rail"),
@@ -888,6 +940,15 @@ def sim_checks(seq: dict[str, float], rev: dict[str, float]) -> list[dict]:
         check("gate_off_v", need(seq, "gate_off"),
               need(seq, "gate_off") >= 14.5,
               "R50 must hold the gate at VDD_IN with the switch off"),
+        check("bias_cut_time_s", need(seq, "t_bias_cut"),
+              5e-6 <= need(seq, "t_bias_cut") <= 40e-6,
+              "the gate must reach 15 V - |Vth| within tens of microseconds; "
+              "R50 * 60 pF says ~14 us, and anything past 40 us means the gate "
+              "node is being held by something else"),
+        check("discharge_time_s", need(seq, "t_discharge"),
+              100e-6 <= need(seq, "t_discharge") <= 500e-6,
+              "VDD_SR must reach the 3.63 V UCC24624 UVLO in a few hundred "
+              "microseconds; 47 ohm * 3.3 uF says ~220 us"),
         check("reverse_current_a", abs(need(rev, "i_vdd_in_min")),
               abs(need(rev, "i_vdd_in_min")) <= 100e-6,
               "back-fed VDD_SR=18 V must not conduct through the switch; "

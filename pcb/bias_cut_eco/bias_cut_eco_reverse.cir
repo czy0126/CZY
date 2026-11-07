@@ -14,6 +14,10 @@ S52 BC_GATE 0 ENABLE 0 SWEN
 * Roff=1G: a 2N7002 leaks nA off, so a 1 Meg off-resistance would load the
 * 100k pull-up and read as a permanent fault in the mock.
 .model SWEN SW(Ron=2 Roff=1G Vt=2.5 Vh=0.2)
+* 60 pF lumped Ciss on the gate.  This is a MODEL element, not a BOM part.
+* ic=15 = VDD_IN, the state R50 holds it in: under uic the node would
+* otherwise ramp up from 0 V through R50 over ~14 us (see the sequence deck).
+CG BC_GATE 0 60p ic=15
 * Q55 source follower plus D50 in series with its drain.  The channel is off
 * while VDD_SR <= VDD_IN (Vgs = 0); D50 blocks the follower's body diode, and
 * the channel+D50 lift the gate only when VDD_SR is back-fed above VDD_IN.

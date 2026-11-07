@@ -235,7 +235,8 @@ def test_recorded_run_passes_every_check():
         c for c in payload["checks"] if not c["ok"]]
     assert payload["evidence_level"] == "BEHAVIOURAL_SIMULATION_NOT_HARDWARE"
     names = {c["name"] for c in payload["checks"]}
-    assert {"default_off_v", "after_fault_v", "held_off_v", "reverse_current_a"} <= names
+    assert {"default_off_v", "startup_max_v", "after_fault_v", "held_off_v",
+            "reverse_current_a", "bias_cut_time_s", "discharge_time_s"} <= names
 
 
 def test_recorded_run_belongs_to_the_current_decks():
@@ -266,10 +267,17 @@ def test_sequence_deck_measures_the_required_points():
     text = eco.sequence_deck()
     for name in ("vdd_sr_default_off", "vdd_sr_enabled", "vdd_sr_after_fault",
                  "vdd_sr_held_off", "vdd_sr_recovered", "latched_after_fault",
-                 "enable_after_fault"):
+                 "enable_after_fault", "vdd_sr_startup_max", "t_bias_cut",
+                 "t_discharge"):
         assert name in text
     assert ".tran" in text
     assert "B_L 0 LATCHED" in text  # the latch is behavioural, not a device model
+    # The model has no gate capacitance of its own; the timing is only real
+    # because this lumped element is there.  Both uic state elements must carry
+    # their steady-state initial value, or the deck invents a power-up pulse:
+    # CG at VDD_IN (gate held by R50) and C_L at 5 V (POR has set the latch).
+    assert "CG BC_GATE 0 60p ic=15" in text
+    assert "C_L LATCHED 0 1n ic=5" in text
 
 
 def test_reverse_deck_forces_vdd_sr_and_measures_vdd_in_current():
@@ -277,6 +285,25 @@ def test_reverse_deck_forces_vdd_sr_and_measures_vdd_in_current():
     assert "MIN I(V1)" in text
     assert "VREV_SRC 0 18" in text
     assert "SREV" in text
+
+
+def test_log_parser_reads_both_printed_measurement_forms():
+    # `.meas STAT(...)` prints "name: STAT(x)=value"; `.meas TRIG/TARG` prints
+    # "name=value FROM a TO b" with no colon.  The second form was silently
+    # dropped once, and the two delays looked like they had never been measured.
+    text = (
+        "vdd_sr_enabled: MIN(V(VDD_SR) )=14.9984836717 FROM 0.012 TO 0.014\n"
+        "t_bias_cut=1.33573975912e-05 FROM 0.0150005 TO 0.0150138573976\n"
+        "t_discharge=-0.000232712698501 FROM 0.0150005 TO 0.0147672873\n"
+        "Total elapsed time: 7.682 seconds.\n"
+        "tnom = 27\n"
+    )
+    got = eco.parse_meas(text)
+    assert got["vdd_sr_enabled"] == pytest.approx(14.9984836717)
+    assert got["t_bias_cut"] == pytest.approx(1.33573975912e-05)
+    assert got["t_discharge"] == pytest.approx(-0.000232712698501)
+    # Header lines are not measurements, even when they look like assignments.
+    assert "tnom" not in got
 
 
 # ---------------------------------------------------------------- netlist

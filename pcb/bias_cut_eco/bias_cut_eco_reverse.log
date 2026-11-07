@@ -1,6 +1,6 @@
 LTspice 26.0.2 for Windows
 Circuit: C:\work\bias_cut_eco_20261107\bias_cut_eco_reverse.cir
-Start Time: Sat Nov  7 10:45:53 2026
+Start Time: Sat Nov  7 11:28:04 2026
 solver = Normal
 Maximum thread count: 64
 tnom = 27
@@ -20,11 +20,11 @@ Changing Tseed to 1e-07
 Changing Tseed to 1e-17
 Changing Tseed to 1e-06
 Changing Tseed to 1e-18
-Total elapsed time: 0.468 seconds.
+Total elapsed time: 0.472 seconds.
 
 Files loaded:
 C:\work\bias_cut_eco_20261107\bias_cut_eco_reverse.cir
 
 i_vdd_in_min: MIN(I(V1) )=2.99747483378e-05 FROM 0.00045 TO 0.00095
 vdd_sr_reverse: V(VDD_SR) =17.9615267096 at 0.0007
-vmid_reverse: V(VMID) =15.4512226946 at 0.0007
+vmid_reverse: V(VMID) =15.4512226941 at 0.0007
