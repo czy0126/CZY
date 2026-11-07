@@ -89,7 +89,7 @@ def design_inputs() -> dict:
     if not math.isclose(schematic_c, model_c, rel_tol=1e-5):
         raise ValueError("C54 schematic equivalent differs from both deck models")
 
-    nominal_v = positive_number(seq, r"^\.param\s+VDD=(\d+(?:\.\d+)?)\s*$",
+    nominal_v = positive_number(seq, r"^\.param\s+VDD=(\d+(?:\.\d+)?)(?:\s|$)",
                                 "15V supply")
     reverse_v = positive_number(
         rev, r"^VREV\s+VREV_SRC\s+0\s+(\d+(?:\.\d+)?)\s*$",
