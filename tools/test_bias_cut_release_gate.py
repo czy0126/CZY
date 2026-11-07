@@ -85,3 +85,27 @@ def test_bad_or_nonphysical_requirements_never_produce_release_numbers(inputs):
 def test_release_required_command_refuses_current_unqualified_circuit(monkeypatch):
     monkeypatch.setattr("sys.argv", ["bias_cut_release_gate.py", "--require-release"])
     assert gate.main() == 2
+
+
+def test_release_required_never_passes_with_unsigned_hardware_even_if_math_clean(
+    monkeypatch,
+):
+    """An absent signoff must not turn into authorization when blockers reach zero."""
+    monkeypatch.setattr(
+        gate, "assess",
+        lambda: {"status": "HUMAN_SIGNOFF_REQUIRED", "fab_release": False,
+                 "hardware_qualified": False, "blocks": []},
+    )
+    monkeypatch.setattr("sys.argv", ["bias_cut_release_gate.py", "--require-release"])
+    assert gate.main() == 2
+
+
+def test_report_checks_current_simulation_and_mismatch_decks():
+    """An old RUN status or old hypothetical mismatch hash must not be accepted."""
+    import make_bias_cut_eco as eco
+    import bias_cut_reverse_corner as corner
+    report = gate.assess()
+    assert eco.sim_run()["status"] == "RUN"
+    assert gate.eco.sha256(corner.deck()) == __import__("json").loads(
+        gate.MISMATCH.read_text(encoding="utf-8"))["deck_sha256"]
+    assert not any("stale" in reason for reason in report["blocks"])
