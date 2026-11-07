@@ -1,0 +1,37 @@
+name: tps26630-bias-concept-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'hardware/sr_bias_efuse_proposal/**'
+      - 'tools/tps26630_bias_design.py'
+      - 'tools/test_tps26630_bias_design.py'
+      - '.github/workflows/tps26630-bias-concept-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  oem-pinmap-and-design-arithmetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run lightweight source-backed checks
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tools/test_tps26630_bias_design.py
+          python tools/tps26630_bias_design.py --check > /tmp/tps26630_concept.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/tps26630_concept.json').read_text())
+          assert r['source_tables']['pins'] == 36
+          assert r['readiness']['fab_release'] is False
+          assert r['nominal']['ilim_nominal_a'] == 0.6
+          assert r['nominal']['uvlo_rising_v'] < 14.25
+          assert r['nominal']['ovp_rising_v'] > 15.75
+          PY
+
+# This is a manufacturer-pinmap and arithmetic concept check only.
+# It is not schematic ERC, LTspice OEM device simulation, H1/H5, or PCB fab release.
