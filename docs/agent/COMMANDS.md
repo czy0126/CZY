@@ -74,7 +74,9 @@ python tools/assembly_drawing.py --check          # 装配/DNP 图（A4 1:1）�
 python tools/make_fast_oc_eco.py --check          # TLV3501 快速过流 ECO 模块：重生成 + 网表 + ERC + 延迟/门限算术
 python tools/make_fast_oc_pcb.py --check          # 该模块的布线板：重生成 + kicad-cli DRC（需 KiCad 10.0，缺了 SystemExit）
 python tools/make_fast_oc_pcb.py --fab            # 同上 + 导出 pcb/fast_oc/fab/（13 个散列文件、9 层、assembly.svg、manifest）
-python tools/manufacturing_index.py --check       # 四块实验板的制造目录 pcb/manufacturing/{index.json,README.md}（--write 重生成）
+python tools/make_bias_cut_eco.py --check         # 偏置关断 ECO：重生成原理图/网表/BOM/deck + ERC（需 KiCad 10.0）
+python tools/bias_cut_reverse_corner.py           # 假设阈值失配反例 deck（不是器件角落）；--record 写哈希与判据 JSON
+python tools/manufacturing_index.py --check       # 五块实验板的制造目录 pcb/manufacturing/{index.json,README.md}（--write 重生成）
 python tools/remaining_dependencies.py --check    # 主板剩余依赖表 hardware/dcx_main/remaining_dependencies.{json,md}（--write 重生成）
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
 python tools/magnetics_manufacturing_input.py --write  # 加工输入页：每件冻结一个候选 + 首件判据 + 空白回填

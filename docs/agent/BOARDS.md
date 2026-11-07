@@ -407,21 +407,29 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 **原生电路 + 行为级仿真，不是硬件。** `evidence_level = BEHAVIOURAL_SIMULATION_NOT_HARDWARE`，
 `hardware_built` / `hardware_qualified` / `thermal_qualified` 三个旗标恒为 `false`，H5 仍 `NOT_READY`。
 完整叙述（含两次失败原型的实测数字、逐脚网络表、BOM、时序）在
-[`../../docs/2026-11-07_偏置关断ECO.md`](../../docs/2026-11-07_偏置关断ECO.md)。
+[`../../docs/2026-11-07_偏置关断ECO.md`](../../docs/2026-11-07_偏置关断ECO.md)；
+**复审更正后的数字以 [`../../docs/2026-11-07_偏置ECO复审修复与下一交付.md`](../../docs/2026-11-07_偏置ECO复审修复与下一交付.md) 为准**
+（那份旧文里的 0.233 ms 放电与"Ciss ≤ 100 pF / 18 V 单点通过"已作废）。
 
 - **拓扑骨架**：`VDD_IN(Q50.S) — VMID(Q50.D=Q51.D) — VDD_SR(Q51.S)` 共漏背靠背，体二极管互相遮挡；
   `R50 100k` 上拉栅极到 `VDD_IN` = 默认关断；`Q52` 只在 5 V 逻辑说 `ENABLE` 时下拉。
+  **`SET` 经 U50C 变成 `SET_N`，同时屏蔽 `RST_EFF` 与 `ENABLE`**（CD4013 本身不是 SET 优先，
+  POR 与复位重叠时 `Qbar` 可为高）；这是静态互锁，门传播、慢上电、掉 5 V 仍未验证。
 - **栅极跟随是这套电路唯一的非显然处**：`VDD_SR` 被灌到 18 V 时栅极必须跟着更高那一轨，否则 Q51
-  自己的 `Vgs = −3 V` 会导通。可行解是 **Q55 源极跟随（栅=`VDD_IN`、源=`VDD_SR`、漏=`BC_FB`）
+  自己的 `Vgs = −3 V` 会导通。可行解是 **Q55 栅极跟随 P-MOS（栅=`VDD_IN`、源=`VDD_SR`、漏=`BC_FB`）
   + D50 串在它漏极与栅极之间**。直接肖特基、以及只有跟随器没有 D50，两种都实测失败，
   数字在 ECO 文档 §2.2，**别再重新推导**。
-- **集成不许动快速路径**：模块内不含 `Q41`/`R44`，`FAULT_G` 直连既有撬棒；`C54`/`R62` 是台架假负载，
+- **集成不许动快速路径**：模块内不含 `Q41`/`R44`，`FAULT_G` 直连既有撬棒；`C54`（11.1 µF =
+  SR 板 `C1+C2+C3` 等效）与 `R62`（1206、最低 0.5 W，15 V 下 0.225 W）是台架假负载，
   集成时删掉，真实负载是 UCC24624 的 VDD 电容。`JP1` 只当服务断开，**不当保护**。
+- **反灌不是只看漏电**：18 V 反灌时 `Q54` 一直导通，`R57`（47 Ω / 0.25 W）持续耗散约 **6.3 W**；
+  30 µA 的输入回灌读数不代表模块安全，反向 deck 通过**不是热通过**。
 - **两个输入默认方向相反，不是笔误**：`FAULT_G` 由 R61 下拉 = 故障源断开读成"无故障"（fail-open）；
   `ENABLE` 由 R52 下拉 = 控制域断开读成"偏置断开"（fail-safe）。既有失败安全策略没有改。
 - **P-MOS（Q50/Q51/Q55）一律 `TO_SELECT`**：仓库没有 P 沟道数据手册。三条硬约束——
-  `Vds ≥ 30 V`、`Id 脉冲 ≥ 3 A`（无软启动，3.3 µF 上电经开关充电）、**`\|Vth\| ≤ 2.5 V` 逻辑电平**
-  （Q55 要在 3 V 反向余量下动作）；`Ciss ≤ 100 pF` 决定关断时间（deck 里 60 pF 时实测 13.36 µs），选定料号后重算。
+  `Vds ≥ 30 V`、`Id 脉冲 ≥ 3 A`（无软启动，11.1 µF 上电经开关充电）、**`\|Vth\| ≤ 2.5 V` 逻辑电平**
+  （Q55 要在 3 V 反向余量下动作）。**没有 `Ciss ≤ 100 pF` 采购上限**：deck 里的 60 pF 是未取证的
+  集总占位，选定料号后要把两只主 P-MOS 的 Qg/Ciss、Q55 与寄生一起算，再重跑关断与 Q54 重叠。
 - **deck 与运行靠 sha256 绑定**：`sim_run.json` 存两份 deck 的哈希，改了 deck 不重跑 ⇒
   `sim_run()` 返回 `STALE`，`report.json` 的 `simulation_status` 跟着变；`--record-run` 重记。
 
@@ -431,9 +439,9 @@ router 说没布通却 0 未连接 ⇒ SystemExit（网表根本没进板子）�
 不做任何设计判断，也**不能**把任何一项变绿。48 小时路线第 5 项明确"不再新增综合审计框架"，
 所以两者都只读上游、只在自己过期时失败。
 
-- **`pcb/manufacturing/{index.json,README.md}`**（`tools/manufacturing_index.py`）：四块实验板的
-  固定表（`sr_fault_validation` / `fast_oc` 有完整制造包，`d0_protection` / `control_validation`
-  只有原理图）。**表是写死的，不靠遍历 `pcb/`**：新出现的目录不该自动获得"已知板"的地位，
+- **`pcb/manufacturing/{index.json,README.md}`**（`tools/manufacturing_index.py`）：五块实验板的
+  固定表（`sr_fault_validation` / `fast_oc` 有完整制造包，`bias_cut_eco` / `d0_protection` /
+  `control_validation` 只有原理图。）**表是写死的，不靠遍历 `pcb/`**：新出现的目录不该自动获得"已知板"的地位，
   消失的板必须让 `--check` 变红。状态四选一：`SCHEMATIC_ONLY` / `NO_FAB_PACKAGE` /
   `FAB_PACKAGE_STALE` / `FAB_PACKAGE_PRESENT`，过期由三条判据得出：manifest 的 `board_sha256`
   与提交板不符、manifest 文件清单与实际目录不符、`plotted_layers != layers`。
