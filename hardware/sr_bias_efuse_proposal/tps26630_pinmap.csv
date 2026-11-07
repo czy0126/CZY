@@ -1,0 +1,37 @@
+ref,pad,net,function,source,release
+U1,1,EFUSE_IN,input power,TPS2663 RevG Fig 5-1 Table5-1,CONCEPT
+U1,2,EFUSE_IN,input power,TPS2663 RevG Fig 5-1 Table5-1,CONCEPT
+U1,3,BGATE,blocking-FET gate driver,TPS2663 RevG Fig 5-1 Table5-1,CONCEPT
+U1,4,DRV,fast pulldown driver for Q2 gate,TPS2663 RevG Fig 5-1 Table5-1,CONCEPT
+U1,5,VIN_SYS,external-blocking FET source and IC supply,TPS2663 RevG Fig 8-7,CONCEPT
+U1,6,UVLO,divider Rtop 909k Rmid 35.7k Rbottom 64.9k,TPS2663 RevG Eq10,CONCEPT
+U1,7,OVP,same divider lower node,TPS2663 RevG Eq9,CONCEPT
+U1,8,PGND,system ground,TPS2663 RevG Table5-1,CONCEPT
+U1,9,DVDT,CdVdT 22nF to PGND,TPS2663 RevG Eq2,CONCEPT
+U1,10,ILIM,RILIM 30k to PGND,TPS2663 RevG Eq8,CONCEPT
+U1,11,FLOAT,MODE open for overload latch-off,TPS2663 RevG Table8-1,CONCEPT
+U1,12,SHDN,independent 5V latch ENABLE via 1k and 100k pulldown to PGND,TPS2663 RevG Sec8.3.13,CONCEPT
+U1,13,FLOAT,IMON unused NC,TPS2663 RevG Table5-1,CONCEPT
+U1,14,FLT_OC,FLT optional open-drain monitor 5V pullup,TPS2663 RevG Table5-1,CONCEPT
+U1,15,PGND,PGTH tied low when PGOOD unused,TPS2663 RevG Table5-1,REVIEW
+U1,16,FLOAT,PGOOD unused NC,TPS2663 RevG Table5-1,CONCEPT
+U1,17,VDD_SR,output power,TPS2663 RevG Table5-1,CONCEPT
+U1,18,VDD_SR,output power,TPS2663 RevG Table5-1,CONCEPT
+U1,19,NC,manufacturer no-connect pin,TPS2663 RevG Figure5-1,CONCEPT
+U1,20,NC,manufacturer no-connect pin,TPS2663 RevG Figure5-1,CONCEPT
+U1,21,NC,manufacturer no-connect pin,TPS2663 RevG Figure5-1,CONCEPT
+U1,22,NC,manufacturer no-connect pin,TPS2663 RevG Figure5-1,CONCEPT
+U1,23,NC,manufacturer no-connect pin,TPS2663 RevG Figure5-1,CONCEPT
+U1,24,NC,manufacturer no-connect pin,TPS2663 RevG Figure5-1,CONCEPT
+U1,EP,PGND,exposed pad heat sink and ground verify footprint,TPS2663 RevG Table5-1,REVIEW
+Q1,1,VIN_SYS,source,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,2,VIN_SYS,source,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,3,VIN_SYS,source,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,4,BGATE,gate,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,5,EFUSE_IN,drain,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,6,EFUSE_IN,drain,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,7,EFUSE_IN,drain,TICSD19537Q3 Figure3-1,CONCEPT
+Q1,8,EFUSE_IN,drain,TICSD19537Q3 Figure3-1,CONCEPT
+Q2,1,DRV,gate,Diodes BSS138 Rev25-2 SOT-23 Fig1 p1,CONCEPT
+Q2,2,VIN_SYS,source,Diodes BSS138 Rev25-2 SOT-23 Fig1 p1,CONCEPT
+Q2,3,BGATE,drain,Diodes BSS138 Rev25-2 SOT-23 Fig1 p1,CONCEPT
