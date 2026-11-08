@@ -37,16 +37,15 @@ def test_measured_timestamps_are_times_not_threshold_values():
         assert run['measures']['q41_energy']>=0
 
 
-def test_deck_hash_is_windows_crlf_rebuilt_from_git_lf():
-    # CI checks out with core.autocrlf=false (LF); the run opened CRLF.  The
-    # stored deck hash must be the rebuilt-CRLF hash, not the checkout bytes.
-    # Logs stay unhashed for identity: LTspice writes mixed CRLF/LF, so their
-    # evidence is the parsed measurements checked above.
+def test_deck_hash_is_canonical_lf_not_checkout_bytes():
+    # CI checks out with core.autocrlf=false (LF) while this Windows tree holds
+    # CRLF, so the stored hash must be over the canonical LF text (text_identity),
+    # not the checkout bytes.  Logs stay unhashed for identity: LTspice writes
+    # mixed CRLF/LF, so their evidence is the parsed measurements checked above.
     data=json.loads((b.OUT/'report.json').read_text())
     for name in b.CASES:
-        lf=(b.OUT/f'{name}.cir').read_bytes().replace(b'\r\n',b'\n')
-        assert b'\r' not in lf
-        expected=hashlib.sha256(lf.replace(b'\n',b'\r\n')).hexdigest()
+        canonical=(b.OUT/f'{name}.cir').read_bytes().replace(b'\r\n',b'\n')
+        expected=hashlib.sha256(canonical).hexdigest()
         assert data['cases'][name]['deck_sha256']==expected,name
 
 

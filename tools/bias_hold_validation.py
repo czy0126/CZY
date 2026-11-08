@@ -4,13 +4,13 @@ The constant-capacitance PMOS and regulator current anchors are explicitly
 unqualified at operating bias. Results cannot approve SR commutation or heat.
 """
 import argparse
-import hashlib
 import json
 import math
 import re
 from pathlib import Path
 import bias_cut_revision_b as rev
 import make_bias_cut_eco as base
+from text_identity import sha256_file
 
 OUT = base.ROOT/'pcb/bias_cut_revision_b/hold_validation'
 CASES = {
@@ -24,17 +24,15 @@ CASES = {
 
 
 def digest(path):
-    """Hash the deck as the bytes LTspice opened: Windows CRLF, rebuilt from Git LF.
+    """LF-canonical text hash via text_identity.sha256_file.
 
-    Git stores these decks LF and CI checks them out LF (core.autocrlf=false),
-    while the local run opened a CRLF copy.  Rebuild CRLF before hashing so the
-    recorded hash is checkout-independent and still means "what the solver
-    read"; same rule as tools/ltspice_windows_evidence.py (PR #56).
-    Logs are not hashed this way: LTspice writes mixed CRLF/LF, so log identity
-    is checked through parse_log() instead of a byte hash.
+    Git stores these decks LF and CI checks them out LF, so hashing the CRLF
+    working-tree bytes would make report.json unverifiable after checkout --
+    the trap recorded in docs/agent/TRAPS.md.  Logs are deliberately not
+    text-hashed: LTspice writes mixed CRLF/LF, so their identity is the parsed
+    measurements (parse_log), not a byte hash.
     """
-    raw=Path(path).read_bytes().replace(b'\r\n',b'\n')
-    return hashlib.sha256(raw.replace(b'\n',b'\r\n')).hexdigest()
+    return sha256_file(Path(path))
 
 
 def parse_log(text):
