@@ -1,0 +1,40 @@
+name: bias-cut-release-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'tools/bias_cut_release_gate.py'
+      - 'tools/test_bias_cut_release_gate.py'
+      - 'pcb/bias_cut_eco/OEM_POWER_PATH_CANDIDATES.md'
+      - 'tools/make_bias_cut_eco.py'
+      - 'pcb/bias_cut_eco/sim_run.json'
+      - 'pcb/bias_cut_eco/bias_cut_reverse_mismatch.json'
+      - 'pcb/sr_fault_validation/h1_evidence_status.json'
+      - '.github/workflows/bias-cut-release-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  safety-math-and-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'pytest>=8,<10'
+      - name: Assert reverse discharge release remains blocked
+        run: |
+          python -m pytest -q tools/test_bias_cut_release_gate.py
+          python tools/bias_cut_release_gate.py > /tmp/bias_cut_release.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/bias_cut_release.json').read_text())
+          assert d['status']=='BLOCKED_NOT_FOR_FAB'
+          assert d['fab_release'] is False
+          assert d['envelope']['incompatible_single_resistor_goals'] is True
+          assert d['simulator_checks_pass'] is True
+          PY
+
+# Passing this workflow means the unsafe corner is detected and blocked,
+# NOT that the bias-cut ECO is qualified, built, or fit to manufacture.
