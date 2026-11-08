@@ -35,3 +35,15 @@ def test_power_gate_does_not_authorize_manufacture():
     assert 'NOT_FOR_FAB' in source
     assert '(property "Footprint" ""' in source
     assert 'U1 symbol EP model pin 25 is a conceptual pad alias' in source
+
+def test_custom_project_library_is_not_missing_in_native_erc():
+    folder = SCH.parent
+    table = (folder / "sym-lib-table").read_text(encoding="utf-8")
+    library = (folder / "SR_Bias.kicad_sym").read_text(encoding="utf-8")
+    assert '(name "SR_Bias")' in table
+    assert "SR_Bias.kicad_sym" in table
+    assert library.startswith("(kicad_symbol_lib")
+    assert library.count('(symbol "BSS138"') == 1
+    assert library.count('(symbol "CSD19537Q3"') == 1
+    assert library.count('(symbol "TPS26630_RGE24"') == 1
+    assert "NOT_FOR_FAB" in table
