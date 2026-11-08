@@ -33,6 +33,20 @@ REQUIRED = (
 NUMBER = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 
 
+def read_ltspice_log(path: Path) -> str:
+    """LTspice 24 writes UTF-16 LE logs in some cases and ASCII in others.
+
+    No errors='replace': a decoded file with embedded NULs is not a valid
+    measurement source; the detected encoding is part of exact evidence.
+    """
+    raw = path.read_bytes()
+    if raw.startswith((b"\\xff\\xfe", b"\\xfe\\xff")):
+        return raw.decode("utf-16")
+    if b"\\x00" in raw[:128]:
+        return raw.decode("utf-16-le")
+    return raw.decode("utf-8")
+
+
 def measurements(log_text: str) -> dict[str, float]:
     """LTspice STAT logs: name: MAX(...) = value FROM ... TO ..."""
     parsed: dict[str, float] = {}
@@ -46,8 +60,10 @@ def measurements(log_text: str) -> dict[str, float]:
         value = float(m.group(2))
         if key in parsed:
             raise ValueError(f"duplicate LTspice .meas {key}")
-        if not math.isfinite(value):
-            raise ValueError(f"nonfinite LTspice .meas {key}")
+        # LTspice uses +-1e308 sentinels when a waveform was not measured
+        # after a numerical blowup. Python considers 1e308 finite.
+        if not math.isfinite(value) or abs(value) >= 1e100:
+            raise ValueError(f"invalid/sentinel LTspice .meas {key}: {value}")
         parsed[key] = value
     absent = set(REQUIRED) - parsed.keys()
     if absent:
@@ -137,14 +153,16 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
         cmd, cwd=deck.parent, capture_output=True,
         text=True, errors="replace", check=False, timeout=900)
     if completed.returncode != 0:
+        tail = read_ltspice_log(log)[-1600:] if log.is_file() else "(no log)"
         raise RuntimeError(
-            f"LTspice {mode}/{case} failed exit={completed.returncode}: "
-            f"{completed.stderr[-1200:]} {completed.stdout[-1200:]}")
+            f"LTspice {mode}/{case} failed exit={completed.returncode}; "
+            f"real log tail: {tail}; stderr: {completed.stderr[-500:]}")
+
     if not log.is_file() or log.stat().st_mtime_ns < start or not log.stat().st_size:
         raise RuntimeError(f"no fresh LTspice log for {deck.name}")
     if not raw.is_file() or raw.stat().st_mtime_ns < start or not raw.stat().st_size:
         raise RuntimeError(f"no fresh, nonempty LTspice .raw for {deck.name}")
-    m = measurements(log.read_text(encoding="utf-8", errors="replace"))
+    m = measurements(read_ltspice_log(log))
     return {
         "status": "SIMULATION_ONLY",
         "deck": deck.relative_to(poc.ROOT).as_posix(),
@@ -193,20 +211,26 @@ def main() -> int:
         return 2
     mode_list = ("on", "off") if args.mode == "both" else (args.mode,)
     statuses = {}
-    try:
-        for mode in mode_list:
+    failures = {}
+    for mode in mode_list:
+        try:
             statuses[mode] = run_selected(args.case, mode, exe)
-    except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
-        print(f"LTspice evidence incomplete: {exc}", file=sys.stderr)
-        return 2
+        except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
+            failures[mode] = str(exc)
+            print(f"LTspice {args.case}/{mode} invalid: {exc}", file=sys.stderr)
+            # Crucial: SR_ON failure cannot prevent independent SR_OFF run.
+            # Never fabricate the missing modes or override the failure status.
 
     compares = simulated_comparison(
         {mode: evidence["measures"] for mode, evidence in statuses.items()})
     report = {
         "source": poc.manifest(),
         "case": args.case,
-        "status": "MODEL_SIMULATION_ONLY_NOT_FOR_HARDWARE",
+        "status": ("MODEL_SIMULATION_ONLY_NOT_FOR_HARDWARE" if not failures
+                   else "INCOMPLETE_OR_INVALID_SIMULATION"),
         "runs": statuses,
+        "failed_modes": failures,
+        "all_requested_modes_completed": not failures,
         "comparison": compares,
         "model_actual_load_points": {
             mode: measured_load_point(args.case, record["measures"])
@@ -217,8 +241,8 @@ def main() -> int:
     output = poc.OUT / f"poc_{args.case}_comparison_model_only.json"
     output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n",
                       encoding="utf-8")
-    print(f"wrote {output}; no hardware release")
-    return 0
+    print(f"wrote {output}; not a hardware release")
+    return 2 if failures else 0
 
 
 if __name__ == "__main__":
