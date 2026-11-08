@@ -281,3 +281,22 @@ def test_native_mpn_precheck_rejects_good_looking_but_unrecorded_readback(monkey
     check = gate._native_mpn_and_r8_precheck()
     assert check["snapshot_matches_live_capture"] is False
     assert check["passed"] is False
+
+
+def test_empty_coverage_cannot_make_mpn_stopline_appear_green(monkeypatch):
+    # Regression: after native device swaps it is not enough to delete the old
+    # MPNs from the known-facts registry and call the resulting zero errors a pass.
+    report = gate.native_bom.audit().copy()
+    report["manufacturer_target_conflicts"] = 0
+    report["known_mpn_and_target_rows"] = 0
+    report["original_r8_in_bom"] = False
+    report["original_r8_in_pcb"] = False
+    monkeypatch.setattr(gate.native_bom, "audit", lambda: report)
+    monkeypatch.setattr(gate, "_read", lambda path: report
+                        if path == gate.native_bom.OUTPUT
+                        else json.loads(path.read_text(encoding="utf-8")))
+    check = gate._native_mpn_and_r8_precheck()
+    assert check["snapshot_matches_live_capture"] is True
+    assert check["manufacturer_target_conflicts"] == 0
+    assert check["known_mpn_and_target_rows"] == 0
+    assert check["passed"] is False
