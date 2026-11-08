@@ -22,7 +22,7 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install 'pytest>=8,<10'
-          python -m pytest -q tools/test_poc_early_solver_diagnostics.py
+          python -m pytest -q tools/test_poc_early_solver_diagnostics.py tools/test_ltspice_batch_smoke.py
           python tools/poc_early_solver_diagnostics.py --scenario ${{ matrix.scenario }}
       - name: Install authenticated ADI LTspice 26
         shell: pwsh
@@ -44,6 +44,10 @@ jobs:
           $exe = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
           if (-not $exe) { throw "Installed official LTspice not found in Program Files or LOCALAPPDATA" }
           "LTSPICE=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Prove LTspice26 batch can solve trivial 1V circuit before expensive 0.62ms model
+        shell: pwsh
+        run: |
+          python tools/ltspice_batch_smoke.py --ltspice "$env:LTSPICE" --out-dir sim/v3 --timeout-sec 25
       - name: Solve 0.62ms and record actual model response (no hardware claim)
         shell: pwsh
         run: |
@@ -54,6 +58,10 @@ jobs:
         with:
           name: diag-5a-${{ matrix.scenario }}
           path: |
+            sim/v3/_ltspice_batch_smoke.json
+            sim/v3/_ltspice_batch_smoke.cir
+            sim/v3/_ltspice_batch_smoke.log
+            sim/v3/_ltspice_batch_smoke.raw
             sim/v3/_diag_5a_${{ matrix.scenario }}.cir
             sim/v3/_diag_5a_${{ matrix.scenario }}.log
             sim/v3/_diag_5a_${{ matrix.scenario }}.raw
