@@ -191,7 +191,21 @@ def _native_mpn_and_r8_precheck() -> dict:
     conflicts = actual.get("manufacturer_target_conflicts")
     in_bom = actual.get("original_r8_in_bom")
     in_pcb = actual.get("original_r8_in_pcb")
-    passed = (match and type(conflicts) is int and conflicts == 0
+    # A zero-conflict report with zero audited rows is not a clean BOM.
+    # Maintain at least the historically evidenced 51 manufacturer/target
+    # identities (of 61 placeholder refs and 83 captured native instances).
+    # When replacing parts, the auditor and its verified OEM part registry must
+    # be extended, not bypassed by dropping old part codes from KNOWN.
+    known_rows = actual.get("known_mpn_and_target_rows")
+    register_rows = actual.get("register_placeholder_rows")
+    component_rows = actual.get("native_components")
+    coverage_retained = (
+        type(known_rows) is int and known_rows >= 51
+        and type(register_rows) is int and register_rows >= 61
+        and type(component_rows) is int and component_rows >= 83
+    )
+    passed = (match and coverage_retained
+              and type(conflicts) is int and conflicts == 0
               and in_bom is False and in_pcb is False)
     return {
         "passed": passed,
