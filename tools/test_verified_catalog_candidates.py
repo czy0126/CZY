@@ -35,7 +35,7 @@ def test_reg_gate_and_kelvin_require_real_functional_check():
     rows = {r["ref"]:r for r in c.report()["faults"]}
     assert rows["C7"]["catalog_match_mpn"] == "GRM188C71E225KE11D"
     assert "DC-bias" in rows["C7"]["functional_review"]
-    assert rows["R20"]["catalog_match_mpn"] == "CRCW06032R20FKEA"
+    assert rows["R20"]["catalog_match_mpn"] == "CRCW06032R20FKEAHP"
     assert "pulse" in rows["R20"]["functional_review"]
     assert rows["R28"]["catalog_match_mpn"] == "CRCW06030000Z0EA"
     assert "Kelvin" in rows["R28"]["functional_review"]
@@ -53,3 +53,14 @@ def test_missing_target_mapping_fails_closed(monkeypatch):
     monkeypatch.setattr(c, "CATALOG", old)
     with pytest.raises(ValueError, match="unmapped"):
         c.report()
+
+
+def test_all_ten_gate_2p2ohm_uses_pulse_robust_0603_candidate_but_not_approved():
+    d = c.report()
+    rows = [r for r in d["faults"] if r["ref"] in
+            {f"R{i}" for i in range(20,28)} | {"R4","R5"}]
+    assert len(rows) == 10
+    assert all(r["catalog_match_mpn"] == "CRCW06032R20FKEAHP" for r in rows)
+    assert all(not r["electrical_corner_qualified"] for r in rows)
+    assert all("pulse" in r["catalog_spec"] or "pulse" in r["functional_review"]
+               for r in rows)

@@ -95,12 +95,12 @@ CATALOG = {
         "critical": "RT frequency programming: verify tolerance, parasitics and tuning result"
     },
     "R:2.2Ω": {
-        "mpn": "CRCW06032R20FKEA",
+        "mpn": "CRCW06032R20FKEAHP",
         "maker": "Vishay",
         "footprint": "0603",
-        "rating": "2.2Ω ±1%,0.125W",
-        "source": "https://www.digikey.com/en/products/detail/vishay-dale/CRCW06032R20FKEA/1961573",
-        "critical": "Switch gate: 0.125W nominal catalog rating is NOT approved for 200kHz gate pulse/dissipation; verify pulse SOA, Ipk, thermal before ordering"
+        "rating": "2.2Ω ±1%,0.333W pulse-withstanding CRCW-HP",
+        "source": "https://www.digikey.com/en/products/detail/vishay-dale/CRCW06032R20FKEAHP/2225881",
+        "critical": "Switch gate: vendor catalog pulse-withstanding CRCW0603-HP 0.333W, still verify Rext switching loss, short pulse peak vs rated pulse-duration curves, derating and PCB thermal; not an actual 200kHz gate approval"
     },
     "R:0Ω": {
         "mpn": "CRCW06030000Z0EA",
