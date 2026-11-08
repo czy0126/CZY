@@ -1,7 +1,7 @@
 """Run selected 48V D1 low-current LTspice A/B models on a licensed Windows PC.
 
 Requires installed Analog Devices LTspice (NOT in repo CI) and calls the
-vendor's documented "-b deck.cir" batch interface. Only new, complete logs
+vendor's documented "-b deck.cir" batch interface. Only new, complete logs and fresh nonempty binary RAWs
 are accepted. Results are marked SIMULATION_ONLY, never fabrication approval.
 Run:
   python tools/run_poc_low_current.py --case 5a --mode both --run
@@ -71,6 +71,32 @@ def find_ltspice(explicit: str | None) -> Path | None:
     return next((p for p in options if p.is_file()), None)
 
 
+def measured_load_point(case: str, vals: dict[str, float]) -> dict:
+    """For an exact resistor, <Iout>=<Vout>/R, NOT ideal 2V/R.
+
+    Mean voltage squared / R is ONLY DC equivalent output power, NOT the
+    time-average of Vout(t)**2/R when ripple exists. No thermal signoff.
+    """
+    resistance = poc.CASES[(case, "on")]
+    vout = vals["poc_vout_6_8_avg"]
+    return {
+        "resistance_ohm": resistance,
+        "model_vout_avg_v": vout,
+        "model_iout_avg_a": vout / resistance,
+        "nominal_current_at_ideal_2v_a": 2 / resistance,
+        "pout_dc_equivalent_only_w": vout * vout / resistance,
+        "thermal_or_hardware_qualified": False,
+    }
+
+
+def digest_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for block in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def simulated_comparison(values: dict[str, dict[str, float]]) -> dict:
     out: dict = {"status": "SIMULATION_ONLY_NO_HARDWARE_RELEASE",
                  "fabrication_approved": False,
@@ -104,6 +130,7 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
     if deck.read_text(encoding="utf-8") != poc.deck(case, mode):
         raise ValueError("generated circuit stale; run poc_low_current_decks.py --write")
     log = deck.with_suffix(".log")
+    raw = deck.with_suffix(".raw")
     start = time.time_ns()
     cmd = [str(exe), "-b", str(deck.resolve())]
     completed = subprocess.run(
@@ -113,15 +140,20 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
         raise RuntimeError(
             f"LTspice {mode}/{case} failed exit={completed.returncode}: "
             f"{completed.stderr[-1200:]} {completed.stdout[-1200:]}")
-    if not log.is_file() or log.stat().st_mtime_ns < start:
+    if not log.is_file() or log.stat().st_mtime_ns < start or not log.stat().st_size:
         raise RuntimeError(f"no fresh LTspice log for {deck.name}")
+    if not raw.is_file() or raw.stat().st_mtime_ns < start or not raw.stat().st_size:
+        raise RuntimeError(f"no fresh, nonempty LTspice .raw for {deck.name}")
     m = measurements(log.read_text(encoding="utf-8", errors="replace"))
     return {
         "status": "SIMULATION_ONLY",
         "deck": deck.relative_to(poc.ROOT).as_posix(),
         "deck_sha256": hashlib.sha256(deck.read_bytes()).hexdigest(),
         "log": log.relative_to(poc.ROOT).as_posix(),
-        "log_sha256": hashlib.sha256(log.read_bytes()).hexdigest(),
+        "log_sha256": digest_file(log),
+        "raw": raw.relative_to(poc.ROOT).as_posix(),
+        "raw_sha256": digest_file(raw),
+        "raw_bytes": raw.stat().st_size,
         "spice_executable": str(exe),
         "LTspice_batch_executed": True,
         "hardware_qualified": False,
@@ -176,6 +208,10 @@ def main() -> int:
         "status": "MODEL_SIMULATION_ONLY_NOT_FOR_HARDWARE",
         "runs": statuses,
         "comparison": compares,
+        "model_actual_load_points": {
+            mode: measured_load_point(args.case, record["measures"])
+            for mode, record in statuses.items()
+        },
         "fab_release": False,
     }
     output = poc.OUT / f"poc_{args.case}_comparison_model_only.json"
