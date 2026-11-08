@@ -19,7 +19,8 @@ def test_paralleled_out_contacts_use_one_power_driver_and_one_passive_pin():
     assert source.count('(pin power_out line (at 30.48 2.54 180)') == 0
     # Two manufacturer OUT pins still physically appear and share VDD_SR.
     assert '(number "17"' in source and '(number "18"' in source
-    assert source.count('(label "VDD_SR" (at 135.04 ') == 2
+    assert source.count('(label "VDD_SR" (at 135.89 88.9 0)') == 1
+    assert source.count('(label "VDD_SR" (at 135.89 95.25 0)') == 1
 
 
 def test_external_fet_feeds_efuse_in_with_explicit_erc_source_annotation():
