@@ -1,0 +1,30 @@
+Revision B POWER PATH SCREEN ONLY - not a controller/device model
+VIN VDD_IN 0 0
+VEN EN 0 PULSE(0 5 1m 10n 10n 19m 1)
+S50 VDD_IN PASS_OUT EN 0 PASS
+DBODY PASS_OUT VDD_IN BODY
+R59 PASS_OUT D_ANODE 22
+D50 D_ANODE VDD_SR RECT
+R57 VDD_SR DIS 2200
+BNEG NEG 0 V=5-V(EN)
+S54 DIS 0 NEG 0 DISCHARGE
+R58 VDD_SR 0 100k
+R62 VDD_SR 0 1000
+C54 VDD_SR 0 11.1u
+VREV VDD_SR 0 24
+.model PASS SW(Ron=0.07 Roff=1e10 Vt=2.5)
+.model DISCHARGE SW(Ron=0.05 Roff=1e10 Vt=2.5)
+* Negative control makes discharge on while pass is off.
+* Implement this with swapped control terminals below via generation.
+.model BODY D(Is=1n Rs=0.1)
+* Generic diode; VF/IR bounds are checked analytically, not extracted here.
+.model RECT D(Is=1n N=1.5 Rs=0.05 Cjo=10p BV=200)
+.tran 0 100m 0 2u uic
+.options plotwinsize=0
+.meas tran input_peak MIN I(VIN)
+.meas tran reverse_peak MAX I(VIN) FROM 5m TO 19m
+.meas tran enabled_v AVG V(VDD_SR) FROM 18m TO 19m
+.meas tran discharge_power MAX (V(VDD_SR,DIS)*V(VDD_SR,DIS)/2200) FROM 25m TO 95m
+.meas tran residual_v FIND V(VDD_SR) AT=95m
+.meas tran limiter_energy INTEG (V(PASS_OUT,D_ANODE)*V(PASS_OUT,D_ANODE)/22) FROM 1m TO 5m
+.end

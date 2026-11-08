@@ -207,3 +207,8 @@
 |  | `staged_magnetics_16mm_rfq.csv` 的 3.65 mm 与设计包 3.51 mm 是两个口径，不许互改 | 改高度表 | MAGNETICS_BOM.md §磁件询价单 |
 |  | 文本文件的 SHA256 必须经 `text_identity.sha256_file()`（CRLF→LF）；裸 `read_bytes()` 哈希会让 LF 检出的 CI 红 | 给文本记哈希 | TRAPS.md §已知工具陷阱 |
 |  | `Path.read_text(newline=)` 只在 Python 3.13+ 有；CI 固定 3.12 ⇒ 用 `agent_docs.read_text_exact()` | 读保留换行的文本 | TRAPS.md §已知工具陷阱 |
+|  | 差动控制的 `SW` 的 `Vt` 必须按 `V(源)-V(栅)` 写**正**；写负数等于常闭（T3 第一版全部误导通） | 写 behavioural 开关 | TRAPS.md §已知工具陷阱 |
+|  | `.meas` 读到不在 `.save` 里的节点会**中止整份**测量，不是只丢一条 | 加 `.meas` | TRAPS.md §已知工具陷阱 |
+|  | 测延迟用 `INTEG(if(V(g)<Vt,1,0)) FROM a TO b`，不用 TRIG/TARG 的 RISE 计数（初值点算一次边沿） | 测传播延迟 | TRAPS.md §已知工具陷阱 |
+|  | `MAX(-I(V1))` 抓理想开关的纳秒尖峰（4.67 A），不是电阻电流；用 `MAX I(<ref>)` | 读浪涌电流 | TRAPS.md §已知工具陷阱 |
+|  | 分段负载用硬 `if(V>Vth,I1,I0)` 会让慢上电报 "Time step too small"；用 sigmoid | 写分段负载 | TRAPS.md §已知工具陷阱 |

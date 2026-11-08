@@ -4,8 +4,22 @@
   "note": "A view over committed artefacts, not an approval: it copies each board's own hashes and flags and makes no judgement about the design.  hardware_built and fabrication_approved stay false for every board.",
   "boards": [
     {
+      "id": "bias_cut_revision_b",
+      "title": "Revision B SR bias-cut candidate: series diode and startup resistor",
+      "what": "Candidate schematic only; replaces revision A power-path proposal. Behavioural power-path screens do not qualify REG hold energy, real control or hardware.",
+      "generator": "python tools/bias_cut_revision_b.py",
+      "schematic": "pcb/bias_cut_revision_b/bias_cut_revision_b.kicad_sch",
+      "board": null,
+      "fab": null,
+      "schematic_sha256": "bb95e322595a6ab383a4ed8a8cb399666038481ace487fa32759f975d8284741",
+      "status": "SCHEMATIC_ONLY",
+      "not_fabricable_because": [
+        "no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper"
+      ]
+    },
+    {
       "id": "bias_cut_eco",
-      "title": "SR bias-cut ECO with external SET/reset interlock",
+      "title": "Revision A SR bias-cut ECO: historical, failed stress review",
       "what": "Native schematic and behavioural simulation only. PMOS selection, startup, gate propagation and reverse-voltage sweep remain unqualified.",
       "generator": "python tools/make_bias_cut_eco.py --check",
       "schematic": "pcb/bias_cut_eco/bias_cut_eco.kicad_sch",
@@ -28,7 +42,7 @@
       "schematic_sha256": "1ba53a5ec5fd642bba5c01946151507b62054bc6dd8035a102b26524259bef24",
       "board_sha256": "849bef79b5f2c12ce8ea762d6332b34340ec01eb93276667bb0cf76695304382",
       "manifest": "pcb/sr_fault_validation/fab/manifest.json",
-      "manifest_sha256": "8e0351a0fa1370c460f9bbbe7f28521285f3ce7a3cb975b22c6698532a288611",
+      "manifest_sha256": "5c893edc5957ae6536c912569d0cecb0b4f29dee5a18d14222bc60d359e81491",
       "kicad_cli": "10.0.6",
       "copper_weight_oz": 1,
       "files": 13,
@@ -113,6 +127,7 @@
     }
   ],
   "reproduce": [
+    "python tools/bias_cut_revision_b.py",
     "python tools/make_bias_cut_eco.py --check",
     "python tools/make_sr_fault_board_pcb.py --fab",
     "python tools/make_fast_oc_pcb.py --fab",

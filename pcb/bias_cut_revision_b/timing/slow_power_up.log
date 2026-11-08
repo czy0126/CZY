@@ -1,0 +1,20 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\work\t3_20261107\slow_power_up.cir
+Start Time: Sat Nov  7 23:33:52 2026
+solver = Normal
+Maximum thread count: 64
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 4.180 seconds.
+
+Files loaded:
+C:\work\t3_20261107\slow_power_up.cir
+
+vdd_sr_max: MAX(V(VDD_SR))=13.2618160248 FROM 0 TO 0.025
+vdd_sr_min: MIN(V(VDD_SR))=-0.146485447884 FROM 0 TO 0.025
+i_r59_peak: MAX(I(R59))=0.625667989254 FROM 0 TO 0.025
+gate_off_max: MAX(V(BC_GATE))=14.999838829 FROM 0 TO 0.025
+vdd_sr_before_reset: MAX(V(VDD_SR) )=0.0764854326844 FROM 0 TO 0.02199
+vdd_sr_after_reset: MIN(V(VDD_SR) )=12.9881925583 FROM 0.023 TO 0.0249

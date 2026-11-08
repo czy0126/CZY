@@ -1,0 +1,21 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\work\t3_20261107\permit_high_at_power_up.cir
+Start Time: Sat Nov  7 23:33:44 2026
+solver = Normal
+Maximum thread count: 64
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 2.395 seconds.
+
+Files loaded:
+C:\work\t3_20261107\permit_high_at_power_up.cir
+
+vdd_sr_max: MAX(V(VDD_SR))=13.2618246078 FROM 0 TO 0.012
+vdd_sr_min: MIN(V(VDD_SR))=-0.00136616802774 FROM 0 TO 0.012
+i_r59_peak: MAX(I(R59))=0.624614655972 FROM 0 TO 0.012
+gate_off_max: MAX(V(BC_GATE))=14.999797821 FROM 0 TO 0.012
+vdd_sr_before_reset: MAX(V(VDD_SR) )=1.26561760902 FROM 0 TO 0.00899
+enable_max_early: MAX(V(ENABLE) )=5 FROM 0 TO 0.001
+i_r59_peak_early: MAX(I(R59) )=0.624614655972 FROM 0 TO 0.00899

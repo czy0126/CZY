@@ -1,0 +1,29 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\pcb\bias_cut_revision_b\hold_validation\backfeed_100r_95ma.cir
+Start Time: Sun Nov  8 12:15:51 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping failed to find operating point. Use".option gminsteps=0" to skip all Gmin stepping.
+Starting source stepping with srcstepmethod=0
+Source stepping succeeded in finding the operating point.
+
+Total elapsed time: 0.547 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\pcb\bias_cut_revision_b\hold_validation\backfeed_100r_95ma.cir
+
+reg_before: AVG(V(REG) )=10.9998903275 FROM 0.018 TO 0.019
+gate_off_at: V(VDD_IN,BC_GATE)=2.1  AT 0.0200240116361
+reg_off_at: V(REG)=3.63  AT 0.0200131037493
+pass_energy: INTEG((V(VDD_SR,REG)*I(BREG)) )=0.0543716639569 FROM 0.02 TO 0.1
+r44_energy: INTEG((V(REG,CROW)*V(REG,CROW)/4.7) )=0.00354139693526 FROM 0.02 TO 0.1
+q41_energy: INTEG((V(CROW)*V(CROW)/.048) )=4.31910850454e-05 FROM 0.02 TO 0.1
+reg_pass_power_end: AVG((V(VDD_SR,REG)*I(BREG)) )=0.671054432317 FROM 0.09 TO 0.1
+vdd_end: AVG(V(VDD_SR) )=7.51476955413 FROM 0.09 TO 0.1
+reg_end: AVG(V(REG) )=0.451038599014 FROM 0.09 TO 0.1
