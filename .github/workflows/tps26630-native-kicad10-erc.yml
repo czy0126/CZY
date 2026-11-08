@@ -1,0 +1,99 @@
+name: TPS26630-actual-KiCad10-native-ERC
+on:
+  push:
+    branches:
+      - feat/sr-bias-tps26630-hardware-design-kit-20261107
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-kicad10-erc-diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 10 from the official project Ubuntu stable PPA
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kicad kicad-symbols kicad-footprints
+          # The KiCad 10 PPA on minimal CI can ship real symbols/footprints
+          # without the optional template tables. Register only installed OEM
+          # library files rather than suppressing missing-library violations.
+          mkdir -p "${HOME}/.config/kicad/10.0"
+          symbol_root=/usr/share/kicad/symbols
+          footprint_root=/usr/share/kicad/footprints
+          test -s "${symbol_root}/Device.kicad_sym" || { echo 'Device stock symbol library missing' >&2; exit 2; }
+          test -d "${footprint_root}/Resistor_SMD.pretty" || { echo 'Resistor_SMD stock footprints missing' >&2; exit 2; }
+          sym_table="${HOME}/.config/kicad/10.0/sym-lib-table"
+          fp_table="${HOME}/.config/kicad/10.0/fp-lib-table"
+          {
+            echo '(sym_lib_table'
+            for lib in "${symbol_root}"/*.kicad_sym; do
+              [ -f "$lib" ] || continue
+              key=$(basename "$lib" .kicad_sym)
+              printf ' (lib (name "%s")(type "KiCad")(uri "%s")(options "")(descr ""))\n' "$key" "$lib"
+            done
+            echo ')'
+          } > "$sym_table"
+          {
+            echo '(fp_lib_table'
+            for lib in "${footprint_root}"/*.pretty; do
+              [ -d "$lib" ] || continue
+              key=$(basename "$lib" .pretty)
+              printf ' (lib (name "%s")(type "KiCad")(uri "%s")(options "")(descr ""))\n' "$key" "$lib"
+            done
+            echo ')'
+          } > "$fp_table"
+          test -s "$sym_table" && test -s "$fp_table"
+          kicad-cli version
+          if ! kicad-cli version | grep -Eq '^10\.'; then
+            echo 'KiCad 10 expected for project-native ERC' >&2
+            exit 2
+          fi
+      - name: Preserve an independent full-severity ERC report; any violation fails the job
+        shell: bash
+        run: |
+          mkdir -p native-erc-results
+          set +e
+          kicad-cli sch erc \
+            --severity-all \
+            --exit-code-violations \
+            --format json \
+            -o native-erc-results/tps26630-native-erc.json \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+          code=$?
+          echo "True native KiCad 10 ERC exit status: $code"
+          if [[ "$code" -ne 0 ]]; then
+            echo 'The concept schematic is NOT approved. Inspect the uploaded ERC violations.' >&2
+          fi
+          exit "$code"
+      - name: Export authentic native XML netlist and concept BOM after clean ERC
+        shell: bash
+        run: |
+          kicad-cli sch export netlist --format kicadxml \
+            -o native-erc-results/tps26630-native-netlist.xml \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+          python tools/verify_tps26630_exported_netlist.py \
+            --netlist native-erc-results/tps26630-native-netlist.xml \
+            --out native-erc-results/tps26630-native-pinmap-verification.json
+          kicad-cli sch export bom \
+            -o native-erc-results/tps26630-CONCEPT-NOT-FOR-FAB-bom.csv \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+          python tools/verify_tps26630_exported_bom.py \
+            --bom native-erc-results/tps26630-CONCEPT-NOT-FOR-FAB-bom.csv \
+            --out native-erc-results/tps26630-native-bom-annotations.json
+          kicad-cli sch export svg \
+            -o native-erc-results/ \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+      - name: Upload full native ERC evidence, even on failure
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tps26630-native-kicad10-erc-diagnostic
+          path: native-erc-results/
+          if-no-files-found: warn
+          retention-days: 30

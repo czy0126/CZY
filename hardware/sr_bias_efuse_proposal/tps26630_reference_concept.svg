@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="980" viewBox="0 0 1680 980" role="img" aria-label="TPS26630 15V SR-bias supply conceptual schematic, manufacturer pin-numbered nets">
+<defs>
+<style>
+.title{font:700 34px Arial, sans-serif;fill:#12355d}
+.subtitle{font:16px Arial, sans-serif;fill:#53667a}
+.h{font:700 19px Arial,sans-serif;fill:#0b3c6b}
+.b{font:16px Arial,sans-serif;fill:#183452}
+.s{font:14px Arial,sans-serif;fill:#3e5d78}
+.small{font:12px Arial,sans-serif;fill:#556a80}
+.pin{font:15px 'Courier New',monospace;fill:#074c88}
+.wire{stroke:#11649a;stroke-width:3;fill:none;stroke-linejoin:round}
+.sg{stroke:#536c83;stroke-width:2;fill:none}
+.node{fill:#11649a}
+.part{fill:white;stroke:#134f7d;stroke-width:2.3}
+.shadow{fill:#f2f7fb;stroke:#cad9e8}
+.warn{fill:#fff7ef;stroke:#db852d;stroke-width:1.8}
+.ok{fill:#f0f7ff;stroke:#a0c1df}
+</style>
+</defs>
+<rect width="1680" height="980" fill="#fff"/>
+<rect x="0" y="0" width="1680" height="12" fill="#0a477d"/>
+<text class="title" x="55" y="66">TPS26630 — 15 V SR bias power-path concept</text>
+<text class="subtitle" x="55" y="94">TI TPS2663 Rev.G Fig. 5-1 / Fig. 8-7 / Eq. 1, 2, 8, 9, 10 | Not a PCB schematic, no ERC or hardware sign-off</text>
+<rect class="ok" x="55" y="120" width="1570" height="56" rx="9"/>
+<text class="h" x="75" y="145">FUNCTION 1: Input current limit + controlled start + reverse blocking</text>
+<text class="s" x="75" y="166">Independent 5 V fault latch controls SHDN. Q41 / R44 fast REG shutdown is retained on the existing SR board.</text>
+<!-- Input source -->
+<circle cx="112" cy="295" r="29" fill="#eaf4ff" stroke="#0e5485" stroke-width="2.5"/>
+<text class="pin" x="112" y="291" text-anchor="middle">+</text>
+<text class="pin" x="112" y="311" text-anchor="middle">15V</text>
+<text class="s" x="67" y="351">VIN_SYS</text>
+<path class="wire" d="M141 295 H245"/>
+<circle class="node" cx="196" cy="295" r="4"/>
+<path class="wire" d="M196 295 V223 H555 V356 H636"/>
+<text class="small" x="202" y="216">VIN_SYS = Q1.S + U1.IN_SYS</text>
+<!-- Q1 MOS package with source drain gate labels -->
+<rect class="part" x="245" y="260" width="230" height="70" rx="6"/>
+<text class="h" x="360" y="282" text-anchor="middle">Q1  CSD19537Q3T</text>
+<text class="s" x="360" y="304" text-anchor="middle">blocking N-FET</text>
+<text class="pin" x="256" y="323">S(1–3)</text>
+<text class="pin" x="400" y="323">D(5–8)</text>
+<path class="wire" d="M475 295 H636"/>
+<text class="pin" x="498" y="285">EFUSE_IN</text>
+<path class="wire" d="M365 330 V415 H636"/>
+<text class="pin" x="378" y="406">Q1.G(4) = B_GATE</text>
+<!-- eFuse -->
+<rect class="part" x="636" y="237" width="525" height="438" rx="12"/>
+<rect x="637" y="238" width="523" height="47" rx="10" fill="#0f4d7d"/>
+<text x="897" y="267" fill="#fff" font-family="Arial,sans-serif" font-size="23" font-weight="700" text-anchor="middle">U1  TPS26630RGET (RGE24)</text>
+<text class="pin" x="650" y="313">IN  1,2</text>
+<text class="pin" x="650" y="360">IN_SYS  5</text>
+<text class="pin" x="650" y="418">B_GATE  3</text>
+<text class="pin" x="650" y="461">DRV  4</text>
+<text class="pin" x="650" y="506">UVLO  6</text>
+<text class="pin" x="650" y="551">OVP  7</text>
+<text class="pin" x="650" y="594">SHDN  12</text>
+<text class="pin" x="650" y="641">GND 8 + EP</text>
+<text class="pin" x="960" y="313">OUT 17,18</text>
+<text class="pin" x="960" y="360">ILIM 10</text>
+<text class="pin" x="960" y="405">dVdT 9</text>
+<text class="pin" x="960" y="451">MODE 11 = OPEN</text>
+<text class="pin" x="960" y="494">PGTH 15 = GND*</text>
+<text class="pin" x="960" y="538">FLT 14 (OD)</text>
+<text class="pin" x="960" y="580">PGOOD 16 = NC</text>
+<text class="small" x="960" y="623">NC pads 19–24 open</text>
+<path class="wire" d="M1161 307 H1451"/>
+<text class="h" x="1358" y="295">VDD_SR → UCC24624</text>
+<circle class="node" cx="1351" cy="307" r="4"/>
+<!-- capacitor bank -->
+<path class="wire" d="M1351 307 V393"/>
+<path class="sg" d="M1333 393 H1369 M1333 404 H1369 M1351 404 V438"/>
+<path class="sg" d="M1330 438 H1372 M1337 445 H1365 M1344 452 H1358"/>
+<text class="b" x="1383" y="391">COUT</text>
+<text class="s" x="1383" y="415">11.1 µF nominal bank</text>
+<text class="small" x="1383" y="436">Existing SR board; verify bias</text>
+<!-- block Q2 -->
+<rect class="shadow" x="240" y="462" width="327" height="152" rx="10"/>
+<text class="h" x="259" y="491">Q2  BSS138-7-F</text>
+<text class="s" x="259" y="515">Fast B_GATE pull-down N-FET</text>
+<text class="pin" x="259" y="541">D(3) → B_GATE</text>
+<text class="pin" x="259" y="566">G(1) ← U1 DRV</text>
+<text class="pin" x="259" y="591">S(2) → VIN_SYS</text>
+<path class="wire" d="M567 541 H598 V418 H636"/>
+<path class="wire" d="M567 566 H613 V461 H636"/>
+<text class="small" x="240" y="640">Q2: Ciss 50 pF MAX at 10 V VDS (OEM).</text>
+<text class="small" x="240" y="659">Ciss design-guaranteed only @25C, 10V VDS.</text>
+<!-- lower panel -->
+<rect class="ok" x="55" y="715" width="985" height="170" rx="9"/>
+<text class="h" x="78" y="745">FUNCTION 2: Analog configuration — verify in native schematic</text>
+<text class="b" x="80" y="783">VIN_SYS ─ 909 kΩ ─ UVLO(6) ─ 35.7 kΩ ─ OVP(7) ─ 64.9 kΩ ─ PGND</text>
+<text class="s" x="80" y="810">UVLO ≈12.04 V / OVP ≈18.67 V (typical threshold; divider not OEM-corner qualified)</text>
+<text class="b" x="80" y="842">ILIM(10) ─ 30 kΩ ─ PGND        dVdT(9) ─ 22 nF ─ PGND</text>
+<text class="s" x="80" y="869">I_LIM ≈0.6 A nominal; startup ramp ≈6.86 ms; 11.1 µF charge current ≈24.3 mA nominal</text>
+<rect class="warn" x="1060" y="715" width="565" height="170" rx="9"/>
+<text class="h" x="1082" y="745" fill="#aa5716">DISCHARGE PATH IS NOT RELEASED</text>
+<text class="b" x="1082" y="781">Do NOT copy old Q54 + 47 Ω R57.</text>
+<text class="s" x="1082" y="807">18 V continuous backfeed → ~6.9 W ideal.</text>
+<text class="s" x="1082" y="833">Choose reverse-aware, energy-limited discharge</text>
+<text class="s" x="1082" y="859">and verify H1/H5 before physical integration.</text>
+<!-- footer -->
+<path class="sg" d="M55 917 H1625"/>
+<text class="s" x="55" y="948">ENABLE_5V → 1 kΩ → SHDN(12), with 100 kΩ SHDN pulldown to PGND; MODE(11) open = overload latch-off.</text>
+<text class="small" x="55" y="969">No claims of actual TPS26630 dynamics, input current spikes, output hold-up, 100 A capability, full pin electrical proof, ERC, DRC, or fabrication.</text>
+</svg>

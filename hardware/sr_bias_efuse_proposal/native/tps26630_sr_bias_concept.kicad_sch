@@ -1,0 +1,1131 @@
+(kicad_sch
+ (version 20260101)
+ (generator "CZY_SR_BIAS_OEM_REVIEW")
+ (generator_version "10.0")
+ (uuid "10203040-5060-4070-8a90-000000000092")
+ (paper "A2")
+ (title_block (title "15V TPS26630 SR bias eFuse OEM concept") (date "2026-11-07") (rev "DRAFT")
+ (comment 1 "No hardware built, vendor SOA or EPC footprint qualified. NOT_FOR_FAB.")
+ (comment 2 "Q1/CSD19537Q3 U1/TPS26630 exposed pad needs verified physical footprint.")
+ (comment 3 "U1 symbol EP model pin 25 is a conceptual pad alias, NOT verified PCB pad ID.")
+ (comment 4 "Q54/R57 continuous backfeed discharge not copied; separate ECO required.")
+ )
+ (lib_symbols
+(symbol "Connector_Generic:Conn_01x02"
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "J"
+			(at 0 2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02"
+			(at 0 -5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "connector"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "Conn_01x02_1_1"
+			(rectangle
+				(start -1.27 1.27)
+				(end 1.27 -3.81)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(rectangle
+				(start -1.27 0.127)
+				(end 0 -0.127)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -2.413)
+				(end 0 -2.667)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 3.81)
+				(name "Pin_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -2.54 0)
+				(length 3.81)
+				(name "Pin_2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Connector_Generic:Conn_01x04"
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "J"
+			(at 0 5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x04"
+			(at 0 -7.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "connector"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "Conn_01x04_1_1"
+			(rectangle
+				(start -1.27 3.81)
+				(end 1.27 -6.35)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(rectangle
+				(start -1.27 2.667)
+				(end 0 2.413)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 0.127)
+				(end 0 -0.127)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -2.413)
+				(end 0 -2.667)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -4.953)
+				(end 0 -5.207)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 2.54 0)
+				(length 3.81)
+				(name "Pin_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 3.81)
+				(name "Pin_2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -2.54 0)
+				(length 3.81)
+				(name "Pin_3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -5.08 0)
+				(length 3.81)
+				(name "Pin_4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Device:C"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "C"
+			(at 0.635 2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "C"
+			(at 0.635 -2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0.9652 -3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "cap capacitor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "C_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "C_0_1"
+			(polyline
+				(pts
+					(xy -2.032 0.762) (xy 2.032 0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.032 -0.762) (xy 2.032 -0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "C_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 2.794)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 2.794)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Device:R"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "R"
+			(at 2.032 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "R"
+			(at 0 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at -1.778 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "R res resistor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "R_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "R_0_1"
+			(rectangle
+				(start -1.016 -2.54)
+				(end 1.016 2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "R_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "SR_Bias:BSS138"
+ (pin_names (offset 0.508))
+ (exclude_from_sim no) (in_bom yes) (on_board yes)
+ (property "Reference" "Q" (at 0 14.5 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "BSS138" (at 0 -14.5 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "OEM PINMAP CONCEPT ONLY. Manufacturer package mapping pending physical footprint." (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (symbol "BSS138_0_1" (rectangle (start -12 11.5) (end 12 -11.5) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "BSS138_1_1"
+ (pin passive line (at -13.97 7.62 0) (length 2.54) (name "G" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at -13.97 -7.62 0) (length 2.54) (name "S" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 13.97 0 180) (length 2.54) (name "D" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+ )
+)
+
+(symbol "SR_Bias:CSD19537Q3"
+ (pin_names (offset 0.508))
+ (exclude_from_sim no) (in_bom yes) (on_board yes)
+ (property "Reference" "Q" (at 0 20 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "CSD19537Q3" (at 0 -20 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "OEM PINMAP CONCEPT ONLY. Manufacturer package mapping pending physical footprint." (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (symbol "CSD19537Q3_0_1" (rectangle (start -15 17) (end 15 -17) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "CSD19537Q3_1_1"
+ (pin passive line (at -17.78 11.43 0) (length 2.54) (name "S" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at -17.78 3.81 0) (length 2.54) (name "S" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at -17.78 -3.81 0) (length 2.54) (name "S" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at -17.78 -11.43 0) (length 2.54) (name "G" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 17.78 11.43 180) (length 2.54) (name "D" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 17.78 3.81 180) (length 2.54) (name "D" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 17.78 -3.81 180) (length 2.54) (name "D" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 17.78 -11.43 180) (length 2.54) (name "D" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+ )
+)
+
+(symbol "SR_Bias:TPS26630_RGE24"
+ (pin_names (offset 0.508))
+ (exclude_from_sim no) (in_bom yes) (on_board yes)
+ (property "Reference" "U" (at 0 43 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "TPS26630_RGE24" (at 0 -43 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "OEM PINMAP CONCEPT ONLY. Manufacturer package mapping pending physical footprint." (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (symbol "TPS26630_RGE24_0_1" (rectangle (start -27.5 40) (end 27.5 -40) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "TPS26630_RGE24_1_1"
+ (pin power_in line (at -30.48 33.02 0) (length 2.54) (name "IN" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+ (pin power_in line (at -30.48 26.67 0) (length 2.54) (name "IN" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+ (pin output line (at -30.48 21.59 0) (length 2.54) (name "BGATE" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+ (pin output line (at -30.48 15.24 0) (length 2.54) (name "DRV" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+ (pin power_in line (at -30.48 8.89 0) (length 2.54) (name "IN_SYS" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+ (pin input line (at -30.48 2.54 0) (length 2.54) (name "UVLO" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+ (pin input line (at -30.48 -2.54 0) (length 2.54) (name "OVP" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+ (pin power_in line (at -30.48 -8.89 0) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+ (pin input line (at -30.48 -15.24 0) (length 2.54) (name "DVDT" (effects (font (size 1.27 1.27)))) (number "9" (effects (font (size 1.27 1.27)))))
+ (pin input line (at -30.48 -21.59 0) (length 2.54) (name "ILIM" (effects (font (size 1.27 1.27)))) (number "10" (effects (font (size 1.27 1.27)))))
+ (pin input line (at -30.48 -26.67 0) (length 2.54) (name "MODE" (effects (font (size 1.27 1.27)))) (number "11" (effects (font (size 1.27 1.27)))))
+ (pin input line (at -30.48 -33.02 0) (length 2.54) (name "SHDN" (effects (font (size 1.27 1.27)))) (number "12" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 33.02 180) (length 2.54) (name "IMON" (effects (font (size 1.27 1.27)))) (number "13" (effects (font (size 1.27 1.27)))))
+ (pin open_collector line (at 30.48 26.67 180) (length 2.54) (name "FLT" (effects (font (size 1.27 1.27)))) (number "14" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 21.59 180) (length 2.54) (name "PGTH" (effects (font (size 1.27 1.27)))) (number "15" (effects (font (size 1.27 1.27)))))
+ (pin open_collector line (at 30.48 15.24 180) (length 2.54) (name "PGOOD" (effects (font (size 1.27 1.27)))) (number "16" (effects (font (size 1.27 1.27)))))
+ (pin power_out line (at 30.48 8.89 180) (length 2.54) (name "OUT" (effects (font (size 1.27 1.27)))) (number "17" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 2.54 180) (length 2.54) (name "OUT" (effects (font (size 1.27 1.27)))) (number "18" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 -2.54 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "19" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 -8.89 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "20" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 -15.24 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "21" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 -21.59 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "22" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 -26.67 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "23" (effects (font (size 1.27 1.27)))))
+ (pin passive line (at 30.48 -33.02 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "24" (effects (font (size 1.27 1.27)))))
+ (pin power_in line (at 0 -41.91 90) (length 2.54) (name "EP_GND" (effects (font (size 1.27 1.27)))) (number "25" (effects (font (size 1.27 1.27)))))
+ )
+)
+
+(symbol "power:PWR_FLAG"
+		(power global)
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "#FLG"
+			(at 0 1.905 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 0 3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "flag power"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "PWR_FLAG_0_0"
+			(pin power_out line
+				(at 0 0 90)
+				(length 0)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(symbol "PWR_FLAG_0_1"
+			(polyline
+				(pts
+					(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+ )
+(symbol (lib_id "SR_Bias:TPS26630_RGE24") (at 105.41 97.79 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000001")
+ (property "Reference" "U1" (at 105.41 85.79 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "TPS26630RGET" (at 105.41 109.79 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 105.41 97.79 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 105.41 97.79 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 105.41 97.79 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000002"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000003"))
+ (pin "3" (uuid "10203040-5060-4070-8a90-000000000004"))
+ (pin "4" (uuid "10203040-5060-4070-8a90-000000000005"))
+ (pin "5" (uuid "10203040-5060-4070-8a90-000000000006"))
+ (pin "6" (uuid "10203040-5060-4070-8a90-000000000007"))
+ (pin "7" (uuid "10203040-5060-4070-8a90-000000000008"))
+ (pin "8" (uuid "10203040-5060-4070-8a90-000000000009"))
+ (pin "9" (uuid "10203040-5060-4070-8a90-00000000000a"))
+ (pin "10" (uuid "10203040-5060-4070-8a90-00000000000b"))
+ (pin "11" (uuid "10203040-5060-4070-8a90-00000000000c"))
+ (pin "12" (uuid "10203040-5060-4070-8a90-00000000000d"))
+ (pin "13" (uuid "10203040-5060-4070-8a90-00000000000e"))
+ (pin "14" (uuid "10203040-5060-4070-8a90-00000000000f"))
+ (pin "15" (uuid "10203040-5060-4070-8a90-000000000010"))
+ (pin "16" (uuid "10203040-5060-4070-8a90-000000000011"))
+ (pin "17" (uuid "10203040-5060-4070-8a90-000000000012"))
+ (pin "18" (uuid "10203040-5060-4070-8a90-000000000013"))
+ (pin "19" (uuid "10203040-5060-4070-8a90-000000000014"))
+ (pin "20" (uuid "10203040-5060-4070-8a90-000000000015"))
+ (pin "21" (uuid "10203040-5060-4070-8a90-000000000016"))
+ (pin "22" (uuid "10203040-5060-4070-8a90-000000000017"))
+ (pin "23" (uuid "10203040-5060-4070-8a90-000000000018"))
+ (pin "24" (uuid "10203040-5060-4070-8a90-000000000019"))
+ (pin "25" (uuid "10203040-5060-4070-8a90-00000000001a"))
+)
+(symbol (lib_id "SR_Bias:CSD19537Q3") (at 34.29 88.9 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000034")
+ (property "Reference" "Q1" (at 34.29 76.9 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "CSD19537Q3T" (at 34.29 100.9 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 34.29 88.9 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 34.29 88.9 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 34.29 88.9 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000035"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000036"))
+ (pin "3" (uuid "10203040-5060-4070-8a90-000000000037"))
+ (pin "4" (uuid "10203040-5060-4070-8a90-000000000038"))
+ (pin "5" (uuid "10203040-5060-4070-8a90-000000000039"))
+ (pin "6" (uuid "10203040-5060-4070-8a90-00000000003a"))
+ (pin "7" (uuid "10203040-5060-4070-8a90-00000000003b"))
+ (pin "8" (uuid "10203040-5060-4070-8a90-00000000003c"))
+)
+(symbol (lib_id "SR_Bias:BSS138") (at 203.2 77.47 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000045")
+ (property "Reference" "Q2" (at 203.2 65.47 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "BSS138-7-F" (at 203.2 89.47 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 203.2 77.47 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 203.2 77.47 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 203.2 77.47 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000046"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000047"))
+ (pin "3" (uuid "10203040-5060-4070-8a90-000000000048"))
+)
+(symbol (lib_id "Device:R") (at 31.75 185.42 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-00000000004c")
+ (property "Reference" "R1" (at 31.75 173.42 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "909k / CRCW0603909KFKEA" (at 31.75 197.42 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 31.75 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 31.75 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 31.75 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-00000000004d"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-00000000004e"))
+)
+(symbol (lib_id "Device:R") (at 71.12 185.42 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000051")
+ (property "Reference" "R2" (at 71.12 173.42 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "35.7k / CRCW060335K7FKEA" (at 71.12 197.42 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 71.12 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 71.12 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 71.12 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000052"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000053"))
+)
+(symbol (lib_id "Device:R") (at 110.49 185.42 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000056")
+ (property "Reference" "R3" (at 110.49 173.42 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "64.9k / CRCW060364K9FKEA" (at 110.49 197.42 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 110.49 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 110.49 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 110.49 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000057"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000058"))
+)
+(symbol (lib_id "Device:R") (at 152.4 185.42 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-00000000005b")
+ (property "Reference" "R4" (at 152.4 173.42 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "30k / CRCW060330K0FKEA" (at 152.4 197.42 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 152.4 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 152.4 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 152.4 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-00000000005c"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-00000000005d"))
+)
+(symbol (lib_id "Device:C") (at 195.58 185.42 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000060")
+ (property "Reference" "C1" (at 195.58 173.42 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "22nF / C0603C223K4RACTU" (at 195.58 197.42 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Capacitor_SMD:C_0603_1608Metric" (at 195.58 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 195.58 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 195.58 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000061"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000062"))
+)
+(symbol (lib_id "Device:C") (at 238.76 185.42 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000065")
+ (property "Reference" "C2" (at 238.76 173.42 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "1uF / C3216X7R2A105K160AA" (at 238.76 197.42 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Capacitor_SMD:C_1206_3216Metric" (at 238.76 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 238.76 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 238.76 185.42 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000066"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000067"))
+)
+(symbol (lib_id "Device:R") (at 34.29 257.81 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-00000000006a")
+ (property "Reference" "R5" (at 34.29 245.81 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "1k / CRCW06031K00FKEA" (at 34.29 269.81 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 34.29 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 34.29 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 34.29 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-00000000006b"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-00000000006c"))
+)
+(symbol (lib_id "Device:R") (at 81.28 257.81 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-00000000006f")
+ (property "Reference" "R6" (at 81.28 245.81 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "100k / CRCW0603100KFKEA" (at 81.28 269.81 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 81.28 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 81.28 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 81.28 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000070"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000071"))
+)
+(symbol (lib_id "Device:C") (at 130.81 257.81 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom no) (on_board no) (in_pos_files no) (dnp yes) (uuid "10203040-5060-4070-8a90-000000000074")
+ (property "Reference" "C3" (at 130.81 245.81 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "11.1uF equivalent -- DNP" (at 130.81 269.81 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 130.81 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 130.81 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 130.81 257.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000075"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000076"))
+)
+(symbol (lib_id "Connector_Generic:Conn_01x02") (at 179.07 265.43 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000079")
+ (property "Reference" "J1" (at 179.07 253.43 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "15 V IN" (at 179.07 277.43 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 179.07 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 179.07 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 179.07 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-00000000007a"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-00000000007b"))
+)
+(symbol (lib_id "Connector_Generic:Conn_01x02") (at 228.6 265.43 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-00000000007e")
+ (property "Reference" "J2" (at 228.6 253.43 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "VDD_SR OUT" (at 228.6 277.43 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 228.6 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 228.6 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 228.6 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-00000000007f"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000080"))
+)
+(symbol (lib_id "Connector_Generic:Conn_01x04") (at 289.56 265.43 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes) (dnp no) (uuid "10203040-5060-4070-8a90-000000000083")
+ (property "Reference" "J3" (at 289.56 253.43 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "CTRL / FAULT" (at 289.56 277.43 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" (at 289.56 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 289.56 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 289.56 265.43 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000084"))
+ (pin "2" (uuid "10203040-5060-4070-8a90-000000000085"))
+ (pin "3" (uuid "10203040-5060-4070-8a90-000000000086"))
+ (pin "4" (uuid "10203040-5060-4070-8a90-000000000087"))
+)
+(symbol (lib_id "power:PWR_FLAG") (at 35.56 330.2 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom no) (on_board no) (in_pos_files no) (dnp no) (uuid "10203040-5060-4070-8a90-00000000008c")
+ (property "Reference" "#FLG_IN" (at 35.56 318.2 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "PWR_FLAG" (at 35.56 342.2 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 35.56 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 35.56 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 35.56 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-00000000008d"))
+)
+(symbol (lib_id "power:PWR_FLAG") (at 60.96 330.2 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom no) (on_board no) (in_pos_files no) (dnp no) (uuid "10203040-5060-4070-8a90-000000000093")
+ (property "Reference" "#FLG_EFUSE" (at 60.96 318.2 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "PWR_FLAG" (at 60.96 342.2 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 60.96 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 60.96 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 60.96 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000094"))
+)
+(symbol (lib_id "power:PWR_FLAG") (at 77.47 330.2 0) (unit 1) (body_style 1) (exclude_from_sim no) (in_bom no) (on_board no) (in_pos_files no) (dnp no) (uuid "10203040-5060-4070-8a90-00000000008f")
+ (property "Reference" "#FLG_GND" (at 77.47 318.2 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "PWR_FLAG" (at 77.47 342.2 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 77.47 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 77.47 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Native electrical concept. NOT_FOR_FAB. Verify physical vendor pad mapping." (at 77.47 330.2 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (pin "1" (uuid "10203040-5060-4070-8a90-000000000090"))
+)
+(label "EFUSE_IN" (at 60.96 330.2 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000095"))
+(label "EFUSE_IN" (at 74.93 64.77 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000001b"))
+(label "EFUSE_IN" (at 74.93 71.12 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000001c"))
+(label "BGATE" (at 74.93 76.2 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000001d"))
+(label "DRV" (at 74.93 82.55 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000001e"))
+(label "VIN_SYS" (at 74.93 88.9 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000001f"))
+(label "UVLO" (at 74.93 95.25 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000020"))
+(label "OVP" (at 74.93 100.33 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000021"))
+(label "PGND" (at 74.93 106.68 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000022"))
+(label "DVDT" (at 74.93 113.03 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000023"))
+(label "ILIM" (at 74.93 119.38 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000024"))
+(label "SHDN" (at 74.93 130.81 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000026"))
+(label "FLT_OC" (at 135.89 71.12 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000028"))
+(label "PGND" (at 135.89 76.2 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000029"))
+(label "VDD_SR" (at 135.89 88.9 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000002b"))
+(label "VDD_SR" (at 135.89 95.25 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000002c"))
+(label "PGND" (at 105.41 139.7 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000033"))
+(label "VIN_SYS" (at 16.51 77.47 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000003d"))
+(label "VIN_SYS" (at 16.51 85.09 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000003e"))
+(label "VIN_SYS" (at 16.51 92.71 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000003f"))
+(label "BGATE" (at 16.51 100.33 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000040"))
+(label "EFUSE_IN" (at 52.07 77.47 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000041"))
+(label "EFUSE_IN" (at 52.07 85.09 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000042"))
+(label "EFUSE_IN" (at 52.07 92.71 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000043"))
+(label "EFUSE_IN" (at 52.07 100.33 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000044"))
+(label "DRV" (at 189.23 69.85 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000049"))
+(label "VIN_SYS" (at 189.23 85.09 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000004a"))
+(label "BGATE" (at 217.17 77.47 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000004b"))
+(label "VIN_SYS" (at 31.75 181.61 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000004f"))
+(label "UVLO" (at 31.75 189.23 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000050"))
+(label "UVLO" (at 71.12 181.61 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000054"))
+(label "OVP" (at 71.12 189.23 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000055"))
+(label "OVP" (at 110.49 181.61 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000059"))
+(label "PGND" (at 110.49 189.23 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000005a"))
+(label "ILIM" (at 152.4 181.61 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000005e"))
+(label "PGND" (at 152.4 189.23 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000005f"))
+(label "DVDT" (at 195.58 181.61 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000063"))
+(label "PGND" (at 195.58 189.23 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000064"))
+(label "VIN_SYS" (at 238.76 181.61 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000068"))
+(label "PGND" (at 238.76 189.23 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000069"))
+(label "ENABLE_5V" (at 34.29 254 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000006d"))
+(label "SHDN" (at 34.29 261.62 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000006e"))
+(label "SHDN" (at 81.28 254 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000072"))
+(label "PGND" (at 81.28 261.62 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000073"))
+(label "VDD_SR" (at 130.81 254 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000077"))
+(label "PGND" (at 130.81 261.62 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000078"))
+(label "VIN_SYS" (at 173.99 265.43 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000007c"))
+(label "PGND" (at 173.99 267.97 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000007d"))
+(label "VDD_SR" (at 223.52 265.43 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000081"))
+(label "PGND" (at 223.52 267.97 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000082"))
+(label "ENABLE_5V" (at 284.48 262.89 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000088"))
+(label "PGND" (at 284.48 265.43 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000089"))
+(label "FLT_OC" (at 284.48 267.97 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000008a"))
+(label "VIN_SYS" (at 35.56 330.2 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-00000000008e"))
+(label "PGND" (at 77.47 330.2 0) (effects (font (size 1.016 1.016))) (uuid "10203040-5060-4070-8a90-000000000091"))
+(no_connect (at 74.93 124.46) (uuid "10203040-5060-4070-8a90-000000000025"))
+(no_connect (at 135.89 64.77) (uuid "10203040-5060-4070-8a90-000000000027"))
+(no_connect (at 135.89 82.55) (uuid "10203040-5060-4070-8a90-00000000002a"))
+(no_connect (at 135.89 100.33) (uuid "10203040-5060-4070-8a90-00000000002d"))
+(no_connect (at 135.89 106.68) (uuid "10203040-5060-4070-8a90-00000000002e"))
+(no_connect (at 135.89 113.03) (uuid "10203040-5060-4070-8a90-00000000002f"))
+(no_connect (at 135.89 119.38) (uuid "10203040-5060-4070-8a90-000000000030"))
+(no_connect (at 135.89 124.46) (uuid "10203040-5060-4070-8a90-000000000031"))
+(no_connect (at 135.89 130.81) (uuid "10203040-5060-4070-8a90-000000000032"))
+(no_connect (at 284.48 270.51) (uuid "10203040-5060-4070-8a90-00000000008b"))
+ (sheet_instances (path "/" (page "1")))
+)
