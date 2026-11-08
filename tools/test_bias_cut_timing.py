@@ -16,6 +16,7 @@ import re
 import pytest
 
 import bias_cut_timing as t
+import ltspice_windows_evidence as transport
 
 
 def _text(rel: str) -> str:
@@ -313,6 +314,25 @@ def test_the_report_records_the_required_conditions() -> None:
 
 def test_the_json_on_disk_is_the_module_output_and_passes_every_check() -> None:
     data = json.loads(t.JSON_PATH.read_text(encoding="utf-8"))
-    assert data == t.record()
+    current = t.record()
+    # The recorded waveform values and complete circuit inputs MUST agree.
+    # The original Windows .log byte hashes are historical and not replaced
+    # when the committed logs have changed formatting in Git transport.
+    historical_no_hash = json.loads(json.dumps(data))
+    current_no_hash = json.loads(json.dumps(current))
+    for name in t.cases():
+        log = t.OUT / f"{name}.log"
+        verified = transport.verify_committed_log_measurements(
+            log,
+            data["results"]["measurements"][name],
+            data["decks"][name]["log_sha256"],
+            t.parse_meas,
+        )
+        assert verified["measurements_exactly_match"]
+        assert not verified["hardware_qualified"]
+        assert data["decks"][name]["cir_sha256"] == current["decks"][name]["cir_sha256"]
+        historical_no_hash["decks"][name].pop("log_sha256")
+        current_no_hash["decks"][name].pop("log_sha256")
+    assert historical_no_hash == current_no_hash
     assert all(data["checks"].values()), data["checks"]
     assert data["evidence"] == "LTSPICE_BEHAVIOURAL_DECKS_ON_REMOTE_WINSRV"

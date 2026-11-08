@@ -37,7 +37,7 @@ Not fabricable today:
 
 Two BSC010N04LS6 driven by one real UCC24624, a fault interface and a REG crowbar.  Its purpose is to measure how one SR pair behaves when a fault command arrives, not to pass the converter's current.
 
-Package: `pcb/sr_fault_validation/fab/` (manifest `8e0351a0fa1370c460f9bbbe7f28521285f3ce7a3cb975b22c6698532a288611`)
+Package: `pcb/sr_fault_validation/fab/` (manifest `5c893edc5957ae6536c912569d0cecb0b4f29dee5a18d14222bc60d359e81491`)
 Board: `pcb/sr_fault_validation/sr_fault_validation.kicad_pcb` (`849bef79b5f2c12ce8ea762d6332b34340ec01eb93276667bb0cf76695304382`)
 Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask, Edge.Cuts
 
