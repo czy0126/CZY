@@ -1,0 +1,460 @@
+{
+  "status": "P0_REVIEW_REQUIRED_NOT_FOR_FAB",
+  "source": "hardware/dcx_main/placeholder_eco.json",
+  "manufacturer_facts": {
+    "CL10B104KB8NNNC": {
+      "value": "100nF",
+      "vendor": "Samsung",
+      "source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf"
+    },
+    "0603WAF1002T5E": {
+      "value": "10kΩ",
+      "vendor": "Uniroyal",
+      "source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804"
+    }
+  },
+  "known_rows": 51,
+  "mismatch_count": 39,
+  "previously_falsely_value_conforming": 37,
+  "known_exact_match_count": 12,
+  "rows": [
+    {
+      "ref": "C10",
+      "role": "REG capacitors",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "2.2uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": "GRM188C71E225KE11D",
+      "approval": false
+    },
+    {
+      "ref": "C101",
+      "role": "VDD decoupling",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C103",
+      "role": "VDD decoupling",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C105",
+      "role": "VDD decoupling",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C107",
+      "role": "VDD decoupling",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C109",
+      "role": "VDD decoupling",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C11",
+      "role": "OC filter (Cf)",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "47nF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C111",
+      "role": "VDD decoupling",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C12",
+      "role": "OC hold (Coc)",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "10nF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C13",
+      "role": "EN filter",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "1nF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C5",
+      "role": "HB bootstrap",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "220nF",
+      "prior_eco_class": "NATIVE_DEVICE_CHANGE",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C6",
+      "role": "SS capacitor",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "10nF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "C7",
+      "role": "REG capacitors",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "2.2uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": "GRM188C71E225KE11D",
+      "approval": false
+    },
+    {
+      "ref": "C8",
+      "role": "REG capacitors",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "2.2uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": "GRM188C71E225KE11D",
+      "approval": false
+    },
+    {
+      "ref": "C9",
+      "role": "REG capacitors",
+      "native_device": "CL10B104KB8NNNC",
+      "native_physical_value": "100nF",
+      "schematic_target": "2.2uF",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B104KB8NNNC_Spec.pdf",
+      "candidate": "GRM188C71E225KE11D",
+      "approval": false
+    },
+    {
+      "ref": "R1",
+      "role": "DT resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "5.36kΩ",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R15",
+      "role": "OC filter series (Rf)",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "1kΩ",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R17",
+      "role": "OC divider bottom (Rd2)",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "24kΩ",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R2",
+      "role": "RT resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "976Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R20",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R21",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R22",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R23",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R24",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R25",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R26",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R27",
+      "role": "SR gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R28",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R29",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R3",
+      "role": "OC burden resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "10Ω",
+      "prior_eco_class": "NATIVE_DEVICE_CHANGE",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R30",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R31",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R32",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R33",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R34",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R35",
+      "role": "SR drain Kelvin link",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "0Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": "CRCW06030000Z0EA",
+      "approval": false
+    },
+    {
+      "ref": "R4",
+      "role": "primary gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R5",
+      "role": "primary gate resistor",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "2.2Ω",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    },
+    {
+      "ref": "R8",
+      "role": "U2 control pull-downs and run jumper",
+      "native_device": "0603WAF1002T5E",
+      "native_physical_value": "10kΩ",
+      "schematic_target": "1kΩ",
+      "prior_eco_class": "ALREADY_CONFORMS",
+      "manufacturer_source": "https://jlcpcb.com/partdetail/0603WAF1002T5E/C25804",
+      "candidate": null,
+      "approval": false
+    }
+  ],
+  "vendor_candidate_sources": {
+    "GRM188C71E225KE11D": "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM188C71E225KE11-01.pdf",
+    "CRCW06030000Z0EA": "https://www.digikey.com/en/products/detail/vishay-dale/CRCW06030000Z0EA/1179296"
+  },
+  "native_eda_modified": false,
+  "physical_parts_ordered": false,
+  "hardware_qualified": false,
+  "fabrication_approved": false,
+  "next_action": "Export native EasyEDA BOM from an EDA project copy, inspect manufacturer MPN/Library code/value for all 39 refs, replace true devices, confirm 0603 pad/REG DC-bias/Kelvin routing before releasing a purchase order"
+}
