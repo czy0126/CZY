@@ -37,8 +37,12 @@ jobs:
           $args = '/i "' + $msi + '" /quiet /norestart'
           $p = Start-Process msiexec.exe -ArgumentList $args -Wait -PassThru
           if ($p.ExitCode -notin @(0,3010)) { throw "MSI failed $($p.ExitCode)" }
-          $exe = Join-Path $env:ProgramFiles 'ADI\LTspice\LTspice.exe'
-          if (-not (Test-Path $exe)) { throw "Installed official LTspice not found" }
+          $candidates = @(
+            (Join-Path $env:ProgramFiles 'ADI\LTspice\LTspice.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\ADI\LTspice\LTspice.exe')
+          )
+          $exe = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $exe) { throw "Installed official LTspice not found in Program Files or LOCALAPPDATA" }
           "LTSPICE=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
       - name: Solve 0.62ms and record actual model response (no hardware claim)
         shell: pwsh
