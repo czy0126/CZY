@@ -1,0 +1,22 @@
+name: D1-two-rail-output-loop-preflight
+on:
+  pull_request:
+    paths:
+      - 'tools/output_loop_budget.py'
+      - 'tools/test_output_loop_budget.py'
+      - 'hardware/dcx_main/output_loop_candidates.json'
+      - '.github/workflows/d1-output-loop-preflight.yml'
+  workflow_dispatch:
+jobs:
+  dc-two-polarity-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check both rails, every joint, and committed arithmetic without hardware claims
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tools/test_output_loop_budget.py tools/test_connector_budget.py
+          python tools/output_loop_budget.py --check
