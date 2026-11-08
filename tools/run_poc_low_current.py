@@ -40,9 +40,9 @@ def read_ltspice_log(path: Path) -> str:
     measurement source; the detected encoding is part of exact evidence.
     """
     raw = path.read_bytes()
-    if raw.startswith((b"\\xff\\xfe", b"\\xfe\\xff")):
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
         return raw.decode("utf-16")
-    if b"\\x00" in raw[:128]:
+    if b"\x00" in raw[:128]:
         return raw.decode("utf-16-le")
     return raw.decode("utf-8")
 
