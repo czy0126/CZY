@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  5a-sr-actual-solve:
+  model-5a-sr-actual-solve:
     runs-on: windows-2025
     timeout-minutes: 48
     steps:
