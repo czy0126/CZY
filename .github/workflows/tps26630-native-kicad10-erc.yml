@@ -20,6 +20,14 @@ jobs:
           sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends kicad kicad-libraries
+          # Headless Actions never launches KiCad's first-run library setup.
+          # Install the official default global library tables explicitly.
+          mkdir -p "${HOME}/.config/kicad/10.0"
+          for table in sym-lib-table fp-lib-table; do
+            source="/usr/share/kicad/template/${table}"
+            test -s "$source" || { echo "KiCad default table unavailable: $source" >&2; exit 2; }
+            cp "$source" "${HOME}/.config/kicad/10.0/${table}"
+          done
           kicad-cli version
           if ! kicad-cli version | grep -Eq '^10\.'; then
             echo 'KiCad 10 expected for project-native ERC' >&2
