@@ -22,6 +22,7 @@ import time
 from pathlib import Path
 
 import poc_low_current_decks as poc
+from poc_raw_evidence import inspect_raw
 
 
 REQUIRED = (
@@ -163,6 +164,7 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
     if not raw.is_file() or raw.stat().st_mtime_ns < start or not raw.stat().st_size:
         raise RuntimeError(f"no fresh, nonempty LTspice .raw for {deck.name}")
     m = measurements(read_ltspice_log(log))
+    raw_check = inspect_raw(raw)
     return {
         "status": "SIMULATION_ONLY",
         "deck": deck.relative_to(poc.ROOT).as_posix(),
@@ -172,6 +174,7 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
         "raw": raw.relative_to(poc.ROOT).as_posix(),
         "raw_sha256": digest_file(raw),
         "raw_bytes": raw.stat().st_size,
+        "raw_evidence": raw_check,
         "spice_executable": str(exe),
         "LTspice_batch_executed": True,
         "hardware_qualified": False,
