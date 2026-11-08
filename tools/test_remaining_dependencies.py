@@ -127,3 +127,15 @@ def test_the_markdown_lists_every_exit_by_id(data):
     text = deps.render(data)
     for row in data["exits"]:
         assert f"### `{row['id']}`" in text, row["id"]
+
+
+def test_native_oem_and_r8_release_block_has_executable_exit(data, gate):
+    row = next((r for r in data["exits"]
+                if r["gate_check"] == "native_manufacturer_ids_and_r8_dnp_verified"), None)
+    assert row is not None
+    assert row["exit_kind"] == "GUI_DEVICE_CHANGE"
+    assert "Manufacturer ID" in row["exit"]
+    assert "BOM AND transferred PCB" in row["exit"]
+    assert row["evidence_file"] == "hardware/dcx_main/native_inventory_bom_gate.json"
+    assert gate["counts"]["native_mpn_target_conflicts"] == 39
+    assert "native_manufacturer_ids_and_r8_dnp_verified" not in data["uncovered_blockers"]
