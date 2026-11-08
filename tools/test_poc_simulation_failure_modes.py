@@ -55,3 +55,9 @@ def test_failed_on_mode_still_executes_off_and_writes_explicit_partial_report(mo
     assert "off" in data["runs"]
     assert data["comparison"]["comparison_available"] is False
     assert data["fab_release"] is False
+
+
+def test_old_24_0_12_is_rejected_even_when_some_measures_exist():
+    with pytest.raises(ValueError, match="requires LTspice 26"):
+        runner.validate_engine_version("LTspice 24.0.12 for Windows\n" + sample_log())
+    assert runner.validate_engine_version("LTspice 26.1.1 for Windows\n") == "LTspice 26.1.1"

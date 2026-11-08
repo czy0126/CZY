@@ -48,6 +48,18 @@ def read_ltspice_log(path: Path) -> str:
     return raw.decode("utf-8")
 
 
+def validate_engine_version(log_text: str) -> str:
+    """Model was authored for LTspice 26; older versions cannot qualify evidence."""
+    match = re.search(r"(?im)^LTspice\s+(\d+)\.(\d+)\.(\d+)", log_text)
+    if not match:
+        raise ValueError("LTspice log has no real simulator version header")
+    major = int(match.group(1))
+    if major < 26:
+        raise ValueError(
+            f"unsupported LTspice {match.group(0)}; D1 model requires LTspice 26+")
+    return match.group(0)
+
+
 def measurements(log_text: str) -> dict[str, float]:
     """LTspice STAT logs: name: MAX(...) = value FROM ... TO ..."""
     parsed: dict[str, float] = {}
@@ -163,7 +175,9 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
         raise RuntimeError(f"no fresh LTspice log for {deck.name}")
     if not raw.is_file() or raw.stat().st_mtime_ns < start or not raw.stat().st_size:
         raise RuntimeError(f"no fresh, nonempty LTspice .raw for {deck.name}")
-    m = measurements(read_ltspice_log(log))
+    log_body = read_ltspice_log(log)
+    engine_version = validate_engine_version(log_body)
+    m = measurements(log_body)
     raw_check = inspect_raw(raw)
     return {
         "status": "SIMULATION_ONLY",
@@ -177,6 +191,7 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
         "raw_evidence": raw_check,
         "spice_executable": str(exe),
         "LTspice_batch_executed": True,
+        "engine_version": engine_version,
         "hardware_qualified": False,
         "measures": m,
     }

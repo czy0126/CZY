@@ -3,6 +3,9 @@ on:
   push:
     branches: [feat/d1-ltspice-real-batch-20261108]
   workflow_dispatch:
+concurrency:
+  group: d1-real-ltspice-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -25,13 +28,13 @@ jobs:
         run: |
           python -m pip install 'pytest>=8,<10'
           python tools/poc_low_current_decks.py --check
-          python -m pytest -q tools/test_poc_low_current_decks.py tools/test_run_poc_low_current.py
+          python -m pytest -q tools/test_poc_low_current_decks.py tools/test_run_poc_low_current.py tools/test_poc_real_run_gate.py tools/test_poc_simulation_failure_modes.py tools/test_poc_raw_evidence.py
       - name: Official manufacturer LTspice x64 MSI
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $msi = Join-Path $env:RUNNER_TEMP 'LTspice64.msi'
-          Invoke-WebRequest -Uri 'https://LTspice.analog.com/download/latest/LTspice64.msi' -OutFile $msi
+          Invoke-WebRequest -Uri 'https://ltspice.analog.com/software/LTspice64.msi' -OutFile $msi
           $signature = Get-AuthenticodeSignature -FilePath $msi
           if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Analog Devices') {
             throw "Invalid Analog Devices MSI signature: $($signature.Status)"
@@ -57,7 +60,7 @@ jobs:
         if: always()
         run: |
           $obj = @{
-            original_msi_url = 'https://LTspice.analog.com/download/latest/LTspice64.msi'
+            original_msi_url = 'https://ltspice.analog.com/software/LTspice64.msi'
             installer_sha256 = $env:ADI_LTSPICE_INSTALLER_SHA
             commit = $env:GITHUB_SHA
             classification = 'SIMULATION_ONLY_NOT_HARDWARE_SIGNOFF'
