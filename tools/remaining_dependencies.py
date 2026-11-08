@@ -118,6 +118,29 @@ def build() -> dict:
             "next_command": "python tools/native_value_eco.py --check",
         },
         {
+            "id": "native_manufacturer_bom",
+            "gate_check": "native_manufacturer_ids_and_r8_dnp_verified",
+            "blocked_by": (
+                f"{counts['native_mpn_target_conflicts']} captured OEM library "
+                "manufacturer MPNs do not match the target electrical part; "
+                f"R8 is still in BOM={counts['native_r8_still_in_bom']} and "
+                f"PCB={counts['native_r8_still_in_pcb']}. "
+                "The captured record is historical, not today's EDA export."),
+            "evidence_file": "hardware/dcx_main/native_inventory_bom_gate.json",
+            "exit_kind": "GUI_DEVICE_CHANGE",
+            "exit": (
+                "in an EasyEDA Pro project COPY replace the actual library "
+                "manufacturer devices and associated footprints/pads, not only "
+                "display Value. Remove R8 from the populated BOM AND transferred "
+                "PCB, then ensure RUN defaults low, independent fault inhibit is "
+                "actually designed, and export the modified live native "
+                "Manufacturer ID/Supplier ID/Value inventory, BOM and nets. "
+                "Recompute its source-bound audit: zero known OEM conflicts "
+                "and R8 false in both real output lists, then independently "
+                "check package pins and signed fabrication evidence."),
+            "next_command": "python tools/native_inventory_bom_gate.py --check",
+        },
+        {
             "id": "native_erc",
             "gate_check": "native_erc_evidence",
             "blocked_by": "native_erc_approved.json is absent (manual_evidence.native_erc)",
