@@ -9,7 +9,9 @@ def test_smoke_deck_exercises_real_one_volt_transient_not_D1_model():
     assert ".tran 0 2u" in s.DECK_TEXT
     assert "V1 n 0 DC 1" in s.DECK_TEXT
     assert ".meas tran vmx" in s.DECK_TEXT
-    assert "SR" not in s.DECK_TEXT.split("\n", 1)[1] or True
+    assert ".include" not in s.DECK_TEXT.lower()
+    assert "SR_DEVICE" not in s.DECK_TEXT
+    assert ".save V(n)" in s.DECK_TEXT
 
 
 def test_real_measure_parser_rejects_bad_values():
