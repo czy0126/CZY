@@ -71,6 +71,21 @@ jobs:
             echo 'The concept schematic is NOT approved. Inspect the uploaded ERC violations.' >&2
           fi
           exit "$code"
+      - name: Export authentic native XML netlist and concept BOM after clean ERC
+        shell: bash
+        run: |
+          kicad-cli sch export netlist --format kicadxml \
+            -o native-erc-results/tps26630-native-netlist.xml \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+          python tools/verify_tps26630_exported_netlist.py \
+            --netlist native-erc-results/tps26630-native-netlist.xml \
+            --out native-erc-results/tps26630-native-pinmap-verification.json
+          kicad-cli sch export bom \
+            -o native-erc-results/tps26630-CONCEPT-NOT-FOR-FAB-bom.csv \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+          kicad-cli sch export svg \
+            -o native-erc-results/ \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
       - name: Upload full native ERC evidence, even on failure
         uses: actions/upload-artifact@v4
         if: always()
