@@ -19,7 +19,7 @@ jobs:
           sudo apt-get install -y software-properties-common
           sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends kicad kicad-libraries
+          sudo apt-get install -y --no-install-recommends kicad kicad-symbols kicad-footprints
           # The KiCad 10 PPA on minimal CI can ship real symbols/footprints
           # without the optional template tables. Register only installed OEM
           # library files rather than suppressing missing-library violations.
