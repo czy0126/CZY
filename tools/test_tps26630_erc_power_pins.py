@@ -12,9 +12,11 @@ SCH = ROOT / "hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.ki
 
 def test_paralleled_out_contacts_use_one_power_driver_and_one_passive_pin():
     source = SCH.read_text(encoding="utf-8")
-    assert source.count('(pin power_out line (at 30.04 9 180)') == 1
-    assert source.count('(pin passive line (at 30.04 3 180)') == 1
-    assert source.count('(pin power_out line (at 30.04 3 180)') == 0
+    # Actual KiCad 10 symbol-grid coordinates from the OEM-mapped U1 symbol.
+    # Check pin types on distinct physical OUT pins, not a stale draft grid.
+    assert source.count('(pin power_out line (at 30.48 8.89 180)') == 1
+    assert source.count('(pin passive line (at 30.48 2.54 180)') == 1
+    assert source.count('(pin power_out line (at 30.48 2.54 180)') == 0
     # Two manufacturer OUT pins still physically appear and share VDD_SR.
     assert '(number "17"' in source and '(number "18"' in source
     assert source.count('(label "VDD_SR" (at 135.04 ') == 2
