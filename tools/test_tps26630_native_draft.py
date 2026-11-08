@@ -133,7 +133,7 @@ def test_native_annotation_is_numeric_and_functional_role_mapping_is_complete():
     assert len({x["native_ref"] for x in records}) == len(records)
     for alias, ref in REFMAP.items():
         assert ref in d["refs"] and alias not in d["refs"], (alias, ref)
-        assert re.fullmatch(r"[RCJ]\\d+", ref), ref
+        assert re.fullmatch(r"[RCJ]\d+", ref), ref
     for ref in d["refs"]:
         if not ref.startswith("#"):
-            assert re.fullmatch(r"[UQRCJ]\\d+", ref), ref
+            assert re.fullmatch(r"[UQRCJ]\d+", ref), ref
