@@ -1,0 +1,52 @@
+name: TPS26630-actual-KiCad10-native-ERC
+on:
+  push:
+    branches:
+      - feat/sr-bias-tps26630-hardware-design-kit-20261107
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-kicad10-erc-diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install KiCad 10 from the official project Ubuntu stable PPA
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kicad
+          kicad-cli version
+          if ! kicad-cli version | grep -Eq '^10\.'; then
+            echo 'KiCad 10 expected for project-native ERC' >&2
+            exit 2
+          fi
+      - name: Preserve an independent full-severity ERC report; any violation fails the job
+        shell: bash
+        run: |
+          mkdir -p native-erc-results
+          set +e
+          kicad-cli sch erc \
+            --severity-all \
+            --exit-code-violations \
+            --format json \
+            -o native-erc-results/tps26630-native-erc.json \
+            hardware/sr_bias_efuse_proposal/native/tps26630_sr_bias_concept.kicad_sch
+          code=$?
+          echo "True native KiCad 10 ERC exit status: $code"
+          if [[ "$code" -ne 0 ]]; then
+            echo 'The concept schematic is NOT approved. Inspect the uploaded ERC violations.' >&2
+          fi
+          exit "$code"
+      - name: Upload full native ERC evidence, even on failure
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tps26630-native-kicad10-erc-diagnostic
+          path: native-erc-results/
+          if-no-files-found: warn
+          retention-days: 30
