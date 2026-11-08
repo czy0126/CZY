@@ -1,6 +1,6 @@
 # D1 | 15 V SR 偏置电源改版候选：TPS26630 + 外部反灌阻断
 
-**状态：OEM_SOURCED_NATIVE_KICAD_DRAFT_NOT_FOR_FAB。** 本包已包含独立可编辑 KiCad 原生原理图草案与工程文件，以及真实厂家料号、引脚、计算和参考电路；**尚未运行原生 KiCad ERC、未补齐 U1/Q1 物理封装、没有 PCB 或硬件，不具备投板批准**。
+**状态：OEM_SOURCED_NATIVE_KICAD_DRAFT_NOT_FOR_FAB。** 本包已包含独立可编辑 KiCad 原生原理图草案与工程文件，以及真实厂家料号、引脚、计算和参考电路；**已通过真实 KiCad 10.0.8 全严重度 ERC（0 条违规），已导出真实 XML 网表及逐脚 OEM 对照；U1/Q1 物理封装、PCB 与硬件验证仍缺失，不具备投板批准**。
 
 ## 1. 设计架构与决策
 
@@ -74,7 +74,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 
 | 工序 | 下一项实际交付 | 验收边界 |
 |---|---|---|
-| A 原生 CAD | **已生成** KiCad 原生草案（17 个器件实例），并由 Python 逐脚核对 36 个 OEM 引脚和模拟分压、SHDN 等网标签；下一步须在 KiCad10 正式运行 ERC / netlist 并落地 U1/Q1 真实 footprint | 现阶段仅为源级净表一致性验证，**正式 KiCad ERC/封装未核准**，不能投板 |
+| A 原生 CAD | **已生成** KiCad 原生草案（17 个器件实例），并由 Python 逐脚核对 36 个 OEM 引脚和模拟分压、SHDN 等网标签；已通过 KiCad10 全严重度 ERC，实际导出 netlist 并对照36脚；下一步落地 U1/Q1真实 footprint | 现阶段仅为源级净表一致性验证，**正式 ERC 已通过，但封装未核准**，不能投板 |
 | B 器件模型 | 选用 TI/TINA 或 PSpice 模型，逐个跑 14.25/15/15.75V、16/18V 外灌、输入丢失、故障/复位/5V掉电、15µF容差与温度 | 证明限流、反灌、Vgs和SOA，并记录仿真 hash；当前不冒充已跑 |
 | C 放电拓扑 | 采用 reverse-aware 或单次能量受限放电，不长期让 47Ω承受18V外灌 | 明确 Rdis 脉冲功率/脉宽/重复率与后续 VDD_SR 是否仍被强制抬高；反例先于布板 |
 | D 实物验证 | EVM 或工程样板、同步获取 H1/H5 真实原始示波器数据及偏置电流 | 证明 REG、VGS、VDD 和反馈在真实门极受激励后保持正确；无实测则不通过 |
@@ -93,7 +93,7 @@ PGTH(15) -> PGND if PGOOD unused (must be checked); NC pins 19–24 open
 
 - `native/tps26630_sr_bias_concept.kicad_sch` 和同名 `.kicad_pro` 是 **可编辑的原生 KiCad 文件**，含 TPS26630、Q1/Q2、分压网络、限流、dVdT、CIN 和 ENABLE_5V 接口；没有复制旧的常通电 47Ω 放电电阻。自检见 `tools/test_tps26630_native_draft.py`。
 - 原生 U1 用 **临时符号 25 代表厂商 EP**，CSV 仍保存 `EP`；当前不提供已验证的 TPS26630 RGE24 及 CSD19537Q3 DQG8 的真实 footprint，避免把一个看似能导出网表的文件误认为可以组装。
-- 该草案没有经过本次会话可访问的 KiCad 10 ERC/网表导出、没有正式 KiCad PCB、没有过流/反灌器件级瞬态仿真、没有 H1/H5 实测；**不能用于下单**。
+- 该草案已通过真实 KiCad 10 ERC并导出了网表/BOM/SVG和逐脚核验报告，但没有正式 KiCad PCB、没有过流/反灌器件级瞬态仿真、没有 H1/H5 实测；**不能用于下单**。
 - 用户可直接在 KiCad 中打开项目，补充厂商 land pattern、运行全严重度 ERC，导出 netlist 并与 `tps26630_pinmap.csv` 逐脚比对；不要擅自为 NC 脚和暴露焊盘指定实体铜面/网络。
 
 
@@ -108,3 +108,11 @@ tools/tps26630_bias_design.py 的 possible_full_d1_sr_gate_drive 读取主板 de
 - 合计 ≈ **0.1135 A**，TPS26630 的 0.6 A 名义限流与该初步值之比约 **5.3**。这是**典型门极电荷加手册运行电流锚点**，绝不是全温最大值；不含器件散布、死区、热、实际门极电荷和辅助 15 V 负载。
 
 **重要**：eFuse 0.6 A 名义限流不能自动解决 UCC24624 持续 REG 撬棒的芯片内部耗散。必须依靠独立 5 V 故障锁存后的 SHDN 长保持断电，并保留每路 Q41/R44 的快速 REG 关断。四路共地可行性必须先在原生主板 VSS/PGND、中心抽头与绝缘规则中复核；若不满足则应分区供电，不得盲目共用。
+
+## 8. 真实 KiCad ERC、网表与标准制造参考位号（2026-11-08）
+
+PR #52 已由官方 KiCad 10.0.8 在 GitHub Linux Runner 执行全严重度 ERC，最终 0 条违规。同期产物：原生 netlist（kicadxml）、草案 BOM（CSV）、SVG 电路图，以及独立读取 KiCad XML 网络的 36 脚 OEM 映射检查。结果见 https://github.com/czy0126/CZY/actions/runs/42483100265 。
+
+**新的原生参考位号**符合 R1…R6、C1…C3、J1…J3 和 U1/Q1/Q2；旧功能名称如 RUV_TOP、CIN、J_IN、COUT_MODEL 保留在原有 component_candidates.csv 和 native/native_reference_map.csv 中追溯。原因是 KiCad 之前导出的 BOM 包含 RUV_TOP?、J_IN? 等未正常注释的值，不能用作正式装配清单。再次 ERC/导出后才能认定新的真实 BOM 完全注释。
+
+本原生草案仅表示原理图网表和 ERC 已通过，**不代表封装、焊盘、热、过载电流反向阻断、独立FAULT、电源实测或 PCB 可生产**。U1/Q1 的 footprint 仍留空，真实器件需厂家 land pattern 及 SOA 复核，独立放电回路也尚未完成。不得据此发起下单。

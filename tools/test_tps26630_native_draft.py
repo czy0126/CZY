@@ -17,6 +17,12 @@ import tps26630_bias_design as spec
 
 SCH = spec.FOLDER / "native/tps26630_sr_bias_concept.kicad_sch"
 PRO = spec.FOLDER / "native/tps26630_sr_bias_concept.kicad_pro"
+REFMAP = {
+    "RUV_TOP": "R1", "RUV_MID": "R2", "ROV_BOT": "R3",
+    "RILIM": "R4", "R_EN_SER": "R5", "R_EN_PD": "R6",
+    "CDVDT": "C1", "CIN": "C2", "COUT_MODEL": "C3",
+    "J_IN": "J1", "J_OUT": "J2", "J_CTRL": "J3",
+}
 
 
 def _locations() -> dict:
@@ -79,7 +85,7 @@ def test_bias_native_is_not_the_unsafe_old_bias_cut():
     d = _locations()
     for old in ("R57", "Q54", "Q50", "Q51", "Q55"):
         assert old not in d["refs"]
-    assert "COUT_MODEL" in d["refs"]
+    assert "C3" in d["refs"]
     assert "(dnp yes)" in d["src"]
     assert "VDD_SR" in d["src"]
 
@@ -98,7 +104,7 @@ def test_enable_and_analog_divider_connect_as_drawn():
     }
     for ref, nets in wanted.items():
         for pin, expected in nets.items():
-            at = d["refs"][ref][pin]
+            at = d["refs"][REFMAP[ref]][pin]
             assert expected in d["labels"].get(at, set()), (ref, pin, expected, at)
 
 
@@ -118,3 +124,16 @@ def test_no_vendor_footprint_has_been_falsely_approved():
     for ref in ("U1", "Q1"):
         assert ref in found
         assert '(property "Footprint" ""' in found[ref], ref
+
+def test_native_annotation_is_numeric_and_functional_role_mapping_is_complete():
+    import csv
+    records = list(csv.DictReader((SCH.parent / "native_reference_map.csv").open(encoding="utf-8")))
+    assert {x["functional_ref"]: x["native_ref"] for x in records} == REFMAP
+    d = _locations()
+    assert len({x["native_ref"] for x in records}) == len(records)
+    for alias, ref in REFMAP.items():
+        assert ref in d["refs"] and alias not in d["refs"], (alias, ref)
+        assert re.fullmatch(r"[RCJ]\\d+", ref), ref
+    for ref in d["refs"]:
+        if not ref.startswith("#"):
+            assert re.fullmatch(r"[UQRCJ]\\d+", ref), ref
