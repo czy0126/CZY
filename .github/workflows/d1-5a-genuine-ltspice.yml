@@ -1,4 +1,4 @@
-name: D1-5A-real-LTspice-batch
+name: D1-5A-and-10A-real-LTspice-batch
 on:
   push:
     branches: [feat/d1-ltspice-real-batch-20261108]
@@ -6,7 +6,13 @@ on:
 permissions:
   contents: read
 jobs:
-  model-5a-sr-actual-solve:
+  model-5a-and-10a-sr-actual-solve:
+    strategy:
+      fail-fast: false
+      matrix:
+        nominal_case: ['5a', '10a']
+    env:
+      POC_CASE: ${{ matrix.nominal_case }}
     runs-on: windows-2025
     timeout-minutes: 48
     steps:
@@ -43,9 +49,9 @@ jobs:
           if (-not $exe) { throw 'Official installer completed but LTspice.exe was not found' }
           "LTSPICE=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
           "Official ADI installer SHA: $hash"
-      - name: Run 5A nominal-load SR-on and SR-off with genuine LTspice batch
+      - name: Run model case using real LTspice, SR on and SR off
         shell: pwsh
-        run: python tools/run_poc_low_current.py --case 5a --mode both --run
+        run: python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run
       - name: Record environment provenance (not success proof)
         shell: pwsh
         if: always()
@@ -57,19 +63,20 @@ jobs:
             classification = 'SIMULATION_ONLY_NOT_HARDWARE_SIGNOFF'
             note = 'This metadata exists on failure too; inspect the job conclusion and measured logs'
           }
-          $obj | ConvertTo-Json | Out-File sim/v3/poc_5a_windows_environment.json -Encoding utf8
+          $resultFile = 'sim/v3/poc_' + $env:POC_CASE + '_windows_environment.json'
+          $obj | ConvertTo-Json | Out-File $resultFile -Encoding utf8
       - name: Keep unmodified simulator evidence even when solver errors
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: d1-5a-sr-on-off-LTspice-evidence
+          name: d1-${{ matrix.nominal_case }}-sr-on-off-LTspice-evidence
           path: |
-            sim/v3/poc_5a_sr_on.log
-            sim/v3/poc_5a_sr_off.log
-            sim/v3/poc_5a_sr_on.raw
-            sim/v3/poc_5a_sr_off.raw
-            sim/v3/poc_5a_comparison_model_only.json
-            sim/v3/poc_5a_windows_environment.json
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_on.log
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_off.log
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_on.raw
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_off.raw
+            sim/v3/poc_${{ matrix.nominal_case }}_comparison_model_only.json
+            sim/v3/poc_${{ matrix.nominal_case }}_windows_environment.json
           if-no-files-found: warn
           retention-days: 14
           compression-level: 1
