@@ -1,0 +1,118 @@
+{
+  "hardware_qualified": false,
+  "switching_frequency_hz": 200620,
+  "gate_charge_reference_nc": 83,
+  "gate_charge_condition": "0 to 10V, VDS20V ID50A; not actual SR charge at 11.9V",
+  "gate_current_per_controller_a": 0.03330292,
+  "bias_reference_a": 0.03480292,
+  "reg_characterized_load_a": 0.03,
+  "within_30ma_characterized_load": false,
+  "engineering_reg_target_a": 0.024,
+  "target_max_charge_per_fet_nc": 59.814574818063996,
+  "frequency_at_30ma_using_83nc_hz": 180722.89156626505,
+  "low_qg_candidate": {
+    "mpn": "BSC022N04LS6",
+    "status": "BENCH_COMPARISON_CANDIDATE_NOT_APPROVED_REPLACEMENT",
+    "datasheet": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc022n04ls6-datasheet-en.pdf",
+    "qg_10v_typ_nc": 28,
+    "qg_max_nc": null,
+    "rds_10v_max_ohm": 0.0022,
+    "typ_gate_current_a": 0.01123472,
+    "engineering_double_typ_gate_current_a": 0.02246944,
+    "scope": "2x typical is an engineering sensitivity, NOT a manufacturer maximum or guaranteed 11.9V charge.",
+    "required": [
+      "Check actual gate charge at SR VDS / 11.9V / temperature",
+      "Check hot RMS conduction losses, commutation and physical land pattern"
+    ],
+    "reference_extra_loss_100a_w": 3.0000000000000004,
+    "loss_scope": "25C resistance comparison; ideal flat 25A per pair with alternate conduction, NOT actual resonant RMS or hot loss"
+  },
+  "decision": "Do not freeze existing SR pairing at full frequency; separate branches do not solve internal REG load capability.",
+  "rows": [
+    {
+      "vin_nom_v": 15,
+      "input_tolerance": 0.05,
+      "controllers_on_branch": 1,
+      "scenario": "10V_datasheet_charge_reference",
+      "branch_a": 0.03480292,
+      "vdd_estimate_v": 12.5542429132,
+      "r59_w": 0.026913824804496608,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 15,
+      "input_tolerance": 0.05,
+      "controllers_on_branch": 1,
+      "scenario": "engineering_stress",
+      "branch_a": 0.05,
+      "vdd_estimate_v": 12.2155,
+      "r59_w": 0.05555000000000001,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 15,
+      "input_tolerance": 0.05,
+      "controllers_on_branch": 4,
+      "scenario": "10V_datasheet_charge_reference",
+      "branch_a": 0.13921168,
+      "vdd_estimate_v": 10.2269716528,
+      "r59_w": 0.4306211968719457,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 15,
+      "input_tolerance": 0.05,
+      "controllers_on_branch": 4,
+      "scenario": "engineering_stress",
+      "branch_a": 0.2,
+      "vdd_estimate_v": 8.872,
+      "r59_w": 0.8888000000000001,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 16.5,
+      "input_tolerance": 0.03,
+      "controllers_on_branch": 1,
+      "scenario": "10V_datasheet_charge_reference",
+      "branch_a": 0.03480292,
+      "vdd_estimate_v": 14.309242913199999,
+      "r59_w": 0.026913824804496608,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 16.5,
+      "input_tolerance": 0.03,
+      "controllers_on_branch": 1,
+      "scenario": "engineering_stress",
+      "branch_a": 0.05,
+      "vdd_estimate_v": 13.9705,
+      "r59_w": 0.05555000000000001,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 16.5,
+      "input_tolerance": 0.03,
+      "controllers_on_branch": 4,
+      "scenario": "10V_datasheet_charge_reference",
+      "branch_a": 0.13921168,
+      "vdd_estimate_v": 11.981971652799999,
+      "r59_w": 0.4306211968719457,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    },
+    {
+      "vin_nom_v": 16.5,
+      "input_tolerance": 0.03,
+      "controllers_on_branch": 4,
+      "scenario": "engineering_stress",
+      "branch_a": 0.2,
+      "vdd_estimate_v": 10.626999999999999,
+      "r59_w": 0.8888000000000001,
+      "scope": "VF=0.92V and Rds=0.07 are stated-condition references, NOT all-temperature bounds"
+    }
+  ],
+  "sources": [
+    "references/datasheets/ucc24624.txt section 8.3.2 and 7.5",
+    "references/datasheets/bsc010n04ls6.txt gate charge table"
+  ],
+  "next": "Verify actual SR Qg at gate voltage and temperature; prefer low-Qg FET <=59.82nC engineering target including margin, or qualify external buffer. Do not feed external power into REG without approval from device documentation."
+}

@@ -1,0 +1,46 @@
+Coupled bias and REG sensitivity - no vendor model, no SR gate switching
+VIN VDD_IN 0 15
+VFAULT FAULT 0 PULSE(0 5 20m 10n 10n 1 2)
+* 4us is an assumed command delay, not a verified controller delay.
+VEN EN 0 PWL(0 5 20.004m 5 20.00401m 0)
+VDIS DIS_EN 0 PWL(0 0 20.006m 0 20.00601m 5)
+R50 VDD_IN BC_GATE 10k
+S52 BC_GATE 0 EN 0 PULL
+Cgs BC_GATE VDD_IN 8.61e-10
+Cgd BC_GATE PASS_OUT 1.47e-10
+S50 VDD_IN PASS_OUT VDD_IN BC_GATE PASS
+DBODY PASS_OUT VDD_IN BODY
+R59 PASS_OUT D_ANODE 22
+D50 D_ANODE VDD_SR RECT
+C54 VDD_SR 0 11.1u
+R58 VDD_SR 0 100k
+R57 VDD_SR DIS 2200
+S54 DIS 0 DIS_EN 0 PULL
+* Pass regulator conserves power: current is drawn from VDD, not ground.
+* Arbitrary smooth current-limited law, not an actual foldback curve.
+BREG VDD_SR REG I=limit((min(11,V(VDD_SR)-0.2)-V(REG))*1,0,0.013)
+BQUIET VDD_SR 0 I=0.0015*limit(V(VDD_SR)/5,0,1)
+CREG REG 0 2.3u
+RREG REG 0 100k
+R44 REG CROW 4.7
+S41 CROW 0 FAULT 0 CROWBAR
+VINJ INJ 0 PWL(0 0 19.999m 0 20m 18)
+D_INJ INJ RINJ BODY
+RINJ RINJ VDD_SR 1000
+.model PULL SW(Ron=2 Roff=1e10 Vt=2.5)
+.model CROWBAR SW(Ron=.048 Roff=1e10 Vt=2.5)
+.model PASS SW(Ron=.07 Roff=1e10 Vt=2.1 Vh=-.1)
+.model BODY D(Is=1n Rs=.1)
+.model RECT D(Is=1n N=1.5 Rs=.05 Cjo=10p BV=200)
+.tran 0 100m 0 1u
+.options plotwinsize=0
+.meas tran reg_before AVG V(REG) FROM 18m TO 19m
+.meas tran gate_off_at WHEN V(VDD_IN,BC_GATE)=2.1 FALL=1 TD=20m
+.meas tran reg_off_at WHEN V(REG)=3.63 FALL=1 TD=20m
+.meas tran pass_energy INTEG (V(VDD_SR,REG)*I(BREG)) FROM 20m TO 100m
+.meas tran r44_energy INTEG (V(REG,CROW)*V(REG,CROW)/4.7) FROM 20m TO 100m
+.meas tran q41_energy INTEG (V(CROW)*V(CROW)/.048) FROM 20m TO 100m
+.meas tran reg_pass_power_end AVG (V(VDD_SR,REG)*I(BREG)) FROM 90m TO 100m
+.meas tran vdd_end AVG V(VDD_SR) FROM 90m TO 100m
+.meas tran reg_end AVG V(REG) FROM 90m TO 100m
+.end

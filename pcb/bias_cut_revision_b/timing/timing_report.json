@@ -1,0 +1,236 @@
+{
+  "task": "T3_DEVICE_AND_CONTROL_TIMING",
+  "evidence": "LTSPICE_BEHAVIOURAL_DECKS_ON_REMOTE_WINSRV",
+  "simulator": "LTspice 26.0.2 at D:/ADI/LTspice-26.0.2/LTspice.exe",
+  "measured": false,
+  "hardware_qualified": false,
+  "checks": {
+    "no_conduction_before_first_reset": true,
+    "fault_cuts_the_bias": true,
+    "fault_latches_and_blocks_reset": true,
+    "permit_withdrawal_cuts_without_latching": true,
+    "five_v_loss_cuts_the_bias": true,
+    "explicit_reset_restores_every_scenario": true,
+    "q54_overlap_current_is_bounded": true
+  },
+  "results": {
+    "cut_delay": {
+      "rows": {
+        "14.25V": {
+          "vdd_in_v": 14.25,
+          "ciss_f": 1.008e-09,
+          "r50_ohm": 10000.0,
+          "tau_s": 1.008e-05,
+          "vth_abs_v": 2.0,
+          "delay_to_vth_s": 1.979318603963952e-05,
+          "delay_to_13v5_s": 2.9679944909997718e-05
+        },
+        "15.00V": {
+          "vdd_in_v": 15.0,
+          "ciss_f": 1.008e-09,
+          "r50_ohm": 10000.0,
+          "tau_s": 1.008e-05,
+          "vth_abs_v": 2.0,
+          "delay_to_vth_s": 2.0310222447066027e-05,
+          "delay_to_13v5_s": 2.3210057737379984e-05
+        },
+        "15.75V": {
+          "vdd_in_v": 15.75,
+          "ciss_f": 1.008e-09,
+          "r50_ohm": 10000.0,
+          "tau_s": 1.008e-05,
+          "vth_abs_v": 2.0,
+          "delay_to_vth_s": 2.0802027301893905e-05,
+          "delay_to_13v5_s": 1.961477430247756e-05
+        }
+      },
+      "placeholder_rev_a_60pf_100k_s": 1.3815510557964276e-05,
+      "rev_a_measured_s": 1.336e-05,
+      "ratio_to_placeholder": 1.68
+    },
+    "r59": {
+      "inrush": {
+        "vdd_in_v": 15.75,
+        "r59_ohm": 22.22,
+        "q50_rds_ohm": 0.2,
+        "i_peak_a": 0.7024977698483498,
+        "peak_w": 10.965639251783129,
+        "energy_j": 0.0013402303189704926,
+        "equivalent_width_s": 0.00012222090187332735,
+        "voltage_v": 15.75
+      },
+      "pulse_limit_w": 886.202948435466,
+      "pulse_limit_floor_0402_w": 133.68018144492154,
+      "pulse_margin_x": 80.81635079244104,
+      "pulse_margin_floor_x": 12.190824299019662,
+      "single_pulse_pass": true,
+      "voltage_pass": true,
+      "steady_w": 0.03353714595000001,
+      "steady_rise_k": 3.6890860545000006,
+      "steady_pass": true,
+      "average_w_at_event_rate": 0.0013402303189704926,
+      "events_per_s_for_p70": 559.6053076728766,
+      "continuous_pulse_pass_at_1_per_s": true,
+      "notes": "the pulse curve is read from a PNG, so the margin is quoted against the 0402 floor as well; both pass by more than 10x"
+    },
+    "five_v_loss_hold": {
+      "vdd_sr_3ms": 3.95245808486,
+      "vdd_sr_6ms": 3.81497736872,
+      "v_reg_off_max_v": 3.63,
+      "v_reg_uvlo_vdd_v": 4.13,
+      "gates_may_still_be_driven_at_6ms": true,
+      "gate_clamp_in_regulation_at_6ms": false
+    },
+    "measurements": {
+      "nominal": {
+        "vdd_sr_max": 13.2619581223,
+        "vdd_sr_min": -0.136392980814,
+        "i_r59_peak": 0.62522482872,
+        "gate_off_max": 14.9998378754,
+        "vdd_sr_after_fault": 3.98404300214,
+        "vdd_sr_on": 13.2610197067,
+        "t_cut_nominal": 2.41833462416e-05,
+        "latched_after_fault": 4.98253440857,
+        "enable_after_fault": 0.0
+      },
+      "five_v_first": {
+        "vdd_sr_max": 13.2619581223,
+        "vdd_sr_min": -0.161884605885,
+        "i_r59_peak": 0.62634408474,
+        "gate_off_max": 14.999838829,
+        "vdd_sr_before_15v": 0.0,
+        "vdd_sr_before_reset": -0.0811706408858,
+        "vdd_sr_after_reset": 13.2618160248
+      },
+      "five_v_last": {
+        "vdd_sr_max": 13.2619581223,
+        "vdd_sr_min": -0.173055455089,
+        "i_r59_peak": 0.626834571362,
+        "gate_off_max": 14.9998397827,
+        "vdd_sr_before_reset": 0.00012472414528,
+        "vdd_sr_after_reset": 13.2557301521
+      },
+      "five_v_loss": {
+        "vdd_sr_max": 13.2619562149,
+        "vdd_sr_min": -0.113462664187,
+        "i_r59_peak": 0.624614655972,
+        "gate_off_max": 14.9998369217,
+        "vdd_sr_on": 13.2557549477,
+        "t_cut_5vloss": 2.30533753169e-05,
+        "i_overlap_5vloss": 0.0406340360641,
+        "vdd_sr_3ms_after_loss": 3.95245808486,
+        "vdd_sr_6ms_after_loss": 3.81497736872
+      },
+      "slow_power_up": {
+        "vdd_sr_max": 13.2618160248,
+        "vdd_sr_min": -0.146485447884,
+        "i_r59_peak": 0.625667989254,
+        "gate_off_max": 14.999838829,
+        "vdd_sr_before_reset": 0.0764854326844,
+        "vdd_sr_after_reset": 12.9881925583
+      },
+      "fault_reset_overlap": {
+        "vdd_sr_max": 13.2619581223,
+        "vdd_sr_min": -0.113462664187,
+        "i_r59_peak": 0.624614655972,
+        "gate_off_max": 14.9998369217,
+        "vdd_sr_on": 13.2618169785,
+        "latched_during_overlap": 4.99999952316,
+        "enable_during_overlap": 0.0,
+        "latched_after_overlap": 4.97755455971,
+        "vdd_sr_after_overlap": 3.9840413332
+      },
+      "permit_withdraw": {
+        "vdd_sr_max": 13.2619581223,
+        "vdd_sr_min": -0.113462664187,
+        "i_r59_peak": 0.624614655972,
+        "gate_off_max": 14.9998369217,
+        "vdd_sr_on": 13.2557549477,
+        "t_cut_permit": 2.37002419118e-05,
+        "i_overlap_permit": 0.0410978123546,
+        "vdd_sr_after_withdraw": 3.76981698966,
+        "vdd_sr_restored": 13.2618532181,
+        "latched_during_withdraw": 0.0
+      },
+      "permit_high_at_power_up": {
+        "vdd_sr_max": 13.2618246078,
+        "vdd_sr_min": -0.00136616802774,
+        "i_r59_peak": 0.624614655972,
+        "gate_off_max": 14.999797821,
+        "vdd_sr_before_reset": 1.26561760902,
+        "enable_max_early": 5.0,
+        "i_r59_peak_early": 0.624614655972
+      }
+    }
+  },
+  "decks": {
+    "nominal": {
+      "cir_sha256": "275259389bd8ebe2c9eb8dcdfe4a01f19abc9ad46921e90ae2b87f31fdc31fcc",
+      "log_sha256": "6b57f1be30a2d3660ed002efd51460165f6b877f60b015c4279b6a3ceba8886a"
+    },
+    "five_v_first": {
+      "cir_sha256": "856045603831e22fac313720407558aaf3e3ae37e298a3d7069cf40c9ec8137f",
+      "log_sha256": "e71d2eb926ca701cf34b76e92f41ffb9dce6677fa68309575ddaff7bb2e6f107"
+    },
+    "five_v_last": {
+      "cir_sha256": "f1379fb8c178ddb4817bae6310a82706087041ea52d68ac3519bb661ec7bfb00",
+      "log_sha256": "388f18cc0217ecc7df7e6dcf0d39070ba534fb91c995b265c54b3775c06cdf41"
+    },
+    "five_v_loss": {
+      "cir_sha256": "ebeac1ee90755bcee98255818e3eb1e12a4d46e3645d74a3f9a9166dbfc13002",
+      "log_sha256": "2255601deb4aca8710e782d6b2088b96861ab7d7170ba8d8a02ae90b6e8a6914"
+    },
+    "slow_power_up": {
+      "cir_sha256": "9510f4b21b10deab933c4d2833fdd6b49b9fd8ae3d26f5a801e5df7617199465",
+      "log_sha256": "7eefa4a274958ee21773a8c75ad1f11985bb486ce00a198f61c9d8be3add3e28"
+    },
+    "fault_reset_overlap": {
+      "cir_sha256": "f1a26a6844204ea5555a1093eaee4e433fbb97afadebee2a8ef4d2bb22c25315",
+      "log_sha256": "6539a47c6f6fa65159de072d243e5927ffa55a872227cb2615519ad21bd88e58"
+    },
+    "permit_withdraw": {
+      "cir_sha256": "69d9b5b1e1c8d4f0184fa5a39df2900f16408feef37abd1bd62bcce0a9933764",
+      "log_sha256": "a3949ee5e985f1984641967c6e0af031b4e6baa216bc0a3bf9c926373df9be6f"
+    },
+    "permit_high_at_power_up": {
+      "cir_sha256": "64ec92c7e26e28f0d84219a2dd41fe02ceb435feb01f49fdcb6b1a5e24fd784a",
+      "log_sha256": "1f9229f616a679183eb305215d5fcb8a8f8b170ba31069a254fda8c49750a673"
+    }
+  },
+  "model": {
+    "q50": {
+      "ciss_f": 1.008e-09,
+      "ciss_status": "URL_ONLY_NOT_IN_REPO (336 pF typ / 1008 pF max)",
+      "cgs_f": 9e-10,
+      "cgd_f": 1.08e-10,
+      "vth_abs_v": 2.0,
+      "rds_ohm": 0.2,
+      "kind": "RC + switch, Miller plateau not reproduced"
+    },
+    "logic_delays": {
+      "cd4069ub_max_s": 1.1e-07,
+      "cd4071b_max_s": 2.5e-07,
+      "cd4081b_max_s": null,
+      "cd4081b_proxy_s": 2.5e-07,
+      "cd4081b_proxy_note": "proxy, not a datasheet number: the datasheet publishes no maximum; 250 ns is the CD4071B max from the same family and supply",
+      "cd4013b_set_to_q_max_s": 4e-07
+    },
+    "latch_initial_state": "cleared (ic=0), not preinitialised",
+    "five_v_domain": "PWL; every gate forced low below 4.5 V"
+  },
+  "decision": {
+    "r59_status": "PASS on the vendored curve for a single event, with >10x margin against even the 0402 floor; PASS on steady and average power. The one thing the curve cannot cover is the Q50 SOA during the same inrush, which is a different part.",
+    "cut_delay_is_slower_than_rev_a": "at 15 V the gate crosses 13.5 V after 23.2 us, 1.7x the Rev A placeholder's 13.8 us, because 1008 pF is 17x the placeholder.  T2's 13.36 us input-delay energy must be re-read at this value; it stays negligible against the 1.28 mJ capacitor energy but the number moves.",
+    "five_v_loss_does_not_kill_gate_drive_immediately": "the cut itself lands in ~23 us, but VDD_SR stays above the 3.63 V REG turn-off floor for milliseconds (3.95 V at +3 ms, 3.81 V at +6 ms) on the local 11.1 uF.  Below 4.13 V the UCC24624 can no longer hold REG in regulation, so the gate clamp is already out of spec.  The guarantee that the SR gates are off after a 5 V loss must come from a clamp in the 5 V domain, not from the bias cut.",
+    "what_the_deck_cannot_close": "no Q50 SOA, no PCB thermal impedance, no CMOS output drive strength, no real DMP3098L model, no SR commutation."
+  },
+  "open": [
+    "the 5 V-domain gate clamp that makes SR gate-off independent of VDD_SR: not designed here, and no existing net does that job",
+    "Q50 SOA during the C54 inrush: no vendored DMP3098L SOA curve",
+    "the assembled-board thermal resistance behind R59's 0.75 W rating",
+    "CD4081B propagation delay: not published, 250 ns is a proxy",
+    "an unpowered CMOS output's real state between 0 and 4.5 V",
+    "the DMP3098L gate charge and Miller plateau",
+    "no hardware: every waveform is a behavioural deck"
+  ]
+}

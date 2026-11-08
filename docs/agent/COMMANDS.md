@@ -76,6 +76,7 @@ python tools/make_fast_oc_pcb.py --check          # 该模块的布线板：重�
 python tools/make_fast_oc_pcb.py --fab            # 同上 + 导出 pcb/fast_oc/fab/（13 个散列文件、9 层、assembly.svg、manifest）
 python tools/make_bias_cut_eco.py --check         # 偏置关断 ECO：重生成原理图/网表/BOM/deck + ERC（需 KiCad 10.0）
 python tools/bias_cut_reverse_corner.py           # 假设阈值失配反例 deck（不是器件角落）；--record 写哈希与判据 JSON
+python tools/bias_hold_validation.py              # REG 偏置预算 + 6 组耦合敏感性 deck；本地跑完 --record 记测量与哈希
 python tools/manufacturing_index.py --check       # 五块实验板的制造目录 pcb/manufacturing/{index.json,README.md}（--write 重生成）
 python tools/remaining_dependencies.py --check    # 主板剩余依赖表 hardware/dcx_main/remaining_dependencies.{json,md}（--write 重生成）
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出

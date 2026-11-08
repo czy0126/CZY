@@ -10,6 +10,7 @@ board they claim to describe.
 
 | board | status | files | copper | flags | rebuild |
 |---|---|---|---|---|---|
+| `bias_cut_revision_b` | SCHEMATIC_ONLY | 0 | - | - | `python tools/bias_cut_revision_b.py` |
 | `bias_cut_eco` | SCHEMATIC_ONLY | 0 | - | - | `python tools/make_bias_cut_eco.py --check` |
 | `sr_fault_validation` | FAB_PACKAGE_PRESENT | 13 | 1 oz | built=False, approved=False | `python tools/make_sr_fault_board_pcb.py --fab` |
 | `fast_oc` | FAB_PACKAGE_PRESENT | 13 | 1 oz | built=False, approved=False | `python tools/make_fast_oc_pcb.py --fab` |
@@ -18,7 +19,14 @@ board they claim to describe.
 
 ## What each board is
 
-### `bias_cut_eco` -- SR bias-cut ECO with external SET/reset interlock
+### `bias_cut_revision_b` -- Revision B SR bias-cut candidate: series diode and startup resistor
+
+Candidate schematic only; replaces revision A power-path proposal. Behavioural power-path screens do not qualify REG hold energy, real control or hardware.
+
+Not fabricable today:
+- no PCB was generated for this board: the repository holds its schematic, netlist, ERC report and BOM, and no copper
+
+### `bias_cut_eco` -- Revision A SR bias-cut ECO: historical, failed stress review
 
 Native schematic and behavioural simulation only. PMOS selection, startup, gate propagation and reverse-voltage sweep remain unqualified.
 
@@ -29,7 +37,7 @@ Not fabricable today:
 
 Two BSC010N04LS6 driven by one real UCC24624, a fault interface and a REG crowbar.  Its purpose is to measure how one SR pair behaves when a fault command arrives, not to pass the converter's current.
 
-Package: `pcb/sr_fault_validation/fab/` (manifest `8e0351a0fa1370c460f9bbbe7f28521285f3ce7a3cb975b22c6698532a288611`)
+Package: `pcb/sr_fault_validation/fab/` (manifest `5c893edc5957ae6536c912569d0cecb0b4f29dee5a18d14222bc60d359e81491`)
 Board: `pcb/sr_fault_validation/sr_fault_validation.kicad_pcb` (`849bef79b5f2c12ce8ea762d6332b34340ec01eb93276667bb0cf76695304382`)
 Layers: F.Cu, B.Cu, F.Paste, B.Paste, F.Silkscreen, B.Silkscreen, F.Mask, B.Mask, Edge.Cuts
 
@@ -58,6 +66,7 @@ Not fabricable today:
 ## Rebuilding a package
 
 ```
+python tools/bias_cut_revision_b.py
 python tools/make_bias_cut_eco.py --check
 python tools/make_sr_fault_board_pcb.py --fab
 python tools/make_fast_oc_pcb.py --fab

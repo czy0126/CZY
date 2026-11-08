@@ -1,0 +1,156 @@
+{
+  "revision": "B-CANDIDATE",
+  "evidence": "BEHAVIOURAL_POWER_PATH_SCREEN",
+  "hardware_qualified": false,
+  "fabrication_approved": false,
+  "full_control_simulated": false,
+  "checks": {
+    "startup_below_0_724a": true,
+    "low_input_30ma_above_12_6v": true,
+    "no_dummy_discharged_below_3_63v_at_95ms": true,
+    "reverse24_discharge_below_0_27w": true,
+    "all_reverse_cases_below_100ua_in_this_model": true
+  },
+  "cases": {
+    "startup": {
+      "deck_sha256": "188430565d13c275730a4d07fee971fa50ee7b6023a1522c996cd753b6c0bd95",
+      "log_sha256": "9b5b35f9bed3d12045fb92de7219fed0f06e6844ee2716bbbfa5bbcc5b0e3bab",
+      "measures": {
+        "input_peak": -0.642601370811,
+        "reverse_peak": -0.0141560826451,
+        "enabled_v": 14.0472100784,
+        "discharge_power": 0.0239734935323,
+        "residual_v": 0.0007097129231,
+        "limiter_energy": 0.00116091522563
+      }
+    },
+    "no_dummy_load": {
+      "deck_sha256": "9025f7a5942fbee8f7a0bb9b9120ba149c5bbc38655930994d9c77ee6ef165c3",
+      "log_sha256": "c21210781fd6b7db3a1ae05a087e1f2eaa1003a9846e75737c471d4289722880",
+      "measures": {
+        "input_peak": -0.642601370811,
+        "reverse_peak": -9.50803150772e-05,
+        "enabled_v": 14.5352598208,
+        "discharge_power": 0.063191574687,
+        "residual_v": 0.629923814284,
+        "limiter_energy": 0.00112144129925
+      }
+    },
+    "low_input_30ma_equivalent": {
+      "deck_sha256": "e04c7a85e71b09c77f0c9d01260d9e04d92677ede6c39db55d16544436bff878",
+      "log_sha256": "4e4c95f2939be399dd7b26f46d348ac28011a6ee2c555cea0cc22624676f6c92",
+      "measures": {
+        "input_peak": -0.608793199062,
+        "reverse_peak": -0.0301442425698,
+        "enabled_v": 12.9145943959,
+        "discharge_power": 0.00613863866868,
+        "residual_v": 9.61486463909e-07,
+        "limiter_energy": 0.00112433994102
+      }
+    },
+    "low_input_35ma_equivalent": {
+      "deck_sha256": "9d7dd39372b951fe8fb11710e26c6f4a848a37ad23411ddb6fd1d03cbc21b222",
+      "log_sha256": "d3beebcb26b41aa80a5fa6d80d5bbcdc4f392b4ca7f7e548ff7126ce6709e07d",
+      "measures": {
+        "input_peak": -0.608793199062,
+        "reverse_peak": -0.0356303788722,
+        "enabled_v": 12.7868185043,
+        "discharge_power": 0.00400415970017,
+        "residual_v": 7.59114342234e-07,
+        "limiter_energy": 0.00116043996366
+      }
+    },
+    "low_input_50ma_equivalent": {
+      "deck_sha256": "7310b681a005317ae50632297b2ea5c249ff3cd4305d7e1131530a21f38d7acf",
+      "log_sha256": "859ccd92c35ee1733309033dc35e0826fe0a16c0d1354d47c56ca044714c3ee7",
+      "measures": {
+        "input_peak": -0.608793199062,
+        "reverse_peak": -0.0518368147314,
+        "enabled_v": 12.4139033311,
+        "discharge_power": 0.00107992431205,
+        "residual_v": 5.28718544501e-07,
+        "limiter_energy": 0.0012937940916
+      }
+    },
+    "reverse18_off": {
+      "deck_sha256": "498ec5623a37a4bf36ab9a2ca3ebc20a84d418c257c8a4e97b442bdc64ec646f",
+      "log_sha256": "b65736ac65316f2faa9319d2deb2106973f30ce35686108a6f801800e912249b",
+      "measures": {
+        "input_peak": 1.00295760586e-09,
+        "reverse_peak": 1.00298536143e-09,
+        "enabled_v": 18.0,
+        "discharge_power": 0.147266033286,
+        "residual_v": 18.0,
+        "limiter_energy": 6.99566788253e-18
+      }
+    },
+    "reverse24_off": {
+      "deck_sha256": "0749008760bc9594e84982758ff3b146534efc814fab041571eea9b51027466e",
+      "log_sha256": "52a3eea9c332a449bc9500387b64145d9dd1eb9e2ae0c67b9a5a0af59026db34",
+      "measures": {
+        "input_peak": 1.00897024069e-09,
+        "reverse_peak": 1.00899144595e-09,
+        "enabled_v": 24.0,
+        "discharge_power": 0.261806281397,
+        "residual_v": 24.0,
+        "limiter_energy": 0.0
+      }
+    },
+    "reverse24_on": {
+      "deck_sha256": "8d3687ecb7c25315753172e890ff37a95229765d46bba1d3f9dbb0db1df1486c",
+      "log_sha256": "9092babf03642d4deefb413cadb8ac1f402a9efdb435a3fbb71c8243c52ee666",
+      "measures": {
+        "input_peak": -9.32666371227e-05,
+        "reverse_peak": 6.53786410112e-05,
+        "enabled_v": 24.0,
+        "discharge_power": 0.261806281397,
+        "residual_v": 24.0,
+        "limiter_energy": 1.66449288107e-10
+      }
+    },
+    "reverse24_input_dead": {
+      "deck_sha256": "92b6c1df5c307bbe6726c76bb5902ee80287f75807305c007668701617606e04",
+      "log_sha256": "9e2b1c05aa5942865a31e4ea51069af26d78a4b6937fb72e371e6c93fd6c40f8",
+      "measures": {
+        "input_peak": 0.0,
+        "reverse_peak": 1.02398178825e-09,
+        "enabled_v": 24.0,
+        "discharge_power": 0.261806281397,
+        "residual_v": 24.0,
+        "limiter_energy": 9.08364292875e-20
+      }
+    },
+    "reverse24_input_dead_enable_high": {
+      "deck_sha256": "f5d5a20de9b647697a0cdacb0e65e524aceddc44bd7b314a4a675d683ba5ae29",
+      "log_sha256": "5281f7b7d35a7d62b196c8305a764d988bea264ae5ed25390ca10b02ebde2e73",
+      "measures": {
+        "input_peak": -6.40428697807e-05,
+        "reverse_peak": 5.13491722813e-05,
+        "enabled_v": 24.0,
+        "discharge_power": 0.261806281397,
+        "residual_v": 24.0,
+        "limiter_energy": 9.18663931276e-11
+      }
+    }
+  },
+  "sources": {
+    "pmos": "https://www.diodes.com/datasheet/download/DMP3098L.pdf",
+    "diode": "https://www.vishay.com/docs/88586/es1.pdf",
+    "resistor": "https://www.vishay.com/docs/20043/crcwhpe3.pdf"
+  },
+  "analytic_bounds": {
+    "inrush_a": 0.7231404958677685,
+    "r57_24v_w": 0.2644628099173554,
+    "bias_min_30ma_v": 12.6613,
+    "single_pair_10v_gate_budget_a": 0.03480292,
+    "bias_min_50ma_v": 12.2155,
+    "diode_max_reverse_100c_a": 0.0001
+  },
+  "open": [
+    "REG crowbar hold energy after slower bias discharge",
+    "actual UCC24624 bias current, Qg*f and regulator headroom",
+    "R59 pulse curve / repetition / thermal layout and PMOS SOA",
+    "real gate charge, POR slow ramp, independent 5V loss and logic hazards",
+    "floating input leakage charging; full SR commutation and hardware H0-H5"
+  ]
+}

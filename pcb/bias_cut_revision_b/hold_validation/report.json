@@ -1,0 +1,136 @@
+{
+  "evidence": "COUPLED_SENSITIVITY_NOT_VENDOR_OR_HARDWARE",
+  "hardware_qualified": false,
+  "full_control_qualified": false,
+  "thermal_qualified": false,
+  "cases": {
+    "finite_13ma": {
+      "measures": {
+        "reg_before": 10.9998903275,
+        "gate_off_at": 0.0200239419914,
+        "reg_off_at": 0.0200122426364,
+        "pass_energy": 0.000791052651764,
+        "r44_energy": 0.00014653315152,
+        "q41_energy": 1.49471211669e-05,
+        "reg_pass_power_end": 0.0,
+        "vdd_end": 0.00222660893063,
+        "reg_end": 0.0
+      },
+      "deck_sha256": "ee5d40df81de4ccf7b0c73b9aa40b7848ef8183909435f654b14559cb96e9170",
+      "log_sha256": "0c62b16d35a63ff654b773af61708b0e1b3e24de5206a3a63bea92c619111ddd",
+      "gate_delay_s": 2.3941991399999835e-05,
+      "reg_delay_s": 1.2242636400001256e-05
+    },
+    "finite_95ma": {
+      "measures": {
+        "reg_before": 10.9998903275,
+        "gate_off_at": 0.0200240616025,
+        "reg_off_at": 0.0200131056808,
+        "pass_energy": 0.00100875378936,
+        "r44_energy": 0.000214451483829,
+        "q41_energy": 1.56407552324e-05,
+        "reg_pass_power_end": 0.0,
+        "vdd_end": 0.00134224039777,
+        "reg_end": 0.0
+      },
+      "deck_sha256": "cfe5829d2f8a6a786f0d1566f7294d9ed2e9a43122ef7062dc2ea528f6d72e08",
+      "log_sha256": "e813e2c658074b1151c1ad5ea4a4184c8483b7e5efed44597484f12753fbf17d",
+      "gate_delay_s": 2.4061602500000112e-05,
+      "reg_delay_s": 1.3105680799999075e-05
+    },
+    "gate_slow_95ma": {
+      "measures": {
+        "reg_before": 10.9998903275,
+        "gate_off_at": 0.0200895583509,
+        "reg_off_at": 0.0200131056808,
+        "pass_energy": 0.00102294704681,
+        "r44_energy": 0.000214923726536,
+        "q41_energy": 1.56455781394e-05,
+        "reg_pass_power_end": 0.0,
+        "vdd_end": 0.00134354264159,
+        "reg_end": 0.0
+      },
+      "deck_sha256": "5b3acd96d4125956491da847aca49414e020d70bb36bbb90d5d2efe30e5c27cb",
+      "log_sha256": "cfc1f2795254d5c549912164109fd8b33af79f02ed9e9a65cf62cefee4becb0d",
+      "gate_delay_s": 8.955835090000003e-05,
+      "reg_delay_s": 1.3105680799999075e-05
+    },
+    "backfeed_1k_13ma": {
+      "measures": {
+        "reg_before": 10.9998903275,
+        "gate_off_at": 0.0200239369914,
+        "reg_off_at": 0.0200122406041,
+        "pass_energy": 0.00368497001611,
+        "r44_energy": 0.000202850273956,
+        "q41_energy": 9.09528808793e-06,
+        "reg_pass_power_end": 0.0328841003356,
+        "vdd_end": 2.59126719535,
+        "reg_end": 0.0617210678757
+      },
+      "deck_sha256": "f7f1ce4a5b0c058965e71adadc74a87558236ca718d351311c65ae93203b3894",
+      "log_sha256": "e721419cdccc6db62af4300f0b1ef76bdf9f4b7576d642a4c2e313c24f3bb1b1",
+      "gate_delay_s": 2.3936991399998997e-05,
+      "reg_delay_s": 1.2240604099999358e-05
+    },
+    "backfeed_100r_13ma": {
+      "measures": {
+        "reg_before": 10.9998903275,
+        "gate_off_at": 0.0200238935434,
+        "reg_off_at": 0.0200122406041,
+        "pass_energy": 0.0159327337981,
+        "r44_energy": 0.000202850263845,
+        "q41_energy": 9.09528798555e-06,
+        "reg_pass_power_end": 0.19935046417,
+        "vdd_end": 15.3963718414,
+        "reg_end": 0.0617210678757
+      },
+      "deck_sha256": "9651b4ac5fa08e4ac2e4b45eae3d9fb314b43ee89301a4f2ca47e9593998be6f",
+      "log_sha256": "0e2ed18ceb1dff4ac8632f7808681d2df9ad935c922f8c3fb84015ca6f598753",
+      "gate_delay_s": 2.3893543399999134e-05,
+      "reg_delay_s": 1.2240604099999358e-05
+    },
+    "backfeed_100r_95ma": {
+      "measures": {
+        "reg_before": 10.9998903275,
+        "gate_off_at": 0.0200240116361,
+        "reg_off_at": 0.0200131037493,
+        "pass_energy": 0.0543716639569,
+        "r44_energy": 0.00354139693526,
+        "q41_energy": 4.31910850454e-05,
+        "reg_pass_power_end": 0.671054432317,
+        "vdd_end": 7.51476955413,
+        "reg_end": 0.451038599014
+      },
+      "deck_sha256": "fb5ad7b155e39576de30d36e78738a2b8b6bdfbf4ee6abe6509e7f8f8ed83e18",
+      "log_sha256": "fb1c49e31c4ac99710ee82fa3816e5fba8274eb31d4f648cec7b9474776f3025",
+      "gate_delay_s": 2.4011636099999928e-05,
+      "reg_delay_s": 1.3103749300000939e-05
+    }
+  },
+  "checks": {
+    "reg_initialized_all": true,
+    "reg_crowbar_crosses_threshold_all": true,
+    "finite_supply_decays": true,
+    "continuous_injection_remains_powered": true,
+    "slow_gate_increases_delay": true,
+    "dissipation_nonnegative": true
+  },
+  "energy_budget": {
+    "stored_j": 0.00184751805,
+    "series_transfer_max_w": 2.8473657024793386,
+    "assumed_isolation_delay_s": 0.0002,
+    "pre_isolation_j": 0.0005694731404958678,
+    "conditional_total_j": 0.0024169911904958676,
+    "conditions": "No external backfeed; no uncounted stored energy or path bypassing R59; nonnegative downstream voltage; bounded delay; cap +20% assumption.",
+    "not_a_junction_temperature_bound": true,
+    "continuous_backfeed_has_finite_bound": false
+  },
+  "limitations": [
+    "Fixed Cgs/Cgd is not a nonlinear gate-charge bound.",
+    "13mA/95mA regulator anchors not guaranteed at simulated bias.",
+    "Q41 and logic command are simplified; actual filters, SR VGS and commutation absent.",
+    "REG pass energy excludes quiescent loss; sum is not IC thermal response.",
+    "No capacitor DC bias/temperature/tolerance model or external parasitic sources.",
+    "log_sha256 records the local Windows log bytes; committed-log identity is checked by parse_log() because LTspice writes mixed CRLF/LF."
+  ]
+}

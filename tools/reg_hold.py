@@ -57,8 +57,10 @@ C_REG = 2.2e-6 + 100e-9
 
 # A deliberate bench choice, not a datasheet value: the fault experiments run
 # with the main power off, so the bias only has to carry IVDDRUN plus the gate
-# charge of a normally switching pair.  30 mA is well below the 50 C allowed
-# current and above that idle/run load.  40 mA was the first choice and is
+# charge only when separately budgeted. 30 mA is an idle/hold bench setting,
+# NOT proof of full-frequency drive capability: two 83 nC gates at 200.62 kHz
+# already imply 33.3 mA before quiescent current (at the 10 V reference point).
+# 40 mA was the first choice and is
 # rejected here: at 40 mA the JEDEC-board Rth already gives 91.7 C, so a
 # mounted Rth only 1.5x worse would sit exactly on the 125 C limit -- no
 # margin at all.  The record row has to carry the actual ambient.

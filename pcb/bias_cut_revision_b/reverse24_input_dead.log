@@ -1,0 +1,21 @@
+LTspice 26.0.2 for Windows
+Circuit: D:\workshop\design_48v-2v\pcb\bias_cut_revision_b\reverse24_input_dead.cir
+Start Time: Sat Nov  7 23:07:28 2026
+Options:plotwinsize=0
+solver = Normal
+Maximum thread count: 24
+tnom = 27
+temp = 27
+method = trap
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.189 seconds.
+
+Files loaded:
+D:\workshop\design_48v-2v\pcb\bias_cut_revision_b\reverse24_input_dead.cir
+
+input_peak: MIN(I(VIN))=0 FROM 0 TO 0.1
+reverse_peak: MAX(I(VIN) )=1.02398178825e-09 FROM 0.005 TO 0.019
+enabled_v: AVG(V(VDD_SR) )=24 FROM 0.018 TO 0.019
+discharge_power: MAX((V(VDD_SR,DIS)*V(VDD_SR,DIS)/2200) )=0.261806281397 FROM 0.025 TO 0.095
+residual_v: V(VDD_SR) =24 at 0.095
+limiter_energy: INTEG((V(PASS_OUT,D_ANODE)*V(PASS_OUT,D_ANODE)/22) )=9.08364292875e-20 FROM 0.001 TO 0.005
