@@ -1,0 +1,30 @@
+name: revb-windows-evidence-preflight
+
+on:
+  pull_request:
+    paths:
+      - 'tools/ltspice_windows_evidence.py'
+      - 'tools/bias_cut_revision_b.py'
+      - 'tools/bias_cut_timing.py'
+      - 'tools/test_ltspice_windows_evidence.py'
+      - 'tools/test_bias_cut_revision_b.py'
+      - 'tools/test_bias_cut_timing.py'
+      - '.github/workflows/revb-windows-evidence-preflight.yml'
+  workflow_dispatch:
+
+jobs:
+  exact-windows-evidence-identity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reconstruct historical Windows CRLF input hashes and compare untouched logs
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tools/test_ltspice_windows_evidence.py tools/test_bias_cut_revision_b.py tools/test_bias_cut_timing.py
+
+# No simulator runs: exact historical .cir SHA and committed .log measurement
+# values are checked. Original Windows .log byte identity is NOT assumed; CI
+# cannot qualify electronics, real hardware, or a manufacturing release.
