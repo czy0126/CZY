@@ -1,0 +1,60 @@
+name: D1-5A-early-numerical-sensitivity
+on:
+  push:
+    branches: [feat/d1-early-solver-diagnostics-20261108]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  physical-original-vs-numerical-only:
+    runs-on: windows-2025
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: [on_original, on_tt0, on_weak_shunt, off_original]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify diagnostic changes remain isolated from golden source
+        shell: pwsh
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tools/test_poc_early_solver_diagnostics.py
+          python tools/poc_early_solver_diagnostics.py --scenario ${{ matrix.scenario }}
+      - name: Install authenticated ADI LTspice 26
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $msi = Join-Path $env:RUNNER_TEMP 'LTspice64.msi'
+          Invoke-WebRequest -Uri 'https://ltspice.analog.com/software/LTspice64.msi' -OutFile $msi
+          $sig = Get-AuthenticodeSignature -FilePath $msi
+          if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'Analog Devices') {
+            throw "Manufacturer installer signature invalid"
+          }
+          $args = '/i "' + $msi + '" /quiet /norestart'
+          $p = Start-Process msiexec.exe -ArgumentList $args -Wait -PassThru
+          if ($p.ExitCode -notin @(0,3010)) { throw "MSI failed $($p.ExitCode)" }
+          $exe = Join-Path $env:ProgramFiles 'ADI\LTspice\LTspice.exe'
+          if (-not (Test-Path $exe)) { throw "Installed official LTspice not found" }
+          "LTSPICE=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Solve 0.62ms and record actual model response (no hardware claim)
+        shell: pwsh
+        run: |
+          python tools/poc_early_solver_diagnostics.py --scenario ${{ matrix.scenario }} --ltspice "$env:LTSPICE" --run
+      - name: Archive original short-run logs and RAW even on failure
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diag-5a-${{ matrix.scenario }}
+          path: |
+            sim/v3/_diag_5a_${{ matrix.scenario }}.cir
+            sim/v3/_diag_5a_${{ matrix.scenario }}.log
+            sim/v3/_diag_5a_${{ matrix.scenario }}.raw
+            sim/v3/_diag_5a_${{ matrix.scenario }}.json
+            sim/v3/_diag_${{ matrix.scenario }}_sr_device.lib
+          if-no-files-found: warn
+          retention-days: 10
+          compression-level: 1
