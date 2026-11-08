@@ -20,14 +20,35 @@ jobs:
           sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends kicad kicad-libraries
-          # Headless Actions never launches KiCad's first-run library setup.
-          # Install the official default global library tables explicitly.
+          # The KiCad 10 PPA on minimal CI can ship real symbols/footprints
+          # without the optional template tables. Register only installed OEM
+          # library files rather than suppressing missing-library violations.
           mkdir -p "${HOME}/.config/kicad/10.0"
-          for table in sym-lib-table fp-lib-table; do
-            source="/usr/share/kicad/template/${table}"
-            test -s "$source" || { echo "KiCad default table unavailable: $source" >&2; exit 2; }
-            cp "$source" "${HOME}/.config/kicad/10.0/${table}"
-          done
+          symbol_root=/usr/share/kicad/symbols
+          footprint_root=/usr/share/kicad/footprints
+          test -s "${symbol_root}/Device.kicad_sym" || { echo 'Device stock symbol library missing' >&2; exit 2; }
+          test -d "${footprint_root}/Resistor_SMD.pretty" || { echo 'Resistor_SMD stock footprints missing' >&2; exit 2; }
+          sym_table="${HOME}/.config/kicad/10.0/sym-lib-table"
+          fp_table="${HOME}/.config/kicad/10.0/fp-lib-table"
+          {
+            echo '(sym_lib_table'
+            for lib in "${symbol_root}"/*.kicad_sym; do
+              [ -f "$lib" ] || continue
+              key=$(basename "$lib" .kicad_sym)
+              printf ' (lib (name "%s")(type "KiCad")(uri "%s")(options "")(descr ""))\n' "$key" "$lib"
+            done
+            echo ')'
+          } > "$sym_table"
+          {
+            echo '(fp_lib_table'
+            for lib in "${footprint_root}"/*.pretty; do
+              [ -d "$lib" ] || continue
+              key=$(basename "$lib" .pretty)
+              printf ' (lib (name "%s")(type "KiCad")(uri "%s")(options "")(descr ""))\n' "$key" "$lib"
+            done
+            echo ')'
+          } > "$fp_table"
+          test -s "$sym_table" && test -s "$fp_table"
           kicad-cli version
           if ! kicad-cli version | grep -Eq '^10\.'; then
             echo 'KiCad 10 expected for project-native ERC' >&2
