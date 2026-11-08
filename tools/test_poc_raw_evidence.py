@@ -32,7 +32,7 @@ def test_nan_at_557us_even_with_complete_time_axis(tmp_path):
 
 def test_mismatched_header_and_payload_byte_counts(tmp_path):
     p = tmp_path / "extra.raw"
-    sample(p, [(0, 0), (.008, 1)], count=1)
+    sample(p, [(0, 0), (.008, 1)], count=3)
     with pytest.raises(RawEvidenceError, match="byte count"):
         inspect_raw(p)
 
