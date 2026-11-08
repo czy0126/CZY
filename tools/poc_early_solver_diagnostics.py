@@ -13,6 +13,7 @@ import subprocess
 import sys
 from pathlib import Path
 import poc_low_current_decks as poc
+from poc_raw_evidence import inspect_raw, RawEvidenceError
 
 ROOT = poc.ROOT
 MODEL = ROOT / "models/sr_device_v3.lib"
@@ -82,7 +83,15 @@ def run(scenario: str, exe: Path) -> int:
     result = subprocess.run([str(exe), "-b", str(path.resolve())],
                             cwd=path.parent, capture_output=True,
                             timeout=840, text=True, errors="replace", check=False)
+    if raw.exists():
+        try:
+            raw_validation = inspect_raw(raw, stop_time_s=.00062)
+        except (RawEvidenceError, ValueError, OSError) as e:
+            raw_validation = {"status": "INVALID_RAW", "reason": str(e)}
+    else:
+        raw_validation = {"status": "MISSING_RAW"}
     metadata = {
+        "raw_validation": raw_validation,
         "status": "ISOLATED_EARLY_NUMERICAL_DIAGNOSTIC_NOT_FOR_HARDWARE",
         "scenario": scenario,
         "case": "nominal_5A_0p4ohm",
@@ -101,7 +110,7 @@ def run(scenario: str, exe: Path) -> int:
     output = poc.OUT / f"_diag_5a_{scenario}.json"
     output.write_text(json.dumps(metadata, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(metadata, indent=2))
-    return 0 if result.returncode == 0 and raw.exists() and raw.stat().st_size else 2
+    return 0 if result.returncode == 0 and raw_validation["status"] == "RAW_ALL_FINITE_AND_TIME_COMPLETE" else 2
 
 
 def main():
