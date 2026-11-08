@@ -9,6 +9,7 @@
     "controller_rt_dt_roles_match_native_netlist": true,
     "all_golden_refs_and_magnetic_physical_pads_verified": false,
     "no_electrical_placeholders_or_unselected_bom": false,
+    "native_manufacturer_ids_and_r8_dnp_verified": false,
     "all_required_real_hardware_bom_refs_in_native_design": true,
     "native_erc_evidence": false,
     "routed_pcb_to_schematic_evidence": false,
@@ -93,6 +94,9 @@
       "T3",
       "T4"
     ],
+    "native_mpn_target_conflicts": 39,
+    "native_r8_still_in_bom": true,
+    "native_r8_still_in_pcb": true,
     "bom_rows_not_selected": [
       {
         "ref": "T1-T4",
@@ -309,11 +313,23 @@
       "passed": false,
       "reason": "evidence file absent",
       "path": "hardware/dcx_main/protection_design_approved.json"
+    },
+    "native_manufacturer_bom": {
+      "passed": false,
+      "snapshot_matches_live_capture": true,
+      "manufacturer_target_conflicts": 39,
+      "r8_in_bom": true,
+      "r8_in_pcb": true,
+      "known_mpn_and_target_rows": 51,
+      "native_component_rows": 83,
+      "reason": "OEM manufacturer MPN/value conflicts, unsafe R8 inclusion or stale native readback; correct in actual EDA and re-export",
+      "scope": "Known catalog part numbers in captured EDA only; NOT a fresh GUI ERC or final BOM approval"
     }
   },
   "blockers": [
     "all_golden_refs_and_magnetic_physical_pads_verified",
     "no_electrical_placeholders_or_unselected_bom",
+    "native_manufacturer_ids_and_r8_dnp_verified",
     "native_erc_evidence",
     "routed_pcb_to_schematic_evidence",
     "manufacturing_package_evidence",
@@ -325,6 +341,7 @@
     "Controller RT/DT functional-value crosscheck detects BOM-to-net mislabelling but does NOT substitute native ERC",
     "The golden netlist was derived from a SPICE deck, not all physical components",
     "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
+    "Visible schematic Value is not an OEM MPN: vendor MPN conflict and native R8 BOM/PCB DNP now veto fabrication",
     "Evidence records require original repository files and matching SHA256, but hashes do not replace expert approval",
     "Independent primary and eight SR fault shutdown must be independently design-reviewed in the same native CAD revision",
     "An ideal behavioural gate clamp cannot replace vendor SOA or real hardware protection signoff",
