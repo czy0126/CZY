@@ -255,3 +255,29 @@ def test_fabrication_gate_rejects_edited_cache_physical_pad_approval(monkeypatch
     import pytest
     with pytest.raises(ValueError, match="differs from live SPICE/native source"):
         gate.build()
+
+
+def test_native_mpn_readback_and_r8_inclusion_are_explicit_fab_blockers():
+    audit = gate._native_mpn_and_r8_precheck()
+    assert audit["snapshot_matches_live_capture"] is True
+    assert audit["manufacturer_target_conflicts"] == 39
+    assert audit["r8_in_bom"] is True
+    assert audit["r8_in_pcb"] is True
+    assert audit["passed"] is False
+    result = gate.build()
+    assert result["checks"]["native_manufacturer_ids_and_r8_dnp_verified"] is False
+    assert "native_manufacturer_ids_and_r8_dnp_verified" in result["blockers"]
+    assert result["counts"]["native_mpn_target_conflicts"] == 39
+
+
+def test_native_mpn_precheck_rejects_good_looking_but_unrecorded_readback(monkeypatch):
+    # A fabricated in-memory report cannot supersede the actual native
+    # inventory and its committed, independently regenerable audit.
+    new_report = gate.native_bom.audit().copy()
+    new_report["manufacturer_target_conflicts"] = 0
+    new_report["original_r8_in_bom"] = False
+    new_report["original_r8_in_pcb"] = False
+    monkeypatch.setattr(gate.native_bom, "audit", lambda: new_report)
+    check = gate._native_mpn_and_r8_precheck()
+    assert check["snapshot_matches_live_capture"] is False
+    assert check["passed"] is False
