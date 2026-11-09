@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import csv
 import json
 
 import pytest
@@ -141,3 +142,23 @@ def test_ratio_helper_rejects_missing_negative_nan_inputs():
                  (float("nan"), 1), (float("inf"), 1)):
         with pytest.raises(ValueError):
             o.ceil_for(a, b)
+
+
+def test_legacy_power_stage_candidates_handoff_is_not_stuck_at_10mm_or_2p5v():
+    path = o.ROOT / "docs/D1_EXECUTION_KIT/templates/power_stage_candidate_options.csv"
+    with path.open(encoding="utf-8", newline="") as stream:
+        opts = list(csv.DictReader(stream))
+    kemet = next(r for r in opts if r["mpn_or_question"] ==
+                 "KEMET T530X477M006ATE004")
+    assert kemet["type"] == "OEM_LOW_ESR_6R3_CANDIDATE"
+    assert kemet["evidence_grade"] == "EXACT_OEM_PART_SHEET"
+    assert kemet["rated_voltage_v"] == "6.3"
+    assert float(kemet["esr_mohm_per_part"]) == 4
+    assert kemet["source_url"].startswith("https://search.kemet.com/")
+    assert "current 0.07mOhm needs >=58" in kemet["review_notes"]
+    for r in opts:
+        if r["ref"] in {"Lr", "Cr", "Cin"}:
+            assert "D1 full assembly 16" in r["max_height_mm"]
+            assert "D3 stretch 10" in r["max_height_mm"]
+        if r["ref"] == "Cout" and r["rated_voltage_v"] == "2.5":
+            assert "LEGACY" in r["review_notes"]
