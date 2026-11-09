@@ -294,33 +294,31 @@ def main() -> int:
             # The genuine ON baseline has exhibited trouble at ~0.56ms,
             # before SR REG enables. Test the unmodified first 620us once
             # instead of launching an 8ms ON deck that cannot complete.
-            # This screen is only available for the 5A source topology.
-            if args.case != "5a":
-                early_screen[mode] = {"status": "NOT_AVAILABLE_FOR_10A",
+            # Both nominal loads now use the same 0.62ms source-preserving
+            # screen; a 5A screen must never stand in for a 10A screen.
+            import poc_early_solver_diagnostics as diag
+            try:
+                early_rc = diag.run("on_original", exe,
+                                    timeout_s=min(args.timeout_sec, 600),
+                                    case=args.case)
+                diag_file = poc.OUT / f"_diag_{args.case}_on_original.json"
+                early_screen[mode] = json.loads(
+                    diag_file.read_text(encoding="utf-8"))
+            except (OSError, ValueError, RuntimeError, UnicodeError) as exc:
+                early_rc = 2
+                early_screen[mode] = {"status": "DIAGNOSTIC_EXECUTION_ERROR",
+                                      "reason": str(exc),
                                       "hardware_qualified": False}
-            else:
-                import poc_early_solver_diagnostics as diag
-                try:
-                    early_rc = diag.run("on_original", exe,
-                                        timeout_s=min(args.timeout_sec, 600))
-                    diag_file = poc.OUT / "_diag_5a_on_original.json"
-                    early_screen[mode] = json.loads(
-                        diag_file.read_text(encoding="utf-8"))
-                except (OSError, ValueError, RuntimeError, UnicodeError) as exc:
-                    early_rc = 2
-                    early_screen[mode] = {"status": "DIAGNOSTIC_EXECUTION_ERROR",
-                                          "reason": str(exc),
-                                          "hardware_qualified": False}
-                if early_rc != 0:
-                    failures[mode] = (
-                        "unmodified 5A SR_ON 620us genuine simulation failed; "
-                        "full 8ms ON was NOT launched")
-                    partials[mode] = {"full_8ms_on": "NOT_ATTEMPTED",
-                                      "early_diagnostic_record":
-                                      "sim/v3/_diag_5a_on_original.json"}
-                    print(f"LTspice {args.case}/on screen failed: "
-                          f"{early_screen[mode]}", file=sys.stderr)
-                    continue
+            if early_rc != 0:
+                failures[mode] = (
+                    f"unmodified {args.case} SR_ON 620us genuine simulation "
+                    "failed; full 8ms ON was NOT launched")
+                partials[mode] = {"full_8ms_on": "NOT_ATTEMPTED",
+                                  "early_diagnostic_record":
+                                  f"sim/v3/_diag_{args.case}_on_original.json"}
+                print(f"LTspice {args.case}/on screen failed: "
+                      f"{early_screen[mode]}", file=sys.stderr)
+                continue
         try:
             statuses[mode] = run_selected(args.case, mode, exe, args.timeout_sec)
         except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
