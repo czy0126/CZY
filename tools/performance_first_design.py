@@ -115,7 +115,10 @@ def build() -> tuple[dict, list[dict[str, str]]]:
         "status": "UNVERIFIED_RFQ_TARGETS_NOT_RATED_NOT_FOR_FAB",
         "cost_policy": "NO_COST_CEILING_PER_USER_DIRECTION",
         "constraints": {
-            "maximum_assembly_height_mm": D1_ASSEMBLY_HEIGHT_LIMIT_MM,
+            # Historical 10mm high-margin / TDK catalog screen is an
+            # immutable D3 reference used by lr_core_geometry_screen and
+            # d1_staged_rebaseline. It must NOT dictate D1/D2 supplier RFQ.
+            "maximum_assembly_height_mm": D3_STRETCH_HEIGHT_LIMIT_MM,
             "d1_100a_first_article_total_height_mm": D1_ASSEMBLY_HEIGHT_LIMIT_MM,
             "d2_120a_total_height_mm": D2_ASSEMBLY_HEIGHT_LIMIT_MM,
             "d3_stretch_total_height_mm": D3_STRETCH_HEIGHT_LIMIT_MM,
