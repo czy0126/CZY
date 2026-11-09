@@ -9,7 +9,8 @@ import performance_first_design as perf
 def test_cost_does_not_override_height_or_safety():
     j, rows = perf.build()
     assert j["cost_policy"] == "NO_COST_CEILING_PER_USER_DIRECTION"
-    assert j["constraints"]["maximum_assembly_height_mm"] == 16.0
+    # Keep the historical high-margin 10mm magnetic geometry screen as D3.
+    assert j["constraints"]["maximum_assembly_height_mm"] == 10.0
     assert j["constraints"]["d1_100a_first_article_total_height_mm"] == 16.0
     assert j["constraints"]["d2_120a_total_height_mm"] == 16.0
     assert j["constraints"]["d3_stretch_total_height_mm"] == 10.0
