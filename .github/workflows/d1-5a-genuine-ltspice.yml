@@ -17,7 +17,7 @@ jobs:
     env:
       POC_CASE: ${{ matrix.nominal_case }}
     runs-on: windows-2025
-    timeout-minutes: 55
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -59,11 +59,10 @@ jobs:
       - name: Attempt genuine SR_OFF baseline first, then SR_ON with bounded wall-clock budgets
         shell: pwsh
         run: |
-          # This project has seen SR_OFF finish while SR_ON was still writing
-          # hundreds of MB. Each mode has a bounded 20-minute *process* limit,
-          # strictly below the 55-minute job budget including installation.
-          # OFF success + ON timeout is an INCOMPLETE comparison, never green.
-          python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run --timeout-sec 1200 --early-on-screen
+          # Measured with LTspice 26 winsrv: 5A ON 1587s; 5A OFF 387s; 10A OFF 478s.
+          # Previous 1200s ON limit would reject a proven-valid 5A full run.
+          # Upper bound: OFF 850s + early 600s + ON 2350s plus setup < 70min.
+          python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run --off-timeout-sec 850 --on-timeout-sec 2350 --early-on-screen
       - name: Record environment provenance (not success proof)
         shell: pwsh
         if: always()
