@@ -1,0 +1,38 @@
+name: D1-output-interface-arithmetic-regression
+on:
+  push:
+    paths:
+      - 'tools/output_loop_budget.py'
+      - 'tools/output_loop_joint_redesign.py'
+      - 'tools/test_output_loop_budget.py'
+      - 'tools/test_output_loop_joint_redesign.py'
+      - 'hardware/dcx_main/output_loop_candidates.json'
+      - 'hardware/dcx_main/output_joint_reduction_cases.json'
+      - '.github/workflows/d1-output-interface-regression.yml'
+  pull_request:
+    paths:
+      - 'tools/output_loop_budget.py'
+      - 'tools/output_loop_joint_redesign.py'
+      - 'tools/test_output_loop_budget.py'
+      - 'tools/test_output_loop_joint_redesign.py'
+      - 'hardware/dcx_main/output_loop_candidates.json'
+      - 'hardware/dcx_main/output_joint_reduction_cases.json'
+      - '.github/workflows/d1-output-interface-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  arithmetic-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recalculate original and proposed both-polarity joint budgets
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/output_loop_budget.py --check
+          python tools/output_loop_joint_redesign.py --check
+          python -m pytest -q tools/test_output_loop_budget.py tools/test_output_loop_joint_redesign.py
