@@ -18,3 +18,8 @@ pcb/**/*.kicad_sch text eol=lf
 pcb/**/*.net text eol=lf
 pcb/**/*.rpt text eol=lf
 pcb/**/*.json text eol=lf
+
+# Generated PoC decks are compared byte-for-byte against the generator and their
+# SHA256 goes into the LTspice evidence JSON; a CRLF checkout would report every
+# deck as stale on a default Windows clone (core.autocrlf=true).
+sim/v3/poc_*.cir text eol=lf

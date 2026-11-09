@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import sys
-from pathlib import Path
 
 import pytest
 import run_poc_low_current as runner
@@ -35,7 +34,7 @@ def test_ltspice_numeric_sentinel_never_counts_as_valid_measurement():
 
 def test_failed_on_mode_still_executes_off_and_writes_explicit_partial_report(monkeypatch, tmp_path):
     calls = []
-    def fake_run(case, mode, exe):
+    def fake_run(case, mode, exe, timeout_sec):
         calls.append(mode)
         if mode == "on":
             raise RuntimeError("Singular matrix: d:sb4:bd#int1")
@@ -51,6 +50,7 @@ def test_failed_on_mode_still_executes_off_and_writes_explicit_partial_report(mo
     data = json.loads((tmp_path / "poc_5a_comparison_model_only.json").read_text())
     assert data["status"] == "INCOMPLETE_OR_INVALID_SIMULATION"
     assert data["all_requested_modes_completed"] is False
+    assert data["timeout_seconds_per_mode"] == runner.DEFAULT_TIMEOUT_SEC
     assert "on" in data["failed_modes"]
     assert "off" in data["runs"]
     assert data["comparison"]["comparison_available"] is False

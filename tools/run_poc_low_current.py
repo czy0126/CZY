@@ -32,6 +32,11 @@ REQUIRED = (
     "poc_gate_b1_max",
 )
 NUMBER = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
+# Measured on winsrv 2026-11-09: SR_OFF solved in 388 s, SR_ON was still writing
+# a 722 MB raw at the old 900 s cap and had to be killed.  The cap is a wall
+# clock budget, not a physical criterion, so it is explicit and recorded in the
+# evidence JSON instead of hidden in the call.
+DEFAULT_TIMEOUT_SEC = 7200
 
 
 def read_ltspice_log(path: Path) -> str:
@@ -152,7 +157,8 @@ def simulated_comparison(values: dict[str, dict[str, float]]) -> dict:
     return out
 
 
-def run_selected(case: str, mode: str, exe: Path) -> dict:
+def run_selected(case: str, mode: str, exe: Path,
+                 timeout_sec: int = DEFAULT_TIMEOUT_SEC) -> dict:
     if (case, mode) not in poc.CASES:
         raise ValueError("unsupported case or mode")
     deck = poc.path(case, mode)
@@ -162,9 +168,16 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
     raw = deck.with_suffix(".raw")
     start = time.time_ns()
     cmd = [str(exe), "-b", str(deck.resolve())]
-    completed = subprocess.run(
-        cmd, cwd=deck.parent, capture_output=True,
-        text=True, errors="replace", check=False, timeout=900)
+    try:
+        completed = subprocess.run(
+            cmd, cwd=deck.parent, capture_output=True,
+            text=True, errors="replace", check=False, timeout=timeout_sec)
+    except subprocess.TimeoutExpired:
+        raise subprocess.TimeoutExpired(
+            cmd, timeout_sec,
+            f"LTspice {case}/{mode} did not finish within {timeout_sec}s "
+            f"(wall clock budget, not a circuit verdict); raw so far: "
+            f"{raw.stat().st_size if raw.is_file() else 0} bytes") from None
     if completed.returncode != 0:
         tail = read_ltspice_log(log)[-1600:] if log.is_file() else "(no log)"
         raise RuntimeError(
@@ -192,6 +205,8 @@ def run_selected(case: str, mode: str, exe: Path) -> dict:
         "spice_executable": str(exe),
         "LTspice_batch_executed": True,
         "engine_version": engine_version,
+        "timeout_seconds": timeout_sec,
+        "wall_seconds": round((time.time_ns() - start) / 1e9, 3),
         "hardware_qualified": False,
         "measures": m,
     }
@@ -202,6 +217,8 @@ def main() -> int:
     parser.add_argument("--case", choices=("5a", "10a"), default="5a")
     parser.add_argument("--mode", choices=("on", "off", "both"), default="both")
     parser.add_argument("--ltspice", help="absolute path to installed LTspice.exe")
+    parser.add_argument("--timeout-sec", type=int, default=DEFAULT_TIMEOUT_SEC,
+                        help="wall-clock budget per mode (recorded in the evidence)")
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--run", action="store_true")
     action.add_argument("--check", action="store_true")
@@ -232,7 +249,7 @@ def main() -> int:
     failures = {}
     for mode in mode_list:
         try:
-            statuses[mode] = run_selected(args.case, mode, exe)
+            statuses[mode] = run_selected(args.case, mode, exe, args.timeout_sec)
         except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
             failures[mode] = str(exc)
             print(f"LTspice {args.case}/{mode} invalid: {exc}", file=sys.stderr)
@@ -248,6 +265,7 @@ def main() -> int:
                    else "INCOMPLETE_OR_INVALID_SIMULATION"),
         "runs": statuses,
         "failed_modes": failures,
+        "timeout_seconds_per_mode": args.timeout_sec,
         "all_requested_modes_completed": not failures,
         "comparison": compares,
         "model_actual_load_points": {

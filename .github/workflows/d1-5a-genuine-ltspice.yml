@@ -1,0 +1,93 @@
+name: D1-5A-and-10A-real-LTspice-batch
+on:
+  push:
+    branches: [feat/d1-ltspice-real-batch-20261108]
+  workflow_dispatch:
+concurrency:
+  group: d1-real-ltspice-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  model-5a-and-10a-sr-actual-solve:
+    strategy:
+      fail-fast: false
+      matrix:
+        nominal_case: ['5a', '10a']
+    env:
+      POC_CASE: ${{ matrix.nominal_case }}
+    runs-on: windows-2025
+    timeout-minutes: 48
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Source and numeric parser preflight
+        shell: pwsh
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/poc_low_current_decks.py --check
+          python -m pytest -q tools/test_poc_low_current_decks.py tools/test_run_poc_low_current.py tools/test_poc_real_run_gate.py tools/test_poc_simulation_failure_modes.py tools/test_poc_raw_evidence.py tools/test_ltspice_batch_smoke.py
+      - name: Official manufacturer LTspice x64 MSI
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $msi = Join-Path $env:RUNNER_TEMP 'LTspice64.msi'
+          Invoke-WebRequest -Uri 'https://ltspice.analog.com/software/LTspice64.msi' -OutFile $msi
+          $signature = Get-AuthenticodeSignature -FilePath $msi
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Analog Devices') {
+            throw "Invalid Analog Devices MSI signature: $($signature.Status)"
+          }
+          $hash = (Get-FileHash -Algorithm SHA256 $msi).Hash.ToLowerInvariant()
+          "ADI_LTSPICE_INSTALLER_SHA=$hash" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $args = '/i "' + $msi + '" /quiet /norestart'
+          $proc = Start-Process msiexec.exe -ArgumentList $args -Wait -PassThru
+          if ($proc.ExitCode -notin @(0,3010)) { throw "Installer exit code: $($proc.ExitCode)" }
+          $candidates = @(
+            (Join-Path $env:ProgramFiles 'ADI\LTspice\LTspice.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\ADI\LTspice\LTspice.exe')
+          )
+          $exe = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $exe) { throw 'Official installer completed but LTspice.exe was not found' }
+          "LTSPICE=$exe" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "Official ADI installer SHA: $hash"
+      - name: Fail fast unless genuine LTspice can solve 1V/1k in batch mode
+        shell: pwsh
+        run: |
+          python tools/ltspice_batch_smoke.py --ltspice "$env:LTSPICE" --out-dir sim/v3 --timeout-sec 25
+      - name: Run model case using real LTspice, SR on and SR off
+        shell: pwsh
+        run: python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run
+      - name: Record environment provenance (not success proof)
+        shell: pwsh
+        if: always()
+        run: |
+          $obj = @{
+            original_msi_url = 'https://ltspice.analog.com/software/LTspice64.msi'
+            installer_sha256 = $env:ADI_LTSPICE_INSTALLER_SHA
+            commit = $env:GITHUB_SHA
+            classification = 'SIMULATION_ONLY_NOT_HARDWARE_SIGNOFF'
+            note = 'This metadata exists on failure too; inspect the job conclusion and measured logs'
+          }
+          $resultFile = 'sim/v3/poc_' + $env:POC_CASE + '_windows_environment.json'
+          $obj | ConvertTo-Json | Out-File $resultFile -Encoding utf8
+      - name: Keep unmodified simulator evidence even when solver errors
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: d1-${{ matrix.nominal_case }}-sr-on-off-LTspice-evidence
+          path: |
+            sim/v3/_ltspice_batch_smoke.json
+            sim/v3/_ltspice_batch_smoke.cir
+            sim/v3/_ltspice_batch_smoke.log
+            sim/v3/_ltspice_batch_smoke.raw
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_on.log
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_off.log
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_on.raw
+            sim/v3/poc_${{ matrix.nominal_case }}_sr_off.raw
+            sim/v3/poc_${{ matrix.nominal_case }}_comparison_model_only.json
+            sim/v3/poc_${{ matrix.nominal_case }}_windows_environment.json
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 1

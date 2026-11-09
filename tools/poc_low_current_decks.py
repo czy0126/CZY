@@ -25,7 +25,16 @@ OUT = ROOT / "sim/v3"
 CASES = {("5a", "on"): 0.4, ("5a", "off"): 0.4,
          ("10a", "on"): 0.2, ("10a", "off"): 0.2}
 SOURCE_PARAMETERS = ".param VIN=48 RL=20m LP=10u LR_TOTAL=1u CR_TOTAL=620n"
-SAVE_START = ".save V(out) V(sw) V(ss) V(aux) V(reg) V(oc) V(vin0) I(Lr) I(Vbus) I(Vaux) I(Vreg)"
+# Single source of truth for the probe list.  LTspice discards every vector not
+# named here, so any .meas that references a dropped vector aborts the *whole*
+# .meas block with "Current not found" (2026-11-09 winsrv run: I(Vaux) was
+# missing and all nine POC_* keys came back empty after a 388 s solve).
+# V(sgnd) is the SR gate-source reference node, not ground.
+SAVE_LINES = (
+    ".save V(out) V(sw) V(ss) V(aux) V(reg) V(oc) V(vin0) I(Lr) I(Vbus) I(Vaux)",
+    "+ V(a1) V(b1) V(ga1) V(gb1) V(ga4) V(gb4) V(sgnd)",
+    "+ I(VSa1) I(VSb1) I(VSa4) I(VSb4)",
+)
 
 
 def deck(case: str, mode: str, parent: str | None = None) -> str:
@@ -46,11 +55,7 @@ def deck(case: str, mode: str, parent: str | None = None) -> str:
     for line in lines:
         if line.startswith(".save "):
             skip_save_continuations = True
-            out += [
-                ".save V(out) V(sw) V(ss) V(aux) V(reg) V(oc) V(vin0) I(Lr) I(Vbus)",
-                "+ V(a1) V(b1) V(ga1) V(gb1) V(ga4) V(gb4)",
-                "+ I(VSa1) I(VSb1) I(VSa4) I(VSb4)",
-            ]
+            out += list(SAVE_LINES)
             continue
         if skip_save_continuations and line.lstrip().startswith("+"):
             continue

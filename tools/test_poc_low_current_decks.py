@@ -95,3 +95,34 @@ def test_provenance_header_is_platform_independent_for_windows_and_linux():
             "NO hardware verification."
         )
         assert "\\\\" not in line
+
+
+def test_every_meas_vector_is_reachable_from_the_save_block():
+    """A .meas over an unsaved vector aborts the whole .meas block in LTspice.
+
+    2026-11-09 winsrv: I(Vaux) was dropped from the generated .save while the
+    inherited .meas still referenced it, so a 388 s SR_OFF solve returned no
+    measurements at all instead of failing loudly at parse time.
+    """
+    for case, mode in poc.CASES:
+        lines = poc.deck(case, mode).splitlines()
+        saved: set[str] = set()
+        for i, line in enumerate(lines):
+            if not line.startswith(".save "):
+                continue
+            saved.update(re.findall(r"[VI]\([^)]*\)", line))
+            for cont in lines[i + 1:]:
+                if not cont.lstrip().startswith("+"):
+                    break
+                saved.update(re.findall(r"[VI]\([^)]*\)", cont))
+        missing: set[str] = set()
+        for meas in (x for x in lines if x.startswith(".meas ")):
+            for ref in re.findall(r"[VI]\([^)]*\)", meas):
+                kind, inner = ref[0], ref[2:-1]
+                # V(ga1,sgnd) needs both V(ga1) and V(sgnd).
+                for node in inner.split(","):
+                    name = f"{kind}({node.strip()})"
+                    if name not in saved:
+                        missing.add(name)
+        assert not missing, f"{case}/{mode}: .meas uses unsaved {sorted(missing)}"
+
