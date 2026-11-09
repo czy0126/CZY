@@ -23,11 +23,13 @@ MODELS = {"on_original": ("on", "original"),
           "off_original": ("off", "original")}
 
 
-def build(scenario: str) -> tuple[Path, str, Path | None, str | None]:
+def build(scenario: str, case: str = "5a") -> tuple[Path, str, Path | None, str | None]:
     if scenario not in MODELS:
         raise ValueError("unknown diagnostic scenario " + scenario)
+    if case not in ("5a", "10a"):
+        raise ValueError("unknown diagnostic load case " + case)
     mode, variation = MODELS[scenario]
-    body = poc.deck("5a", mode)
+    body = poc.deck(case, mode)
     if body.count(".tran 0 8m 0 10n uic") != 1:
         raise ValueError("golden transient has drifted")
     body = body.replace(".tran 0 8m 0 10n uic", ".tran 0 620u 0 10n uic")
@@ -41,7 +43,7 @@ def build(scenario: str) -> tuple[Path, str, Path | None, str | None]:
     source_path = None
     source_text = None
     if variation != "original":
-        source_path = poc.OUT / f"_diag_{scenario}_sr_device.lib"
+        source_path = poc.OUT / f"_diag_{case}_{scenario}_sr_device.lib"
         source_text = MODEL.read_text(encoding="utf-8")
         source_marker = ".model DB D(IS=5e-11 N=1.05 TT=27n CJO=0 RS=1m)"
         if source_text.count(source_marker) != 2:
@@ -56,7 +58,7 @@ def build(scenario: str) -> tuple[Path, str, Path | None, str | None]:
         if body.count(include) != 1:
             raise ValueError("baseline SR_DEVICE include drifted")
         body = body.replace(include, f".include {source_path.name}")
-    name = f"_diag_5a_{scenario}.cir"
+    name = f"_diag_{case}_{scenario}.cir"
     return poc.OUT / name, body, source_path, source_text
 
 
@@ -90,12 +92,13 @@ def diagnostic_measurements(log: Path) -> dict[str, float]:
     return result
 
 
-def run(scenario: str, exe: Path, timeout_s: int = 840) -> int:
+def run(scenario: str, exe: Path, timeout_s: int = 840,
+        case: str = "5a") -> int:
     if not exe.is_file():
         raise FileNotFoundError("genuine LTspice exe unavailable")
     if not 5 <= timeout_s <= 3600:
         raise ValueError("diagnostic timeout must be 5-3600 seconds")
-    path, deck, model_path, model_text = build(scenario)
+    path, deck, model_path, model_text = build(scenario, case)
     if model_path:
         model_path.write_text(model_text, encoding="utf-8", newline="\n")
     path.write_text(deck, encoding="utf-8", newline="\n")
@@ -160,7 +163,7 @@ def run(scenario: str, exe: Path, timeout_s: int = 840) -> int:
             None if complete else raw_validation.get("reason", "RAW invalid")),
         "raw_validation": raw_validation,
         "scenario": scenario,
-        "case": "nominal_5A_0p4ohm",
+        "case": "nominal_5A_0p4ohm" if case == "5a" else "nominal_10A_0p2ohm",
         "simulated_stop_s": .00062,
         "wall_clock_limit_s": timeout_s,
         "source_sha256": sha(poc.PARENT),
@@ -178,7 +181,7 @@ def run(scenario: str, exe: Path, timeout_s: int = 840) -> int:
         "stdout_tail": stdout_tail,
         "stderr_tail": stderr_tail,
     }
-    output = poc.OUT / f"_diag_5a_{scenario}.json"
+    output = poc.OUT / f"_diag_{case}_{scenario}.json"
     output.write_text(json.dumps(metadata, indent=2) + "\n",
                       encoding="utf-8")
     print(json.dumps(metadata, indent=2))
@@ -188,19 +191,20 @@ def run(scenario: str, exe: Path, timeout_s: int = 840) -> int:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--scenario", choices=MODELS, required=True)
+    parser.add_argument("--case", choices=("5a", "10a"), default="5a")
     parser.add_argument("--ltspice")
     parser.add_argument("--run", action="store_true")
     parser.add_argument("--timeout-sec", type=int, default=840)
     args = parser.parse_args()
     if not args.run:
-        name, deck, model, text = build(args.scenario)
+        name, deck, model, text = build(args.scenario, args.case)
         print(json.dumps({"deck": name.name, "sha256": hashlib.sha256(
             deck.encode()).hexdigest(), "diagnostic_model": model.name if model else None,
             "hardware_qualified": False}))
         return 0
     if not args.ltspice:
         parser.error("--ltspice is required for a genuine --run")
-    return run(args.scenario, Path(args.ltspice), args.timeout_sec)
+    return run(args.scenario, Path(args.ltspice), args.timeout_sec, case=args.case)
 
 
 if __name__ == "__main__":
