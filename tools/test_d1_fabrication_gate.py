@@ -300,3 +300,57 @@ def test_empty_coverage_cannot_make_mpn_stopline_appear_green(monkeypatch):
     assert check["manufacturer_target_conflicts"] == 0
     assert check["known_mpn_and_target_rows"] == 0
     assert check["passed"] is False
+
+
+def test_real_double_dnp_r8_is_unpopulated_even_if_schematic_netlist_retains_ref():
+    nets = _native_ref_nets()
+    assert gate._primary_en_default_low_precheck(nets)["passed"] is False
+    p = gate._primary_en_default_low_precheck(nets, r8_real_dnp=True)
+    assert p["passed"] is True
+    assert not p["problems"]
+    assert "no proof" in p["limited_scope"]
+
+
+def test_r8_dnp_never_hides_second_renamed_live_run_pullup():
+    nets = _native_ref_nets()
+    nets["R88"] = {"1": "RUN", "2": "VCC12"}
+    p = gate._primary_en_default_low_precheck(nets, r8_real_dnp=True)
+    assert p["passed"] is False
+    assert any("R88" in s for s in p["problems"])
+
+
+def test_partial_or_unmatched_r8_native_capture_cannot_bypass_static_run_check(
+        monkeypatch):
+    # Synthetic scenarios are not new evidence; cover branch wiring only.
+    original = gate._native_mpn_and_r8_precheck()
+    assert original["r8_in_bom"] is True and original["r8_in_pcb"] is True
+    for state in (
+            {"snapshot_matches_live_capture": False,
+             "r8_in_bom": False, "r8_in_pcb": False},
+            {"snapshot_matches_live_capture": True,
+             "r8_in_bom": False, "r8_in_pcb": True},
+            {"snapshot_matches_live_capture": True,
+             "r8_in_bom": True, "r8_in_pcb": False},
+    ):
+        check = {**original, **state, "passed": False}
+        monkeypatch.setattr(gate, "_native_mpn_and_r8_precheck",
+                            lambda check=check: check)
+        result = gate.build()
+        assert result["checks"]["independent_fault_shutdown_design_evidence"] is False
+        assert result["release_approved"] is False
+        assert result["status"] == "NOT_FOR_FAB"
+
+
+def test_native_r8_double_dnp_keeps_independent_protection_gate_blocked(
+        monkeypatch):
+    original = gate._native_mpn_and_r8_precheck()
+    two_fields_dnp = {**original, "snapshot_matches_live_capture": True,
+                      "r8_in_bom": False, "r8_in_pcb": False,
+                      "manufacturer_target_conflicts": 38, "passed": False}
+    monkeypatch.setattr(gate, "_native_mpn_and_r8_precheck",
+                        lambda: two_fields_dnp)
+    result = gate.build()
+    assert result["status"] == "NOT_FOR_FAB"
+    assert result["checks"]["native_manufacturer_ids_and_r8_dnp_verified"] is False
+    assert result["checks"]["independent_fault_shutdown_design_evidence"] is False
+    assert "independent_fault_shutdown_design_evidence" in result["blockers"]
