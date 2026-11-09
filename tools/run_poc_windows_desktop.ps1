@@ -4,7 +4,7 @@
 # Example:
 #   pwsh -File tools/run_poc_windows_desktop.ps1 -Case smoke
 #   pwsh -File tools/run_poc_windows_desktop.ps1 -Case 5a -Mode off
-#   pwsh -File tools/run_poc_windows_desktop.ps1 -Case 5a -Mode both -TimeoutSec 1200
+#   pwsh -File tools/run_poc_windows_desktop.ps1 -Case 5a -Mode both -TimeoutSec 2400
 param(
     [ValidateSet("smoke", "5a", "10a")]
     [string] $Case = "smoke",
@@ -12,7 +12,7 @@ param(
     [string] $Mode = "off",
     [string] $LTspicePath = "",
     [ValidateRange(5,7200)]
-    [int] $TimeoutSec = 1200
+    [int] $TimeoutSec = 2400
 )
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
