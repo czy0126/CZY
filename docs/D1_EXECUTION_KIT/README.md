@@ -1,5 +1,7 @@
 # D1 可执行工程参考包（更新至 2026-11-05）
 
+> **磁件路线更新（2026-11-09，不限制成本）：先做自研 Maxwell，不用等报价。** 6种可生成的概念 STEP 源 [diy_magnetics_concept.json](../../design/v3/maxwell/diy_magnetics_concept.json)，生成器 [maxwell_diy_geometry.py](../../tools/maxwell_diy_geometry.py)，**G1设计自有26位临时 PAD 逻辑映射** [maxwell_diy_pcb_envelope.py](../../tools/maxwell_diy_pcb_envelope.py)，真实 Maxwell 运行入口 [maxwell_diy_run.py](../../tools/maxwell_diy_run.py)。[第49章当前优先级/证据边界](49_D1主功率板PCB唯一执行计划_2026-11-09.md)：已经实现 CAD STEP，不是已经跑完 Maxwell，更不是厂家签版或投板许可。
+
 > **唯一交付主线（2026-11-09）：** [49 D1 主功率板 PCB 冻结执行计划](49_D1主功率板PCB唯一执行计划_2026-11-09.md) · [GitHub #4](https://github.com/czy0126/CZY/issues/4)；先实现 G1 原生带网非锁版 PCB，再完成 G2 真实封装/磁件与百安培铜路，G3 最终版图/安全制造审核。只并行原生 CAD、厂家实物回件、D0 真实保护三条主线。**以下旧各章保留为技术参考，不再产生平行计划或与 G1–G3 抢占优先级；NOT_FOR_FAB。**
 
 **对象**：CZY 48 V→约 2 V、24:1 LLC-DCX、100/120 A 高输出实验样机。**设计取舍（2026-11-04更新）**：成本不设上限；D1首样100A级/总高目标≤16mm，D2 120A级/≤16mm，原≤10mm目标转D3优化；器件SOA、绝缘、保护、制造和证据可信度不放松。
