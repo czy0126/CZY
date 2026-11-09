@@ -4,6 +4,8 @@ on:
     paths:
       - 'tools/native_inventory_bom_gate.py'
       - 'tools/test_native_inventory_bom_gate.py'
+      - 'tools/d1_fabrication_gate.py'
+      - 'tools/test_d1_fabrication_gate.py'
       - 'hardware/dcx_main/gen/native_inventory_raw.json'
       - 'hardware/dcx_main/native_inventory_bom_gate.json'
       - '.github/workflows/d1-native-eco-progress.yml'
@@ -30,4 +32,4 @@ jobs:
         run: |
           python -m pip install 'pytest>=8,<10'
           python tools/native_inventory_bom_gate.py --check
-          python -m pytest -q tools/test_native_inventory_bom_gate.py
+          python -m pytest -q tools/test_native_inventory_bom_gate.py tools/test_d1_fabrication_gate.py
