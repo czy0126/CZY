@@ -49,6 +49,10 @@ python tools/powerup_checklist.py --md design/v3/stage_f/上电检查表.md \
     --json design/v3/stage_f/powerup_checklist.json   # 上电检查表，判据由各 JSON 渲染
 python tools/current_manifest.py --scope v3 \
     --json design/v3/manifest_current_candidate.json   # 可复现当前清单（v2 仍是不带 --scope 的默认）
+    # 本机重生成会打印 "34 missing"：33 条 `.raw` 证据只在 winsrv 上，生成器 `entry()`
+    # 把它们改写成 `{"status":"missing"}`，**丢掉已记录的 bytes/mtime/sha256**。
+    # `ci_check.compare_manifests` 容忍缺 raw（跳过该行），但清单里那份 hash 可能是这些
+    # raw 唯一的身份记录 ⇒ 只补真正变了的行（bytes/sha256），不要整份覆盖后提交。
 python tools/extract_op_point.py <raw> --rl <ohm> --periods 22 --json <out>
 python tools/energy_ledger_100a.py --json design/v3/stage_f/energy_ledger_100a.json
 python tools/sr_loss_audit.py --json design/v3/stage_f/sr_loss_audit.json
