@@ -60,7 +60,7 @@ try {
     }
     if ($Case -eq "smoke") {
         Write-Host "Trivial 1V batch preflight passed. D1 power model NOT run."
-        exit 0
+        return
     }
     $record = @{
         status = "DESKTOP_MODEL_ATTEMPT_NOT_PROOF"
