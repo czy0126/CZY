@@ -68,49 +68,121 @@ def sha(path: Path) -> str:
     return h.hexdigest()
 
 
-def run(scenario: str, exe: Path) -> int:
+def diagnostic_measurements(log: Path) -> dict[str, float]:
+    """A RAW end-time is insufficient: demand both actual finite .meas values."""
+    from run_poc_low_current import read_ltspice_log
+
+    raw_log = read_ltspice_log(log)
+    targets = ("diag_vout_at_600u", "diag_resonant_pk")
+    result = {}
+    number = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
+    for key in targets:
+        values = re.findall(
+            rf"(?im)^\s*{re.escape(key)}\s*:\s*[^=\r\n]*=\s*({number})",
+            raw_log,
+        )
+        if len(values) != 1:
+            raise ValueError(f"diagnostic LTspice log lacks a unique valid {key}")
+        value = float(values[0])
+        if not __import__("math").isfinite(value) or abs(value) >= 1e100:
+            raise ValueError(f"nonfinite/sentinel diagnostic {key}")
+        result[key] = value
+    return result
+
+
+def run(scenario: str, exe: Path, timeout_s: int = 840) -> int:
     if not exe.is_file():
         raise FileNotFoundError("genuine LTspice exe unavailable")
+    if not 5 <= timeout_s <= 3600:
+        raise ValueError("diagnostic timeout must be 5-3600 seconds")
     path, deck, model_path, model_text = build(scenario)
     if model_path:
         model_path.write_text(model_text, encoding="utf-8", newline="\n")
     path.write_text(deck, encoding="utf-8", newline="\n")
     log, raw = path.with_suffix(".log"), path.with_suffix(".raw")
     # Prior outputs may be stale; remove ONLY generated diagnostic outputs.
-    for item in [log, raw]:
-        if item.is_file():
-            item.unlink()
-    result = subprocess.run([str(exe), "-b", str(path.resolve())],
-                            cwd=path.parent, capture_output=True,
-                            timeout=840, text=True, errors="replace", check=False)
+    for item in (log, raw):
+        item.unlink(missing_ok=True)
+
+    returncode = None
+    stderr_tail = ""
+    stdout_tail = ""
+    failure = None
+    try:
+        result = subprocess.run(
+            [str(exe), "-b", str(path.resolve())], cwd=path.parent,
+            capture_output=True, timeout=timeout_s, text=True,
+            errors="replace", check=False,
+        )
+        returncode = result.returncode
+        stdout_tail = result.stdout[-800:]
+        stderr_tail = result.stderr[-800:]
+        if returncode != 0:
+            failure = f"LTspice returned nonzero exit code {returncode}"
+    except subprocess.TimeoutExpired as exc:
+        # A 14-minute timeout is an execution failure, not a simulated
+        # 0.62-ms numerical trajectory. Never lose the diagnostic JSON here.
+        failure = f"LTspice exceeded {timeout_s}s wall clock without completing"
+        stdout_tail = (exc.stdout or b"")[-800:]
+        stderr_tail = (exc.stderr or b"")[-800:]
+        if isinstance(stdout_tail, bytes):
+            stdout_tail = stdout_tail.decode(errors="replace")
+        if isinstance(stderr_tail, bytes):
+            stderr_tail = stderr_tail.decode(errors="replace")
+    except OSError as exc:
+        failure = f"failed to launch LTspice: {exc}"
+
     if raw.exists():
         try:
             raw_validation = inspect_raw(raw, stop_time_s=.00062)
-        except (RawEvidenceError, ValueError, OSError) as e:
-            raw_validation = {"status": "INVALID_RAW", "reason": str(e)}
+        except (RawEvidenceError, ValueError, OSError) as exc:
+            raw_validation = {"status": "INVALID_RAW", "reason": str(exc)}
     else:
         raw_validation = {"status": "MISSING_RAW"}
+
+    measurements = None
+    if log.is_file() and log.stat().st_size > 0:
+        try:
+            measurements = diagnostic_measurements(log)
+        except (ValueError, OSError, UnicodeError) as exc:
+            if failure is None:
+                failure = f"log .meas incomplete: {exc}"
+    elif failure is None:
+        failure = "genuine LTspice log missing"
+
+    complete = (returncode == 0 and failure is None and
+                raw_validation["status"] == "RAW_ALL_FINITE_AND_TIME_COMPLETE"
+                and measurements is not None)
     metadata = {
-        "raw_validation": raw_validation,
         "status": "ISOLATED_EARLY_NUMERICAL_DIAGNOSTIC_NOT_FOR_HARDWARE",
+        "diagnostic_run_validated": bool(complete),
+        "failure_reason": failure if failure else (
+            None if complete else raw_validation.get("reason", "RAW invalid")),
+        "raw_validation": raw_validation,
         "scenario": scenario,
         "case": "nominal_5A_0p4ohm",
         "simulated_stop_s": .00062,
+        "wall_clock_limit_s": timeout_s,
         "source_sha256": sha(poc.PARENT),
         "golden_mos_model_sha256": sha(MODEL),
         "input_sha256": sha(path),
         "diagnostic_model_sha256": sha(model_path) if model_path else None,
-        "returncode": result.returncode,
+        "returncode": returncode,
         "log_sha256": sha(log) if log.exists() else None,
+        "log_bytes": log.stat().st_size if log.exists() else 0,
         "raw_sha256": sha(raw) if raw.exists() else None,
         "raw_bytes": raw.stat().st_size if raw.exists() else 0,
-        "hardware_qualified": False, "fabrication_approved": False,
-        "stdout_tail": result.stdout[-800:], "stderr_tail": result.stderr[-800:],
+        "diagnostic_measurements": measurements,
+        "hardware_qualified": False,
+        "fabrication_approved": False,
+        "stdout_tail": stdout_tail,
+        "stderr_tail": stderr_tail,
     }
     output = poc.OUT / f"_diag_5a_{scenario}.json"
-    output.write_text(json.dumps(metadata, indent=2)+"\n", encoding="utf-8")
+    output.write_text(json.dumps(metadata, indent=2) + "\n",
+                      encoding="utf-8")
     print(json.dumps(metadata, indent=2))
-    return 0 if result.returncode == 0 and raw_validation["status"] == "RAW_ALL_FINITE_AND_TIME_COMPLETE" else 2
+    return 0 if complete else 2
 
 
 def main():
@@ -118,6 +190,7 @@ def main():
     parser.add_argument("--scenario", choices=MODELS, required=True)
     parser.add_argument("--ltspice")
     parser.add_argument("--run", action="store_true")
+    parser.add_argument("--timeout-sec", type=int, default=840)
     args = parser.parse_args()
     if not args.run:
         name, deck, model, text = build(args.scenario)
@@ -125,7 +198,9 @@ def main():
             deck.encode()).hexdigest(), "diagnostic_model": model.name if model else None,
             "hardware_qualified": False}))
         return 0
-    return run(args.scenario, Path(args.ltspice))
+    if not args.ltspice:
+        parser.error("--ltspice is required for a genuine --run")
+    return run(args.scenario, Path(args.ltspice), args.timeout_sec)
 
 
 if __name__ == "__main__":
