@@ -1,0 +1,190 @@
+{
+  "classification": "OEM_SOURCING_SCREEN_NOT_VENDOR_SIGNOFF_NOT_FOR_FAB",
+  "source_data": "hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json",
+  "source_count_oem_links": 10,
+  "source_specification_temperature_caveat": "Part resistance measured at its quoted OEM temperature and ripple rating at another quoted temperature are independent parameter screens, NOT a guaranteed joint operating point. At 200.62kHz and in the actual 16mm assembly re-measure.",
+  "targets": {
+    "capacitance_min_mf": 7.05,
+    "bank_ripple_required_arms": 84.092907,
+    "bank_cap_esr_budget_mohm": 0.07,
+    "bank_copper_and_joint_separate_budget_mohm": 0.03,
+    "max_d1_full_assembly_height_mm": 16,
+    "max_d3_stretch_full_assembly_height_mm": 10,
+    "nominal_existing_model_bank_count": 15,
+    "preferred_vrating_v": 6.3
+  },
+  "capacitor_options": [
+    {
+      "mpn": "T530X477M006ATE004",
+      "source_id": "KEMET_T530_470_6R3",
+      "voltage_v_nominal_until_105c_oem": 6.3,
+      "voltage_v_at_125c_oem_or_unknown": 4.22,
+      "cap_nominal_uF_each": 470,
+      "cap_worst_tolerance_uF_each": 376,
+      "esr_mohm_each_oem_at_100khz": 4,
+      "esr_temperature_c_from_oem_or_unspecified": 25,
+      "min_units_by_nominal_cap_only": 15,
+      "min_units_by_low_tolerance_cap": 19,
+      "min_units_by_ideal_equal_esr_only": 58,
+      "min_units_by_ripple_at_listed_oem_temperatures": {
+        "45": {
+          "ripple_per_part_a_at_100khz_oem": 8.2,
+          "min_units_ripple_only": 11,
+          "min_units_all_simple_arithmetic_targets": 58,
+          "does_not_interpolate_other_temperatures": true
+        },
+        "85": {
+          "ripple_per_part_a_at_100khz_oem": 5.74,
+          "min_units_ripple_only": 15,
+          "min_units_all_simple_arithmetic_targets": 58,
+          "does_not_interpolate_other_temperatures": true
+        },
+        "125": {
+          "ripple_per_part_a_at_100khz_oem": 2.05,
+          "min_units_ripple_only": 42,
+          "min_units_all_simple_arithmetic_targets": 58,
+          "does_not_interpolate_other_temperatures": true
+        }
+      },
+      "current_nominal_15units_cap_mf": 7.05,
+      "current_15units_low_tolerance_cap_mf": 5.64,
+      "current_15units_ideal_equal_esr_mohm": 0.266667,
+      "current_15units_under_cap_bank_esr_budget": false,
+      "case_body_size_mm": {
+        "L": 7.3,
+        "W": 4.3,
+        "manufacturer_height_max_or_unknown": 4.3,
+        "diameter_or_unknown": null
+      },
+      "physical_layout_and_mixed_bank_qualified": false,
+      "only_equal_current_and_equal_impedance_arithmetic": true,
+      "esr_and_ripple_specs_not_same_operating_point": true,
+      "thermal_ac_and_dcbias_models_still_needed": true
+    },
+    {
+      "mpn": "6SVPS470M",
+      "source_id": "PANASONIC_SVPS_470_6R3",
+      "voltage_v_nominal_until_105c_oem": 6.3,
+      "voltage_v_at_125c_oem_or_unknown": null,
+      "cap_nominal_uF_each": 470,
+      "cap_worst_tolerance_uF_each": 376,
+      "esr_mohm_each_oem_at_100khz": 20,
+      "esr_temperature_c_from_oem_or_unspecified": null,
+      "min_units_by_nominal_cap_only": 15,
+      "min_units_by_low_tolerance_cap": 19,
+      "min_units_by_ideal_equal_esr_only": 286,
+      "min_units_by_ripple_at_listed_oem_temperatures": {
+        "105": {
+          "ripple_per_part_a_at_100khz_oem": 4.13,
+          "min_units_ripple_only": 21,
+          "min_units_all_simple_arithmetic_targets": 286,
+          "does_not_interpolate_other_temperatures": true
+        }
+      },
+      "current_nominal_15units_cap_mf": 7.05,
+      "current_15units_low_tolerance_cap_mf": 5.64,
+      "current_15units_ideal_equal_esr_mohm": 1.333333,
+      "current_15units_under_cap_bank_esr_budget": false,
+      "case_body_size_mm": {
+        "L": 7.9,
+        "W": null,
+        "manufacturer_height_max_or_unknown": null,
+        "diameter_or_unknown": 10
+      },
+      "physical_layout_and_mixed_bank_qualified": false,
+      "only_equal_current_and_equal_impedance_arithmetic": true,
+      "esr_and_ripple_specs_not_same_operating_point": true,
+      "thermal_ac_and_dcbias_models_still_needed": true
+    },
+    {
+      "mpn": "6SVP470M",
+      "source_id": "PANASONIC_SVP_470_6R3",
+      "voltage_v_nominal_until_105c_oem": 6.3,
+      "voltage_v_at_125c_oem_or_unknown": null,
+      "cap_nominal_uF_each": 470,
+      "cap_worst_tolerance_uF_each": 376,
+      "esr_mohm_each_oem_at_100khz": 15,
+      "esr_temperature_c_from_oem_or_unspecified": null,
+      "min_units_by_nominal_cap_only": 15,
+      "min_units_by_low_tolerance_cap": 19,
+      "min_units_by_ideal_equal_esr_only": 215,
+      "min_units_by_ripple_at_listed_oem_temperatures": {
+        "105": {
+          "ripple_per_part_a_at_100khz_oem": 4.21,
+          "min_units_ripple_only": 20,
+          "min_units_all_simple_arithmetic_targets": 215,
+          "does_not_interpolate_other_temperatures": true
+        }
+      },
+      "current_nominal_15units_cap_mf": 7.05,
+      "current_15units_low_tolerance_cap_mf": 5.64,
+      "current_15units_ideal_equal_esr_mohm": 1,
+      "current_15units_under_cap_bank_esr_budget": false,
+      "case_body_size_mm": {
+        "L": 11.9,
+        "W": null,
+        "manufacturer_height_max_or_unknown": null,
+        "diameter_or_unknown": 8
+      },
+      "physical_layout_and_mixed_bank_qualified": false,
+      "only_equal_current_and_equal_impedance_arithmetic": true,
+      "esr_and_ripple_specs_not_same_operating_point": true,
+      "thermal_ac_and_dcbias_models_still_needed": true
+    }
+  ],
+  "connector_risk": {
+    "source_id": "WURTH_REDCUBE_CONTACT_NOTE",
+    "basis": "Wurth REDCUBE PRESS-FIT family app note, NOT a part-specific spec",
+    "loop_resistance_budget_uohm_both_poles": 150,
+    "assumed_counted_contacts_total_both_poles": 2,
+    "bar_pair_uohm_100c_from_existing_concept": 6.798,
+    "reserved_pcb_uohm_unverified": 30,
+    "family_pressfit_contact_zone_range_cases": {
+      "manufacturer_family_low_uohm_not_exact_part": {
+        "per_contact_zone_uohm_family_note_not_exact_part": 100,
+        "both_poles_total_contact_uohm": 200,
+        "full_two_pole_arithmetic_uohm": 236.798,
+        "passes_150uohm_arithmetic_only": false
+      },
+      "manufacturer_family_high_uohm_not_exact_part": {
+        "per_contact_zone_uohm_family_note_not_exact_part": 200,
+        "both_poles_total_contact_uohm": 400,
+        "full_two_pole_arithmetic_uohm": 436.798,
+        "passes_150uohm_arithmetic_only": false
+      }
+    },
+    "manufacturer_rated_current_does_not_certify_low_loop_resistance": true,
+    "mechanical_cad_and_kelvin_evidence_required": true,
+    "physical_approval": false
+  },
+  "magnetics": {
+    "core_preferred": "TDK_ELP38_I38_N97",
+    "core_alternate": "TDK_ELP43_I43_N97",
+    "material": "TDK_N97_2025",
+    "elp38_i38_Amin_mm2": 192,
+    "elp43_i43_Amin_mm2": 217,
+    "core_sheet_Bs_100c_mT_at_H250": 310,
+    "generic_n97_Bs_100c_mT_at_H1200": 410,
+    "raw_product_is_finished_magnetic": false,
+    "missing": "Signed 24 physical pads + DOT, core pair material/batch, full Z tolerance, gap recipe, L(I,T), AC loss and winding stress.",
+    "core_material_Bs_measurement_conditions_not_interchangeable": true,
+    "actual_100c_L_I_gap_and_24_real_physical_pads_verified": false,
+    "full_16mm_height_and_coldplate_verified": false
+  },
+  "safety": {
+    "oem_urls_are_independent_references_not_reproduced_datasheets": true,
+    "series_cap_bank_esr_budget_is_not_output_150uohm_loop_budget": true,
+    "actual_bom_updated": false,
+    "vendor_quotes_received": false,
+    "assembly_height_qualified": false,
+    "original_easyeda_project_modified": false,
+    "full_hardware_fault_shutdown_qualified": false,
+    "fabrication_approved": false
+  },
+  "next_action": [
+    "Request exact 100/200kHz ESR-versus-temperature and per-part ripple derating for shortlisted capacitor banks, plus PCB/current-sharing layout and worst-case C tolerance",
+    "Ask 2+ magnetics vendors for T1-T4, CT, Lr finished pads/DOT/100C L(I), AC-loss and <=16mm total board/thermal stack drawing",
+    "Ask high-current interconnect vendor for exact assembled hot Kelvin R(VOUT+PGND), not pressfit family ampacity; prefer physically countable continuous bars/inlays",
+    "Validate TI UCC24624 REG/DC-bias cap, VDS Kelvin and default-off fault path on physical D0; this document is not D0 signoff"
+  ]
+}
