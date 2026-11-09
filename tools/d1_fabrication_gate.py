@@ -30,6 +30,7 @@ import d1_functional_net_audit as functional_audit
 import check_main_board_netlist as native_check
 import main_board_schematic as mbs
 import magnetics_cad_contract as magnetics_contract
+import native_inventory_bom_gate as native_bom
 
 # No such files have been delivered in the current main branch. Do not turn
 # these checks green until the native EDA evidence has been independently
@@ -168,6 +169,60 @@ def _primary_en_default_low_precheck(refs: dict) -> dict:
                              "power loss, real driver inhibit or measured gate VGS"}
 
 
+def _native_mpn_and_r8_precheck() -> dict:
+    """Manufacturing veto against actual captured OEM IDs, not display Value.
+
+    The 61-ref value ECO can make a schematic look correct without replacing
+    physical Samsung 100nF / Uniroyal 10k library devices. Compare the
+    independently regenerated original-inventory audit with its committed
+    readback: stale or absent evidence cannot authorize fabrication.
+    This is a necessary SOURCE check, never a substitute for native GUI
+    export, exact package pin map, or signed purchasing/DFM approval.
+    """
+    try:
+        actual = native_bom.audit()
+        cached = _read(native_bom.OUTPUT)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return {"passed": False, "snapshot_matches_live_capture": False,
+                "manufacturer_target_conflicts": None,
+                "r8_in_bom": None, "r8_in_pcb": None,
+                "reason": f"native inventory audit unavailable: {type(exc).__name__}"}
+    match = cached == actual
+    conflicts = actual.get("manufacturer_target_conflicts")
+    in_bom = actual.get("original_r8_in_bom")
+    in_pcb = actual.get("original_r8_in_pcb")
+    # A zero-conflict report with zero audited rows is not a clean BOM.
+    # Maintain at least the historically evidenced 51 manufacturer/target
+    # identities (of 61 placeholder refs and 83 captured native instances).
+    # When replacing parts, the auditor and its verified OEM part registry must
+    # be extended, not bypassed by dropping old part codes from KNOWN.
+    known_rows = actual.get("known_mpn_and_target_rows")
+    register_rows = actual.get("register_placeholder_rows")
+    component_rows = actual.get("native_components")
+    coverage_retained = (
+        type(known_rows) is int and known_rows >= 51
+        and type(register_rows) is int and register_rows >= 61
+        and type(component_rows) is int and component_rows >= 83
+    )
+    passed = (match and coverage_retained
+              and type(conflicts) is int and conflicts == 0
+              and in_bom is False and in_pcb is False)
+    return {
+        "passed": passed,
+        "snapshot_matches_live_capture": match,
+        "manufacturer_target_conflicts": conflicts,
+        "r8_in_bom": in_bom,
+        "r8_in_pcb": in_pcb,
+        "known_mpn_and_target_rows": actual.get("known_mpn_and_target_rows"),
+        "native_component_rows": actual.get("native_components"),
+        "reason": ("captured MPN/target pairs agree and R8 is DNP in BOM and PCB"
+                   if passed else
+                   "OEM manufacturer MPN/value conflicts, unsafe R8 inclusion "
+                   "or stale native readback; correct in actual EDA and re-export"),
+        "scope": "Known catalog part numbers in captured EDA only; NOT a fresh GUI ERC or final BOM approval",
+    }
+
+
 def build() -> dict:
     golden = _csv(GOLDEN)
     net = _read(NETLIST)
@@ -197,6 +252,7 @@ def build() -> dict:
     subset_snapshot_fresh = live_net == net
     functional_check = functional_audit.compare(native_export["value"]["refs"])
     primary_en_precheck = _primary_en_default_low_precheck(native_export["value"]["refs"])
+    native_mpn_precheck = _native_mpn_and_r8_precheck()
 
 
     gold_refs = {x["ref"] for x in golden}
@@ -257,6 +313,7 @@ def build() -> dict:
         "controller_rt_dt_roles_match_native_netlist": functional_check["passed"],
         "all_golden_refs_and_magnetic_physical_pads_verified": all_placed,
         "no_electrical_placeholders_or_unselected_bom": all_values_frozen,
+        "native_manufacturer_ids_and_r8_dnp_verified": native_mpn_precheck["passed"],
         "all_required_real_hardware_bom_refs_in_native_design": not native_bom_missing_reported,
         "native_erc_evidence": native_erc["passed"],
         "routed_pcb_to_schematic_evidence": pcb_diff["passed"],
@@ -280,6 +337,9 @@ def build() -> dict:
             "unplaced_references": missing_refs,
             "magnetics_missing_physical_pads": incomplete_magnets,
             "refs_with_placeholders": placeholders,
+            "native_mpn_target_conflicts": native_mpn_precheck["manufacturer_target_conflicts"],
+            "native_r8_still_in_bom": native_mpn_precheck["r8_in_bom"],
+            "native_r8_still_in_pcb": native_mpn_precheck["r8_in_pcb"],
             "bom_rows_not_selected": undecided_bom,
             "real_hardware_bom_refs_not_in_golden": sorted(x["ref"] for x in required_missing),
             "all_required_bom_refs_missing_from_native_export": native_bom_missing,
@@ -292,6 +352,7 @@ def build() -> dict:
             "pcb_to_schematic": pcb_diff,
             "fab_approval": fab_signoff,
             "protection_design": protection_design,
+            "native_manufacturer_bom": native_mpn_precheck,
         },
         "blockers": blockers,
         "limitations": [
@@ -300,6 +361,7 @@ def build() -> dict:
             "Controller RT/DT functional-value crosscheck detects BOM-to-net mislabelling but does NOT substitute native ERC",
             "The golden netlist was derived from a SPICE deck, not all physical components",
             "BOM-driven control/decoupling parts must be present in native EDA and the final CAD-derived netlist",
+            "Visible schematic Value is not an OEM MPN: vendor MPN conflict and native R8 BOM/PCB DNP now veto fabrication",
             "Evidence records require original repository files and matching SHA256, but hashes do not replace expert approval",
             "Independent primary and eight SR fault shutdown must be independently design-reviewed in the same native CAD revision",
             "An ideal behavioural gate clamp cannot replace vendor SOA or real hardware protection signoff",
