@@ -17,7 +17,7 @@ jobs:
     env:
       POC_CASE: ${{ matrix.nominal_case }}
     runs-on: windows-2025
-    timeout-minutes: 48
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,9 +56,13 @@ jobs:
         shell: pwsh
         run: |
           python tools/ltspice_batch_smoke.py --ltspice "$env:LTSPICE" --out-dir sim/v3 --timeout-sec 25
-      - name: Run model case using real LTspice, SR on and SR off
+      - name: Attempt genuine SR_OFF baseline first, then SR_ON with bounded wall-clock budgets
         shell: pwsh
-        run: python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run
+        run: |
+          # Measured with LTspice 26 winsrv: 5A ON 1587s; 5A OFF 387s; 10A OFF 478s.
+          # Previous 1200s ON limit would reject a proven-valid 5A full run.
+          # Upper bound: OFF 850s + early 600s + ON 2350s plus setup < 70min.
+          python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run --off-timeout-sec 850 --on-timeout-sec 2350 --early-on-screen
       - name: Record environment provenance (not success proof)
         shell: pwsh
         if: always()
@@ -82,6 +86,14 @@ jobs:
             sim/v3/_ltspice_batch_smoke.cir
             sim/v3/_ltspice_batch_smoke.log
             sim/v3/_ltspice_batch_smoke.raw
+            sim/v3/_diag_10a_on_original.json
+            sim/v3/_diag_10a_on_original.log
+            sim/v3/_diag_10a_on_original.raw
+            sim/v3/_diag_10a_on_original.cir
+            sim/v3/_diag_5a_on_original.json
+            sim/v3/_diag_5a_on_original.log
+            sim/v3/_diag_5a_on_original.raw
+            sim/v3/_diag_5a_on_original.cir
             sim/v3/poc_${{ matrix.nominal_case }}_sr_on.log
             sim/v3/poc_${{ matrix.nominal_case }}_sr_off.log
             sim/v3/poc_${{ matrix.nominal_case }}_sr_on.raw

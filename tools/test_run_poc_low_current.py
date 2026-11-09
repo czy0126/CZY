@@ -68,3 +68,148 @@ def test_source_only_mode_is_explicitly_not_a_simulation(monkeypatch, capsys):
     assert all(v["deck_fresh"] is True for v in data["cases"].values())
     assert all(v["LTspice_run_performed_here"] is False
                for v in data["cases"].values())
+
+
+def test_both_mode_runs_independent_off_first_and_keeps_failed_attempt(monkeypatch, tmp_path):
+    """An expensive/unconverged ON run cannot erase the completed OFF baseline."""
+    observed = []
+    monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
+    monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path",
+                        lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
+    monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
+    monkeypatch.setattr(runner.sys, "argv",
+                        ["run_poc_low_current.py", "--case", "5a",
+                         "--mode", "both", "--run", "--timeout-sec", "123"])
+    def solver(case, mode, exe, timeout_sec):
+        observed.append((case, mode, timeout_sec))
+        if mode == "on":
+            (tmp_path / "poc_5a_sr_on.log").write_text(
+                "real partial but invalid log", encoding="utf-8")
+            raise RuntimeError("intentional ON solver divergence")
+        return {"measures": {key: 1.0 for key in runner.REQUIRED},
+                "status": "SIMULATION_ONLY", "hardware_qualified": False}
+    monkeypatch.setattr(runner, "run_selected", solver)
+    assert runner.main() == 2
+    assert observed == [("5a", "off", 123), ("5a", "on", 123)]
+    result = json.loads((tmp_path / "poc_5a_comparison_model_only.json")
+                        .read_text(encoding="utf-8"))
+    assert list(result["runs"]) == ["off"]
+    assert result["all_requested_modes_completed"] is False
+    assert result["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"][".log"]["present"]
+    assert result["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"][".log"]["validated_complete"] is False
+    assert result["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"][".raw"]["present"] is False
+    assert result["comparison"]["comparison_available"] is False
+    assert result["fab_release"] is False
+
+
+def test_partial_log_sha_cannot_be_mistaken_for_success(monkeypatch, tmp_path):
+    d = tmp_path / "poc_10a_sr_on.cir"
+    d.write_text("test source", encoding="utf-8")
+    log = d.with_suffix(".log")
+    raw = d.with_suffix(".raw")
+    log.write_bytes(b"partial waveform error")
+    raw.write_bytes(b"truncated binary raw")
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path", lambda *_: d)
+    part = runner.partial_artifacts("10a", "on")
+    assert part[".log"]["sha256"] == __import__("hashlib").sha256(log.read_bytes()).hexdigest()
+    assert part[".raw"]["size_bytes"] == len(raw.read_bytes())
+    assert not part[".raw"]["validated_complete"]
+
+
+def test_early_on_failure_avoids_full_on_but_retains_off_result(monkeypatch, tmp_path):
+    import poc_early_solver_diagnostics as diagnostic
+    calls = []
+    monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
+    monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path",
+                        lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
+    monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
+    monkeypatch.setattr(runner.sys, "argv",
+                        ["run_poc_low_current.py", "--case", "5a",
+                         "--mode", "both", "--run", "--early-on-screen"])
+    def mock_run(case, mode, exe, timeout_sec):
+        calls.append(mode)
+        return {"measures": {key: 1.0 for key in runner.REQUIRED},
+                "status": "SIMULATION_ONLY"}
+    def mock_diag(scenario, exe, timeout_s, case):
+        assert scenario == "on_original"
+        assert case == "5a"
+        (tmp_path / "_diag_5a_on_original.json").write_text(json.dumps({
+            "diagnostic_run_validated": False, "hardware_qualified": False}))
+        return 2
+    monkeypatch.setattr(runner, "run_selected", mock_run)
+    monkeypatch.setattr(diagnostic, "run", mock_diag)
+    assert runner.main() == 2
+    assert calls == ["off"]
+    report = json.loads((tmp_path / "poc_5a_comparison_model_only.json").read_text())
+    assert report["early_on_screen"]["on"]["diagnostic_run_validated"] is False
+    assert "on" in report["failed_modes"]
+    assert report["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"]["full_8ms_on"] == "NOT_ATTEMPTED"
+    assert report["fab_release"] is False
+
+
+def test_real_solver_per_mode_budgets_preserve_measured_5a_on_window(monkeypatch, tmp_path):
+    # The actual 2026-11-09 5A SR_ON solve took 1587.021 seconds.
+    # A 1200s budget must not quietly become the new mandatory cap.
+    seen = []
+    monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
+    monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path",
+                        lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
+    monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
+    monkeypatch.setattr(runner.sys, "argv", [
+        "run_poc_low_current.py", "--case", "5a", "--mode", "both",
+        "--run", "--off-timeout-sec", "850", "--on-timeout-sec", "2350"])
+    def fake_run(case, mode, exe, timeout_sec):
+        seen.append((mode, timeout_sec))
+        return {"measures": {key: 1.0 for key in runner.REQUIRED},
+                "status": "SIMULATION_ONLY"}
+    monkeypatch.setattr(runner, "run_selected", fake_run)
+    assert runner.main() == 0
+    assert seen == [("off", 850), ("on", 2350)]
+    data = json.loads((tmp_path / "poc_5a_comparison_model_only.json").read_text())
+    assert data["effective_timeout_seconds_by_mode"] == {
+        "off": 850, "on": 2350}
+    assert data["all_requested_modes_completed"] is True
+    assert data["fab_release"] is False
+
+
+def test_10a_original_screen_runs_longer_than_real_collapse(monkeypatch, tmp_path):
+    import poc_early_solver_diagnostics as diagnostic
+    captured = []
+    monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
+    monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path",
+                        lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
+    monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
+    monkeypatch.setattr(runner.sys, "argv", [
+        "run_poc_low_current.py", "--case", "10a", "--mode", "both",
+        "--run", "--early-on-screen", "--off-timeout-sec", "850",
+        "--on-timeout-sec", "2350"])
+    def fake_run(case, mode, exe, timeout_sec):
+        captured.append((case, mode, timeout_sec))
+        return {"measures": {key: 1.0 for key in runner.REQUIRED},
+                "status": "SIMULATION_ONLY"}
+    def fake_diag(scenario, exe, timeout_s, case):
+        assert scenario == "on_original" and case == "10a"
+        assert diagnostic.DIAG_STOP_BY_CASE[case][1] == 0.0015
+        assert timeout_s == 600
+        (tmp_path / "_diag_10a_on_original.json").write_text(
+            json.dumps({"diagnostic_run_validated": False,
+                        "simulated_stop_s": 0.0015,
+                        "hardware_qualified": False}))
+        return 2
+    monkeypatch.setattr(runner, "run_selected", fake_run)
+    monkeypatch.setattr(diagnostic, "run", fake_diag)
+    assert runner.main() == 2
+    assert captured == [("10a", "off", 850)]
+    report = json.loads((tmp_path / "poc_10a_comparison_model_only.json").read_text())
+    assert report["early_on_screen"]["on"]["simulated_stop_s"] == 0.0015
+    assert report["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"]["early_diagnostic_record"] == "sim/v3/_diag_10a_on_original.json"
+    assert not report["all_requested_modes_completed"]

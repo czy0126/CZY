@@ -166,6 +166,11 @@ def run_selected(case: str, mode: str, exe: Path,
         raise ValueError("generated circuit stale; run poc_low_current_decks.py --write")
     log = deck.with_suffix(".log")
     raw = deck.with_suffix(".raw")
+    # An old valid RAW/LOG must never be mixed with this new attempt.
+    # Preserve failed *new* files for root-cause inspection; never delete them
+    # after the solver returns or is terminated by the time budget.
+    for old in (log, raw):
+        old.unlink(missing_ok=True)
     start = time.time_ns()
     cmd = [str(exe), "-b", str(deck.resolve())]
     try:
@@ -212,6 +217,32 @@ def run_selected(case: str, mode: str, exe: Path,
     }
 
 
+def partial_artifacts(case: str, mode: str) -> dict:
+    """Identify real files left by a failed run, WITHOUT qualifying results.
+
+    These files may end early, contain NaNs or be incomplete, so they are
+    evidence of a failed attempted execution only, never waveform proof.
+    """
+    deck = poc.path(case, mode)
+    files = {}
+    for suffix in (".log", ".raw"):
+        path = deck.with_suffix(suffix)
+        try:
+            display_path = path.relative_to(poc.ROOT).as_posix()
+        except ValueError:
+            # Also support isolated test fixtures and standalone external
+            # capture locations; never lose the original solver failure.
+            display_path = path.as_posix()
+        files[suffix] = {
+            "path": display_path,
+            "present": path.is_file(),
+            "size_bytes": path.stat().st_size if path.is_file() else 0,
+            "sha256": digest_file(path) if path.is_file() else None,
+            "validated_complete": False,
+        }
+    return files
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case", choices=("5a", "10a"), default="5a")
@@ -219,10 +250,23 @@ def main() -> int:
     parser.add_argument("--ltspice", help="absolute path to installed LTspice.exe")
     parser.add_argument("--timeout-sec", type=int, default=DEFAULT_TIMEOUT_SEC,
                         help="wall-clock budget per mode (recorded in the evidence)")
+    parser.add_argument("--off-timeout-sec", type=int,
+                        help="optional SR_OFF wall-time budget, overrides --timeout-sec")
+    parser.add_argument("--on-timeout-sec", type=int,
+                        help="optional SR_ON wall-time budget, overrides --timeout-sec")
+    parser.add_argument("--early-on-screen", action="store_true",
+                        help="before full SR_ON run require a genuine original-model "
+                             "diagnostic: 5A to 620us, 10A to 1500us "
+                             "(past observed 1.355ms collapse)")
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--run", action="store_true")
     action.add_argument("--check", action="store_true")
     args = parser.parse_args()
+    if args.timeout_sec < 5 or args.timeout_sec > 7200:
+        parser.error("--timeout-sec must be between 5 and 7200 seconds")
+    for budget in (args.off_timeout_sec, args.on_timeout_sec):
+        if budget is not None and not 5 <= budget <= 7200:
+            parser.error("mode-specific timeout must be 5-7200 seconds")
     if args.check:
         statuses = {
             f"{case}_{mode}": {
@@ -244,14 +288,56 @@ def main() -> int:
         print("LTspice not installed/found; specify --ltspice path on Windows",
               file=sys.stderr)
         return 2
-    mode_list = ("on", "off") if args.mode == "both" else (args.mode,)
+    # OFF is an independent low-energy diode-path model and has completed on a
+    # desktop run when ON was still producing a huge RAW. Secure the OFF
+    # baseline first; an ON timeout must not hide that independent evidence.
+    mode_list = ("off", "on") if args.mode == "both" else (args.mode,)
+    mode_budgets = {
+        "off": args.off_timeout_sec if args.off_timeout_sec is not None
+               else args.timeout_sec,
+        "on": args.on_timeout_sec if args.on_timeout_sec is not None
+              else args.timeout_sec,
+    }
     statuses = {}
     failures = {}
+    partials = {}
+    early_screen = {}
     for mode in mode_list:
+        if mode == "on" and args.early_on_screen:
+            # The 5A early window tests 620us; the 10A window tests 1500us
+            # because the default 10A model abandoned at 1.35512456ms.
+            # A 5A screen cannot qualify a different load case, and passing
+            # this early window does not establish steady state or physical
+            # validity of the following 8ms power-stage simulation.
+            import poc_early_solver_diagnostics as diag
+            try:
+                early_rc = diag.run("on_original", exe,
+                                    timeout_s=min(mode_budgets["on"], 600),
+                                    case=args.case)
+                diag_file = poc.OUT / f"_diag_{args.case}_on_original.json"
+                early_screen[mode] = json.loads(
+                    diag_file.read_text(encoding="utf-8"))
+            except (OSError, ValueError, RuntimeError, UnicodeError) as exc:
+                early_rc = 2
+                early_screen[mode] = {"status": "DIAGNOSTIC_EXECUTION_ERROR",
+                                      "reason": str(exc),
+                                      "hardware_qualified": False}
+            if early_rc != 0:
+                failures[mode] = (
+                    f"unmodified {args.case} SR_ON "
+                    f"{diag.DIAG_STOP_BY_CASE[args.case][0]} genuine simulation "
+                    "failed; full 8ms ON was NOT launched")
+                partials[mode] = {"full_8ms_on": "NOT_ATTEMPTED",
+                                  "early_diagnostic_record":
+                                  f"sim/v3/_diag_{args.case}_on_original.json"}
+                print(f"LTspice {args.case}/on screen failed: "
+                      f"{early_screen[mode]}", file=sys.stderr)
+                continue
         try:
-            statuses[mode] = run_selected(args.case, mode, exe, args.timeout_sec)
+            statuses[mode] = run_selected(args.case, mode, exe, mode_budgets[mode])
         except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
             failures[mode] = str(exc)
+            partials[mode] = partial_artifacts(args.case, mode)
             print(f"LTspice {args.case}/{mode} invalid: {exc}", file=sys.stderr)
             # Crucial: SR_ON failure cannot prevent independent SR_OFF run.
             # Never fabricate the missing modes or override the failure status.
@@ -265,7 +351,13 @@ def main() -> int:
                    else "INCOMPLETE_OR_INVALID_SIMULATION"),
         "runs": statuses,
         "failed_modes": failures,
+        "partial_failed_mode_files_NOT_VALID_RESULTS": partials,
+        "early_on_screen": early_screen,
+        "attempt_order": list(mode_list),
         "timeout_seconds_per_mode": args.timeout_sec,
+        "effective_timeout_seconds_by_mode": {
+            mode: mode_budgets[mode] for mode in mode_list
+        },
         "all_requested_modes_completed": not failures,
         "comparison": compares,
         "model_actual_load_points": {
