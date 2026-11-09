@@ -166,6 +166,11 @@ def run_selected(case: str, mode: str, exe: Path,
         raise ValueError("generated circuit stale; run poc_low_current_decks.py --write")
     log = deck.with_suffix(".log")
     raw = deck.with_suffix(".raw")
+    # An old valid RAW/LOG must never be mixed with this new attempt.
+    # Preserve failed *new* files for root-cause inspection; never delete them
+    # after the solver returns or is terminated by the time budget.
+    for old in (log, raw):
+        old.unlink(missing_ok=True)
     start = time.time_ns()
     cmd = [str(exe), "-b", str(deck.resolve())]
     try:
@@ -212,6 +217,26 @@ def run_selected(case: str, mode: str, exe: Path,
     }
 
 
+def partial_artifacts(case: str, mode: str) -> dict:
+    """Identify real files left by a failed run, WITHOUT qualifying results.
+
+    These files may end early, contain NaNs or be incomplete, so they are
+    evidence of a failed attempted execution only, never waveform proof.
+    """
+    deck = poc.path(case, mode)
+    files = {}
+    for suffix in (".log", ".raw"):
+        path = deck.with_suffix(suffix)
+        files[suffix] = {
+            "path": path.relative_to(poc.ROOT).as_posix(),
+            "present": path.is_file(),
+            "size_bytes": path.stat().st_size if path.is_file() else 0,
+            "sha256": digest_file(path) if path.is_file() else None,
+            "validated_complete": False,
+        }
+    return files
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case", choices=("5a", "10a"), default="5a")
@@ -223,6 +248,8 @@ def main() -> int:
     action.add_argument("--run", action="store_true")
     action.add_argument("--check", action="store_true")
     args = parser.parse_args()
+    if args.timeout_sec < 5 or args.timeout_sec > 7200:
+        parser.error("--timeout-sec must be between 5 and 7200 seconds")
     if args.check:
         statuses = {
             f"{case}_{mode}": {
@@ -244,14 +271,19 @@ def main() -> int:
         print("LTspice not installed/found; specify --ltspice path on Windows",
               file=sys.stderr)
         return 2
-    mode_list = ("on", "off") if args.mode == "both" else (args.mode,)
+    # OFF is an independent low-energy diode-path model and has completed on a
+    # desktop run when ON was still producing a huge RAW. Secure the OFF
+    # baseline first; an ON timeout must not hide that independent evidence.
+    mode_list = ("off", "on") if args.mode == "both" else (args.mode,)
     statuses = {}
     failures = {}
+    partials = {}
     for mode in mode_list:
         try:
             statuses[mode] = run_selected(args.case, mode, exe, args.timeout_sec)
         except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
             failures[mode] = str(exc)
+            partials[mode] = partial_artifacts(args.case, mode)
             print(f"LTspice {args.case}/{mode} invalid: {exc}", file=sys.stderr)
             # Crucial: SR_ON failure cannot prevent independent SR_OFF run.
             # Never fabricate the missing modes or override the failure status.
@@ -265,6 +297,8 @@ def main() -> int:
                    else "INCOMPLETE_OR_INVALID_SIMULATION"),
         "runs": statuses,
         "failed_modes": failures,
+        "partial_failed_mode_files_NOT_VALID_RESULTS": partials,
+        "attempt_order": list(mode_list),
         "timeout_seconds_per_mode": args.timeout_sec,
         "all_requested_modes_completed": not failures,
         "comparison": compares,
