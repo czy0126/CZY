@@ -168,6 +168,21 @@
   `load()` 一次约 20 分钟、约 3.5 GB 内存。只想看尾部时**不要**整文件加载：
   ASCII raw 每个时间点占 31 行（首行 `序号<TAB><TAB>时间`，其余每行一个值），
   可 seek 到文件尾部、对齐到非 TAB 开头的行后逐记录解析。
+- **二进制 raw 的布局已有权威实现：`tools/poc_raw_evidence.py:inspect_raw()`**。
+  头是 **UTF-16LE**，`Flags: real`，`Binary:\n` 之后每条 = **1 个 double 时间 + (N−1) 个 float32**，
+  `stride = 8 + 4×(N−1)`（23 变量 = **96 B**），并用
+  `size == offset + No.Points × stride` 做整除自检。**不要自己按全 double 解**：
+  184 B 的读法不报错，只给出胡说八道（把时间读成 **2.097e6**）。要新写读取器时先看这个文件。
+- **二进制 raw 是边算边写的，而且失败运行的头里 `No. Points` 是真实条数**：
+  2026-11-09 在 `_probe_10a_sr_on_itl4.raw`（118 410 072 B，收敛失败）上核对，
+  头写 1 233 422 = `(size − offset) // 96`，余 0。所以"跑到哪了"不必等进程退出，
+  直接按 stride 数记录即可。（ASCII 早停运行的头部仍是 0，PyLTSpice 因此拒读——
+  见 `ascii_raw_window.py` 文档串。）
+- `tools/ascii_raw_window.py --step-profile` 按模拟时间分箱报 dt，并给每个阈值**第一次**
+  低于它的步长。日志只报最后那一点（"Time step too small … trouble with node a1"），
+  读起来像单点事件；实际 10 A SR_ON 从 0.5 ms 起步长就压在 **9.758e-19** 地板上，
+  1.355 ms 是求解器**放弃**的时刻，不是**开始**挣扎的时刻。`uic` deck 的 t=0 第一步
+  约 1e-13 s，所以"第一次短步"永远是初态——要传 `t0` 越过它再叫塌缩。
 - **deck 在仿真运行期间被重新生成**会导致 raw 与当前 deck 不是同一输入
   （例：raw 头缺 `.save V(pre*)`，说明运行开始时 deck 尚无该行）。比对 mtime：
   raw 的 mtime 不是开始时间，开始时间 ≈ raw mtime − 日志运行时长。
