@@ -1,0 +1,22 @@
+{
+  "kind": "CZY_N97_SURROGATE_BH_INPUT_NOT_OEM_MEASUREMENT",
+  "temperature_c": 100,
+  "valid_for": "Model flow-through, gap design sensitivity, qualitative nonlinear concept screening only. NOT rated L(I), Bpeak, SOA, temperature loss or fab.",
+  "file": "design/v3/maxwell/N97_100C_ILLUSTRATIVE_NOT_OEM.csv",
+  "source_anchors": [
+    {
+      "H_A_per_m": 250,
+      "B_T": 0.31,
+      "source": "references/datasheets/elp38.txt:PAGE7:ELP38/I38 N97 device BS at100C H250 A/m"
+    },
+    {
+      "H_A_per_m": 1200,
+      "B_T": 0.41,
+      "source": "https://www.tdk-electronics.tdk.com/download/187242/81166f0de556e5b6a94db7793daed936/pdf-n97.pdf : material N97 BS at100C H1200 A/m"
+    }
+  ],
+  "other_curve_points": "H/B pairs other than the two anchors are human-defined interpolation/extrapolation for software checkout; NOT a digitized B-H measurement. Two BS anchors at different H and device contexts cannot validate a real continuous material B-H curve.",
+  "model_field_limitations": "Actual flux depends on assembled gap and geometry; open conductor geometry is an IDEALIZED stranded coil; no Eddy-current/copper/capacitance predictions are valid.",
+  "hardware_approved": false,
+  "maxwell_executed": false
+}

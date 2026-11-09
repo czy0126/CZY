@@ -1,0 +1,193 @@
+{
+  "kind": "CZY_MAXWELL_DESIGN_OWNED_3D_GEOMETRY_V1",
+  "design_goal": "Enable G1 geometry and future Ansys Maxwell concept EM, not fabricate a winding",
+  "reference_input": [
+    "references/datasheets/elp38.txt",
+    "design/v3/bom/lr_design.json",
+    "design/v3/bom/ct_design.json",
+    "hardware/dcx_main/vendor_terminal_request.json"
+  ],
+  "design_owned_geometry_not_oem": true,
+  "maxwell_solved": false,
+  "fabrication_approved": false,
+  "warning": "ELP dimensions are envelope proxy based on catalogue identifiers; winding annuli are isolated stranded current proxy, not connected foil terminal conductor. CT has NO 100-turn winding. DO NOT approve Maxwell losses, terminal PAD, isolation or PCB until actual validation.",
+  "cases": [
+    {
+      "id": "ELP38_Lr_2turn_0920uH",
+      "type": "LR_ELP38",
+      "turns": 2,
+      "gap_mm": 1.031,
+      "target_inductance_uH": 0.92,
+      "core_body_height_mm": 8.25,
+      "plate_height_mm": 3.75,
+      "body_names": {
+        "core": "ELP38_FERRITE",
+        "plate": "I38_FERRITE",
+        "winding_copper": "LR_FOIL_COPPER",
+        "winding_terminal_sheet": "LR_COIL_TERMINAL"
+      },
+      "geometry": {
+        "core_outer_x_mm": 38,
+        "core_depth_y_mm": 25.4,
+        "backplate_thickness_mm": 2.6,
+        "center_leg_x_mm": 7.64,
+        "window_width_each_mm": 6.35,
+        "foil_thickness_z_mm": 0.3,
+        "foil_axial_pitch_mm": 0.68,
+        "first_foil_center_z_mm": 6.5,
+        "winding_clearance_x_mm": 0.35,
+        "winding_clearance_y_mm": 0.35,
+        "foil_width_radial_mm": 1.2
+      }
+    },
+    {
+      "id": "ELP38_Lr_3turn_0920uH",
+      "type": "LR_ELP38",
+      "turns": 3,
+      "gap_mm": 2.356,
+      "target_inductance_uH": 0.92,
+      "core_body_height_mm": 8.25,
+      "plate_height_mm": 3.75,
+      "body_names": {
+        "core": "ELP38_FERRITE",
+        "plate": "I38_FERRITE",
+        "winding_copper": "LR_FOIL_COPPER",
+        "winding_terminal_sheet": "LR_COIL_TERMINAL"
+      },
+      "geometry": {
+        "core_outer_x_mm": 38,
+        "core_depth_y_mm": 25.4,
+        "backplate_thickness_mm": 2.6,
+        "center_leg_x_mm": 7.64,
+        "window_width_each_mm": 6.35,
+        "foil_thickness_z_mm": 0.3,
+        "foil_axial_pitch_mm": 0.68,
+        "first_foil_center_z_mm": 6.5,
+        "winding_clearance_x_mm": 0.35,
+        "winding_clearance_y_mm": 0.35,
+        "foil_width_radial_mm": 1.2
+      }
+    },
+    {
+      "id": "ELP38_Lr_2turn_1000uH",
+      "type": "LR_ELP38",
+      "turns": 2,
+      "gap_mm": 0.946,
+      "target_inductance_uH": 1,
+      "core_body_height_mm": 8.25,
+      "plate_height_mm": 3.75,
+      "body_names": {
+        "core": "ELP38_FERRITE",
+        "plate": "I38_FERRITE",
+        "winding_copper": "LR_FOIL_COPPER",
+        "winding_terminal_sheet": "LR_COIL_TERMINAL"
+      },
+      "geometry": {
+        "core_outer_x_mm": 38,
+        "core_depth_y_mm": 25.4,
+        "backplate_thickness_mm": 2.6,
+        "center_leg_x_mm": 7.64,
+        "window_width_each_mm": 6.35,
+        "foil_thickness_z_mm": 0.3,
+        "foil_axial_pitch_mm": 0.68,
+        "first_foil_center_z_mm": 6.5,
+        "winding_clearance_x_mm": 0.35,
+        "winding_clearance_y_mm": 0.35,
+        "foil_width_radial_mm": 1.2
+      }
+    },
+    {
+      "id": "ELP38_Lr_3turn_1000uH",
+      "type": "LR_ELP38",
+      "turns": 3,
+      "gap_mm": 2.165,
+      "target_inductance_uH": 1,
+      "core_body_height_mm": 8.25,
+      "plate_height_mm": 3.75,
+      "body_names": {
+        "core": "ELP38_FERRITE",
+        "plate": "I38_FERRITE",
+        "winding_copper": "LR_FOIL_COPPER",
+        "winding_terminal_sheet": "LR_COIL_TERMINAL"
+      },
+      "geometry": {
+        "core_outer_x_mm": 38,
+        "core_depth_y_mm": 25.4,
+        "backplate_thickness_mm": 2.6,
+        "center_leg_x_mm": 7.64,
+        "window_width_each_mm": 6.35,
+        "foil_thickness_z_mm": 0.3,
+        "foil_axial_pitch_mm": 0.68,
+        "first_foil_center_z_mm": 6.5,
+        "winding_clearance_x_mm": 0.35,
+        "winding_clearance_y_mm": 0.35,
+        "foil_width_radial_mm": 1.2
+      }
+    },
+    {
+      "id": "T_3_1_1_ELP32_CONCEPT",
+      "type": "T_ELP32",
+      "turns": 5,
+      "gap_mm": 0.1211,
+      "target_lm_uH": 10,
+      "core_body_height_mm": 6.2,
+      "plate_height_mm": 3,
+      "body_names": {
+        "core": "ELP32_FERRITE",
+        "plate": "I32_FERRITE",
+        "winding_copper": "T_COIL_EQUIVALENT_COPPER",
+        "winding_terminal_sheet": "T_WINDING_EQUIVALENT_TERMINAL"
+      },
+      "winding_contract": {
+        "primary_turns": 3,
+        "sec_a_turns": 1,
+        "sec_b_turns": 1,
+        "physical_turn_bundle_in_step": 5,
+        "independent_windings_em_modelled": false
+      },
+      "geometry": {
+        "core_outer_x_mm": 32,
+        "core_depth_y_mm": 20,
+        "backplate_thickness_mm": 2.5,
+        "center_leg_x_mm": 6.5,
+        "window_width_each_mm": 5.7,
+        "foil_thickness_z_mm": 0.25,
+        "foil_axial_pitch_mm": 0.52,
+        "first_foil_center_z_mm": 3.65,
+        "winding_clearance_x_mm": 0.3,
+        "winding_clearance_y_mm": 0.3,
+        "foil_width_radial_mm": 0.85
+      }
+    },
+    {
+      "id": "CT_100_1_DIMENSION_PROXY",
+      "type": "CT_CONCEPT",
+      "secondary_turns": 100,
+      "primary_turns": 1,
+      "actual_coil_modelled": false,
+      "geometry": {
+        "outer_diameter_mm": 20,
+        "inner_diameter_mm": 10,
+        "height_mm": 5
+      },
+      "pin_centers_mm": [
+        [
+          -12,
+          -4
+        ],
+        [
+          -12,
+          4
+        ],
+        [
+          12,
+          -4
+        ],
+        [
+          12,
+          4
+        ]
+      ]
+    }
+  ]
+}

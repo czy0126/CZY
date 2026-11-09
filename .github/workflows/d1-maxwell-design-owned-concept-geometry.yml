@@ -1,0 +1,56 @@
+name: D1-Maxwell-CAD-Concept-Geometry-No-Solver
+on:
+  push:
+    paths:
+      - 'tools/maxwell_diy_geometry.py'
+      - 'tools/maxwell_diy_pcb_envelope.py'
+      - 'tools/maxwell_diy_run.py'
+      - 'tools/test_maxwell_diy_geometry.py'
+      - 'design/v3/maxwell/diy_magnetics_concept.json'
+      - 'design/v3/maxwell/N97_100C_ILLUSTRATIVE_NOT_OEM.csv'
+      - 'design/v3/maxwell/N97_100C_ILLUSTRATIVE_NOT_OEM.provenance.json'
+      - '.github/workflows/d1-maxwell-design-owned-concept-geometry.yml'
+  pull_request:
+    paths:
+      - 'tools/maxwell_diy_geometry.py'
+      - 'tools/maxwell_diy_pcb_envelope.py'
+      - 'tools/maxwell_diy_run.py'
+      - 'tools/test_maxwell_diy_geometry.py'
+      - 'design/v3/maxwell/diy_magnetics_concept.json'
+      - 'design/v3/maxwell/N97_100C_ILLUSTRATIVE_NOT_OEM.csv'
+      - 'design/v3/maxwell/N97_100C_ILLUSTRATIVE_NOT_OEM.provenance.json'
+      - '.github/workflows/d1-maxwell-design-owned-concept-geometry.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  independent-3d-step-no-maxwell-claim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: CAD kernel and focused tests
+        run: |
+          python -m pip install 'cadquery==2.8.0' 'pytest>=8,<10'
+          python tools/maxwell_diy_geometry.py --write
+          python tools/maxwell_diy_geometry.py --check
+          python tools/maxwell_diy_pcb_envelope.py --write
+          python tools/maxwell_diy_pcb_envelope.py --check
+          python tools/maxwell_diy_run.py --prepare --case ELP38_Lr_3turn_0920uH
+          python -m pytest -q tools/test_maxwell_diy_geometry.py tools/test_maxwell_magnetics_prescreen.py
+      - name: Preserve editable CAD-transfer geometry and original evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: D1-Maxwell-CONCEPT-6-STEP-24plus2-PADS-NO-SOLVER
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            design/v3/maxwell/generated_concept/*.step
+            design/v3/maxwell/generated_concept/manifest.json
+            design/v3/maxwell/generated_concept/design_owned_G1_pads_24plus2.csv
+            design/v3/maxwell/generated_concept/design_owned_G1_pads_24plus2.json
+            design/v3/maxwell/local_runs/*_non_oem_contract.json
+            design/v3/maxwell/local_runs/source_and_limits.json
