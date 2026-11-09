@@ -18,9 +18,12 @@
 - 版本 4.1.60.198f38ab，路径 `D:\lceda-pro`。CLI：
   `lceda-pro invoke --session <id> --ext-uuid eda --timeout <ms≤60000> --code "<async body>"`。
 - headless 可做：建工程、放器件、建命名导线、导出网表/BOM（xlsx 二进制 base64 取回）。
-- headless **不可做**：`pcb_Document.importChanges` 返回 true 但导入 0 个器件；
-  `dmt_Pcb.createPcb('Board1')` 返回 undefined；`pcb_PrimitiveComponent.create` 抛
-  `[object Object]`；`saveFileToFileSystem` 返回"路径不允许"。PCB 需 GUI 手工导入。
+- **"PCB 只能 GUI 做"已于 2026-11-09 更正**：`pcb_Document.importChanges` 返回 true 但导入
+  0 个器件、`dmt_Pcb.createPcb('Board1')` 返回 undefined、`saveFileToFileSystem` 返回"路径不允许"，
+  这三条仍然成立——但原生带网 PCB 可以用 PCB 图元 API 直接搭出来，见下面
+  `### 原生 PCB 的 headless 构建（2026-11-09 已实跑）`。
+  `pcb_PrimitiveComponent.create` 抛 `[object Object]` 是**参数形状错**（直接传了封装 item），
+  按 `{libraryUuid, uuid}` 的形状调用能建件。
 - `.eprj2` 是 SQLite；PCB 文档源格式是 `{json header}||{json data}` 行式记录，
   类型包括 DOCHEAD/CANVAS/LAYER/LAYER_PHYS/ACTIVE_LAYER/RULE_TEMPLATE/RULE/
   PRIMITIVE(仅显示)/SILK_OPTS/D3_ATTRIBUTE/PREFERENCE/PANELIZE。
@@ -171,6 +174,59 @@
   `{ok,value,logs,durationMs}`**，不是里面那个 `value`——写错会让 `placeholder_eco` 报
   `is not an inventory dump: None`）。
 
+### 原生 PCB 的 headless 构建（2026-11-09 已实跑）
+
+从原生原理图网表建原生 PCB **不需要 GUI**：`pcb_Document.importChanges` 与 `dmt_Pcb.createPcb`
+都走不通，但 PCB 图元 API 能把板子逐件搭起来。下面每条都是实跑读数，不是计划。
+
+- **单位与坐标系**：PCB API 的坐标单位是 **mil**；PCB 笛卡尔坐标 **Y 向上**。
+  `pcb_MathPolygon.createPolygon` 的多边形源是 **SVG 约定 Y 向下** ⇒ 两个坐标系之间必须对 Y
+  取负，否则板框会上下镜像。
+- **放器件**：`eda.lib_Device.searchByProperties({supplierId:'C<LCSC号>'})`（或按 name 搜）拿
+  `{libraryUuid, uuid}` 命中，再
+  `eda.pcb_PrimitiveComponent.create({libraryUuid, uuid}, 1, x_mil, y_mil, 0, false)`；
+  第 2 个参数是层（**1 = 顶**）。设计位号用 `setState_Designator`。
+- **焊盘挂网**：`eda.pcb_PrimitivePad.modify(padId, {net:'NAME'})`，回读用 `getState_Net()`。
+  网表读取用 `eda.pcb_Net.getAllNetsName()`；**没有** `pcb_Net.getAll()`。
+- **对象没有 `getState()`**：PCB 图元只能逐字段 `getState_X()` / `getState_Y()` /
+  `getState_PrimitiveId()` / `getState_PadNumber()` / `getState_Net()`；笼统 `obj.getState()`
+  不是函数。
+- **板框**：必须是**第 11 层（板框层）上的闭合折线**，用
+  `pcb_MathPolygon.createPolygon([x, y, 'L', …])` + `pcb_PrimitivePolyline.create('', 11, polygon, 10, false)`。
+  `pcb_PrimitiveLine.create` **只在第 1 层（铜）能用**，3/11/13 层一律报"无法找到图元…参数错误"。
+- **文本图元**：`pcb_PrimitiveString.create` 在所有试过的层/字体上都失败（"无法找到文本图元"）
+  ⇒ headless 画不出丝印/文档层文字；待锁区只能用**第 13 层（文档层）矩形**圈出，不能写字。
+- **磁件封装放不进去**：
+  `pcb_PrimitiveComponent.create({libraryType:'4', libraryUuid:'project', uuid})` 抛
+  `Cannot destructure property 'libraryUuid' of 'i'`；直接传封装 item 抛 `Error: [object Object]`。
+  项目库里查封装用 `eda.lib_Footprint.search('XFMR', 'project')`（**按 uuid 查返回 0 条**）。
+- **保存会写回被打开的那个文件**：内存里做过封装注入的 session，之后任何 `save()`（或关闭时落盘）
+  都会把被污染的工程写回打开的 `.eprj2` ⇒ 注入类实验**只能开副本**，绝不能打开仓库里那份真文件；
+  每次实验后用 md5 确认真文件没变。
+- **自由焊盘（不挂在器件上）能 headless 建**：
+  `eda.pcb_PrimitivePad.create(layer, padNumber, x, y, rotation, pad, net, hole, holeOffsetX,
+  holeOffsetY, holeRotation, metallization, padType, specialPad, solderMaskAndPasteMaskExpansion,
+  heatWelding, primitiveLock)`——17 个位置参数，少传会抛 `[object Object]` 这类无信息错误。
+  `pad` 形状是 **mil**：`['ELLIPSE', w, h]` / `['RECT', w, h, corner]` / `['OVAL', w, h]` /
+  `['POLYGON', [x0, y0, 'L', …]]`；`layer 1` = 顶层；`rotation` 用 PCB 的笛卡尔角度。
+  删用 `eda.pcb_PrimitivePad.delete([id…])`。磁件还没有厂商封装时，就用它把**带真网名的
+  临时端子**放上板（G1 的 24 个设计自有焊盘就是这么来的）——它们是**占位，不是实体 PAD**。
+- **组件→焊盘只有一条链**：`pcb_PrimitiveComponent.getAllPinsByPrimitiveId(id)`。焊盘对象上
+  **没有** component 字段 ⇒ 要判"哪些焊盘是自由的"，先收集所有组件的 pad PrimitiveId 再做差集。
+- **`getState_Polygon()` 是扁平数组**：返回 `{polygon: [x0, y0, 'L', x1, y0, x1, y1, x0, y1]}`，
+  `'L'` 夹在数字中间。按 3 步长解析会读出垃圾（曾把 31.75 mm 的待锁区读成 31.0 / 69.0 / 107.0
+  三个宽度）⇒ 过滤出数字后按 `nums[0::2]` / `nums[1::2]` 配对。
+- **`doc api --class-name` 用 `PCB_` 大写的类名**（`PCB_PrimitivePad`、`PCB_PrimitivePolyline`、
+  `PCB_PrimitiveComponent`、`IPCB_PrimitivePad`）；写成 `pcb_PrimitivePad` 会报"eda 命名空间下
+  不存在类型"。invoke 正文里才是小写 `eda.pcb_PrimitivePad`。`--timeout` 只收 1…60000 的整数。
+- **实测规模（2026-11-09 终值）**：原生原理图 **83** 器件 → PCB **77** 器件（T1–T4/CT 无厂商封装、
+  R8 双字段 DNP 排除）、**65** 个网、**299** 个焊盘（275 封装 + 24 设计自有临时焊盘）、
+  **14** 条折线（1 条板框 @第 11 层 + 5 个待锁区 + 8 个 DOT 标记 @第 13 层）；
+  每只网都有焊盘、逐焊盘网络与编辑器网表**零不符**。焊盘旋转必须从 `getState_Rotation()` 读，
+  不能默认 0（本板有 80 只焊盘是 90/180/−90°）。
+
+交付物：`hardware/dcx_main/g1/dcx_main_board_g1.eprj2`（G1 原生带网 PCB，非投板）。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
@@ -192,8 +248,9 @@
 `test_the_courtyard_check_can_fail` 用"删掉一个 courtyard 必须报错"锁住（已验证）。
 
 - 有 `sch erc`、`sch export netlist/pdf/bom`、`pcb drc`、`pcb export gerbers/drill/position`、
-  `pcb render`（3D PNG）。**PCB 这一层 LCEDA headless 做不了、KiCad 能做**，
-  所以"要真实 PCB/Gerber"时走 KiCad 而不是 LCEDA。
+  `pcb render`（3D PNG）。**"PCB 这一层 LCEDA headless 做不了"已更正（2026-11-09）**：
+  原生带网 PCB LCEDA headless 能建（见 `### 原生 PCB 的 headless 构建（2026-11-09 已实跑）`），
+  但 LCEDA 侧还没有**已证明**的 Gerber/DRC 出口 ⇒ **投板包继续走 KiCad**。
 - **`.kicad_pro` 缺失会让 ERC 说假话**：`kicad-cli` 只在原理图旁边有工程文件时才读
   `sym-lib-table`；没有工程文件则 `${KIPRJMOD}` 未定义，两张工程库（`UCC24624`、`SR`）
   整体不可见，每个来自它们的符号都被报成"当前配置不包含符号库"。

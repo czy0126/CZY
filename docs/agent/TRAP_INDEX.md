@@ -104,8 +104,12 @@
 | ★ | 只能用 `--path` 打开 LCEDA 工程；绝不调 `openProject(uuid)`（之后 save 恒 false） | LCEDA 任何操作 | EDA.md §嘉立创 EDA |
 | ★ | `save()` 防抖约 20 s；判"写进去了"只能看被打开那个路径的 size/mtime | LCEDA 保存 | EDA.md §嘉立创 EDA |
 |  | `otherProperty.Footprint` 会毒化整个文档（每次 save 都 false） | 改封装 | EDA.md §嘉立创 EDA |
-| ★ | 保存与导出互斥：先放件→等写盘→内存注入封装 uuid→导出；注入后不能再 save | 导出网表 | EDA.md §嘉立创 EDA |
+| ★ | 保存与导出互斥：先放件→等写盘→内存注入封装 uuid→导出；注入后不能再 save；注入/构建实验**只开副本**——`save()` 写回的是被打开的那个文件 | 导出网表 | EDA.md §嘉立创 EDA |
 |  | `getSvgFile` 在 83 位号时超 60 s；`main_board.svg` 是旧的，不要当当前图证据 | 引用主板 SVG | EDA.md §嘉立创 EDA |
+|  | 原生 PCB 靠图元 API 搭（`pcb_PrimitiveComponent.create({libraryUuid,uuid},…)` + `pcb_PrimitivePad.modify(id,{net})`）；`importChanges` 导入 0 件；单位 mil、Y 向上，polygon 源 Y 向下要取负 | 建原生 PCB | EDA.md §原生 PCB 的 headless 构建 |
+|  | 自由焊盘用 `pcb_PrimitivePad.create(...)` 17 个位置参数建（带网、不挂器件）；组件→焊盘只有 `getAllPinsByPrimitiveId` 一条链，焊盘上**没有** component 字段 | 放临时端子 | EDA.md §原生 PCB 的 headless 构建 |
+|  | `getState_Polygon()` 是扁平数组（`'L'` 夹在数字里）⇒ 过滤数字后按 `nums[0::2]`/`[1::2]` 配对，按 3 步长解析读出垃圾 | 读折线/板框 | EDA.md §原生 PCB 的 headless 构建 |
+|  | `doc api --class-name` 用 `PCB_PrimitivePad` 这种大写类名，invoke 正文里才写 `eda.pcb_PrimitivePad`；`--timeout` 只收 1…60000 整数 | 查 PCB API | EDA.md §原生 PCB 的 headless 构建 |
 |  | 磁件符号的引脚号是逻辑端子名；`physical_pad` 全 null，不编厂商焊盘号 | 磁件封装 | EDA.md §嘉立创 EDA |
 |  | 供应商回件审核只对当时那两份字节成立；合同重生成后必须重跑审核 | 审核回件 | EDA.md §嘉立创 EDA |
 |  | R8 ECO 分两相：phase 1 注入**绝不保存**，phase 2 clean session 凭 attestation 应用 | 跑 R8 ECO | EDA.md §装配排除 ECO |
