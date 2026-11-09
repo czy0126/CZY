@@ -1,15 +1,22 @@
 """Plan the G1 driver-ECO short-loop copper and check it offline before creating it.
 
 The placement candidate is accepted (``driver_eco_report.json``).  This module
-turns the next roadmap step -- real copper for the primary gate loops, the
+turns the roadmap step -- real copper for the primary gate loops, the
 high-side bootstrap, and workable supply returns -- into explicit segments,
 checks them against every pad read back from the native board, and emits the
 LCEDA invocation body that creates exactly those segments.
 
-Only layer-1 copper is planned: ``pcb_PrimitiveLine.create`` refuses the other
-layers, so a connection that would have to cross another net has no legal
-one-layer path and is listed in :data:`REMAINING` instead of being drawn
-through a pad.
+Two copper layers are used.  The committed :data:`PLAN` is the layer-1 gate
+loop.  Its geometry seals the bootstrap diode outside the GH_DRV wall, so the
+bootstrap, SW return, VCC12 and PGND connections cross to the bottom layer
+through vias (:data:`STUBS` = short layer-1 pad-to-via stubs, :data:`BOTTOM` =
+the layer-2 runs, :data:`VIAS` = the through holes between them).
+
+Clearance checking is layer aware: a trace only conflicts with copper on its
+own layer, but a via is a hole through every layer, so it must clear every pad
+and trace regardless of layer.  New LCEDA boards default to two copper layers
+(``PCB_Layer.setTheNumberOfCopperLayers`` remarks); ``emit_js`` refuses to run
+if the board reports fewer than two rather than silently changing the stackup.
 """
 
 from __future__ import annotations
@@ -45,39 +52,99 @@ PLAN: dict[str, dict] = {
                                     (50.3, 60.499), (50.3, 60.0)]]},
 }
 
-#: Connections the placement makes impossible on one copper layer, with the wall.
+#: Layer-1 stubs: pad centre -> via centre.  Every stub is short and same-net.
+#: The HB stub into C5.1 is deliberately diagonal: a collinear continuation of
+#: the existing HB line would be merged by the editor on save and then read back
+#: as one unplanned segment.
+STUBS: dict[str, dict] = {
+    "HB": {"width": 0.25, "layer": 1, "paths": [
+        [(45.827, 61.999), (44.8, 61.999)],
+        [(50.3, 60.0), (50.9, 59.0)]]},
+    "VCC12": {"width": 0.25, "layer": 1, "paths": [
+        [(48.174, 61.999), (48.174, 63.5)],
+        [(52.499, 61.001), (51.6, 61.001)],
+        [(56.299, 65.001), (56.299, 63.9)],
+        [(56.299, 67.0), (56.299, 66.0)]]},
+    "PGND": {"width": 0.25, "layer": 1, "paths": [
+        [(55.499, 61.501), (56.5, 61.56)],
+        [(58.753, 55.001), (58.753, 54.0)],
+        [(57.701, 65.001), (57.701, 63.9)],
+        [(57.701, 67.0), (57.701, 66.0)]]},
+    "SW": {"width": 0.25, "layer": 1, "paths": [
+        [(52.499, 63.0), (52.499, 63.9)],
+        [(51.699, 60.0), (51.699, 59.0)],
+        [(49.754, 55.001), (49.754, 54.0)]]},
+}
+
+#: Layer-2 runs between the vias.  They may pass under layer-1 SMD pads; only
+#: through-hole (multi-layer) pads and other layer-2 copper are obstacles.
+BOTTOM: dict[str, dict] = {
+    "HB": {"width": 0.3, "layer": 2, "paths": [
+        [(44.8, 61.999), (50.9, 59.0)]]},
+    "VCC12": {"width": 0.3, "layer": 2, "paths": [
+        [(48.174, 63.5), (51.6, 61.001), (51.6, 64.8), (56.299, 64.8)],
+        [(56.299, 63.9), (56.299, 66.0)]]},
+    "PGND": {"width": 0.3, "layer": 2, "paths": [
+        [(56.5, 61.56), (57.701, 63.9)],
+        [(57.701, 63.9), (57.701, 66.0)],
+        [(56.5, 61.56), (58.753, 54.0)]]},
+    "SW": {"width": 0.3, "layer": 2, "paths": [
+        [(52.499, 63.9), (52.6, 62.5), (51.699, 59.0), (49.754, 54.0)]]},
+}
+
+VIA_HOLE = 0.2  # mm; 0.5/0.2 keeps a 0.15 mm annular ring and fits the pin gaps
+VIA_DIAMETER = 0.5
+
+#: net, centre (board mm, Y down).  Every via must be touched by a same-net
+#: stub or bottom run; ``check_plan`` rejects a dangling via.
+VIAS = [
+    {"net": "HB", "x": 44.8, "y": 61.999},
+    {"net": "HB", "x": 50.9, "y": 59.0},
+    {"net": "VCC12", "x": 48.174, "y": 63.5},
+    {"net": "VCC12", "x": 51.6, "y": 61.001},
+    {"net": "VCC12", "x": 56.299, "y": 63.9},
+    {"net": "VCC12", "x": 56.299, "y": 66.0},
+    {"net": "PGND", "x": 56.5, "y": 61.56},
+    {"net": "PGND", "x": 58.753, "y": 54.0},
+    {"net": "PGND", "x": 57.701, "y": 63.9},
+    {"net": "PGND", "x": 57.701, "y": 66.0},
+    {"net": "SW", "x": 52.499, "y": 63.9},
+    {"net": "SW", "x": 51.699, "y": 59.0},
+    {"net": "SW", "x": 49.754, "y": 54.0},
+]
+for _v in VIAS:
+    _v.setdefault("hole", VIA_HOLE)
+    _v.setdefault("diameter", VIA_DIAMETER)
+
+#: Connections deliberately left out of this increment.
 REMAINING = [
-    {"net": "SW", "endpoints": ["U2.5", "C5.2"],
-     "blocker": "U2.3->C5.1 (HB) crosses the only channel left of the pin column; "
-                "the HB and SW pads are interleaved (U2.3 above U2.5, C5.1 right of C5.2)."},
     {"net": "SW", "endpoints": ["C5.2", "R18.2", "QH.1-3"],
-     "blocker": "the GH wall (R4.2->R18.1 and the x=49.05 drop to QH.4) seals the corridor "
-                "between R18 and the QH gate pins."},
-    {"net": "HB", "endpoints": ["D_BT.1", "C5.1"],
-     "blocker": "D_BT sits left of the GH_DRV wall (x=49.174 from y=60.673 to 57.501); "
-                "the direct path crosses it.  Moving D_BT right of that wall is the cheap fix."},
-    {"net": "VCC12", "endpoints": ["D_BT.2", "U2.1"],
-     "blocker": "same GH_DRV wall; also C5.1 occupies y=59.55..60.45 on any low detour."},
-    {"net": "VCC12", "endpoints": ["U2.1", "C103.1", "C104.1"],
-     "blocker": "the run must cross the PGND return corridor at the same pins; "
-                "needs a pour or a second layer."},
-    {"net": "PGND", "endpoints": ["U2.9", "R19.2", "C103.2", "C104.2"],
-     "blocker": "crosses the VCC12 drop to C103 at x=56.299 and the GL horizontal at y=56.3."},
+     "blocker": "C5.2 -> R18.2 is now routed on layer 2; the QH.1-3 source pins are a "
+                "100 A power-loop connection and must be copper pour/bar, not this signal trace."},
 ]
 
 
-def segments(plan: dict[str, dict]) -> list[dict]:
-    """Flatten a plan into the individual straight segments."""
+
+def _plan_list(plan) -> list[dict]:
+    """Accept one plan dict or a list of them."""
+    return list(plan) if isinstance(plan, (list, tuple)) else [plan]
+
+
+def segments(plan) -> list[dict]:
+    """Flatten one or more plans into the individual straight segments."""
     out = []
-    for net, spec in plan.items():
-        for pts in spec["paths"]:
-            for a, b in zip(pts, pts[1:]):
-                out.append({"net": net, "width": spec["width"], "a": a, "b": b})
+    for one in _plan_list(plan):
+        for net, spec in one.items():
+            layer = spec.get("layer", 1)
+            for pts in spec["paths"]:
+                for a, b in zip(pts, pts[1:]):
+                    out.append({"net": net, "width": spec["width"], "layer": layer,
+                                "a": a, "b": b})
     return out
 
 
 def load_pads(readback: Path) -> list[dict]:
-    """Pads with their true net and rotated bounding box, in board mm (Y down)."""
+    """Pads with their true net, layer and rotated bounding box, in board mm (Y down)."""
     value = json.loads(readback.read_text(encoding="utf-8"))["value"]
     pads = []
     for p in value["pads"]:
@@ -85,9 +152,15 @@ def load_pads(readback: Path) -> list[dict]:
             continue
         x0, y0, x1, y1 = g.pad_bbox_mm(p)
         pads.append({"ref": p.get("ref"), "pin": str(p.get("PadNumber")),
-                     "net": p["Net"], "bbox": (x0, y0, x1, y1),
+                     "net": p["Net"], "layer": p.get("Layer", 1),
+                     "bbox": (x0, y0, x1, y1),
                      "x": (x0 + x1) / 2, "y": (y0 + y1) / 2})
     return pads
+
+
+def _pad_on_layer(pad_layer: int, trace_layer: int) -> bool:
+    """A pad blocks a trace when it is on that layer or is a multi-layer pad."""
+    return pad_layer in (0, 12) or pad_layer == trace_layer
 
 
 def _point_segment(px: float, py: float, a: tuple, b: tuple) -> float:
@@ -135,75 +208,151 @@ def _segment_rect(a: tuple, b: tuple, box: tuple) -> float:
     return min(_segment_segment(a, b, c, d) for c, d in edges)
 
 
-def find_conflicts(pads: list[dict], segs: list[dict], clearance: float = CLEARANCE) -> list[dict]:
-    """Foreign-pad clearance plus net-to-net trace spacing on one layer."""
+def _point_rect(px: float, py: float, box: tuple) -> float:
+    x0, y0, x1, y1 = box
+    return math.hypot(max(x0 - px, 0.0, px - x1), max(y0 - py, 0.0, py - y1))
+
+
+def find_conflicts(pads: list[dict], segs: list[dict], clearance: float = CLEARANCE,
+                   vias: list[dict] | None = None) -> list[dict]:
+    """Layer-aware clearances.
+
+    A trace only meets copper on its own layer, so layer-1 SMD pads do not block
+    a layer-2 run.  A via is a through hole: it is checked against every pad and
+    every trace regardless of layer.
+    """
+    vias = vias or []
     out = []
     for s in segs:
+        layer = s.get("layer", 1)
         for p in pads:
-            if p["net"] == s["net"]:
+            if p["net"] == s["net"] or not _pad_on_layer(p["layer"], layer):
                 continue
             need = s["width"] / 2 + clearance
             d = _segment_rect(s["a"], s["b"], p["bbox"])
             if d < need - 1e-9:
-                out.append({"kind": "pad", "net": s["net"], "other": f"{p['ref']}.{p['pin']}",
-                            "other_net": p["net"], "distance_mm": round(d, 4),
+                out.append({"kind": "pad", "net": s["net"], "layer": layer,
+                            "other": f"{p['ref']}.{p['pin']}", "other_net": p["net"],
+                            "distance_mm": round(d, 4), "needed_mm": round(need, 4)})
+        for v in vias:
+            if v["net"] == s["net"]:
+                continue
+            need = s["width"] / 2 + v["diameter"] / 2 + clearance
+            d = _point_segment(v["x"], v["y"], s["a"], s["b"])
+            if d < need - 1e-9:
+                out.append({"kind": "via", "net": s["net"], "other": f"via {v['net']}",
+                            "other_net": v["net"], "distance_mm": round(d, 4),
                             "needed_mm": round(need, 4)})
     for s1, s2 in itertools.combinations(segs, 2):
-        if s1["net"] == s2["net"]:
+        if s1["net"] == s2["net"] or s1.get("layer", 1) != s2.get("layer", 1):
             continue
         need = (s1["width"] + s2["width"]) / 2 + clearance
         d = _segment_segment(s1["a"], s1["b"], s2["a"], s2["b"])
         if d < need - 1e-9:
             out.append({"kind": "trace", "net": s1["net"], "other": s2["net"],
+                        "layer": s1.get("layer", 1),
+                        "distance_mm": round(d, 4), "needed_mm": round(need, 4)})
+    for v in vias:
+        for p in pads:
+            if p["net"] == v["net"]:
+                continue
+            need = v["diameter"] / 2 + clearance
+            d = _point_rect(v["x"], v["y"], p["bbox"])
+            if d < need - 1e-9:
+                out.append({"kind": "via-pad", "net": v["net"], "other": f"{p['ref']}.{p['pin']}",
+                            "other_net": p["net"], "distance_mm": round(d, 4),
+                            "needed_mm": round(need, 4)})
+    for v1, v2 in itertools.combinations(vias, 2):
+        if v1["net"] == v2["net"]:
+            continue
+        need = (v1["diameter"] + v2["diameter"]) / 2 + clearance
+        d = math.hypot(v1["x"] - v2["x"], v1["y"] - v2["y"])
+        if d < need - 1e-9:
+            out.append({"kind": "via-via", "net": v1["net"], "other": v2["net"],
                         "distance_mm": round(d, 4), "needed_mm": round(need, 4)})
     return out
 
 
-def margins(pads: list[dict], segs: list[dict]) -> list[dict]:
+def margins(pads: list[dict], segs: list[dict], vias: list[dict] | None = None) -> list[dict]:
     """Per-net tightest clearance actually available, for the report."""
+    vias = vias or []
     rows = []
-    for net in sorted({s["net"] for s in segs}):
-        mine = [s for s in segs if s["net"] == net]
+    for net in sorted({s["net"] for s in segs} | {v["net"] for v in vias}):
         best = None
-        for s in mine:
+        for s in (s for s in segs if s["net"] == net):
+            for p in pads:
+                if p["net"] == net or not _pad_on_layer(p["layer"], s.get("layer", 1)):
+                    continue
+                d = _segment_rect(s["a"], s["b"], p["bbox"]) - s["width"] / 2
+                best = d if best is None else min(best, d)
+            for s2 in segs:
+                if s2["net"] == net or s2.get("layer", 1) != s.get("layer", 1):
+                    continue
+                d = _segment_segment(s["a"], s["b"], s2["a"], s2["b"]) - (s["width"] + s2["width"]) / 2
+                best = d if best is None else min(best, d)
+            for v in vias:
+                if v["net"] == net:
+                    continue
+                d = _point_segment(v["x"], v["y"], s["a"], s["b"]) - s["width"] / 2 - v["diameter"] / 2
+                best = d if best is None else min(best, d)
+        for v in (v for v in vias if v["net"] == net):
             for p in pads:
                 if p["net"] == net:
                     continue
-                d = _segment_rect(s["a"], s["b"], p["bbox"]) - s["width"] / 2
-                if best is None or d < best:
-                    best = d
-            for s2 in segs:
-                if s2["net"] == net:
+                d = _point_rect(v["x"], v["y"], p["bbox"]) - v["diameter"] / 2
+                best = d if best is None else min(best, d)
+            for v2 in vias:
+                if v2["net"] == net:
                     continue
-                d = _segment_segment(s["a"], s["b"], s2["a"], s2["b"]) - (s["width"] + s2["width"]) / 2
-                if best is None or d < best:
-                    best = d
+                d = math.hypot(v["x"] - v2["x"], v["y"] - v2["y"]) - (v["diameter"] + v2["diameter"]) / 2
+                best = d if best is None else min(best, d)
         rows.append({"net": net, "min_clearance_mm": round(best, 3) if best is not None else None})
     return rows
 
 
-def endpoint_problems(pads: list[dict], path: dict, same_net: tuple = (), tol: float = 0.02) -> list[str]:
-    """First/last point of each polyline must land on a same-net pad or a same-net junction."""
+def endpoint_problems(pads: list[dict], path: dict, same_net: tuple = (), tol: float = 0.02,
+                      vias: list[dict] | None = None) -> list[str]:
+    """First/last point of each polyline must land on a same-net pad, trace or via."""
+    vias = vias or []
+    layer = path.get("layer", 1)
     problems = []
     for label, pt in (("start", path["points"][0]), ("end", path["points"][-1])):
-        on_pad = any(p["net"] == path["net"]
+        on_pad = any(p["net"] == path["net"] and _pad_on_layer(p["layer"], layer)
                      and p["bbox"][0] - tol <= pt[0] <= p["bbox"][2] + tol
                      and p["bbox"][1] - tol <= pt[1] <= p["bbox"][3] + tol for p in pads)
-        on_trace = any(s["net"] == path["net"] and _point_segment(pt[0], pt[1], s["a"], s["b"]) <= tol
+        on_trace = any(s["net"] == path["net"] and s.get("layer", 1) == layer
+                       and _point_segment(pt[0], pt[1], s["a"], s["b"]) <= tol
                        for s in same_net)
-        if not (on_pad or on_trace):
-            problems.append(f"{path['net']} {label} {pt} is not on a pad of the same net")
+        on_via = any(v["net"] == path["net"]
+                     and math.hypot(v["x"] - pt[0], v["y"] - pt[1]) <= tol for v in vias)
+        if not (on_pad or on_trace or on_via):
+            problems.append(f"{path['net']} {label} {pt} is not on a same-net pad, trace or via")
     return problems
 
 
-def check_plan(pads: list[dict], plan: dict[str, dict], clearance: float = CLEARANCE) -> list[dict]:
-    segs = segments(plan)
-    problems = find_conflicts(pads, segs, clearance)
-    for net, spec in plan.items():
-        for pts in spec["paths"]:
-            problems += [{"kind": "endpoint", "net": net, "detail": d}
-                         for d in endpoint_problems(pads, {"net": net, "points": pts},
-                                                    tuple(s for s in segs if s["net"] == net))]
+def check_plan(pads: list[dict], plan, clearance: float = CLEARANCE,
+               vias: list[dict] | None = None) -> list[dict]:
+    """Check one plan or a list of plans, plus the vias that join them."""
+    vias = vias or []
+    plans = _plan_list(plan)
+    segs = segments(plans)
+    problems = find_conflicts(pads, segs, clearance, vias)
+    for one in plans:
+        for net, spec in one.items():
+            layer = spec.get("layer", 1)
+            for pts in spec["paths"]:
+                problems += [{"kind": "endpoint", "net": net, "detail": d}
+                             for d in endpoint_problems(
+                                 pads, {"net": net, "layer": layer, "points": pts},
+                                 tuple(s for s in segs if s["net"] == net), vias=vias)]
+    for v in vias:
+        touched = any(s["net"] == v["net"] and (
+            math.hypot(s["a"][0] - v["x"], s["a"][1] - v["y"]) <= 0.02
+            or math.hypot(s["b"][0] - v["x"], s["b"][1] - v["y"]) <= 0.02
+            or _point_segment(v["x"], v["y"], s["a"], s["b"]) <= 0.02) for s in segs)
+        if not touched:
+            problems.append({"kind": "via-dangling", "net": v["net"],
+                             "at": [v["x"], v["y"]]})
     return problems
 
 
@@ -211,15 +360,25 @@ def _mil(x: float, y: float) -> tuple[float, float]:
     return round(x * MIL, 3), round(-y * MIL, 3)
 
 
-def emit_js(plan: dict[str, dict]) -> str:
-    """LCEDA invocation body: open the board, create the layer-1 lines, save."""
+def emit_js(plan, vias: list[dict] | None = None) -> str:
+    """LCEDA invocation body: open the board, create the lines and vias, save.
+
+    Refuses to run on a board with fewer than two copper layers: growing the
+    stackup is a reviewable design change, not something this script may do
+    silently.
+    """
+    vias = vias or []
     rows = []
-    for net, spec in plan.items():
-        w = round(spec["width"] * MIL, 3)
-        for pts in spec["paths"]:
-            mil = [_mil(x, y) for x, y in pts]
-            for a, b in zip(mil, mil[1:]):
-                rows.append([net, w, a[0], a[1], b[0], b[1]])
+    for s in segments(plan):
+        a = _mil(*s["a"])
+        b = _mil(*s["b"])
+        rows.append([s["net"], s["layer"], round(s["width"] * MIL, 3),
+                     a[0], a[1], b[0], b[1]])
+    via_rows = []
+    for v in vias:
+        x, y = _mil(v["x"], v["y"])
+        via_rows.append([v["net"], x, y, round(v["hole"] * MIL, 3),
+                         round(v["diameter"] * MIL, 3)])
     return """return await (async () => {
   let board;
   for (let i = 0; i < 20 && !board; i++) {
@@ -230,22 +389,39 @@ def emit_js(plan: dict[str, dict]) -> str:
   if (!board) throw new Error('PCB document missing');
   await eda.dmt_EditorControl.openDocument(board.pcb.uuid);
   await new Promise(r => setTimeout(r, 1000));
+  const copperLayers = await eda.pcb_Layer.getTheNumberOfCopperLayers();
+  if (copperLayers < 2) {
+    throw new Error('board reports ' + copperLayers + ' copper layer(s); this plan needs 2. '
+      + 'Changing the stackup is a separate reviewed design step.');
+  }
   const lines = %s;
-  const out = { created: [], failed: [] };
-  for (const [net, w, x1, y1, x2, y2] of lines) {
+  const vias = %s;
+  const out = { copperLayers, created: [], failed: [], viasCreated: [] };
+  for (const [net, layer, w, x1, y1, x2, y2] of lines) {
     try {
-      const l = await eda.pcb_PrimitiveLine.create(net, 1, x1, y1, x2, y2, w, false);
-      if (!l) { out.failed.push([net, x1, y1, x2, y2, 'null']); continue; }
-      out.created.push([net, x1, y1, x2, y2, w,
+      const l = await eda.pcb_PrimitiveLine.create(net, layer, x1, y1, x2, y2, w, false);
+      if (!l) { out.failed.push([net, layer, x1, y1, x2, y2, 'null']); continue; }
+      out.created.push([net, layer, x1, y1, x2, y2, w,
                         l.getState_PrimitiveId ? l.getState_PrimitiveId() : null]);
     } catch (e) {
-      out.failed.push([net, x1, y1, x2, y2, String(e && e.message || e)]);
+      out.failed.push([net, layer, x1, y1, x2, y2, String(e && e.message || e)]);
     }
   }
-  out.total = (await eda.pcb_PrimitiveLine.getAll()).length;
+  for (const [net, x, y, hole, diameter] of vias) {
+    try {
+      const v = await eda.pcb_PrimitiveVia.create(net, x, y, hole, diameter, 0, null);
+      if (!v) { out.failed.push(['via', net, x, y, 'null']); continue; }
+      out.viasCreated.push([net, x, y, hole, diameter,
+                            v.getState_PrimitiveId ? v.getState_PrimitiveId() : null]);
+    } catch (e) {
+      out.failed.push(['via', net, x, y, String(e && e.message || e)]);
+    }
+  }
+  out.lines = (await eda.pcb_PrimitiveLine.getAll()).length;
+  out.vias = (await eda.pcb_PrimitiveVia.getAll()).length;
   out.saved = await eda.pcb_Document.save();
   return out;
-})();""" % json.dumps(rows)
+})();""" % (json.dumps(rows), json.dumps(via_rows))
 
 
 def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01) -> tuple[bool, list[dict]]:
@@ -262,6 +438,8 @@ def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01) -> tuple[bool,
     spans = []
     for s in mine:
         if abs(s["width"] - plan_seg["width"]) > tol:
+            continue
+        if s.get("layer", 1) != plan_seg.get("layer", 1):
             continue
         if any(abs(_point_segment(pt[0], pt[1], plan_seg["a"], plan_seg["b"])) > tol
                for pt in (s["a"], s["b"])):
@@ -281,21 +459,24 @@ def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01) -> tuple[bool,
     return end >= 1.0 - tol / max(length, 1e-9), []
 
 
-def verify_lines(plan: dict[str, dict], lines_mm: list[dict], tol: float = 0.01) -> list[dict]:
+def verify_lines(plan, lines_mm: list[dict], tol: float = 0.01) -> list[dict]:
     """Check readback lines cover the plan and every line lies on the plan."""
     planned = segments(plan)
     problems = []
     for p in planned:
         ok, why = _covered(p, lines_mm, tol)
         if not ok:
-            problems.append({"kind": "coverage", "net": p["net"], "at": [p["a"], p["b"]], "why": why})
+            problems.append({"kind": "coverage", "net": p["net"], "layer": p["layer"],
+                             "at": [p["a"], p["b"]], "why": why})
     for s in lines_mm:
-        hit = s.get("layer", 1) == 1 and any(
-            s["net"] == p["net"] and abs(s["width"] - p["width"]) <= tol
+        hit = any(
+            s["net"] == p["net"] and s.get("layer", 1) == p["layer"]
+            and abs(s["width"] - p["width"]) <= tol
             and all(_point_segment(*pt, p["a"], p["b"]) <= tol for pt in (s["a"], s["b"]))
             for p in planned)
         if not hit:
-            problems.append({"kind": "unplanned", "net": s["net"], "at": [s["a"], s["b"]]})
+            problems.append({"kind": "unplanned", "net": s["net"], "layer": s.get("layer", 1),
+                             "at": [s["a"], s["b"]]})
     return problems
 
 
@@ -306,6 +487,30 @@ def lines_from_readback(readback: Path) -> list[dict]:
             for l in value["lines"]]
 
 
+def vias_from_readback(readback: Path) -> list[dict]:
+    value = json.loads(readback.read_text(encoding="utf-8"))["value"]
+    return [{"net": v["net"], "x": v["x"] / MIL, "y": -v["y"] / MIL,
+             "hole": v["hole"] / MIL, "diameter": v["diameter"] / MIL}
+            for v in value.get("vias", [])]
+
+
+def verify_vias(vias: list[dict], readback_vias: list[dict], tol: float = 0.02) -> list[dict]:
+    """Every planned via must exist at its centre and no unplanned via may remain."""
+    problems = []
+    for v in vias:
+        hit = any(r["net"] == v["net"]
+                  and math.hypot(r["x"] - v["x"], r["y"] - v["y"]) <= tol
+                  and abs(r["diameter"] - v["diameter"]) <= tol for r in readback_vias)
+        if not hit:
+            problems.append({"kind": "via-missing", "net": v["net"], "at": [v["x"], v["y"]]})
+    for r in readback_vias:
+        hit = any(r["net"] == v["net"] and math.hypot(r["x"] - v["x"], r["y"] - v["y"]) <= tol
+                  for v in vias)
+        if not hit:
+            problems.append({"kind": "via-unplanned", "net": r["net"], "at": [r["x"], r["y"]]})
+    return problems
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--emit-js", action="store_true", help="print the LCEDA body")
@@ -314,20 +519,24 @@ def main() -> int:
     ap.add_argument("--verify", action="store_true", help="verify a fresh reopen readback")
     args = ap.parse_args()
     pads = load_pads(HERE / "driver_readback.json")
-    problems = check_plan(pads, PLAN)
+    plans = [PLAN, STUBS, BOTTOM]
+    segs = segments(plans)
+    problems = check_plan(pads, plans, vias=VIAS)
     if args.emit_js:
-        print(emit_js(PLAN))
+        print(emit_js(plans, VIAS))
     if args.verify:
         return verify_and_report()
     if args.check or not (args.emit_js or args.write_plan):
-        print(json.dumps({"pads": len(pads), "segments": len(segments(PLAN)),
-                          "problems": problems, "margins": margins(pads, segments(PLAN))},
+        print(json.dumps({"pads": len(pads), "segments": len(segs), "vias": len(VIAS),
+                          "problems": problems, "margins": margins(pads, segs, VIAS)},
                          ensure_ascii=False, indent=2))
     if args.write_plan:
         payload = {"date": "2026-11-10", "status": "G1_ROUTE_PLAN_NOT_FOR_FAB",
-                   "layer": 1, "clearance_floor_mm": CLEARANCE,
-                   "plan": PLAN, "segments": segments(PLAN),
-                   "margins": margins(pads, segments(PLAN)),
+                   "clearance_floor_mm": CLEARANCE,
+                   "layers": 2, "via_hole_mm": VIA_HOLE, "via_diameter_mm": VIA_DIAMETER,
+                   "layer_1_plan": PLAN, "layer_1_stubs": STUBS, "layer_2_plan": BOTTOM,
+                   "vias": VIAS, "segments": segs,
+                   "margins": margins(pads, segs, VIAS),
                    "remaining_connections": REMAINING}
         (HERE / "driver_route_plan.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -344,7 +553,10 @@ def verify_and_report() -> int:
     readback_path = HERE / "driver_route_readback.json"
     value = json.loads(readback_path.read_text(encoding="utf-8"))["value"]
     lines = lines_from_readback(readback_path)
-    line_problems = verify_lines(PLAN, lines)
+    readback_vias = vias_from_readback(readback_path)
+    plans = [PLAN, STUBS, BOTTOM]
+    line_problems = verify_lines(plans, lines)
+    via_problems = verify_vias(VIAS, readback_vias)
     base = json.loads((HERE / "driver_readback.json").read_text(encoding="utf-8"))["value"]
     old = {c["ref"]: (c["X"], c["Y"]) for c in base["components"]}
     drift = [{"ref": c["ref"], "dx_mil": round(c["X"] - old[c["ref"]][0], 4),
@@ -354,7 +566,7 @@ def verify_and_report() -> int:
     counts_ok = (len(value["components"]) == 77 and len(value["pads"]) == 299
                  and len(value["nets"]) == 65 and value["polylines"] == 38)
     per_net = {}
-    for s in segments(PLAN):
+    for s in segments(plans):
         length = math.hypot(s["b"][0] - s["a"][0], s["b"][1] - s["a"][1])
         per_net[s["net"]] = round(per_net.get(s["net"], 0) + length, 3)
     readback_per_net = {}
@@ -369,18 +581,23 @@ def verify_and_report() -> int:
         "layout_counts": {"components": len(value["components"]), "pads": len(value["pads"]),
                           "nets": len(value["nets"]), "polylines": value["polylines"],
                           "unchanged": counts_ok},
-        "lines": {"count": len(lines), "layer": 1,
-                  "planned_segments": len(segments(PLAN)),
+        "lines": {"count": len(lines),
+                  "by_layer": {str(n): sum(1 for s in lines if s.get("layer") == n)
+                               for n in sorted({s.get("layer") for s in lines})},
+                  "planned_segments": len(segments(plans)),
                   "planned_length_mm_per_net": per_net,
                   "readback_length_mm_per_net": readback_per_net,
                   "coverage_problems": line_problems},
+        "vias": {"planned": len(VIAS), "readback": len(readback_vias),
+                 "problems": via_problems},
         "placement_drift": drift,
-        "nets_routed": sorted(PLAN),
+        "nets_routed": sorted(set(PLAN) | set(STUBS) | set(BOTTOM)),
         "remaining_connections": REMAINING,
         "limitations": [
-            "One copper layer only; the remaining connections need a pour, a second layer, or a placement change.",
+            "The QH.1-3 source connection is a 100 A power loop; it is not part of this signal-level increment.",
             "No native DRC/ERC export yet; clearances are the offline 0.15 mm floor and are not a DRC result.",
             "No netlist connectivity check beyond endpoints and coverage; the editor's ratsnest/DRC must confirm.",
+            "Bottom-layer runs pass under layer-1 SMD pads by design; through-hole clearance is checked offline only.",
             "Magnetics still have 24 provisional pads and T1-T4/CT have no physical footprint.",
             "This does not change the NOT_FOR_FAB gate.",
         ],
@@ -389,9 +606,10 @@ def verify_and_report() -> int:
     }
     (HERE / "driver_route_report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"lines": len(lines), "coverage_problems": line_problems,
+    print(json.dumps({"lines": len(lines), "vias": len(readback_vias),
+                      "coverage_problems": line_problems, "via_problems": via_problems,
                       "placement_drift": drift, "counts_unchanged": counts_ok}, indent=2))
-    return 0 if (counts_ok and not line_problems and not drift) else 1
+    return 0 if (counts_ok and not line_problems and not via_problems and not drift) else 1
 
 
 if __name__ == "__main__":

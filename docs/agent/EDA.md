@@ -239,6 +239,26 @@
 
 交付物：`hardware/dcx_main/g1/dcx_main_board_g1.eprj2`（G1 原生带网 PCB，非投板）。
 
+### API 桥接会被可见模态框卡死（2026-11-10 实测）
+
+第 2 层探针（`tmp_g1_probe/probe_bottom_layer.py`：在副本上建一条第 2 层线，从不保存）执行后，
+LCEDA 主进程弹出一个**可见的 `#32770` 模态框**，标题是 `blob:https://client/…`。此后：
+
+- **`return 1;` 这类不触达 `eda` 命名空间的 body 仍在约 1 ms 内返回**；
+- 任何真实 API body（哪怕只是 `getCurrentProjectInfo()`）一律
+  `REQUEST_TIMEOUT` 59750 ms（budget 60000）；
+- **新开 session 也一样**：`open` 仍返回 sessionId（durationMs 约 2 s），但 body 照旧超时
+  ⇒ 卡住的是**共享的主进程 render**，不是某一个 session，重开/换 session 都不解。
+
+判活口径：**先跑 `return 1;`，再跑一个只读 API body**。两者结果不同就说明是模态框；
+只看 `open` 成功或只看 `return 1;` 成功都会误判成"桥接正常"（2026-11-10 复测：
+`probe_alive.py` 返回 `{"ok":true,"value":1}`，`probe_open_document.py` 仍 59750 ms 超时）。
+
+处理方式：**请用户手动关掉那个窗口**。不要用 PowerShell / Python ctypes 等 Win32 互操作去关它
+——本机 PowerShell 受执行策略与用户规则禁止，绕过去等于违反用户约束。窗口关掉前**不要重复
+invoke 同一路径**（本轮已按此停止）；关掉后重跑上面两步探活确认恢复，再继续板级作业。
+这类"建图元"探针本身就可能再次弹框 ⇒ 一次只跑一个、给短 timeout，且只在副本上跑。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。

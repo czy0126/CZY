@@ -25,6 +25,9 @@ return await (async () => {
     id:l.getState_PrimitiveId(),net:l.getState_Net(),layer:l.getState_Layer(),
     x1:l.getState_StartX(),y1:l.getState_StartY(),x2:l.getState_EndX(),y2:l.getState_EndY(),
     width:l.getState_LineWidth()}));
-  return {components,pads,lines,nets:await eda.pcb_Net.getAllNetsName(),
+  const vias=(await eda.pcb_PrimitiveVia.getAll()).map(v=>({
+    id:v.getState_PrimitiveId(),net:v.getState_Net(),x:v.getState_X(),y:v.getState_Y(),
+    hole:v.getState_HoleDiameter(),diameter:v.getState_Diameter()}));
+  return {components,pads,lines,vias,nets:await eda.pcb_Net.getAllNetsName(),
     polylines:(await eda.pcb_PrimitivePolyline.getAll()).length};
 })();

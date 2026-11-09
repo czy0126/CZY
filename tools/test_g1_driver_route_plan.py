@@ -11,9 +11,13 @@ route = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(route)
 
 
-def pad(ref, number, net, x, y, w, h):
-    return {"ref": ref, "pin": str(number), "net": net,
+def pad(ref, number, net, x, y, w, h, layer=1):
+    return {"ref": ref, "pin": str(number), "net": net, "layer": layer,
             "bbox": (x - w / 2, y - h / 2, x + w / 2, y + h / 2), "x": x, "y": y}
+
+
+def via(net, x, y, diameter=0.5):
+    return {"net": net, "x": x, "y": y, "diameter": diameter, "hole": 0.2}
 
 
 def test_segment_crossing_between_different_nets_is_detected():
@@ -50,6 +54,84 @@ def test_the_planned_routes_pass_the_offline_check():
     pads = route.load_pads(route.HERE / "driver_readback.json")
     problems = route.check_plan(pads, route.PLAN)
     assert not problems, problems
+
+
+def test_the_two_layer_resolution_passes_the_offline_check():
+    pads = route.load_pads(route.HERE / "driver_readback.json")
+    problems = route.check_plan(pads, [route.PLAN, route.STUBS, route.BOTTOM],
+                                vias=route.VIAS)
+    assert not problems, problems
+
+
+def test_a_bottom_trace_may_pass_under_a_top_smd_pad():
+    pads = [pad("A", "1", "N1", 0, 5, 0.5, 0.5), pad("B", "1", "N2", 10, 5, 0.5, 0.5)]
+    seg = [{"net": "N1", "width": 0.3, "layer": 2, "a": (0, 5), "b": (10, 5)}]
+    assert not route.find_conflicts(pads, seg, clearance=0.15)
+
+
+def test_a_bottom_trace_must_clear_a_through_hole_pad():
+    pads = [pad("J", "1", "N2", 5, 5, 0.5, 0.5, layer=12)]
+    seg = [{"net": "N1", "width": 0.3, "layer": 2, "a": (0, 5), "b": (10, 5)}]
+    assert route.find_conflicts(pads, seg, clearance=0.15)
+
+
+def test_traces_on_different_layers_do_not_conflict():
+    segs = [{"net": "N1", "width": 0.3, "layer": 1, "a": (0, 0), "b": (10, 0)},
+            {"net": "N2", "width": 0.3, "layer": 2, "a": (5, -5), "b": (5, 5)}]
+    assert not route.find_conflicts([], segs, clearance=0.15)
+
+
+def test_a_via_must_clear_a_pad_on_any_layer():
+    pads = [pad("A", "1", "N2", 0, 0, 0.5, 0.5, layer=1)]
+    vias = [via("N1", 0.4, 0.0)]
+    assert route.find_conflicts(pads, [], clearance=0.15, vias=vias)
+    vias = [via("N1", 2.0, 0.0)]
+    assert not route.find_conflicts(pads, [], clearance=0.15, vias=vias)
+
+
+def test_a_same_net_via_is_a_valid_endpoint():
+    pads = [pad("A", "1", "N1", 0, 0, 0.5, 0.5, layer=12)]
+    vias = [via("N1", 5, 5)]
+    path = {"net": "N1", "layer": 2, "points": [(5, 5), (0, 0)]}
+    assert not route.endpoint_problems(pads, path, vias=vias)
+
+
+def test_a_bottom_endpoint_cannot_land_on_a_top_only_pad():
+    pads = [pad("A", "1", "N1", 0, 0, 0.5, 0.5)]
+    path = {"net": "N1", "layer": 2, "points": [(0, 0), (5, 0)]}
+    assert route.endpoint_problems(pads, path)
+
+
+def test_an_endpoint_landing_on_a_foreign_via_is_rejected():
+    vias = [via("N2", 5, 5)]
+    path = {"net": "N1", "layer": 2, "points": [(5, 5), (0, 0)]}
+    assert route.endpoint_problems([], path, vias=vias)
+
+
+def test_a_dangling_via_is_rejected():
+    pads = route.load_pads(route.HERE / "driver_readback.json")
+    problems = route.check_plan(pads, [route.STUBS], vias=[via("SW", 0, 0)])
+    assert any(p["kind"] == "via-dangling" for p in problems)
+
+
+def test_verification_distinguishes_layers():
+    plan = {"N1": {"width": 0.2, "layer": 1, "paths": [[(0, 0), (10, 0)]]}}
+    lines = [{"net": "N1", "layer": 2, "width": 0.2, "a": (0, 0), "b": (10, 0)}]
+    assert route.verify_lines(plan, lines)
+
+
+def test_emit_js_carries_the_layer_and_the_vias():
+    js = route.emit_js([route.PLAN, route.STUBS, route.BOTTOM], route.VIAS)
+    assert "pcb_PrimitiveVia.create" in js
+    assert "getTheNumberOfCopperLayers" in js
+    assert '["SW", 2,' in js
+    assert '["HB", 1,' in js
+
+
+def test_readback_vias_must_match_the_plan():
+    readback = [{"net": "SW", "x": 52.499, "y": 63.9, "hole": 0.2, "diameter": 0.5}]
+    assert not route.verify_vias([route.VIAS[10]], readback)
+    assert route.verify_vias([route.VIAS[10]], [])
 
 
 def test_editor_split_at_a_junction_is_accepted():
