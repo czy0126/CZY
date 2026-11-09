@@ -81,6 +81,30 @@ def load_packet() -> list[dict]:
         return list(csv.DictReader(fh))
 
 
+def audit_pad_nets(pads: list[dict], refs: dict, placed_refs: set[str]) -> dict:
+    """Compare snapshot pads to exported schematic pins; never assume zero."""
+    mismatches, unknown, seen = [], [], set()
+    duplicates = {}
+    for p in pads:
+        ref, pin = p.get('ref'), str(p['PadNumber'])
+        if ref is None:
+            continue  # Concept pads are checked separately against their packet.
+        seen.add((ref, pin))
+        duplicates.setdefault((ref, pin), set()).add(p.get('Net') or '')
+        if ref not in refs or pin not in refs[ref]:
+            unknown.append({'ref': ref, 'pin': pin, 'actual': p.get('Net')})
+        elif (p.get('Net') or '') != (refs[ref][pin] or ''):
+            mismatches.append({'ref': ref, 'pin': pin, 'expected': refs[ref][pin], 'actual': p.get('Net')})
+    missing = [{'ref': ref, 'pin': pin, 'net': net}
+               for ref in sorted(placed_refs) for pin, net in refs.get(ref, {}).items()
+               if (ref, str(pin)) not in seen]
+    conflicts = [{'ref': ref, 'pin': pin, 'nets': sorted(nets)}
+                 for (ref, pin), nets in duplicates.items() if len(nets) > 1]
+    return {'mismatches': mismatches, 'unknown_pins': unknown,
+            'missing_pins': missing, 'duplicate_net_conflicts': conflicts,
+            'snapshot_equivalent': not (mismatches or unknown or missing or conflicts)}
+
+
 def match_concept_pads(free_pads: list[dict], packet: list[dict]) -> tuple[list[dict], list[dict]]:
     """Pair board free pads with packet rows; both sides must agree on net."""
     placed, unmatched = [], []
@@ -187,6 +211,7 @@ def main() -> int:
     netlist = json.loads((ROOT / "hardware/dcx_main/gen/netlist_export_raw.json")
                          .read_text(encoding="utf-8"))["value"]["refs"]
     on_board = {c["ref"] for c in comps}
+    pin_audit = audit_pad_nets(pads, netlist, on_board)
     missing_from_pcb = []
     for ref in sorted(set(netlist) - on_board):
         reason = ("excluded from PCB by the R8 double-DNP ECO (addIntoBom=false, addIntoPcb=false)"
@@ -229,7 +254,7 @@ def main() -> int:
     # Pad-pad overlap is split in two: overlaps *inside* one footprint are the
     # vendor footprint's own geometry (thermal tabs, duplicated pads) and are not
     # placement errors; overlaps *between* two components are.
-    intra, clashes = [], []
+    intra, clashes, internal_net_conflicts = [], [], []
     for i, a in enumerate(footprint_pads):
         ba = pad_bbox_mm(a)
         for b in footprint_pads[i + 1:]:
@@ -238,6 +263,8 @@ def main() -> int:
             pair = {"a": f"{a['ref']}.{a['PadNumber']}@{a['X'] / MIL:.3f},{a['Y'] / MIL:.3f}",
                     "b": f"{b['ref']}.{b['PadNumber']}@{b['X'] / MIL:.3f},{b['Y'] / MIL:.3f}"}
             (intra if a["ref"] == b["ref"] else clashes).append(pair)
+            if a['ref'] == b['ref'] and a.get('Net') and b.get('Net') and a['Net'] != b['Net']:
+                internal_net_conflicts.append(dict(pair, nets=[a['Net'], b['Net']]))
     assert not clashes, f"pads of different components overlap: {clashes[:5]}"
 
     dup_numbers = []
@@ -269,7 +296,7 @@ def main() -> int:
                    "would double-count those nets, so only the native pads exist.",
          "status": "INTENTIONAL_NOT_PLACED"},
         {"topic": "footprint truth for the five magnetics",
-         "detail": "components T1-T4/CT/Lr are NOT placed as PCB components; only their "
+         "detail": "components T1-T4/CT are NOT placed as PCB components; only their "
                    "terminals exist as free pads.  There is no component, no silkscreen, "
                    "no courtyard and no physical pad geometry behind them.",
          "status": "NOT_FOR_FAB"},
@@ -310,14 +337,21 @@ def main() -> int:
         "nets_without_pads": pads_json["nets_without_pads"],
         "pads_without_net_total": len(unneted),
         "pads_without_net": unneted,
-        "pad_net_mismatches": [],
-        "pad_net_mismatch_count": 0,
+        "pad_net_mismatches": pin_audit['mismatches'],
+        "pad_net_mismatch_count": len(pin_audit['mismatches']),
+        "pin_audit": pin_audit,
+        "evidence_identity": {
+            "pad_snapshot_sha256": hashlib.sha256((HERE/'g1_pads.json').read_bytes()).hexdigest(),
+            "schematic_snapshot_sha256": hashlib.sha256((ROOT/'hardware/dcx_main/gen/netlist_export_raw.json').read_bytes()).hexdigest(),
+            "scope": "Offline snapshot comparison; does not refresh CAD readback or prove routed connectivity/DRC",
+        },
         "zone_clearance": {
             "method": "per-component pad bbox (rotated) vs each TBD rectangle; "
                       "pad-pad bbox overlap over all footprint pads; extent over all pads",
             "component_zone_overlaps": zone_hits,
             "cross_component_pad_overlaps": clashes,
             "footprint_internal_pad_overlaps": intra,
+            "different_net_internal_bbox_overlaps": internal_net_conflicts,
             "duplicate_pad_numbers": dup_numbers,
             "pad_extent_mm": extent,
             "moved": prev["zone_clearance"]["moved"],

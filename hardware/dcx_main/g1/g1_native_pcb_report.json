@@ -1990,6 +1990,18 @@
  ],
  "pad_net_mismatches": [],
  "pad_net_mismatch_count": 0,
+ "pin_audit": {
+  "mismatches": [],
+  "unknown_pins": [],
+  "missing_pins": [],
+  "duplicate_net_conflicts": [],
+  "snapshot_equivalent": true
+ },
+ "evidence_identity": {
+  "pad_snapshot_sha256": "ecedf179613d180e39de7d2da602729c4611cee27549b5ecd8e9e888606cf62f",
+  "schematic_snapshot_sha256": "b5275af94f8fd211824983767dbde36074e566e1bf7fb16440c20282a1a50c38",
+  "scope": "Offline snapshot comparison; does not refresh CAD readback or prove routed connectivity/DRC"
+ },
  "zone_clearance": {
   "method": "per-component pad bbox (rotated) vs each TBD rectangle; pad-pad bbox overlap over all footprint pads; extent over all pads",
   "component_zone_overlaps": [],
@@ -2252,6 +2264,7 @@
     "b": "SR4B.8@138.001,-81.514"
    }
   ],
+  "different_net_internal_bbox_overlaps": [],
   "duplicate_pad_numbers": [
    {
     "ref": "SR1A",
@@ -2766,7 +2779,7 @@
   },
   {
    "topic": "footprint truth for the five magnetics",
-   "detail": "components T1-T4/CT/Lr are NOT placed as PCB components; only their terminals exist as free pads.  There is no component, no silkscreen, no courtyard and no physical pad geometry behind them.",
+   "detail": "components T1-T4/CT are NOT placed as PCB components; only their terminals exist as free pads.  There is no component, no silkscreen, no courtyard and no physical pad geometry behind them.",
    "status": "NOT_FOR_FAB"
   }
  ]

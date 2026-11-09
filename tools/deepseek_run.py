@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -23,6 +24,8 @@ def main() -> None:
     parser.add_argument("--reply", type=Path, required=True)
     parser.add_argument("--thinking", choices=["enabled","disabled"], default="disabled")
     parser.add_argument("--max-tokens", type=int, default=1500)
+    parser.add_argument("--key-file", type=Path,
+                        help="Credential file path; alternatively set DEEPSEEK_API_KEY or DEEPSEEK_API_KEY_FILE")
     parser.add_argument("--context-file", type=Path, action="append", default=[],
                         help="Append a local UTF-8 evidence excerpt to the prompt")
     args = parser.parse_args()
@@ -43,7 +46,17 @@ def main() -> None:
                 parser.error(f"context file exceeds 150000 characters: {source}")
             excerpts.append(f"\n\n## Evidence: {path.relative_to(ROOT)}\n{body}")
         prompt += "".join(excerpts)
-    key = (Path(r"D:\workshop\circuit_net\deepseekapi.txt")).read_text(encoding="utf-8").strip()
+    key_path = args.key_file or Path(os.environ.get("DEEPSEEK_API_KEY_FILE", r"D:\workshop\circuit_net\deepseekapi.txt"))
+    if any(source.resolve() == key_path.resolve() for source in args.context_file):
+        parser.error("credential file cannot be sent as context")
+    key = os.environ.get("DEEPSEEK_API_KEY", "").strip() if args.key_file is None else ""
+    if not key:
+        try:
+            key = key_path.read_text(encoding="utf-8-sig").strip()
+        except FileNotFoundError:
+            raise SystemExit("DeepSeek credential file missing; use --key-file or DEEPSEEK_API_KEY. No request sent.") from None
+    if not key or "\n" in key or "\r" in key:
+        raise SystemExit("DeepSeek credential must be one nonempty line. No request sent.")
     payload = {
         "model": "deepseek-flash",
         "messages": [{"role": "user", "content": prompt}],

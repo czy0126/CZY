@@ -1,0 +1,80 @@
+{
+  "date": "2026-11-10",
+  "status": "G1_PLACEMENT_INCREMENT_NOT_FOR_FAB",
+  "hardware_qualified": false,
+  "routed": false,
+  "native_drc_passed": false,
+  "erc_passed": false,
+  "reopened_readback": false,
+  "geometry_evidence": "PREDICTED_FROM_BASELINE_AND_MOVE_COMMANDS",
+  "moved_components": {
+    "U2": [
+      54,
+      62
+    ],
+    "C5": [
+      51,
+      60
+    ],
+    "D_BT": [
+      47,
+      62
+    ],
+    "C103": [
+      57,
+      65
+    ],
+    "C104": [
+      57,
+      67
+    ],
+    "R18": [
+      49,
+      55
+    ],
+    "R19": [
+      58,
+      55
+    ]
+  },
+  "pin_audit": {
+    "mismatches": [],
+    "unknown_pins": [],
+    "missing_pins": [],
+    "duplicate_net_conflicts": [],
+    "snapshot_equivalent": true
+  },
+  "cross_component_pad_bbox_overlaps": [],
+  "magnetic_zone_pad_bbox_overlaps": [],
+  "endpoint_distances": {
+    "GH_DRV": {
+      "before_mm": 81.47935526933188,
+      "after_mm": 6.003990807326218
+    },
+    "GL_DRV": {
+      "before_mm": 75.60615459443231,
+      "after_mm": 4.404535830570332
+    },
+    "bootstrap_HB": {
+      "before_mm": 62.45252136748364,
+      "after_mm": 2.9732373381620953
+    },
+    "bootstrap_SW": {
+      "before_mm": 61.223398806668676,
+      "after_mm": 3.1051272302404
+    }
+  },
+  "sha256": {
+    "dcx_main_board_g1.eprj2": "3311c31a44eb3ec1add129b97119abf6cdc2029895a06c55c64e40ff8cd9cb41",
+    "dcx_main_board_g1_driver_eco.eprj2": "c987bba9ae3ba023eaf65c03284a176f3d84a4db36d9fecd957623c2fd3ab5b4",
+    "g1_pads.json": "ecedf179613d180e39de7d2da602729c4611cee27549b5ecd8e9e888606cf62f",
+    "driver_readback.json": "27ddc350ecd006fa5432115c5f72d9e1fc24e4f5779ba94b2199c94273a25d06",
+    "driver_eco.js": "e6ba82a1207c5f7570c0b09221d61eb7f49915f562ec5ad326b856ce7d67b2e5"
+  },
+  "limitations": [
+    "Distances are straight endpoint distances, not routed lengths or loop inductance.",
+    "Pad bounding boxes do not replace courtyard, assembly or native DRC checks.",
+    "24 concept magnetic pads remain provisional; no physical magnet terminals locked.",
+    "C103/C104 assignment checked only by VCC12/PGND nets; exact values/MPNs need native BOM ECO."
+  ]
+}

@@ -225,6 +225,12 @@
   每只网都有焊盘、逐焊盘网络与编辑器网表**零不符**。焊盘旋转必须从 `getState_Rotation()` 读，
   不能默认 0（本板有 80 只焊盘是 90/180/−90°）。
 
+- **重开读回与旧快照不是同一口径**：`g1_pads.json` 生成器把所有**器件焊盘** `Layer` 硬编码成
+  `1`，真实重开读回把通孔焊盘（J_IN/J_OUT）报成 `12`；`POLYGON` 焊盘源又是**绝对板坐标**，
+  器件一移整块平移。逐焊盘比对必须按「引脚号 + 网络 + 相对器件原点的形状 + 旋转 + 自由焊盘层」
+  做身份，位置偏移给约 0.25 mil 容差（编辑器重开会重新舍入）——直接比原始字段会把正常重开判成
+  改封装。见 `hardware/dcx_main/g1/audit_driver_eco.py` 与 `tools/test_g1_driver_eco_audit.py`。
+
 交付物：`hardware/dcx_main/g1/dcx_main_board_g1.eprj2`（G1 原生带网 PCB，非投板）。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
