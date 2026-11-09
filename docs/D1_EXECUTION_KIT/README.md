@@ -6,7 +6,7 @@
 
 ## 2026-11-09 原厂资料、Cout高温选型与可直接发出的供应商问题表
 
-[47 原厂KEMET/Panasonic电容、TDK磁芯、Würth连接器与TI SR的参数/适用边界](47_原厂电容磁件高流端子资料与采购决策_2026-11-09.md)；[10条官方出处和3个真实电容候选](../../hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json)；[可复算的各温度电容数量和百安培端子µΩ筛查](../../hardware/dcx_main/oem_sourcing_screen_2026-11-09.json)；[16行厂商回件任务卡](templates/oem_2026-11-09_supplier_outreach.csv)。数据来自厂家条件点，当前**没有把任何未回件磁件认成订单料号**，也不会自动修改原生 EasyEDA 或 D1 投板门禁。
+[47 原厂KEMET/Panasonic电容、TDK磁芯、Würth连接器与TI SR的参数/适用边界](47_原厂电容磁件高流端子资料与采购决策_2026-11-09.md)；[10条官方出处和3个真实电容候选](../../hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json)；[可复算的各温度电容数量和百安培端子µΩ筛查](../../hardware/dcx_main/oem_sourcing_screen_2026-11-09.json)；[16行厂商回件任务卡](templates/oem_2026-11-09_supplier_outreach.csv)；[48 可直接发送的磁件/电容/铜排询价邮件](48_磁件电容铜排可发送供应商邮件_2026-11-09.md)。数据来自厂家条件点，当前**没有把任何未回件磁件认成订单料号**，也不会自动修改原生 EasyEDA 或 D1 投板门禁。
 
 ## 2026-11-09 100 A 输出接口：优先减少接点，而不是只增加铜厚
 
