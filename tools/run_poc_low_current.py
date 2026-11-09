@@ -255,9 +255,9 @@ def main() -> int:
     parser.add_argument("--on-timeout-sec", type=int,
                         help="optional SR_ON wall-time budget, overrides --timeout-sec")
     parser.add_argument("--early-on-screen", action="store_true",
-                        help="before full SR_ON run require genuine original-model "
-                             "620us early numerical diagnostic to pass; failures "
-                             "are preserved and still leave independent OFF result")
+                        help="before full SR_ON run require a genuine original-model "
+                             "diagnostic: 5A to 620us, 10A to 1500us "
+                             "(past observed 1.355ms collapse)")
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--run", action="store_true")
     action.add_argument("--check", action="store_true")
@@ -304,11 +304,11 @@ def main() -> int:
     early_screen = {}
     for mode in mode_list:
         if mode == "on" and args.early_on_screen:
-            # The genuine ON baseline has exhibited trouble at ~0.56ms,
-            # before SR REG enables. Test the unmodified first 620us once
-            # instead of launching an 8ms ON deck that cannot complete.
-            # Both nominal loads now use the same 0.62ms source-preserving
-            # screen; a 5A screen must never stand in for a 10A screen.
+            # The 5A early window tests 620us; the 10A window tests 1500us
+            # because the default 10A model abandoned at 1.35512456ms.
+            # A 5A screen cannot qualify a different load case, and passing
+            # this early window does not establish steady state or physical
+            # validity of the following 8ms power-stage simulation.
             import poc_early_solver_diagnostics as diag
             try:
                 early_rc = diag.run("on_original", exe,
@@ -324,7 +324,8 @@ def main() -> int:
                                       "hardware_qualified": False}
             if early_rc != 0:
                 failures[mode] = (
-                    f"unmodified {args.case} SR_ON 620us genuine simulation "
+                    f"unmodified {args.case} SR_ON "
+                    f"{diag.DIAG_STOP_BY_CASE[args.case][0]} genuine simulation "
                     "failed; full 8ms ON was NOT launched")
                 partials[mode] = {"full_8ms_on": "NOT_ATTEMPTED",
                                   "early_diagnostic_record":
