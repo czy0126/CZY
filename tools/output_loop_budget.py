@@ -41,15 +41,21 @@ CURRENT_A = 100.0
 
 def loop_resistance(width_mm: float, thickness_mm: float, length_mm: float,
                     contact_uohm: float, reserve_uohm: float = RESERVED_PCB_UOHM,
-                    temperature_c: float = TEMPERATURE_C) -> dict:
+                    temperature_c: float = TEMPERATURE_C,
+                    contact_count: int = CONTACTS_TOTAL) -> dict:
     if min(width_mm, thickness_mm, length_mm) <= 0:
         raise ValueError("positive copper geometry required")
     if contact_uohm < 0 or reserve_uohm < 0:
         raise ValueError("contact and reserve resistance must be nonnegative")
+    # A two-rail output contract must count every assumed contact on BOTH
+    # poles. Only even positive totals are accepted. This is an electrical
+    # accounting parameter; it never asserts a physically feasible topology.
+    if type(contact_count) is not int or contact_count < 2 or contact_count % 2:
+        raise ValueError("both-rail contact_count must be an even integer >= 2")
     one = busbar_resistance(length_mm / 1000, width_mm / 1000,
                             thickness_mm / 1000, temperature_c)
     two = 2 * one  # both outgoing and return rails carry full current
-    total = two + CONTACTS_TOTAL * contact_uohm * 1e-6 + reserve_uohm * 1e-6
+    total = two + contact_count * contact_uohm * 1e-6 + reserve_uohm * 1e-6
     return {"bar_pair_ohm": two, "loop_ohm": total}
 
 

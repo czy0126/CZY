@@ -1,0 +1,214 @@
+{
+  "status": "UNVERIFIED_INTERFACE_TOPOLOGY_REDESIGN_NOT_FOR_FAB",
+  "hardware_qualified": false,
+  "fabrication_approved": false,
+  "reference": "hardware/dcx_main/output_loop_candidates.json",
+  "design_basis_uohm_both_rails": 150,
+  "design_basis_is_internal_not_regulatory_or_measured": true,
+  "temperature_c_assumed": 100,
+  "current_a_assumed": 100,
+  "reserved_pcb_uohm_unverified": 30,
+  "per_joint_uohm_scenarios_unverified": [
+    20,
+    50
+  ],
+  "feasibility_deduction": {
+    "four_contacts_each_50uohm_exceed_budget_before_copper": true,
+    "four_contacts_only_joints_uohm_at_50": 200,
+    "max_even_contact_count_at_50uohm_with_30uohm_pcb_reserve": 2,
+    "two_contacts_require_one_verified_separable_joint_per_pole": true,
+    "any_unmodelled_weld_solder_bond_or_external_connector_must_be_counted": true
+  },
+  "candidates": [
+    {
+      "id": "baseline_4_contacts_30x2x25",
+      "total_counted_separable_contacts": 4,
+      "assumed_counted_contacts_per_pole": 2,
+      "rail_count": 2,
+      "width_mm_each_rail": 30,
+      "thickness_mm_each_rail": 2,
+      "length_mm_each_rail": 25,
+      "bar_pair_uohm_at_100c": 18.884,
+      "max_joint_uohm_each_including_pcb_reserve": 25.279,
+      "joint_scenarios_uohm": {
+        "20": {
+          "total_uohm": 128.884,
+          "margin_to_150uohm": 21.116,
+          "power_w_at_100a": 1.28884,
+          "drop_mv_at_100a": 12.8884,
+          "passes_resistance_arithmetic_only": true
+        },
+        "50": {
+          "total_uohm": 248.884,
+          "margin_to_150uohm": -98.884,
+          "power_w_at_100a": 2.48884,
+          "drop_mv_at_100a": 24.8884,
+          "passes_resistance_arithmetic_only": false
+        }
+      },
+      "geometry_verified": false,
+      "contact_count_verified": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "wide_4_contacts_50x2x15",
+      "total_counted_separable_contacts": 4,
+      "assumed_counted_contacts_per_pole": 2,
+      "rail_count": 2,
+      "width_mm_each_rail": 50,
+      "thickness_mm_each_rail": 2,
+      "length_mm_each_rail": 15,
+      "bar_pair_uohm_at_100c": 6.798,
+      "max_joint_uohm_each_including_pcb_reserve": 28.3,
+      "joint_scenarios_uohm": {
+        "20": {
+          "total_uohm": 116.798,
+          "margin_to_150uohm": 33.202,
+          "power_w_at_100a": 1.16798,
+          "drop_mv_at_100a": 11.6798,
+          "passes_resistance_arithmetic_only": true
+        },
+        "50": {
+          "total_uohm": 236.798,
+          "margin_to_150uohm": -86.798,
+          "power_w_at_100a": 2.36798,
+          "drop_mv_at_100a": 23.6798,
+          "passes_resistance_arithmetic_only": false
+        }
+      },
+      "geometry_verified": false,
+      "contact_count_verified": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "reduced_2_contacts_30x2x25",
+      "total_counted_separable_contacts": 2,
+      "assumed_counted_contacts_per_pole": 1,
+      "rail_count": 2,
+      "width_mm_each_rail": 30,
+      "thickness_mm_each_rail": 2,
+      "length_mm_each_rail": 25,
+      "bar_pair_uohm_at_100c": 18.884,
+      "max_joint_uohm_each_including_pcb_reserve": 50.558,
+      "joint_scenarios_uohm": {
+        "20": {
+          "total_uohm": 88.884,
+          "margin_to_150uohm": 61.116,
+          "power_w_at_100a": 0.88884,
+          "drop_mv_at_100a": 8.8884,
+          "passes_resistance_arithmetic_only": true
+        },
+        "50": {
+          "total_uohm": 148.884,
+          "margin_to_150uohm": 1.116,
+          "power_w_at_100a": 1.48884,
+          "drop_mv_at_100a": 14.8884,
+          "passes_resistance_arithmetic_only": true
+        }
+      },
+      "geometry_verified": false,
+      "contact_count_verified": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "reduced_2_contacts_50x1x15",
+      "total_counted_separable_contacts": 2,
+      "assumed_counted_contacts_per_pole": 1,
+      "rail_count": 2,
+      "width_mm_each_rail": 50,
+      "thickness_mm_each_rail": 1,
+      "length_mm_each_rail": 15,
+      "bar_pair_uohm_at_100c": 13.596,
+      "max_joint_uohm_each_including_pcb_reserve": 53.202,
+      "joint_scenarios_uohm": {
+        "20": {
+          "total_uohm": 83.596,
+          "margin_to_150uohm": 66.404,
+          "power_w_at_100a": 0.83596,
+          "drop_mv_at_100a": 8.3596,
+          "passes_resistance_arithmetic_only": true
+        },
+        "50": {
+          "total_uohm": 143.596,
+          "margin_to_150uohm": 6.404,
+          "power_w_at_100a": 1.43596,
+          "drop_mv_at_100a": 14.3596,
+          "passes_resistance_arithmetic_only": true
+        }
+      },
+      "geometry_verified": false,
+      "contact_count_verified": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "reduced_2_contacts_50x2x15",
+      "total_counted_separable_contacts": 2,
+      "assumed_counted_contacts_per_pole": 1,
+      "rail_count": 2,
+      "width_mm_each_rail": 50,
+      "thickness_mm_each_rail": 2,
+      "length_mm_each_rail": 15,
+      "bar_pair_uohm_at_100c": 6.798,
+      "max_joint_uohm_each_including_pcb_reserve": 56.601,
+      "joint_scenarios_uohm": {
+        "20": {
+          "total_uohm": 76.798,
+          "margin_to_150uohm": 73.202,
+          "power_w_at_100a": 0.76798,
+          "drop_mv_at_100a": 7.6798,
+          "passes_resistance_arithmetic_only": true
+        },
+        "50": {
+          "total_uohm": 136.798,
+          "margin_to_150uohm": 13.202,
+          "power_w_at_100a": 1.36798,
+          "drop_mv_at_100a": 13.6798,
+          "passes_resistance_arithmetic_only": true
+        }
+      },
+      "geometry_verified": false,
+      "contact_count_verified": false,
+      "hardware_qualified": false
+    },
+    {
+      "id": "reduced_2_contacts_50x2x25",
+      "total_counted_separable_contacts": 2,
+      "assumed_counted_contacts_per_pole": 1,
+      "rail_count": 2,
+      "width_mm_each_rail": 50,
+      "thickness_mm_each_rail": 2,
+      "length_mm_each_rail": 25,
+      "bar_pair_uohm_at_100c": 11.33,
+      "max_joint_uohm_each_including_pcb_reserve": 54.335,
+      "joint_scenarios_uohm": {
+        "20": {
+          "total_uohm": 81.33,
+          "margin_to_150uohm": 68.67,
+          "power_w_at_100a": 0.8133,
+          "drop_mv_at_100a": 8.133,
+          "passes_resistance_arithmetic_only": true
+        },
+        "50": {
+          "total_uohm": 141.33,
+          "margin_to_150uohm": 8.67,
+          "power_w_at_100a": 1.4133,
+          "drop_mv_at_100a": 14.133,
+          "passes_resistance_arithmetic_only": true
+        }
+      },
+      "geometry_verified": false,
+      "contact_count_verified": false,
+      "hardware_qualified": false
+    }
+  ],
+  "next_eda_action": "CAD engineer must identify VOUT and PGND from SR-Cout pads to external load as two explicit physical rails, draw separately a 4-contact low-R option and a 2-contact integrated copper inlay/busbar option; enumerate every transition, bolt, solder bond and Kelvin probe point. A missing interface cannot be considered 0-ohm; allocate any inseparable joints to the PCB reserve. No pad, clearance or ≤16mm height frozen yet.",
+  "required_measurement": "Kelvin 4-wire resistance for full positive+return loop and each separable joint at specified torque, plating and temperature (incl 100C worst case), plus current balance and contact hot spots at staged loads. Actual copper/inlay geometry, all pad neckdowns/vias and source-to-load terminals must be identified.",
+  "not_qualified": [
+    "Neither 20 nor 50 microohm per contact is measured.",
+    "Reducing counted connections on paper is not reducing real losses.",
+    "Current crowding, neckdowns, skin/proximity and thermal rise unknown.",
+    "One counted contact/pole requires a manufacturable monolithic or integrated interface; other joints still resistive and must be budgeted.",
+    "No original EasyEDA native routing / 3D envelope or supplier DFM proof.",
+    "R8, OEM manufacturer MPNs, magnetic pads and hardware fault shutoff remain blocked."
+  ]
+}
