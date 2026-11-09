@@ -63,7 +63,7 @@ jobs:
           # hundreds of MB. Each mode has a bounded 20-minute *process* limit,
           # strictly below the 55-minute job budget including installation.
           # OFF success + ON timeout is an INCOMPLETE comparison, never green.
-          python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run --timeout-sec 1200
+          python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run --timeout-sec 1200 --early-on-screen
       - name: Record environment provenance (not success proof)
         shell: pwsh
         if: always()
@@ -87,6 +87,10 @@ jobs:
             sim/v3/_ltspice_batch_smoke.cir
             sim/v3/_ltspice_batch_smoke.log
             sim/v3/_ltspice_batch_smoke.raw
+            sim/v3/_diag_5a_on_original.json
+            sim/v3/_diag_5a_on_original.log
+            sim/v3/_diag_5a_on_original.raw
+            sim/v3/_diag_5a_on_original.cir
             sim/v3/poc_${{ matrix.nominal_case }}_sr_on.log
             sim/v3/poc_${{ matrix.nominal_case }}_sr_off.log
             sim/v3/poc_${{ matrix.nominal_case }}_sr_on.raw
