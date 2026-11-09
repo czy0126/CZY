@@ -227,8 +227,14 @@ def partial_artifacts(case: str, mode: str) -> dict:
     files = {}
     for suffix in (".log", ".raw"):
         path = deck.with_suffix(suffix)
+        try:
+            display_path = path.relative_to(poc.ROOT).as_posix()
+        except ValueError:
+            # Also support isolated test fixtures and standalone external
+            # capture locations; never lose the original solver failure.
+            display_path = path.as_posix()
         files[suffix] = {
-            "path": path.relative_to(poc.ROOT).as_posix(),
+            "path": display_path,
             "present": path.is_file(),
             "size_bytes": path.stat().st_size if path.is_file() else 0,
             "sha256": digest_file(path) if path.is_file() else None,
