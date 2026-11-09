@@ -1,0 +1,2773 @@
+{
+ "schema": "dcx_main_g1_native_pcb_report/2",
+ "generated": "2026-11-09",
+ "cad": {
+  "path": "hardware/dcx_main/g1/dcx_main_board_g1.eprj2",
+  "bytes": 2535424,
+  "md5": "0d516efecae4c95b9baf2648b14c0a4f"
+ },
+ "before": {
+  "pcb_components": 0,
+  "pcb_nets": 0,
+  "pcb_pads": 0,
+  "pcb_polylines": 0,
+  "note": "原生工程里只有原理图；PCB 文档没有任何图元"
+ },
+ "after": {
+  "pcb_components": 77,
+  "pcb_nets": 65,
+  "pcb_pads": 299,
+  "footprint_pads": 275,
+  "provisional_pads": 24,
+  "pcb_polylines": 38,
+  "schematic_parts": 83
+ },
+ "board": {
+  "outline_mm": [
+   155.0,
+   131.0
+  ],
+  "outline_layer": 11,
+  "tbd_zones": [
+   {
+    "x_mm": 82.0,
+    "y_mm": 44.5,
+    "w_mm": 20.0,
+    "d_mm": 15.0,
+    "ref": "CT"
+   },
+   {
+    "x_mm": 4.125,
+    "y_mm": 7.3,
+    "w_mm": 31.75,
+    "d_mm": 25.4,
+    "ref": "T1"
+   },
+   {
+    "x_mm": 42.125,
+    "y_mm": 7.3,
+    "w_mm": 31.75,
+    "d_mm": 25.4,
+    "ref": "T2"
+   },
+   {
+    "x_mm": 80.125,
+    "y_mm": 7.3,
+    "w_mm": 31.75,
+    "d_mm": 25.4,
+    "ref": "T3"
+   },
+   {
+    "x_mm": 118.125,
+    "y_mm": 7.3,
+    "w_mm": 31.75,
+    "d_mm": 25.4,
+    "ref": "T4"
+   }
+  ],
+  "dot_marks": [
+   {
+    "x_mm": 37.0,
+    "y_mm": 13.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 75.0,
+    "y_mm": 13.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 113.0,
+    "y_mm": 13.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 151.0,
+    "y_mm": 13.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 3.0,
+    "y_mm": 28.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 41.0,
+    "y_mm": 28.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 79.0,
+    "y_mm": 28.0,
+    "size_mm": 3.4
+   },
+   {
+    "x_mm": 117.0,
+    "y_mm": 28.0,
+    "size_mm": 3.4
+   }
+  ],
+  "provisional_marks_total": 24,
+  "provisional_marks": [
+   {
+    "x_mm": 3.0,
+    "y_mm": 28.001,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 3.0,
+    "y_mm": 11.999,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 37.0,
+    "y_mm": 27.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 37.0,
+    "y_mm": 13.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 37.0,
+    "y_mm": 20.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 41.001,
+    "y_mm": 28.001,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 41.001,
+    "y_mm": 11.999,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 75.001,
+    "y_mm": 27.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 75.001,
+    "y_mm": 13.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 75.001,
+    "y_mm": 20.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 78.999,
+    "y_mm": 28.001,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 78.999,
+    "y_mm": 11.999,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 113.0,
+    "y_mm": 27.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 113.0,
+    "y_mm": 13.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 113.0,
+    "y_mm": 20.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 117.0,
+    "y_mm": 28.001,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 117.0,
+    "y_mm": 11.999,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 151.0,
+    "y_mm": 27.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 151.0,
+    "y_mm": 13.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 151.0,
+    "y_mm": 20.0,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 80.0,
+    "y_mm": 55.999,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 80.0,
+    "y_mm": 48.001,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 104.0,
+    "y_mm": 55.999,
+    "size_mm": 6.0
+   },
+   {
+    "x_mm": 104.0,
+    "y_mm": 48.001,
+    "size_mm": 6.0
+   }
+  ]
+ },
+ "coordinate_note": "pads: X/Y in mil, Cartesian Y up (the .eprj2 stores Y negative); zones/dots: mm, SVG Y down (the polygon source frame); components are all placed at rotation 0, pads carry 0/90/180/-90",
+ "placements": [
+  {
+   "ref": "C10",
+   "x_mm": 5.0,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "REG4"
+   }
+  },
+  {
+   "ref": "C101",
+   "x_mm": 9.6,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12"
+   }
+  },
+  {
+   "ref": "C102",
+   "x_mm": 14.2,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12"
+   }
+  },
+  {
+   "ref": "C103",
+   "x_mm": 18.8,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12"
+   }
+  },
+  {
+   "ref": "C104",
+   "x_mm": 23.4,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12"
+   }
+  },
+  {
+   "ref": "C105",
+   "x_mm": 28.0,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C106",
+   "x_mm": 32.6,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C107",
+   "x_mm": 37.2,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C108",
+   "x_mm": 41.8,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C109",
+   "x_mm": 46.4,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C110",
+   "x_mm": 51.0,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C111",
+   "x_mm": 55.6,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C112",
+   "x_mm": 60.2,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VCC12_S"
+   }
+  },
+  {
+   "ref": "C13",
+   "x_mm": 64.8,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "RUN"
+   }
+  },
+  {
+   "ref": "C5",
+   "x_mm": 69.4,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "SW",
+    "1": "HB"
+   }
+  },
+  {
+   "ref": "C6",
+   "x_mm": 74.0,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "SS"
+   }
+  },
+  {
+   "ref": "C7",
+   "x_mm": 78.6,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "REG1"
+   }
+  },
+  {
+   "ref": "C8",
+   "x_mm": 83.2,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "REG2"
+   }
+  },
+  {
+   "ref": "C9",
+   "x_mm": 87.8,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "REG3"
+   }
+  },
+  {
+   "ref": "Cin",
+   "x_mm": 92.4,
+   "y_mm": 43.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VIN_P"
+   }
+  },
+  {
+   "ref": "D_BT",
+   "x_mm": 105.0,
+   "y_mm": 45.0,
+   "source": "special",
+   "footprint_uuid": "3d52830988f8a16e",
+   "supplier_part": "C168799",
+   "pad_count": 2,
+   "pads": {
+    "1": "HB",
+    "2": "VCC12"
+   }
+  },
+  {
+   "ref": "U1",
+   "x_mm": 112.0,
+   "y_mm": 45.0,
+   "source": "special",
+   "footprint_uuid": "f538bd1a5b468d75",
+   "supplier_part": "C88569",
+   "pad_count": 8,
+   "pads": {
+    "1": "DT",
+    "2": "RT",
+    "3": "OC",
+    "4": "SS",
+    "8": "GD1",
+    "7": "VCC12",
+    "6": "PGND",
+    "5": "GD2"
+   }
+  },
+  {
+   "ref": "Cout",
+   "x_mm": 5.0,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "VOUT"
+   }
+  },
+  {
+   "ref": "R1",
+   "x_mm": 9.6,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "DT"
+   }
+  },
+  {
+   "ref": "R10",
+   "x_mm": 14.2,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "GD2"
+   }
+  },
+  {
+   "ref": "R18",
+   "x_mm": 18.8,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "SW",
+    "1": "GH"
+   }
+  },
+  {
+   "ref": "R19",
+   "x_mm": 23.4,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "GL"
+   }
+  },
+  {
+   "ref": "R2",
+   "x_mm": 28.0,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "RT"
+   }
+  },
+  {
+   "ref": "R7",
+   "x_mm": 32.6,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "RUN"
+   }
+  },
+  {
+   "ref": "R9",
+   "x_mm": 41.8,
+   "y_mm": 47.0,
+   "source": "grid",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "PGND",
+    "1": "GD1"
+   }
+  },
+  {
+   "ref": "QH",
+   "x_mm": 48.0,
+   "y_mm": 50.0,
+   "source": "A5",
+   "footprint_uuid": "cd14acbf8058e67e",
+   "supplier_part": "C2760462",
+   "pad_count": 9,
+   "pads": {
+    "4": "GH",
+    "3": "SW",
+    "2": "SW",
+    "1": "SW",
+    "8": "VIN_P",
+    "7": "VIN_P",
+    "6": "VIN_P",
+    "5": "VIN_P",
+    "9": "VIN_P"
+   }
+  },
+  {
+   "ref": "QL",
+   "x_mm": 57.0,
+   "y_mm": 50.0,
+   "source": "A5",
+   "footprint_uuid": "cd14acbf8058e67e",
+   "supplier_part": "C2760462",
+   "pad_count": 9,
+   "pads": {
+    "4": "GL",
+    "3": "PGND",
+    "2": "PGND",
+    "1": "PGND",
+    "8": "SW",
+    "7": "SW",
+    "6": "SW",
+    "5": "SW",
+    "9": "SW"
+   }
+  },
+  {
+   "ref": "Lr",
+   "x_mm": 20.0,
+   "y_mm": 52.0,
+   "source": "A5",
+   "footprint_uuid": "f5076b56dc7a48af",
+   "supplier_part": "C9900024507",
+   "pad_count": 2,
+   "pads": {
+    "1": "CT_LR",
+    "2": "PRI_T1"
+   }
+  },
+  {
+   "ref": "Cr",
+   "x_mm": 72.0,
+   "y_mm": 52.0,
+   "source": "A5",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "CR_CT",
+    "1": "SW"
+   }
+  },
+  {
+   "ref": "J_IN",
+   "x_mm": 112.0,
+   "y_mm": 52.0,
+   "source": "A5",
+   "footprint_uuid": "5fe7f84c3b8f52b4",
+   "supplier_part": "C474952",
+   "pad_count": 2,
+   "pads": {
+    "1": "VIN_P",
+    "2": "PGND"
+   }
+  },
+  {
+   "ref": "U2",
+   "x_mm": 132.0,
+   "y_mm": 52.0,
+   "source": "A5",
+   "footprint_uuid": "0ee1698a7ecac368",
+   "supplier_part": "C2677035",
+   "pad_count": 11,
+   "pads": {
+    "1": "VCC12",
+    "3": "HB",
+    "4": "GH_DRV",
+    "5": "SW",
+    "6": "RUN",
+    "7": "GD1",
+    "8": "GD2",
+    "11": "PGND",
+    "10": "GL_DRV",
+    "9": "PGND"
+   }
+  },
+  {
+   "ref": "R4",
+   "x_mm": 49.928,
+   "y_mm": 57.5,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GH",
+    "1": "GH_DRV"
+   }
+  },
+  {
+   "ref": "R5",
+   "x_mm": 58.927,
+   "y_mm": 57.5,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GL",
+    "1": "GL_DRV"
+   }
+  },
+  {
+   "ref": "R3",
+   "x_mm": 77.0,
+   "y_mm": 62.4,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "OCM",
+    "1": "OCD"
+   }
+  },
+  {
+   "ref": "R15",
+   "x_mm": 132.0,
+   "y_mm": 62.4,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "OC1",
+    "1": "OCD"
+   }
+  },
+  {
+   "ref": "R16",
+   "x_mm": 136.0,
+   "y_mm": 62.4,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "OC",
+    "1": "OC1"
+   }
+  },
+  {
+   "ref": "R17",
+   "x_mm": 140.0,
+   "y_mm": 62.4,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "OCM",
+    "1": "OC"
+   }
+  },
+  {
+   "ref": "C11",
+   "x_mm": 144.0,
+   "y_mm": 62.4,
+   "source": "A5",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "OCM",
+    "1": "OC1"
+   }
+  },
+  {
+   "ref": "C12",
+   "x_mm": 148.0,
+   "y_mm": 62.4,
+   "source": "A5",
+   "footprint_uuid": "66b60566e7ca28f9",
+   "supplier_part": "C1591",
+   "pad_count": 2,
+   "pads": {
+    "2": "OCM",
+    "1": "OC"
+   }
+  },
+  {
+   "ref": "D_CT1",
+   "x_mm": 108.0,
+   "y_mm": 70.0,
+   "source": "A5",
+   "footprint_uuid": "f445abf2af2b4875",
+   "supplier_part": "C2931736",
+   "pad_count": 3,
+   "pads": {
+    "1": "CS1",
+    "3": "OCD"
+   }
+  },
+  {
+   "ref": "D_CT2",
+   "x_mm": 114.0,
+   "y_mm": 70.0,
+   "source": "A5",
+   "footprint_uuid": "f445abf2af2b4875",
+   "supplier_part": "C2931736",
+   "pad_count": 3,
+   "pads": {
+    "1": "CS2",
+    "3": "OCD"
+   }
+  },
+  {
+   "ref": "D_CT3",
+   "x_mm": 120.0,
+   "y_mm": 70.0,
+   "source": "A5",
+   "footprint_uuid": "f445abf2af2b4875",
+   "supplier_part": "C2931736",
+   "pad_count": 3,
+   "pads": {
+    "1": "OCM",
+    "3": "CS1"
+   }
+  },
+  {
+   "ref": "D_CT4",
+   "x_mm": 126.0,
+   "y_mm": 70.0,
+   "source": "A5",
+   "footprint_uuid": "f445abf2af2b4875",
+   "supplier_part": "C2931736",
+   "pad_count": 3,
+   "pads": {
+    "1": "OCM",
+    "3": "CS2"
+   }
+  },
+  {
+   "ref": "U3",
+   "x_mm": 19.0,
+   "y_mm": 72.0,
+   "source": "A5",
+   "footprint_uuid": "d85adce2912f2571",
+   "supplier_part": "C2862446",
+   "pad_count": 8,
+   "pads": {
+    "5": "PGND",
+    "6": "VD1_B",
+    "7": "VCC12_S",
+    "8": "VG1_B",
+    "4": "VD1_A",
+    "3": "REG1",
+    "2": "PGND",
+    "1": "VG1_A"
+   }
+  },
+  {
+   "ref": "U4",
+   "x_mm": 57.0,
+   "y_mm": 72.0,
+   "source": "A5",
+   "footprint_uuid": "d85adce2912f2571",
+   "supplier_part": "C2862446",
+   "pad_count": 8,
+   "pads": {
+    "5": "PGND",
+    "6": "VD2_B",
+    "7": "VCC12_S",
+    "8": "VG2_B",
+    "4": "VD2_A",
+    "3": "REG2",
+    "2": "PGND",
+    "1": "VG2_A"
+   }
+  },
+  {
+   "ref": "U5",
+   "x_mm": 95.0,
+   "y_mm": 72.0,
+   "source": "A5",
+   "footprint_uuid": "d85adce2912f2571",
+   "supplier_part": "C2862446",
+   "pad_count": 8,
+   "pads": {
+    "5": "PGND",
+    "6": "VD3_B",
+    "7": "VCC12_S",
+    "8": "VG3_B",
+    "4": "VD3_A",
+    "3": "REG3",
+    "2": "PGND",
+    "1": "VG3_A"
+   }
+  },
+  {
+   "ref": "U6",
+   "x_mm": 133.0,
+   "y_mm": 72.0,
+   "source": "A5",
+   "footprint_uuid": "d85adce2912f2571",
+   "supplier_part": "C2862446",
+   "pad_count": 8,
+   "pads": {
+    "5": "PGND",
+    "6": "VD4_B",
+    "7": "VCC12_S",
+    "8": "VG4_B",
+    "4": "VD4_A",
+    "3": "REG4",
+    "2": "PGND",
+    "1": "VG4_A"
+   }
+  },
+  {
+   "ref": "SR1A",
+   "x_mm": 14.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GA1",
+    "5": "SEC1_A",
+    "6": "SEC1_A",
+    "7": "SEC1_A",
+    "8": "SEC1_A"
+   }
+  },
+  {
+   "ref": "SR1B",
+   "x_mm": 24.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GB1",
+    "5": "SEC1_B",
+    "6": "SEC1_B",
+    "7": "SEC1_B",
+    "8": "SEC1_B"
+   }
+  },
+  {
+   "ref": "SR2A",
+   "x_mm": 52.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GA2",
+    "5": "SEC2_A",
+    "6": "SEC2_A",
+    "7": "SEC2_A",
+    "8": "SEC2_A"
+   }
+  },
+  {
+   "ref": "SR2B",
+   "x_mm": 62.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GB2",
+    "5": "SEC2_B",
+    "6": "SEC2_B",
+    "7": "SEC2_B",
+    "8": "SEC2_B"
+   }
+  },
+  {
+   "ref": "SR3A",
+   "x_mm": 90.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GA3",
+    "5": "SEC3_A",
+    "6": "SEC3_A",
+    "7": "SEC3_A",
+    "8": "SEC3_A"
+   }
+  },
+  {
+   "ref": "SR3B",
+   "x_mm": 100.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GB3",
+    "5": "SEC3_B",
+    "6": "SEC3_B",
+    "7": "SEC3_B",
+    "8": "SEC3_B"
+   }
+  },
+  {
+   "ref": "SR4A",
+   "x_mm": 128.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GA4",
+    "5": "SEC4_A",
+    "6": "SEC4_A",
+    "7": "SEC4_A",
+    "8": "SEC4_A"
+   }
+  },
+  {
+   "ref": "SR4B",
+   "x_mm": 138.0,
+   "y_mm": 82.0,
+   "source": "A5",
+   "footprint_uuid": "a5f47fff57989a29",
+   "supplier_part": "C534278",
+   "pad_count": 10,
+   "pads": {
+    "1": "PGND",
+    "2": "PGND",
+    "3": "PGND",
+    "4": "GB4",
+    "5": "SEC4_B",
+    "6": "SEC4_B",
+    "7": "SEC4_B",
+    "8": "SEC4_B"
+   }
+  },
+  {
+   "ref": "R20",
+   "x_mm": 10.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GA1",
+    "1": "VG1_A"
+   }
+  },
+  {
+   "ref": "R28",
+   "x_mm": 15.522,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD1_A",
+    "1": "SEC1_A"
+   }
+  },
+  {
+   "ref": "R21",
+   "x_mm": 20.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GB1",
+    "1": "VG1_B"
+   }
+  },
+  {
+   "ref": "R29",
+   "x_mm": 25.523,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD1_B",
+    "1": "SEC1_B"
+   }
+  },
+  {
+   "ref": "R22",
+   "x_mm": 48.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GA2",
+    "1": "VG2_A"
+   }
+  },
+  {
+   "ref": "R30",
+   "x_mm": 53.522,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD2_A",
+    "1": "SEC2_A"
+   }
+  },
+  {
+   "ref": "R23",
+   "x_mm": 58.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GB2",
+    "1": "VG2_B"
+   }
+  },
+  {
+   "ref": "R31",
+   "x_mm": 63.523,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD2_B",
+    "1": "SEC2_B"
+   }
+  },
+  {
+   "ref": "R24",
+   "x_mm": 86.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GA3",
+    "1": "VG3_A"
+   }
+  },
+  {
+   "ref": "R32",
+   "x_mm": 91.522,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD3_A",
+    "1": "SEC3_A"
+   }
+  },
+  {
+   "ref": "R25",
+   "x_mm": 96.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GB3",
+    "1": "VG3_B"
+   }
+  },
+  {
+   "ref": "R33",
+   "x_mm": 101.523,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD3_B",
+    "1": "SEC3_B"
+   }
+  },
+  {
+   "ref": "R26",
+   "x_mm": 124.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GA4",
+    "1": "VG4_A"
+   }
+  },
+  {
+   "ref": "R34",
+   "x_mm": 129.522,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD4_A",
+    "1": "SEC4_A"
+   }
+  },
+  {
+   "ref": "R27",
+   "x_mm": 134.378,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "GB4",
+    "1": "VG4_B"
+   }
+  },
+  {
+   "ref": "R35",
+   "x_mm": 139.523,
+   "y_mm": 88.0,
+   "source": "A5",
+   "footprint_uuid": "54d0eff80ecd1bb3",
+   "supplier_part": "C25804",
+   "pad_count": 2,
+   "pads": {
+    "2": "VD4_B",
+    "1": "SEC4_B"
+   }
+  },
+  {
+   "ref": "J_OUT",
+   "x_mm": 76.0,
+   "y_mm": 116.0,
+   "source": "A5",
+   "footprint_uuid": "6285a272c6912742",
+   "supplier_part": "C5188434",
+   "pad_count": 2,
+   "pads": {
+    "1": "VOUT",
+    "2": "PGND"
+   }
+  }
+ ],
+ "placement_source_counts": {
+  "A5": 47,
+  "special": 2,
+  "grid": 28
+ },
+ "excluded": [
+  {
+   "ref": "R8",
+   "reason": "双字段 DNP：addIntoBom=false, addIntoPcb=false（ECO 已落盘）"
+  }
+ ],
+ "schematic_vs_pcb": {
+  "source": "hardware/dcx_main/gen/netlist_export_raw.json (refs)",
+  "schematic_refs": 83,
+  "pcb_components": 77,
+  "missing_from_pcb": [
+   {
+    "ref": "CT",
+    "reason": "no vendor footprint selected; terminals exist only as the provisional pads below"
+   },
+   {
+    "ref": "R8",
+    "reason": "excluded from PCB by the R8 double-DNP ECO (addIntoBom=false, addIntoPcb=false)"
+   },
+   {
+    "ref": "T1",
+    "reason": "no vendor footprint selected; terminals exist only as the provisional pads below"
+   },
+   {
+    "ref": "T2",
+    "reason": "no vendor footprint selected; terminals exist only as the provisional pads below"
+   },
+   {
+    "ref": "T3",
+    "reason": "no vendor footprint selected; terminals exist only as the provisional pads below"
+   },
+   {
+    "ref": "T4",
+    "reason": "no vendor footprint selected; terminals exist only as the provisional pads below"
+   }
+  ],
+  "extra_on_pcb": []
+ },
+ "provisional_pad_total": 24,
+ "provisional_pads": [
+  {
+   "concept_pad_id": "D1_DESIGN_T1_PRI_A",
+   "ref": "T1",
+   "terminal": "PRI_A",
+   "pad_number_on_board": "PRI_A",
+   "net": "PRI_T1",
+   "dot_expectation": "DOT",
+   "x_mm": 3.0,
+   "y_mm": 28.001,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T1_PRI_B",
+   "ref": "T1",
+   "terminal": "PRI_B",
+   "pad_number_on_board": "PRI_B",
+   "net": "PRI_12",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 3.0,
+   "y_mm": 11.999,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T1_SEC_A",
+   "ref": "T1",
+   "terminal": "SEC_A",
+   "pad_number_on_board": "SEC_A",
+   "net": "SEC1_A",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 37.0,
+   "y_mm": 27.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T1_SEC_B",
+   "ref": "T1",
+   "terminal": "SEC_B",
+   "pad_number_on_board": "SEC_B",
+   "net": "SEC1_B",
+   "dot_expectation": "DOT",
+   "x_mm": 37.0,
+   "y_mm": 13.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T1_CTAP",
+   "ref": "T1",
+   "terminal": "CTAP",
+   "pad_number_on_board": "CTAP",
+   "net": "VOUT",
+   "dot_expectation": "S_A_DOT_AND_S_B_NON_DOT",
+   "x_mm": 37.0,
+   "y_mm": 20.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T2_PRI_A",
+   "ref": "T2",
+   "terminal": "PRI_A",
+   "pad_number_on_board": "PRI_A",
+   "net": "PRI_12",
+   "dot_expectation": "DOT",
+   "x_mm": 41.001,
+   "y_mm": 28.001,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T2_PRI_B",
+   "ref": "T2",
+   "terminal": "PRI_B",
+   "pad_number_on_board": "PRI_B",
+   "net": "PRI_23",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 41.001,
+   "y_mm": 11.999,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T2_SEC_A",
+   "ref": "T2",
+   "terminal": "SEC_A",
+   "pad_number_on_board": "SEC_A",
+   "net": "SEC2_A",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 75.001,
+   "y_mm": 27.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T2_SEC_B",
+   "ref": "T2",
+   "terminal": "SEC_B",
+   "pad_number_on_board": "SEC_B",
+   "net": "SEC2_B",
+   "dot_expectation": "DOT",
+   "x_mm": 75.001,
+   "y_mm": 13.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T2_CTAP",
+   "ref": "T2",
+   "terminal": "CTAP",
+   "pad_number_on_board": "CTAP",
+   "net": "VOUT",
+   "dot_expectation": "S_A_DOT_AND_S_B_NON_DOT",
+   "x_mm": 75.001,
+   "y_mm": 20.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T3_PRI_A",
+   "ref": "T3",
+   "terminal": "PRI_A",
+   "pad_number_on_board": "PRI_A",
+   "net": "PRI_23",
+   "dot_expectation": "DOT",
+   "x_mm": 78.999,
+   "y_mm": 28.001,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T3_PRI_B",
+   "ref": "T3",
+   "terminal": "PRI_B",
+   "pad_number_on_board": "PRI_B",
+   "net": "PRI_34",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 78.999,
+   "y_mm": 11.999,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T3_SEC_A",
+   "ref": "T3",
+   "terminal": "SEC_A",
+   "pad_number_on_board": "SEC_A",
+   "net": "SEC3_A",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 113.0,
+   "y_mm": 27.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T3_SEC_B",
+   "ref": "T3",
+   "terminal": "SEC_B",
+   "pad_number_on_board": "SEC_B",
+   "net": "SEC3_B",
+   "dot_expectation": "DOT",
+   "x_mm": 113.0,
+   "y_mm": 13.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T3_CTAP",
+   "ref": "T3",
+   "terminal": "CTAP",
+   "pad_number_on_board": "CTAP",
+   "net": "VOUT",
+   "dot_expectation": "S_A_DOT_AND_S_B_NON_DOT",
+   "x_mm": 113.0,
+   "y_mm": 20.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T4_PRI_A",
+   "ref": "T4",
+   "terminal": "PRI_A",
+   "pad_number_on_board": "PRI_A",
+   "net": "PRI_34",
+   "dot_expectation": "DOT",
+   "x_mm": 117.0,
+   "y_mm": 28.001,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T4_PRI_B",
+   "ref": "T4",
+   "terminal": "PRI_B",
+   "pad_number_on_board": "PRI_B",
+   "net": "PGND",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 117.0,
+   "y_mm": 11.999,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T4_SEC_A",
+   "ref": "T4",
+   "terminal": "SEC_A",
+   "pad_number_on_board": "SEC_A",
+   "net": "SEC4_A",
+   "dot_expectation": "NON_DOT",
+   "x_mm": 151.0,
+   "y_mm": 27.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T4_SEC_B",
+   "ref": "T4",
+   "terminal": "SEC_B",
+   "pad_number_on_board": "SEC_B",
+   "net": "SEC4_B",
+   "dot_expectation": "DOT",
+   "x_mm": 151.0,
+   "y_mm": 13.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_T4_CTAP",
+   "ref": "T4",
+   "terminal": "CTAP",
+   "pad_number_on_board": "CTAP",
+   "net": "VOUT",
+   "dot_expectation": "S_A_DOT_AND_S_B_NON_DOT",
+   "x_mm": 151.0,
+   "y_mm": 20.0,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_CT_PRI_A",
+   "ref": "CT",
+   "terminal": "PRI_A",
+   "pad_number_on_board": "PRI_A",
+   "net": "CR_CT",
+   "dot_expectation": "UNVERIFIED_FROM_CT_VENDOR",
+   "x_mm": 80.0,
+   "y_mm": 55.999,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_CT_PRI_B",
+   "ref": "CT",
+   "terminal": "PRI_B",
+   "pad_number_on_board": "PRI_B",
+   "net": "CT_LR",
+   "dot_expectation": "UNVERIFIED_FROM_CT_VENDOR",
+   "x_mm": 80.0,
+   "y_mm": 48.001,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_CT_SEC_A",
+   "ref": "CT",
+   "terminal": "SEC_A",
+   "pad_number_on_board": "SEC_A",
+   "net": "CS1",
+   "dot_expectation": "UNVERIFIED_FROM_CT_VENDOR",
+   "x_mm": 104.0,
+   "y_mm": 55.999,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  },
+  {
+   "concept_pad_id": "D1_DESIGN_CT_SEC_B",
+   "ref": "CT",
+   "terminal": "SEC_B",
+   "pad_number_on_board": "SEC_B",
+   "net": "CS2",
+   "dot_expectation": "UNVERIFIED_FROM_CT_VENDOR",
+   "x_mm": 104.0,
+   "y_mm": 48.001,
+   "pad_mm": [
+    "ELLIPSE",
+    1.999,
+    1.999
+   ],
+   "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
+  }
+ ],
+ "blocked": [
+  {
+   "ref": "T1",
+   "physical_pad_total": 5,
+   "reason": "no vendor footprint selected: the project library holds only XFMR-TH_ZHT104A and no magnetic vendor has supplied a part/footprint; the 24 pads below exist as design-owned provisional terminals, NOT as physical pads",
+   "pads": [
+    {
+     "concept_pad_id": "D1_DESIGN_T1_PRI_A",
+     "terminal": "PRI_A",
+     "net": "PRI_T1"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T1_PRI_B",
+     "terminal": "PRI_B",
+     "net": "PRI_12"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T1_SEC_A",
+     "terminal": "SEC_A",
+     "net": "SEC1_A"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T1_SEC_B",
+     "terminal": "SEC_B",
+     "net": "SEC1_B"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T1_CTAP",
+     "terminal": "CTAP",
+     "net": "VOUT"
+    }
+   ]
+  },
+  {
+   "ref": "T2",
+   "physical_pad_total": 5,
+   "reason": "no vendor footprint selected: the project library holds only XFMR-TH_ZHT104A and no magnetic vendor has supplied a part/footprint; the 24 pads below exist as design-owned provisional terminals, NOT as physical pads",
+   "pads": [
+    {
+     "concept_pad_id": "D1_DESIGN_T2_PRI_A",
+     "terminal": "PRI_A",
+     "net": "PRI_12"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T2_PRI_B",
+     "terminal": "PRI_B",
+     "net": "PRI_23"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T2_SEC_A",
+     "terminal": "SEC_A",
+     "net": "SEC2_A"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T2_SEC_B",
+     "terminal": "SEC_B",
+     "net": "SEC2_B"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T2_CTAP",
+     "terminal": "CTAP",
+     "net": "VOUT"
+    }
+   ]
+  },
+  {
+   "ref": "T3",
+   "physical_pad_total": 5,
+   "reason": "no vendor footprint selected: the project library holds only XFMR-TH_ZHT104A and no magnetic vendor has supplied a part/footprint; the 24 pads below exist as design-owned provisional terminals, NOT as physical pads",
+   "pads": [
+    {
+     "concept_pad_id": "D1_DESIGN_T3_PRI_A",
+     "terminal": "PRI_A",
+     "net": "PRI_23"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T3_PRI_B",
+     "terminal": "PRI_B",
+     "net": "PRI_34"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T3_SEC_A",
+     "terminal": "SEC_A",
+     "net": "SEC3_A"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T3_SEC_B",
+     "terminal": "SEC_B",
+     "net": "SEC3_B"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T3_CTAP",
+     "terminal": "CTAP",
+     "net": "VOUT"
+    }
+   ]
+  },
+  {
+   "ref": "T4",
+   "physical_pad_total": 5,
+   "reason": "no vendor footprint selected: the project library holds only XFMR-TH_ZHT104A and no magnetic vendor has supplied a part/footprint; the 24 pads below exist as design-owned provisional terminals, NOT as physical pads",
+   "pads": [
+    {
+     "concept_pad_id": "D1_DESIGN_T4_PRI_A",
+     "terminal": "PRI_A",
+     "net": "PRI_34"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T4_PRI_B",
+     "terminal": "PRI_B",
+     "net": "PGND"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T4_SEC_A",
+     "terminal": "SEC_A",
+     "net": "SEC4_A"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T4_SEC_B",
+     "terminal": "SEC_B",
+     "net": "SEC4_B"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_T4_CTAP",
+     "terminal": "CTAP",
+     "net": "VOUT"
+    }
+   ]
+  },
+  {
+   "ref": "CT",
+   "physical_pad_total": 4,
+   "reason": "no vendor footprint selected: the project library holds only XFMR-TH_ZHT104A and no magnetic vendor has supplied a part/footprint; the 24 pads below exist as design-owned provisional terminals, NOT as physical pads",
+   "pads": [
+    {
+     "concept_pad_id": "D1_DESIGN_CT_PRI_A",
+     "terminal": "PRI_A",
+     "net": "CR_CT"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_CT_PRI_B",
+     "terminal": "PRI_B",
+     "net": "CT_LR"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_CT_SEC_A",
+     "terminal": "SEC_A",
+     "net": "CS1"
+    },
+    {
+     "concept_pad_id": "D1_DESIGN_CT_SEC_B",
+     "terminal": "SEC_B",
+     "net": "CS2"
+    }
+   ]
+  }
+ ],
+ "blocked_pad_total": 24,
+ "nets_total": 65,
+ "nets_without_pads": [],
+ "pads_without_net_total": 5,
+ "pads_without_net": [
+  {
+   "ref": "D_CT1",
+   "pad_number": "2",
+   "x_mm": 108.999,
+   "y_mm": 69.05,
+   "pad_mm": [
+    "RECT",
+    1.001,
+    0.65,
+    0.0
+   ]
+  },
+  {
+   "ref": "D_CT2",
+   "pad_number": "2",
+   "x_mm": 115.001,
+   "y_mm": 69.05,
+   "pad_mm": [
+    "RECT",
+    1.001,
+    0.65,
+    0.0
+   ]
+  },
+  {
+   "ref": "D_CT3",
+   "pad_number": "2",
+   "x_mm": 121.001,
+   "y_mm": 69.05,
+   "pad_mm": [
+    "RECT",
+    1.001,
+    0.65,
+    0.0
+   ]
+  },
+  {
+   "ref": "D_CT4",
+   "pad_number": "2",
+   "x_mm": 127.0,
+   "y_mm": 69.05,
+   "pad_mm": [
+    "RECT",
+    1.001,
+    0.65,
+    0.0
+   ]
+  },
+  {
+   "ref": "U2",
+   "pad_number": "2",
+   "x_mm": 130.5,
+   "y_mm": 51.501,
+   "pad_mm": [
+    "RECT",
+    0.8,
+    0.3,
+    0.0
+   ]
+  }
+ ],
+ "pad_net_mismatches": [],
+ "pad_net_mismatch_count": 0,
+ "zone_clearance": {
+  "method": "per-component pad bbox (rotated) vs each TBD rectangle; pad-pad bbox overlap over all footprint pads; extent over all pads",
+  "component_zone_overlaps": [],
+  "cross_component_pad_overlaps": [],
+  "footprint_internal_pad_overlaps": [
+   {
+    "a": "QH.8@46.098,-47.249",
+    "b": "QH.9@48.001,-49.355"
+   },
+   {
+    "a": "QH.7@47.368,-47.249",
+    "b": "QH.9@48.001,-49.355"
+   },
+   {
+    "a": "QH.6@48.638,-47.249",
+    "b": "QH.9@48.001,-49.355"
+   },
+   {
+    "a": "QH.5@49.908,-47.249",
+    "b": "QH.9@48.001,-49.355"
+   },
+   {
+    "a": "QL.8@55.098,-47.249",
+    "b": "QL.9@57.000,-49.355"
+   },
+   {
+    "a": "QL.7@56.368,-47.249",
+    "b": "QL.9@57.000,-49.355"
+   },
+   {
+    "a": "QL.6@57.638,-47.249",
+    "b": "QL.9@57.000,-49.355"
+   },
+   {
+    "a": "QL.5@58.908,-47.249",
+    "b": "QL.9@57.000,-49.355"
+   },
+   {
+    "a": "SR1A.1@12.095,-84.818",
+    "b": "SR1A.3@13.401,-84.470"
+   },
+   {
+    "a": "SR1A.2@13.365,-84.818",
+    "b": "SR1A.3@13.401,-84.470"
+   },
+   {
+    "a": "SR1A.3@14.635,-84.818",
+    "b": "SR1A.3@13.401,-84.470"
+   },
+   {
+    "a": "SR1A.5@15.905,-79.179",
+    "b": "SR1A.8@14.000,-81.514"
+   },
+   {
+    "a": "SR1A.6@14.635,-79.179",
+    "b": "SR1A.8@14.000,-81.514"
+   },
+   {
+    "a": "SR1A.7@13.365,-79.179",
+    "b": "SR1A.8@14.000,-81.514"
+   },
+   {
+    "a": "SR1A.8@12.095,-79.179",
+    "b": "SR1A.8@14.000,-81.514"
+   },
+   {
+    "a": "SR1B.1@22.095,-84.818",
+    "b": "SR1B.3@23.401,-84.470"
+   },
+   {
+    "a": "SR1B.2@23.365,-84.818",
+    "b": "SR1B.3@23.401,-84.470"
+   },
+   {
+    "a": "SR1B.3@24.635,-84.818",
+    "b": "SR1B.3@23.401,-84.470"
+   },
+   {
+    "a": "SR1B.5@25.905,-79.179",
+    "b": "SR1B.8@24.000,-81.514"
+   },
+   {
+    "a": "SR1B.6@24.635,-79.179",
+    "b": "SR1B.8@24.000,-81.514"
+   },
+   {
+    "a": "SR1B.7@23.365,-79.179",
+    "b": "SR1B.8@24.000,-81.514"
+   },
+   {
+    "a": "SR1B.8@22.095,-79.179",
+    "b": "SR1B.8@24.000,-81.514"
+   },
+   {
+    "a": "SR2A.1@50.094,-84.818",
+    "b": "SR2A.3@51.399,-84.470"
+   },
+   {
+    "a": "SR2A.2@51.364,-84.818",
+    "b": "SR2A.3@51.399,-84.470"
+   },
+   {
+    "a": "SR2A.3@52.634,-84.818",
+    "b": "SR2A.3@51.399,-84.470"
+   },
+   {
+    "a": "SR2A.5@53.904,-79.179",
+    "b": "SR2A.8@51.999,-81.514"
+   },
+   {
+    "a": "SR2A.6@52.634,-79.179",
+    "b": "SR2A.8@51.999,-81.514"
+   },
+   {
+    "a": "SR2A.7@51.364,-79.179",
+    "b": "SR2A.8@51.999,-81.514"
+   },
+   {
+    "a": "SR2A.8@50.094,-79.179",
+    "b": "SR2A.8@51.999,-81.514"
+   },
+   {
+    "a": "SR2B.1@60.094,-84.818",
+    "b": "SR2B.3@61.399,-84.470"
+   },
+   {
+    "a": "SR2B.2@61.364,-84.818",
+    "b": "SR2B.3@61.399,-84.470"
+   },
+   {
+    "a": "SR2B.3@62.634,-84.818",
+    "b": "SR2B.3@61.399,-84.470"
+   },
+   {
+    "a": "SR2B.5@63.904,-79.179",
+    "b": "SR2B.8@61.999,-81.514"
+   },
+   {
+    "a": "SR2B.6@62.634,-79.179",
+    "b": "SR2B.8@61.999,-81.514"
+   },
+   {
+    "a": "SR2B.7@61.364,-79.179",
+    "b": "SR2B.8@61.999,-81.514"
+   },
+   {
+    "a": "SR2B.8@60.094,-79.179",
+    "b": "SR2B.8@61.999,-81.514"
+   },
+   {
+    "a": "SR3A.1@88.095,-84.818",
+    "b": "SR3A.3@89.400,-84.470"
+   },
+   {
+    "a": "SR3A.2@89.365,-84.818",
+    "b": "SR3A.3@89.400,-84.470"
+   },
+   {
+    "a": "SR3A.3@90.635,-84.818",
+    "b": "SR3A.3@89.400,-84.470"
+   },
+   {
+    "a": "SR3A.5@91.905,-79.179",
+    "b": "SR3A.8@90.000,-81.514"
+   },
+   {
+    "a": "SR3A.6@90.635,-79.179",
+    "b": "SR3A.8@90.000,-81.514"
+   },
+   {
+    "a": "SR3A.7@89.365,-79.179",
+    "b": "SR3A.8@90.000,-81.514"
+   },
+   {
+    "a": "SR3A.8@88.095,-79.179",
+    "b": "SR3A.8@90.000,-81.514"
+   },
+   {
+    "a": "SR3B.1@98.095,-84.818",
+    "b": "SR3B.3@99.400,-84.470"
+   },
+   {
+    "a": "SR3B.2@99.365,-84.818",
+    "b": "SR3B.3@99.400,-84.470"
+   },
+   {
+    "a": "SR3B.3@100.635,-84.818",
+    "b": "SR3B.3@99.400,-84.470"
+   },
+   {
+    "a": "SR3B.5@101.905,-79.179",
+    "b": "SR3B.8@100.000,-81.514"
+   },
+   {
+    "a": "SR3B.6@100.635,-79.179",
+    "b": "SR3B.8@100.000,-81.514"
+   },
+   {
+    "a": "SR3B.7@99.365,-79.179",
+    "b": "SR3B.8@100.000,-81.514"
+   },
+   {
+    "a": "SR3B.8@98.095,-79.179",
+    "b": "SR3B.8@100.000,-81.514"
+   },
+   {
+    "a": "SR4A.1@126.096,-84.818",
+    "b": "SR4A.3@127.401,-84.470"
+   },
+   {
+    "a": "SR4A.2@127.366,-84.818",
+    "b": "SR4A.3@127.401,-84.470"
+   },
+   {
+    "a": "SR4A.3@128.636,-84.818",
+    "b": "SR4A.3@127.401,-84.470"
+   },
+   {
+    "a": "SR4A.5@129.906,-79.179",
+    "b": "SR4A.8@128.001,-81.514"
+   },
+   {
+    "a": "SR4A.6@128.636,-79.179",
+    "b": "SR4A.8@128.001,-81.514"
+   },
+   {
+    "a": "SR4A.7@127.366,-79.179",
+    "b": "SR4A.8@128.001,-81.514"
+   },
+   {
+    "a": "SR4A.8@126.096,-79.179",
+    "b": "SR4A.8@128.001,-81.514"
+   },
+   {
+    "a": "SR4B.1@136.096,-84.818",
+    "b": "SR4B.3@137.401,-84.470"
+   },
+   {
+    "a": "SR4B.2@137.366,-84.818",
+    "b": "SR4B.3@137.401,-84.470"
+   },
+   {
+    "a": "SR4B.3@138.636,-84.818",
+    "b": "SR4B.3@137.401,-84.470"
+   },
+   {
+    "a": "SR4B.5@139.906,-79.179",
+    "b": "SR4B.8@138.001,-81.514"
+   },
+   {
+    "a": "SR4B.6@138.636,-79.179",
+    "b": "SR4B.8@138.001,-81.514"
+   },
+   {
+    "a": "SR4B.7@137.366,-79.179",
+    "b": "SR4B.8@138.001,-81.514"
+   },
+   {
+    "a": "SR4B.8@136.096,-79.179",
+    "b": "SR4B.8@138.001,-81.514"
+   }
+  ],
+  "duplicate_pad_numbers": [
+   {
+    "ref": "SR1A",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR1A",
+    "pad_number": "8",
+    "nets": [
+     "SEC1_A"
+    ]
+   },
+   {
+    "ref": "SR1B",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR1B",
+    "pad_number": "8",
+    "nets": [
+     "SEC1_B"
+    ]
+   },
+   {
+    "ref": "SR2A",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR2A",
+    "pad_number": "8",
+    "nets": [
+     "SEC2_A"
+    ]
+   },
+   {
+    "ref": "SR2B",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR2B",
+    "pad_number": "8",
+    "nets": [
+     "SEC2_B"
+    ]
+   },
+   {
+    "ref": "SR3A",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR3A",
+    "pad_number": "8",
+    "nets": [
+     "SEC3_A"
+    ]
+   },
+   {
+    "ref": "SR3B",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR3B",
+    "pad_number": "8",
+    "nets": [
+     "SEC3_B"
+    ]
+   },
+   {
+    "ref": "SR4A",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR4A",
+    "pad_number": "8",
+    "nets": [
+     "SEC4_A"
+    ]
+   },
+   {
+    "ref": "SR4B",
+    "pad_number": "3",
+    "nets": [
+     "PGND"
+    ]
+   },
+   {
+    "ref": "SR4B",
+    "pad_number": "8",
+    "nets": [
+     "SEC4_B"
+    ]
+   }
+  ],
+  "pad_extent_mm": {
+   "x_mm": [
+    2.0,
+    152.0
+   ],
+   "y_mm": [
+    11.0,
+    116.9
+   ]
+  },
+  "moved": [
+   {
+    "ref": "C10",
+    "from_mm": [
+     5.0,
+     35.0
+    ],
+    "to_mm": [
+     5.0,
+     43.0
+    ]
+   },
+   {
+    "ref": "C101",
+    "from_mm": [
+     9.6,
+     35.0
+    ],
+    "to_mm": [
+     9.6,
+     43.0
+    ]
+   },
+   {
+    "ref": "C102",
+    "from_mm": [
+     14.2,
+     35.0
+    ],
+    "to_mm": [
+     14.2,
+     43.0
+    ]
+   },
+   {
+    "ref": "C103",
+    "from_mm": [
+     18.8,
+     35.0
+    ],
+    "to_mm": [
+     18.8,
+     43.0
+    ]
+   },
+   {
+    "ref": "C104",
+    "from_mm": [
+     23.4,
+     35.0
+    ],
+    "to_mm": [
+     23.4,
+     43.0
+    ]
+   },
+   {
+    "ref": "C105",
+    "from_mm": [
+     28.0,
+     35.0
+    ],
+    "to_mm": [
+     28.0,
+     43.0
+    ]
+   },
+   {
+    "ref": "C106",
+    "from_mm": [
+     32.6,
+     35.0
+    ],
+    "to_mm": [
+     32.6,
+     43.0
+    ]
+   },
+   {
+    "ref": "C107",
+    "from_mm": [
+     37.2,
+     35.0
+    ],
+    "to_mm": [
+     37.2,
+     43.0
+    ]
+   },
+   {
+    "ref": "C108",
+    "from_mm": [
+     41.8,
+     35.0
+    ],
+    "to_mm": [
+     41.8,
+     43.0
+    ]
+   },
+   {
+    "ref": "C109",
+    "from_mm": [
+     46.4,
+     35.0
+    ],
+    "to_mm": [
+     46.4,
+     43.0
+    ]
+   },
+   {
+    "ref": "C110",
+    "from_mm": [
+     51.0,
+     35.0
+    ],
+    "to_mm": [
+     51.0,
+     43.0
+    ]
+   },
+   {
+    "ref": "C111",
+    "from_mm": [
+     55.6,
+     35.0
+    ],
+    "to_mm": [
+     55.6,
+     43.0
+    ]
+   },
+   {
+    "ref": "C112",
+    "from_mm": [
+     60.2,
+     35.0
+    ],
+    "to_mm": [
+     60.2,
+     43.0
+    ]
+   },
+   {
+    "ref": "C13",
+    "from_mm": [
+     64.8,
+     35.0
+    ],
+    "to_mm": [
+     64.8,
+     43.0
+    ]
+   },
+   {
+    "ref": "C5",
+    "from_mm": [
+     69.4,
+     35.0
+    ],
+    "to_mm": [
+     69.4,
+     43.0
+    ]
+   },
+   {
+    "ref": "C6",
+    "from_mm": [
+     74.0,
+     35.0
+    ],
+    "to_mm": [
+     74.0,
+     43.0
+    ]
+   },
+   {
+    "ref": "C7",
+    "from_mm": [
+     78.6,
+     35.0
+    ],
+    "to_mm": [
+     78.6,
+     43.0
+    ]
+   },
+   {
+    "ref": "C8",
+    "from_mm": [
+     83.2,
+     35.0
+    ],
+    "to_mm": [
+     83.2,
+     43.0
+    ]
+   },
+   {
+    "ref": "C9",
+    "from_mm": [
+     87.8,
+     35.0
+    ],
+    "to_mm": [
+     87.8,
+     43.0
+    ]
+   },
+   {
+    "ref": "Cin",
+    "from_mm": [
+     92.4,
+     35.0
+    ],
+    "to_mm": [
+     92.4,
+     43.0
+    ]
+   },
+   {
+    "ref": "Cout",
+    "from_mm": [
+     5.0,
+     39.0
+    ],
+    "to_mm": [
+     5.0,
+     47.0
+    ]
+   },
+   {
+    "ref": "R1",
+    "from_mm": [
+     9.6,
+     39.0
+    ],
+    "to_mm": [
+     9.6,
+     47.0
+    ]
+   },
+   {
+    "ref": "R10",
+    "from_mm": [
+     14.2,
+     39.0
+    ],
+    "to_mm": [
+     14.2,
+     47.0
+    ]
+   },
+   {
+    "ref": "R18",
+    "from_mm": [
+     18.8,
+     39.0
+    ],
+    "to_mm": [
+     18.8,
+     47.0
+    ]
+   },
+   {
+    "ref": "R19",
+    "from_mm": [
+     23.4,
+     39.0
+    ],
+    "to_mm": [
+     23.4,
+     47.0
+    ]
+   },
+   {
+    "ref": "R2",
+    "from_mm": [
+     28.0,
+     39.0
+    ],
+    "to_mm": [
+     28.0,
+     47.0
+    ]
+   },
+   {
+    "ref": "R7",
+    "from_mm": [
+     32.6,
+     39.0
+    ],
+    "to_mm": [
+     32.6,
+     47.0
+    ]
+   },
+   {
+    "ref": "R9",
+    "from_mm": [
+     41.8,
+     39.0
+    ],
+    "to_mm": [
+     41.8,
+     47.0
+    ]
+   },
+   {
+    "ref": "D_CT1",
+    "from_mm": [
+     108.0,
+     62.4
+    ],
+    "to_mm": [
+     108.0,
+     70.0
+    ]
+   },
+   {
+    "ref": "D_CT2",
+    "from_mm": [
+     114.0,
+     62.4
+    ],
+    "to_mm": [
+     114.0,
+     70.0
+    ]
+   },
+   {
+    "ref": "D_CT3",
+    "from_mm": [
+     120.0,
+     62.4
+    ],
+    "to_mm": [
+     120.0,
+     70.0
+    ]
+   },
+   {
+    "ref": "D_CT4",
+    "from_mm": [
+     126.0,
+     62.4
+    ],
+    "to_mm": [
+     126.0,
+     70.0
+    ]
+   },
+   {
+    "ref": "U1",
+    "from_mm": [
+     112.0,
+     36.5
+    ],
+    "to_mm": [
+     112.0,
+     45.0
+    ]
+   },
+   {
+    "ref": "D_BT",
+    "from_mm": [
+     105.0,
+     36.5
+    ],
+    "to_mm": [
+     105.0,
+     45.0
+    ]
+   }
+  ]
+ },
+ "discrepancies": [
+  {
+   "topic": "concept pad x-span vs A5 magnetic envelope",
+   "detail": "packet offsets are +-17.0 mm (T1-T4) and +-12.0 mm (CT) from the A5 centre, while the A5 envelopes are 31.75 mm and 20.0 mm wide (half-widths 15.875 / 10.0 mm) -- the provisional terminals therefore sit 1.125 mm / 2.0 mm outside their own TBD rectangle",
+   "status": "DERIVED_FROM_A5_ENVELOPE_NOT_VENDOR_DATA"
+  },
+  {
+   "topic": "Lr +2 concept pads not placed",
+   "detail": "D1_DESIGN_Lr_N1 / _N2 ride the native Lr footprint (nets CT_LR and PRI_T1 already have footprint pads); the packet puts them +-20 mm apart while the native footprint's two pads are 9 mm apart.  Placing both would double-count those nets, so only the native pads exist.",
+   "status": "INTENTIONAL_NOT_PLACED"
+  },
+  {
+   "topic": "footprint truth for the five magnetics",
+   "detail": "components T1-T4/CT/Lr are NOT placed as PCB components; only their terminals exist as free pads.  There is no component, no silkscreen, no courtyard and no physical pad geometry behind them.",
+   "status": "NOT_FOR_FAB"
+  }
+ ]
+}
