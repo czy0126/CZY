@@ -17,6 +17,9 @@ from poc_raw_evidence import inspect_raw, RawEvidenceError
 
 ROOT = poc.ROOT
 MODEL = ROOT / "models/sr_device_v3.lib"
+DIAG_STOP_BY_CASE = {"5a": ("620u", 0.00062), "10a": ("1500u", 0.0015)}
+# 10A SR_ON's actual default-model numerical failure was observed at
+# 1.35512456 ms on 2026-11-09. A 620us screen falsely passed this case.
 MODELS = {"on_original": ("on", "original"),
           "on_tt0": ("on", "tt0"),
           "on_weak_shunt": ("on", "weak_shunt"),
@@ -32,14 +35,16 @@ def build(scenario: str, case: str = "5a") -> tuple[Path, str, Path | None, str 
     body = poc.deck(case, mode)
     if body.count(".tran 0 8m 0 10n uic") != 1:
         raise ValueError("golden transient has drifted")
-    body = body.replace(".tran 0 8m 0 10n uic", ".tran 0 620u 0 10n uic")
+    stop_spice, _ = DIAG_STOP_BY_CASE[case]
+    body = body.replace(".tran 0 8m 0 10n uic",
+                        f".tran 0 {stop_spice} 0 10n uic")
     body = "\n".join(line for line in body.splitlines()
                      if not line.lstrip().lower().startswith(".meas ")) + "\n"
     if not body.endswith(".end\n"):
         raise ValueError("unexpected .end topology")
     body = body[:-5] + (
         ".meas tran DIAG_VOUT_AT_600U FIND V(out) AT=600u\n"
-        ".meas tran DIAG_RESONANT_PK MAX abs(I(Lr)) FROM=400u TO=620u\n.end\n")
+        f".meas tran DIAG_RESONANT_PK MAX abs(I(Lr)) FROM=400u TO={stop_spice}\n.end\n")
     source_path = None
     source_text = None
     if variation != "original":
@@ -137,7 +142,7 @@ def run(scenario: str, exe: Path, timeout_s: int = 840,
 
     if raw.exists():
         try:
-            raw_validation = inspect_raw(raw, stop_time_s=.00062)
+            raw_validation = inspect_raw(raw, stop_time_s=DIAG_STOP_BY_CASE[case][1])
         except (RawEvidenceError, ValueError, OSError) as exc:
             raw_validation = {"status": "INVALID_RAW", "reason": str(exc)}
     else:
@@ -164,7 +169,7 @@ def run(scenario: str, exe: Path, timeout_s: int = 840,
         "raw_validation": raw_validation,
         "scenario": scenario,
         "case": "nominal_5A_0p4ohm" if case == "5a" else "nominal_10A_0p2ohm",
-        "simulated_stop_s": .00062,
+        "simulated_stop_s": DIAG_STOP_BY_CASE[case][1],
         "wall_clock_limit_s": timeout_s,
         "source_sha256": sha(poc.PARENT),
         "golden_mos_model_sha256": sha(MODEL),
