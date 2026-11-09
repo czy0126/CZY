@@ -156,6 +156,11 @@ def test_legacy_power_stage_candidates_handoff_is_not_stuck_at_10mm_or_2p5v():
     assert float(kemet["esr_mohm_per_part"]) == 4
     assert kemet["source_url"].startswith("https://search.kemet.com/")
     assert "current 0.07mOhm needs >=58" in kemet["review_notes"]
+    lr = next(r for r in opts if r["ref"] == "Lr")
+    assert "B66459G0000X197" in lr["mpn_or_question"]
+    assert "0.92uH external" in lr["nominal_capacitance"]
+    assert lr["source_url"].startswith("https://www.tdk-electronics.tdk.com/")
+    assert lr["evidence_grade"] == "OEM_CORE_REFERENCE_CUSTOM_WINDING_OPEN"
     for r in opts:
         if r["ref"] in {"Lr", "Cr", "Cin"}:
             assert "D1 full assembly 16" in r["max_height_mm"]
