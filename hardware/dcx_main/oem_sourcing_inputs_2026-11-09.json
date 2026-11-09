@@ -1,0 +1,177 @@
+{
+  "classification": "OEM_LINKS_AND_PARAMETER_SCREEN_ONLY_NOT_FOR_FAB",
+  "capture_date": "2026-11-09",
+  "original_repo_requirements": {
+    "electrical_source": "design/v3/power_priority/high_margin_design_gate.json",
+    "mechanical_source": "design/v3/power_priority/d1_staged_target_policy.json",
+    "output_loop_source": "hardware/dcx_main/output_joint_reduction_cases.json"
+  },
+  "sources": [
+    {
+      "id": "KEMET_T530_470_6R3",
+      "maker": "KEMET / YAGEO",
+      "category": "OUTPUT_CAPACITOR",
+      "mpn": "T530X477M006ATE004",
+      "official_url": "https://search.kemet.com/component-documentation/download/specsheet/T530X477M006ATE004",
+      "evidence": "Original exact-order spec sheet; 470uF ±20%; 6.3V at <=105C, 4.22V at 125C; 4mOhm ESR @100kHz/25C; 8.2A @45C, 5.74A @85C, 2.05A @125C ripple @100kHz; L7.3xW4.3xH4.0±0.3 mm",
+      "grade": "EXACT_OEM_PART_SHEET"
+    },
+    {
+      "id": "PANASONIC_SVPS_470_6R3",
+      "maker": "Panasonic",
+      "category": "OUTPUT_CAPACITOR",
+      "mpn": "6SVPS470M",
+      "official_url": "https://industrial.panasonic.com/ww/products/pt/os-con/models/6SVPS470M",
+      "evidence": "Exact model OEM page; 470uF±20%,6.3V,20mOhm ESR@100kHz,4.13A RMS @100kHz/105C, diameter10mm, body length7.9mm (not assembled Z)",
+      "grade": "EXACT_OEM_PART_PAGE"
+    },
+    {
+      "id": "PANASONIC_SVP_470_6R3",
+      "maker": "Panasonic",
+      "category": "OUTPUT_CAPACITOR",
+      "mpn": "6SVP470M",
+      "official_url": "https://industrial.panasonic.com/ww/products/pt/os-con/models/6SVP470M",
+      "evidence": "Exact model OEM page; 470uF±20%,6.3V,15mOhm ESR@100kHz,4.21A RMS @100kHz/105C, diameter8mm, body length11.9mm (not assembled Z)",
+      "grade": "EXACT_OEM_PART_PAGE"
+    },
+    {
+      "id": "WURTH_REDCUBE_CONTACT_NOTE",
+      "maker": "Wurth Elektronik",
+      "category": "OUTPUT_CONNECTOR_FAMILY",
+      "mpn": null,
+      "official_url": "https://www.we-online.com/components/media/o156402v410%20AppNote_REDCUBE_Terminals.pdf",
+      "evidence": "Manufacturer family application note states press-fit contact zone ~100-200 microOhm (not an exact part resistance or an assembled loop guarantee); PCB/copper/bolts additional.",
+      "grade": "OEM_FAMILY_APPLICATION_NOTE_NOT_MPN"
+    },
+    {
+      "id": "TDK_ELP38_I38_N97",
+      "maker": "TDK Electronics",
+      "category": "MAGNETICS_CORE_AND_PLATE",
+      "mpn": "B66459G0000X197 / B66459K0000X197",
+      "official_url": "https://www.tdk-electronics.tdk.com/inf/80/db/fer/elp_38_8_25.pdf",
+      "evidence": "ELP38 and I38 N97 non-clamp EILP catalog core pair; Amin 192mm2; per assembled set nominal core dimensions are not finished winding/physical pins/gap.",
+      "grade": "OEM_CORE_DATA_SHEET_NOT_FINISHED_MAGNETIC"
+    },
+    {
+      "id": "TDK_ELP43_I43_N97",
+      "maker": "TDK Electronics",
+      "category": "MAGNETICS_CORE_AND_PLATE",
+      "mpn": "B66461G0000X197 / B66461K0000X197",
+      "official_url": "https://www.tdk-electronics.tdk.com/inf/80/db/fer/elp_43_10_28.pdf",
+      "evidence": "ELP43/I43 N97 non-clamp family; Amin217mm2 (EILP); published core geometry, NOT 16mm finished assembly certification.",
+      "grade": "OEM_CORE_DATA_SHEET_NOT_FINISHED_MAGNETIC"
+    },
+    {
+      "id": "TDK_N97_2025",
+      "maker": "TDK Electronics",
+      "category": "MAGNETIC_MATERIAL",
+      "mpn": "N97",
+      "official_url": "https://www.tdk-electronics.tdk.com/download/528886/d28e0ebe7095bcdafa28c3d7d21aa41/pdf-n97.pdf",
+      "evidence": "N97 Bs410mT at100C with H=1200A/m (material sheet); ELP38/43 catalog N97 Bs310mT at100C with H=250A/m; do not swap test-H into pre-existing 0.31T margin.",
+      "grade": "OEM_MATERIAL_NOT_DEVICE_SATURATION"
+    },
+    {
+      "id": "TI_UCC24624_DATASHEET",
+      "maker": "Texas Instruments",
+      "category": "SR_CONTROLLER",
+      "mpn": "UCC24624",
+      "official_url": "https://www.ti.com/lit/ds/symlink/ucc24624.pdf",
+      "evidence": "REG powered internal logic; VDD=4.25-26V normal, REG >=2.2uF bypass if >5mA gate charge current, REG and source/drain Kelvin layout. Requires physical independent SR inhibit validation.",
+      "grade": "OEM_PRODUCT_DATASHEET"
+    },
+    {
+      "id": "TI_UCC24624_DESIGN_NOTE",
+      "maker": "Texas Instruments",
+      "category": "SR_LAYOUT_REFERENCE",
+      "mpn": "SLUAA52",
+      "official_url": "https://www.ti.com/lit/an/sluaa52/sluaa52.pdf",
+      "evidence": "SR VDS turn-off sensed includes stray L dI/dt, warns early turnoff; adaptive RC on VD raises latency; examine source/drain Kelvin, gate loss and ringing.",
+      "grade": "OEM_APPLICATION_NOTE_NOT_BOARD_PROOF"
+    },
+    {
+      "id": "TI_UCC24624_EVM",
+      "maker": "Texas Instruments",
+      "category": "SR_REFERENCE_BOARD",
+      "mpn": "UCC24624EVM-015",
+      "official_url": "https://www.ti.com/tool/UCC24624EVM",
+      "evidence": "Official EVM user guide/schematic and layout for a 120W SR demo, not a native 48V to 2V/100A power design or independent fault-latch circuit.",
+      "grade": "OEM_EVM_REFERENCE_NOT_READY_TO_DROP_IN"
+    }
+  ],
+  "capacitor_candidates": [
+    {
+      "source_id": "KEMET_T530_470_6R3",
+      "mpn": "T530X477M006ATE004",
+      "cap_uF": 470,
+      "min_cap_fraction": 0.8,
+      "nominal_voltage_v_at_or_below_105c": 6.3,
+      "voltage_v_at_125c": 4.22,
+      "esr_mohm_at_100khz": 4,
+      "esr_test_temp_c": 25,
+      "ripple_rms_a_at_100khz_by_temp_c": {
+        "45": 8.2,
+        "85": 5.74,
+        "125": 2.05
+      },
+      "body_length_mm": 7.3,
+      "body_width_mm": 4.3,
+      "body_height_max_mm": 4.3,
+      "layout_footprint_approved": false
+    },
+    {
+      "source_id": "PANASONIC_SVPS_470_6R3",
+      "mpn": "6SVPS470M",
+      "cap_uF": 470,
+      "min_cap_fraction": 0.8,
+      "nominal_voltage_v_at_or_below_105c": 6.3,
+      "voltage_v_at_125c": null,
+      "esr_mohm_at_100khz": 20,
+      "esr_test_temp_c": null,
+      "ripple_rms_a_at_100khz_by_temp_c": {
+        "105": 4.13
+      },
+      "body_length_mm": 7.9,
+      "body_width_mm": null,
+      "body_height_max_mm": null,
+      "body_diameter_mm": 10,
+      "layout_footprint_approved": false
+    },
+    {
+      "source_id": "PANASONIC_SVP_470_6R3",
+      "mpn": "6SVP470M",
+      "cap_uF": 470,
+      "min_cap_fraction": 0.8,
+      "nominal_voltage_v_at_or_below_105c": 6.3,
+      "voltage_v_at_125c": null,
+      "esr_mohm_at_100khz": 15,
+      "esr_test_temp_c": null,
+      "ripple_rms_a_at_100khz_by_temp_c": {
+        "105": 4.21
+      },
+      "body_length_mm": 11.9,
+      "body_width_mm": null,
+      "body_height_max_mm": null,
+      "body_diameter_mm": 8,
+      "layout_footprint_approved": false
+    }
+  ],
+  "connector_family": {
+    "source_id": "WURTH_REDCUBE_CONTACT_NOTE",
+    "family": "REDCUBE PRESS-FIT",
+    "contact_zone_resistance_uohm_low": 100,
+    "contact_zone_resistance_uohm_high": 200,
+    "note": "Typical manufacturer application-note range is NOT guaranteed per purchasable model and omits other interface losses; use only as exclusion risk screen.",
+    "actual_interface_approved": false
+  },
+  "magnetic_core_sources": {
+    "core_preferred": "TDK_ELP38_I38_N97",
+    "core_alternate": "TDK_ELP43_I43_N97",
+    "material": "TDK_N97_2025",
+    "elp38_i38_Amin_mm2": 192,
+    "elp43_i43_Amin_mm2": 217,
+    "core_sheet_Bs_100c_mT_at_H250": 310,
+    "generic_n97_Bs_100c_mT_at_H1200": 410,
+    "raw_product_is_finished_magnetic": false,
+    "missing": "Signed 24 physical pads + DOT, core pair material/batch, full Z tolerance, gap recipe, L(I,T), AC loss and winding stress."
+  }
+}
