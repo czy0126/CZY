@@ -101,7 +101,9 @@ def test_10a_early_screen_is_truly_10a_not_relabelled_5a(variant):
     assert path.name == f"_diag_10a_{variant}.cir"
     assert ".param VIN=48 RL=0.2 LP=10u LR_TOTAL=1u CR_TOTAL=620n" in deck
     assert ".param VIN=48 RL=0.4 LP=10u LR_TOTAL=1u CR_TOTAL=620n" not in deck
-    assert ".tran 0 620u 0 10n uic" in deck
+    assert ".tran 0 1500u 0 10n uic" in deck
+    assert ".meas tran DIAG_RESONANT_PK MAX abs(I(Lr)) FROM=400u TO=1500u" in deck
+    assert ".tran 0 620u 0 10n uic" not in deck
     assert ".meas tran DIAG_VOUT_AT_600U" in deck
     if model_path is not None:
         assert model_path.name.startswith("_diag_10a_")
@@ -111,3 +113,9 @@ def test_10a_early_screen_is_truly_10a_not_relabelled_5a(variant):
 def test_early_screen_rejects_unknown_resistive_load():
     with pytest.raises(ValueError, match="unknown diagnostic load case"):
         d.build("off_original", case="100a")
+
+
+def test_early_window_guard_is_longer_than_observed_10a_divergence():
+    assert d.DIAG_STOP_BY_CASE["5a"][1] == pytest.approx(0.00062)
+    assert d.DIAG_STOP_BY_CASE["10a"][1] > 0.001355124561272764
+    assert d.DIAG_STOP_BY_CASE["10a"][1] == pytest.approx(0.0015)
