@@ -250,6 +250,10 @@ def main() -> int:
     parser.add_argument("--ltspice", help="absolute path to installed LTspice.exe")
     parser.add_argument("--timeout-sec", type=int, default=DEFAULT_TIMEOUT_SEC,
                         help="wall-clock budget per mode (recorded in the evidence)")
+    parser.add_argument("--off-timeout-sec", type=int,
+                        help="optional SR_OFF wall-time budget, overrides --timeout-sec")
+    parser.add_argument("--on-timeout-sec", type=int,
+                        help="optional SR_ON wall-time budget, overrides --timeout-sec")
     parser.add_argument("--early-on-screen", action="store_true",
                         help="before full SR_ON run require genuine original-model "
                              "620us early numerical diagnostic to pass; failures "
@@ -260,6 +264,9 @@ def main() -> int:
     args = parser.parse_args()
     if args.timeout_sec < 5 or args.timeout_sec > 7200:
         parser.error("--timeout-sec must be between 5 and 7200 seconds")
+    for budget in (args.off_timeout_sec, args.on_timeout_sec):
+        if budget is not None and not 5 <= budget <= 7200:
+            parser.error("mode-specific timeout must be 5-7200 seconds")
     if args.check:
         statuses = {
             f"{case}_{mode}": {
@@ -285,6 +292,12 @@ def main() -> int:
     # desktop run when ON was still producing a huge RAW. Secure the OFF
     # baseline first; an ON timeout must not hide that independent evidence.
     mode_list = ("off", "on") if args.mode == "both" else (args.mode,)
+    mode_budgets = {
+        "off": args.off_timeout_sec if args.off_timeout_sec is not None
+               else args.timeout_sec,
+        "on": args.on_timeout_sec if args.on_timeout_sec is not None
+              else args.timeout_sec,
+    }
     statuses = {}
     failures = {}
     partials = {}
@@ -299,7 +312,7 @@ def main() -> int:
             import poc_early_solver_diagnostics as diag
             try:
                 early_rc = diag.run("on_original", exe,
-                                    timeout_s=min(args.timeout_sec, 600),
+                                    timeout_s=min(mode_budgets["on"], 600),
                                     case=args.case)
                 diag_file = poc.OUT / f"_diag_{args.case}_on_original.json"
                 early_screen[mode] = json.loads(
@@ -320,7 +333,7 @@ def main() -> int:
                       f"{early_screen[mode]}", file=sys.stderr)
                 continue
         try:
-            statuses[mode] = run_selected(args.case, mode, exe, args.timeout_sec)
+            statuses[mode] = run_selected(args.case, mode, exe, mode_budgets[mode])
         except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
             failures[mode] = str(exc)
             partials[mode] = partial_artifacts(args.case, mode)
@@ -341,6 +354,9 @@ def main() -> int:
         "early_on_screen": early_screen,
         "attempt_order": list(mode_list),
         "timeout_seconds_per_mode": args.timeout_sec,
+        "effective_timeout_seconds_by_mode": {
+            mode: mode_budgets[mode] for mode in mode_list
+        },
         "all_requested_modes_completed": not failures,
         "comparison": compares,
         "model_actual_load_points": {
