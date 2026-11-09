@@ -34,6 +34,7 @@
 |  | cshunt 阶梯非单调（1/2/5 fF = 254.980/264.515/235.890 µs）；它只挪塌缩时刻 | 加 cshunt | SIMULATION.md §仿真文件 |
 |  | 严重过载约 1.7 ms 后求解器塌缩；8 ms deck 不一定产出 8 ms，前缀仍可读 | 跑 cold_oc | SIMULATION.md §仿真文件 |
 |  | cshunt 对冷启动过载无效，而且让塌缩更早（5.6141 vs 7.5714 ms） | 跑 cold_oc 变体 | SIMULATION.md §仿真文件 |
+| ★ | 10 A SR_ON 默认设置塌缩在 1.3551 ms；只有 `gmin=1e-10` 能跑满，那是**声明过的求解器偏差**（5 A 对照差 0.5233 %），不得当默认模型证据 | 引用 10 A 数 | SIMULATION.md §仿真文件 |
 | ★ | `Tstart` 重排保存时间轴；窗口必须记 `raw_time_start_s` 与 `display_offset_us`，由 `deck_timing()` 解析 | 报任何窗口 | SIMULATION.md §仿真文件 |
 | ★ | deck 在仿真运行期间被重新生成 ⇒ raw 与 deck 不是同一输入；比 mtime / `No. Variables` | 比对 raw | SIMULATION.md §仿真文件 |
 |  | 冷启动 raw 10.7 GB；只看尾部时 seek 到记录边界（31 行/点），不要整文件 load | 读冷启动 raw | SIMULATION.md §仿真文件 |

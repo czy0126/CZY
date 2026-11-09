@@ -98,6 +98,7 @@ python tools/main_board_mechanical.py --check    # A5 摆放 1:1 + DRC，需要 
 | `uic` 且无 `.ic` = 真冷启动；只要有一行 `.ic` 就不是 | 写冷启动 deck | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
 | 48 V hotfault 才是完整证据（跑满 320 µs）；50 V 基座在 296.929 µs 塌缩，引用必须写"前缀" | 引用故障数 | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
 | trip 后 SR 门极锁存是**模型边界**，不是"已安全关断"，也不是"SR 直通" | 写 SR 故障结论 | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
+| 10 A SR_ON 默认设置塌缩在 1.3551 ms；只有 `gmin=1e-10` 能跑满，那是**声明过的求解器偏差**（5 A 对照差 0.5233 %），不得当默认模型证据 | 引用 10 A 数 | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
 | `Tstart` 重排保存时间轴；窗口必须记 `raw_time_start_s` 与 `display_offset_us`，由 `deck_timing()` 解析 | 报任何窗口 | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
 | deck 在仿真运行期间被重新生成 ⇒ raw 与 deck 不是同一输入；比 mtime / `No. Variables` | 比对 raw | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
 | `.save` 是多行续行块；只在第一行尾部追加会丢后面 18 个探针 | 给 deck 加探针 | [SIMULATION.md](docs/agent/SIMULATION.md) §仿真文件 |
