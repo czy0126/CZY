@@ -1,0 +1,37 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\work\a02_20261109\poc5a\sim\v3\poc_5a_sr_on.cir
+Start Time: Mon Nov  9 11:09:28 2026
+Options:plotwinsize=0 method=gear
+solver = Normal
+Maximum thread count: 64
+tnom = 27
+temp = 27
+method = Gear
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 1538.471 seconds.
+
+Files loaded:
+C:\work\a02_20261109\poc5a\sim\v3\poc_5a_sr_on.cir
+C:\work\a02_20261109\poc5a\models\ucc25600_legacy_behaviour.lib
+C:\work\a02_20261109\poc5a\models\sr_timing_v3_3.lib
+C:\work\a02_20261109\poc5a\models\sr_device_v3.lib
+
+vout_max: MAX(V(out) )=2.06989192963 FROM 0 TO 0.008
+vout_2m: V(out) =1.74831659557 at 0.002
+vout_4m: V(out) =1.85493022903 at 0.004
+vout_6m: V(out) =2.04901483017 at 0.006
+vout_avg: AVG(V(out) )=1.80995049223 FROM 0.007 TO 0.008
+ipri_pk: MAX(abs(I(Lr)) )=17.440788269 FROM 0 TO 0.008
+vsra1_pk: MAX(-I(VSa1) )=52.0563926697 FROM 0 TO 0.008
+oc_max: MAX(V(oc) )=0.19088549912 FROM 0 TO 0.008
+iaux_pk: MAX(I(Vaux) )=1.00492023591e-08 FROM 0 TO 0.008
+ibus_pk: MAX(-I(Vbus) )=321.836303711 FROM 0 TO 0.008
+poc_vout_6_8_avg: AVG(V(out) )=1.84307026008 FROM 0.006 TO 0.008
+poc_vout_max: MAX(V(out) )=2.06989192963 FROM 0 TO 0.008
+poc_vout_min: MIN(V(out) )=1.63828659058 FROM 0.006 TO 0.008
+poc_input_min: MIN(-I(Vbus) )=-5.61706256866 FROM 0.006 TO 0.008
+poc_input_max: MAX(-I(Vbus) )=321.836303711 FROM 0 TO 0.008
+poc_primary_max: MAX(abs(I(Lr)) )=17.440788269 FROM 0 TO 0.008
+poc_rectifier_current_max: MAX(abs(I(VSa1)) )=52.0563926697 FROM 0 TO 0.008
+poc_gate_a1_max: MAX(V(ga1,sgnd) )=10.9907798767 FROM 0 TO 0.008
+poc_gate_b1_max: MAX(V(gb1,sgnd) )=11.0039272308 FROM 0 TO 0.008

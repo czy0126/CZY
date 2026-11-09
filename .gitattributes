@@ -23,3 +23,10 @@ pcb/**/*.json text eol=lf
 # SHA256 goes into the LTspice evidence JSON; a CRLF checkout would report every
 # deck as stale on a default Windows clone (core.autocrlf=true).
 sim/v3/poc_*.cir text eol=lf
+
+# LTspice run logs are evidence, not source.  LTspice emits a *mix* of CRLF and
+# lone-LF lines (19 CRLF / 18 LF on the 5A pair), so any eol= conversion makes
+# the committed blob differ from the bytes the run actually produced and every
+# log_sha256 in the evidence JSON becomes unverifiable on a fresh clone.
+# Store the run's bytes exactly.
+sim/v3/poc_*.log -text
