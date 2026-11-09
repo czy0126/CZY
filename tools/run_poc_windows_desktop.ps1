@@ -76,7 +76,7 @@ try {
     }
     $recordPath = "sim/v3/poc_" + $Case + "_desktop_launcher.json"
     $record | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $recordPath -Encoding utf8
-    & python tools/run_poc_low_current.py --case $Case --mode $Mode --run --ltspice $LTspicePath --timeout-sec $TimeoutSec
+    & python tools/run_poc_low_current.py --case $Case --mode $Mode --run --ltspice $LTspicePath --timeout-sec $TimeoutSec --early-on-screen
     $resultCode = $LASTEXITCODE
     if ($resultCode -ne 0) {
         throw ("LTspice model case returned $resultCode; results are NOT complete. " +
