@@ -1,7 +1,8 @@
 """Performance-first component RFQ from committed 48/50V simulation evidence.
 
-No price cap. Still constrained by <=10 mm total height, actual pin-outs, and
-simulation/hardware safety evidence. Design targets ≠ qualified components.
+No price cap. D1 first-article full assembly target <=16 mm and D2 <=16 mm;
+the previous <=10 mm is D3 stretch only. Actual pin-outs, component SOA and
+hardware safety gates remain mandatory. Design targets != qualified parts.
 Regenerate:
   python tools/performance_first_design.py --write
 Verify:
@@ -32,6 +33,9 @@ COUT_ESR_TOTAL_MOHM = 0.10
 COUT_PCB_ESR_BUDGET_MOHM = 0.03
 COUT_RIPPLE_MARGIN = 1.50
 SR_PEAK_MARGIN = 1.25
+D1_ASSEMBLY_HEIGHT_LIMIT_MM = 16.0
+D2_ASSEMBLY_HEIGHT_LIMIT_MM = 16.0
+D3_STRETCH_HEIGHT_LIMIT_MM = 10.0
 
 
 def _load(path: Path) -> dict:
@@ -51,6 +55,21 @@ def build() -> tuple[dict, list[dict[str, str]]]:
     cinbank = _load(ROOT / "design/v3/bom/cin_bank.json")
     crbank = _load(ROOT / "design/v3/bom/cr_bank.json")
     cad = _load(HW / "d1_fabrication_gate.json")
+    connection = _load(HW / "output_joint_reduction_cases.json")
+    if (connection.get("status") != "UNVERIFIED_INTERFACE_TOPOLOGY_REDESIGN_NOT_FOR_FAB"
+            or connection.get("fabrication_approved") is not False
+            or connection.get("hardware_qualified") is not False):
+        raise ValueError("output interface design provenance changed")
+    by_connection = {c["id"]: c for c in connection["candidates"]}
+    compact_two = by_connection["reduced_2_contacts_50x2x15"]
+    compact_four = by_connection["wide_4_contacts_50x2x15"]
+    two_50 = compact_two["joint_scenarios_uohm"]["50"]
+    four_50 = compact_four["joint_scenarios_uohm"]["50"]
+    if (compact_two["total_counted_separable_contacts"] != 2
+            or compact_four["total_counted_separable_contacts"] != 4
+            or two_50["passes_resistance_arithmetic_only"] is not True
+            or four_50["passes_resistance_arithmetic_only"] is not False):
+        raise ValueError("100A output topology screen changed; requalify RFQ")
     if hot50["solver_prefix_only"] is not True:
         raise ValueError("fault evidence regime changed: revalidate high-current margin")
     peak = float(hot50["fault"]["ipri_peak_before_trip_a"])
@@ -96,7 +115,13 @@ def build() -> tuple[dict, list[dict[str, str]]]:
         "status": "UNVERIFIED_RFQ_TARGETS_NOT_RATED_NOT_FOR_FAB",
         "cost_policy": "NO_COST_CEILING_PER_USER_DIRECTION",
         "constraints": {
-            "maximum_assembly_height_mm": 10.0,
+            # Historical 10mm high-margin / TDK catalog screen is an
+            # immutable D3 reference used by lr_core_geometry_screen and
+            # d1_staged_rebaseline. It must NOT dictate D1/D2 supplier RFQ.
+            "maximum_assembly_height_mm": D3_STRETCH_HEIGHT_LIMIT_MM,
+            "d1_100a_first_article_total_height_mm": D1_ASSEMBLY_HEIGHT_LIMIT_MM,
+            "d2_120a_total_height_mm": D2_ASSEMBLY_HEIGHT_LIMIT_MM,
+            "d3_stretch_total_height_mm": D3_STRETCH_HEIGHT_LIMIT_MM,
             "thermal_detail": "DEFERRED_BUT_DEVICE_SOA_AND_PROTECTION_MANDATORY",
             "no_invented_mpn": True,
         },
@@ -161,6 +186,18 @@ def build() -> tuple[dict, list[dict[str, str]]]:
                 "inhibit for primary+all 8 SR; verify actual Vgs/Id/Vds after OC."
             ),
         },
+        "output_interface": {
+            "source": "hardware/dcx_main/output_joint_reduction_cases.json",
+            "status": connection["status"],
+            "both_pole_resistance_budget_uohm": connection["design_basis_uohm_both_rails"],
+            "four_joint_wide_50u_case_total_uohm": four_50["total_uohm"],
+            "two_joint_wide_50u_case_total_uohm": two_50["total_uohm"],
+            "two_joint_wide_50u_case_margin_uohm": two_50["margin_to_150uohm"],
+            "joint_resistance_is_unverified": True,
+            "physical_2joint_topology_verified": False,
+            "physical_interconnect_height_verified": False,
+            "required_exit": "two-pole native CAD net and mechanical DFM; count every physical contact; Kelvin 4-wire resistance at assembled temperature and torque",
+        },
         "cad": {
             "fabrication_gate": cad["status"],
             "unverified_physical_magnetics": cad["counts"]["magnetics_missing_physical_pads"],
@@ -189,7 +226,7 @@ def build() -> tuple[dict, list[dict[str, str]]]:
             f"50V early-fault peak {peak:.2f}A; 3T/Amin128mm2 fails tolerance budget",
             f"3T; Amin>=200mm2 preferred; >= {min_ae(3):.1f}mm2 mathematical floor; "
             f"Lmax={inductance_max_h*1e6:.2f}uH; I_design={design_current:.1f}A; "
-            "max B <= 0.80*Bsat at 100C; total assembly <=10mm",
+            "max B <= 0.80*Bsat at 100C; D1 full assembly <=16mm; D3 stretch <=10mm",
             "Actual L(I), gap/distributed gap, B-H at temperature, winding AC loss, winding terminals/DOT, physical 3D"),
         row("Lr_4turn_alternative",
             f"existing ELP32 3T gives B~{b_at(3,128):.3f}T with margins",
@@ -200,7 +237,7 @@ def build() -> tuple[dict, list[dict[str, str]]]:
             f"baseline 15x470uF/2.5V nominal; {r_ripple:.2f}A RMS at the 50V/120A overload "
             f"({r_ripple_rated:.2f}A at the rated 100A, a four-SR reconstruction), "
             "7.05mF, ideal 0.2mOhm",
-            f">=4V rated, 6.3V preferred if <=10mm; >=7.05mF; "
+            f">=4V rated, 6.3V preferred within D1 <=16mm full stack; >=7.05mF; "
             f"bank ripple >={r_target:.2f}Arms; ESR bank <=0.07mOhm at operating frequency/temperature",
             "Original datasheets; actual PCB copper/joints <=0.03mOhm; overshoot/ripple/reliability and envelope"),
         row("Cin_high_ripple",
@@ -224,9 +261,16 @@ def build() -> tuple[dict, list[dict[str, str]]]:
             "fast transient comparator path independent of 47us RC where appropriate",
             "Physical comparator/level-shift/logic power-up/down schematic; no shoot-through; all-waveform validation"),
         row("J_OUT_high_current_interconnect",
-            "100A path target 0.15mOhm; higher output may approach 120A",
-            "Low-inductance Kelvin-sense output busbar; multiple parallel contacts or welded joints permitted",
-            "4-wire DC resistance and pulse temperature rise at maximum current; <=10mm mechanical limit"),
+            f"100A VOUT+PGND loop 150uOhm internal target; "
+            f"four×50uOhm contacts alone use 200uOhm; "
+            f"modeled four-contact total {four_50['total_uohm']:.3f}uOhm",
+            f"Quote CAD/DFM A: four separable contacts each verified <=28.30uOhm "
+            f"or B: integrated both-pole 2-contact 50x2x15mm concept "
+            f"{two_50['total_uohm']:.3f}uOhm at 50uOhm/contact "
+            f"with remaining bonds included in PCB budget; D1 full stack <=16mm",
+            "Provide full VOUT/PGND nets and numbered joints; vendor DFM/height; "
+            "Kelvin 4-wire hot resistance and pulse temperature at 100A; "
+            "unmeasured contacts do NOT qualify fab"),
         row("Main_board_vendor_signoff",
             "5 magnetics no physical pads, 61 placeholder refs, GUI ERC/PCB absent",
             "No price ceiling for real footprint, via-in-pad fill, copper inlay or heavy copper if manufacturable",

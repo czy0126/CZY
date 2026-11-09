@@ -2,9 +2,12 @@
   "status": "UNVERIFIED_RFQ_TARGETS_NOT_RATED_NOT_FOR_FAB",
   "cost_policy": "NO_COST_CEILING_PER_USER_DIRECTION",
   "constraints": {
-    "maximum_assembly_height_mm": 10.0,
+    "maximum_assembly_height_mm": 10,
     "thermal_detail": "DEFERRED_BUT_DEVICE_SOA_AND_PROTECTION_MANDATORY",
-    "no_invented_mpn": true
+    "no_invented_mpn": true,
+    "d1_100a_first_article_total_height_mm": 16,
+    "d2_120a_total_height_mm": 16,
+    "d3_stretch_total_height_mm": 10
   },
   "magnetics": {
     "observed_50v_fault_peak_a": 101.262657,
@@ -15,13 +18,13 @@
     "bsat_reference_100c_t": 0.31,
     "max_bsat_usage": 0.8,
     "design_flux_limit_t": 0.248,
-    "existing_core_amin_mm2": 128.0,
+    "existing_core_amin_mm2": 128,
     "existing_three_turn_worst_b_t": 0.34809,
     "three_turn_min_ae_mm2": 179.659554,
-    "preferred_three_turn_amin_mm2": 200.0,
+    "preferred_three_turn_amin_mm2": 200,
     "preferred_three_turn_worst_b_t": 0.222778,
     "four_turn_min_ae_mm2": 134.744665,
-    "optional_four_turn_amin_mm2": 150.0,
+    "optional_four_turn_amin_mm2": 150,
     "optional_four_turn_worst_b_t": 0.222778,
     "status": "REDESIGN_OR_VENDOR_FIRST_ARTICLE_REQUIRED",
     "limitation": "1.10x L and 1.20x peak are design scenarios; flux uses constant L, not a validated nonlinear BH curve. Prefer custom low-profile larger-Ae or distributed-gap assembly, not a blind multi-mm single gap."
@@ -29,7 +32,7 @@
   "capacitors": {
     "existing_nominal_bank_count": 15,
     "existing_nominal_v_rating_v": 2.5,
-    "output_vrating_min_v": 4.0,
+    "output_vrating_min_v": 4,
     "output_vrating_preferred_v": 6.3,
     "output_bank_c_min_mf": 7.05,
     "output_model_ripple_rms_a": 56.061938,
@@ -75,5 +78,17 @@
     "high-voltage low-ESR output bank RFQ and PCB spreading model",
     "real magnetic terminals, MPNs, GUI ERC and netted main PCB",
     "full device SOA and electrical stress verification"
-  ]
+  ],
+  "output_interface": {
+    "source": "hardware/dcx_main/output_joint_reduction_cases.json",
+    "status": "UNVERIFIED_INTERFACE_TOPOLOGY_REDESIGN_NOT_FOR_FAB",
+    "both_pole_resistance_budget_uohm": 150,
+    "four_joint_wide_50u_case_total_uohm": 236.798,
+    "two_joint_wide_50u_case_total_uohm": 136.798,
+    "two_joint_wide_50u_case_margin_uohm": 13.202,
+    "joint_resistance_is_unverified": true,
+    "physical_2joint_topology_verified": false,
+    "physical_interconnect_height_verified": false,
+    "required_exit": "two-pole native CAD net and mechanical DFM; count every physical contact; Kelvin 4-wire resistance at assembled temperature and torque"
+  }
 }

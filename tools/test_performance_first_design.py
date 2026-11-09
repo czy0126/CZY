@@ -9,7 +9,11 @@ import performance_first_design as perf
 def test_cost_does_not_override_height_or_safety():
     j, rows = perf.build()
     assert j["cost_policy"] == "NO_COST_CEILING_PER_USER_DIRECTION"
+    # Keep the historical high-margin 10mm magnetic geometry screen as D3.
     assert j["constraints"]["maximum_assembly_height_mm"] == 10.0
+    assert j["constraints"]["d1_100a_first_article_total_height_mm"] == 16.0
+    assert j["constraints"]["d2_120a_total_height_mm"] == 16.0
+    assert j["constraints"]["d3_stretch_total_height_mm"] == 10.0
     assert j["constraints"]["no_invented_mpn"]
     assert not j["hardware_continuous_rating_approved"]
     assert j["cad"]["fabrication_gate"] == "NOT_FOR_FAB"
@@ -109,3 +113,35 @@ def test_rfqs_and_json_regenerate_exactly():
         supplied = list(csv.DictReader(stream))
     assert len(supplied) == 9
     assert "Lr_custom_flat_magnetic" in {r["group"] for r in supplied}
+
+
+def test_jout_rfq_requires_actual_both_pole_contact_topology():
+    design, rows = perf.build()
+    d = design["output_interface"]
+    assert d["both_pole_resistance_budget_uohm"] == 150
+    assert d["four_joint_wide_50u_case_total_uohm"] > 200
+    assert d["two_joint_wide_50u_case_total_uohm"] == pytest.approx(136.798)
+    assert d["two_joint_wide_50u_case_margin_uohm"] == pytest.approx(13.202)
+    assert d["joint_resistance_is_unverified"] is True
+    assert d["physical_2joint_topology_verified"] is False
+    assert d["physical_interconnect_height_verified"] is False
+    assert design["hardware_continuous_rating_approved"] is False
+    req = next(x for x in rows if x["group"] == "J_OUT_high_current_interconnect")
+    assert "VOUT+PGND" in req["evidence"]
+    assert "four×50uOhm" in req["evidence"]
+    assert "four separable contacts" in req["unlimited_cost_request"]
+    assert "2-contact" in req["unlimited_cost_request"]
+    assert "Kelvin 4-wire" in req["acceptance_evidence"]
+    assert "D1 full stack <=16mm" in req["unlimited_cost_request"]
+    assert req["supplier_mpn_or_custom_drawing"] == ""
+    assert req["decision"] == "PENDING"
+
+
+def test_rfq_treats_10mm_as_stretch_not_first_article():
+    _, rows = perf.build()
+    magnet = next(x for x in rows if x["group"] == "Lr_custom_flat_magnetic")
+    cout = next(x for x in rows if x["group"] == "Cout_bank_high_voltage")
+    assert "D1 full assembly <=16mm" in magnet["unlimited_cost_request"]
+    assert "D3 stretch <=10mm" in magnet["unlimited_cost_request"]
+    assert "D1 <=16mm full stack" in cout["unlimited_cost_request"]
+    assert "if <=10mm" not in cout["unlimited_cost_request"]
