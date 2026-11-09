@@ -75,6 +75,7 @@ def test_both_mode_runs_independent_off_first_and_keeps_failed_attempt(monkeypat
     observed = []
     monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
     monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
     monkeypatch.setattr(runner.poc, "path",
                         lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
     monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
