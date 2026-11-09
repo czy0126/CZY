@@ -42,3 +42,54 @@ def test_weak_leak_does_not_change_golden_model():
 def test_reject_unknown_model_variant():
     with pytest.raises(ValueError):
         d.build("not_a_real_variant")
+
+
+def test_early_solver_wall_clock_expiry_emits_failure_evidence(monkeypatch, tmp_path):
+    import json
+    import subprocess
+    exe = tmp_path / "LTspice.exe"
+    exe.write_bytes(b"test-only stub")
+    monkeypatch.setattr(poc, "OUT", tmp_path)
+    def timeout(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args[0], 7, output=b"partial stdout")
+    monkeypatch.setattr(d.subprocess, "run", timeout)
+    assert d.run("off_original", exe, timeout_s=7) == 2
+    evidence = json.loads((tmp_path / "_diag_5a_off_original.json").read_text())
+    assert evidence["diagnostic_run_validated"] is False
+    assert "exceeded 7s" in evidence["failure_reason"]
+    assert evidence["returncode"] is None
+    assert evidence["log_sha256"] is None
+    assert evidence["raw_validation"]["status"] == "MISSING_RAW"
+    assert evidence["stdout_tail"] == "partial stdout"
+    assert evidence["hardware_qualified"] is False
+
+
+def test_process_exit_zero_without_raw_and_measurements_is_not_valid(monkeypatch, tmp_path):
+    import json
+    from types import SimpleNamespace
+    exe = tmp_path / "LTspice.exe"
+    exe.write_bytes(b"test-only stub")
+    monkeypatch.setattr(poc, "OUT", tmp_path)
+    monkeypatch.setattr(d.subprocess, "run",
+                        lambda *args, **kwargs: SimpleNamespace(
+                            returncode=0, stdout="", stderr=""))
+    assert d.run("on_original", exe, timeout_s=10) == 2
+    result = json.loads((tmp_path / "_diag_5a_on_original.json").read_text())
+    assert result["diagnostic_run_validated"] is False
+    assert result["returncode"] == 0
+    assert result["diagnostic_measurements"] is None
+
+
+def test_early_diagnostic_meas_must_be_unique_finite(tmp_path):
+    bad = tmp_path / "diag.log"
+    bad.write_text("diag_vout_at_600u: V(out) = 1.0\n"
+                   "diag_resonant_pk: MAX(abs(I(Lr))) = 1e308\n",
+                   encoding="utf-8")
+    with pytest.raises(ValueError, match="sentinel"):
+        d.diagnostic_measurements(bad)
+    bad.write_text("diag_vout_at_600u: V(out) = 1.7\n"
+                   "diag_resonant_pk: MAX(abs(I(Lr))) = 2.3\n",
+                   encoding="utf-8")
+    x = d.diagnostic_measurements(bad)
+    assert x["diag_vout_at_600u"] == pytest.approx(1.7)
+    assert x["diag_resonant_pk"] == pytest.approx(2.3)
