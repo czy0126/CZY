@@ -1,6 +1,6 @@
 # G1 原生带网 PCB（非投板）— 2026-11-09
 
-2026-11-10增量见 [驱动布局复审](driver_eco_review.md)：基线报告已修复写死的网络检查；7件移动的原生候选已重开读回验收（77件/299焊盘/65网/38折线，`driver_eco_report.json`），但仍无走线/DRC，未取代本文基线的投板门禁。
+2026-11-10增量见 [驱动布局复审](driver_eco_review.md)：基线报告已修复写死的网络检查；7件移动的原生候选已重开读回验收（77件/299焊盘/65网/38折线，`driver_eco_report.json`）。同日的独立副本 `dcx_main_board_g1_driver_route.eprj2` 已建 25 条第 1 层铜线（GH_DRV/GH/GL_DRV/GL/HB），重开后 `driver_route_report.json` 覆盖校验通过、其余计数与摆放不变；SW/D_BT/VCC12/PGND 仍未连，无原生 DRC/ERC，未取代本文基线的投板门禁。
 
 > **G1 非锁版审查件。** 这是原生 EasyEDA 工程里**长出来的 PCB**，不是
 > `hardware/dcx_mech` 的 KiCad 概念板，也不是投板包。板厂门禁仍是

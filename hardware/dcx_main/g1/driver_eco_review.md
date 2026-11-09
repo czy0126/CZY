@@ -14,7 +14,9 @@
 | C103/C104 | 57,65 / 57,67 | VCC12局部供电候选位置，值/料号仍须核实 |
 | R18/R19 | 49,55 / 58,55 | 靠近相应MOS门源节点 |
 
-**原生重开验证已通过（2026-11-10 补测）。** 首次重开读回曾 `REQUEST_TIMEOUT`，失败原文保留在 `driver_readback_timeout_2026-11-10T0208.json`；本轮按路径新开 session 后第一次 invoke 即返回成功（同一只读体在冷启动时可能超时、同 session 重试有效的已知现象）。读回 `driver_readback.json` 为 **77 件 / 299 焊盘 / 65 网 / 38 折线**，7 件新中心坐标逐项等于目标值，`audit_driver_eco.py` 非 preview 断言全部通过，生成 `driver_eco_report.json`（`reopened_readback: true`，`geometry_evidence: NATIVE_REOPEN_READBACK`）。候选仍未取代基线用于投板：没有走线、没有 DRC/ERC。
+**原生重开验证已通过（2026-11-10 补测）。** 首次重开读回曾 `REQUEST_TIMEOUT`，失败原文保留在 `driver_readback_timeout_2026-11-10T0208.json`；本轮按路径新开 session 后第一次 invoke 即返回成功（同一只读体在冷启动时可能超时、同 session 重试有效的已知现象）。读回 `driver_readback.json` 为 **77 件 / 299 焊盘 / 65 网 / 38 折线**，7 件新中心坐标逐项等于目标值，`audit_driver_eco.py` 非 preview 断言全部通过，生成 `driver_eco_report.json`（`reopened_readback: true`，`geometry_evidence: NATIVE_REOPEN_READBACK`）。候选重开当时仍没有走线、没有 DRC/ERC，也未取代基线用于投板。
+
+**驱动短路铜增量（2026-11-10）。** 在候选的独立副本 `dcx_main_board_g1_driver_route.eprj2` 上用 `pcb_PrimitiveLine.create` 建了 **25 条第 1 层铜线**（GH_DRV 3、GH 8、GL_DRV 3、GL 8、HB 3），`driver_route_apply.json` 记录 25/25 成功、save=true。关会话后**按路径重新打开**读回：77 件 / 299 焊盘 / 65 网 / 38 折线全部不变，7 件移动位置漂移 0，25 条线逐条在网络、层、线宽与端点上覆盖计划（编辑器在 T 型节点把一条折线拆成两段，所以验收按“覆盖”而不是逐段同一）。`route_driver_eco.py --verify` 生成 `driver_route_report.json`，`driver_route.svg` 是同一份读回的驱动窗口平面图。**不是布通**：SW、D_BT、VCC12、PGND 回流仍未连，原因逐条写在计划的 `remaining_connections` 里；没有原生 DRC/ERC。
 
 原G1文件保持MD5 `0d516efecae4c95b9baf2648b14c0a4f`。
 
@@ -38,7 +40,7 @@
 
 ## 4. 当前G1/G2/G3与三个工作包
 
-**A：G1原生PCB，最高优先级。** 候选重开读回已完成：7件移动已持久化，77件/299焊盘/65网/38折线重读一致（见§1、`driver_eco_report.json`）。下一步是在这个候选上完成原边驱动、C5/D_BT、自举与供电回流的实际走线，导出原生DRC原始结果。下一最小交付是“验证可重开的原生源+短回路实际铜线+剩余错误清单”，不是又一份只有绿色测试的报告。
+**A：G1原生PCB，最高优先级。** 候选重开读回与驱动短路铜已完成：7件移动已持久化，25条第1层铜线经按路径重开读回验收（`driver_route_report.json`；一条计划段被编辑器在 T 型节点拆成两段，按覆盖校验通过）。下一步是解决 SW/D_BT/VCC12/PGND 剩余连接的走廊冲突（改铺铜、第二层或微调 D_BT/C5 位置），然后导出原生DRC原始结果。下一最小交付是“剩余连接的可布线方案（含冲突消解）+原生DRC原始结果”，不是又一份只有绿色测试的报告。
 
 **B：G2磁件接口，同步推进。** 按现有自研Maxwell路线完成Lr及变压器几何/矩阵、DOT、绕组出口与工艺剖面。解决T1–T4/CT端子超出原包络、Lr9mm与40mm端距冲突。厂家回件不是G1停工理由，但24概念PAD不能直接转为制造实脚。实体绕组/磁芯、材料与损耗仍需要模型及实物证据。
 
@@ -46,7 +48,7 @@
 
 ## 5. 后续路线与停止条件
 
-近期：候选重开验收（已完成）→原边门极/自举真实布线→四组SR和Cout局部布局/回流→磁件实端子与电流铜路集成。
+近期：候选重开验收（已完成）→原边门极/自举真实布线（第一批 25 段已完成，剩余连接见 `driver_route_plan.json` 的 `remaining_connections`）→四组SR和Cout局部布局/回流→磁件实端子与电流铜路集成。
 
 中期：G2磁件/高度/铜厚工艺收敛→同一CAD修订的ERC、DRC、Gerber/钻孔/BOM/层叠/DFM→真实G3审查。保持NOT_FOR_FAB，不能仅修改布尔值放行。
 

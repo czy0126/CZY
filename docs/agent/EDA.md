@@ -194,6 +194,12 @@
 - **板框**：必须是**第 11 层（板框层）上的闭合折线**，用
   `pcb_MathPolygon.createPolygon([x, y, 'L', …])` + `pcb_PrimitivePolyline.create('', 11, polygon, 10, false)`。
   `pcb_PrimitiveLine.create` **只在第 1 层（铜）能用**，3/11/13 层一律报"无法找到图元…参数错误"。
+- **铜线读写口径**：`pcb_PrimitiveLine.create(net, 1, x1, y1, x2, y2, width, false)` 的坐标是
+  **mil、PCB 笛卡尔 Y 向上**（板面 Y 向下 ⇒ 取负），`width` 也是 **mil**（0.2 mm = 7.874）。
+  读回字段是 `getState_StartX/StartY/EndX/EndY`，**没有** `getState_X1/Y1`（照抄焊盘命名会
+  `EXECUTION_ERROR: getState_X1 is not a function`）。**保存时编辑器会重排折线**：T 型节点处把
+  一条线拆成两段、重合段合并 ⇒ 验收不能逐段比对，要按「同网、同层、同线宽、共线且区间覆盖」
+  判（`hardware/dcx_main/g1/route_driver_eco.py --verify`）。
 - **文本图元**：`pcb_PrimitiveString.create` 在所有试过的层/字体上都失败（"无法找到文本图元"）
   ⇒ headless 画不出丝印/文档层文字；待锁区只能用**第 13 层（文档层）矩形**圈出，不能写字。
 - **磁件封装放不进去**：
