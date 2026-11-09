@@ -244,6 +244,10 @@ def main() -> int:
     parser.add_argument("--ltspice", help="absolute path to installed LTspice.exe")
     parser.add_argument("--timeout-sec", type=int, default=DEFAULT_TIMEOUT_SEC,
                         help="wall-clock budget per mode (recorded in the evidence)")
+    parser.add_argument("--early-on-screen", action="store_true",
+                        help="before full SR_ON run require genuine original-model "
+                             "620us early numerical diagnostic to pass; failures "
+                             "are preserved and still leave independent OFF result")
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--run", action="store_true")
     action.add_argument("--check", action="store_true")
@@ -278,7 +282,39 @@ def main() -> int:
     statuses = {}
     failures = {}
     partials = {}
+    early_screen = {}
     for mode in mode_list:
+        if mode == "on" and args.early_on_screen:
+            # The genuine ON baseline has exhibited trouble at ~0.56ms,
+            # before SR REG enables. Test the unmodified first 620us once
+            # instead of launching an 8ms ON deck that cannot complete.
+            # This screen is only available for the 5A source topology.
+            if args.case != "5a":
+                early_screen[mode] = {"status": "NOT_AVAILABLE_FOR_10A",
+                                      "hardware_qualified": False}
+            else:
+                import poc_early_solver_diagnostics as diag
+                try:
+                    early_rc = diag.run("on_original", exe,
+                                        timeout_s=min(args.timeout_sec, 600))
+                    diag_file = poc.OUT / "_diag_5a_on_original.json"
+                    early_screen[mode] = json.loads(
+                        diag_file.read_text(encoding="utf-8"))
+                except (OSError, ValueError, RuntimeError, UnicodeError) as exc:
+                    early_rc = 2
+                    early_screen[mode] = {"status": "DIAGNOSTIC_EXECUTION_ERROR",
+                                          "reason": str(exc),
+                                          "hardware_qualified": False}
+                if early_rc != 0:
+                    failures[mode] = (
+                        "unmodified 5A SR_ON 620us genuine simulation failed; "
+                        "full 8ms ON was NOT launched")
+                    partials[mode] = {"full_8ms_on": "NOT_ATTEMPTED",
+                                      "early_diagnostic_record":
+                                      "sim/v3/_diag_5a_on_original.json"}
+                    print(f"LTspice {args.case}/on screen failed: "
+                          f"{early_screen[mode]}", file=sys.stderr)
+                    continue
         try:
             statuses[mode] = run_selected(args.case, mode, exe, args.timeout_sec)
         except (ValueError, RuntimeError, OSError, subprocess.TimeoutExpired) as exc:
@@ -298,6 +334,7 @@ def main() -> int:
         "runs": statuses,
         "failed_modes": failures,
         "partial_failed_mode_files_NOT_VALID_RESULTS": partials,
+        "early_on_screen": early_screen,
         "attempt_order": list(mode_list),
         "timeout_seconds_per_mode": args.timeout_sec,
         "all_requested_modes_completed": not failures,
