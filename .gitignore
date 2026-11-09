@@ -48,3 +48,9 @@ sim/v3/superseded/
 # deck/raw/log sha256, and a copy of that manifest is committed as the
 # evidence.  Nothing here is a source file.
 /out/
+
+# Generated Ansys Maxwell/CadQuery concept CAD: reproducible from the source
+# JSON and Python code. Keep as CI artifacts, not committed binary/ASCII STEP.
+# Local licensed AEDT projects and solver matrices are also machine outputs.
+design/v3/maxwell/generated_concept/
+design/v3/maxwell/local_runs/
