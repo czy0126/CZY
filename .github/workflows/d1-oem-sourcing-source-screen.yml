@@ -1,0 +1,37 @@
+name: D1-OEM-Sourcing-Source-and-Cout-Connector-Screen
+on:
+  push:
+    paths:
+      - 'tools/oem_sourcing_screen.py'
+      - 'tools/test_oem_sourcing_screen.py'
+      - 'hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json'
+      - 'hardware/dcx_main/oem_sourcing_screen_2026-11-09.json'
+      - 'design/v3/power_priority/high_margin_design_gate.json'
+      - 'hardware/dcx_main/output_joint_reduction_cases.json'
+      - '.github/workflows/d1-oem-sourcing-source-screen.yml'
+  pull_request:
+    paths:
+      - 'tools/oem_sourcing_screen.py'
+      - 'tools/test_oem_sourcing_screen.py'
+      - 'hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json'
+      - 'hardware/dcx_main/oem_sourcing_screen_2026-11-09.json'
+      - 'design/v3/power_priority/high_margin_design_gate.json'
+      - 'hardware/dcx_main/output_joint_reduction_cases.json'
+      - '.github/workflows/d1-oem-sourcing-source-screen.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  oem-linked-parameters-only-no-fab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assert source-bound OEM conditions and source JSON
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/oem_sourcing_screen.py --check
+          python -m pytest -q tools/test_oem_sourcing_screen.py
