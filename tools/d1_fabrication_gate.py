@@ -139,13 +139,16 @@ def _protection_design_gate() -> dict:
             "original source hashes matched; design-only signoff, NOT a hardware rating"}
 
 
-def _primary_en_default_low_precheck(refs: dict) -> dict:
+def _primary_en_default_low_precheck(refs: dict, r8_real_dnp: bool = False) -> dict:
     """Static structural veto on always-on RUN; *not* protection approval.
 
     A real fault latch must independently be reviewed, but paperwork cannot
     override a 1k pullup hardwired between VCC12 and the UCC27282 EN pin.
     Search all resistor refs (not just R8), in either pin order, so renaming
-    the unsafe resistor cannot evade the check.
+    the unsafe resistor cannot evade the check. A captured R8 DNP is excluded
+    ONLY if both actual BOM and PCB flags are false and the capture's
+    independently generated audit matches its committed readback; connected
+    but physically unpopulated R8 remains visible in the schematic netlist.
     """
     u2 = refs.get("U2") or {}
     r7 = refs.get("R7") or {}
@@ -159,6 +162,7 @@ def _primary_en_default_low_precheck(refs: dict) -> dict:
         powered = sorted(
             ref for ref, pins in refs.items()
             if ref.startswith("R") and isinstance(pins, dict)
+            and not (ref == "R8" and r8_real_dnp is True)
             and len(pins) == 2 and set(pins.values()) == {"VCC12", run_net}
         )
         if powered:
@@ -251,8 +255,19 @@ def build() -> dict:
         mbs.load_golden(), native_export["value"]["refs"], mbs.load_library())
     subset_snapshot_fresh = live_net == net
     functional_check = functional_audit.compare(native_export["value"]["refs"])
-    primary_en_precheck = _primary_en_default_low_precheck(native_export["value"]["refs"])
     native_mpn_precheck = _native_mpn_and_r8_precheck()
+    # With the actual native capture and regeneration matching, both BOM+PCB
+    # excluded R8 is an unpopulated schematic footprint, not an electrical
+    # pull-up. The 39/38 other OEM discrepancies still independently block
+    # fabrication via native_mpn_precheck; design-only protection signoff
+    # requires entirely separate physical fault-inhibit evidence.
+    real_r8_dnp = (
+        native_mpn_precheck["snapshot_matches_live_capture"] is True
+        and native_mpn_precheck["r8_in_bom"] is False
+        and native_mpn_precheck["r8_in_pcb"] is False
+    )
+    primary_en_precheck = _primary_en_default_low_precheck(
+        native_export["value"]["refs"], r8_real_dnp=real_r8_dnp)
 
 
     gold_refs = {x["ref"] for x in golden}
