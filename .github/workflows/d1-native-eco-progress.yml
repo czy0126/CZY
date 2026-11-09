@@ -1,0 +1,35 @@
+name: D1-native-CAD-ECO-progress-audit
+on:
+  push:
+    paths:
+      - 'tools/native_inventory_bom_gate.py'
+      - 'tools/test_native_inventory_bom_gate.py'
+      - 'tools/d1_fabrication_gate.py'
+      - 'tools/test_d1_fabrication_gate.py'
+      - 'hardware/dcx_main/gen/native_inventory_raw.json'
+      - 'hardware/dcx_main/native_inventory_bom_gate.json'
+      - '.github/workflows/d1-native-eco-progress.yml'
+  pull_request:
+    paths:
+      - 'tools/native_inventory_bom_gate.py'
+      - 'tools/test_native_inventory_bom_gate.py'
+      - 'hardware/dcx_main/gen/native_inventory_raw.json'
+      - 'hardware/dcx_main/native_inventory_bom_gate.json'
+      - '.github/workflows/d1-native-eco-progress.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  captured-native-not-fabrication-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check old snapshot, changed OEM and R8 DNP cases
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/native_inventory_bom_gate.py --check
+          python -m pytest -q tools/test_native_inventory_bom_gate.py tools/test_d1_fabrication_gate.py

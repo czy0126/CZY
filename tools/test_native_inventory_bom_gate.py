@@ -50,3 +50,94 @@ def test_missing_protected_native_ref_fails_closed(tmp_path, monkeypatch):
     monkeypatch.setattr(mod, "INVENTORY", p)
     with pytest.raises(ValueError, match="missing native refs"):
         mod.audit()
+
+
+def _edited_capture(tmp_path, monkeypatch, ref, updates):
+    original = json.loads(mod.INVENTORY.read_text(encoding="utf-8"))
+    rows = [c for c in original["value"]["components"] if c["ref"] == ref]
+    assert len(rows) == 1
+    rows[0].update(updates)
+    path = tmp_path / "captured_native_after_gui.json"
+    path.write_text(json.dumps(original), encoding="utf-8")
+    monkeypatch.setattr(mod, "INVENTORY", path)
+    return mod.audit()
+
+
+def test_a_real_changed_manufacturer_mpn_remains_a_failing_audited_row(
+        tmp_path, monkeypatch):
+    # Actual GUI changes must not raise an opaque "captured MPN shifted"
+    # exception, and must not make 39 original conflicts silently become 38.
+    capture = json.loads(mod.INVENTORY.read_text(encoding="utf-8"))
+    row = next(r for r in capture["value"]["components"] if r["ref"] == "C10")
+    replacement = dict(manufacturer_id="GRM188C71E225KE11D",
+                       supplier_id="C_VERIFY_INDEPENDENTLY",
+                       component={**row["component"], "name": "GRM188C71E225KE11D"},
+                       value="2.2uF")
+    d = _edited_capture(tmp_path, monkeypatch, "C10", replacement)
+    assert d["known_mpn_and_target_rows"] == 51
+    assert d["native_components"] == 83
+    assert d["manufacturer_target_conflicts"] == 39
+    c10 = next(x for x in d["conflicts"] if x["ref"] == "C10")
+    assert c10["change_classification"] == "UNVERIFIED_NATIVE_OEM_OR_LIBRARY_CHANGE"
+    assert c10["manufacturer_nominal"] is None
+    assert c10["manufacturer_vs_design_target"] is None
+    assert c10["manufacturer_identity_or_value_verified"] is False
+    assert d["manufacturing_approved"] is False
+    assert d["native_cad_modified"] is False
+
+
+def test_unchanged_native_mpn_with_unexpected_supplier_code_fails_closed(
+        tmp_path, monkeypatch):
+    d = _edited_capture(tmp_path, monkeypatch, "C102",
+                        {"supplier_id": "C_FAKE"})
+    assert d["known_mpn_and_target_rows"] == 51
+    assert d["manufacturer_target_conflicts"] == 40
+    entry = next(x for x in d["conflicts"] if x["ref"] == "C102")
+    assert entry["change_classification"] == "UNVERIFIED_NATIVE_OEM_OR_LIBRARY_CHANGE"
+    assert entry["manufacturer_identity_or_value_verified"] is False
+
+
+def test_r8_true_bom_and_pcb_dnp_stops_ordering_the_wrong_pullup(
+        tmp_path, monkeypatch):
+    d = _edited_capture(tmp_path, monkeypatch, "R8",
+                        {"add_into_bom": False, "add_into_pcb": False})
+    assert d["original_r8_in_bom"] is False
+    assert d["original_r8_in_pcb"] is False
+    assert d["manufacturer_target_conflicts"] == 38
+    assert not any(x["ref"] == "R8" for x in d["conflicts"])
+    assert d["known_mpn_and_target_rows"] == 51
+    assert d["manufacturing_approved"] is False
+    assert "R8 DNP" in d["snapshot_age_note"]
+
+
+@pytest.mark.parametrize("flags", [
+    {"add_into_bom": False, "add_into_pcb": True},
+    {"add_into_bom": True, "add_into_pcb": False},
+])
+def test_partial_r8_exclusion_is_not_dnp_or_release(
+        tmp_path, monkeypatch, flags):
+    d = _edited_capture(tmp_path, monkeypatch, "R8", flags)
+    assert d["manufacturer_target_conflicts"] == 39
+    assert any(x["ref"] == "R8" for x in d["conflicts"])
+    assert d["manufacturing_approved"] is False
+
+
+def test_new_unapproved_oem_identity_cannot_zero_all_conflicts(
+        tmp_path, monkeypatch):
+    original = json.loads(mod.INVENTORY.read_text(encoding="utf-8"))
+    for c in original["value"]["components"]:
+        if c["ref"] in {r["ref"] for r in
+                        json.loads(mod.REGISTER.read_text(encoding="utf-8"))["rows"]}:
+            if c.get("manufacturer_id") in mod.KNOWN:
+                c["manufacturer_id"] = "UNVERIFIED_CANDIDATE"
+                c["supplier_id"] = "UNVERIFIED_SUPPLIER"
+                c["component"] = {"name": "UNVERIFIED_CANDIDATE"}
+    path = tmp_path / "mass_change.json"
+    path.write_text(json.dumps(original), encoding="utf-8")
+    monkeypatch.setattr(mod, "INVENTORY", path)
+    d = mod.audit()
+    assert d["known_mpn_and_target_rows"] == 51
+    assert d["manufacturer_target_conflicts"] == 51
+    assert all(c.get("manufacturer_identity_or_value_verified") is False
+               for c in d["conflicts"])
+    assert not d["manufacturing_approved"]
