@@ -68,3 +68,51 @@ def test_source_only_mode_is_explicitly_not_a_simulation(monkeypatch, capsys):
     assert all(v["deck_fresh"] is True for v in data["cases"].values())
     assert all(v["LTspice_run_performed_here"] is False
                for v in data["cases"].values())
+
+
+def test_both_mode_runs_independent_off_first_and_keeps_failed_attempt(monkeypatch, tmp_path):
+    """An expensive/unconverged ON run cannot erase the completed OFF baseline."""
+    observed = []
+    monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
+    monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path",
+                        lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
+    monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
+    monkeypatch.setattr(runner.sys, "argv",
+                        ["run_poc_low_current.py", "--case", "5a",
+                         "--mode", "both", "--run", "--timeout-sec", "123"])
+    def solver(case, mode, exe, timeout_sec):
+        observed.append((case, mode, timeout_sec))
+        if mode == "on":
+            (tmp_path / "poc_5a_sr_on.log").write_text(
+                "real partial but invalid log", encoding="utf-8")
+            raise RuntimeError("intentional ON solver divergence")
+        return {"measures": {key: 1.0 for key in runner.REQUIRED},
+                "status": "SIMULATION_ONLY", "hardware_qualified": False}
+    monkeypatch.setattr(runner, "run_selected", solver)
+    assert runner.main() == 2
+    assert observed == [("5a", "off", 123), ("5a", "on", 123)]
+    result = json.loads((tmp_path / "poc_5a_comparison_model_only.json")
+                        .read_text(encoding="utf-8"))
+    assert list(result["runs"]) == ["off"]
+    assert result["all_requested_modes_completed"] is False
+    assert result["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"][".log"]["present"]
+    assert result["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"][".log"]["validated_complete"] is False
+    assert result["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"][".raw"]["present"] is False
+    assert result["comparison"]["comparison_available"] is False
+    assert result["fab_release"] is False
+
+
+def test_partial_log_sha_cannot_be_mistaken_for_success(monkeypatch, tmp_path):
+    d = tmp_path / "poc_10a_sr_on.cir"
+    d.write_text("test source", encoding="utf-8")
+    log = d.with_suffix(".log")
+    raw = d.with_suffix(".raw")
+    log.write_bytes(b"partial waveform error")
+    raw.write_bytes(b"truncated binary raw")
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path", lambda *_: d)
+    part = runner.partial_artifacts("10a", "on")
+    assert part[".log"]["sha256"] == __import__("hashlib").sha256(log.read_bytes()).hexdigest()
+    assert part[".raw"]["size_bytes"] == len(raw.read_bytes())
+    assert not part[".raw"]["validated_complete"]
