@@ -1,0 +1,128 @@
+{
+  "source": {
+    "status": "MODEL_ONLY_NOT_FOR_HARDWARE",
+    "source_path": "sim/v3/sr_tank_dual_v33_cold_phys.cir",
+    "source_sha256": "0d84c159ac2d842019861d37051553f59f0a0ee0056765b3afd60aec4fbde29e",
+    "config": {
+      "input_bus_nominal_v": 48,
+      "output_nominal_for_resistance_only_v": 2,
+      "fixed_ratio_unchanged": "24:1",
+      "target_load_resistors_ohm": {
+        "5a": 0.4,
+        "10a": 0.2
+      },
+      "sr_off_ideal_external_gate_clamp": true,
+      "sr_on_existing_behavioural_timing": true,
+      "output_actual_current_verified": false,
+      "physical_diode_temperature_verified": false,
+      "lab_psu_current_limit_measured": false,
+      "power_stage_power_on_authorized": false
+    },
+    "cases": {
+      "5a_on": {
+        "path": "sim/v3/poc_5a_sr_on.cir",
+        "sha256": "2c16ed65f182cd522fff66731d94c026abc714c6c8def2edb00831fc11e853f5",
+        "mode": "on",
+        "rload_ohm": 0.4,
+        "estimated_2v_output_a": 5.0,
+        "LTspice_simulated": false
+      },
+      "5a_off": {
+        "path": "sim/v3/poc_5a_sr_off.cir",
+        "sha256": "3f96f78f7e4490d0357e0fe3ece87c80bbfefa0554e2fe34eaf2d9308220d9c6",
+        "mode": "off",
+        "rload_ohm": 0.4,
+        "estimated_2v_output_a": 5.0,
+        "LTspice_simulated": false
+      },
+      "10a_on": {
+        "path": "sim/v3/poc_10a_sr_on.cir",
+        "sha256": "4488521f1fe4e93b4776323aa25641e95ca5bcd7e791a5f19ff6b1efa476a6f0",
+        "mode": "on",
+        "rload_ohm": 0.2,
+        "estimated_2v_output_a": 10.0,
+        "LTspice_simulated": false
+      },
+      "10a_off": {
+        "path": "sim/v3/poc_10a_sr_off.cir",
+        "sha256": "0936f417c13619403f66d2f7641e58b61608f7687f246c8a104060eedca078c5",
+        "mode": "off",
+        "rload_ohm": 0.2,
+        "estimated_2v_output_a": 10.0,
+        "LTspice_simulated": false
+      }
+    }
+  },
+  "case": "10a",
+  "status": "MODEL_SIMULATION_ONLY_NOT_FOR_HARDWARE",
+  "runs": {
+    "off": {
+      "status": "SIMULATION_ONLY",
+      "deck": "sim/v3/poc_10a_sr_off.cir",
+      "deck_sha256": "0936f417c13619403f66d2f7641e58b61608f7687f246c8a104060eedca078c5",
+      "log": "sim/v3/poc_10a_sr_off.log",
+      "log_sha256": "b8551cf19ee5a79df894ecf992f79f2a4a8ce7bde408966e9f40f3b0770107e9",
+      "raw": "sim/v3/poc_10a_sr_off.raw",
+      "raw_sha256": "359924fad809931b1dfc81007ac9823e56eb050e7decae8d91d620a145713b57",
+      "raw_bytes": 594080168,
+      "raw_evidence": {
+        "status": "RAW_ALL_FINITE_AND_TIME_COMPLETE",
+        "points": 6188319,
+        "variables": 23,
+        "bytes": 594080168,
+        "last_time_s": 0.008,
+        "hardware_qualified": false
+      },
+      "spice_executable": "D:\\ADI\\LTspice-26.0.2\\LTspice.exe",
+      "LTspice_batch_executed": true,
+      "engine_version": "LTspice 26.0.2",
+      "timeout_seconds": 7200,
+      "wall_seconds": 478.127,
+      "hardware_qualified": false,
+      "measures": {
+        "poc_vout_6_8_avg": 1.33054963566,
+        "poc_vout_max": 1.3313498497,
+        "poc_vout_min": 1.32864928246,
+        "poc_input_min": -5.33577775955,
+        "poc_input_max": 189.178451538,
+        "poc_primary_max": 4.52673578262,
+        "poc_rectifier_current_max": 13.0279369354,
+        "poc_gate_a1_max": 0.0,
+        "poc_gate_b1_max": 0.0
+      }
+    }
+  },
+  "failed_modes": {},
+  "timeout_seconds_per_mode": 7200,
+  "all_requested_modes_completed": true,
+  "comparison": {
+    "status": "SIMULATION_ONLY_NO_HARDWARE_RELEASE",
+    "fabrication_approved": false,
+    "performance_verified": false,
+    "modes": {
+      "off": {
+        "poc_vout_6_8_avg": 1.33054963566,
+        "poc_vout_max": 1.3313498497,
+        "poc_vout_min": 1.32864928246,
+        "poc_input_min": -5.33577775955,
+        "poc_input_max": 189.178451538,
+        "poc_primary_max": 4.52673578262,
+        "poc_rectifier_current_max": 13.0279369354,
+        "poc_gate_a1_max": 0.0,
+        "poc_gate_b1_max": 0.0
+      }
+    },
+    "comparison_available": false
+  },
+  "model_actual_load_points": {
+    "off": {
+      "resistance_ohm": 0.2,
+      "model_vout_avg_v": 1.33054963566,
+      "model_iout_avg_a": 6.6527481782999995,
+      "nominal_current_at_ideal_2v_a": 10.0,
+      "pout_dc_equivalent_only_w": 8.851811664774793,
+      "thermal_or_hardware_qualified": false
+    }
+  },
+  "fab_release": false
+}
