@@ -59,12 +59,49 @@ def audit() -> dict:
         actual = by_ref[r["ref"]]
         mpn = r["native_device"]
         physical = KNOWN[mpn]
-        if actual["manufacturer_id"] != mpn:
-            raise ValueError("captured native MPN shifted at " + r["ref"])
-        if actual["supplier_id"] != physical["supplier"]:
-            raise ValueError("captured LCSC supplier code shifted at " + r["ref"])
-        if actual["component"]["name"] != mpn:
-            raise ValueError("captured library device changed at " + r["ref"])
+        # R8 is the unsafe VCC12->RUN assembly pull-up. If the ACTUAL native
+        # capture says BOTH BOM and PCB are disabled, it is deliberately DNP.
+        # A DNP part is not a physical wrong-value purchase. A partial DNP
+        # (only one flag disabled) still counts as a blocker.
+        if (r["ref"] == "R8"
+                and actual["add_into_bom"] is False
+                and actual["add_into_pcb"] is False):
+            continue
+        # The register records the PRE-ECO library identity. A real manufacturer
+        # swap must not crash the audit, but it must also never disappear from
+        # the 51-row coverage merely because its old MPN has been changed.
+        # Without independently authenticated OEM electrical and footprint
+        # evidence we cannot infer the new device's physical value from text.
+        if (actual["manufacturer_id"] != mpn
+                or actual["supplier_id"] != physical["supplier"]
+                or not isinstance(actual.get("component"), dict)
+                or actual["component"].get("name") != mpn):
+            errors.append({
+                "ref": r["ref"],
+                "role": r["part_role"],
+                "priority": r["priority"],
+                "design_target": r["target_value"],
+                "actual_native_display": actual["value"],
+                "native_manufacturer_id": actual["manufacturer_id"],
+                "native_supplier_id": actual["supplier_id"],
+                "manufacturer_nominal": None,
+                "manufacturer_vs_design_target": None,
+                "display_vs_manufacturer": False,
+                "display_vs_design_target": actual["value"] != r["target_value"],
+                "add_into_bom": actual["add_into_bom"],
+                "add_into_pcb": actual["add_into_pcb"],
+                "datasheet_from_captured_native": actual["datasheet"],
+                "missing_real_native_cad_edit": False,
+                "change_classification": "UNVERIFIED_NATIVE_OEM_OR_LIBRARY_CHANGE",
+                "previous_native_mpn": mpn,
+                "manufacturer_identity_or_value_verified": False,
+                "required_action": (
+                    "Verify real OEM datasheet/value, supplier code, component "
+                    "library identity, pad mapping and original CAD persistence; "
+                    "do not count an unreviewed MPN replacement as a clean BOM"
+                ),
+            })
+            continue
         if physical["physical"] == r["target_value"]:
             continue
         errors.append({
@@ -90,7 +127,12 @@ def audit() -> dict:
     return {
         "status": "NATIVE_CAPTURE_NOT_FOR_FAB_BOM_AND_ENABLE_BLOCKED",
         "snapshot_source": "hardware/dcx_main/gen/native_inventory_raw.json",
-        "snapshot_age_note": "This is the captured Nov 6 unmodified original. A saved ECO on a COPY is not a modification of the active .eprj2.",
+        "snapshot_age_note": (
+            "This is the captured Nov 6 unmodified original. A saved ECO on a COPY is not a modification of the active .eprj2."
+            if not any(e.get("change_classification") for e in errors)
+            and (r8["add_into_bom"] is True or r8["add_into_pcb"] is True)
+            else "Capture differs from the original or contains R8 DNP; re-open the saved authoritative native project and independently verify BOM/PCB exports. This capture alone is not an EDA or fab signoff."
+        ),
         "register_source": "hardware/dcx_main/placeholder_eco.json",
         "native_components": len(components),
         "register_placeholder_rows": len(placeholder),
