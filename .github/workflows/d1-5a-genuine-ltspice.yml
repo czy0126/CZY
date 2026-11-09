@@ -17,7 +17,7 @@ jobs:
     env:
       POC_CASE: ${{ matrix.nominal_case }}
     runs-on: windows-2025
-    timeout-minutes: 48
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,9 +56,14 @@ jobs:
         shell: pwsh
         run: |
           python tools/ltspice_batch_smoke.py --ltspice "$env:LTSPICE" --out-dir sim/v3 --timeout-sec 25
-      - name: Run model case using real LTspice, SR on and SR off
+      - name: Attempt genuine SR_OFF baseline first, then SR_ON with bounded wall-clock budgets
         shell: pwsh
-        run: python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run
+        run: |
+          # This project has seen SR_OFF finish while SR_ON was still writing
+          # hundreds of MB. Each mode has a bounded 20-minute *process* limit,
+          # strictly below the 55-minute job budget including installation.
+          # OFF success + ON timeout is an INCOMPLETE comparison, never green.
+          python tools/run_poc_low_current.py --case $env:POC_CASE --mode both --run --timeout-sec 1200
       - name: Record environment provenance (not success proof)
         shell: pwsh
         if: always()
