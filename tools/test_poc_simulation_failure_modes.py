@@ -46,8 +46,9 @@ def test_failed_on_mode_still_executes_off_and_writes_explicit_partial_report(mo
     monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "MODEL_ONLY"})
     monkeypatch.setattr(sys, "argv", ["run_poc_low_current", "--case", "5a", "--mode", "both", "--run"])
     assert runner.main() == 2
-    assert calls == ["on", "off"]
+    assert calls == ["off", "on"]
     data = json.loads((tmp_path / "poc_5a_comparison_model_only.json").read_text())
+    assert data["attempt_order"] == ["off", "on"]
     assert data["status"] == "INCOMPLETE_OR_INVALID_SIMULATION"
     assert data["all_requested_modes_completed"] is False
     assert data["timeout_seconds_per_mode"] == runner.DEFAULT_TIMEOUT_SEC
