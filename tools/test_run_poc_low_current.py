@@ -135,8 +135,9 @@ def test_early_on_failure_avoids_full_on_but_retains_off_result(monkeypatch, tmp
         calls.append(mode)
         return {"measures": {key: 1.0 for key in runner.REQUIRED},
                 "status": "SIMULATION_ONLY"}
-    def mock_diag(scenario, exe, timeout_s):
+    def mock_diag(scenario, exe, timeout_s, case):
         assert scenario == "on_original"
+        assert case == "5a"
         (tmp_path / "_diag_5a_on_original.json").write_text(json.dumps({
             "diagnostic_run_validated": False, "hardware_qualified": False}))
         return 2
