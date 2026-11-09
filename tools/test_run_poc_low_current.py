@@ -117,3 +117,35 @@ def test_partial_log_sha_cannot_be_mistaken_for_success(monkeypatch, tmp_path):
     assert part[".log"]["sha256"] == __import__("hashlib").sha256(log.read_bytes()).hexdigest()
     assert part[".raw"]["size_bytes"] == len(raw.read_bytes())
     assert not part[".raw"]["validated_complete"]
+
+
+def test_early_on_failure_avoids_full_on_but_retains_off_result(monkeypatch, tmp_path):
+    import poc_early_solver_diagnostics as diagnostic
+    calls = []
+    monkeypatch.setattr(runner, "find_ltspice", lambda _: tmp_path / "LTspice.exe")
+    monkeypatch.setattr(runner.poc, "OUT", tmp_path)
+    monkeypatch.setattr(runner.poc, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.poc, "path",
+                        lambda case, mode: tmp_path / f"poc_{case}_sr_{mode}.cir")
+    monkeypatch.setattr(runner.poc, "manifest", lambda: {"status": "SOURCE_ONLY"})
+    monkeypatch.setattr(runner.sys, "argv",
+                        ["run_poc_low_current.py", "--case", "5a",
+                         "--mode", "both", "--run", "--early-on-screen"])
+    def mock_run(case, mode, exe, timeout_sec):
+        calls.append(mode)
+        return {"measures": {key: 1.0 for key in runner.REQUIRED},
+                "status": "SIMULATION_ONLY"}
+    def mock_diag(scenario, exe, timeout_s):
+        assert scenario == "on_original"
+        (tmp_path / "_diag_5a_on_original.json").write_text(json.dumps({
+            "diagnostic_run_validated": False, "hardware_qualified": False}))
+        return 2
+    monkeypatch.setattr(runner, "run_selected", mock_run)
+    monkeypatch.setattr(diagnostic, "run", mock_diag)
+    assert runner.main() == 2
+    assert calls == ["off"]
+    report = json.loads((tmp_path / "poc_5a_comparison_model_only.json").read_text())
+    assert report["early_on_screen"]["on"]["diagnostic_run_validated"] is False
+    assert "on" in report["failed_modes"]
+    assert report["partial_failed_mode_files_NOT_VALID_RESULTS"]["on"]["full_8ms_on"] == "NOT_ATTEMPTED"
+    assert report["fab_release"] is False
