@@ -266,7 +266,8 @@ def main(argv=None) -> int:
     if args.write:
         OUT.write_text(payload, encoding="utf-8", newline="\n")
     elif args.check:
-        if not OUT.is_file() or OUT.read_text(encoding="utf-8") != payload:
+        if not OUT.is_file() or json.loads(
+                OUT.read_text(encoding="utf-8")) != result:
             print("OEM sourcing screen not source-reproducible; regenerate --write")
             return 2
     else:
