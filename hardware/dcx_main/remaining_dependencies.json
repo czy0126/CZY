@@ -5,7 +5,7 @@
   "source": {
     "gate": {
       "path": "hardware/dcx_main/d1_fabrication_gate.json",
-      "sha256": "d159d01bab583b8669568a5a4cd22d2a914474dbf78b214098da40b61c8dad58",
+      "sha256": "efddcedbd637b447005b084f51a708fef55d5b23b65a1fc5302d20dbe9bed673",
       "status": "NOT_FOR_FAB",
       "release_approved": false
     },
@@ -15,9 +15,9 @@
     }
   },
   "summary": {
-    "blocking_checks": 6,
-    "checks_total": 11,
-    "exits": 7,
+    "blocking_checks": 7,
+    "checks_total": 12,
+    "exits": 8,
     "magnetics_without_a_physical_pad": 5,
     "placeholders": 61,
     "bom_rows_not_selected": 30,
@@ -126,6 +126,15 @@
       "next_command": "python tools/native_value_eco.py --check"
     },
     {
+      "id": "native_manufacturer_bom",
+      "gate_check": "native_manufacturer_ids_and_r8_dnp_verified",
+      "blocked_by": "39 captured OEM library manufacturer MPNs do not match the target electrical part; R8 is still in BOM=True and PCB=True. The captured record is historical, not today's EDA export.",
+      "evidence_file": "hardware/dcx_main/native_inventory_bom_gate.json",
+      "exit_kind": "GUI_DEVICE_CHANGE",
+      "exit": "in an EasyEDA Pro project COPY replace the actual library manufacturer devices and associated footprints/pads, not only display Value. Remove R8 from the populated BOM AND transferred PCB, then ensure RUN defaults low, independent fault inhibit is actually designed, and export the modified live native Manufacturer ID/Supplier ID/Value inventory, BOM and nets. Recompute its source-bound audit: zero known OEM conflicts and R8 false in both real output lists, then independently check package pins and signed fabrication evidence.",
+      "next_command": "python tools/native_inventory_bom_gate.py --check"
+    },
+    {
       "id": "native_erc",
       "gate_check": "native_erc_evidence",
       "blocked_by": "native_erc_approved.json is absent (manual_evidence.native_erc)",
@@ -165,6 +174,7 @@
   "blocking_checks": [
     "all_golden_refs_and_magnetic_physical_pads_verified",
     "no_electrical_placeholders_or_unselected_bom",
+    "native_manufacturer_ids_and_r8_dnp_verified",
     "native_erc_evidence",
     "routed_pcb_to_schematic_evidence",
     "manufacturing_package_evidence",
