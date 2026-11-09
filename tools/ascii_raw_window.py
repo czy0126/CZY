@@ -14,6 +14,7 @@ to named columns.  It only understands the ASCII format that `-ascii` writes.
 
 Usage:
     python tools/ascii_raw_window.py sim/v2/x.raw --from-ms 5.4 "V(oc)" "V(out)"
+    python tools/ascii_raw_window.py sim/v3/y.raw --step-profile --bin-us 100
 """
 
 from __future__ import annotations
@@ -217,15 +218,102 @@ def read_window(path: str | Path, names: list[str], t0: float,
     return t_arr[mask], {name: out[name][mask] for name in names}
 
 
+def step_profile(path: str | Path, t0: float = 0.0, t1: float | None = None,
+                 bin_s: float = 100e-6,
+                 thresholds: tuple[float, ...] = (1e-9, 1e-10, 1e-11, 1e-12),
+                 ) -> dict:
+    """Summarise the solver timestep against simulated time for one raw.
+
+    A converged solve of this converter should hold the deck's max step.  When
+    it does not, the ``.log`` only names the *last* point ("Time step too
+    small ... trouble with node X"), which reads like a single event at that
+    instant.  The profile shows the step was already at the floor long before,
+    so the reported instant is where the solver gave up, not where it first
+    struggled.  ``collapses`` keeps, per threshold, the first step that falls
+    below it -- that is the onset, and it is what a claim about "when it broke"
+    has to quote.
+
+    The time axis is read with an empty trace list so no other column is
+    allocated; a 10 M-point raw costs one float per record.
+
+    TRAP: a ``uic`` deck starts at t=0 with a ~1e-13 s first step, so the
+    earliest ``collapses`` entry is always that start, not an instability.
+    Pass ``t0`` past the initial transient before calling anything a collapse.
+    """
+    t, _ = read_window(path, [], t0, t1)
+    if t.size < 2:
+        raise ValueError(f"{Path(path).name}: {t.size} record(s); need >= 2 for a step")
+    dt = np.diff(t)
+    if np.any(dt <= 0.0):
+        raise ValueError(f"{Path(path).name}: record times are not increasing")
+
+    starts = t[:-1]
+    bins = []
+    if bin_s > 0:
+        index = np.floor((starts - starts[0]) / bin_s).astype(np.int64)
+        order = np.argsort(index, kind="stable")
+        bounds = np.flatnonzero(np.diff(index[order])) + 1
+        for chunk in np.split(order, bounds):
+            if chunk.size == 0:
+                continue
+            bins.append({
+                "t_start": float(t[chunk[0]]),
+                "t_end": float(t[chunk[-1] + 1]),
+                "steps": int(chunk.size),
+                "dt_min": float(dt[chunk].min()),
+                "dt_max": float(dt[chunk].max()),
+            })
+
+    collapses = []
+    for threshold in thresholds:
+        hit = np.flatnonzero(dt < threshold)
+        if hit.size:
+            k = int(hit[0])
+            collapses.append({"threshold": float(threshold),
+                              "t": float(t[k + 1]), "dt": float(dt[k])})
+
+    return {
+        "records": int(t.size),
+        "t_first": float(t[0]),
+        "t_last": float(t[-1]),
+        "dt_min": float(dt.min()),
+        "dt_max": float(dt.max()),
+        "dt_median": float(np.median(dt)),
+        "bins": bins,
+        "collapses": collapses,
+    }
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("raw", type=Path)
-    ap.add_argument("--from-ms", type=float, required=True)
+    ap.add_argument("--from-ms", type=float, default=0.0)
     ap.add_argument("--to-ms", type=float, default=None)
-    ap.add_argument("traces", nargs="+")
+    ap.add_argument("--step-profile", action="store_true",
+                    help="report timestep vs simulated time instead of trace ranges")
+    ap.add_argument("--bin-us", type=float, default=100.0)
+    ap.add_argument("traces", nargs="*")
     args = ap.parse_args()
-    t, data = read_window(args.raw, args.traces, args.from_ms * 1e-3,
-                          None if args.to_ms is None else args.to_ms * 1e-3)
+    t0 = args.from_ms * 1e-3
+    t1 = None if args.to_ms is None else args.to_ms * 1e-3
+
+    if args.step_profile:
+        profile = step_profile(args.raw, t0, t1, bin_s=args.bin_us * 1e-6)
+        print(f"{profile['records']} records, {profile['t_first'] * 1e3:.6f}.."
+              f"{profile['t_last'] * 1e3:.6f} ms  dt median={profile['dt_median']:.3e}"
+              f"  min={profile['dt_min']:.3e}  max={profile['dt_max']:.3e}")
+        for hit in profile["collapses"]:
+            print(f"  first step < {hit['threshold']:g} s at t={hit['t']:.9e} s"
+                  f"  (dt={hit['dt']:.3e})")
+        for b in profile["bins"]:
+            print(f"  t=[{b['t_start'] * 1e3:9.4f},{b['t_end'] * 1e3:9.4f}) ms"
+                  f"  steps={b['steps']:9d}  dt_min={b['dt_min']:.3e}"
+                  f"  dt_max={b['dt_max']:.3e}")
+        return
+
+    if not args.traces:
+        ap.error("give at least one trace, or --step-profile")
+    t, data = read_window(args.raw, args.traces, t0, t1)
     print(f"{t.size} points, {t[0] * 1e3:.4f}..{t[-1] * 1e3:.4f} ms")
     for name in args.traces:
         print(f"  {name}: min={np.nanmin(data[name]):.6g} max={np.nanmax(data[name]):.6g}")
