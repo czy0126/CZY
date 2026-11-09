@@ -219,8 +219,8 @@ Bovl1 ovl1 0 V=min(max(-I(VSa1),0),max(-I(VSb1),0))
 Bovg1 ovg1 0 V=if(V(ga1)>2,if(V(gb1)>2,1,0),0)
 
 .tran 0 8m 0 10n uic
-.save V(out) V(sw) V(ss) V(aux) V(reg) V(oc) V(vin0) I(Lr) I(Vbus)
-+ V(a1) V(b1) V(ga1) V(gb1) V(ga4) V(gb4)
+.save V(out) V(sw) V(ss) V(aux) V(reg) V(oc) V(vin0) I(Lr) I(Vbus) I(Vaux)
++ V(a1) V(b1) V(ga1) V(gb1) V(ga4) V(gb4) V(sgnd)
 + I(VSa1) I(VSb1) I(VSa4) I(VSb4)
 .meas tran VOUT_MAX MAX V(out) FROM=0 TO=8m
 .meas tran VOUT_2M FIND V(out) AT=2m
