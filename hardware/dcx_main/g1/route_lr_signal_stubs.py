@@ -1,8 +1,8 @@
 """Prepare exactly SIX same-net low-current signal stubs on the applied native G1.
 
 Only the six safe, direct short segments are allowed (no magnet terminals, no
-100 A output rail, no 8 SR gate/VD Kelvin links). Four planned connections to
-VCC12/VCC12_S decoupling and the controller RUN link are placed on layer 1.
+100 A output rail, no 8 SR gate/VD Kelvin links). Five supply/decoupling
+connections and the controller RUN link are placed on layer 1.
 
 Only SOURCE is validated now; actual native EasyEDA routing is separate and
 must be applied to a NEW copy on a licensed/installed Windows EDA host:
@@ -19,9 +19,10 @@ import argparse
 import hashlib
 import json
 import math
-from collections import Counter
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / 'tools'))
 import route_driver_eco as R
 import audit_driver_eco as E
 import g1_magnetics_envelope as geom
