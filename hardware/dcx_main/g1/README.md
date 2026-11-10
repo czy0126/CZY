@@ -1,9 +1,25 @@
-# G1 原生带网 PCB（非投板）— 2026-11-09
+# G1 原生带网 PCB（非投板）
 
-> **2026-11-10 下一增量：六条低电流短连线已完成布局预检，尚未写入原生 PCB。** 基于 [刚合入的 Lr 重排原生板](dcx_main_board_g1_lr_repack.eprj2) 的保存重开读回，选出 **VCC12：C101.1↔U2.1、C102.1↔U1.7；VCC12_S：C105.1↔U3.7、C107.1↔U5.7、C108.1↔U6.7；RUN：R7.1↔U2.6**，均为第1层、0.20mm宽的控制/去耦短线，实际两端PAD坐标直接从原生读回得到，单段约2.53–3.75mm。脚本逐个检查真实299焊盘、已有98线/18孔和设计自有磁件空间与本板0.152mm规则的距离，保留源CAD/网表身份与禁止投板标志。[路由与原生重开校验器](route_lr_signal_stubs.py) · [独立原生复制/应用/DRC执行器](apply_lr_signal_stubs.py)。
-> 
-> **具体执行**：在仓库根目录先运行 `python hardware/dcx_main/g1/route_lr_signal_stubs.py --check`；具有 Windows EasyEDA Pro/lceda-pro 的工作站可运行 `python hardware/dcx_main/g1/apply_lr_signal_stubs.py --apply`，自动复制为新的 `dcx_main_board_g1_signal_stubs.eprj2`，保存关闭重开后核验未改原98线和18过孔，并重新运行原生 DRC。原生DRC **必须比206条连接错误减少、不能出现物理规则错误或新增网表错误**；失败保留候选，不得声称通过。**C106.1→U4.7 直连与 U4.8（另一网络）实物焊盘交叉，本次特意不画，必须另行选底层/过孔或绕线方案。**这六条不涉及Lr未知实际端子、四磁件真实绕组、SR门极Kelvin、100A VOUT+PGND铜排、3D冷板、独立保护。完成离线预检并不代表已在实际EasyEDA中加铜；当前仍 NOT_FOR_FAB。
+> **从此处进入 [D1 唯一当前交接面板](../../../docs/D1_CURRENT.md)；本文件后半部分是原生 PCB 形成过程的历史证据。** 即使下面过去有“六条下一增量”的表述，**当前脚本已由 PR #84 扩展到九条**。不得从旧过程片段重开同一任务。
 
+## 当前唯一待执行原生操作（2026-11-10）
+
+原生父版 `dcx_main_board_g1_lr_repack.eprj2` 已真实保存、关闭、重开；77 个 PCB 元件 / 299 PAD / 65 NET / 98 LINE / 18 VIA。现有真实原生 DRC 为 **206 Connection、1 Netlist、0 Physical**；不表示可制造。
+
+已完成的 **9 条 0.20 mm、L1、0 新过孔**低电流短线离线预检：`C101.1→U2.1`、`C102.1→U1.7`、`C103.1→C104.1`（VCC12），`C105.1→U3.7`、`C107.1→U5.7`、`C108.1→U6.7`（VCC12_S），`R7.1→U2.6`（RUN），`R15.2→R16.1`（OC1），`R16.2→R17.1`（OC）。**这些线尚未真正写入原生板。** `C106.1→U4.7` 的直连因与其它网络焊盘干涉仍明确排除。
+
+在授权 Windows EasyEDA Pro 工作站、关闭其他占用工程的编辑器后，从仓库根目录执行：
+
+```powershell
+python hardware/dcx_main/g1/apply_lr_signal_stubs.py --check
+python hardware/dcx_main/g1/apply_lr_signal_stubs.py --apply
+```
+
+仅当新候选 `dcx_main_board_g1_signal_stubs.eprj2` 的**原生保存/关闭/重开、铜线读回、原生 DRC 回执**真实存在，并证明连接错误下降、不新增 Physical/Netlist 错误，才算 A 线进展。下一项是 1 条实际 schematic↔PCB Netlist Error 的 GUI 差异定位，以及 100 A 的 4+8 条旧窄颈实体铜路重构；24 个磁件自由 PAD 仍不可当实物端子。所有结论保持 `NOT_FOR_FAB`。
+
+---
+
+## 形成过程记录（历史，不再逐条当作最新指令）
 
 > **2026-11-10 最新原生板布局与审查源纠正**：上一版 PR #77 的 Lr 包络检查从最初没有铜的 `g1_pads.json` 取元件位置，而忽略了后续已经落盘的 U2/C103/C104/R18/R19 等驱动元件移动。已改从最新真实保存、关闭、重开后的 `kelvin_readback.json` 取 77 器件、299 焊盘、98 铜线、18 过孔的位置与形状，原初基板只用于提取板框与四变压器轮廓。**Lr ELP38/I38 38×25.4mm 的 XY 包络在这张冻结父板上覆盖 11 个其他位号、22 只焊盘**，不是先前按旧版图算出的 15 / 30。脚本以 Git blob SHA 锁定该冻结父板（`SOURCE_READBACK`），不再跟着"当前活跃板"漂移；XY 重叠不能直接认定三维实体碰撞。
 >
