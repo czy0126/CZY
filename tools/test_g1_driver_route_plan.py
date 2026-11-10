@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -185,3 +186,29 @@ def test_line_off_the_plan_is_rejected():
     lines = [{"net": "N1", "layer": 1, "width": 0.2, "a": (0, 0), "b": (10, 0)},
              {"net": "N1", "layer": 1, "width": 0.2, "a": (0, 0.5), "b": (10, 0.5)}]
     assert route.verify_lines(plan, lines)
+
+
+def test_the_sr_source_leads_block_a_layer_one_gate_route_at_this_placement():
+    """GA1-GA4 / GB1-GB4 are not routed, and at the concept placement they
+    cannot be on layer 1: each gate resistor sits left of its SR's PGND source
+    lead (x = 13.401 ...) and the gate pad right of it.  The only crossing is
+    the 0.554 mm slot between the SR tab (bottom 83.614) and the pin row (top
+    84.168) -- 0.3 mm needs 0.604 mm -- and the lead's tip clearance closes
+    even the 0.2 mm band.  If the SR local layout moves, this test should fail:
+    that is the moment to route the eight nets (README §5 驱动对).
+    """
+    readback = G1 / "kelvin_readback.json"
+    pads = route.load_pads(readback)
+    leads = [s for s in route.lines_from_readback(readback)
+             if s["net"] == "PGND" and abs((s.get("width") or 0) - 1.0) < 1e-3
+             and 13.0 < s["a"][0] < 14.0]
+    assert len(leads) == 1
+    assert math.isclose(leads[0]["a"][0], 13.401, abs_tol=1e-3)
+    assert math.isclose(leads[0]["a"][1], 84.470, abs_tol=1e-3)
+    path = [(11.13, 88.001), (11.13, 83.88), (15.905, 83.88), (15.905, 84.818)]
+    cand = [{"net": "GA1", "width": 0.2, "layer": 1, "a": p, "b": q}
+            for p, q in zip(path, path[1:])]
+    conflicts = route.find_conflicts(pads, [*leads, *cand])
+    assert {c["other"] for c in conflicts} == {"GA1"}
+    assert all(c["kind"] == "trace" for c in conflicts)
+    assert any(c["needed_mm"] > 0.7 for c in conflicts)
