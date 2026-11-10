@@ -56,7 +56,7 @@ def test_fourth_sr_decoupler_excluded_due_to_real_obstacle():
     segment={"net":"VCC12_S","layer":1,"width":.2,"a":a,"b":b}
     obstacles=S.R.find_conflicts(pads,[segment])
     assert any(o["kind"]=="pad" and o["other"]=="U4.8" for o in obstacles)
-    assert any(o["kind"]=="pad" and o["other"]=="C106.2" for o in obstacles)
+    assert all(o["other"]!="C106.2" for o in obstacles)  # near but not below 0.152mm floor
 
 
 def test_js_is_six_real_native_line_creations_without_vias():
