@@ -33,6 +33,7 @@ import g1_lr_repack_ready as R
 import g1_magnetics_envelope as G
 import apply_increment as A
 import run_driver_drc as D
+import audit_driver_eco as E
 
 SOURCE=HERE/"dcx_main_board_g1_kelvin.eprj2"
 TARGET=HERE/"dcx_main_board_g1_lr_repack.eprj2"
@@ -67,24 +68,33 @@ def native_verify(original:dict, fresh:dict, planned:dict) -> dict:
             or len(v.get("lines",[]))!=98 or len(v.get("vias",[]))!=18
             or v.get("polylines")!=38):
         raise ValueError("ECO silently changed footprint/copper/net counts")
-    # More than counts: serializing the same x/y/net/width ensures no old line
-    # or via disappears and no unreviewed replacement is accepted.
+    # More than counts: same copper identity and nets; allow only the native
+    # editor's documented <0.25 mil coordinate re-rounding on reopen.
     fields=[("lines",("net","layer","x1","y1","x2","y2","width")),
             ("vias",("net","x","y","hole","diameter"))]
     for attr,keys in fields:
-        normalized=lambda d: sorted(tuple(d.get(k) for k in keys)
-                                     for d in dct[attr])
-        dct=original
-        left=sorted(tuple(p.get(k) for k in keys) for p in original[attr])
-        right=sorted(tuple(p.get(k) for k in keys) for p in v[attr])
-        if left!=right:
-            raise ValueError(f"Native existing {attr} altered by placement ECO")
+        old_items={row["id"]:row for row in original[attr]}
+        new_items={row["id"]:row for row in v[attr]}
+        if set(old_items)!=set(new_items):
+            raise ValueError(f"Native existing {attr} IDs were replaced")
+        for ident,a in old_items.items():
+            b=new_items[ident]
+            for key in keys:
+                if key in {"net","layer"}:
+                    if a.get(key)!=b.get(key):
+                        raise ValueError(f"Native {attr} {ident} changed {key}")
+                elif abs(float(a[key])-float(b[key]))>0.25:
+                    raise ValueError(f"Native {attr} {ident} moved or resized {key}")
     old_pad_nets=sorted((p.get("ref") or "",str(p["PadNumber"]),p.get("Net") or "")
                         for p in original["pads"])
     new_pad_nets=sorted((p.get("ref") or "",str(p["PadNumber"]),p.get("Net") or "")
                         for p in v["pads"])
     if old_pad_nets!=new_pad_nets:
         raise ValueError("An existing pad/net/designator changed during native move")
+    oldorig={k:(p["X"],p["Y"]) for k,p in before.items()}
+    neworig={k:(p["X"],p["Y"]) for k,p in after.items()}
+    if not E.pads_match(original["pads"],oldorig,v["pads"],neworig):
+        raise ValueError("Native pad geometry/footprint/pin changed during ECO")
     candidate={"board":G.load_current()["board"],
                "tbd_zones":G.load_current()["tbd_zones"],
                "pads":v["pads"],"components":v["components"],
