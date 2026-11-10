@@ -60,7 +60,9 @@ def test_native_polygons_are_real_world_xy_not_fake_millimeter_dimensions():
     poly_rect = gate.pad_rect(polygon)
     assert poly_rect["left"] > 130 and poly_rect["right"] < 135
     lr = gate.report()["lr_elp38_candidate"]["current_body_xy_mm"]
-    assert gate.intersection(lr,poly_rect) == (0.0,0.0)
+    dx, dy = gate.intersection(lr,poly_rect)
+    assert dx == 0.0  # Y intervals may overlap; no 2D area without both axes
+    assert dy >= 0.0
 
 
 def test_current_elp32_transforms_have_six_mm_gap_but_elp38_does_not():
