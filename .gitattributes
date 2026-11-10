@@ -30,3 +30,9 @@ sim/v3/poc_*.cir text eol=lf
 # log_sha256 in the evidence JSON becomes unverifiable on a fresh clone.
 # Store the run's bytes exactly.
 sim/v3/poc_*.log -text
+
+# Native EasyEDA G1 evidence is SHA/source-locked. Windows core.autocrlf=true
+# must not change committed JSON blobs or the original opaque CAD archive.
+hardware/dcx_main/g1/*.json text eol=lf
+hardware/dcx_main/gen/*_raw.json text eol=lf
+hardware/dcx_main/**/*.eprj2 -text
