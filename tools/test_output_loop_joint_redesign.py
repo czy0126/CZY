@@ -70,6 +70,12 @@ def test_source_bound_concept_report_has_no_fake_native_design_or_measurements()
     assert "enumerate every transition" in out["next_eda_action"]
     assert "Kelvin 4-wire" in out["required_measurement"]
     assert out["status"].endswith("NOT_FOR_FAB")
+    screen = out["current_native_g1_feeder_screen"]
+    assert screen["physical_copper_replacement_required"] is True
+    assert screen["candidate_bars_and_joint_arithmetic_includes_these_necks"] is False
+    assert screen["even_210um_exceeds_whole_loop_budget"] is True
+    assert screen["optimistic_min_combined_necks_uohm"] > out["design_basis_uohm_both_rails"]
+    assert screen["fab_approved"] is False
 
 
 def test_committed_joint_redesign_snapshot_matches_generator():

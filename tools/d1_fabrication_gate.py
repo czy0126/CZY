@@ -38,6 +38,14 @@ import native_inventory_bom_gate as native_bom
 NATIVE_ERC = HW / "native_erc_approved.json"
 PCB_NET_DIFF = HW / "pcb_to_schematic_verified.json"
 FAB_APPROVAL = HW / "fabrication_approval.json"
+# The output geometry is a high-current design item, not just board connectivity.
+# Require a source-hashed, signed TWO-RAIL current/temperature review before
+# pre-fabrication signoff. Bench 4-wire resistance belongs to post-fab G4.
+FAB_EVIDENCE = (
+    "gerber_path", "bom_path", "pcb_drc_path", "stackup_path",
+    "output_two_rail_current_thermal_review_path",
+    "reviewer", "revision",
+)
 # This P0 design review is separate from ERC/PCB/DFM and from hardware rating.
 PROTECTION_APPROVAL = HW / "protection_design_approved.json"
 
@@ -286,8 +294,7 @@ def build() -> dict:
     ]
     native_erc = _manual_gate(NATIVE_ERC, ("report_path", "reviewer", "revision"))
     pcb_diff = _manual_gate(PCB_NET_DIFF, ("report_path", "reviewer", "revision"))
-    fab_signoff = _manual_gate(FAB_APPROVAL, ("gerber_path", "bom_path", "pcb_drc_path",
-                                               "stackup_path", "reviewer", "revision"))
+    fab_signoff = _manual_gate(FAB_APPROVAL, FAB_EVIDENCE)
     protection_design = _protection_design_gate()
 
     logical_ok = (

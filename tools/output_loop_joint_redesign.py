@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 
 from connector_budget import DESIGN_BASIS_OHM
+from g1_current_neck_screen import report as native_neck_report
 from output_loop_budget import (
     CONTACT_SCENARIOS_UOHM, CURRENT_A, RESERVED_PCB_UOHM,
     TEMPERATURE_C, ROOT, loop_resistance, report as existing_report,
@@ -71,6 +72,11 @@ def evaluate(name: str, contacts: int, width: float,
 
 def report() -> dict:
     baseline = existing_report()
+    g1 = native_neck_report()
+    scenarios = g1["scenarios"]
+    if (len(scenarios) != 4 or not all(not x["within_complete_rail_budget"] for x in scenarios)
+            or g1["fabrication_approved"] is not False):
+        raise ValueError("G1 native high-current neck design changed; re-review output joints")
     if (baseline["status"] != "CONCEPT_SCREEN_ONLY_NOT_FOR_FAB"
             or baseline["total_unverified_joints"] != 4
             or baseline["number_of_current_rails"] != 2):
@@ -96,6 +102,16 @@ def report() -> dict:
             "any_unmodelled_weld_solder_bond_or_external_connector_must_be_counted": True,
         },
         "candidates": rows,
+        "current_native_g1_feeder_screen": {
+            "status": "MUST_REPLACE_NATIVE_G1_NARROW_FEEDERS_BEFORE_G2",
+            "reference": "hardware/dcx_main/g1/g1_100a_copper_neck_screen.json",
+            "native_cad_sha256": g1["native_cad_sha256"],
+            "optimistic_min_combined_necks_uohm": min(x["combined_necks_uohm"] for x in scenarios),
+            "even_210um_exceeds_whole_loop_budget": all(not x["within_complete_rail_budget"] for x in scenarios),
+            "candidate_bars_and_joint_arithmetic_includes_these_necks": False,
+            "physical_copper_replacement_required": True,
+            "fab_approved": False,
+        },
         "next_eda_action": (
             "CAD engineer must identify VOUT and PGND from SR-Cout pads to "
             "external load as two explicit physical rails, draw separately "
@@ -103,7 +119,9 @@ def report() -> dict:
             "inlay/busbar option; enumerate every transition, bolt, solder "
             "bond and Kelvin probe point. A missing interface cannot be "
             "considered 0-ohm; allocate any inseparable joints to the PCB "
-            "reserve. No pad, clearance or ≤16mm height frozen yet."
+            "reserve. Existing native G1 1mm CTAP/SR feeder necks must be replaced "
+            "with a short high-cross-section interface, not merely thicker foil. "
+            "No pad, clearance or ≤16mm height frozen yet."
         ),
         "required_measurement": (
             "Kelvin 4-wire resistance for full positive+return loop and "
@@ -118,7 +136,9 @@ def report() -> dict:
             "Current crowding, neckdowns, skin/proximity and thermal rise unknown.",
             "One counted contact/pole requires a manufacturable monolithic or "
             "integrated interface; other joints still resistive and must be budgeted.",
-            "No original EasyEDA native routing / 3D envelope or supplier DFM proof.",
+            "The actual reopened G1 native EasyEDA PCB has 1mm CTAP/SR current necks "
+            "that fail the complete-loop copper budget even with assumed 210um copper; "
+            "3D assembly and supplier DFM remain unverified.",
             "R8, OEM manufacturer MPNs, magnetic pads and hardware fault shutoff remain blocked.",
         ],
     }

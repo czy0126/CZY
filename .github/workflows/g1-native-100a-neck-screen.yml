@@ -1,0 +1,41 @@
+name: D1 G1 native 100A copper neck screen
+on:
+  pull_request:
+    paths:
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_native_report.json'
+      - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
+      - 'hardware/dcx_main/g1/g1_100a_copper_neck_screen.json'
+      - 'tools/g1_current_neck_screen.py'
+      - 'tools/test_g1_current_neck_screen.py'
+      - '.github/workflows/g1-native-100a-neck-screen.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-copper-neck-fail-closed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test harness
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Verify exact saved/reopened PCB, electrical copper dimensions, loss JSON and mutation guards
+        run: |
+          python tools/g1_current_neck_screen.py --check
+          python -m pytest -q tools/test_g1_current_neck_screen.py
+      - name: Explicitly retain fabrication gate veto
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          gate=json.loads(Path("hardware/dcx_main/d1_fabrication_gate.json").read_text())
+          neck=json.loads(Path("hardware/dcx_main/g1/g1_100a_copper_neck_screen.json").read_text())
+          assert gate["status"]=="NOT_FOR_FAB" and gate["release_approved"] is False
+          assert neck["fabrication_approved"] is False
+          assert all(not x["within_complete_rail_budget"] for x in neck["scenarios"])
+          PY
+# Green CI means source-grounded screening, never 100 A conductor/thermal approval.
