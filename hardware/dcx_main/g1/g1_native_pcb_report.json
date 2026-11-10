@@ -1765,6 +1765,20 @@
    "truth_status": "DESIGN_OWNED_G1_CONCEPT_NOT_PHYSICAL_PAD"
   }
  ],
+ "provisional_pad_gaps": {
+  "method": "rotated pad bounding boxes, edge-to-edge distance in mm; a screen, not a DRC",
+  "min_between_provisional_mm": 1.999,
+  "min_between_provisional": [
+   "PRI_23",
+   "SEC2_A"
+  ],
+  "min_to_footprint_pad_mm": 1.65,
+  "min_to_footprint_pad": [
+   "CS2",
+   "D_BT.1"
+  ],
+  "status": "GEOMETRY_SCREEN_NOT_DRC"
+ },
  "blocked": [
   {
    "ref": "T1",
@@ -2768,14 +2782,14 @@
  },
  "discrepancies": [
   {
-   "topic": "concept pad x-span vs A5 magnetic envelope",
-   "detail": "packet offsets are +-17.0 mm (T1-T4) and +-12.0 mm (CT) from the A5 centre, while the A5 envelopes are 31.75 mm and 20.0 mm wide (half-widths 15.875 / 10.0 mm) -- the provisional terminals therefore sit 1.125 mm / 2.0 mm outside their own TBD rectangle",
-   "status": "DERIVED_FROM_A5_ENVELOPE_NOT_VENDOR_DATA"
+   "topic": "concept pad x-span vs the TBD rectangle (core body)",
+   "detail": "the provisional terminals span 34.001 mm (T1-T4) and 24.000 mm (CT) in x; the board's TBD rectangles are 31.75 mm and 20.00 mm wide and the concept core bodies are 32.0 mm and 20.0 mm.  The rectangles are core-body outlines (the A6 pocket), not device envelopes, so terminals that leave the core are expected; the measured edge distances are 1.999 mm between two provisional terminals of different magnetics (PRI_23 / SEC2_A) and 1.650 mm from a provisional terminal to any component pad (CS2 / D_BT.1), against the board's own 0.152 mm Track/Via spacing rule.  Bounding boxes, not DRC.",
+   "status": "TERMINALS_EXIT_THE_CORE_BODY_BY_DESIGN_NOT_VENDOR_DATA"
   },
   {
    "topic": "Lr +2 concept pads not placed",
-   "detail": "D1_DESIGN_Lr_N1 / _N2 ride the native Lr footprint (nets CT_LR and PRI_T1 already have footprint pads); the packet puts them +-20 mm apart while the native footprint's two pads are 9 mm apart.  Placing both would double-count those nets, so only the native pads exist.",
-   "status": "INTENTIONAL_NOT_PLACED"
+   "detail": "D1_DESIGN_Lr_N1 / _N2 ride the native Lr footprint (nets CT_LR and PRI_T1 already have footprint pads).  The packet's Lr pitch is now 9.0 mm, identical to that footprint (pad centres 610.2 -> 964.6 mil); the packet rows stay 2x2 mm concept pads and are not placed, because placing them would double-count those nets.  The earlier 40 mm span described nothing that existed in CAD.",
+   "status": "INTENTIONAL_NOT_PLACED_NOW_MATCHES_NATIVE_PITCH"
   },
   {
    "topic": "footprint truth for the five magnetics",

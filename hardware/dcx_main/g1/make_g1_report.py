@@ -32,6 +32,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 MIL = 39.37007874015748
 PACKET = ROOT / "design/v3/maxwell/generated_concept/design_owned_G1_pads_24plus2.csv"
+CONCEPT = ROOT / "design/v3/maxwell/diy_magnetics_concept.json"
 BOARD = HERE / "dcx_main_board_g1.eprj2"
 REPORT = HERE / "g1_native_pcb_report.json"
 
@@ -74,6 +75,13 @@ def overlaps(a: tuple[float, float, float, float], b: tuple[float, float, float,
              tol: float = 1e-4) -> bool:
     return (min(a[2], b[2]) - max(a[0], b[0]) > tol
             and min(a[3], b[3]) - max(a[1], b[1]) > tol)
+
+
+def gap_mm(a: tuple[float, float, float, float], b: tuple[float, float, float, float]) -> float:
+    """Edge-to-edge distance between two axis-aligned boxes; 0.0 when they touch."""
+    dx = max(0.0, a[0] - b[2], b[0] - a[2])
+    dy = max(0.0, a[1] - b[3], b[1] - a[3])
+    return math.hypot(dx, dy)
 
 
 def load_packet() -> list[dict]:
@@ -281,20 +289,71 @@ def main() -> int:
     extent = {"x_mm": [round(min(b[0] for b in xs), 2), round(max(b[2] for b in xs), 2)],
               "y_mm": [round(min(b[1] for b in xs), 2), round(max(b[3] for b in xs), 2)]}
 
+    # ---- provisional terminal clearance ------------------------------------
+    # The TBD rectangles are core bodies (and the A6 pocket outline), NOT device
+    # envelopes: winding terminals are expected to leave the core.  What must
+    # hold is that no provisional pad touches another pad or a component.
+    pp = (math.inf, None)
+    for i, a in enumerate(free_pads):
+        for b in free_pads[i + 1:]:
+            d = gap_mm(pad_bbox_mm(a), pad_bbox_mm(b))
+            if d < pp[0]:
+                pp = (d, sorted([a["Net"], b["Net"]]))
+    pf = (math.inf, None)
+    for a in free_pads:
+        for b in footprint_pads:
+            d = gap_mm(pad_bbox_mm(a), pad_bbox_mm(b))
+            if d < pf[0]:
+                pf = (d, [a["Net"], f"{b['ref']}.{b['PadNumber']}"])
+    assert pp[0] > 0 and pf[0] > 0, (pp, pf)
+    provisional_gaps = {
+        "method": "rotated pad bounding boxes, edge-to-edge distance in mm; a screen, not a DRC",
+        "min_between_provisional_mm": round(pp[0], 3),
+        "min_between_provisional": pp[1],
+        "min_to_footprint_pad_mm": round(pf[0], 3),
+        "min_to_footprint_pad": pf[1],
+        "status": "GEOMETRY_SCREEN_NOT_DRC",
+    }
+
     # ---- A5 envelope vs packet envelope ------------------------------------
+    concept = {c["type"]: c["geometry"] for c in
+               json.loads(CONCEPT.read_text(encoding="utf-8"))["cases"]}
+    zone_by_ref = {z["ref"]: z for z in zones}
+    spans = {ref: max(r["x_mm"] for r in placed if r["ref"] == ref)
+                  - min(r["x_mm"] for r in placed if r["ref"] == ref)
+             for ref in ("T1", "T2", "T3", "T4", "CT")}
+    t_spans = [spans[r] for r in ("T1", "T2", "T3", "T4")]
+    # The editor stores mil at 0.1, so the four readbacks differ by one
+    # quantization step (34.000 vs 34.001); the spread is not a placement drift.
+    assert max(t_spans) - min(t_spans) < 0.01, spans
+    t_span, ct_span = max(t_spans), spans["CT"]
+    t_zone, ct_zone = zone_by_ref["T1"]["w_mm"], zone_by_ref["CT"]["w_mm"]
+    t_body = concept["T_ELP32"]["core_outer_x_mm"]
+    ct_body = concept["CT_CONCEPT"]["outer_diameter_mm"]
     discrepancies = [
-        {"topic": "concept pad x-span vs A5 magnetic envelope",
-         "detail": "packet offsets are +-17.0 mm (T1-T4) and +-12.0 mm (CT) from the A5 "
-                   "centre, while the A5 envelopes are 31.75 mm and 20.0 mm wide "
-                   "(half-widths 15.875 / 10.0 mm) -- the provisional terminals therefore "
-                   "sit 1.125 mm / 2.0 mm outside their own TBD rectangle",
-         "status": "DERIVED_FROM_A5_ENVELOPE_NOT_VENDOR_DATA"},
+        {"topic": "concept pad x-span vs the TBD rectangle (core body)",
+         "detail": f"the provisional terminals span {t_span:.3f} mm (T1-T4) and "
+                   f"{ct_span:.3f} mm (CT) in x; the board's TBD rectangles are "
+                   f"{t_zone:.2f} mm and {ct_zone:.2f} mm wide and the concept core bodies "
+                   f"are {t_body:.1f} mm and {ct_body:.1f} mm.  The rectangles are core-body "
+                   "outlines (the A6 pocket), not device envelopes, so terminals that leave "
+                   "the core are expected; the measured edge distances are "
+                   f"{provisional_gaps['min_between_provisional_mm']:.3f} mm between two "
+                   f"provisional terminals of different magnetics "
+                   f"({' / '.join(provisional_gaps['min_between_provisional'])}) and "
+                   f"{provisional_gaps['min_to_footprint_pad_mm']:.3f} mm from a provisional "
+                   f"terminal to any component pad "
+                   f"({' / '.join(provisional_gaps['min_to_footprint_pad'])}), against the "
+                   "board's own 0.152 mm Track/Via spacing rule.  Bounding boxes, not DRC.",
+         "status": "TERMINALS_EXIT_THE_CORE_BODY_BY_DESIGN_NOT_VENDOR_DATA"},
         {"topic": "Lr +2 concept pads not placed",
          "detail": "D1_DESIGN_Lr_N1 / _N2 ride the native Lr footprint (nets CT_LR and "
-                   "PRI_T1 already have footprint pads); the packet puts them +-20 mm apart "
-                   "while the native footprint's two pads are 9 mm apart.  Placing both "
-                   "would double-count those nets, so only the native pads exist.",
-         "status": "INTENTIONAL_NOT_PLACED"},
+                   "PRI_T1 already have footprint pads).  The packet's Lr pitch is now "
+                   "9.0 mm, identical to that footprint (pad centres 610.2 -> 964.6 mil); "
+                   "the packet rows stay 2x2 mm concept pads and are not placed, because "
+                   "placing them would double-count those nets.  The earlier 40 mm span "
+                   "described nothing that existed in CAD.",
+         "status": "INTENTIONAL_NOT_PLACED_NOW_MATCHES_NATIVE_PITCH"},
         {"topic": "footprint truth for the five magnetics",
          "detail": "components T1-T4/CT are NOT placed as PCB components; only their "
                    "terminals exist as free pads.  There is no component, no silkscreen, "
@@ -331,6 +390,7 @@ def main() -> int:
         },
         "provisional_pad_total": len(placed),
         "provisional_pads": placed,
+        "provisional_pad_gaps": provisional_gaps,
         "blocked": blocked,
         "blocked_pad_total": sum(b["physical_pad_total"] for b in blocked),
         "nets_total": len(nets),

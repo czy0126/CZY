@@ -167,6 +167,8 @@
 |  | 窗口净高 = 半芯总高 − I 片厚（数据手册不给单列尺寸） | 磁件叠层 | MAGNETICS_BOM.md §磁件询价单 |
 | ★ | 变压器的磁通不许用 `L·I/(N·Ae)`（那是 Lr 的电感筛查） | 写 T 单 | MAGNETICS_BOM.md §磁件询价单 |
 |  | 询价单与 `vendor_terminal_request.json` 的 24 个逻辑端子必须逐项相同 | 改磁件接口 | MAGNETICS_BOM.md §磁件询价单 |
+|  | 24+2 包的 Lr 端距由板上原生封装决定（9.0 mm），不是概念里的 40 mm | 改 G1 端子包 | MAGNETICS_BOM.md §磁件询价单 |
+|  | TBD 矩形是磁芯本体/A6 沉槽，不是器件包络；磁件端子出芯是设计意图 | 改 G1 磁件焊盘 | MAGNETICS_BOM.md §磁件询价单 |
 |  | 气隙窗口必须按电感排序（L_min ↔ 最宽气隙），返回 `(narrow, wide)` | 写加工输入页 | MAGNETICS_BOM.md §磁件加工输入页 |
 |  | 物理端子一律写「待商家提供」，不编焊盘号 | 写加工输入页 | MAGNETICS_BOM.md §磁件加工输入页 |
 |  | 磁密只能写「仿真波形积分」或解析值，不写实测 | 写加工输入页 | MAGNETICS_BOM.md §磁件加工输入页 |

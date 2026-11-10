@@ -80,7 +80,7 @@ def main() -> int:
         'stroke="#f1c40f" stroke-width="0.5"/>',
     ]
 
-    # TBD zones: the six magnetic envelopes, still to be locked.
+    # TBD zones: the six magnetic core bodies (A6 pocket outlines), not envelopes.
     for z in data["tbd_zones"]:
         out.append(
             f'<rect x="{z["x_mm"]:.2f}" y="{z["y_mm"]:.2f}" width="{z["w_mm"]:.2f}" '

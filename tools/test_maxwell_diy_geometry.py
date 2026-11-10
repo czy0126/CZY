@@ -139,6 +139,65 @@ def test_prepare_returns_local_only_surrogate_contract(tmp_path,monkeypatch):
     assert ev["target_not_guaranteed_by_gap_or_solver"] is True
 
 
+G1 = Path(__file__).resolve().parents[1] / "hardware/dcx_main/g1"
+
+
+def test_lr_packet_pitch_matches_the_native_footprint():
+    """The +2 packet rows must describe the Lr land that is on the board."""
+    rows = {r["logical_terminal"]: r for r in pads.rows() if r["ref"] == "Lr"}
+    pitch = abs(float(rows["N2"]["x_mm"]) - float(rows["N1"]["x_mm"]))
+    readback = json.loads((G1 / "g1_pads.json").read_text(encoding="utf-8"))
+    mil_x = sorted(p["X"] for p in readback["pads"] if p.get("ref") == "Lr")
+    assert len(mil_x) == 2
+    native = (mil_x[1] - mil_x[0]) / 39.37007874015748
+    assert pitch == pytest.approx(native, abs=0.01)
+
+
+def _edge_gap(a, b):
+    dx = max(0.0, a[0] - b[2], b[0] - a[2])
+    dy = max(0.0, a[1] - b[3], b[1] - a[3])
+    return (dx * dx + dy * dy) ** 0.5
+
+
+def _bbox(p):
+    """Independent bounding box (mil -> mm, board Y down) for the cross-check."""
+    import math
+
+    x, y = p["X"] / 39.37007874015748, -p["Y"] / 39.37007874015748
+    shape = p.get("Pad") or []
+    if shape and shape[0] == "POLYGON":
+        nums = [v for v in shape[1] if isinstance(v, (int, float))]
+        w = (max(nums[0::2]) - min(nums[0::2])) / 39.37007874015748
+        h = (max(nums[1::2]) - min(nums[1::2])) / 39.37007874015748
+    else:
+        w, h = shape[1] / 39.37007874015748, shape[2] / 39.37007874015748
+    a = math.radians(p.get("Rotation") or 0)
+    ca, sa = abs(math.cos(a)), abs(math.sin(a))
+    hw, hh = (w * ca + h * sa) / 2, (w * sa + h * ca) / 2
+    return x - hw, y - hh, x + hw, y + hh
+
+
+def test_report_states_the_terminal_exits_with_measured_clearances():
+    """The report must describe the TBD rectangles as core bodies, not claim the
+    pads fit inside them, and the clearance figures must be reproducible here."""
+    report = json.loads((G1 / "g1_native_pcb_report.json").read_text(encoding="utf-8"))
+    topics = {d["status"]: d for d in report["discrepancies"]}
+    assert "TERMINALS_EXIT_THE_CORE_BODY_BY_DESIGN_NOT_VENDOR_DATA" in topics
+    assert "INTENTIONAL_NOT_PLACED_NOW_MATCHES_NATIVE_PITCH" in topics
+    assert "1.125 mm" not in topics["TERMINALS_EXIT_THE_CORE_BODY_BY_DESIGN_NOT_VENDOR_DATA"]["detail"]
+
+    pads_json = json.loads((G1 / "g1_pads.json").read_text(encoding="utf-8"))
+    free = [p for p in pads_json["pads"] if p.get("ref") is None]
+    footprint = [p for p in pads_json["pads"] if p.get("ref") is not None]
+    pp = min(_edge_gap(_bbox(a), _bbox(b))
+             for i, a in enumerate(free) for b in free[i + 1:])
+    pf = min(_edge_gap(_bbox(a), _bbox(b)) for a in free for b in footprint)
+    gaps = report["provisional_pad_gaps"]
+    assert gaps["min_between_provisional_mm"] == pytest.approx(pp, abs=1e-3)
+    assert gaps["min_to_footprint_pad_mm"] == pytest.approx(pf, abs=1e-3)
+    assert pp > 0.152 and pf > 0.152  # board Track/Via spacing rule
+
+
 def test_solve_requires_explicit_synthetic_acknowledgement(tmp_path):
     pytest.importorskip("cadquery")
     geom.build_report(geom.OUT,write=True)

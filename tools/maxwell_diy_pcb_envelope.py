@@ -23,7 +23,13 @@ TCOORD = {"PRI_A": (-17.0, -8.0), "PRI_B": (-17.0, 8.0),
           "CTAP": (17.0, 0.0)}
 CTCOORD = {"PRI_A": (-12.0, -4.0), "PRI_B": (-12.0, 4.0),
            "SEC_A": (12.0, -4.0), "SEC_B": (12.0, 4.0)}
-LRCOORD = {"N1": (-20.0, 0.0), "N2": (20.0, 0.0)}
+#: The native Lr footprint is the interface of record on the G1 board: its two
+#: pads are 9.0 mm apart (readback ``g1_pads.json``: X 610.2 -> 964.6 mil), and
+#: they already carry CT_LR / PRI_T1.  The packet used to put the +2 concept
+#: pads 40 mm apart, which no CAD ever placed and which contradicted that
+#: footprint; it now describes the same 9.0 mm pitch.  If an in-house winding
+#: needs wider exits, the footprint changes first and this constant follows.
+LRCOORD = {"N1": (-4.5, 0.0), "N2": (4.5, 0.0)}
 FIELDS = ["ref", "concept_pad_id", "logical_terminal", "pcb_net",
           "dot_expectation", "x_mm", "y_mm", "pad_width_mm",
           "pad_height_mm", "truth_status"]

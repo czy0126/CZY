@@ -59,6 +59,13 @@
   波形表里写死"按各绕组实际电压积分"。
 - 询价单与 `vendor_terminal_request.json` 的 24 个逻辑端子**必须逐项相同**
   （测试比对 `(terminal, net, dot)` 三元组），否则会出现第七个端子。
+- **24+2 包（`tools/maxwell_diy_pcb_envelope.py`）只描述已经在板上的接口**：Lr 的 +2 行
+  端距取原生封装的 **9.0 mm**（`hardware/dcx_main/g1/g1_pads.json` 焊盘中心 610.2 → 964.6 mil），
+  不是早期概念写的 40 mm——那个跨度没有任何 CAD 落过，已撤回；要改 Lr 端距先改封装。
+  T/CT 的 TBD 矩形是**磁芯本体**（也是 A6 沉槽轮廓），不是器件包络：绕组端子出芯是设计意图，
+  不是"越界"。真正要查的是端子别碰到别的东西——`g1_native_pcb_report.json` 的
+  `provisional_pad_gaps` 记读回实测最小边缘距离（2026-11-10：临时间 1.999 mm、临时到器件焊盘
+  1.650 mm，相对板规则 0.152 mm），改焊盘前先看它；那是包围盒筛查，不是 DRC。
 - **`templates/staged_magnetics_16mm_rfq.csv` 的 3.65 mm 与设计包的 3.51 mm 是两个口径**：
   前者 `source_status=MANUFACTURER_CATALOG_CORE_ONLY`，只减裸芯+I 片；后者补上胶/标签/压块/沉槽
   （净 +0.14 mm）才是全叠层。两个数都对，**不许互改**——模板是"目录件本身还剩多少"，
