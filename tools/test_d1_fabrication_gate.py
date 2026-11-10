@@ -354,3 +354,34 @@ def test_native_r8_double_dnp_keeps_independent_protection_gate_blocked(
     assert result["checks"]["native_manufacturer_ids_and_r8_dnp_verified"] is False
     assert result["checks"]["independent_fault_shutdown_design_evidence"] is False
     assert "independent_fault_shutdown_design_evidence" in result["blockers"]
+
+
+
+def test_current_design_signoff_requires_two_rail_pre_fab_review(tmp_path, monkeypatch):
+    """A full Gerber/BOM/DRC/stackup package must not bypass 100 A copper design."""
+    import hashlib
+    monkeypatch.setattr(gate, "ROOT", tmp_path)
+    evidence = tmp_path / "hardware/dcx_main/fabrication_approval.json"
+    evidence.parent.mkdir(parents=True)
+    doc = {"approved": True, "reviewer": "fixture-only", "revision": "fixture-only"}
+    for field in gate.FAB_EVIDENCE:
+        if not field.endswith("_path"):
+            continue
+        target = tmp_path / "synthetic_evidence" / (field + ".txt")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("not an actual D1 fabrication approval", encoding="utf-8")
+        doc[field] = target.relative_to(tmp_path).as_posix()
+        doc[field[:-5] + "_sha256"] = hashlib.sha256(target.read_bytes()).hexdigest()
+    key = "output_two_rail_current_thermal_review_path"
+    assert key in gate.FAB_EVIDENCE
+    original = doc.pop(key)
+    doc.pop(key[:-5] + "_sha256")
+    evidence.write_text(json.dumps(doc), encoding="utf-8")
+    blocked = gate._manual_gate(evidence, gate.FAB_EVIDENCE)
+    assert blocked["passed"] is False
+    doc[key] = original
+    target = tmp_path / original
+    doc[key[:-5] + "_sha256"] = hashlib.sha256(target.read_bytes()).hexdigest()
+    evidence.write_text(json.dumps(doc), encoding="utf-8")
+    # Metadata/hashes are only one pre-fab evidence contract, not physical validation.
+    assert gate._manual_gate(evidence, gate.FAB_EVIDENCE)["passed"] is True
