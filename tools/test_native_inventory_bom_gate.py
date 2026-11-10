@@ -48,8 +48,55 @@ def test_missing_protected_native_ref_fails_closed(tmp_path, monkeypatch):
     p = tmp_path / "native.json"
     p.write_text(json.dumps(fixture), encoding="utf-8")
     monkeypatch.setattr(mod, "INVENTORY", p)
-    with pytest.raises(ValueError, match="missing native refs"):
+    # A missing R8 now takes the rename path first, which is strictly stricter:
+    # it needs the registered library device AND both DNP flags to accept it.
+    with pytest.raises(ValueError, match="missing native R8"):
         mod.audit()
+
+
+G1_CAPTURE = mod.ROOT / "hardware/dcx_main/g1/g1_native_inventory_raw.json"
+G1_REPORT = mod.ROOT / "hardware/dcx_main/g1/g1_native_inventory_bom_gate.json"
+
+
+def test_default_snapshot_still_identifies_r8_by_designator():
+    d = mod.audit()
+    assert d["r8_identified_by"] == "designator"
+    assert d["r8_capture_designator"] == "R8"
+    assert d["original_r8_in_bom"] is True and d["original_r8_in_pcb"] is True
+
+
+def test_g1_capture_resolves_the_renamed_r8_to_its_double_dnp_row():
+    """The applied ECO renumbers the excluded part; that must still audit."""
+    d = mod.audit(G1_CAPTURE)
+    assert d["native_components"] == 83
+    assert d["r8_identified_by"] == "double-dnp-designator-fallback"
+    assert d["r8_capture_designator"] == "R6"
+    assert d["original_r8_in_bom"] is False
+    assert d["original_r8_in_pcb"] is False
+    assert d["snapshot_source"] == "hardware/dcx_main/g1/g1_native_inventory_raw.json"
+    assert d["manufacturing_approved"] is False
+
+
+def test_g1_report_reproduces_from_the_committed_capture():
+    """The committed G1 report must be derivable from the committed capture.
+
+    The default candidate keeps auditing the Nov 6 snapshot, so without this
+    the G1 report could silently drift into a hand-edited artifact.
+    """
+    assert json.loads(G1_REPORT.read_text(encoding="utf-8")) == mod.audit(G1_CAPTURE)
+    assert mod.main(["--check", "--inventory", str(G1_CAPTURE),
+                     "--out", str(G1_REPORT)]) == 0
+
+
+def test_a_renamed_but_populated_pullup_cannot_pass_as_r8(tmp_path):
+    """Renaming must not be usable to make a live enable look DNP'd."""
+    fixture = json.loads(G1_CAPTURE.read_text(encoding="utf-8"))
+    r6 = next(c for c in fixture["value"]["components"] if c["ref"] == "R6")
+    r6["add_into_bom"] = True
+    p = tmp_path / "renamed_but_populated.json"
+    p.write_text(json.dumps(fixture), encoding="utf-8")
+    with pytest.raises(ValueError, match="missing native R8"):
+        mod.audit(p)
 
 
 def _edited_capture(tmp_path, monkeypatch, ref, updates):

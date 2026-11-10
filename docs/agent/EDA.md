@@ -9,6 +9,7 @@
 
 - 嘉立创 EDA（LCEDA Pro）
 - 装配排除 ECO（R8，`hardware/dcx_main/gen/eco_r8_bom_pcb_inhibit.js`）
+- 在 G1 候选板上重读清册（`hardware/dcx_main/g1/export_native_inventory.py`）
 - 原生主板的取值 ECO（`tools/native_value_eco.py`）
 - KiCad 10.0 CLI（headless，与 LCEDA 互补）
 - D0 十路保护板的铜（已按 issue #36 延后）
@@ -127,6 +128,27 @@
 - **关掉的/headless 的 session 会占着工程文件**：客户端进程没退干净时，仓库里那份
   `.eprj2` 对 `cp`/`git` 都是 `WinError 32`（另一个程序正在使用此文件）。这不是文件坏了，
   等后端进程退出即可；**不要为此去删工程或重启编辑器之外的进程**。
+
+### 在 G1 候选板上重读清册（2026-11-10 已实跑）
+
+`tools/native_inventory_bom_gate.py` 默认审计的是 **Nov 6 的主板快照**
+（`hardware/dcx_main/gen/native_inventory_raw.json`），而当前交付板是 G1 候选。
+重读用 `hardware/dcx_main/g1/export_native_inventory.py`：`--path` 只读打开
+`dcx_main_board_g1_lr_repack.eprj2`（前后 sha256 必须不变），先**在同一 session** 设
+`globalThis.CZY_EXPECTED_PROJECT`，再跑 `gen/read_native_inventory.js` 本体——
+不复制第二份读取器，两个 `globalThis.CZY_*` 默认值保持不变，`docs/agent/COMMANDS.md`
+里那条老命令仍然逐字节有效。
+
+- **G1 的读数里没有位号 R8，`R6` 两个标志都是 false**——正是上面那条 rename，
+  不是"R8 被删了"，也不是"R8 还开着"。`g1_native_inventory_raw.json` 是 83 个器件。
+- **闸门按"注册库器件 + BOM/PCB 双 false + 唯一命中"解析改名**：
+  `--inventory <capture> --out <report>` 会在位号查不到时走这条路，命中写进
+  `r8_identified_by: double-dnp-designator-fallback` / `r8_capture_designator: R6`；
+  改名但**有装**（任一标志 true）的一行匹配不上，照样 `missing native R8` fail closed。
+- **默认候选没有改指向**：`tools/d1_fabrication_gate.py` 的 `real_r8_dnp` 决定要不要把
+  网表里 R8（VCC12→RUN）从"无条件上拉"里排除，而 `gen/netlist_export_raw.json` 是 **ECO 前**
+  的（有 R8、没有 R6）。让清册指向 G1 就等于拿"ECO 后清册"放行"ECO 前网表"，
+  所以 G1 报告另存一份、只作读数证据，不参与放行判定。
 
 ### 原生主板的取值 ECO（`tools/native_value_eco.py`）
 

@@ -348,3 +348,20 @@ mil / Y 取负换算。24 个自由端子焊盘也在覆盖内：它们不是手
 - **Lr 位置冻结后，下一步是证据而不是继续布线**：重排后的 Lr 及 11 件邻件坐标已由 `g1_magnetic_envelope_gate.json` 标为 `freeze_existing_lr_placement: true`。下一份实质 G1 交付应是三维安装/间隙实测或供应商图纸、绕组出口与端子的设计所有件，然后才在改动后的板上接高频谐振网/门极铜。磁件端子是设计所有的暂定PAD，绝缘/安装高度和冷板接口仍需要设计复核；G1不要求等待厂商报价，但G2/G3仍禁止直接投板。
 
 **几何审查边界**：这是保守的**XY包络重叠**检测，不能凭平面重叠直接断言三维碰撞；机械预留值是工程规划而非厂家的法定间距。报告本身不修改原生`.eprj2`，不会虚构磁件实体、Maxwell 求解结果、100A 载流能力或制造批准。原生 DRC 的0物理错误和本包络门禁的P0阻塞两者可以同时真实存在。
+
+## 2026-11-10 新增：在 G1 候选板上重读原生清册（只读，不是 BOM 批准）
+
+`tools/native_inventory_bom_gate.py` 原先只审计 **Nov 6 的主板快照**，而当前交付板是 G1 候选。本轮补上了从**活板**重读的那一步：
+
+```bash
+python hardware/dcx_main/g1/export_native_inventory.py
+# 可选：--board <path> --out <path>
+python tools/native_inventory_bom_gate.py --write \
+    --inventory hardware/dcx_main/g1/g1_native_inventory_raw.json \
+    --out hardware/dcx_main/g1/g1_native_inventory_bom_gate.json
+```
+
+- **读数**：`dcx_main_board_g1_lr_repack.eprj2`（2 572 288 字节，`552628f0…f87e`）以 `--path` 只读打开，**83 个器件**，前后 sha256 一致；读数落进 `g1_native_inventory_raw.json`，回执是同目录的 `g1_inventory_{session_open,session_ping,identity,read,close}.json`。两次独立运行给出逐字段相同的 `components`。
+- **没有位号 R8，但 `R6` 在**：面板排除 ECO 会把被排除件重新编号（R8→R6，引脚不变），`R6` 的 `Add into BOM` / `Convert to PCB` 都是 false。这不是"R8 丢了"，也不是"R8 还开着"；`export_native_inventory.py` 的摘要因此只报 `r8_by_designator: null` + `double_dnp_refs: ["R6"]`，不起名。
+- **闸门报告的解析**：`g1_native_inventory_bom_gate.json` 里 `r8_identified_by: double-dnp-designator-fallback`、`r8_capture_designator: R6`、`original_r8_in_bom/pcb: false`，其余 **38 条**厂家 MPN/取值冲突仍在，`manufacturing_approved: false`。
+- **这不是放行依据**：`tools/d1_fabrication_gate.py` 仍审计 Nov 6 默认快照，G1 报告单独成文件。原因写在 `docs/agent/EDA.md §在 G1 候选板上重读清册`：P0 预检要拿"ECO 后清册"去判"ECO 前网表"，两者混用会凭空放行。切默认指向需要另一次评审。
