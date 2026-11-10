@@ -16,6 +16,7 @@
 | 原生重开读回 | [`lr_repack_readback.json`](../hardware/dcx_main/g1/lr_repack_readback.json)、[`lr_repack_drc_raw.json`](../hardware/dcx_main/g1/lr_repack_drc_raw.json)：77 个 PCB 位号、299 焊盘、65 网络、98 铜线、18 过孔；206 条 Connection、1 条 Netlist、0 条 Physical 错误 |
 | 实际 G1 原理图清册 | [`g1_native_inventory_raw.json`](../hardware/dcx_main/g1/g1_native_inventory_raw.json) / [审计](../hardware/dcx_main/g1/g1_native_inventory_bom_gate.json)：83 个原理图元件、38 项 MPN/目标值冲突，原 R8 被排除并在清册中重编号为 R6（BOM/PCB 双 false） |
 | 当前 原理图↔PCB 差异 | [`g1_schematic_pcb_alignment.json`](../hardware/dcx_main/g1/g1_schematic_pcb_alignment.json)：83−77 对应 CT/T1–T4 的 24 个**匿名临时 PAD**及不应装配的 R6；275 个在板 PAD 与**旧版**网表一致，但**当前** 1 条原生 Netlist Error 的根因未确定 |
+| G1 **活网表**（原理图侧） | [`g1_live_netlist.json`](../hardware/dcx_main/g1/g1_live_netlist.json)：83 位号的 `{位号:{脚:网}}` 由编辑器图元重建（`--path` 打开时**所有**制造导出都是 `null`），先在参考板逐脚复现 Nov 6 导出才采信；与旧导出只差 `R8→R6`。是读数，**不是** Netlist Error 的根因结论，也不是 ERC/DRC |
 | 100 A 铜路 | [`g1_100a_copper_neck_screen.json`](../hardware/dcx_main/g1/g1_100a_copper_neck_screen.json)：4 条 VOUT + 8 条 PGND 的 1 mm 旧窄颈，不满足既定两极 150 µΩ 内部预算；必须改实体铜路，不得只改报告 |
 
 > **切忌混用两套审计：** 根目录 `hardware/dcx_main/d1_fabrication_gate.json` 当前仍从**旧版主板**相关清册/网表重建，因此其中原 R8、39 条厂商冲突不是当前 G1 实际清册的逐项读数；不要用旧门禁的元件字段推翻 G1 的 R6 双 DNP 实际读回，也不能用 G1 的读回直接把旧门禁置绿。安全总状态始终保持 `NOT_FOR_FAB`，直到同一 CAD 修订版完成全链审核。
