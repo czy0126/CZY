@@ -199,7 +199,38 @@ G1 读数（`hardware/dcx_main/g1/g1_live_netlist.json`）：83 个位号，
 
 **边界**：这是**原理图侧**。那条唯一的 EasyEDA `Netlist Error`（"PCB and schematic netlist
 does not match"）是**原理图 vs PCB** 的差，本工具**没有**解决它，报告里写死
-`schematic_versus_pcb_netlist_match_proven: false`；也不是 ERC/DRC 通过或投板批准。
+`schematic_versus_pcb_netlist_match_proven: false`；逐脚差见下一节（2026-11-10），仍不是
+ERC/DRC 通过或投板批准。
+
+### 原理图↔PCB 逐脚差异：对比器 PCB 列不可用，用 PCB 自己的网表导出（2026-11-10 已实跑）
+
+`hardware/dcx_main/g1/read_import_changes.py`（对比器读数）、`probe_pcb_netlist_model.py`
+（PCB 网表模型探针）、`export_pcb_netlist.py`（PCB 网表导出）、`tools/g1_import_changes_diff.py`
+（配对报告）四个只读步骤，全部在候选副本上，前后 SHA 一致。
+
+- **`sys_Tool.netlistComparison(schUuid, pcbUuid)` 能吃裸 uuid，但 PCB 列在本类板上恒空**：
+  66 行（65 NET + 1 COMPONENT），**每一条 NET 的 `netlist2Name` 都是 `[]`**，连逐脚完全相同的
+  47 个网也一样。传 `{projectUuid, documentUuid}` 对象返回 `undefined`；反序传参得到严格镜像
+  （`net1: []`）；原理图自比、PCB 自比都是 0。**所以它不是差异清单**，只能证明"编辑器认为
+  PCB 侧没有可配对的脚"。
+- **PCB 网表并不空**：同一份副本上 `pcb_Net.getNetlist('JLCEDA')` 返回 **165 556 字符 / 5 531 行**，
+  77 个器件、62 个有名网络、254 个已分配脚；`getAllPrimitivesByNet`（VOUT 23 / PGND 105 /
+  SEC1_A 7）与 `getAllNetsName()`（65）都非空。注意它和 `getNetlistFile` 不同——后者在
+  `--path` 打开的工程上恒 `null`（上一节）。
+- **逐脚差异（`g1_import_changes_diff.json`）**：原理图 65 网 / 278 脚，PCB 62 网 / 254 脚；
+  **只有 24 个脚不配对，全部是 CT(4) 与 T1–T4(各 5) 的逻辑端**；PCB 侧不配对脚 **0**；
+  `PRI_12`/`PRI_23`/`PRI_34` 只因脚全在磁件上而只存在于原理图；47 个共有网逐脚完全相同；
+  两侧都未分配的 5 个脚（`D_CT1–D_CT4`、`U2` 的 2 脚，即上一节那 5 个 `""`）完全一致。
+  结论只到这里：**配平不等于实体端子/DOT**（见 D-07），DRC 只报条数、不能逐项映射。
+- **`pinInfoMap[pin].net == ""` 是"未分配"，不是 `null`**；按 `None` 统计会得到 0。
+- **一个 invoke 只问一个有把握的问题**：把 `getAllNetsName`+`getAllNets`+5×
+  `getAllPrimitivesByNet`+3×`getNetlist` 捆在一个体里，**三次都 59 750 ms 超时**，整次结果全丢；
+  `lceda-pro stop` + 重开后拆成每次一问，分别 9.6 s / 2 ms / 5 ms / 1 ms / 1.0–1.2 s。
+  这也修正了 §嘉立创 EDA 里"只读导出在同一 session 重试有效"的旧说法：**本 case 重试 3 次全败，
+  真正生效的是停服务重开**。
+- **诊断入口**：`lceda-pro doctor`（endpoint/connected）、`lceda-pro session list`（本机
+  7 个 headless 会话全 `closed` 仍不算可用）、`lceda-pro stop`（优雅停服务，四个 helper 进程一起退）。
+  `sch_Netlist.getNetlist()` 不带参数在本 build 抛 `i is not iterable`（且已标 deprecated）。
 
 ### 原生主板的取值 ECO（`tools/native_value_eco.py`）
 

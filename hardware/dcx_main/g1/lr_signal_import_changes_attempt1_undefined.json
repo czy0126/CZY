@@ -1,0 +1,42 @@
+{
+  "status": "NATIVE_IMPORT_CHANGES_DIFF_READBACK",
+  "attempted": "read-only: opened a copy, compared schematic/PCB netlists, never saved",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "candidate_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256_after": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "editor_ok": true,
+  "api": "eda.sys_Tool.netlistComparison(schematic, pcb)",
+  "board": {
+    "name": "Board1",
+    "projectUuid": "a251a8380e085090a7c5aaffe1a1c90b2eec9fbbc76a2800fc3a949df625befa",
+    "schUuid": "578d520019a373e9",
+    "pcbUuid": "2f6fa2d508d3f9a8"
+  },
+  "count": null,
+  "readback_error": null,
+  "normalize_error": "netlist comparison returned str, not a list",
+  "normalized": [],
+  "raw": {
+    "ok": true,
+    "value": {
+      "steps": [
+        "schematic open",
+        "pcb open"
+      ],
+      "board": {
+        "name": "Board1",
+        "projectUuid": "a251a8380e085090a7c5aaffe1a1c90b2eec9fbbc76a2800fc3a949df625befa",
+        "schUuid": "578d520019a373e9",
+        "pcbUuid": "2f6fa2d508d3f9a8"
+      },
+      "count": null,
+      "diff": "undefined",
+      "api": "eda.sys_Tool.netlistComparison(schematic, pcb)",
+      "normalize_error": "netlist comparison returned str, not a list"
+    },
+    "logs": [],
+    "durationMs": 8010
+  },
+  "not_erc_not_drc_not_fab": true
+}

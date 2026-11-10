@@ -1,0 +1,414 @@
+{
+  "status": "PCB_NETLIST_MODEL_PROBE",
+  "attempted": "read-only: opened a copy, asked the PCB API one question per invoke, never saved",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "candidate_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256_after": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "editor_ok": true,
+  "board": {
+    "name": "Board1",
+    "pcbUuid": "2f6fa2d508d3f9a8"
+  },
+  "net_names": {
+    "type": "object",
+    "count": 65,
+    "sample": [
+      "GH_DRV",
+      "GH",
+      "GL_DRV",
+      "GL",
+      "HB"
+    ],
+    "names": [
+      "GH_DRV",
+      "GH",
+      "GL_DRV",
+      "GL",
+      "HB",
+      "VCC12",
+      "PGND",
+      "SW",
+      "VOUT",
+      "CS1",
+      "CS2",
+      "VCC12_S",
+      "RUN",
+      "OC1",
+      "OC",
+      "PRI_T1",
+      "PRI_12",
+      "SEC1_A",
+      "SEC1_B",
+      "PRI_23",
+      "SEC2_A",
+      "SEC2_B",
+      "PRI_34",
+      "SEC3_A",
+      "SEC3_B",
+      "SEC4_A",
+      "SEC4_B",
+      "CR_CT",
+      "CT_LR",
+      "REG4",
+      "OCM",
+      "SS",
+      "REG1",
+      "REG2",
+      "REG3",
+      "VIN_P",
+      "OCD",
+      "DT",
+      "GD2",
+      "RT",
+      "GA1",
+      "VG1_A",
+      "GB1",
+      "VG1_B",
+      "GA2",
+      "VG2_A",
+      "GB2",
+      "VG2_B",
+      "GA3",
+      "VG3_A",
+      "GB3",
+      "VG3_B",
+      "GA4",
+      "VG4_A",
+      "GB4",
+      "VG4_B",
+      "VD1_A",
+      "VD1_B",
+      "VD2_A",
+      "VD2_B",
+      "VD3_A",
+      "VD3_B",
+      "VD4_A",
+      "VD4_B",
+      "GD1"
+    ]
+  },
+  "primitives_by_net": {
+    "VOUT": {
+      "type": "object",
+      "count": 23
+    },
+    "PGND": {
+      "type": "object",
+      "count": 105
+    },
+    "SEC1_A": {
+      "type": "object",
+      "count": 7
+    },
+    "PRI_T1": {
+      "type": "object",
+      "count": 2
+    },
+    "CR_CT": {
+      "type": "object",
+      "count": 2
+    }
+  },
+  "all_nets": {
+    "type": "object",
+    "count": 65,
+    "with_length": 15,
+    "sample": [
+      {
+        "net": "GH_DRV",
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "alpha": 1
+        },
+        "length": 285.5658129990018
+      },
+      {
+        "net": "GH",
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "alpha": 1
+        },
+        "length": 362.0261576713159
+      },
+      {
+        "net": "GL_DRV",
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "alpha": 1
+        },
+        "length": 216.03465796349028
+      }
+    ]
+  },
+  "pcb_netlist": {
+    "label": "JLCEDA",
+    "type": "string",
+    "length": 165556,
+    "lines": 5531,
+    "head": "{\n  \"version\": \"2.0.0\",\n  \"projectId\": \"dc6bd544dad2e01704d7a25113fc6c990d17ef0879fd2a495f1ae7a45cb89341\",\n  \"components\": {\n    \"UNIQUEC10\": {\n      \"props\": {\n        \"Footprint\": \"66b60566e7ca28f9\",\n        \"Designator\": \"C10\",\n        \"LCSC Part Name\": \"100nF ±10% 50V\",\n        \"Supplier Part\": \"C1591\",\n        \"Manufacturer\": \"SAMSUNG(三星)\",\n        \"Manufacturer Part\": \"CL10B104KB8NNNC\",\n    "
+  },
+  "sch_netlist": {
+    "error": "i is not iterable"
+  },
+  "native_readback_summary": {
+    "components": 77,
+    "pads": 299,
+    "net_names": 65,
+    "pads_with_empty_net_name": 5,
+    "distinct_pad_nets": 65,
+    "anonymous_pads": 24,
+    "anonymous_pad_terminals": [
+      "CTAP",
+      "PRI_A",
+      "PRI_B",
+      "SEC_A",
+      "SEC_B"
+    ],
+    "net_names_absent_from_pads": []
+  },
+  "probes": [
+    {
+      "probe": "board_and_open_pcb",
+      "ok": true,
+      "error": null,
+      "value": {
+        "name": "Board1",
+        "pcbUuid": "2f6fa2d508d3f9a8"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "ok": true,
+          "error": null,
+          "durationMs": 9180
+        }
+      ],
+      "body": "return await (async () => {\n  let info, board;\n  for (let i = 0; i < 20 && !board; i++) {\n    info = await eda.dmt_Project.getCurrentProjectInfo();\n    board = (info && info.data || []).find(b => b && b.schematic && b.schematic.uuid && b.pcb && b.pcb.uuid);\n    if (!board) await new Promise(r => setTimeout(r, 500));\n  }\n  if (!board) throw new Error('schematic/PCB pair missing');\n  await eda.dmt_EditorControl.openDocument(board.pcb.uuid);\n  await new Promise(r => setTimeout(r, 2500));\n  return { name: board.name, pcbUuid: board.pcb.uuid };\n})();"
+    },
+    {
+      "probe": "net_names",
+      "ok": true,
+      "error": null,
+      "value": {
+        "type": "object",
+        "count": 65,
+        "sample": [
+          "GH_DRV",
+          "GH",
+          "GL_DRV",
+          "GL",
+          "HB"
+        ],
+        "names": [
+          "GH_DRV",
+          "GH",
+          "GL_DRV",
+          "GL",
+          "HB",
+          "VCC12",
+          "PGND",
+          "SW",
+          "VOUT",
+          "CS1",
+          "CS2",
+          "VCC12_S",
+          "RUN",
+          "OC1",
+          "OC",
+          "PRI_T1",
+          "PRI_12",
+          "SEC1_A",
+          "SEC1_B",
+          "PRI_23",
+          "SEC2_A",
+          "SEC2_B",
+          "PRI_34",
+          "SEC3_A",
+          "SEC3_B",
+          "SEC4_A",
+          "SEC4_B",
+          "CR_CT",
+          "CT_LR",
+          "REG4",
+          "OCM",
+          "SS",
+          "REG1",
+          "REG2",
+          "REG3",
+          "VIN_P",
+          "OCD",
+          "DT",
+          "GD2",
+          "RT",
+          "GA1",
+          "VG1_A",
+          "GB1",
+          "VG1_B",
+          "GA2",
+          "VG2_A",
+          "GB2",
+          "VG2_B",
+          "GA3",
+          "VG3_A",
+          "GB3",
+          "VG3_B",
+          "GA4",
+          "VG4_A",
+          "GB4",
+          "VG4_B",
+          "VD1_A",
+          "VD1_B",
+          "VD2_A",
+          "VD2_B",
+          "VD3_A",
+          "VD3_B",
+          "VD4_A",
+          "VD4_B",
+          "GD1"
+        ]
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "ok": true,
+          "error": null,
+          "durationMs": 2
+        }
+      ],
+      "body": "return await (async () => {\n  const names = await eda.pcb_Net.getAllNetsName();\n  return { type: typeof names, count: Array.isArray(names) ? names.length : null,\n           sample: Array.isArray(names) ? names.slice(0, 5) : null, names };\n})();"
+    },
+    {
+      "probe": "primitives_by_net",
+      "ok": true,
+      "error": null,
+      "value": {
+        "VOUT": {
+          "type": "object",
+          "count": 23
+        },
+        "PGND": {
+          "type": "object",
+          "count": 105
+        },
+        "SEC1_A": {
+          "type": "object",
+          "count": 7
+        },
+        "PRI_T1": {
+          "type": "object",
+          "count": 2
+        },
+        "CR_CT": {
+          "type": "object",
+          "count": 2
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "ok": true,
+          "error": null,
+          "durationMs": 4
+        }
+      ],
+      "body": "return await (async () => {\n  const out = {};\n  for (const net of ['VOUT', 'PGND', 'SEC1_A', 'PRI_T1', 'CR_CT']) {\n    const v = await eda.pcb_Net.getAllPrimitivesByNet(net);\n    out[net] = { type: typeof v, count: Array.isArray(v) ? v.length : null };\n  }\n  return out;\n})();"
+    },
+    {
+      "probe": "all_nets",
+      "ok": true,
+      "error": null,
+      "value": {
+        "type": "object",
+        "count": 65,
+        "with_length": 15,
+        "sample": [
+          {
+            "net": "GH_DRV",
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "alpha": 1
+            },
+            "length": 285.5658129990018
+          },
+          {
+            "net": "GH",
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "alpha": 1
+            },
+            "length": 362.0261576713159
+          },
+          {
+            "net": "GL_DRV",
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "alpha": 1
+            },
+            "length": 216.03465796349028
+          }
+        ]
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "ok": true,
+          "error": null,
+          "durationMs": 1
+        }
+      ],
+      "body": "return await (async () => {\n  const all = await eda.pcb_Net.getAllNets();\n  return { type: typeof all, count: Array.isArray(all) ? all.length : null,\n           with_length: Array.isArray(all) ? all.filter(n => n && n.length > 0).length : null,\n           sample: Array.isArray(all) ? all.slice(0, 3) : null };\n})();"
+    },
+    {
+      "probe": "pcb_netlist",
+      "ok": true,
+      "error": null,
+      "value": {
+        "label": "JLCEDA",
+        "type": "string",
+        "length": 165556,
+        "lines": 5531,
+        "head": "{\n  \"version\": \"2.0.0\",\n  \"projectId\": \"dc6bd544dad2e01704d7a25113fc6c990d17ef0879fd2a495f1ae7a45cb89341\",\n  \"components\": {\n    \"UNIQUEC10\": {\n      \"props\": {\n        \"Footprint\": \"66b60566e7ca28f9\",\n        \"Designator\": \"C10\",\n        \"LCSC Part Name\": \"100nF ±10% 50V\",\n        \"Supplier Part\": \"C1591\",\n        \"Manufacturer\": \"SAMSUNG(三星)\",\n        \"Manufacturer Part\": \"CL10B104KB8NNNC\",\n    "
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "ok": true,
+          "error": null,
+          "durationMs": 1228
+        }
+      ],
+      "body": "return await (async () => {\n  const out = { label: 'JLCEDA' };\n  const v = await eda.pcb_Net.getNetlist('JLCEDA');\n  out.type = typeof v;\n  if (typeof v === 'string') {\n    out.length = v.length;\n    out.lines = v.split(/\\r?\\n/).length;\n    out.head = v.slice(0, 400);\n  } else {\n    out.value = String(v);\n  }\n  return out;\n})();"
+    },
+    {
+      "probe": "sch_netlist",
+      "ok": true,
+      "error": null,
+      "value": {
+        "error": "i is not iterable"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "ok": true,
+          "error": null,
+          "durationMs": 2
+        }
+      ],
+      "body": "return await (async () => {\n  const out = {};\n  try {\n    const s = await eda.sch_Netlist.getNetlist();\n    out.type = typeof s;\n    out.length = typeof s === 'string' ? s.length : null;\n    out.head = typeof s === 'string' ? s.slice(0, 200) : String(s);\n  } catch (e) {\n    out.error = String((e && e.message) || e);\n  }\n  return out;\n})();"
+    }
+  ],
+  "not_erc_not_drc_not_fab": true
+}

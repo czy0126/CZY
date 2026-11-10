@@ -1,0 +1,115 @@
+{
+  "status": "G1_NATIVE_IMPORT_CHANGES_DIFF_FROM_EDITOR_NETLIST_EXPORT",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "candidate_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "editor_comparator": {
+    "api": "eda.sys_Tool.netlistComparison(bare uuids (documented example))",
+    "net_rows": 65,
+    "net_rows_with_empty_pcb_side": 65,
+    "component_rows": [
+      {
+        "type": "COMPONENT",
+        "object": "",
+        "schematic": [
+          "CT",
+          "T1",
+          "T2",
+          "T3",
+          "T4"
+        ],
+        "pcb": []
+      }
+    ],
+    "schematic_self_compare": 0,
+    "pcb_self_compare": 0,
+    "reversed_compare_is_mirror": true,
+    "pcb_side_usable": false,
+    "why_unusable": "every net row carries an empty PCB pin list, including the nets whose pins match exactly, while the same PCB exports a 165556-character netlist with 62 named nets and 254 assigned pins"
+  },
+  "schematic_netlist": {
+    "components_with_pins": 82,
+    "nets": 65,
+    "pins": 278,
+    "unassigned_pins": [
+      "D_CT1.2",
+      "D_CT2.2",
+      "D_CT3.2",
+      "D_CT4.2",
+      "U2.2"
+    ]
+  },
+  "pcb_netlist": {
+    "components": 77,
+    "components_with_pins": 77,
+    "named_nets": 62,
+    "assigned_pins": 254,
+    "unassigned_pins": [
+      "D_CT1.2",
+      "D_CT2.2",
+      "D_CT3.2",
+      "D_CT4.2",
+      "U2.2"
+    ]
+  },
+  "difference": {
+    "unmatched_schematic_pins_total": 24,
+    "unmatched_schematic_pins_by_ref": {
+      "T4": 5,
+      "T2": 5,
+      "T1": 5,
+      "T3": 5,
+      "CT": 4
+    },
+    "unmatched_pcb_pins_total": 0,
+    "unmatched_pcb_pins_by_ref": {},
+    "nets_only_in_schematic": [
+      "PRI_12",
+      "PRI_23",
+      "PRI_34"
+    ],
+    "nets_only_in_pcb": [],
+    "nets_differing": [
+      "CR_CT",
+      "CS1",
+      "CS2",
+      "CT_LR",
+      "PGND",
+      "PRI_12",
+      "PRI_23",
+      "PRI_34",
+      "PRI_T1",
+      "SEC1_A",
+      "SEC1_B",
+      "SEC2_A",
+      "SEC2_B",
+      "SEC3_A",
+      "SEC3_B",
+      "SEC4_A",
+      "SEC4_B",
+      "VOUT"
+    ],
+    "nets_identical": 47,
+    "schematic_components_absent_from_pcb": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ]
+  },
+  "unassigned_pins_agree": true,
+  "interpretation": [
+    "Every pin present on both sides pairs by (designator, pin number); no PCB pin is missing a schematic partner.",
+    "The only unmatched pins are the 24 logical terminals of CT and T1-T4, whose PCB pads are design-owned placeholders with no designator, so they are not component pins in the PCB netlist.",
+    "PRI_12, PRI_23 and PRI_34 exist only in the schematic because every pin on them is a magnetic terminal.",
+    "The five D_CT1-D_CT4 and U2 pin-2 pads carry no net on either side; they are the same unassigned pins on both sides, not a difference.",
+    "The single native Netlist Error is consistent with these five magnetics having no PCB component, and no other pin-level difference exists in the editor's own export; the DRC rule reports a count, not items, so mapping that count to these rows remains an inference."
+  ],
+  "not_erc_not_drc_not_fab": true,
+  "fabrication_approved": false,
+  "limitations": [
+    "The comparator's PCB column is unusable on this primitive-built board; the difference above comes from the PCB's own netlist export, not from it.",
+    "Anonymous pads can carry a net name while remaining outside any component pin list; that is a placeholder fact, not a verified physical terminal map.",
+    "Pin pairing by (designator, pin number) does not prove footprint geometry, polarity, insulation or assembly."
+  ]
+}

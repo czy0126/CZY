@@ -1,0 +1,22 @@
+{
+  "status": "PCB_NETLIST_EXPORT_JLCEDA",
+  "attempted": "read-only: opened a copy, exported pcb_Net.getNetlist('JLCEDA'), never saved",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "candidate_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256_after": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "pcbUuid": "2f6fa2d508d3f9a8",
+  "netlist_file": "lr_repack_pcb_netlist_jlc.json",
+  "netlist_sha256": "237c79814ad65678bb5612d9ac44f114862f05ec66b3fdb3d09e0bdd06828ce0",
+  "netlist_chars": 165556,
+  "netlist_lines": 5531,
+  "invoke_attempts": [
+    {
+      "attempt": 1,
+      "ok": true,
+      "error": null,
+      "durationMs": 10756
+    }
+  ],
+  "not_erc_not_drc_not_fab": true
+}

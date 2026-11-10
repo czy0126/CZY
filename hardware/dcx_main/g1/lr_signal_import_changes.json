@@ -1,0 +1,4589 @@
+{
+  "status": "NATIVE_IMPORT_CHANGES_DIFF_READBACK",
+  "attempted": "read-only: opened a copy, compared schematic/PCB netlists, never saved",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "candidate_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256_after": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "editor_ok": true,
+  "api": "eda.sys_Tool.netlistComparison(bare uuids (documented example))",
+  "api_type": "function",
+  "board": {
+    "name": "Board1",
+    "projectUuid": "a251a8380e085090a7c5aaffe1a1c90b2eec9fbbc76a2800fc3a949df625befa",
+    "schUuid": "578d520019a373e9",
+    "pcbUuid": "2f6fa2d508d3f9a8"
+  },
+  "count": 66,
+  "attempts": [
+    {
+      "label": "bare uuids (documented example)",
+      "value": [
+        {
+          "type": "NET",
+          "object": "'CR_CT'",
+          "net1": [
+            "Cr.2",
+            "CT.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'CT_LR'",
+          "net1": [
+            "CT.PRI_B",
+            "Lr.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'GH_DRV'",
+          "net1": [
+            "R4.1",
+            "U2.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'GL_DRV'",
+          "net1": [
+            "R5.1",
+            "U2.10"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_12'",
+          "net1": [
+            "T1.PRI_B",
+            "T2.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_23'",
+          "net1": [
+            "T2.PRI_B",
+            "T3.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_34'",
+          "net1": [
+            "T3.PRI_B",
+            "T4.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_T1'",
+          "net1": [
+            "Lr.2",
+            "T1.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC1_A'",
+          "net1": [
+            "R28.1",
+            "SR1A.5",
+            "SR1A.6",
+            "SR1A.7",
+            "SR1A.8",
+            "T1.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC1_B'",
+          "net1": [
+            "R29.1",
+            "SR1B.5",
+            "SR1B.6",
+            "SR1B.7",
+            "SR1B.8",
+            "T1.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC2_A'",
+          "net1": [
+            "R30.1",
+            "SR2A.5",
+            "SR2A.6",
+            "SR2A.7",
+            "SR2A.8",
+            "T2.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC2_B'",
+          "net1": [
+            "R31.1",
+            "SR2B.5",
+            "SR2B.6",
+            "SR2B.7",
+            "SR2B.8",
+            "T2.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC3_A'",
+          "net1": [
+            "R32.1",
+            "SR3A.5",
+            "SR3A.6",
+            "SR3A.7",
+            "SR3A.8",
+            "T3.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC3_B'",
+          "net1": [
+            "R33.1",
+            "SR3B.5",
+            "SR3B.6",
+            "SR3B.7",
+            "SR3B.8",
+            "T3.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC4_A'",
+          "net1": [
+            "R34.1",
+            "SR4A.5",
+            "SR4A.6",
+            "SR4A.7",
+            "SR4A.8",
+            "T4.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC4_B'",
+          "net1": [
+            "R35.1",
+            "SR4B.5",
+            "SR4B.6",
+            "SR4B.7",
+            "SR4B.8",
+            "T4.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VCC12_S'",
+          "net1": [
+            "C105.1",
+            "C106.1",
+            "C107.1",
+            "C108.1",
+            "C109.1",
+            "C110.1",
+            "C111.1",
+            "C112.1",
+            "U3.7",
+            "U4.7",
+            "U5.7",
+            "U6.7"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD1_A'",
+          "net1": [
+            "R28.2",
+            "U3.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD1_B'",
+          "net1": [
+            "R29.2",
+            "U3.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD2_A'",
+          "net1": [
+            "R30.2",
+            "U4.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD2_B'",
+          "net1": [
+            "R31.2",
+            "U4.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD3_A'",
+          "net1": [
+            "R32.2",
+            "U5.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD3_B'",
+          "net1": [
+            "R33.2",
+            "U5.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD4_A'",
+          "net1": [
+            "R34.2",
+            "U6.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD4_B'",
+          "net1": [
+            "R35.2",
+            "U6.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG1_A'",
+          "net1": [
+            "R20.1",
+            "U3.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG1_B'",
+          "net1": [
+            "R21.1",
+            "U3.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG2_A'",
+          "net1": [
+            "R22.1",
+            "U4.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG2_B'",
+          "net1": [
+            "R23.1",
+            "U4.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG3_A'",
+          "net1": [
+            "R24.1",
+            "U5.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG3_B'",
+          "net1": [
+            "R25.1",
+            "U5.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG4_A'",
+          "net1": [
+            "R26.1",
+            "U6.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG4_B'",
+          "net1": [
+            "R27.1",
+            "U6.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VIN_P'",
+          "net1": [
+            "Cin.1",
+            "J_IN.1",
+            "QH.5",
+            "QH.6",
+            "QH.7",
+            "QH.8",
+            "QH.9"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "CS1",
+          "net1": [
+            "CT.SEC_A",
+            "D_CT1.1",
+            "D_CT3.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "CS2",
+          "net1": [
+            "CT.SEC_B",
+            "D_CT2.1",
+            "D_CT4.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "DT",
+          "net1": [
+            "R1.1",
+            "U1.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA1",
+          "net1": [
+            "R20.2",
+            "SR1A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA2",
+          "net1": [
+            "R22.2",
+            "SR2A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA3",
+          "net1": [
+            "R24.2",
+            "SR3A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA4",
+          "net1": [
+            "R26.2",
+            "SR4A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB1",
+          "net1": [
+            "R21.2",
+            "SR1B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB2",
+          "net1": [
+            "R23.2",
+            "SR2B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB3",
+          "net1": [
+            "R25.2",
+            "SR3B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB4",
+          "net1": [
+            "R27.2",
+            "SR4B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GD1",
+          "net1": [
+            "R9.1",
+            "U1.8",
+            "U2.7"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GD2",
+          "net1": [
+            "R10.1",
+            "U1.5",
+            "U2.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GH",
+          "net1": [
+            "QH.4",
+            "R4.2",
+            "R18.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GL",
+          "net1": [
+            "QL.4",
+            "R5.2",
+            "R19.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "HB",
+          "net1": [
+            "C5.1",
+            "D_BT.1",
+            "U2.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OC",
+          "net1": [
+            "C12.1",
+            "R16.2",
+            "R17.1",
+            "U1.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OC1",
+          "net1": [
+            "C11.1",
+            "R15.2",
+            "R16.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OCD",
+          "net1": [
+            "D_CT1.3",
+            "D_CT2.3",
+            "R3.1",
+            "R15.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OCM",
+          "net1": [
+            "C11.2",
+            "C12.2",
+            "D_CT3.1",
+            "D_CT4.1",
+            "R3.2",
+            "R17.2"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "PGND",
+          "net1": [
+            "C6.2",
+            "C7.2",
+            "C8.2",
+            "C9.2",
+            "C10.2",
+            "C13.2",
+            "C101.2",
+            "C102.2",
+            "C103.2",
+            "C104.2",
+            "C105.2",
+            "C106.2",
+            "C107.2",
+            "C108.2",
+            "C109.2",
+            "C110.2",
+            "C111.2",
+            "C112.2",
+            "Cin.2",
+            "Cout.2",
+            "J_IN.2",
+            "J_OUT.2",
+            "QL.1",
+            "QL.2",
+            "QL.3",
+            "R1.2",
+            "R2.2",
+            "R7.2",
+            "R9.2",
+            "R10.2",
+            "R19.2",
+            "SR1A.1",
+            "SR1A.2",
+            "SR1A.3",
+            "SR1B.1",
+            "SR1B.2",
+            "SR1B.3",
+            "SR2A.1",
+            "SR2A.2",
+            "SR2A.3",
+            "SR2B.1",
+            "SR2B.2",
+            "SR2B.3",
+            "SR3A.1",
+            "SR3A.2",
+            "SR3A.3",
+            "SR3B.1",
+            "SR3B.2",
+            "SR3B.3",
+            "SR4A.1",
+            "SR4A.2",
+            "SR4A.3",
+            "SR4B.1",
+            "SR4B.2",
+            "SR4B.3",
+            "T4.PRI_B",
+            "U1.6",
+            "U2.9",
+            "U2.11",
+            "U3.2",
+            "U3.5",
+            "U4.2",
+            "U4.5",
+            "U5.2",
+            "U5.5",
+            "U6.2",
+            "U6.5"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG1",
+          "net1": [
+            "C7.1",
+            "U3.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG2",
+          "net1": [
+            "C8.1",
+            "U4.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG3",
+          "net1": [
+            "C9.1",
+            "U5.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG4",
+          "net1": [
+            "C10.1",
+            "U6.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "RT",
+          "net1": [
+            "R2.1",
+            "U1.2"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "RUN",
+          "net1": [
+            "C13.1",
+            "R7.1",
+            "U2.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "SS",
+          "net1": [
+            "C6.1",
+            "U1.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "SW",
+          "net1": [
+            "C5.2",
+            "Cr.1",
+            "QH.1",
+            "QH.2",
+            "QH.3",
+            "QL.5",
+            "QL.6",
+            "QL.7",
+            "QL.8",
+            "QL.9",
+            "R18.2",
+            "U2.5"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "VCC12",
+          "net1": [
+            "C101.1",
+            "C102.1",
+            "C103.1",
+            "C104.1",
+            "D_BT.2",
+            "U1.7",
+            "U2.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "VOUT",
+          "net1": [
+            "Cout.1",
+            "J_OUT.1",
+            "T1.CTAP",
+            "T2.CTAP",
+            "T3.CTAP",
+            "T4.CTAP"
+          ],
+          "net2": []
+        },
+        {
+          "type": "COMPONENT",
+          "object": "",
+          "net1": [
+            "CT",
+            "T1",
+            "T2",
+            "T3",
+            "T4"
+          ],
+          "net2": []
+        }
+      ],
+      "kind": "array",
+      "count": 66
+    },
+    {
+      "label": "reversed (pcb, schematic)",
+      "value": [
+        {
+          "type": "NET",
+          "object": "'CR_CT'",
+          "net1": [],
+          "net2": [
+            "Cr.2",
+            "CT.PRI_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'CT_LR'",
+          "net1": [],
+          "net2": [
+            "CT.PRI_B",
+            "Lr.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'GH_DRV'",
+          "net1": [],
+          "net2": [
+            "R4.1",
+            "U2.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'GL_DRV'",
+          "net1": [],
+          "net2": [
+            "R5.1",
+            "U2.10"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_12'",
+          "net1": [],
+          "net2": [
+            "T1.PRI_B",
+            "T2.PRI_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_23'",
+          "net1": [],
+          "net2": [
+            "T2.PRI_B",
+            "T3.PRI_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_34'",
+          "net1": [],
+          "net2": [
+            "T3.PRI_B",
+            "T4.PRI_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_T1'",
+          "net1": [],
+          "net2": [
+            "Lr.2",
+            "T1.PRI_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC1_A'",
+          "net1": [],
+          "net2": [
+            "R28.1",
+            "SR1A.5",
+            "SR1A.6",
+            "SR1A.7",
+            "SR1A.8",
+            "T1.SEC_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC1_B'",
+          "net1": [],
+          "net2": [
+            "R29.1",
+            "SR1B.5",
+            "SR1B.6",
+            "SR1B.7",
+            "SR1B.8",
+            "T1.SEC_B"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC2_A'",
+          "net1": [],
+          "net2": [
+            "R30.1",
+            "SR2A.5",
+            "SR2A.6",
+            "SR2A.7",
+            "SR2A.8",
+            "T2.SEC_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC2_B'",
+          "net1": [],
+          "net2": [
+            "R31.1",
+            "SR2B.5",
+            "SR2B.6",
+            "SR2B.7",
+            "SR2B.8",
+            "T2.SEC_B"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC3_A'",
+          "net1": [],
+          "net2": [
+            "R32.1",
+            "SR3A.5",
+            "SR3A.6",
+            "SR3A.7",
+            "SR3A.8",
+            "T3.SEC_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC3_B'",
+          "net1": [],
+          "net2": [
+            "R33.1",
+            "SR3B.5",
+            "SR3B.6",
+            "SR3B.7",
+            "SR3B.8",
+            "T3.SEC_B"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC4_A'",
+          "net1": [],
+          "net2": [
+            "R34.1",
+            "SR4A.5",
+            "SR4A.6",
+            "SR4A.7",
+            "SR4A.8",
+            "T4.SEC_A"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'SEC4_B'",
+          "net1": [],
+          "net2": [
+            "R35.1",
+            "SR4B.5",
+            "SR4B.6",
+            "SR4B.7",
+            "SR4B.8",
+            "T4.SEC_B"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VCC12_S'",
+          "net1": [],
+          "net2": [
+            "C105.1",
+            "C106.1",
+            "C107.1",
+            "C108.1",
+            "C109.1",
+            "C110.1",
+            "C111.1",
+            "C112.1",
+            "U3.7",
+            "U4.7",
+            "U5.7",
+            "U6.7"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD1_A'",
+          "net1": [],
+          "net2": [
+            "R28.2",
+            "U3.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD1_B'",
+          "net1": [],
+          "net2": [
+            "R29.2",
+            "U3.6"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD2_A'",
+          "net1": [],
+          "net2": [
+            "R30.2",
+            "U4.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD2_B'",
+          "net1": [],
+          "net2": [
+            "R31.2",
+            "U4.6"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD3_A'",
+          "net1": [],
+          "net2": [
+            "R32.2",
+            "U5.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD3_B'",
+          "net1": [],
+          "net2": [
+            "R33.2",
+            "U5.6"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD4_A'",
+          "net1": [],
+          "net2": [
+            "R34.2",
+            "U6.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VD4_B'",
+          "net1": [],
+          "net2": [
+            "R35.2",
+            "U6.6"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG1_A'",
+          "net1": [],
+          "net2": [
+            "R20.1",
+            "U3.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG1_B'",
+          "net1": [],
+          "net2": [
+            "R21.1",
+            "U3.8"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG2_A'",
+          "net1": [],
+          "net2": [
+            "R22.1",
+            "U4.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG2_B'",
+          "net1": [],
+          "net2": [
+            "R23.1",
+            "U4.8"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG3_A'",
+          "net1": [],
+          "net2": [
+            "R24.1",
+            "U5.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG3_B'",
+          "net1": [],
+          "net2": [
+            "R25.1",
+            "U5.8"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG4_A'",
+          "net1": [],
+          "net2": [
+            "R26.1",
+            "U6.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VG4_B'",
+          "net1": [],
+          "net2": [
+            "R27.1",
+            "U6.8"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "'VIN_P'",
+          "net1": [],
+          "net2": [
+            "Cin.1",
+            "J_IN.1",
+            "QH.5",
+            "QH.6",
+            "QH.7",
+            "QH.8",
+            "QH.9"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "CS1",
+          "net1": [],
+          "net2": [
+            "CT.SEC_A",
+            "D_CT1.1",
+            "D_CT3.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "CS2",
+          "net1": [],
+          "net2": [
+            "CT.SEC_B",
+            "D_CT2.1",
+            "D_CT4.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "DT",
+          "net1": [],
+          "net2": [
+            "R1.1",
+            "U1.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GA1",
+          "net1": [],
+          "net2": [
+            "R20.2",
+            "SR1A.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GA2",
+          "net1": [],
+          "net2": [
+            "R22.2",
+            "SR2A.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GA3",
+          "net1": [],
+          "net2": [
+            "R24.2",
+            "SR3A.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GA4",
+          "net1": [],
+          "net2": [
+            "R26.2",
+            "SR4A.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GB1",
+          "net1": [],
+          "net2": [
+            "R21.2",
+            "SR1B.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GB2",
+          "net1": [],
+          "net2": [
+            "R23.2",
+            "SR2B.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GB3",
+          "net1": [],
+          "net2": [
+            "R25.2",
+            "SR3B.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GB4",
+          "net1": [],
+          "net2": [
+            "R27.2",
+            "SR4B.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GD1",
+          "net1": [],
+          "net2": [
+            "R9.1",
+            "U1.8",
+            "U2.7"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GD2",
+          "net1": [],
+          "net2": [
+            "R10.1",
+            "U1.5",
+            "U2.8"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GH",
+          "net1": [],
+          "net2": [
+            "QH.4",
+            "R4.2",
+            "R18.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "GL",
+          "net1": [],
+          "net2": [
+            "QL.4",
+            "R5.2",
+            "R19.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "HB",
+          "net1": [],
+          "net2": [
+            "C5.1",
+            "D_BT.1",
+            "U2.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "OC",
+          "net1": [],
+          "net2": [
+            "C12.1",
+            "R16.2",
+            "R17.1",
+            "U1.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "OC1",
+          "net1": [],
+          "net2": [
+            "C11.1",
+            "R15.2",
+            "R16.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "OCD",
+          "net1": [],
+          "net2": [
+            "D_CT1.3",
+            "D_CT2.3",
+            "R3.1",
+            "R15.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "OCM",
+          "net1": [],
+          "net2": [
+            "C11.2",
+            "C12.2",
+            "D_CT3.1",
+            "D_CT4.1",
+            "R3.2",
+            "R17.2"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "PGND",
+          "net1": [],
+          "net2": [
+            "C6.2",
+            "C7.2",
+            "C8.2",
+            "C9.2",
+            "C10.2",
+            "C13.2",
+            "C101.2",
+            "C102.2",
+            "C103.2",
+            "C104.2",
+            "C105.2",
+            "C106.2",
+            "C107.2",
+            "C108.2",
+            "C109.2",
+            "C110.2",
+            "C111.2",
+            "C112.2",
+            "Cin.2",
+            "Cout.2",
+            "J_IN.2",
+            "J_OUT.2",
+            "QL.1",
+            "QL.2",
+            "QL.3",
+            "R1.2",
+            "R2.2",
+            "R7.2",
+            "R9.2",
+            "R10.2",
+            "R19.2",
+            "SR1A.1",
+            "SR1A.2",
+            "SR1A.3",
+            "SR1B.1",
+            "SR1B.2",
+            "SR1B.3",
+            "SR2A.1",
+            "SR2A.2",
+            "SR2A.3",
+            "SR2B.1",
+            "SR2B.2",
+            "SR2B.3",
+            "SR3A.1",
+            "SR3A.2",
+            "SR3A.3",
+            "SR3B.1",
+            "SR3B.2",
+            "SR3B.3",
+            "SR4A.1",
+            "SR4A.2",
+            "SR4A.3",
+            "SR4B.1",
+            "SR4B.2",
+            "SR4B.3",
+            "T4.PRI_B",
+            "U1.6",
+            "U2.9",
+            "U2.11",
+            "U3.2",
+            "U3.5",
+            "U4.2",
+            "U4.5",
+            "U5.2",
+            "U5.5",
+            "U6.2",
+            "U6.5"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "REG1",
+          "net1": [],
+          "net2": [
+            "C7.1",
+            "U3.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "REG2",
+          "net1": [],
+          "net2": [
+            "C8.1",
+            "U4.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "REG3",
+          "net1": [],
+          "net2": [
+            "C9.1",
+            "U5.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "REG4",
+          "net1": [],
+          "net2": [
+            "C10.1",
+            "U6.3"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "RT",
+          "net1": [],
+          "net2": [
+            "R2.1",
+            "U1.2"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "RUN",
+          "net1": [],
+          "net2": [
+            "C13.1",
+            "R7.1",
+            "U2.6"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "SS",
+          "net1": [],
+          "net2": [
+            "C6.1",
+            "U1.4"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "SW",
+          "net1": [],
+          "net2": [
+            "C5.2",
+            "Cr.1",
+            "QH.1",
+            "QH.2",
+            "QH.3",
+            "QL.5",
+            "QL.6",
+            "QL.7",
+            "QL.8",
+            "QL.9",
+            "R18.2",
+            "U2.5"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "VCC12",
+          "net1": [],
+          "net2": [
+            "C101.1",
+            "C102.1",
+            "C103.1",
+            "C104.1",
+            "D_BT.2",
+            "U1.7",
+            "U2.1"
+          ]
+        },
+        {
+          "type": "NET",
+          "object": "VOUT",
+          "net1": [],
+          "net2": [
+            "Cout.1",
+            "J_OUT.1",
+            "T1.CTAP",
+            "T2.CTAP",
+            "T3.CTAP",
+            "T4.CTAP"
+          ]
+        },
+        {
+          "type": "COMPONENT",
+          "object": "",
+          "net1": [],
+          "net2": [
+            "CT",
+            "T1",
+            "T2",
+            "T3",
+            "T4"
+          ]
+        }
+      ],
+      "kind": "array",
+      "count": 66
+    },
+    {
+      "label": "schematic self-compare (control)",
+      "value": [],
+      "kind": "array",
+      "count": 0
+    },
+    {
+      "label": "pcb self-compare (control)",
+      "value": [],
+      "kind": "array",
+      "count": 0
+    },
+    {
+      "label": "project+document objects",
+      "value": "undefined",
+      "kind": "undefined",
+      "count": null
+    }
+  ],
+  "sch_netlist": {
+    "error": "i is not iterable"
+  },
+  "readback_error": null,
+  "normalize_error": null,
+  "normalized": [
+    {
+      "type": "COMPONENT",
+      "object": "",
+      "schematic": [
+        "CT",
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'CR_CT'",
+      "schematic": [
+        "Cr.2",
+        "CT.PRI_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'CT_LR'",
+      "schematic": [
+        "CT.PRI_B",
+        "Lr.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'GH_DRV'",
+      "schematic": [
+        "R4.1",
+        "U2.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'GL_DRV'",
+      "schematic": [
+        "R5.1",
+        "U2.10"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'PRI_12'",
+      "schematic": [
+        "T1.PRI_B",
+        "T2.PRI_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'PRI_23'",
+      "schematic": [
+        "T2.PRI_B",
+        "T3.PRI_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'PRI_34'",
+      "schematic": [
+        "T3.PRI_B",
+        "T4.PRI_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'PRI_T1'",
+      "schematic": [
+        "Lr.2",
+        "T1.PRI_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC1_A'",
+      "schematic": [
+        "R28.1",
+        "SR1A.5",
+        "SR1A.6",
+        "SR1A.7",
+        "SR1A.8",
+        "T1.SEC_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC1_B'",
+      "schematic": [
+        "R29.1",
+        "SR1B.5",
+        "SR1B.6",
+        "SR1B.7",
+        "SR1B.8",
+        "T1.SEC_B"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC2_A'",
+      "schematic": [
+        "R30.1",
+        "SR2A.5",
+        "SR2A.6",
+        "SR2A.7",
+        "SR2A.8",
+        "T2.SEC_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC2_B'",
+      "schematic": [
+        "R31.1",
+        "SR2B.5",
+        "SR2B.6",
+        "SR2B.7",
+        "SR2B.8",
+        "T2.SEC_B"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC3_A'",
+      "schematic": [
+        "R32.1",
+        "SR3A.5",
+        "SR3A.6",
+        "SR3A.7",
+        "SR3A.8",
+        "T3.SEC_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC3_B'",
+      "schematic": [
+        "R33.1",
+        "SR3B.5",
+        "SR3B.6",
+        "SR3B.7",
+        "SR3B.8",
+        "T3.SEC_B"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC4_A'",
+      "schematic": [
+        "R34.1",
+        "SR4A.5",
+        "SR4A.6",
+        "SR4A.7",
+        "SR4A.8",
+        "T4.SEC_A"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'SEC4_B'",
+      "schematic": [
+        "R35.1",
+        "SR4B.5",
+        "SR4B.6",
+        "SR4B.7",
+        "SR4B.8",
+        "T4.SEC_B"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VCC12_S'",
+      "schematic": [
+        "C105.1",
+        "C106.1",
+        "C107.1",
+        "C108.1",
+        "C109.1",
+        "C110.1",
+        "C111.1",
+        "C112.1",
+        "U3.7",
+        "U4.7",
+        "U5.7",
+        "U6.7"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD1_A'",
+      "schematic": [
+        "R28.2",
+        "U3.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD1_B'",
+      "schematic": [
+        "R29.2",
+        "U3.6"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD2_A'",
+      "schematic": [
+        "R30.2",
+        "U4.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD2_B'",
+      "schematic": [
+        "R31.2",
+        "U4.6"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD3_A'",
+      "schematic": [
+        "R32.2",
+        "U5.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD3_B'",
+      "schematic": [
+        "R33.2",
+        "U5.6"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD4_A'",
+      "schematic": [
+        "R34.2",
+        "U6.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VD4_B'",
+      "schematic": [
+        "R35.2",
+        "U6.6"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG1_A'",
+      "schematic": [
+        "R20.1",
+        "U3.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG1_B'",
+      "schematic": [
+        "R21.1",
+        "U3.8"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG2_A'",
+      "schematic": [
+        "R22.1",
+        "U4.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG2_B'",
+      "schematic": [
+        "R23.1",
+        "U4.8"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG3_A'",
+      "schematic": [
+        "R24.1",
+        "U5.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG3_B'",
+      "schematic": [
+        "R25.1",
+        "U5.8"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG4_A'",
+      "schematic": [
+        "R26.1",
+        "U6.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VG4_B'",
+      "schematic": [
+        "R27.1",
+        "U6.8"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "'VIN_P'",
+      "schematic": [
+        "Cin.1",
+        "J_IN.1",
+        "QH.5",
+        "QH.6",
+        "QH.7",
+        "QH.8",
+        "QH.9"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "CS1",
+      "schematic": [
+        "CT.SEC_A",
+        "D_CT1.1",
+        "D_CT3.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "CS2",
+      "schematic": [
+        "CT.SEC_B",
+        "D_CT2.1",
+        "D_CT4.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "DT",
+      "schematic": [
+        "R1.1",
+        "U1.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GA1",
+      "schematic": [
+        "R20.2",
+        "SR1A.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GA2",
+      "schematic": [
+        "R22.2",
+        "SR2A.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GA3",
+      "schematic": [
+        "R24.2",
+        "SR3A.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GA4",
+      "schematic": [
+        "R26.2",
+        "SR4A.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GB1",
+      "schematic": [
+        "R21.2",
+        "SR1B.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GB2",
+      "schematic": [
+        "R23.2",
+        "SR2B.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GB3",
+      "schematic": [
+        "R25.2",
+        "SR3B.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GB4",
+      "schematic": [
+        "R27.2",
+        "SR4B.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GD1",
+      "schematic": [
+        "R9.1",
+        "U1.8",
+        "U2.7"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GD2",
+      "schematic": [
+        "R10.1",
+        "U1.5",
+        "U2.8"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GH",
+      "schematic": [
+        "QH.4",
+        "R4.2",
+        "R18.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "GL",
+      "schematic": [
+        "QL.4",
+        "R5.2",
+        "R19.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "HB",
+      "schematic": [
+        "C5.1",
+        "D_BT.1",
+        "U2.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "OC",
+      "schematic": [
+        "C12.1",
+        "R16.2",
+        "R17.1",
+        "U1.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "OC1",
+      "schematic": [
+        "C11.1",
+        "R15.2",
+        "R16.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "OCD",
+      "schematic": [
+        "D_CT1.3",
+        "D_CT2.3",
+        "R3.1",
+        "R15.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "OCM",
+      "schematic": [
+        "C11.2",
+        "C12.2",
+        "D_CT3.1",
+        "D_CT4.1",
+        "R3.2",
+        "R17.2"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "PGND",
+      "schematic": [
+        "C6.2",
+        "C7.2",
+        "C8.2",
+        "C9.2",
+        "C10.2",
+        "C13.2",
+        "C101.2",
+        "C102.2",
+        "C103.2",
+        "C104.2",
+        "C105.2",
+        "C106.2",
+        "C107.2",
+        "C108.2",
+        "C109.2",
+        "C110.2",
+        "C111.2",
+        "C112.2",
+        "Cin.2",
+        "Cout.2",
+        "J_IN.2",
+        "J_OUT.2",
+        "QL.1",
+        "QL.2",
+        "QL.3",
+        "R1.2",
+        "R2.2",
+        "R7.2",
+        "R9.2",
+        "R10.2",
+        "R19.2",
+        "SR1A.1",
+        "SR1A.2",
+        "SR1A.3",
+        "SR1B.1",
+        "SR1B.2",
+        "SR1B.3",
+        "SR2A.1",
+        "SR2A.2",
+        "SR2A.3",
+        "SR2B.1",
+        "SR2B.2",
+        "SR2B.3",
+        "SR3A.1",
+        "SR3A.2",
+        "SR3A.3",
+        "SR3B.1",
+        "SR3B.2",
+        "SR3B.3",
+        "SR4A.1",
+        "SR4A.2",
+        "SR4A.3",
+        "SR4B.1",
+        "SR4B.2",
+        "SR4B.3",
+        "T4.PRI_B",
+        "U1.6",
+        "U2.9",
+        "U2.11",
+        "U3.2",
+        "U3.5",
+        "U4.2",
+        "U4.5",
+        "U5.2",
+        "U5.5",
+        "U6.2",
+        "U6.5"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "REG1",
+      "schematic": [
+        "C7.1",
+        "U3.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "REG2",
+      "schematic": [
+        "C8.1",
+        "U4.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "REG3",
+      "schematic": [
+        "C9.1",
+        "U5.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "REG4",
+      "schematic": [
+        "C10.1",
+        "U6.3"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "RT",
+      "schematic": [
+        "R2.1",
+        "U1.2"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "RUN",
+      "schematic": [
+        "C13.1",
+        "R7.1",
+        "U2.6"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "SS",
+      "schematic": [
+        "C6.1",
+        "U1.4"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "SW",
+      "schematic": [
+        "C5.2",
+        "Cr.1",
+        "QH.1",
+        "QH.2",
+        "QH.3",
+        "QL.5",
+        "QL.6",
+        "QL.7",
+        "QL.8",
+        "QL.9",
+        "R18.2",
+        "U2.5"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "VCC12",
+      "schematic": [
+        "C101.1",
+        "C102.1",
+        "C103.1",
+        "C104.1",
+        "D_BT.2",
+        "U1.7",
+        "U2.1"
+      ],
+      "pcb": []
+    },
+    {
+      "type": "NET",
+      "object": "VOUT",
+      "schematic": [
+        "Cout.1",
+        "J_OUT.1",
+        "T1.CTAP",
+        "T2.CTAP",
+        "T3.CTAP",
+        "T4.CTAP"
+      ],
+      "pcb": []
+    }
+  ],
+  "raw": {
+    "ok": true,
+    "value": {
+      "steps": [
+        "schematic open",
+        "pcb open"
+      ],
+      "attempts": [
+        {
+          "label": "bare uuids (documented example)",
+          "value": [
+            {
+              "type": "NET",
+              "object": "'CR_CT'",
+              "net1": [
+                "Cr.2",
+                "CT.PRI_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'CT_LR'",
+              "net1": [
+                "CT.PRI_B",
+                "Lr.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'GH_DRV'",
+              "net1": [
+                "R4.1",
+                "U2.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'GL_DRV'",
+              "net1": [
+                "R5.1",
+                "U2.10"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_12'",
+              "net1": [
+                "T1.PRI_B",
+                "T2.PRI_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_23'",
+              "net1": [
+                "T2.PRI_B",
+                "T3.PRI_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_34'",
+              "net1": [
+                "T3.PRI_B",
+                "T4.PRI_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_T1'",
+              "net1": [
+                "Lr.2",
+                "T1.PRI_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC1_A'",
+              "net1": [
+                "R28.1",
+                "SR1A.5",
+                "SR1A.6",
+                "SR1A.7",
+                "SR1A.8",
+                "T1.SEC_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC1_B'",
+              "net1": [
+                "R29.1",
+                "SR1B.5",
+                "SR1B.6",
+                "SR1B.7",
+                "SR1B.8",
+                "T1.SEC_B"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC2_A'",
+              "net1": [
+                "R30.1",
+                "SR2A.5",
+                "SR2A.6",
+                "SR2A.7",
+                "SR2A.8",
+                "T2.SEC_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC2_B'",
+              "net1": [
+                "R31.1",
+                "SR2B.5",
+                "SR2B.6",
+                "SR2B.7",
+                "SR2B.8",
+                "T2.SEC_B"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC3_A'",
+              "net1": [
+                "R32.1",
+                "SR3A.5",
+                "SR3A.6",
+                "SR3A.7",
+                "SR3A.8",
+                "T3.SEC_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC3_B'",
+              "net1": [
+                "R33.1",
+                "SR3B.5",
+                "SR3B.6",
+                "SR3B.7",
+                "SR3B.8",
+                "T3.SEC_B"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC4_A'",
+              "net1": [
+                "R34.1",
+                "SR4A.5",
+                "SR4A.6",
+                "SR4A.7",
+                "SR4A.8",
+                "T4.SEC_A"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'SEC4_B'",
+              "net1": [
+                "R35.1",
+                "SR4B.5",
+                "SR4B.6",
+                "SR4B.7",
+                "SR4B.8",
+                "T4.SEC_B"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VCC12_S'",
+              "net1": [
+                "C105.1",
+                "C106.1",
+                "C107.1",
+                "C108.1",
+                "C109.1",
+                "C110.1",
+                "C111.1",
+                "C112.1",
+                "U3.7",
+                "U4.7",
+                "U5.7",
+                "U6.7"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD1_A'",
+              "net1": [
+                "R28.2",
+                "U3.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD1_B'",
+              "net1": [
+                "R29.2",
+                "U3.6"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD2_A'",
+              "net1": [
+                "R30.2",
+                "U4.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD2_B'",
+              "net1": [
+                "R31.2",
+                "U4.6"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD3_A'",
+              "net1": [
+                "R32.2",
+                "U5.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD3_B'",
+              "net1": [
+                "R33.2",
+                "U5.6"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD4_A'",
+              "net1": [
+                "R34.2",
+                "U6.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VD4_B'",
+              "net1": [
+                "R35.2",
+                "U6.6"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG1_A'",
+              "net1": [
+                "R20.1",
+                "U3.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG1_B'",
+              "net1": [
+                "R21.1",
+                "U3.8"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG2_A'",
+              "net1": [
+                "R22.1",
+                "U4.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG2_B'",
+              "net1": [
+                "R23.1",
+                "U4.8"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG3_A'",
+              "net1": [
+                "R24.1",
+                "U5.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG3_B'",
+              "net1": [
+                "R25.1",
+                "U5.8"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG4_A'",
+              "net1": [
+                "R26.1",
+                "U6.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VG4_B'",
+              "net1": [
+                "R27.1",
+                "U6.8"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "'VIN_P'",
+              "net1": [
+                "Cin.1",
+                "J_IN.1",
+                "QH.5",
+                "QH.6",
+                "QH.7",
+                "QH.8",
+                "QH.9"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "CS1",
+              "net1": [
+                "CT.SEC_A",
+                "D_CT1.1",
+                "D_CT3.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "CS2",
+              "net1": [
+                "CT.SEC_B",
+                "D_CT2.1",
+                "D_CT4.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "DT",
+              "net1": [
+                "R1.1",
+                "U1.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GA1",
+              "net1": [
+                "R20.2",
+                "SR1A.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GA2",
+              "net1": [
+                "R22.2",
+                "SR2A.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GA3",
+              "net1": [
+                "R24.2",
+                "SR3A.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GA4",
+              "net1": [
+                "R26.2",
+                "SR4A.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GB1",
+              "net1": [
+                "R21.2",
+                "SR1B.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GB2",
+              "net1": [
+                "R23.2",
+                "SR2B.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GB3",
+              "net1": [
+                "R25.2",
+                "SR3B.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GB4",
+              "net1": [
+                "R27.2",
+                "SR4B.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GD1",
+              "net1": [
+                "R9.1",
+                "U1.8",
+                "U2.7"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GD2",
+              "net1": [
+                "R10.1",
+                "U1.5",
+                "U2.8"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GH",
+              "net1": [
+                "QH.4",
+                "R4.2",
+                "R18.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "GL",
+              "net1": [
+                "QL.4",
+                "R5.2",
+                "R19.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "HB",
+              "net1": [
+                "C5.1",
+                "D_BT.1",
+                "U2.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "OC",
+              "net1": [
+                "C12.1",
+                "R16.2",
+                "R17.1",
+                "U1.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "OC1",
+              "net1": [
+                "C11.1",
+                "R15.2",
+                "R16.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "OCD",
+              "net1": [
+                "D_CT1.3",
+                "D_CT2.3",
+                "R3.1",
+                "R15.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "OCM",
+              "net1": [
+                "C11.2",
+                "C12.2",
+                "D_CT3.1",
+                "D_CT4.1",
+                "R3.2",
+                "R17.2"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "PGND",
+              "net1": [
+                "C6.2",
+                "C7.2",
+                "C8.2",
+                "C9.2",
+                "C10.2",
+                "C13.2",
+                "C101.2",
+                "C102.2",
+                "C103.2",
+                "C104.2",
+                "C105.2",
+                "C106.2",
+                "C107.2",
+                "C108.2",
+                "C109.2",
+                "C110.2",
+                "C111.2",
+                "C112.2",
+                "Cin.2",
+                "Cout.2",
+                "J_IN.2",
+                "J_OUT.2",
+                "QL.1",
+                "QL.2",
+                "QL.3",
+                "R1.2",
+                "R2.2",
+                "R7.2",
+                "R9.2",
+                "R10.2",
+                "R19.2",
+                "SR1A.1",
+                "SR1A.2",
+                "SR1A.3",
+                "SR1B.1",
+                "SR1B.2",
+                "SR1B.3",
+                "SR2A.1",
+                "SR2A.2",
+                "SR2A.3",
+                "SR2B.1",
+                "SR2B.2",
+                "SR2B.3",
+                "SR3A.1",
+                "SR3A.2",
+                "SR3A.3",
+                "SR3B.1",
+                "SR3B.2",
+                "SR3B.3",
+                "SR4A.1",
+                "SR4A.2",
+                "SR4A.3",
+                "SR4B.1",
+                "SR4B.2",
+                "SR4B.3",
+                "T4.PRI_B",
+                "U1.6",
+                "U2.9",
+                "U2.11",
+                "U3.2",
+                "U3.5",
+                "U4.2",
+                "U4.5",
+                "U5.2",
+                "U5.5",
+                "U6.2",
+                "U6.5"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "REG1",
+              "net1": [
+                "C7.1",
+                "U3.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "REG2",
+              "net1": [
+                "C8.1",
+                "U4.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "REG3",
+              "net1": [
+                "C9.1",
+                "U5.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "REG4",
+              "net1": [
+                "C10.1",
+                "U6.3"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "RT",
+              "net1": [
+                "R2.1",
+                "U1.2"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "RUN",
+              "net1": [
+                "C13.1",
+                "R7.1",
+                "U2.6"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "SS",
+              "net1": [
+                "C6.1",
+                "U1.4"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "SW",
+              "net1": [
+                "C5.2",
+                "Cr.1",
+                "QH.1",
+                "QH.2",
+                "QH.3",
+                "QL.5",
+                "QL.6",
+                "QL.7",
+                "QL.8",
+                "QL.9",
+                "R18.2",
+                "U2.5"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "VCC12",
+              "net1": [
+                "C101.1",
+                "C102.1",
+                "C103.1",
+                "C104.1",
+                "D_BT.2",
+                "U1.7",
+                "U2.1"
+              ],
+              "net2": []
+            },
+            {
+              "type": "NET",
+              "object": "VOUT",
+              "net1": [
+                "Cout.1",
+                "J_OUT.1",
+                "T1.CTAP",
+                "T2.CTAP",
+                "T3.CTAP",
+                "T4.CTAP"
+              ],
+              "net2": []
+            },
+            {
+              "type": "COMPONENT",
+              "object": "",
+              "net1": [
+                "CT",
+                "T1",
+                "T2",
+                "T3",
+                "T4"
+              ],
+              "net2": []
+            }
+          ],
+          "kind": "array",
+          "count": 66
+        },
+        {
+          "label": "reversed (pcb, schematic)",
+          "value": [
+            {
+              "type": "NET",
+              "object": "'CR_CT'",
+              "net1": [],
+              "net2": [
+                "Cr.2",
+                "CT.PRI_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'CT_LR'",
+              "net1": [],
+              "net2": [
+                "CT.PRI_B",
+                "Lr.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'GH_DRV'",
+              "net1": [],
+              "net2": [
+                "R4.1",
+                "U2.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'GL_DRV'",
+              "net1": [],
+              "net2": [
+                "R5.1",
+                "U2.10"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_12'",
+              "net1": [],
+              "net2": [
+                "T1.PRI_B",
+                "T2.PRI_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_23'",
+              "net1": [],
+              "net2": [
+                "T2.PRI_B",
+                "T3.PRI_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_34'",
+              "net1": [],
+              "net2": [
+                "T3.PRI_B",
+                "T4.PRI_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'PRI_T1'",
+              "net1": [],
+              "net2": [
+                "Lr.2",
+                "T1.PRI_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC1_A'",
+              "net1": [],
+              "net2": [
+                "R28.1",
+                "SR1A.5",
+                "SR1A.6",
+                "SR1A.7",
+                "SR1A.8",
+                "T1.SEC_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC1_B'",
+              "net1": [],
+              "net2": [
+                "R29.1",
+                "SR1B.5",
+                "SR1B.6",
+                "SR1B.7",
+                "SR1B.8",
+                "T1.SEC_B"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC2_A'",
+              "net1": [],
+              "net2": [
+                "R30.1",
+                "SR2A.5",
+                "SR2A.6",
+                "SR2A.7",
+                "SR2A.8",
+                "T2.SEC_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC2_B'",
+              "net1": [],
+              "net2": [
+                "R31.1",
+                "SR2B.5",
+                "SR2B.6",
+                "SR2B.7",
+                "SR2B.8",
+                "T2.SEC_B"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC3_A'",
+              "net1": [],
+              "net2": [
+                "R32.1",
+                "SR3A.5",
+                "SR3A.6",
+                "SR3A.7",
+                "SR3A.8",
+                "T3.SEC_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC3_B'",
+              "net1": [],
+              "net2": [
+                "R33.1",
+                "SR3B.5",
+                "SR3B.6",
+                "SR3B.7",
+                "SR3B.8",
+                "T3.SEC_B"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC4_A'",
+              "net1": [],
+              "net2": [
+                "R34.1",
+                "SR4A.5",
+                "SR4A.6",
+                "SR4A.7",
+                "SR4A.8",
+                "T4.SEC_A"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'SEC4_B'",
+              "net1": [],
+              "net2": [
+                "R35.1",
+                "SR4B.5",
+                "SR4B.6",
+                "SR4B.7",
+                "SR4B.8",
+                "T4.SEC_B"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VCC12_S'",
+              "net1": [],
+              "net2": [
+                "C105.1",
+                "C106.1",
+                "C107.1",
+                "C108.1",
+                "C109.1",
+                "C110.1",
+                "C111.1",
+                "C112.1",
+                "U3.7",
+                "U4.7",
+                "U5.7",
+                "U6.7"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD1_A'",
+              "net1": [],
+              "net2": [
+                "R28.2",
+                "U3.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD1_B'",
+              "net1": [],
+              "net2": [
+                "R29.2",
+                "U3.6"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD2_A'",
+              "net1": [],
+              "net2": [
+                "R30.2",
+                "U4.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD2_B'",
+              "net1": [],
+              "net2": [
+                "R31.2",
+                "U4.6"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD3_A'",
+              "net1": [],
+              "net2": [
+                "R32.2",
+                "U5.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD3_B'",
+              "net1": [],
+              "net2": [
+                "R33.2",
+                "U5.6"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD4_A'",
+              "net1": [],
+              "net2": [
+                "R34.2",
+                "U6.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VD4_B'",
+              "net1": [],
+              "net2": [
+                "R35.2",
+                "U6.6"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG1_A'",
+              "net1": [],
+              "net2": [
+                "R20.1",
+                "U3.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG1_B'",
+              "net1": [],
+              "net2": [
+                "R21.1",
+                "U3.8"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG2_A'",
+              "net1": [],
+              "net2": [
+                "R22.1",
+                "U4.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG2_B'",
+              "net1": [],
+              "net2": [
+                "R23.1",
+                "U4.8"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG3_A'",
+              "net1": [],
+              "net2": [
+                "R24.1",
+                "U5.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG3_B'",
+              "net1": [],
+              "net2": [
+                "R25.1",
+                "U5.8"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG4_A'",
+              "net1": [],
+              "net2": [
+                "R26.1",
+                "U6.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VG4_B'",
+              "net1": [],
+              "net2": [
+                "R27.1",
+                "U6.8"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "'VIN_P'",
+              "net1": [],
+              "net2": [
+                "Cin.1",
+                "J_IN.1",
+                "QH.5",
+                "QH.6",
+                "QH.7",
+                "QH.8",
+                "QH.9"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "CS1",
+              "net1": [],
+              "net2": [
+                "CT.SEC_A",
+                "D_CT1.1",
+                "D_CT3.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "CS2",
+              "net1": [],
+              "net2": [
+                "CT.SEC_B",
+                "D_CT2.1",
+                "D_CT4.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "DT",
+              "net1": [],
+              "net2": [
+                "R1.1",
+                "U1.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GA1",
+              "net1": [],
+              "net2": [
+                "R20.2",
+                "SR1A.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GA2",
+              "net1": [],
+              "net2": [
+                "R22.2",
+                "SR2A.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GA3",
+              "net1": [],
+              "net2": [
+                "R24.2",
+                "SR3A.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GA4",
+              "net1": [],
+              "net2": [
+                "R26.2",
+                "SR4A.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GB1",
+              "net1": [],
+              "net2": [
+                "R21.2",
+                "SR1B.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GB2",
+              "net1": [],
+              "net2": [
+                "R23.2",
+                "SR2B.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GB3",
+              "net1": [],
+              "net2": [
+                "R25.2",
+                "SR3B.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GB4",
+              "net1": [],
+              "net2": [
+                "R27.2",
+                "SR4B.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GD1",
+              "net1": [],
+              "net2": [
+                "R9.1",
+                "U1.8",
+                "U2.7"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GD2",
+              "net1": [],
+              "net2": [
+                "R10.1",
+                "U1.5",
+                "U2.8"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GH",
+              "net1": [],
+              "net2": [
+                "QH.4",
+                "R4.2",
+                "R18.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "GL",
+              "net1": [],
+              "net2": [
+                "QL.4",
+                "R5.2",
+                "R19.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "HB",
+              "net1": [],
+              "net2": [
+                "C5.1",
+                "D_BT.1",
+                "U2.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "OC",
+              "net1": [],
+              "net2": [
+                "C12.1",
+                "R16.2",
+                "R17.1",
+                "U1.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "OC1",
+              "net1": [],
+              "net2": [
+                "C11.1",
+                "R15.2",
+                "R16.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "OCD",
+              "net1": [],
+              "net2": [
+                "D_CT1.3",
+                "D_CT2.3",
+                "R3.1",
+                "R15.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "OCM",
+              "net1": [],
+              "net2": [
+                "C11.2",
+                "C12.2",
+                "D_CT3.1",
+                "D_CT4.1",
+                "R3.2",
+                "R17.2"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "PGND",
+              "net1": [],
+              "net2": [
+                "C6.2",
+                "C7.2",
+                "C8.2",
+                "C9.2",
+                "C10.2",
+                "C13.2",
+                "C101.2",
+                "C102.2",
+                "C103.2",
+                "C104.2",
+                "C105.2",
+                "C106.2",
+                "C107.2",
+                "C108.2",
+                "C109.2",
+                "C110.2",
+                "C111.2",
+                "C112.2",
+                "Cin.2",
+                "Cout.2",
+                "J_IN.2",
+                "J_OUT.2",
+                "QL.1",
+                "QL.2",
+                "QL.3",
+                "R1.2",
+                "R2.2",
+                "R7.2",
+                "R9.2",
+                "R10.2",
+                "R19.2",
+                "SR1A.1",
+                "SR1A.2",
+                "SR1A.3",
+                "SR1B.1",
+                "SR1B.2",
+                "SR1B.3",
+                "SR2A.1",
+                "SR2A.2",
+                "SR2A.3",
+                "SR2B.1",
+                "SR2B.2",
+                "SR2B.3",
+                "SR3A.1",
+                "SR3A.2",
+                "SR3A.3",
+                "SR3B.1",
+                "SR3B.2",
+                "SR3B.3",
+                "SR4A.1",
+                "SR4A.2",
+                "SR4A.3",
+                "SR4B.1",
+                "SR4B.2",
+                "SR4B.3",
+                "T4.PRI_B",
+                "U1.6",
+                "U2.9",
+                "U2.11",
+                "U3.2",
+                "U3.5",
+                "U4.2",
+                "U4.5",
+                "U5.2",
+                "U5.5",
+                "U6.2",
+                "U6.5"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "REG1",
+              "net1": [],
+              "net2": [
+                "C7.1",
+                "U3.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "REG2",
+              "net1": [],
+              "net2": [
+                "C8.1",
+                "U4.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "REG3",
+              "net1": [],
+              "net2": [
+                "C9.1",
+                "U5.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "REG4",
+              "net1": [],
+              "net2": [
+                "C10.1",
+                "U6.3"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "RT",
+              "net1": [],
+              "net2": [
+                "R2.1",
+                "U1.2"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "RUN",
+              "net1": [],
+              "net2": [
+                "C13.1",
+                "R7.1",
+                "U2.6"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "SS",
+              "net1": [],
+              "net2": [
+                "C6.1",
+                "U1.4"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "SW",
+              "net1": [],
+              "net2": [
+                "C5.2",
+                "Cr.1",
+                "QH.1",
+                "QH.2",
+                "QH.3",
+                "QL.5",
+                "QL.6",
+                "QL.7",
+                "QL.8",
+                "QL.9",
+                "R18.2",
+                "U2.5"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "VCC12",
+              "net1": [],
+              "net2": [
+                "C101.1",
+                "C102.1",
+                "C103.1",
+                "C104.1",
+                "D_BT.2",
+                "U1.7",
+                "U2.1"
+              ]
+            },
+            {
+              "type": "NET",
+              "object": "VOUT",
+              "net1": [],
+              "net2": [
+                "Cout.1",
+                "J_OUT.1",
+                "T1.CTAP",
+                "T2.CTAP",
+                "T3.CTAP",
+                "T4.CTAP"
+              ]
+            },
+            {
+              "type": "COMPONENT",
+              "object": "",
+              "net1": [],
+              "net2": [
+                "CT",
+                "T1",
+                "T2",
+                "T3",
+                "T4"
+              ]
+            }
+          ],
+          "kind": "array",
+          "count": 66
+        },
+        {
+          "label": "schematic self-compare (control)",
+          "value": [],
+          "kind": "array",
+          "count": 0
+        },
+        {
+          "label": "pcb self-compare (control)",
+          "value": [],
+          "kind": "array",
+          "count": 0
+        },
+        {
+          "label": "project+document objects",
+          "value": "undefined",
+          "kind": "undefined",
+          "count": null
+        }
+      ],
+      "board": {
+        "name": "Board1",
+        "projectUuid": "a251a8380e085090a7c5aaffe1a1c90b2eec9fbbc76a2800fc3a949df625befa",
+        "schUuid": "578d520019a373e9",
+        "pcbUuid": "2f6fa2d508d3f9a8"
+      },
+      "api_type": "function",
+      "sch_netlist": {
+        "error": "i is not iterable"
+      },
+      "count": 66,
+      "diff": [
+        {
+          "type": "NET",
+          "object": "'CR_CT'",
+          "net1": [
+            "Cr.2",
+            "CT.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'CT_LR'",
+          "net1": [
+            "CT.PRI_B",
+            "Lr.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'GH_DRV'",
+          "net1": [
+            "R4.1",
+            "U2.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'GL_DRV'",
+          "net1": [
+            "R5.1",
+            "U2.10"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_12'",
+          "net1": [
+            "T1.PRI_B",
+            "T2.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_23'",
+          "net1": [
+            "T2.PRI_B",
+            "T3.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_34'",
+          "net1": [
+            "T3.PRI_B",
+            "T4.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'PRI_T1'",
+          "net1": [
+            "Lr.2",
+            "T1.PRI_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC1_A'",
+          "net1": [
+            "R28.1",
+            "SR1A.5",
+            "SR1A.6",
+            "SR1A.7",
+            "SR1A.8",
+            "T1.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC1_B'",
+          "net1": [
+            "R29.1",
+            "SR1B.5",
+            "SR1B.6",
+            "SR1B.7",
+            "SR1B.8",
+            "T1.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC2_A'",
+          "net1": [
+            "R30.1",
+            "SR2A.5",
+            "SR2A.6",
+            "SR2A.7",
+            "SR2A.8",
+            "T2.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC2_B'",
+          "net1": [
+            "R31.1",
+            "SR2B.5",
+            "SR2B.6",
+            "SR2B.7",
+            "SR2B.8",
+            "T2.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC3_A'",
+          "net1": [
+            "R32.1",
+            "SR3A.5",
+            "SR3A.6",
+            "SR3A.7",
+            "SR3A.8",
+            "T3.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC3_B'",
+          "net1": [
+            "R33.1",
+            "SR3B.5",
+            "SR3B.6",
+            "SR3B.7",
+            "SR3B.8",
+            "T3.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC4_A'",
+          "net1": [
+            "R34.1",
+            "SR4A.5",
+            "SR4A.6",
+            "SR4A.7",
+            "SR4A.8",
+            "T4.SEC_A"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'SEC4_B'",
+          "net1": [
+            "R35.1",
+            "SR4B.5",
+            "SR4B.6",
+            "SR4B.7",
+            "SR4B.8",
+            "T4.SEC_B"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VCC12_S'",
+          "net1": [
+            "C105.1",
+            "C106.1",
+            "C107.1",
+            "C108.1",
+            "C109.1",
+            "C110.1",
+            "C111.1",
+            "C112.1",
+            "U3.7",
+            "U4.7",
+            "U5.7",
+            "U6.7"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD1_A'",
+          "net1": [
+            "R28.2",
+            "U3.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD1_B'",
+          "net1": [
+            "R29.2",
+            "U3.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD2_A'",
+          "net1": [
+            "R30.2",
+            "U4.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD2_B'",
+          "net1": [
+            "R31.2",
+            "U4.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD3_A'",
+          "net1": [
+            "R32.2",
+            "U5.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD3_B'",
+          "net1": [
+            "R33.2",
+            "U5.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD4_A'",
+          "net1": [
+            "R34.2",
+            "U6.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VD4_B'",
+          "net1": [
+            "R35.2",
+            "U6.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG1_A'",
+          "net1": [
+            "R20.1",
+            "U3.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG1_B'",
+          "net1": [
+            "R21.1",
+            "U3.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG2_A'",
+          "net1": [
+            "R22.1",
+            "U4.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG2_B'",
+          "net1": [
+            "R23.1",
+            "U4.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG3_A'",
+          "net1": [
+            "R24.1",
+            "U5.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG3_B'",
+          "net1": [
+            "R25.1",
+            "U5.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG4_A'",
+          "net1": [
+            "R26.1",
+            "U6.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VG4_B'",
+          "net1": [
+            "R27.1",
+            "U6.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "'VIN_P'",
+          "net1": [
+            "Cin.1",
+            "J_IN.1",
+            "QH.5",
+            "QH.6",
+            "QH.7",
+            "QH.8",
+            "QH.9"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "CS1",
+          "net1": [
+            "CT.SEC_A",
+            "D_CT1.1",
+            "D_CT3.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "CS2",
+          "net1": [
+            "CT.SEC_B",
+            "D_CT2.1",
+            "D_CT4.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "DT",
+          "net1": [
+            "R1.1",
+            "U1.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA1",
+          "net1": [
+            "R20.2",
+            "SR1A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA2",
+          "net1": [
+            "R22.2",
+            "SR2A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA3",
+          "net1": [
+            "R24.2",
+            "SR3A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GA4",
+          "net1": [
+            "R26.2",
+            "SR4A.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB1",
+          "net1": [
+            "R21.2",
+            "SR1B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB2",
+          "net1": [
+            "R23.2",
+            "SR2B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB3",
+          "net1": [
+            "R25.2",
+            "SR3B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GB4",
+          "net1": [
+            "R27.2",
+            "SR4B.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GD1",
+          "net1": [
+            "R9.1",
+            "U1.8",
+            "U2.7"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GD2",
+          "net1": [
+            "R10.1",
+            "U1.5",
+            "U2.8"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GH",
+          "net1": [
+            "QH.4",
+            "R4.2",
+            "R18.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "GL",
+          "net1": [
+            "QL.4",
+            "R5.2",
+            "R19.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "HB",
+          "net1": [
+            "C5.1",
+            "D_BT.1",
+            "U2.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OC",
+          "net1": [
+            "C12.1",
+            "R16.2",
+            "R17.1",
+            "U1.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OC1",
+          "net1": [
+            "C11.1",
+            "R15.2",
+            "R16.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OCD",
+          "net1": [
+            "D_CT1.3",
+            "D_CT2.3",
+            "R3.1",
+            "R15.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "OCM",
+          "net1": [
+            "C11.2",
+            "C12.2",
+            "D_CT3.1",
+            "D_CT4.1",
+            "R3.2",
+            "R17.2"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "PGND",
+          "net1": [
+            "C6.2",
+            "C7.2",
+            "C8.2",
+            "C9.2",
+            "C10.2",
+            "C13.2",
+            "C101.2",
+            "C102.2",
+            "C103.2",
+            "C104.2",
+            "C105.2",
+            "C106.2",
+            "C107.2",
+            "C108.2",
+            "C109.2",
+            "C110.2",
+            "C111.2",
+            "C112.2",
+            "Cin.2",
+            "Cout.2",
+            "J_IN.2",
+            "J_OUT.2",
+            "QL.1",
+            "QL.2",
+            "QL.3",
+            "R1.2",
+            "R2.2",
+            "R7.2",
+            "R9.2",
+            "R10.2",
+            "R19.2",
+            "SR1A.1",
+            "SR1A.2",
+            "SR1A.3",
+            "SR1B.1",
+            "SR1B.2",
+            "SR1B.3",
+            "SR2A.1",
+            "SR2A.2",
+            "SR2A.3",
+            "SR2B.1",
+            "SR2B.2",
+            "SR2B.3",
+            "SR3A.1",
+            "SR3A.2",
+            "SR3A.3",
+            "SR3B.1",
+            "SR3B.2",
+            "SR3B.3",
+            "SR4A.1",
+            "SR4A.2",
+            "SR4A.3",
+            "SR4B.1",
+            "SR4B.2",
+            "SR4B.3",
+            "T4.PRI_B",
+            "U1.6",
+            "U2.9",
+            "U2.11",
+            "U3.2",
+            "U3.5",
+            "U4.2",
+            "U4.5",
+            "U5.2",
+            "U5.5",
+            "U6.2",
+            "U6.5"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG1",
+          "net1": [
+            "C7.1",
+            "U3.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG2",
+          "net1": [
+            "C8.1",
+            "U4.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG3",
+          "net1": [
+            "C9.1",
+            "U5.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "REG4",
+          "net1": [
+            "C10.1",
+            "U6.3"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "RT",
+          "net1": [
+            "R2.1",
+            "U1.2"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "RUN",
+          "net1": [
+            "C13.1",
+            "R7.1",
+            "U2.6"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "SS",
+          "net1": [
+            "C6.1",
+            "U1.4"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "SW",
+          "net1": [
+            "C5.2",
+            "Cr.1",
+            "QH.1",
+            "QH.2",
+            "QH.3",
+            "QL.5",
+            "QL.6",
+            "QL.7",
+            "QL.8",
+            "QL.9",
+            "R18.2",
+            "U2.5"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "VCC12",
+          "net1": [
+            "C101.1",
+            "C102.1",
+            "C103.1",
+            "C104.1",
+            "D_BT.2",
+            "U1.7",
+            "U2.1"
+          ],
+          "net2": []
+        },
+        {
+          "type": "NET",
+          "object": "VOUT",
+          "net1": [
+            "Cout.1",
+            "J_OUT.1",
+            "T1.CTAP",
+            "T2.CTAP",
+            "T3.CTAP",
+            "T4.CTAP"
+          ],
+          "net2": []
+        },
+        {
+          "type": "COMPONENT",
+          "object": "",
+          "net1": [
+            "CT",
+            "T1",
+            "T2",
+            "T3",
+            "T4"
+          ],
+          "net2": []
+        }
+      ],
+      "api": "eda.sys_Tool.netlistComparison(bare uuids (documented example))"
+    },
+    "logs": [],
+    "durationMs": 17289
+  },
+  "not_erc_not_drc_not_fab": true
+}
