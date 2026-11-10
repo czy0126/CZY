@@ -1,0 +1,168 @@
+{
+  "schema": "CZY_G1_LR_ELP38_REPACK_PROPOSAL_V1",
+  "status": "CANDIDATE_ECO_NOT_APPLIED",
+  "source_cad": "hardware/dcx_main/g1/dcx_main_board_g1_kelvin.eprj2",
+  "source_reopen_readback": "hardware/dcx_main/g1/kelvin_readback.json",
+  "source_reopen_git_blob_sha": "feb6d3a2f791f379049d803ed428956f4d627bec",
+  "source_count_guard": {
+    "components": 77,
+    "pads": 299,
+    "nets": 65,
+    "lines": 98,
+    "vias": 18
+  },
+  "output_cad_new_file": "hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2",
+  "maxwell_concept_geometry": "design/v3/maxwell/diy_magnetics_concept.json",
+  "options": {
+    "near_loop_candidate": {
+      "body_center_mm": [
+        26,
+        49
+      ],
+      "body_width_mm": 38,
+      "body_depth_mm": 25.4,
+      "expected_neighbour_refs_to_relocate": [
+        "C101",
+        "C102",
+        "C105",
+        "C106",
+        "C107",
+        "C108",
+        "R1",
+        "R2",
+        "R7",
+        "R9",
+        "R10"
+      ],
+      "existing_route_segments_crossing_core_body_centerline": 0,
+      "existing_route_vias_inside_body": 0,
+      "layout_assessment": "keeps Lr near T1, no new copper routing in source; requires 11 passive moves and CAD/3D review",
+      "not_approved_copper_or_assembly": true
+    },
+    "remote_no_existing_pad_or_route_overlap": {
+      "body_center_mm": [
+        99,
+        109
+      ],
+      "body_width_mm": 38,
+      "body_depth_mm": 25.4,
+      "status": "REJECT_FOR_NEXT_G1_ECO_RESONANT_LOOP_DISTANT",
+      "reason": "May have no 2D pad/line overlaps but routes CT_LR and PRI_T1 around 187.6mm straight endpoint distance even after 180 degree rotation, versus local about 77.5mm; unacceptable to auto-select solely for free space."
+    }
+  },
+  "moves": {
+    "Lr": {
+      "new_xy_mm": [
+        26,
+        49
+      ],
+      "rotation_deg": 180,
+      "requires_real_winding_review": true,
+      "role": "unresolved 38x25.4mm ELP38/I38 self-designed core; non-polar two-terminal coil"
+    },
+    "C101": {
+      "new_xy_mm": [
+        54,
+        58
+      ],
+      "anchor_ref": "U2",
+      "anchor_net": "VCC12"
+    },
+    "C102": {
+      "new_xy_mm": [
+        111,
+        40
+      ],
+      "anchor_ref": "U1",
+      "anchor_net": "VCC12"
+    },
+    "C105": {
+      "new_xy_mm": [
+        18,
+        67
+      ],
+      "anchor_ref": "U3",
+      "anchor_net": "VCC12_S"
+    },
+    "C106": {
+      "new_xy_mm": [
+        54,
+        67
+      ],
+      "anchor_ref": "U4",
+      "anchor_net": "VCC12_S"
+    },
+    "C107": {
+      "new_xy_mm": [
+        94,
+        67
+      ],
+      "anchor_ref": "U5",
+      "anchor_net": "VCC12_S"
+    },
+    "C108": {
+      "new_xy_mm": [
+        132,
+        67
+      ],
+      "anchor_ref": "U6",
+      "anchor_net": "VCC12_S"
+    },
+    "R1": {
+      "new_xy_mm": [
+        108,
+        48
+      ],
+      "anchor_ref": "U1",
+      "anchor_net": "DT"
+    },
+    "R2": {
+      "new_xy_mm": [
+        108,
+        46
+      ],
+      "anchor_ref": "U1",
+      "anchor_net": "RT"
+    },
+    "R7": {
+      "new_xy_mm": [
+        60,
+        63
+      ],
+      "anchor_ref": "U2",
+      "anchor_net": "RUN"
+    },
+    "R9": {
+      "new_xy_mm": [
+        60,
+        67
+      ],
+      "anchor_ref": "U2",
+      "anchor_net": "GD1"
+    },
+    "R10": {
+      "new_xy_mm": [
+        60,
+        65
+      ],
+      "anchor_ref": "U2",
+      "anchor_net": "GD2"
+    }
+  },
+  "guards": {
+    "all_target_refs_must_exist_once": true,
+    "source_not_for_fab": true,
+    "never_modify_input_project": true,
+    "no_automated_erc_drc_claim": true,
+    "original_copper_and_vias_must_not_be_silently_removed": true,
+    "require_manual_3d_body_review": true,
+    "require_lrs_real_physical_winding_and_terminal_design": true
+  },
+  "limitations": [
+    "The present Lr native two-pin footprint is not a physical ELP38 custom assembly.",
+    "The 11 passive moved positions are a grid-search preview based on actual pad extents and same-net IC pins; no courtyard/3D assembly or field-solving approval.",
+    "No connection or manufacturer MPN was changed. All moved refs require fresh native reopen readback, real GUI DRC and electrical-loop review before adoption.",
+    "The existing Cout is still only one nominal placeholder; the 100A busbar/cooling and magnetic pad engineering are unsolved.",
+    "One Lr rotated 180deg is an inductor (unpolarized electrical behavior), but actual winding entry/exit must be verified; no manufacturing release."
+  ]
+}
