@@ -1,7 +1,6 @@
 """Offline evidence tests: G1 Lr ELP38 physical repack, not a PCB release."""
 from __future__ import annotations
 
-import copy
 import importlib.util
 import json
 from pathlib import Path
@@ -14,7 +13,7 @@ r=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(r)
 
 
-def test_actual_reopened_board_is_locked_to_plan():
+def test_frozen_source_parent_is_locked_to_plan():
     report=r.check()
     assert not report["preflight_errors"], report["preflight_errors"]
     assert report["move_count"]==12
@@ -22,7 +21,15 @@ def test_actual_reopened_board_is_locked_to_plan():
     assert report["Lr_center_mm"]==[26.0,49.0]
     assert report["Lr_core_xy_mm"]=={
         "left":7,"right":45,"top":36.3,"bottom":61.7}
-    assert report["source_readback_git_blob_sha"]==r.geom.git_blob_sha(r.geom.ACTIVE_READBACK)
+    # The plan is locked to the frozen pre-ECO parent, NOT to the active board:
+    # once the repack is applied the active readback no longer has these moves
+    # to make, so reading it here would double-apply or fail the source guard.
+    assert r.geom.SOURCE_READBACK.name=="kelvin_readback.json"
+    assert r.geom.ACTIVE_READBACK.name=="lr_repack_readback.json"
+    assert report["source_readback_git_blob_sha"]==r.geom.git_blob_sha(
+        r.geom.SOURCE_READBACK)
+    assert report["source_readback_git_blob_sha"]!=r.geom.git_blob_sha(
+        r.geom.ACTIVE_READBACK)
     assert report["native_eda_modified"] is False
     assert report["native_drc_passed"] is False
     assert report["maxwell_solved"] is False
