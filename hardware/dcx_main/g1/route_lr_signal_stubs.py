@@ -192,7 +192,7 @@ def report() -> dict:
                                                  for x in segments),4),
         "minimum_clearance_policy_mm":CLEARANCE_MM,
         "preflight_problems":issues,
-        "forbidden_not_routed":["C106.1→U4.7: intersects U4.8 and C106.2",
+        "forbidden_not_routed":["C106.1→U4.7: short-circuits U4.8 wrong-net pad on direct line; requires reroute",
                                 "Lr actual CT_LR and PRI_T1: magnetic terminals unverified",
                                 "100A VOUT+PGND output copper and CT provisional PADs",
                                 "remaining SR gate and source Kelvin pairs"],
