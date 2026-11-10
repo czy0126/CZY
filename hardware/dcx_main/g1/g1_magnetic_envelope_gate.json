@@ -1,0 +1,415 @@
+{
+  "schema": "CZY_G1_MAGNETIC_BODY_XY_CLEARANCE_SCREEN_V1",
+  "status": "P0_G1_MAGNETIC_PLACEMENT_ECO_REQUIRED",
+  "evidence": {
+    "native_board_pad_readback": "hardware/dcx_main/g1/g1_pads.json",
+    "design_owned_maxwell_geometry": "design/v3/maxwell/diy_magnetics_concept.json",
+    "magnetics_concept_only": true,
+    "actual_maxwell_3d_solve": false,
+    "real_assembly_Z_cleared": false,
+    "native_gui_3d_collision_test": false,
+    "fab_approved": false
+  },
+  "board_mm": [
+    155,
+    131
+  ],
+  "clearance_planning_assumptions_mm": {
+    "core_to_core": 2,
+    "core_to_edge": 3,
+    "status": "ENGINEERING_PLANNING_ONLY_NOT_A_MANUFACTURER_SPECIFICATION"
+  },
+  "lr_elp38_candidate": {
+    "ref": "Lr",
+    "physical_core_envelope_mm": [
+      38,
+      25.4
+    ],
+    "current_body_xy_mm": {
+      "left": 1,
+      "right": 39,
+      "top": 39.3,
+      "bottom": 64.7
+    },
+    "minimum_board_edge_margin_mm": 1,
+    "native_footprint_pad_count": 2,
+    "other_pad_envelope_intersections": 30,
+    "other_ref_count": 15,
+    "by_ref": [
+      {
+        "ref": "C10",
+        "pads": 2
+      },
+      {
+        "ref": "C101",
+        "pads": 2
+      },
+      {
+        "ref": "C102",
+        "pads": 2
+      },
+      {
+        "ref": "C103",
+        "pads": 2
+      },
+      {
+        "ref": "C104",
+        "pads": 2
+      },
+      {
+        "ref": "C105",
+        "pads": 2
+      },
+      {
+        "ref": "C106",
+        "pads": 2
+      },
+      {
+        "ref": "C107",
+        "pads": 2
+      },
+      {
+        "ref": "Cout",
+        "pads": 2
+      },
+      {
+        "ref": "R1",
+        "pads": 2
+      },
+      {
+        "ref": "R10",
+        "pads": 2
+      },
+      {
+        "ref": "R18",
+        "pads": 2
+      },
+      {
+        "ref": "R19",
+        "pads": 2
+      },
+      {
+        "ref": "R2",
+        "pads": 2
+      },
+      {
+        "ref": "R7",
+        "pads": 2
+      }
+    ],
+    "intersections": [
+      {
+        "ref": "C10",
+        "pin": "1",
+        "net": "REG4",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C10",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C101",
+        "pin": "1",
+        "net": "VCC12",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C101",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C102",
+        "pin": "1",
+        "net": "VCC12",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C102",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C103",
+        "pin": "1",
+        "net": "VCC12",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C103",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C104",
+        "pin": "1",
+        "net": "VCC12",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C104",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C105",
+        "pin": "1",
+        "net": "VCC12_S",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C105",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C106",
+        "pin": "1",
+        "net": "VCC12_S",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C106",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C107",
+        "pin": "1",
+        "net": "VCC12_S",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "C107",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "Cout",
+        "pin": "1",
+        "net": "VOUT",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "Cout",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.8,
+        "overlap_y_mm": 0.899
+      },
+      {
+        "ref": "R1",
+        "pin": "1",
+        "net": "DT",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R1",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R10",
+        "pin": "1",
+        "net": "GD2",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R10",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R18",
+        "pin": "1",
+        "net": "GH",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R18",
+        "pin": "2",
+        "net": "SW",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R19",
+        "pin": "1",
+        "net": "GL",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R19",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R2",
+        "pin": "1",
+        "net": "RT",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R2",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R7",
+        "pin": "1",
+        "net": "RUN",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      },
+      {
+        "ref": "R7",
+        "pin": "2",
+        "net": "PGND",
+        "overlap_x_mm": 0.808,
+        "overlap_y_mm": 0.864
+      }
+    ],
+    "assessment": "XY_OVERLAP_REQUIRES_Z_OR_COMPONENT_MOVE_REVIEW",
+    "native_footprint_pad_pitch_mm": 9.002,
+    "board_edge_reserve_passed": false
+  },
+  "transformer_envelopes": {
+    "present_design": "ELP32_32x20_3_1_1_GEOMETRY_PROXY",
+    "change_to_elp38_is_not_an_existing_design": true,
+    "current_elp32_box_mm": {
+      "T1": {
+        "left": 4,
+        "right": 36,
+        "top": 10,
+        "bottom": 30
+      },
+      "T2": {
+        "left": 42,
+        "right": 74,
+        "top": 10,
+        "bottom": 30
+      },
+      "T3": {
+        "left": 80,
+        "right": 112,
+        "top": 10,
+        "bottom": 30
+      },
+      "T4": {
+        "left": 118,
+        "right": 150,
+        "top": 10,
+        "bottom": 30
+      }
+    },
+    "hypothetical_elp38_box_mm": {
+      "T1": {
+        "left": 1,
+        "right": 39,
+        "top": 7.3,
+        "bottom": 32.7
+      },
+      "T2": {
+        "left": 39,
+        "right": 77,
+        "top": 7.3,
+        "bottom": 32.7
+      },
+      "T3": {
+        "left": 77,
+        "right": 115,
+        "top": 7.3,
+        "bottom": 32.7
+      },
+      "T4": {
+        "left": 115,
+        "right": 153,
+        "top": 7.3,
+        "bottom": 32.7
+      }
+    },
+    "adjacent_pairs": [
+      {
+        "refs": [
+          "T1",
+          "T2"
+        ],
+        "current_elp32_gap_mm": 6,
+        "if_changed_to_elp38_gap_mm": 0
+      },
+      {
+        "refs": [
+          "T2",
+          "T3"
+        ],
+        "current_elp32_gap_mm": 6,
+        "if_changed_to_elp38_gap_mm": 0
+      },
+      {
+        "refs": [
+          "T3",
+          "T4"
+        ],
+        "current_elp32_gap_mm": 6,
+        "if_changed_to_elp38_gap_mm": 0
+      }
+    ],
+    "elp38_stretch_requires_placement_change": true,
+    "elp38_if_all_four_single_row_required_board_width_mm": 164,
+    "elp38_if_all_four_single_row_shortfall_mm": 9
+  },
+  "decisions": {
+    "g1_can_continue_non_frozen_routing_away_from_magnets": true,
+    "freeze_existing_lr_placement": false,
+    "approve_g1_magnetic_assembly": false,
+    "approve_g2_fab": false,
+    "next_cad_action": "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_15_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr",
+    "conditional_transformer_action": "IF_T1_TO_T4_UPSIZE_TO_ELP38_REPACK_ALL_FOUR_PITCHES_AND_PROVISIONAL_TERMINALS"
+  },
+  "limitations": [
+    "Rectangular envelope is conservative: XY crossing does not prove a 3D clash at different Z.",
+    "Full winding, fixture, mounting, cold plate, thermal gap and physical pad drawings are unknown.",
+    "A G1 0 physical DRC is a copper rule result, not a magnetic body clearance pass.",
+    "No EDA primitives, BOM, PCB, or gate JSON were changed by this report."
+  ]
+}
