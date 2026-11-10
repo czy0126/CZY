@@ -1,0 +1,151 @@
+{
+  "status": "P0_G1_ACTUAL_NARROW_NECKS_NOT_100A_QUALIFIED",
+  "source": "hardware/dcx_main/g1/lr_repack_readback.json",
+  "source_is_reopened_native_pcb": true,
+  "current_a_assumed": 100,
+  "conductor_temp_c_assumed": 100,
+  "copper_rho20_ohm_m_assumed": 1.724e-8,
+  "alpha_per_c_assumed": 0.00393,
+  "both_rails_budget_uohm": 150,
+  "vout_four_ctap_branches": [
+    {
+      "track_ids": [
+        "4472fd8093206096",
+        "9c5deb27d2956809"
+      ],
+      "length_mm": 17.49999,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "e44829dd823551dc",
+        "8bf8a703dc2950dd"
+      ],
+      "length_mm": 17.49999,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "5c02a141e09b24a0",
+        "597cb7acc9b97e93"
+      ],
+      "length_mm": 17.49999,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "7d2f84aa4e6691a5",
+        "0b72ca237c0f06d9"
+      ],
+      "length_mm": 17.49999,
+      "width_mm": 1
+    }
+  ],
+  "pgnd_eight_sr_source_branches": [
+    {
+      "track_ids": [
+        "869575685fd74bf3"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "bdeb167d766b3b27"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "2ad3e24a63daf52c"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "1ec048504f3637e7"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "32256ac2add08f88"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "aa06e0c4057759b9"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "3bc6e3e55263d401"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    },
+    {
+      "track_ids": [
+        "09b5726f59204564"
+      ],
+      "length_mm": 11.53,
+      "width_mm": 1
+    }
+  ],
+  "scenarios": [
+    {
+      "nominal_thickness_um": 35,
+      "vout_necks_uohm": 2832.536,
+      "pgnd_necks_uohm": 933.119,
+      "combined_necks_uohm": 3765.655,
+      "ideal_100a_neck_loss_w": 37.657,
+      "times_complete_rail_budget": 25.104,
+      "within_complete_rail_budget": false
+    },
+    {
+      "nominal_thickness_um": 70,
+      "vout_necks_uohm": 1416.268,
+      "pgnd_necks_uohm": 466.559,
+      "combined_necks_uohm": 1882.827,
+      "ideal_100a_neck_loss_w": 18.828,
+      "times_complete_rail_budget": 12.552,
+      "within_complete_rail_budget": false
+    },
+    {
+      "nominal_thickness_um": 105,
+      "vout_necks_uohm": 944.179,
+      "pgnd_necks_uohm": 311.04,
+      "combined_necks_uohm": 1255.218,
+      "ideal_100a_neck_loss_w": 12.552,
+      "times_complete_rail_budget": 8.368,
+      "within_complete_rail_budget": false
+    },
+    {
+      "nominal_thickness_um": 210,
+      "vout_necks_uohm": 472.089,
+      "pgnd_necks_uohm": 155.52,
+      "combined_necks_uohm": 627.609,
+      "ideal_100a_neck_loss_w": 6.276,
+      "times_complete_rail_budget": 4.184,
+      "within_complete_rail_budget": false
+    }
+  ],
+  "model_limitations": [
+    "Optimistic uniform copper cross section and ideal parallel load sharing, not actual transient SR RMS currents.",
+    "Excludes even the existing 2mm VOUT/PGND trunks, joints, pads, connectors, vias, current spreading and AC loss.",
+    "Four CTAPs are provisional design-owned pads, not qualified physical winding terminals.",
+    "Thick foil scenario is hypothetical: actual EDA PCB stackup and manufactured copper thickness are not verified.",
+    "No IPC-2152 thermal/current carrying qualification, Maxwell 3D current distribution or PCB fab approval.",
+    "Source-locked to the saved/reopened Lr board; any subsequent actual copper redraw requires new readback."
+  ],
+  "fabrication_approved": false,
+  "native_cad_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+  "readback_git_blob_sha": "1fc42b2b91711aa641cfcffc2670e9cd988a4f7f"
+}
