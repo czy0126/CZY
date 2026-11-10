@@ -1,8 +1,9 @@
 """Render the driver-region copper that was read back from the saved route copy.
 
 Input is ``driver_route_readback.json`` (native reopen readback), not the plan,
-so the picture shows what is actually in the file: 77 parts, 299 pads and the
-25 layer-1 lines.  Review aid only -- not a Gerber, DRC or fab claim.
+so the picture shows what is actually in the file: 77 parts, 299 pads, the
+layer-1 stubs and the layer-2 runs between them, and the through vias.  Layer-2
+copper is dashed.  Review aid only -- not a Gerber, DRC or fab claim.
 
     python hardware/dcx_main/g1/make_driver_route_svg.py
 """
@@ -18,7 +19,8 @@ HERE = Path(__file__).resolve().parent
 MIL = base.MIL
 X0, X1, Y0, Y1 = 39.0, 67.0, 43.0, 71.0  # driver window, mm Y down
 COLORS = {"GH_DRV": "#f1c40f", "GH": "#f39c12", "GL_DRV": "#3498db",
-          "GL": "#5dade2", "HB": "#2ecc71"}
+          "GL": "#5dade2", "HB": "#2ecc71", "VCC12": "#e74c3c",
+          "PGND": "#95a5a6", "SW": "#9b59b6"}
 
 
 def main() -> int:
@@ -38,10 +40,17 @@ def main() -> int:
     for line in data["lines"]:
         x1, y1 = line["x1"] / MIL, -line["y1"] / MIL
         x2, y2 = line["x2"] / MIL, -line["y2"] / MIL
+        bottom = line.get("layer", 1) != 1
         layer.append(
             f'<line x1="{x1:.3f}" y1="{y1:.3f}" x2="{x2:.3f}" y2="{y2:.3f}" '
             f'stroke="{COLORS.get(line["net"], "#ecf0f1")}" '
-            f'stroke-width="{line["width"] / MIL:.3f}" stroke-linecap="round"/>')
+            f'stroke-width="{line["width"] / MIL:.3f}" stroke-linecap="round"'
+            + (' stroke-dasharray="0.9 0.5" stroke-opacity="0.8"' if bottom else '') + '/>')
+    for via in data.get("vias") or []:
+        vx, vy = via["x"] / MIL, -via["y"] / MIL
+        layer.append(
+            f'<circle cx="{vx:.3f}" cy="{vy:.3f}" r="{via["diameter"] / MIL / 2:.3f}" '
+            f'fill="{COLORS.get(via["net"], "#ecf0f1")}" stroke="#111" stroke-width="0.12"/>')
     for c in data["components"]:
         x, y = c["X"] / MIL, -c["Y"] / MIL
         if not (X0 <= x <= X1 and Y0 <= y <= Y1):
@@ -49,6 +58,8 @@ def main() -> int:
         layer.append(f'<text x="{x:.2f}" y="{y - 1.5:.2f}" fill="#e8e8e8" '
                      f'font-family="monospace" font-size="1.5" text-anchor="middle">{c["ref"]}</text>')
     legend = " · ".join(f"{k} {v}" for k, v in COLORS.items())
+    top = sum(1 for line in data["lines"] if line.get("layer", 1) == 1)
+    bottom = len(data["lines"]) - top
     svg = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}">',
@@ -56,12 +67,13 @@ def main() -> int:
         *layer,
         "</g>",
         f'<text x="8" y="{h - 46}" fill="#95a5a6" font-family="monospace" font-size="11">'
-        f'driver window {X1 - X0:.0f} x {Y1 - Y0:.0f} mm · 25 layer-1 lines · '
+        f'driver window {X1 - X0:.0f} x {Y1 - Y0:.0f} mm · {top} layer-1 + {bottom} '
+        f'layer-2 (dashed) lines · {len(data.get("vias") or [])} vias · '
         'read back from dcx_main_board_g1_driver_route.eprj2</text>',
         f'<text x="8" y="{h - 28}" fill="#ecf0f1" font-family="monospace" font-size="11">'
         f'routed nets ({legend})</text>',
         f'<text x="8" y="{h - 10}" fill="#e74c3c" font-family="monospace" font-size="12">'
-        'PARTIAL ROUTING · NO NATIVE DRC · NOT FOR FAB</text>',
+        'PARTIAL ROUTING · NATIVE DRC: 0 PHYSICAL ERRORS · NOT FOR FAB</text>',
         "</svg>",
     ]
     (HERE / "driver_route.svg").write_text("\n".join(svg) + "\n", encoding="utf-8")

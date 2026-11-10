@@ -1,6 +1,7 @@
 """Lock the offline checks used before any G1 driver copper is created."""
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -61,6 +62,22 @@ def test_the_two_layer_resolution_passes_the_offline_check():
     problems = route.check_plan(pads, [route.PLAN, route.STUBS, route.BOTTOM],
                                 vias=route.VIAS)
     assert not problems, problems
+
+
+def test_the_via_geometry_sits_inside_the_board_rule_file():
+    """``driver_rules_raw.json`` is the board's own rule set (``pcb_Drc``).
+
+    A 0.2 mm drill made the native DRC report 13 "Via Size" errors, and the
+    outer diameter cannot grow to 0.6 mm to pay for a thicker ring: three
+    trace-to-via clearances are only 0.559 / 0.564 / 0.595 mm.
+    """
+    rules = json.loads((G1 / "driver_rules_raw.json").read_text(encoding="utf-8"))
+    form = rules["value"]["config"]["Physics"]["Via Size"]["viaSize"]["form"]
+    assert route.VIA_HOLE >= form["viaInnerdiameterMin"]
+    assert route.VIA_DIAMETER >= form["viaOuterdiameterMin"]
+    assert route.VIA_DIAMETER - route.VIA_HOLE >= 0.2 - 1e-9  # 0.1 mm ring per side
+    assert {v["hole"] for v in route.VIAS} == {route.VIA_HOLE}
+    assert {v["diameter"] for v in route.VIAS} == {route.VIA_DIAMETER}
 
 
 def test_a_bottom_trace_may_pass_under_a_top_smd_pad():

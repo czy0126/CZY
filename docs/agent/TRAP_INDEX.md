@@ -110,7 +110,9 @@
 |  | 自由焊盘用 `pcb_PrimitivePad.create(...)` 17 个位置参数建（带网、不挂器件）；组件→焊盘只有 `getAllPinsByPrimitiveId` 一条链，焊盘上**没有** component 字段 | 放临时端子 | EDA.md §原生 PCB 的 headless 构建 |
 |  | `getState_Polygon()` 是扁平数组（`'L'` 夹在数字里）⇒ 过滤数字后按 `nums[0::2]`/`[1::2]` 配对，按 3 步长解析读出垃圾 | 读折线/板框 | EDA.md §原生 PCB 的 headless 构建 |
 |  | `doc api --class-name` 用 `PCB_PrimitivePad` 这种大写类名，invoke 正文里才写 `eda.pcb_PrimitivePad`；`--timeout` 只收 1…60000 整数 | 查 PCB API | EDA.md §原生 PCB 的 headless 构建 |
-|  | LCEDA 主进程被可见模态框（`#32770`，标题 `blob:https://client/…`）卡住时，`return 1;` 仍 1 ms 返回、真实 API body 一律 59750 ms `REQUEST_TIMEOUT`、新 session 同样卡 ⇒ 两步探活后请用户关窗，不要用 Win32 互操作去关 | LCEDA invoke 全部超时 | EDA.md §API 桥接会被可见模态框卡死 |
+|  | LCEDA `eda` body 在 `open` 后约 20 s 内发出、或带未保存图元 `close --destroy`，都会**永久卡死** render（`return 1;` 仍 1 ms、真实 body 一律 59750 ms、新 session 同样卡）⇒ 只能 `lceda-pro stop` + 重开；协议固定为 open → 等 20 s → `return 1;` 探活 → 真实 body，body 内先 `save()` | LCEDA invoke 超时 | EDA.md §EDA 桥接的卡死与恢复 |
+|  | 会话里没打开 PCB 文档就调 `pcb_Layer` / `pcb_Drc`，抛 `EXECUTION_ERROR … 指定的参数信息在对应的会话中没有找到`（不是卡死）⇒ 先 `dmt_EditorControl.openDocument(board.pcb.uuid)` 再等 1 s | PCB API 报参数找不到 | EDA.md §EDA 桥接的卡死与恢复 |
+|  | 过孔尺寸/间距要现读板子自带的规则（`pcb_Drc.getCurrentRuleConfiguration()`）：G1 是内径 ≥0.3、外径 ≥0.5 mm、Track/Via 间距 0.152；按"嘉立创能力"记忆写 0.2 钻孔会出 13 条 `Via Size` | 定过孔/净距 | EDA.md §EDA 桥接的卡死与恢复 |
 |  | 磁件符号的引脚号是逻辑端子名；`physical_pad` 全 null，不编厂商焊盘号 | 磁件封装 | EDA.md §嘉立创 EDA |
 |  | 供应商回件审核只对当时那两份字节成立；合同重生成后必须重跑审核 | 审核回件 | EDA.md §嘉立创 EDA |
 |  | R8 ECO 分两相：phase 1 注入**绝不保存**，phase 2 clean session 凭 attestation 应用 | 跑 R8 ECO | EDA.md §装配排除 ECO |

@@ -1,10 +1,10 @@
 {
   "date": "2026-11-10",
   "status": "G1_ROUTE_PLAN_NOT_FOR_FAB",
-  "clearance_floor_mm": 0.15,
+  "clearance_floor_mm": 0.152,
   "layers": 2,
-  "via_hole_mm": 0.2,
-  "via_diameter_mm": 0.5,
+  "via_hole_mm": 0.3,
+  "via_diameter_mm": 0.505,
   "layer_1_plan": {
     "GH_DRV": {
       "width": 0.25,
@@ -51,10 +51,6 @@
           ]
         ],
         [
-          [
-            50.681,
-            56.3
-          ],
           [
             49.05,
             56.3
@@ -123,10 +119,6 @@
           ]
         ],
         [
-          [
-            59.68,
-            56.3
-          ],
           [
             58.05,
             56.3
@@ -447,92 +439,92 @@
       "net": "HB",
       "x": 44.8,
       "y": 61.999,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "HB",
       "x": 50.9,
       "y": 59.0,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "VCC12",
       "x": 48.174,
       "y": 63.5,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "VCC12",
       "x": 51.6,
       "y": 61.001,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "VCC12",
       "x": 56.299,
       "y": 63.9,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "VCC12",
       "x": 56.299,
       "y": 66.0,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "PGND",
       "x": 56.5,
       "y": 61.56,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "PGND",
       "x": 58.753,
       "y": 54.0,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "PGND",
       "x": 57.701,
       "y": 63.9,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "PGND",
       "x": 57.701,
       "y": 66.0,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "SW",
       "x": 52.499,
       "y": 63.9,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "SW",
       "x": 51.699,
       "y": 59.0,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     },
     {
       "net": "SW",
       "x": 49.754,
       "y": 54.0,
-      "hole": 0.2,
-      "diameter": 0.5
+      "hole": 0.3,
+      "diameter": 0.505
     }
   ],
   "segments": [
@@ -612,19 +604,6 @@
       "b": [
         48.247,
         55.001
-      ]
-    },
-    {
-      "net": "GH",
-      "width": 0.2,
-      "layer": 1,
-      "a": [
-        50.681,
-        56.3
-      ],
-      "b": [
-        49.05,
-        56.3
       ]
     },
     {
@@ -755,19 +734,6 @@
       "b": [
         57.247,
         55.001
-      ]
-    },
-    {
-      "net": "GL",
-      "width": 0.2,
-      "layer": 1,
-      "a": [
-        59.68,
-        56.3
-      ],
-      "b": [
-        58.05,
-        56.3
       ]
     },
     {
@@ -1189,11 +1155,11 @@
     },
     {
       "net": "GL_DRV",
-      "min_clearance_mm": 0.184
+      "min_clearance_mm": 0.182
     },
     {
       "net": "HB",
-      "min_clearance_mm": 0.164
+      "min_clearance_mm": 0.162
     },
     {
       "net": "PGND",
@@ -1201,7 +1167,7 @@
     },
     {
       "net": "SW",
-      "min_clearance_mm": 0.195
+      "min_clearance_mm": 0.192
     },
     {
       "net": "VCC12",

@@ -239,25 +239,39 @@
 
 交付物：`hardware/dcx_main/g1/dcx_main_board_g1.eprj2`（G1 原生带网 PCB，非投板）。
 
-### API 桥接会被可见模态框卡死（2026-11-10 实测）
+### EDA 桥接的卡死与恢复（2026-11-10 实测）
 
-第 2 层探针（`tmp_g1_probe/probe_bottom_layer.py`：在副本上建一条第 2 层线，从不保存）执行后，
-LCEDA 主进程弹出一个**可见的 `#32770` 模态框**，标题是 `blob:https://client/…`。此后：
+**签名**（所有触发共用同一种死法）：`return 1;` 这类不触达 `eda` 命名空间的 body 仍在约 1 ms
+返回；任何真实 API body（哪怕只是 `getCurrentProjectInfo()`）一律 `REQUEST_TIMEOUT` 59750 ms
+（budget 60000）；**新开 session 也一样**（`open` 仍返回 sessionId，durationMs 约 2 s）
+⇒ 卡住的是**共享的主进程 render**，换 session 不解。
 
-- **`return 1;` 这类不触达 `eda` 命名空间的 body 仍在约 1 ms 内返回**；
-- 任何真实 API body（哪怕只是 `getCurrentProjectInfo()`）一律
-  `REQUEST_TIMEOUT` 59750 ms（budget 60000）；
-- **新开 session 也一样**：`open` 仍返回 sessionId（durationMs 约 2 s），但 body 照旧超时
-  ⇒ 卡住的是**共享的主进程 render**，不是某一个 session，重开/换 session 都不解。
+已确认的三个触发（最早的归因"可见 `#32770` 模态框"只是同一种卡死的一个实例，不是原因）：
 
-判活口径：**先跑 `return 1;`，再跑一个只读 API body**。两者结果不同就说明是模态框；
-只看 `open` 成功或只看 `return 1;` 成功都会误判成"桥接正常"（2026-11-10 复测：
-`probe_alive.py` 返回 `{"ok":true,"value":1}`，`probe_open_document.py` 仍 59750 ms 超时）。
+| 触发 | 证据 | 对策 |
+|---|---|---|
+| `open` 后约 20 s 内就发真实 `eda` body | 四次冷启动：1–3 s 发 → 永久卡死；等 20 s 发 → 同一 body 3 ms 返回 | 固定 `SETTLE_S = 20`，先打 `return 1;` 探活 |
+| 带着**未保存图元**的 session 被 `close --destroy` | 关闭后整机卡死 | body 末尾先 `save()` 再等过防抖（约 20 s）才关 |
+| 会话里没有打开的 PCB 文档就调 `pcb_Layer` / `pcb_Drc` | `EXECUTION_ERROR: Error: 指定的参数信息在对应的会话中没有找到`（不是卡死） | 先 `dmt_EditorControl.openDocument(board.pcb.uuid)` 再等 1 s |
 
-处理方式：**请用户手动关掉那个窗口**。不要用 PowerShell / Python ctypes 等 Win32 互操作去关它
-——本机 PowerShell 受执行策略与用户规则禁止，绕过去等于违反用户约束。窗口关掉前**不要重复
-invoke 同一路径**（本轮已按此停止）；关掉后重跑上面两步探活确认恢复，再继续板级作业。
-这类"建图元"探针本身就可能再次弹框 ⇒ 一次只跑一个、给短 timeout，且只在副本上跑。
+恢复只有一条路：`lceda-pro stop` → 重新 `open --path` → 等 20 s → `return 1;` 探活 → 真实 body。
+`return 1;` 单独成功**不足以**判活，必须再打一次只读 API（`probe_alive.py` 会返回
+`{"ok":true,"value":1}`，而 `probe_open_document.py` 仍 59750 ms 超时）。不要用 PowerShell /
+Python ctypes 等 Win32 互操作去关窗口——用户规则禁 PowerShell，绕过去等于违约。
+
+脚本侧另有一个假死：`subprocess.run(capture_output=True)` 会被分离的 app 继承的管道挂住，
+永不返回；用文件重定向的 `Popen` + `wait(timeout)` + `kill()`（见 `run_driver_drc.py`）。
+
+判"写进去了"只能看被打开路径的 size/mtime：`save()` 约 20–30 s 后才落盘，落盘可能落在下一次
+读之前，让 md5 守卫报一次假的"变了"——对静止的板重跑一次得到 `unchanged: true` 即可，
+不要当成 DRC 写盘。
+
+规则值也要现读，不要按"嘉立创能力"记忆写：`pcb_Drc.getCurrentRuleConfiguration()`（需先打开
+PCB 文档）返回板子自带的全表；生产入口是 `run_driver_drc.py --rules`（同一套 open/settle/ping/
+close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `hardware/dcx_main/g1/driver_rules_raw.json`
+里内径 0.3–6.3 mm、外径 0.5–10 mm、Track/Via 间距 0.152 mm（1 oz 表），0.2 mm 钻孔会被 DRC 判 13 条
+`Via Size`。编辑器把 mil **截断**到 0.1（0.5 mm → 19.6 mil、0.3 mm → 11.8 mil），所以贴着规则
+下限的尺寸要往上留 0.1 mil（外径写 0.505 mm 才落到 19.8 mil）。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 

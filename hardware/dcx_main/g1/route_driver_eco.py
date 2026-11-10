@@ -31,7 +31,13 @@ import make_g1_report as g
 
 HERE = Path(__file__).resolve().parent
 MIL = g.MIL
-CLEARANCE = 0.15  # mm hard floor before creation; the report prints real margins
+#: mm hard floor before creation.  This is the board's own safety-spacing value
+#: for Track/Pad/Via against each other in the 1 oz table of
+#: ``driver_rules_raw.json`` (Track vs Track is 0.102 there, Copper Zone 0.254);
+#: keeping the floor at the strictest applicable number means the offline check
+#: cannot pass something the native DRC would flag for track/pad/via contacts.
+#: Copper zones (0.254) are not modelled offline; there are none in this window.
+CLEARANCE = 0.152
 
 #: net -> width (mm) and one or more polylines (mm, Y down).  Branches are
 #: separate polylines that meet on a junction; consecutive points are one segment.
@@ -40,13 +46,16 @@ PLAN: dict[str, dict] = {
                                          (49.174, 60.673), (49.174, 57.501)]]},
     "GH": {"width": 0.2, "paths": [
         [(50.681, 57.501), (50.681, 56.3), (48.247, 56.3), (48.247, 55.001)],
-        [(50.681, 56.3), (49.05, 56.3), (49.05, 53.6), (49.268, 53.332),
+        # Branch from the T at x=49.05, not from (50.681, 56.3): starting at the
+        # trunk end would draw the 1.631 mm run twice and inflate the planned
+        # length against the readback.
+        [(49.05, 56.3), (49.05, 53.6), (49.268, 53.332),
          (49.268, 52.751), (49.903, 52.751)]]},
     "GL_DRV": {"width": 0.25, "paths": [[(55.499, 61.001), (57.0, 61.001),
                                          (58.174, 59.827), (58.174, 57.501)]]},
     "GL": {"width": 0.2, "paths": [
         [(59.680, 57.501), (59.680, 56.3), (57.247, 56.3), (57.247, 55.001)],
-        [(59.680, 56.3), (58.05, 56.3), (58.05, 53.6), (58.268, 53.332),
+        [(58.05, 56.3), (58.05, 53.6), (58.268, 53.332),
          (58.268, 52.751), (58.903, 52.751)]]},
     "HB": {"width": 0.3, "paths": [[(52.499, 61.999), (51.8, 61.999),
                                     (50.3, 60.499), (50.3, 60.0)]]},
@@ -92,8 +101,16 @@ BOTTOM: dict[str, dict] = {
         [(52.499, 63.9), (52.6, 62.5), (51.699, 59.0), (49.754, 54.0)]]},
 }
 
-VIA_HOLE = 0.2  # mm; 0.5/0.2 keeps a 0.15 mm annular ring and fits the pin gaps
-VIA_DIAMETER = 0.5
+#: The board's own rule set ("JLCPCB Capability(Two Layers Board)", read with
+#: ``pcb_Drc.getCurrentRuleConfiguration()``) allows 0.3 <= inner <= 6.3 mm and
+#: 0.5 <= outer <= 10 mm.  The editor stores mil at 0.1 mil, truncated: a 0.5 mm
+#: outer comes back as 19.6 mil (0.4978 mm), i.e. just under the rule minimum,
+#: so the outer is asked for as 0.505 mm and lands at 19.8 mil.  The drill moved
+#: from 0.2 to 0.3 mm because the native DRC reported 13 "Via Size" errors
+#: (7.9 < 11.8 mil).  Going to 0.6 mm outer instead would break three
+#: trace-to-via clearances (0.559/0.564/0.595 mm against 0.575/0.6).
+VIA_HOLE = 0.3
+VIA_DIAMETER = 0.505
 
 #: net, centre (board mm, Y down).  Every via must be touched by a same-net
 #: stub or bottom run; ``check_plan`` rejects a dangling via.
@@ -548,6 +565,25 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def drc_summary(path: Path | None = None) -> dict | None:
+    """Group counts from the native DRC raw export (``None`` when it is absent).
+
+    ``driver_drc_raw.json`` is written by ``run_driver_drc.py``; it holds the
+    untouched ``pcb_Drc.check(true, false, true)`` envelope.
+    """
+    path = path or (HERE / "driver_drc_raw.json")
+    if not path.exists():
+        return None
+    value = json.loads(path.read_text(encoding="utf-8")).get("value") or {}
+    groups = {}
+    for group in value.get("raw") or []:
+        groups[group["name"]] = sum(len(net.get("list") or [])
+                                    for net in group.get("list") or [])
+    return {"rule_config": value.get("rule_config"), "groups": groups,
+            "physical_errors": groups.get("Physical Error", 0),
+            "total_errors": sum(groups.values()), "source": path.name}
+
+
 def verify_and_report() -> int:
     """Turn the fresh-reopen readback into the route increment record."""
     readback_path = HERE / "driver_route_readback.json"
@@ -573,10 +609,13 @@ def verify_and_report() -> int:
     for s in lines:
         length = math.hypot(s["b"][0] - s["a"][0], s["b"][1] - s["a"][1])
         readback_per_net[s["net"]] = round(readback_per_net.get(s["net"], 0) + length, 3)
+    drc = drc_summary()
     report = {
         "date": "2026-11-10", "status": "G1_ROUTE_INCREMENT_NOT_FOR_FAB",
         "hardware_qualified": False, "partial_routing": True, "fully_routed": False,
-        "native_drc_passed": False, "erc_passed": False,
+        "native_drc_passed": bool(drc and drc["total_errors"] == 0), "erc_passed": False,
+        "native_drc": drc or {"source": None,
+                              "why": "driver_drc_raw.json not present; run run_driver_drc.py"},
         "geometry_evidence": "NATIVE_REOPEN_READBACK",
         "layout_counts": {"components": len(value["components"]), "pads": len(value["pads"]),
                           "nets": len(value["nets"]), "polylines": value["polylines"],
@@ -589,15 +628,19 @@ def verify_and_report() -> int:
                   "readback_length_mm_per_net": readback_per_net,
                   "coverage_problems": line_problems},
         "vias": {"planned": len(VIAS), "readback": len(readback_vias),
+                 "hole_mm": VIA_HOLE, "diameter_mm": VIA_DIAMETER,
+                 "annular_ring_mm": round((VIA_DIAMETER - VIA_HOLE) / 2, 4),
                  "problems": via_problems},
         "placement_drift": drift,
         "nets_routed": sorted(set(PLAN) | set(STUBS) | set(BOTTOM)),
         "remaining_connections": REMAINING,
         "limitations": [
             "The QH.1-3 source connection is a 100 A power loop; it is not part of this signal-level increment.",
-            "No native DRC/ERC export yet; clearances are the offline 0.15 mm floor and are not a DRC result.",
-            "No netlist connectivity check beyond endpoints and coverage; the editor's ratsnest/DRC must confirm.",
-            "Bottom-layer runs pass under layer-1 SMD pads by design; through-hole clearance is checked offline only.",
+            "Native DRC ran (see native_drc): no physical error, but 224 connection errors remain on "
+            "board-level nets that are not routed yet and the PCB/schematic netlist does not match; "
+            "ERC has not been run.",
+            "No netlist connectivity check beyond endpoints and coverage; the editor's ratsnest must still confirm.",
+            "Bottom-layer runs pass under layer-1 SMD pads by design; the native DRC accepted that geometry.",
             "Magnetics still have 24 provisional pads and T1-T4/CT have no physical footprint.",
             "This does not change the NOT_FOR_FAB gate.",
         ],

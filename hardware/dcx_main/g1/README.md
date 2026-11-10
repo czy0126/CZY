@@ -1,7 +1,7 @@
 # G1 原生带网 PCB（非投板）— 2026-11-09
 
 2026-11-10增量见 [驱动布局复审](driver_eco_review.md)：基线报告已修复写死的网络检查；7件移动的原生候选已重开读回验收（77件/299焊盘/65网/38折线，`driver_eco_report.json`）。同日的独立副本 `dcx_main_board_g1_driver_route.eprj2` 已建 25 条第 1 层铜线（GH_DRV/GH/GL_DRV/GL/HB），重开后 `driver_route_report.json` 覆盖校验通过、其余计数与摆放不变。
-第二增量是**已离线验收、尚未落到板文件**的两层方案：HB 的 D_BT.1→C5.1、VCC12 的 D_BT.2/U2.1/C103/C104、PGND 的 U2.9/R19.2/C103/C104、SW 的 U2.5/C5.2/R18.2 通过 13 个 0.5/0.2 mm 过孔转到第 2 层（13 段第 1 层短引线 + 11 段第 2 层走线），全部端点、净距与过孔连通性在 `driver_route_plan.json` 与 `route_driver_eco.py --check` 下通过（最紧新净距 0.164 mm，0.15 mm 下限）；原生 DRC/ERC 仍未导出，未取代本文基线的投板门禁。
+第二增量是**已落到 `dcx_main_board_g1_driver_route.eprj2` 并经原生 DRC 验收**的两层方案：HB 的 D_BT.1→C5.1、VCC12 的 D_BT.2/U2.1/C103/C104、PGND 的 U2.9/R19.2/C103/C104、SW 的 U2.5/C5.2/R18.2 通过 13 个 **0.3/0.505 mm** 过孔（读回 11.8/19.8 mil，环约 0.10 mm；外径取 0.505 是因为编辑器把 mil 截断到 0.1，0.5 mm 会落成 19.6 mil、低于规则 19.685 mil 的下限）转到第 2 层（13 段第 1 层短引线 + 11 段第 2 层走线）。重开读回 50 条线（47 段计划 + 3 处 T 型拆分）、逐网长度与计划完全一致、覆盖/过孔/摆放检查全空（`driver_route_report.json`）；新网最紧净距 0.156 mm（板规则 0.152，`CLEARANCE` 已对齐到规则值）。原生 DRC 原始结果在 `driver_drc_raw.json`（`pcb_Drc.check(true, false, true)`，规则配置 `JLCPCB Capability(Two Layers Board)`）：**Physical Error 组不存在**（0 条），剩 Connection Error 224、Netlist Error 1，因此 `native_drc_passed` 仍为 false；ERC 未跑，未取代本文基线的投板门禁。钻孔原为 0.2 mm，被 DRC 判了 13 条 `Via Size`（7.9 < 11.8 mil），规则值见 `driver_rules_raw.json`。
 
 > **G1 非锁版审查件。** 这是原生 EasyEDA 工程里**长出来的 PCB**，不是
 > `hardware/dcx_mech` 的 KiCad 概念板，也不是投板包。板厂门禁仍是
@@ -111,7 +111,8 @@ DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 
 ## 5. 两极电流路与 Kelvin 清单（**均未布线**）
 
-这块板**没有铜、没有走线、没有过孔**——只有网络赋值和位置。所以下面是"要连的端点"，
+基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**——只有网络赋值和位置
+（`_driver_route` 副本只多了顶部那段原边驱动增量）。所以下面是"要连的端点"，
 不是"已连的路径"；100 A 铜排/铺铜不在本文件里，也不该被读成本文件已解决。
 
 坐标单位 mm，A5 坐标（Y 向下）。
@@ -155,10 +156,12 @@ J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0,
 
 ## 7. 这份文件**不能**当作什么
 
-- **不是**可制造件：没有铜厚/线宽/间距、没有 DRC、没有 ERC、没有 Gerber/钻孔/坐标/装配 BOM，
-  没有板厂 DFM。`d1_fabrication_gate.json` 仍是 `NOT_FOR_FAB`。
-- **不是**布局完成件：器件按功能分行摆在该去的位置，但**没有一条走线**；
-  "自动布通 / 0 DRC"本来就"不算 G1"，这里连布通都没有。
+- **不是**可制造件：没有铜厚/层叠/板厂 DFM、没有 ERC、没有 Gerber/钻孔/坐标/装配 BOM。
+  本文件对应的基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**；原生 DRC 只跑在
+  `_driver_route` 副本上，且仍有 224 条板级连接错误与 1 条网表错误。`d1_fabrication_gate.json`
+  仍是 `NOT_FOR_FAB`。
+- **不是**布局完成件：器件按功能分行摆在该去的位置；基板**没有一条走线**，`_driver_route`
+  副本也只有原边驱动/自举那一小块（47 段 + 13 过孔），整板远未布通。
 - **不是**磁件已锁版：T1–T4/CT 只有临时焊盘，没有实体封装；Lr 有原生封装但端子间距与
   concept 包对不上（§3）。
 - **不是**原理图已同步的板：A5 机械表里有 28 个位号原生原理图里没有 —— 撬棒组
@@ -171,8 +174,17 @@ J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0,
 ```bash
 python hardware/dcx_main/g1/make_g1_report.py        # 从 g1_pads.json + 原理图 refs 重建报告
 python hardware/dcx_main/g1/make_g1_layout_svg.py    # 从 g1_pads.json 重画平面图
+python hardware/dcx_main/g1/route_driver_eco.py --check   # 离线检查走线计划（净距/端点/过孔）
+python hardware/dcx_main/g1/route_driver_eco.py --verify  # 从重开读回重建 driver_route_report.json
+python hardware/dcx_main/g1/run_driver_drc.py             # 只读原生 DRC → driver_drc_raw.json
+python hardware/dcx_main/g1/run_driver_drc.py --rules     # 只读规则配置 → driver_rules_raw.json
 python -m pytest tools -q                            # 离线测试
 ```
+
+`driver_route.js` 由 `route_driver_eco.py --emit-js` 生成，内容就是当前计划；第一增量是一次
+invoke 应用（回执 `driver_route_apply.json`），第二增量按网络逐次 invoke（回执
+`driver_route_apply_chunks.json`）——一次卡死会让整段 body 的结果作废，分网能把损失限制在一网。
+两次应用都必须重开读回验收（`--verify`），不能只信 `save()` 返回 true。
 
 `g1_pads.json` 是 `pcb_PrimitivePad.getAll()` / `pcb_PrimitiveComponent.getAll()` /
 `pcb_PrimitivePolyline.getAll()` 的原始读数（焊盘 X/Y 单位 mil、PCB 笛卡尔 Y 向上，
