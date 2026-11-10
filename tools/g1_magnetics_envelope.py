@@ -153,12 +153,18 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
     box_margin = min(lr["left"],lr["top"],
                      float(board["w_mm"])-lr["right"],
                      float(board["d_mm"])-lr["bottom"])
-    critical = bool(hits) or any(pair["current_elp32_gap_mm"] < MECH_CLEARANCE_TARGET_MM
-                                  for pair in pairs)
+    critical = (bool(hits) or box_margin < EDGE_RESERVE_TARGET_MM
+                or any(pair["current_elp32_gap_mm"] < MECH_CLEARANCE_TARGET_MM
+                       for pair in pairs))
     # The 38-mm transformer case is an ALTERNATIVE, not a statement that
     # the current 3:1:1 transformer is made from ELP38.
     stretch_requires_eco = any(p["if_changed_to_elp38_gap_mm"] <
                                MECH_CLEARANCE_TARGET_MM for p in pairs)
+    native_lr_pitch = abs(float(native_lrs[0]["X"])-float(native_lrs[1]["X"]))/MIL_PER_MM
+    hypothetical_t38_required_width = (4*float(
+        next(x for x in mag["cases"] if x["id"] == "ELP38_Lr_3turn_0920uH")
+        ["geometry"]["core_outer_x_mm"]) +
+        3*MECH_CLEARANCE_TARGET_MM + 2*EDGE_RESERVE_TARGET_MM)
     return {
         "schema": "CZY_G1_MAGNETIC_BODY_XY_CLEARANCE_SCREEN_V1",
         "status": "P0_G1_MAGNETIC_PLACEMENT_ECO_REQUIRED" if critical
@@ -184,6 +190,8 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
             "current_body_xy_mm": rounded_box(lr),
             "minimum_board_edge_margin_mm": round(box_margin,3),
             "native_footprint_pad_count": len(native_lrs),
+            "native_footprint_pad_pitch_mm": round(native_lr_pitch,3),
+            "board_edge_reserve_passed": box_margin >= EDGE_RESERVE_TARGET_MM,
             "other_pad_envelope_intersections": len(hits),
             "other_ref_count": len(by_ref),
             "by_ref": [{"ref":ref,"pads":n} for ref,n in sorted(by_ref.items())],
@@ -197,6 +205,10 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
             "current_elp32_box_mm": {k: rounded_box(v) for k,v in tf_current.items()},
             "hypothetical_elp38_box_mm": {k: rounded_box(v) for k,v in tf_stretch.items()},
             "adjacent_pairs": pairs,
+            "elp38_if_all_four_single_row_required_board_width_mm": round(
+                hypothetical_t38_required_width,3),
+            "elp38_if_all_four_single_row_shortfall_mm": round(max(
+                0.0,hypothetical_t38_required_width-float(board["w_mm"])),3),
             "elp38_stretch_requires_placement_change": stretch_requires_eco,
         },
         "decisions": {
