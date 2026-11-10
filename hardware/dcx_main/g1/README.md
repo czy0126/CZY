@@ -24,8 +24,9 @@
 DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 
 图下方的说明文字写着 `dcx_main_board_g1.eprj2`：现在同目录还有 `..._driver_eco` /
-`..._driver_route` / `..._power_rails` 三个候选（`_driver_route` 读回 50 条铜线、13 个过孔，
-另有原生 DRC raw；`_power_rails` 在它基础上再加两极，读回 84 条线、15 个过孔），
+`..._driver_route` / `..._power_rails` / `..._kelvin` 四个候选（`_driver_route` 读回 50 条铜线、
+13 个过孔，另有原生 DRC raw；`_power_rails` 在它基础上再加两极，读回 84 条线、15 个过孔；
+`_kelvin` 再加两条 CT 检测网，读回 96 条线、18 个过孔），
 一句不带文件名的 "无铜、无走线、无 DRC" 会被读成对整块板说的。提交里的 SVG 必须等于由提交里的
 `g1_pads.json` 现渲染的结果，`tools/test_g1_layout_svg.py` 逐字节锁住；五个待锁区
 就是 CT+T1–T4 五个磁芯本体，**Lr 是真放上去的器件、没有待锁区**。
@@ -123,11 +124,11 @@ DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 **另一个未落地的实体 PAD**：`R8` 的两个焊盘——它不是"阻塞"，是双字段 DNP 的
 `addIntoPcb=false` 落地结果（与"排除装配"一致）。
 
-## 5. 两极电流路与 Kelvin 清单（基板未布线；两极已在 `_power_rails` 候选上落地）
+## 5. 两极电流路与 Kelvin 清单（基板未布线；两极与两条 CT 检测网已在候选上落地）
 
 基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**——只有网络赋值和位置
-（`_driver_route` 副本多了顶部那段原边驱动增量；`_power_rails` 副本再加下面的两极，
-仍远未布通）。其余各网下面列出的是"要连的端点"，不是"已连的路径"；100 A 铜排/铺铜
+（`_driver_route` 副本多了顶部那段原边驱动增量；`_power_rails` 副本再加下面的两极；
+`_kelvin` 副本再加 CS1/CS2 两条检测网，仍远未布通）。其余各网下面列出的是"要连的端点"，不是"已连的路径"；100 A 铜排/铺铜
 不在本文件里，也不该被读成本文件已解决。
 
 坐标单位 mm，A5 坐标（Y 向下）。
@@ -184,10 +185,27 @@ y=96 母线那几处），所以按「同网、同层、同宽、共线覆盖」
 
 **Kelvin / 检测对**（各 3 个焊盘，含 CT 临时焊盘）
 
-| 网 | 端点 |
-|---|---|
-| `CS1` | D_CT1 p1 (109.0, 70.9) ↔ D_CT3 p3 (119.0, 70.0) ↔ CT `SEC_A` (104.0, 56.0) |
-| `CS2` | D_CT2 p1 (115.0, 70.9) ↔ D_CT4 p3 (125.0, 70.0) ↔ CT `SEC_B` (104.0, 48.0) |
+| 网 | 端点 | 已落地的路径（`route_kelvin.py`） |
+|---|---|---|
+| `CS1` | D_CT1 p1 (109.0, 70.9) ↔ D_CT3 p3 (119.0, 70.0) ↔ CT `SEC_A` (104.0, 56.0) | 6 段 / 33.450 mm；第 1 层 + 第 2 层（3 过孔：(106.2,56)、(109,66.5)、(119,69)） |
+| `CS2` | D_CT2 p1 (115.0, 70.9) ↔ D_CT4 p3 (125.0, 70.0) ↔ CT `SEC_B` (104.0, 48.0) | 5 段 / 52.950 mm；全第 1 层 |
+
+- 两条网都在 `_power_rails` 候选上再落地：检查用同一套净距/端点/过孔，且把**已有的驱动铜与
+  两极**一起放进计划（`kelvin_plan.json` 的 `problems: []`，`tools/test_g1_kelvin.py` 9 个用例）。
+- CS1 要横穿 CS2 的 y=65 走廊，所以它经三只 **0.3/0.505 mm** 过孔绕到第 2 层；CS2 留在第 1 层。
+  第 2 层那条 y=66.5 的长横穿**直接穿过 (109, 66.5) 那只过孔**——不另画一小段支线：
+  编辑器保存时会把共线重叠的线合并，支线回来是一条更长的线，覆盖检查判「没有这一段的读回线」。
+- **0.3 mm 是检测线宽，不是电流额定**；SR 门极/漏极的 Kelvin 对（`GA*`/`GB*`）**仍未布**，
+  CT 端仍是设计自有临时焊盘，磁件端子上板后这两条网会整体移动。
+
+**落地回执**（`apply_kelvin.py`，2026-11-10 第一次 invoke 即成功）：从 `_power_rails` 复制出
+`_kelvin`，同样的 settle/ping/invoke/防抖/关闭/重开协议，`created: 12`、`viasCreated: 3`、
+`failed: []`、`saved: true` → 重开读回 **96 条线 / 18 个过孔**，器件 77 / 焊盘 299 / 网 65 /
+折线 38 不变。`created: 12` 比计划的 11 段多一条：那一版正文里还带着上述冗余支线，保存时被
+编辑器并进长横穿线，所以**读回的 11 段才是板上真实几何**；`kelvin_report.json` 的
+`coverage_problems` / `vias.problems` / `placement_drift` 全空。原始读数在 `kelvin_readback.json`，
+开/关/应用回执是 `kelvin_apply_*` / `kelvin_reopen_*`。**原生 DRC 没有在 `_kelvin` 上重跑**，
+`_power_rails` 的 md5 在复制前后一致。
 
 **驱动对**（各 2 个焊盘）：`GH_DRV` R4 p1 (49.2, 57.5) ↔ U2 p4 (130.5, 52.5)；
 `GL_DRV` R5 p1 (58.2, 57.5) ↔ U2 p10 (133.5, 51.0)；`GA1–GA4` / `GB1–GB4` 各
@@ -208,11 +226,11 @@ y=96 母线那几处），所以按「同网、同层、同宽、共线覆盖」
 
 - **不是**可制造件：没有铜厚/层叠/板厂 DFM、没有 ERC、没有 Gerber/钻孔/坐标/装配 BOM。
   本文件对应的基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**；原生 DRC 只跑在
-  `_driver_route` 副本上，且仍有 224 条板级连接错误与 1 条网表错误（`_power_rails` 上未重跑）。
-  `d1_fabrication_gate.json` 仍是 `NOT_FOR_FAB`。
+  `_driver_route` 副本上，且仍有 224 条板级连接错误与 1 条网表错误（`_power_rails`、`_kelvin`
+  上未重跑）。`d1_fabrication_gate.json` 仍是 `NOT_FOR_FAB`。
 - **不是**布局完成件：器件按功能分行摆在该去的位置；基板**没有一条走线**，`_driver_route`
   副本只有原边驱动/自举那一小块（47 段 + 13 过孔），`_power_rails` 再加两极（24 段 + 2 过孔），
-  整板仍远未布通。
+  `_kelvin` 再加 CS1/CS2（11 段 + 3 过孔），整板仍远未布通。
 - **不是**磁件已锁版：T1–T4/CT 只有临时焊盘，没有实体封装；Lr 有原生封装但端子间距与
   concept 包对不上（§3）。
 - **不是**原理图已同步的板：A5 机械表里有 28 个位号原生原理图里没有 —— 撬棒组
@@ -231,6 +249,10 @@ python hardware/dcx_main/g1/route_power_rails.py --check  # 两极离线检查�
 python hardware/dcx_main/g1/route_power_rails.py --emit-js  # 打印两极的 LCEDA body
 python hardware/dcx_main/g1/route_power_rails.py --verify  # 从 power_rails_readback.json 重建报告
 python hardware/dcx_main/g1/apply_power_rails.py           # 复制→应用→重开读回→出报告（改板，仅副本）
+python hardware/dcx_main/g1/route_kelvin.py --check        # CS1/CS2 离线检查（含已有驱动铜 + 两极）
+python hardware/dcx_main/g1/route_kelvin.py --emit-js      # 打印 CS1/CS2 的 LCEDA body
+python hardware/dcx_main/g1/route_kelvin.py --verify       # 从 kelvin_readback.json 重建报告
+python hardware/dcx_main/g1/apply_kelvin.py                # 复制→应用→重开读回→出报告（改板，仅副本）
 python hardware/dcx_main/g1/route_driver_eco.py --check   # 离线检查走线计划（净距/端点/过孔）
 python hardware/dcx_main/g1/route_driver_eco.py --verify  # 从重开读回重建 driver_route_report.json
 python hardware/dcx_main/g1/run_driver_drc.py             # 只读原生 DRC → driver_drc_raw.json

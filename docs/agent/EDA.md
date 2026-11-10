@@ -254,10 +254,19 @@
   出 `_power_rails`（**只开副本**）、20 s settle + ping 后 invoke，重开读回 84 线/15 过孔、
   覆盖与摆放漂移全空（`power_rails_report.json`；84 是 50+34，编辑器在 T 型节点拆线）。
   **DRC 未在这个新候选上重跑**，仍是 `NOT_FOR_FAB`。
+- **CS1/CS2 两条 CT 检测网已落到 `_kelvin` 候选**：`route_kelvin.py` 用同一套检查、同样把
+  已有驱动铜与两极一起放进计划（0.3 mm 检测线宽，不是电流额定）。CS1 横穿 CS2 的 y=65
+  走廊 ⇒ 三只 0.3/0.505 mm 过孔绕到第 2 层（`(106.2,56)`、`(109,66.5)`、`(119,69)`），
+  CS2 全第 1 层。`apply_kelvin.py` 从 `_power_rails` 复制（**只开副本**），重开读回
+  96 线/18 过孔、覆盖与漂移全空（`kelvin_report.json`）；SR 门极/漏极的 Kelvin 对仍未布。
+  **写入协议收进 `apply_increment.py`**：`apply_power_rails.py` / `apply_kelvin.py` 只差
+  模块、父候选与回执前缀。该编辑器保存时**合并共线重叠的线** ⇒ 计划里不要给一条长横穿再补
+  一段共线支线，回来的读回线是一整条，`_covered` 要求两个读回端点都落在计划段内，会判缺线。
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
-  `..._driver_route.eprj2`（后者读回 50 条铜线 / 13 个过孔，另有原生 DRC raw
-  `driver_drc_raw.json`；数以 `driver_route_report.json` 为准）。图下只写"无铜、无走线、无 DRC"
+  `..._driver_route` / `..._power_rails` / `..._kelvin`（`_driver_route` 读回 50 条铜线 /
+  13 个过孔，另有原生 DRC raw `driver_drc_raw.json`；数以 `driver_route_report.json` 为准）。
+  图下只写"无铜、无走线、无 DRC"
   会被读成对整块板说的 ⇒ `make_g1_layout_svg.py` 把 `BOARD` 常量写进 caption，
   **提交的 SVG 必须等于提交的 `g1_pads.json` 现渲染结果**（`tools/test_g1_layout_svg.py`
   逐字节锁住；`render()` 与写文件分开是这个测试的前提）。待锁区只有 CT+T1–T4 五块磁芯本体，

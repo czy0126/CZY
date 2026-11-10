@@ -1,0 +1,54 @@
+{
+  "status": "DRAFT_CT_KELVIN_ON_CS1_CS2",
+  "readback": "power_rails_readback.json",
+  "width_mm": 0.3,
+  "nets": {
+    "CS1": {
+      "segments": 6,
+      "length_mm": 33.45,
+      "layers": [
+        1,
+        2
+      ],
+      "endpoint_refs": [
+        "CS1@(104.00,56.00)",
+        "D_CT1.1",
+        "D_CT3.3"
+      ]
+    },
+    "CS2": {
+      "segments": 5,
+      "length_mm": 52.95,
+      "layers": [
+        1
+      ],
+      "endpoint_refs": [
+        "CS2@(104.00,48.00)",
+        "D_CT2.1",
+        "D_CT4.3"
+      ]
+    }
+  },
+  "vias": [
+    [
+      106.2,
+      56.0
+    ],
+    [
+      109.0,
+      66.5
+    ],
+    [
+      119.0,
+      69.0
+    ]
+  ],
+  "not_qualified": [
+    "only the two CT sense nets are routed; the SR gate/drain Kelvin pairs are not",
+    "the CT terminals are design-owned provisional pads, not vendor terminals",
+    "0.3 mm is a sense width, not a current rating",
+    "the four SR local layouts and the Cout bank are not placed",
+    "native DRC has not been run on this candidate"
+  ],
+  "problems": []
+}

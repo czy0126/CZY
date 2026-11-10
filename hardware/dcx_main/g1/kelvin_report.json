@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-10",
+  "status": "G1_CT_KELVIN_ON_CANDIDATE_NOT_FOR_FAB",
+  "board": "dcx_main_board_g1_kelvin.eprj2",
+  "geometry_evidence": "NATIVE_REOPEN_READBACK",
+  "native_drc_passed": false,
+  "layout_counts": {
+    "components": 77,
+    "pads": 299,
+    "nets": 65,
+    "polylines": 38,
+    "unchanged": true
+  },
+  "lines": {
+    "readback": 96,
+    "by_layer": {
+      "1": 79,
+      "2": 17
+    },
+    "planned_segments": 82,
+    "kelvin_segments": 11,
+    "kelvin_length_mm": 86.4,
+    "coverage_problems": []
+  },
+  "vias": {
+    "planned": 18,
+    "readback": 18,
+    "kelvin_vias": [
+      [
+        106.2,
+        56.0
+      ],
+      [
+        109.0,
+        66.5
+      ],
+      [
+        119.0,
+        69.0
+      ]
+    ],
+    "problems": []
+  },
+  "placement_drift": [],
+  "kelvin_plan_status": "DRAFT_CT_KELVIN_ON_CS1_CS2",
+  "limitations": [
+    "CS1/CS2 only: the SR gate/drain Kelvin pairs are not routed.",
+    "The CT terminals are provisional pads; CS1/CS2 will move with the vendor terminals.",
+    "Only the driver increment, the two output rails and these two sense nets are routed; every other net is open.",
+    "Native DRC has not been run on this candidate; the route candidate's raw result is not a pass.",
+    "This does not change the NOT_FOR_FAB gate."
+  ]
+}
