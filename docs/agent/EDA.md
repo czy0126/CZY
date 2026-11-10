@@ -237,6 +237,14 @@
   做身份，位置偏移给约 0.25 mil 容差（编辑器重开会重新舍入）——直接比原始字段会把正常重开判成
   改封装。见 `hardware/dcx_main/g1/audit_driver_eco.py` 与 `tools/test_g1_driver_eco_audit.py`。
 
+- **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
+  `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
+  `..._driver_route.eprj2`（后者 75 段铜 + 原生 DRC raw）。图下只写"无铜、无走线、无 DRC"
+  会被读成对整块板说的 ⇒ `make_g1_layout_svg.py` 把 `BOARD` 常量写进 caption，
+  **提交的 SVG 必须等于提交的 `g1_pads.json` 现渲染结果**（`tools/test_g1_layout_svg.py`
+  逐字节锁住；`render()` 与写文件分开是这个测试的前提）。待锁区只有 CT+T1–T4 五块磁芯本体，
+  Lr 是已放器件、没有待锁区。
+
 交付物：`hardware/dcx_main/g1/dcx_main_board_g1.eprj2`（G1 原生带网 PCB，非投板）。
 
 ### EDA 桥接的卡死与恢复（2026-11-10 实测）
