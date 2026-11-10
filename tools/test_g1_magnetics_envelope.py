@@ -86,7 +86,7 @@ def test_native_polygons_are_real_world_xy_not_fake_millimeter_dimensions():
     polygon = next(p for p in pads["pads"] if p["Pad"][0] == "POLYGON")
     assert (polygon["ref"],polygon["PadNumber"]) == ("U2","11")
     poly_rect = gate.pad_rect(polygon)
-    assert poly_rect["left"] > 130 and poly_rect["right"] < 135
+    assert 52 < poly_rect["left"] < poly_rect["right"] < 57  # U2 moved to x54 in latest native readback
     lr = gate.report()["lr_elp38_candidate"]["current_body_xy_mm"]
     dx, dy = gate.intersection(lr,poly_rect)
     assert dx == 0.0  # Y intervals may overlap; no 2D area without both axes
