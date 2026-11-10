@@ -80,7 +80,7 @@ def pad_rect(p: dict) -> dict:
 def git_blob_sha(path: Path) -> str:
     """Calculate the exact GitHub Git blob id of this source file."""
     data = path.read_bytes()
-    return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\\0" + data).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(data)).encode() + bytes([0]) + data).hexdigest()
 
 
 def load_current() -> dict:
