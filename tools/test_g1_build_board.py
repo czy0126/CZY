@@ -91,3 +91,41 @@ def test_check_reports_a_moved_part_a_wrong_net_and_a_missing_part():
     assert any("net" in p for p in g.check_placement(wrong, dump, inv, nets))
     short = rows[:-1]
     assert any("missing" in p for p in g.check_placement(short, dump, inv, nets))
+
+
+def test_the_packet_derives_the_24_provisional_terminals_on_the_board():
+    dump, _, _ = data()
+    rows = g.concept_pads(dump, g.concept_packet())
+    assert len(rows) == 24
+    assert {r["ref"] for r in rows} == {"T1", "T2", "T3", "T4", "CT"}
+    assert g.check_concept_pads(rows, dump) == []
+
+
+def test_lr_has_no_provisional_pad_because_it_has_a_real_footprint():
+    dump, _, _ = data()
+    rows = g.concept_pads(dump, g.concept_packet())
+    assert "Lr" not in {r["ref"] for r in rows}
+
+
+def test_check_reports_a_provisional_pad_that_moved_or_lost_its_net():
+    dump, _, _ = data()
+    rows = g.concept_pads(dump, g.concept_packet())
+    moved = json.loads(json.dumps(dump))
+    free = [p for p in moved["pads"] if p.get("ref") is None]
+    free[0]["X"] += 40.0  # 1 mm
+    assert any("missing provisional pad" in p for p in g.check_concept_pads(rows, moved))
+    stripped = json.loads(json.dumps(dump))
+    free = [p for p in stripped["pads"] if p.get("ref") is None]
+    free[0]["Net"] = "WRONG"
+    assert any("board says 'WRONG'" in p for p in g.check_concept_pads(rows, stripped))
+
+
+def test_pads_js_creates_every_pad_with_its_net_on_layer_one():
+    dump, _, _ = data()
+    rows = g.concept_pads(dump, g.concept_packet())
+    js = g.pads_js(rows, dot_size_mm=3.4)
+    assert js.count("eda.pcb_PrimitivePad.create(") == 1  # one call, looped over PADS
+    assert js.count('"num": ') == 24
+    for net in {r["net"] for r in rows}:
+        assert f'"{net}"' in js
+    assert "eda.pcb_PrimitivePad.create(\n        1," in js

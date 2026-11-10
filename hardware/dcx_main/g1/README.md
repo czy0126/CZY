@@ -209,8 +209,12 @@ mm / Y 向下、左上角原点，每行带位号、LCSC、器件 uuid、旋转�
 `--from-board` 从板的原生读回生成这份摆放（它是设计决定，之后按 diff 评审）；`--check`
 把摆放与读回、网表逐件比对（位置容差 0.25 mil，与 `audit_driver_eco.py` 同口径）。
 `tools/test_g1_build_board.py` 锁住"提交的摆放 = 提交的读回所推出的摆放"以及 slice 的
-mil / Y 取负换算。**尚未覆盖**：24 个自由端子焊盘、板框/待锁区/DOT 折线（`frame_js()`
-已能生成，但没有对着活板跑过的回执）、以及走线——它们仍由各自的增量脚本负责。
+mil / Y 取负换算。24 个自由端子焊盘也在覆盖内：它们不是手写坐标，而是由已提交的
+`design/v3/maxwell/generated_concept/design_owned_G1_pads_24plus2.csv`（每个端子的相对
+偏移与网络）加上板自身的 5 个待锁核体矩形（`g1_pads.json` 的 `tbd_zones`）算出来的，
+`--check` 按**位置**（不是脚号——`PRI_A` 在 T1–T4 上各有一个）逐一对回板上的自由焊盘。
+**尚未覆盖**：板框/待锁区/DOT 折线（`frame_js()` 已能生成，但没有对着活板跑过的回执）、
+以及走线——它们仍由各自的增量脚本负责。
 
 `g1_pads.json` 是 `pcb_PrimitivePad.getAll()` / `pcb_PrimitiveComponent.getAll()` /
 `pcb_PrimitivePolyline.getAll()` 的原始读数（焊盘 X/Y 单位 mil、PCB 笛卡尔 Y 向上，

@@ -242,7 +242,9 @@
   `hardware/dcx_main/g1/build_g1_board.py` + `g1_placement.json`（77 行，mm / Y 向下）是唯一
   摆放，slice 正文只由它生成，叠 `native_inventory_raw.json` 与 `netlist_export_raw.json`；
   `--check` 对读回逐件比对（0.25 mil 容差），`tools/test_g1_build_board.py` 锁住"提交的摆放
-  = 提交的读回所推出的摆放"。**还没覆盖**自由端子焊盘、板框/待锁区/DOT 与走线。
+  = 提交的读回所推出的摆放"。24 个自由端子焊盘同样在覆盖内——坐标由已提交的端子包
+  `design_owned_G1_pads_24plus2.csv` 加板自身的 `tbd_zones` 算出，按位置回对（脚号会跨核重复）。
+  **还没覆盖**板框/待锁区/DOT 折线与走线（`frame_js()` 能生成，但没有对着活板的回执）。
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
   `..._driver_route.eprj2`（后者读回 50 条铜线 / 13 个过孔，另有原生 DRC raw
