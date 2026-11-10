@@ -1,0 +1,35 @@
+name: G1-native-Maxwell-magnetic-envelope-safety-screen
+on:
+  push:
+    paths:
+      - 'tools/g1_magnetics_envelope.py'
+      - 'tools/test_g1_magnetics_envelope.py'
+      - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
+      - 'hardware/dcx_main/g1/g1_pads.json'
+      - 'design/v3/maxwell/diy_magnetics_concept.json'
+      - '.github/workflows/g1-magnetic-envelope-screen.yml'
+  pull_request:
+    paths:
+      - 'tools/g1_magnetics_envelope.py'
+      - 'tools/test_g1_magnetics_envelope.py'
+      - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
+      - 'hardware/dcx_main/g1/g1_pads.json'
+      - 'design/v3/maxwell/diy_magnetics_concept.json'
+      - '.github/workflows/g1-magnetic-envelope-screen.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  physical-body-xy-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate committed native G1 against Maxwell body envelope
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/g1_magnetics_envelope.py --check
+          python -m pytest -q tools/test_g1_magnetics_envelope.py
