@@ -81,3 +81,17 @@ def test_copper_corners_and_parallel_math():
 def test_committed_reopen_report_reproducible():
     # Reads actual pinned SHA and geometry; offline test never fabricates solver results.
     assert S.report() == __import__("json").loads(S.REPORT.read_text(encoding="utf-8"))
+
+
+def test_git_blob_id_is_independent_of_checkout_line_endings(tmp_path):
+    """The gate records the LF git blob id; a Windows worktree is CRLF.
+
+    Hashing ``read_bytes()`` directly makes the same committed readback compare
+    unequal only because ``core.autocrlf=true`` (docs/agent/TRAPS.md). The blob
+    id must come from the canonical stored bytes.
+    """
+    lf = tmp_path / "lf.json"
+    crlf = tmp_path / "crlf.json"
+    lf.write_bytes(b'{\n  "ok": true\n}\n')
+    crlf.write_bytes(b'{\r\n  "ok": true\r\n}\r\n')
+    assert S.git_blob_sha(lf) == S.git_blob_sha(crlf)
