@@ -237,6 +237,12 @@
   做身份，位置偏移给约 0.25 mil 容差（编辑器重开会重新舍入）——直接比原始字段会把正常重开判成
   改封装。见 `hardware/dcx_main/g1/audit_driver_eco.py` 与 `tools/test_g1_driver_eco_audit.py`。
 
+- **建板脚本必须在仓库里**：G1 的板原先由 `tmp_g1_probe/g1_build.py` 建（未跟踪），30 个控制区
+  器件的摆放只存在于临时脚本和板上，仓库无法重建那块板。现在
+  `hardware/dcx_main/g1/build_g1_board.py` + `g1_placement.json`（77 行，mm / Y 向下）是唯一
+  摆放，slice 正文只由它生成，叠 `native_inventory_raw.json` 与 `netlist_export_raw.json`；
+  `--check` 对读回逐件比对（0.25 mil 容差），`tools/test_g1_build_board.py` 锁住"提交的摆放
+  = 提交的读回所推出的摆放"。**还没覆盖**自由端子焊盘、板框/待锁区/DOT 与走线。
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
   `..._driver_route.eprj2`（后者读回 50 条铜线 / 13 个过孔，另有原生 DRC raw

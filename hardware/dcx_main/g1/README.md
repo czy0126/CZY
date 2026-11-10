@@ -185,6 +185,8 @@ J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0,
 ## 8. 复现
 
 ```bash
+python hardware/dcx_main/g1/build_g1_board.py --check  # 摆放文件 vs 读回 + 网表（离线）
+python hardware/dcx_main/g1/build_g1_board.py --slices DIR  # 生成重建这块板的 JS body
 python hardware/dcx_main/g1/make_g1_report.py        # 从 g1_pads.json + 原理图 refs 重建报告
 python hardware/dcx_main/g1/make_g1_layout_svg.py    # 从 g1_pads.json 重画平面图
 python hardware/dcx_main/g1/route_driver_eco.py --check   # 离线检查走线计划（净距/端点/过孔）
@@ -198,6 +200,17 @@ python -m pytest tools -q                            # 离线测试
 invoke 应用（回执 `driver_route_apply.json`），第二增量按网络逐次 invoke（回执
 `driver_route_apply_chunks.json`）——一次卡死会让整段 body 的结果作废，分网能把损失限制在一网。
 两次应用都必须重开读回验收（`--verify`），不能只信 `save()` 返回 true。
+
+**这块板的生成器现在在仓库里**：原先建板的 `tmp_g1_probe/g1_build.py` 是未跟踪的临时目录，
+30 个控制区器件的摆放（A5 机械表只摆功率级）和生成它们的 slice 正文都只存在于那份临时脚本和
+板上。`build_g1_board.py` 取代它：`g1_placement.json` 是**唯一的一处**摆放（77 行，
+mm / Y 向下、左上角原点，每行带位号、LCSC、器件 uuid、旋转与逐脚网络），slice 正文只由它
+生成，再叠上已提交的 `native_inventory_raw.json` 与 `netlist_export_raw.json`。
+`--from-board` 从板的原生读回生成这份摆放（它是设计决定，之后按 diff 评审）；`--check`
+把摆放与读回、网表逐件比对（位置容差 0.25 mil，与 `audit_driver_eco.py` 同口径）。
+`tools/test_g1_build_board.py` 锁住"提交的摆放 = 提交的读回所推出的摆放"以及 slice 的
+mil / Y 取负换算。**尚未覆盖**：24 个自由端子焊盘、板框/待锁区/DOT 折线（`frame_js()`
+已能生成，但没有对着活板跑过的回执）、以及走线——它们仍由各自的增量脚本负责。
 
 `g1_pads.json` 是 `pcb_PrimitivePad.getAll()` / `pcb_PrimitiveComponent.getAll()` /
 `pcb_PrimitivePolyline.getAll()` 的原始读数（焊盘 X/Y 单位 mil、PCB 笛卡尔 Y 向上，

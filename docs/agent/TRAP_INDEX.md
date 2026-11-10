@@ -206,3 +206,4 @@
 |  | 文本文件的 SHA256 必须经 `text_identity.sha256_file()`（CRLF→LF）；裸 `read_bytes()` 哈希会让 LF 检出的 CI 红 | 给文本记哈希 | TRAPS.md §已知工具陷阱 |
 |  | `Path.read_text(newline=)` 只在 Python 3.13+ 有；CI 固定 3.12 ⇒ 用 `agent_docs.read_text_exact()` | 读保留换行的文本 | TRAPS.md §已知工具陷阱 |
 |  | G1 评审图必须写明画的是哪个板文件；提交的 SVG 必须等于提交的 `g1_pads.json` 现渲染 | 出 G1 评审图 | EDA.md §原生 PCB 的 headless 构建 |
+|  | G1 建板脚本原先只在 `tmp_g1_probe/`（未跟踪）⇒ 摆放与 slice 正文现在由 `build_g1_board.py` + `g1_placement.json` 生成，`--check` 对读回比对 | 重建 G1 板 | EDA.md §原生 PCB 的 headless 构建 |
