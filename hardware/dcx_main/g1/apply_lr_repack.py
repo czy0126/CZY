@@ -93,8 +93,30 @@ def native_verify(original:dict, fresh:dict, planned:dict) -> dict:
         raise ValueError("An existing pad/net/designator changed during native move")
     oldorig={k:(p["X"],p["Y"]) for k,p in before.items()}
     neworig={k:(p["X"],p["Y"]) for k,p in after.items()}
-    if not E.pads_match(original["pads"],oldorig,v["pads"],neworig):
-        raise ValueError("Native pad geometry/footprint/pin changed during ECO")
+    # Every non-Lr component is translated without rotation. Check full local
+    # pad shape/offset/net identity using the proven 0.25 mil native tolerance.
+    old_others=[p for p in original["pads"] if p.get("ref")!="Lr"]
+    new_others=[p for p in v["pads"] if p.get("ref")!="Lr"]
+    if not E.pads_match(old_others,oldorig,new_others,neworig):
+        raise ValueError("Native non-Lr pad footprint/pin changed during ECO")
+    # Lr is uniquely and intentionally rotated 180 degrees: the local x/y
+    # pin offsets invert, so applying ordinary pads_match would wrongly reject
+    # it. Verify each pin individually and its nonpolar rectangular geometry.
+    old_lr={str(p["PadNumber"]):p for p in original["pads"] if p.get("ref")=="Lr"}
+    new_lr={str(p["PadNumber"]):p for p in v["pads"] if p.get("ref")=="Lr"}
+    if set(old_lr)!=set(new_lr) or len(old_lr)!=2:
+        raise ValueError("Lr native 2-pin footprint changed")
+    ox,oy=oldorig["Lr"]
+    nx,ny=neworig["Lr"]
+    for pin,p in old_lr.items():
+        q=new_lr[pin]
+        expected_x=nx-(p["X"]-ox)
+        expected_y=ny-(p["Y"]-oy)
+        if (abs(q["X"]-expected_x)>0.25 or abs(q["Y"]-expected_y)>0.25
+                or p.get("Net")!=q.get("Net")
+                or p["Pad"][:3]!=q["Pad"][:3]
+                or (float(p.get("Rotation") or 0)-float(q.get("Rotation") or 0))%180>.02):
+            raise ValueError(f"Lr rotation/pin identity differs at pad {pin}")
     candidate={"board":G.load_current()["board"],
                "tbd_zones":G.load_current()["tbd_zones"],
                "pads":v["pads"],"components":v["components"],
