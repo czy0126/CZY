@@ -20,7 +20,7 @@ spec.loader.exec_module(gate)
 
 
 def baseline():
-    p = json.loads(gate.PADS.read_text(encoding="utf-8"))
+    p = gate.load_current()
     g = json.loads(gate.MAG.read_text(encoding="utf-8"))
     return p, g
 
@@ -36,7 +36,8 @@ def test_recomputed_structural_gate_matches_committed_native_readback():
     assert report["decisions"]["approve_g2_fab"] is False
 
 
-def test_lr_elp38_38x25p4_body_overlaps_30_other_copper_pads():
+def test_latest_reopened_98_line_board_has_22_pad_intersections():
+    assert gate.load_current()["source_status"] == "ACTUAL_NATIVE_G1_KELVIN_REOPEN_READBACK"
     a = gate.report()
     lr = a["lr_elp38_candidate"]
     assert lr["physical_core_envelope_mm"] == [38.0,25.4]
@@ -47,13 +48,37 @@ def test_lr_elp38_38x25p4_body_overlaps_30_other_copper_pads():
     assert lr["native_footprint_pad_pitch_mm"] == pytest.approx(9.002, abs=.001)
     assert lr["minimum_board_edge_margin_mm"] == 1.0
     assert lr["board_edge_reserve_passed"] is False
-    assert lr["other_pad_envelope_intersections"] == 30
-    assert lr["other_ref_count"] == 15
+    assert lr["other_pad_envelope_intersections"] == 22
+    assert lr["other_ref_count"] == 11
     refs = {r["ref"] for r in lr["by_ref"]}
-    assert refs == {"C10","C101","C102","C103","C104","C105",
-                    "C106","C107","Cout","R1","R10","R18",
-                    "R19","R2","R7"}
+    assert refs == {"C10","C101","C102","C105","C106","C107",
+                    "Cout","R1","R10","R2","R7"}
     assert "Lr" not in refs
+
+
+def test_old_initial_placement_overstates_active_collisions():
+    original = json.loads(gate.PADS.read_text(encoding="utf-8"))
+    cfg = json.loads(gate.MAG.read_text(encoding="utf-8"))
+    old = gate.report(original, cfg)
+    live = gate.report()
+    assert old["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 30
+    assert old["lr_elp38_candidate"]["other_ref_count"] == 15
+    assert live["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 22
+    assert live["evidence"]["native_board_pad_readback"].endswith("kelvin_readback.json")
+    assert live["evidence"]["active_copper_lines"] == 98
+    assert live["evidence"]["active_vias"] == 18
+    assert live["evidence"]["native_readback_git_blob_sha"] == gate.git_blob_sha(
+        gate.ACTIVE_READBACK)
+
+
+def test_current_native_source_rejects_a_stale_or_failed_cad_reopen(monkeypatch, tmp_path):
+    raw = json.loads(gate.ACTIVE_READBACK.read_text(encoding="utf-8"))
+    raw["ok"] = False
+    path = tmp_path / "damaged_reopen.json"
+    path.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(gate, "ACTIVE_READBACK", path)
+    with pytest.raises(ValueError, match="reopen readback failed"):
+        gate.load_current()
 
 
 def test_native_polygons_are_real_world_xy_not_fake_millimeter_dimensions():
@@ -88,7 +113,7 @@ def test_moving_a_real_pad_out_of_the_body_changes_gate():
              if p["ref"] == "C10" and p["PadNumber"] == "1")
     a["Y"] -= 2500
     got = gate.report(moved,m)
-    assert got["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 29
+    assert got["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 21
     assert got["decisions"]["freeze_existing_lr_placement"] is False
 
 
