@@ -1,0 +1,56 @@
+name: G1-Lr-ELP38-repack-native-ECO-preflight
+on:
+  push:
+    paths:
+      - 'tools/g1_magnetics_envelope.py'
+      - 'tools/test_g1_magnetics_envelope.py'
+      - 'tools/g1_lr_repack_ready.py'
+      - 'tools/test_g1_lr_repack_ready.py'
+      - 'tools/test_g1_lr_native_apply.py'
+      - 'hardware/dcx_main/g1/apply_lr_repack.py'
+      - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
+      - 'hardware/dcx_main/g1/lr_elp38_repack_plan.json'
+      - 'hardware/dcx_main/g1/kelvin_readback.json'
+      - '.github/workflows/g1-lr-repack-preflight.yml'
+  pull_request:
+    paths:
+      - 'tools/g1_magnetics_envelope.py'
+      - 'tools/test_g1_magnetics_envelope.py'
+      - 'tools/g1_lr_repack_ready.py'
+      - 'tools/test_g1_lr_repack_ready.py'
+      - 'tools/test_g1_lr_native_apply.py'
+      - 'hardware/dcx_main/g1/apply_lr_repack.py'
+      - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
+      - 'hardware/dcx_main/g1/lr_elp38_repack_plan.json'
+      - 'hardware/dcx_main/g1/kelvin_readback.json'
+      - '.github/workflows/g1-lr-repack-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checked-native-eco-preview-not-fab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check corrected current magnetic gate and Lr relocation geometry
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python tools/g1_magnetics_envelope.py --check
+          python tools/g1_lr_repack_ready.py --check > /tmp/lr_repack_preflight.json
+          python tools/g1_lr_repack_ready.py --emit-js > /tmp/g1_lr_repack_apply.js
+          python -m pytest -q tools/test_g1_magnetics_envelope.py tools/test_g1_lr_repack_ready.py tools/test_g1_lr_native_apply.py
+      - name: Preserve candidate move plan and guarded EasyEDA JS
+        uses: actions/upload-artifact@v4
+        with:
+          name: G1-Lr-near-loop-repack-PREVIEW-not-native-applied
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            /tmp/lr_repack_preflight.json
+            /tmp/g1_lr_repack_apply.js
+            hardware/dcx_main/g1/lr_elp38_repack_plan.json
+            hardware/dcx_main/g1/g1_magnetic_envelope_gate.json

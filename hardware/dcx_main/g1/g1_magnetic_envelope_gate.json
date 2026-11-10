@@ -2,13 +2,17 @@
   "schema": "CZY_G1_MAGNETIC_BODY_XY_CLEARANCE_SCREEN_V1",
   "status": "P0_G1_MAGNETIC_PLACEMENT_ECO_REQUIRED",
   "evidence": {
-    "native_board_pad_readback": "hardware/dcx_main/g1/g1_pads.json",
+    "native_board_pad_readback": "hardware/dcx_main/g1/kelvin_readback.json",
     "design_owned_maxwell_geometry": "design/v3/maxwell/diy_magnetics_concept.json",
     "magnetics_concept_only": true,
     "actual_maxwell_3d_solve": false,
     "real_assembly_Z_cleared": false,
     "native_gui_3d_collision_test": false,
-    "fab_approved": false
+    "fab_approved": false,
+    "original_board_frame": "hardware/dcx_main/g1/g1_pads.json",
+    "native_readback_git_blob_sha": "feb6d3a2f791f379049d803ed428956f4d627bec",
+    "active_copper_lines": 98,
+    "active_vias": 18
   },
   "board_mm": [
     155,
@@ -33,8 +37,8 @@
     },
     "minimum_board_edge_margin_mm": 1,
     "native_footprint_pad_count": 2,
-    "other_pad_envelope_intersections": 30,
-    "other_ref_count": 15,
+    "other_pad_envelope_intersections": 22,
+    "other_ref_count": 11,
     "by_ref": [
       {
         "ref": "C10",
@@ -46,14 +50,6 @@
       },
       {
         "ref": "C102",
-        "pads": 2
-      },
-      {
-        "ref": "C103",
-        "pads": 2
-      },
-      {
-        "ref": "C104",
         "pads": 2
       },
       {
@@ -78,14 +74,6 @@
       },
       {
         "ref": "R10",
-        "pads": 2
-      },
-      {
-        "ref": "R18",
-        "pads": 2
-      },
-      {
-        "ref": "R19",
         "pads": 2
       },
       {
@@ -135,34 +123,6 @@
       },
       {
         "ref": "C102",
-        "pin": "2",
-        "net": "PGND",
-        "overlap_x_mm": 0.8,
-        "overlap_y_mm": 0.899
-      },
-      {
-        "ref": "C103",
-        "pin": "1",
-        "net": "VCC12",
-        "overlap_x_mm": 0.8,
-        "overlap_y_mm": 0.899
-      },
-      {
-        "ref": "C103",
-        "pin": "2",
-        "net": "PGND",
-        "overlap_x_mm": 0.8,
-        "overlap_y_mm": 0.899
-      },
-      {
-        "ref": "C104",
-        "pin": "1",
-        "net": "VCC12",
-        "overlap_x_mm": 0.8,
-        "overlap_y_mm": 0.899
-      },
-      {
-        "ref": "C104",
         "pin": "2",
         "net": "PGND",
         "overlap_x_mm": 0.8,
@@ -247,34 +207,6 @@
       },
       {
         "ref": "R10",
-        "pin": "2",
-        "net": "PGND",
-        "overlap_x_mm": 0.808,
-        "overlap_y_mm": 0.864
-      },
-      {
-        "ref": "R18",
-        "pin": "1",
-        "net": "GH",
-        "overlap_x_mm": 0.808,
-        "overlap_y_mm": 0.864
-      },
-      {
-        "ref": "R18",
-        "pin": "2",
-        "net": "SW",
-        "overlap_x_mm": 0.808,
-        "overlap_y_mm": 0.864
-      },
-      {
-        "ref": "R19",
-        "pin": "1",
-        "net": "GL",
-        "overlap_x_mm": 0.808,
-        "overlap_y_mm": 0.864
-      },
-      {
-        "ref": "R19",
         "pin": "2",
         "net": "PGND",
         "overlap_x_mm": 0.808,
@@ -403,7 +335,7 @@
     "freeze_existing_lr_placement": false,
     "approve_g1_magnetic_assembly": false,
     "approve_g2_fab": false,
-    "next_cad_action": "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_15_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr",
+    "next_cad_action": "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_11_CURRENT_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr",
     "conditional_transformer_action": "IF_T1_TO_T4_UPSIZE_TO_ELP38_REPACK_ALL_FOUR_PITCHES_AND_PROVISIONAL_TERMINALS"
   },
   "limitations": [
