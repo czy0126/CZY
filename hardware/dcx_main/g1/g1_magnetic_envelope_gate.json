@@ -309,7 +309,9 @@
         "overlap_y_mm": 0.864
       }
     ],
-    "assessment": "XY_OVERLAP_REQUIRES_Z_OR_COMPONENT_MOVE_REVIEW"
+    "assessment": "XY_OVERLAP_REQUIRES_Z_OR_COMPONENT_MOVE_REVIEW",
+    "native_footprint_pad_pitch_mm": 9.002,
+    "board_edge_reserve_passed": false
   },
   "transformer_envelopes": {
     "present_design": "ELP32_32x20_3_1_1_GEOMETRY_PROXY",
@@ -392,7 +394,9 @@
         "if_changed_to_elp38_gap_mm": 0
       }
     ],
-    "elp38_stretch_requires_placement_change": true
+    "elp38_stretch_requires_placement_change": true,
+    "elp38_if_all_four_single_row_required_board_width_mm": 164,
+    "elp38_if_all_four_single_row_shortfall_mm": 9
   },
   "decisions": {
     "g1_can_continue_non_frozen_routing_away_from_magnets": true,
