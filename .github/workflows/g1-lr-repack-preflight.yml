@@ -11,10 +11,6 @@ on:
       - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
       - 'hardware/dcx_main/g1/lr_elp38_repack_plan.json'
       - 'hardware/dcx_main/g1/kelvin_readback.json'
-      - 'hardware/dcx_main/g1/lr_repack_readback.json'
-      - 'hardware/dcx_main/g1/lr_repack_native_report.json'
-      - 'hardware/dcx_main/g1/kelvin_drc_raw.json'
-      - 'hardware/dcx_main/g1/lr_repack_drc_raw.json'
       - '.github/workflows/g1-lr-repack-preflight.yml'
   pull_request:
     paths:
@@ -27,10 +23,6 @@ on:
       - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
       - 'hardware/dcx_main/g1/lr_elp38_repack_plan.json'
       - 'hardware/dcx_main/g1/kelvin_readback.json'
-      - 'hardware/dcx_main/g1/lr_repack_readback.json'
-      - 'hardware/dcx_main/g1/lr_repack_native_report.json'
-      - 'hardware/dcx_main/g1/kelvin_drc_raw.json'
-      - 'hardware/dcx_main/g1/lr_repack_drc_raw.json'
       - '.github/workflows/g1-lr-repack-preflight.yml'
   workflow_dispatch:
 permissions:
@@ -51,10 +43,10 @@ jobs:
           python tools/g1_lr_repack_ready.py --check > /tmp/lr_repack_preflight.json
           python tools/g1_lr_repack_ready.py --emit-js > /tmp/g1_lr_repack_apply.js
           python -m pytest -q tools/test_g1_magnetics_envelope.py tools/test_g1_lr_repack_ready.py tools/test_g1_lr_native_apply.py
-      - name: Preserve candidate move plan, native reopen evidence and guarded EasyEDA JS
+      - name: Preserve candidate move plan and guarded EasyEDA JS
         uses: actions/upload-artifact@v4
         with:
-          name: G1-Lr-near-loop-repack-preflight-and-native-reopen-evidence
+          name: G1-Lr-near-loop-repack-PREVIEW-not-native-applied
           retention-days: 30
           if-no-files-found: error
           path: |
@@ -62,5 +54,3 @@ jobs:
             /tmp/g1_lr_repack_apply.js
             hardware/dcx_main/g1/lr_elp38_repack_plan.json
             hardware/dcx_main/g1/g1_magnetic_envelope_gate.json
-            hardware/dcx_main/g1/lr_repack_readback.json
-            hardware/dcx_main/g1/lr_repack_native_report.json

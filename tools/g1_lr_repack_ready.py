@@ -1,9 +1,6 @@
 """Prepare an actual G1 EasyEDA Lr+11-passive *candidate* ECO, never edit native CAD here.
 
-Source is the FROZEN pre-ECO parent board (``geom.SOURCE_READBACK`` = the
-saved/reopened 98-track/18-via kelvin copy), not whatever board is active now:
-the plan moves parts from the parent's coordinates, so once the repack is
-applied the plan must keep reading the parent or it stops being reproducible.
+Source is the latest saved/reopened 98-track/18-via EasyEDA G1 board.
 The plan keeps high-frequency Lr near the original T1 region and moves 11
 small unconnected passives close to same-net controller/SR-driver pins.
 
@@ -19,6 +16,7 @@ release is implied; the core and the 100A output structure remain provisional.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import sys
@@ -99,16 +97,16 @@ def electrical_proxy_length(center: tuple[float,float], rotate_180: bool) -> flo
 
 def check() -> dict:
     plan = json.loads(PLAN.read_text(encoding="utf-8"))
-    board = geom.load_current(geom.SOURCE_READBACK)
+    board = geom.load_current()
     # Source is locked to a concrete saved EasyEDA copy; do not run against
     # any future layout until a human refreshes this source-locked plan.
-    if plan["source_reopen_git_blob_sha"] != geom.git_blob_sha(geom.SOURCE_READBACK):
+    if plan["source_reopen_git_blob_sha"] != geom.git_blob_sha(geom.ACTIVE_READBACK):
         raise ValueError("The native G1 source changed; re-audit before moving anything")
     if plan["status"] != "CANDIDATE_ECO_NOT_APPLIED":
         raise ValueError("A candidate cannot claim to have been applied")
     actual = {k: len(board[k]) for k in ("components","pads","lines","vias")}
     actual["nets"] = len(json.loads(
-        geom.SOURCE_READBACK.read_text(encoding="utf-8"))["value"]["nets"])
+        geom.ACTIVE_READBACK.read_text(encoding="utf-8"))["value"]["nets"])
     if actual != plan["source_count_guard"]:
         raise ValueError(f"Live source counts changed: {actual}")
     moves = plan["moves"]

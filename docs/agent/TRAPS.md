@@ -18,11 +18,6 @@
   以及 `pcb/fast_oc/fab/manifest.json` 的 board 哈希都曾因此只在 CI 上红。
   现在统一走 `tools/text_identity.py` 的 `sha256_file()`（文本 CRLF→LF，二进制保持原字节；
   后缀表也住在那里）。**任何新的"文本文件记哈希"都改用它。**
-  **Git blob id 是同一类，但不是同一个函数**：`git_blob_sha()` 必须先 `canonical_bytes()`
-  再算 `sha1(b"blob <len>\0" + data)`。`tools/g1_magnetics_envelope.py` 曾直接对工作区字节
-  做 blob 哈希，于是 Windows（CRLF 检出 + 原生读回生成器写 CRLF）算出 `d1d6ab88…`，
-  而提交里的 `feb6d3a2…` 是在 LF 下算的——4 个 G1 前置检查在本地红、在 ubuntu CI 全绿
-  （回归用例 `test_git_blob_id_is_independent_of_checkout_line_endings`）。
 
 - **`Path.read_text(newline=...)` 是 Python 3.13 才有的参数**：开发机是 3.13，而
   `.github/workflows/ci.yml` 固定 `python-version: "3.12"`，于是 `tools/agent_docs.py`

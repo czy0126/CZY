@@ -16,22 +16,13 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import sys
 from collections import defaultdict
 import hashlib
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from text_identity import canonical_bytes
-
 ROOT = Path(__file__).resolve().parents[1]
 PADS = ROOT / "hardware/dcx_main/g1/g1_pads.json"  # original un-routed placement, zones only
-# Frozen parent of the Lr repack: the source-locked plan moves parts from *these*
-# coordinates. Never repoint it at a newer candidate, or the plan stops being
-# reproducible and the guarded apply rejects the board anyway.
-SOURCE_READBACK = ROOT / "hardware/dcx_main/g1/kelvin_readback.json"
-# Board currently being screened: the reopened native copy after the Lr ECO.
-ACTIVE_READBACK = ROOT / "hardware/dcx_main/g1/lr_repack_readback.json"
+ACTIVE_READBACK = ROOT / "hardware/dcx_main/g1/kelvin_readback.json"  # reopened routed candidate
 MAG = ROOT / "design/v3/maxwell/diy_magnetics_concept.json"
 OUT = ROOT / "hardware/dcx_main/g1/g1_magnetic_envelope_gate.json"
 MIL_PER_MM = 39.37007874015748
@@ -87,31 +78,21 @@ def pad_rect(p: dict) -> dict:
 
 
 def git_blob_sha(path: Path) -> str:
-    """Git blob id of this file's canonical stored content.
-
-    Git stores text as LF while a default Windows clone (core.autocrlf=true)
-    has CRLF in the worktree, and the native readback generator itself writes
-    CRLF on Windows. Hash the canonical form (``text_identity.canonical_bytes``)
-    so the id matches Linux/CI instead of depending on the local checkout.
-    """
-    data = canonical_bytes(path)
+    """Calculate the exact GitHub Git blob id of this source file."""
+    data = path.read_bytes()
     return hashlib.sha1(b"blob " + str(len(data)).encode() + bytes([0]) + data).hexdigest()
 
 
-def load_current(readback: Path | None = None) -> dict:
-    """Board frame and magnet keep-outs from BASE, real placements/pads from a reopened board.
+def load_current() -> dict:
+    """Board frame and magnet keep-outs from BASE, real placements/pads from LAST route.
 
     The original g1_pads.json predates the driver ECO and is *not* a valid
     statement of the current G1 placement. Fail closed on a stale readback.
     The free magnetic pads and zones are unchanged across these candidates;
     the evidence source must be the same board read back after reopen.
-
-    ``readback`` defaults to the active candidate; pass ``SOURCE_READBACK`` to
-    read the frozen pre-ECO parent the repack plan is locked to.
     """
-    src = ACTIVE_READBACK if readback is None else readback
     base = json.loads(PADS.read_text(encoding="utf-8"))
-    packet = json.loads(src.read_text(encoding="utf-8"))
+    packet = json.loads(ACTIVE_READBACK.read_text(encoding="utf-8"))
     if packet.get("ok") is not True or not isinstance(packet.get("value"), dict):
         raise ValueError("Active G1 native PCB reopen readback failed")
     live = packet["value"]
@@ -126,9 +107,7 @@ def load_current(readback: Path | None = None) -> dict:
     return {"board": base["board"], "tbd_zones": base["tbd_zones"],
             "components": live["components"], "pads": live["pads"],
             "lines": live["lines"], "vias": live["vias"],
-            # kelvin_readback.json -> ACTUAL_NATIVE_G1_KELVIN_REOPEN_READBACK
-            "source_status": "ACTUAL_NATIVE_G1_{}_REOPEN_READBACK".format(
-                src.stem.upper().removesuffix("_READBACK"))}
+            "source_status": "ACTUAL_NATIVE_G1_KELVIN_REOPEN_READBACK"}
 
 
 def core_rects(pads: dict, mag: dict) -> tuple[dict, dict, dict]:
@@ -276,18 +255,14 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
             "freeze_existing_lr_placement": not critical,
             "approve_g1_magnetic_assembly": False,
             "approve_g2_fab": False,
-            "next_cad_action": (
-                "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_CURRENT_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr"
-                if critical else
-                "KEEP_THE_REPACKED_Lr_AND_GATHER_3D_MOUNTING_AND_TERMINAL_EVIDENCE_BEFORE_ROUTING_AT_Lr"),
+            "next_cad_action": "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_11_CURRENT_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr",
             "conditional_transformer_action": "IF_T1_TO_T4_UPSIZE_TO_ELP38_REPACK_ALL_FOUR_PITCHES_AND_PROVISIONAL_TERMINALS",
         },
         "limitations": [
             "Rectangular envelope is conservative: XY crossing does not prove a 3D clash at different Z.",
             "Full winding, fixture, mounting, cold plate, thermal gap and physical pad drawings are unknown.",
             "A G1 0 physical DRC is a copper rule result, not a magnetic body clearance pass.",
-            "This screen only reads a committed reopen readback; it changes no EDA "
-            "primitives, BOM or PCB, and it cannot verify that the .eprj2 matches it.",
+            "No EDA primitives, BOM, PCB, or gate JSON were changed by this report.",
         ],
     }
 

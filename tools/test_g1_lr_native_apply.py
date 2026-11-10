@@ -22,10 +22,7 @@ spec.loader.exec_module(n)
 
 @pytest.fixture
 def source_and_mock():
-    # The ECO moves parts *from* the frozen pre-ECO parent. Using the active
-    # (already repacked) readback here would silently apply the plan twice and
-    # would no longer prove that the runner rejects a stale source.
-    original=json.loads(n.G.SOURCE_READBACK.read_text(encoding="utf-8"))["value"]
+    original=json.loads(n.G.ACTIVE_READBACK.read_text(encoding="utf-8"))["value"]
     plan=json.loads(n.R.PLAN.read_text(encoding="utf-8"))
     v=copy.deepcopy(original)
     old={c["ref"]:(c["X"],c["Y"]) for c in original["components"]}
@@ -66,43 +63,6 @@ def test_missing_or_unapproved_source_file_is_protected():
     assert n.SOURCE!=n.TARGET
     assert n.READBACK.name=="lr_repack_readback.json"
     assert n.REPORT.name=="lr_repack_native_report.json"
-    assert n.G.SOURCE_READBACK.name=="kelvin_readback.json"
-    assert n.G.ACTIVE_READBACK.name=="lr_repack_readback.json"
-    assert n.G.ACTIVE_READBACK==n.READBACK  # envelope screen reads the applied board
-
-
-def test_committed_native_candidate_receipt_matches_the_active_board():
-    """The .eprj2, its reopen readback and its report are one evidence chain."""
-    report=json.loads(n.REPORT.read_text(encoding="utf-8"))
-    assert report["status"]=="REOPENED_NATIVE_CAD_CANDIDATE_REQUIRES_GUI_DRC_AND_3D_REVIEW"
-    assert report["candidate"]=="hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2"
-    assert report["candidate_sha256"]==n.hashfile(n.TARGET)
-    assert (report["components"],report["pads"],report["nets"],
-            report["lines"],report["vias"])==(77,299,65,98,18)
-    assert report["moved_refs"]==sorted(
-        json.loads(n.R.PLAN.read_text(encoding="utf-8"))["moves"])
-    assert report["lr_other_pad_intersections"]==0
-    assert report["core_board_edge_margin_mm"]==7.0
-    assert report["source_md5_unchanged"] is True
-    assert report["source_readback_git_blob_sha"]==n.G.git_blob_sha(n.G.SOURCE_READBACK)
-    # An applied move is still not an approved board.
-    assert report["real_assembly_3d_verified"] is False
-    assert report["native_erc_passed"] is False
-    assert report["native_drc_passed"] is False
-    assert report["fab_release"] is False
-
-
-def test_repack_drc_added_no_new_error_group_over_the_frozen_parent():
-    """A move may not introduce a new class of native DRC error."""
-    def groups(name):
-        raw=json.loads((G1/name).read_text(encoding="utf-8"))["value"]
-        return (raw["rule_config"],
-                [(g["name"],g["count"],len(g["list"])) for g in raw["raw"]])
-    before=groups("kelvin_drc_raw.json")
-    after=groups("lr_repack_drc_raw.json")
-    assert before[0]==after[0]  # same rule set on both boards
-    assert after[1]==before[1]
-    assert not [g for g in after[1] if g[0]=="Physical Error"]
 
 
 def test_native_reopen_catches_moved_nonparticipant(source_and_mock):

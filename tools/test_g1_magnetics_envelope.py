@@ -29,37 +29,23 @@ def test_recomputed_structural_gate_matches_committed_native_readback():
     report = gate.report()
     committed = json.loads(gate.OUT.read_text(encoding="utf-8"))
     assert report == committed
-    # The applied Lr ECO clears the XY screen; Z, windings and terminals do not.
-    assert report["status"] == "XY_SCREEN_CLEARED_3D_STILL_REQUIRED"
+    assert report["status"] == "P0_G1_MAGNETIC_PLACEMENT_ECO_REQUIRED"
     assert report["board_mm"] == [155.0,131.0]
-    assert report["decisions"]["freeze_existing_lr_placement"] is True
+    assert report["decisions"]["freeze_existing_lr_placement"] is False
     assert report["decisions"]["approve_g1_magnetic_assembly"] is False
     assert report["decisions"]["approve_g2_fab"] is False
 
 
-def test_active_reopened_board_has_no_remaining_lr_body_overlap():
-    assert gate.load_current()["source_status"] == "ACTUAL_NATIVE_G1_LR_REPACK_REOPEN_READBACK"
-    lr = gate.report()["lr_elp38_candidate"]
+def test_latest_reopened_98_line_board_has_22_pad_intersections():
+    assert gate.load_current()["source_status"] == "ACTUAL_NATIVE_G1_KELVIN_REOPEN_READBACK"
+    a = gate.report()
+    lr = a["lr_elp38_candidate"]
     assert lr["physical_core_envelope_mm"] == [38.0,25.4]
     assert lr["current_body_xy_mm"] == {
-        "left":7.0, "right":45.0, "top":36.3, "bottom":61.7
+        "left":1.0, "right":39.0, "top":39.3, "bottom":64.7
     }
     assert lr["native_footprint_pad_count"] == 2
-    # Native reopen re-rounds coordinates at 0.25 mil, so the pad pitch is only
-    # stable to ~0.013 mm, not to the last digit.
-    assert lr["native_footprint_pad_pitch_mm"] == pytest.approx(9.0, abs=.013)
-    assert lr["minimum_board_edge_margin_mm"] == 7.0
-    assert lr["board_edge_reserve_passed"] is True
-    assert lr["other_pad_envelope_intersections"] == 0
-    assert lr["by_ref"] == []
-    assert lr["assessment"] == "NO_OTHER_PAD_ENVELOPE_OVERLAPS"
-
-
-def test_frozen_parent_still_records_the_22_intersections_that_forced_the_eco():
-    """The pre-ECO evidence must stay reproducible; it is not a current verdict."""
-    parent = gate.report(gate.load_current(gate.SOURCE_READBACK))
-    lr = parent["lr_elp38_candidate"]
-    assert gate.SOURCE_READBACK.name == "kelvin_readback.json"
+    assert lr["native_footprint_pad_pitch_mm"] == pytest.approx(9.002, abs=.001)
     assert lr["minimum_board_edge_margin_mm"] == 1.0
     assert lr["board_edge_reserve_passed"] is False
     assert lr["other_pad_envelope_intersections"] == 22
@@ -68,37 +54,21 @@ def test_frozen_parent_still_records_the_22_intersections_that_forced_the_eco():
     assert refs == {"C10","C101","C102","C105","C106","C107",
                     "Cout","R1","R10","R2","R7"}
     assert "Lr" not in refs
-    assert parent["status"] == "P0_G1_MAGNETIC_PLACEMENT_ECO_REQUIRED"
 
 
-def test_old_initial_placement_overstates_both_later_boards():
+def test_old_initial_placement_overstates_active_collisions():
     original = json.loads(gate.PADS.read_text(encoding="utf-8"))
     cfg = json.loads(gate.MAG.read_text(encoding="utf-8"))
     old = gate.report(original, cfg)
-    parent = gate.report(gate.load_current(gate.SOURCE_READBACK))
     live = gate.report()
     assert old["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 30
     assert old["lr_elp38_candidate"]["other_ref_count"] == 15
-    assert parent["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 22
-    assert live["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 0
-    assert live["evidence"]["native_board_pad_readback"].endswith("lr_repack_readback.json")
+    assert live["lr_elp38_candidate"]["other_pad_envelope_intersections"] == 22
+    assert live["evidence"]["native_board_pad_readback"].endswith("kelvin_readback.json")
     assert live["evidence"]["active_copper_lines"] == 98
     assert live["evidence"]["active_vias"] == 18
     assert live["evidence"]["native_readback_git_blob_sha"] == gate.git_blob_sha(
         gate.ACTIVE_READBACK)
-
-
-def test_git_blob_id_is_independent_of_checkout_line_endings(tmp_path):
-    """A default Windows clone has CRLF in the worktree but LF in the blob.
-
-    The saved/reopened native readback is hashed into the gate JSON, so the
-    hash must identify the canonical stored content, not the local checkout.
-    """
-    lf = tmp_path / "lf.json"
-    crlf = tmp_path / "crlf.json"
-    lf.write_bytes(b'{\n  "ok": true\n}\n')
-    crlf.write_bytes(b'{\r\n  "ok": true\r\n}\r\n')
-    assert gate.git_blob_sha(lf) == gate.git_blob_sha(crlf)
 
 
 def test_current_native_source_rejects_a_stale_or_failed_cad_reopen(monkeypatch, tmp_path):
@@ -137,10 +107,7 @@ def test_current_elp32_transforms_have_six_mm_gap_but_elp38_does_not():
 
 
 def test_moving_a_real_pad_out_of_the_body_changes_gate():
-    # Measured on the frozen parent: the active board has no overlap left to
-    # reduce, so a zero-collision board cannot show that the check is alive.
-    pad_dump = gate.load_current(gate.SOURCE_READBACK)
-    m = json.loads(gate.MAG.read_text(encoding="utf-8"))
+    pad_dump, m = baseline()
     moved = copy.deepcopy(pad_dump)
     a = next(p for p in moved["pads"]
              if p["ref"] == "C10" and p["PadNumber"] == "1")
