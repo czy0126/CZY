@@ -23,7 +23,16 @@
 // whole dump (that would hide the 80 rows that did read).
 
 // The stored project UUID (what ``projects.uuid`` holds inside the .eprj2).
-const PROJECT_UUID = '14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46';
+//
+// Both identities below are overridable through ``globalThis.CZY_*`` set by a
+// preceding invoke on the SAME session: invoke bodies share the render's
+// global scope (docs/agent/EDA.md §装配排除 ECO).  The default keeps the
+// historical main-board command in docs/agent/COMMANDS.md byte-for-byte
+// valid; the G1 runner only sets the two globals.  Do not turn these into a
+// second copy of this script -- the readers below are the audited ones.
+const PROJECT_UUID = (typeof globalThis.CZY_EXPECTED_PROJECT_UUID === 'string')
+  ? globalThis.CZY_EXPECTED_PROJECT_UUID
+  : '14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53989e46';
 // Opening by ``--path`` does not use that identity: the editor wraps the file in
 // a path-derived project whose name is the file stem.  Its uuid is NOT stable --
 // three opens of the same file produced
@@ -34,7 +43,8 @@ const PROJECT_UUID = '14837d107b6a52feb21f43869dd7378616b33db49e6c75ae2ea6bc0a53
 // used that as the reason the name check sufficed.  The conclusion still holds,
 // but for the opposite reason: the uuid cannot be matched at all, so the file
 // stem is the ONLY identity this script can check.
-const PATH_OPENED_NAME = 'dcx_main_board';
+const PATH_OPENED_NAME = (typeof globalThis.CZY_EXPECTED_PROJECT === 'string')
+  ? globalThis.CZY_EXPECTED_PROJECT : 'dcx_main_board';
 
 const read = (obj, name) => {
   try {

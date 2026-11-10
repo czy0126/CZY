@@ -34,8 +34,36 @@ KNOWN = {
 }
 
 
-def audit() -> dict:
-    captured = json.loads(INVENTORY.read_text(encoding="utf-8"))
+def _resolve_r8(by_ref: dict, placeholder: list) -> tuple[dict, str]:
+    """Locate the EN pull-up in a capture whose export may have renamed it.
+
+    ``docs/agent/EDA.md`` §装配排除 ECO: excluding a part from BOM/PCB makes the
+    export renumber it (R8 -> R6) while its pins stay identical, so a designator
+    lookup alone cannot tell "DNP'd" from "deleted".  Accept the rename ONLY when
+    the capture proves the double DNP AND the row still carries R8's registered
+    library device.  A renamed-but-populated part matches nothing here, so the
+    audit fails closed instead of reporting a clean BOM.
+    """
+    direct = by_ref.get("R8")
+    if direct is not None:
+        return direct, "designator"
+    row = next((r for r in placeholder if r["ref"] == "R8"), None)
+    if row is None:
+        raise ValueError("placeholder register has no R8 row")
+    matches = [c for c in by_ref.values()
+               if c.get("manufacturer_id") == row["native_device"]
+               and c.get("add_into_bom") is False
+               and c.get("add_into_pcb") is False]
+    if len(matches) != 1:
+        raise ValueError(
+            "missing native R8 and {} double-DNP candidate(s) carrying {}; "
+            "cannot check default enable".format(len(matches), row["native_device"]))
+    return matches[0], "double-dnp-designator-fallback"
+
+
+def audit(inventory: Path | None = None) -> dict:
+    source = INVENTORY if inventory is None else inventory
+    captured = json.loads(source.read_text(encoding="utf-8"))
     if not captured.get("ok") or captured.get("value", {}).get("status") != "INVENTORY":
         raise ValueError("actual native inventory capture missing or unsuccessful")
     n = captured["value"]
@@ -49,6 +77,11 @@ def audit() -> dict:
     placeholder = register["rows"]
     if len({r["ref"] for r in placeholder}) != len(placeholder):
         raise ValueError("duplicate placeholder reference")
+    r8_row, r8_identified_by = _resolve_r8(by_ref, placeholder)
+    if "R8" not in by_ref:
+        # Audit the renamed part under its registered designator so that every
+        # later lookup (conflicts, R8 flags) reads the same row.
+        by_ref = {**by_ref, "R8": r8_row}
     unknown_refs = sorted(r["ref"] for r in placeholder if r["ref"] not in by_ref)
     if unknown_refs:
         raise ValueError("missing native refs: " + repr(unknown_refs))
@@ -121,12 +154,14 @@ def audit() -> dict:
             "datasheet_from_captured_native": actual["datasheet"],
             "missing_real_native_cad_edit": True,
         })
-    r8 = by_ref.get("R8")
-    if not r8:
-        raise ValueError("missing native R8; cannot check default enable")
+    r8 = by_ref["R8"]
+    try:
+        source_label = source.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        source_label = str(source)
     return {
         "status": "NATIVE_CAPTURE_NOT_FOR_FAB_BOM_AND_ENABLE_BLOCKED",
-        "snapshot_source": "hardware/dcx_main/gen/native_inventory_raw.json",
+        "snapshot_source": source_label,
         "snapshot_age_note": (
             "This is the captured Nov 6 unmodified original. A saved ECO on a COPY is not a modification of the active .eprj2."
             if not any(e.get("change_classification") for e in errors)
@@ -144,6 +179,8 @@ def audit() -> dict:
             e["display_vs_design_target"] for e in errors),
         "original_r8_in_bom": r8["add_into_bom"],
         "original_r8_in_pcb": r8["add_into_pcb"],
+        "r8_identified_by": r8_identified_by,
+        "r8_capture_designator": r8_row["ref"],
         "conflicts": errors,
         "manufacturing_approved": False,
         "native_cad_modified": False,
@@ -157,14 +194,19 @@ def main(argv=None) -> int:
     group.add_argument("--write", action="store_true")
     group.add_argument("--check", action="store_true")
     group.add_argument("--release-check", action="store_true")
+    p.add_argument("--inventory", type=Path, default=None,
+                   help="capture to audit; defaults to the Nov 6 main-board snapshot")
+    p.add_argument("--out", type=Path, default=None,
+                   help="report path used by --write/--check; defaults to OUTPUT")
     args = p.parse_args(argv)
-    report = audit()
+    report = audit(args.inventory)
+    out = OUTPUT if args.out is None else args.out
     if args.write:
-        OUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-                          encoding="utf-8")
+        out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+                       encoding="utf-8")
         return 0
     if args.check:
-        actual = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else None
+        actual = json.loads(out.read_text(encoding="utf-8")) if out.exists() else None
         if actual != report:
             print("Native inventory risk report stale / missing: regenerate --write")
             return 1
