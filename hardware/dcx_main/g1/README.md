@@ -1,5 +1,10 @@
 # G1 原生带网 PCB（非投板）— 2026-11-09
 
+> **2026-11-10 下一增量：六条低电流短连线已完成布局预检，尚未写入原生 PCB。** 基于 [刚合入的 Lr 重排原生板](dcx_main_board_g1_lr_repack.eprj2) 的保存重开读回，选出 **VCC12：C101.1↔U2.1、C102.1↔U1.7；VCC12_S：C105.1↔U3.7、C107.1↔U5.7、C108.1↔U6.7；RUN：R7.1↔U2.6**，均为第1层、0.20mm宽的控制/去耦短线，实际两端PAD坐标直接从原生读回得到，单段约2.53–3.75mm。脚本逐个检查真实299焊盘、已有98线/18孔和设计自有磁件空间与本板0.152mm规则的距离，保留源CAD/网表身份与禁止投板标志。[路由与原生重开校验器](route_lr_signal_stubs.py) · [独立原生复制/应用/DRC执行器](apply_lr_signal_stubs.py)。
+> 
+> **具体执行**：在仓库根目录先运行 `python hardware/dcx_main/g1/route_lr_signal_stubs.py --check`；具有 Windows EasyEDA Pro/lceda-pro 的工作站可运行 `python hardware/dcx_main/g1/apply_lr_signal_stubs.py --apply`，自动复制为新的 `dcx_main_board_g1_signal_stubs.eprj2`，保存关闭重开后核验未改原98线和18过孔，并重新运行原生 DRC。原生DRC **必须比206条连接错误减少、不能出现物理规则错误或新增网表错误**；失败保留候选，不得声称通过。**C106.1→U4.7 直连与 U4.8（另一网络）实物焊盘交叉，本次特意不画，必须另行选底层/过孔或绕线方案。**这六条不涉及Lr未知实际端子、四磁件真实绕组、SR门极Kelvin、100A VOUT+PGND铜排、3D冷板、独立保护。完成离线预检并不代表已在实际EasyEDA中加铜；当前仍 NOT_FOR_FAB。
+
+
 > **2026-11-10 最新原生板布局与审查源纠正**：上一版 PR #77 的 Lr 包络检查从最初没有铜的 `g1_pads.json` 取元件位置，而忽略了后续已经落盘的 U2/C103/C104/R18/R19 等驱动元件移动。已改从最新真实保存、关闭、重开后的 `kelvin_readback.json` 取 77 器件、299 焊盘、98 铜线、18 过孔的位置与形状，原初基板只用于提取板框与四变压器轮廓。**Lr ELP38/I38 38×25.4mm 的 XY 包络在这张冻结父板上覆盖 11 个其他位号、22 只焊盘**，不是先前按旧版图算出的 15 / 30。脚本以 Git blob SHA 锁定该冻结父板（`SOURCE_READBACK`），不再跟着"当前活跃板"漂移；XY 重叠不能直接认定三维实体碰撞。
 >
 > **同日 Lr 重排 ECO 已真实落盘并重开验收**：`dcx_main_board_g1_lr_repack.eprj2`（sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`）由 kelvin 副本复制而来，改摆 12 件、保存、关闭、重开后读回 **77 器件 / 299 焊盘 / 65 网 / 98 铜线 / 18 过孔 / 38 折线**；Lr 本体包络与其余焊盘的 XY 重叠 **22 → 0**，板边余量 **1.0 → 7.0 mm**，父文件 MD5 未变；原生 DRC 分组计数与父板逐项相同（206 连接错误 / 1 网表错误，**无 Physical Error**）。证据：[重开读回](lr_repack_readback.json) · [原生验收收据](lr_repack_native_report.json) · [DRC 原始结果](lr_repack_drc_raw.json)。门禁随之变为 `XY_SCREEN_CLEARED_3D_STILL_REQUIRED`：**XY 已清，Z 向/绕组/端子仍未证，NOT_FOR_FAB 不变**。
