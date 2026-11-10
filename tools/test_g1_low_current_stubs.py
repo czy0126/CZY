@@ -1,4 +1,4 @@
-"""Evidence-only regression tests for six real-G1 low-current route proposals.
+"""Evidence-only regression tests for nine real-G1 low-current route proposals.
 
 These tests never use the native EasyEDA editor and must not assert a
 fabrication or successful *applied* PCB.
@@ -20,20 +20,27 @@ import route_lr_signal_stubs as S
 import apply_lr_signal_stubs as A
 
 
-def test_six_real_after_lr_repack_segments_are_clear():
+def test_nine_real_after_lr_repack_segments_are_clear():
     audit=S.report()
     assert audit["preflight_problems"]==[]
     assert audit["source_counts"]=={
         "components":77,"pads":299,"nets":65,"lines":98,"vias":18,"polylines":38}
-    assert audit["new_trace_count"]==6
+    assert audit["new_trace_count"]==9
     assert audit["new_via_count"]==0
     assert audit["candidate"]=="dcx_main_board_g1_signal_stubs.eprj2"
     assert audit["native_eda_run"] is False
     assert audit["fab_approved"] is False
-    assert {r["net"] for r in audit["routes"]}=={"VCC12","VCC12_S","RUN"}
+    assert {r["net"] for r in audit["routes"]}=={"VCC12","VCC12_S","RUN","OC1","OC"}
     assert all(r["length_mm"]<4.0 and r["layer"]==1 for r in audit["routes"])
     assert [r["from"] for r in audit["routes"]]==[
-        "C101.1","C102.1","C105.1","C107.1","C108.1","R7.1"]
+        "C101.1","C102.1","C103.1","C105.1","C107.1","C108.1",
+        "R7.1","R15.2","R16.2"]
+    # Actual protection net pairs come from the real saved native pads.
+    assert {(r["from"], r["to"], r["net"]) for r in audit["routes"]} >= {
+        ("R15.2", "R16.1", "OC1"),
+        ("R16.2", "R17.1", "OC"),
+        ("C103.1", "C104.1", "VCC12"),
+    }
 
 
 def test_source_geometry_stays_locked_to_actual_native_binary():
@@ -59,7 +66,7 @@ def test_fourth_sr_decoupler_excluded_due_to_real_obstacle():
     assert all(o["other"]!="C106.2" for o in obstacles)  # near but not below 0.152mm floor
 
 
-def test_js_is_six_real_native_line_creations_without_vias():
+def test_js_is_nine_real_native_line_creations_without_vias():
     js=S.R.emit_js(S.copper(),S.vias())
     assert "pcb_PrimitiveLine.create" in js
     assert "pcb_PrimitiveVia.create" in js  # generic emitter, but via array empty
@@ -69,7 +76,7 @@ def test_js_is_six_real_native_line_creations_without_vias():
     assert "pcb_Drc.check" not in js  # real DRC is a distinct read-only host step
 
 
-def test_mock_reopen_verifies_all_original_98_tracks_and_six_new_segments(tmp_path):
+def test_mock_reopen_verifies_all_original_98_tracks_and_nine_new_segments(tmp_path):
     original=json.loads(S.READBACK.read_text(encoding="utf-8"))
     fake=copy.deepcopy(original)
     baseline=len(fake["value"]["lines"])
@@ -80,12 +87,12 @@ def test_mock_reopen_verifies_all_original_98_tracks_and_six_new_segments(tmp_pa
             "x2":s["b"][0]*S.R.MIL,"y2":-s["b"][1]*S.R.MIL,
             "width":s["width"]*S.R.MIL,
         })
-    assert len(fake["value"]["lines"])==baseline+6
+    assert len(fake["value"]["lines"])==baseline+9
     file=tmp_path/"mock_reopen.json"
     file.write_text(json.dumps(fake),encoding="utf-8")
     results=S.verify(file)
     assert results["status"]=="REOPENED_NATIVE_SIGNAL_STUBS_PENDING_ACTUAL_DRC"
-    assert results["new_seg_count"]==6
+    assert results["new_seg_count"]==9
     assert results["layout_counts"]["unchanged"] is True
     assert results["lines"]["coverage_problems"]==[]
     assert results["native_drc_passed"] is False
