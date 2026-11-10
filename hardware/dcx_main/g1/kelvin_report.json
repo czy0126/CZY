@@ -4,6 +4,14 @@
   "board": "dcx_main_board_g1_kelvin.eprj2",
   "geometry_evidence": "NATIVE_REOPEN_READBACK",
   "native_drc_passed": false,
+  "drc": {
+    "source": "kelvin_drc_raw.json",
+    "rule_config": "JLCPCB Capability(Two Layers Board)",
+    "physical_errors": 0,
+    "connection_errors": 206,
+    "netlist_errors": 1,
+    "groups": {}
+  },
   "layout_counts": {
     "components": 77,
     "pads": 299,
@@ -47,7 +55,7 @@
     "CS1/CS2 only: the SR gate/drain Kelvin pairs are not routed.",
     "The CT terminals are provisional pads; CS1/CS2 will move with the vendor terminals.",
     "Only the driver increment, the two output rails and these two sense nets are routed; every other net is open.",
-    "Native DRC has not been run on this candidate; the route candidate's raw result is not a pass.",
+    "Native DRC was run: physical errors are zero, but 206 open connections and the existing schematic/PCB netlist mismatch mean it is not a pass.",
     "This does not change the NOT_FOR_FAB gate."
   ]
 }

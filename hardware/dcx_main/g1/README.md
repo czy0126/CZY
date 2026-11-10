@@ -217,7 +217,9 @@ y=96 母线那几处），所以按「同网、同层、同宽、共线覆盖」
 **Netlist Error 1**、**没有 Clearance 组**——即两极与两条检测网加进来后**物理错误仍是 0**
 （`_driver_route` 时也是 0；连接错误从 224 降到 206，是这两次增量接通的鼠线）。那条网表错误
 是原理图↔PCB 的既有不符（§2 的 6 个位号 + A5 表），不是走线造成的。原始读数
-`kelvin_drc_raw.json`，开/关/ping 回执 `kelvin_drc_*.json`。
+`kelvin_drc_raw.json`，开/关/ping 回执 `kelvin_drc_*.json`；`kelvin_report.json` 的 `drc`
+字段直接引用这些计数（`physical_errors` / `connection_errors` / `netlist_errors`），
+`native_drc_passed` 仍是 false。
 
 **驱动对**（各 2 个焊盘）：`GH_DRV` R4 p1 (49.2, 57.5) ↔ U2 p4 (130.5, 52.5)；
 `GL_DRV` R5 p1 (58.2, 57.5) ↔ U2 p10 (133.5, 51.0)；`GA1–GA4` / `GB1–GB4` 各

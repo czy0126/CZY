@@ -34,6 +34,7 @@ READBACK = P.READBACK_OUT
 READBACK_OUT = HERE / "kelvin_readback.json"
 PLAN_OUT = HERE / "kelvin_plan.json"
 REPORT_OUT = HERE / "kelvin_report.json"
+DRC_RAW = HERE / "kelvin_drc_raw.json"
 CANDIDATE = "dcx_main_board_g1_kelvin.eprj2"
 
 WIDTH = 0.3
@@ -117,9 +118,31 @@ def summary(readback: Path = READBACK) -> dict:
             "the CT terminals are design-owned provisional pads, not vendor terminals",
             "0.3 mm is a sense width, not a current rating",
             "the four SR local layouts and the Cout bank are not placed",
-            "native DRC has not been run on this candidate",
+            "native DRC: 0 physical errors, but the board is not a pass (open nets)",
         ],
     }
+
+
+def drc_summary(path: Path = DRC_RAW) -> dict | None:
+    """The native DRC result this candidate was run through, if it exists.
+
+    ``physical_errors`` is every group that is not a connection or netlist
+    error -- that is the number the fab gate cares about.  The report quotes
+    it instead of asserting a pass.
+    """
+    if not path.exists():
+        return None
+    value = json.loads(path.read_text(encoding="utf-8"))["value"]
+    groups = {g["name"]: g.get("count") for g in value["raw"]}
+    connection = groups.get("Connection Error", 0)
+    netlist = groups.get("Netlist Error", 0)
+    physical = sum(c or 0 for n, c in groups.items()
+                   if n not in ("Connection Error", "Netlist Error"))
+    return {"source": path.name, "rule_config": value.get("rule_config"),
+            "physical_errors": physical, "connection_errors": connection,
+            "netlist_errors": netlist,
+            "groups": {n: c for n, c in groups.items()
+                       if n not in ("Connection Error", "Netlist Error")}}
 
 
 def verify(readback: Path = READBACK_OUT) -> dict:
@@ -143,6 +166,7 @@ def verify(readback: Path = READBACK_OUT) -> dict:
         "board": CANDIDATE,
         "geometry_evidence": "NATIVE_REOPEN_READBACK",
         "native_drc_passed": False,
+        "drc": drc_summary(),
         "layout_counts": {"components": len(value["components"]), "pads": len(value["pads"]),
                           "nets": len(value["nets"]), "polylines": value["polylines"],
                           "unchanged": counts_ok},
@@ -164,8 +188,8 @@ def verify(readback: Path = READBACK_OUT) -> dict:
             "The CT terminals are provisional pads; CS1/CS2 will move with the vendor terminals.",
             "Only the driver increment, the two output rails and these two sense nets are "
             "routed; every other net is open.",
-            "Native DRC has not been run on this candidate; the route candidate's raw result is "
-            "not a pass.",
+            "Native DRC was run: physical errors are zero, but 206 open connections and the "
+            "existing schematic/PCB netlist mismatch mean it is not a pass.",
             "This does not change the NOT_FOR_FAB gate.",
         ],
     }

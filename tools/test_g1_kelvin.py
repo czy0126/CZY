@@ -90,6 +90,18 @@ def test_verify_on_the_pre_kelvin_readback_names_exactly_these_nets_missing():
     assert report["board"] == k.CANDIDATE
 
 
+def test_the_report_quotes_the_native_drc_raw_instead_of_asserting_a_pass():
+    report = json.loads((G1 / "kelvin_report.json").read_text(encoding="utf-8"))
+    raw = json.loads((G1 / "kelvin_drc_raw.json").read_text(encoding="utf-8"))["value"]
+    groups = {g["name"]: g.get("count") for g in raw["raw"]}
+    assert report["drc"]["source"] == "kelvin_drc_raw.json"
+    assert report["drc"]["connection_errors"] == groups.get("Connection Error", 0)
+    assert report["drc"]["netlist_errors"] == groups.get("Netlist Error", 0)
+    assert report["drc"]["physical_errors"] == k.drc_summary()["physical_errors"]
+    assert report["drc"]["physical_errors"] == 0        # the two kelvin run was clean
+    assert report["native_drc_passed"] is False         # open nets are not a pass
+
+
 def test_the_committed_plan_file_is_what_the_module_computes():
     committed = json.loads((G1 / "kelvin_plan.json").read_text(encoding="utf-8"))
     assert committed == k.summary() | {"problems": []}
