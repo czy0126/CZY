@@ -2,7 +2,8 @@
 
 Two board files now exist: the baseline ``dcx_main_board_g1.eprj2`` (no copper,
 no routing, no DRC) and the routed candidate ``..._driver_eco.eprj2`` /
-``..._driver_route.eprj2`` (75 copper segments, a native DRC raw).  A drawing
+``..._driver_route.eprj2`` (50 readback lines and 13 vias, plus a native DRC
+raw).  A drawing
 captioned only "NO COPPER, NO ROUTING, NO DRC" therefore reads as a statement
 about *the* board rather than about the baseline file, and a stale copy of the
 drawing looks exactly like a current one.  These tests pin the caption to the

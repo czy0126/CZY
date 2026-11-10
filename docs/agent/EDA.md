@@ -239,7 +239,8 @@
 
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
-  `..._driver_route.eprj2`（后者 75 段铜 + 原生 DRC raw）。图下只写"无铜、无走线、无 DRC"
+  `..._driver_route.eprj2`（后者读回 50 条铜线 / 13 个过孔，另有原生 DRC raw
+  `driver_drc_raw.json`；数以 `driver_route_report.json` 为准）。图下只写"无铜、无走线、无 DRC"
   会被读成对整块板说的 ⇒ `make_g1_layout_svg.py` 把 `BOARD` 常量写进 caption，
   **提交的 SVG 必须等于提交的 `g1_pads.json` 现渲染结果**（`tools/test_g1_layout_svg.py`
   逐字节锁住；`render()` 与写文件分开是这个测试的前提）。待锁区只有 CT+T1–T4 五块磁芯本体，

@@ -13,8 +13,8 @@ it is not a Gerber, a DRC report, or a manufacturability claim.
 
 The caption names `BOARD` on purpose.  Two boards now exist: this baseline has
 no copper and no DRC, while the `..._driver_eco` / `..._driver_route`
-candidates carry 75 copper segments and a native DRC raw.  "NO COPPER, NO
-ROUTING, NO DRC" is a fact about *this file*, not about the board.
+candidates carry copper, vias and a native DRC raw.  "NO COPPER, NO ROUTING,
+NO DRC" is a fact about *this file*, not about the board.
 """
 
 from __future__ import annotations
