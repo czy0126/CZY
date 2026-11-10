@@ -17,10 +17,12 @@ import argparse
 import json
 import math
 from collections import defaultdict
+import hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PADS = ROOT / "hardware/dcx_main/g1/g1_pads.json"
+PADS = ROOT / "hardware/dcx_main/g1/g1_pads.json"  # original un-routed placement, zones only
+ACTIVE_READBACK = ROOT / "hardware/dcx_main/g1/kelvin_readback.json"  # reopened routed candidate
 MAG = ROOT / "design/v3/maxwell/diy_magnetics_concept.json"
 OUT = ROOT / "hardware/dcx_main/g1/g1_magnetic_envelope_gate.json"
 MIL_PER_MM = 39.37007874015748
@@ -73,6 +75,33 @@ def pad_rect(p: dict) -> dict:
     projected_h = abs(w*math.sin(angle))+abs(h*math.cos(angle))
     return rectangle(float(p["X"])/MIL_PER_MM, -float(p["Y"])/MIL_PER_MM,
                      projected_w, projected_h)
+
+
+def load_current() -> dict:
+    """Board frame and magnet keep-outs from BASE, real placements/pads from LAST route.
+
+    The original g1_pads.json predates the driver ECO and is *not* a valid
+    statement of the current G1 placement. Fail closed on a stale readback.
+    The free magnetic pads and zones are unchanged across these candidates;
+    the evidence source must be the same board read back after reopen.
+    """
+    base = json.loads(PADS.read_text(encoding="utf-8"))
+    packet = json.loads(ACTIVE_READBACK.read_text(encoding="utf-8"))
+    if packet.get("ok") is not True or not isinstance(packet.get("value"), dict):
+        raise ValueError("Active G1 native PCB reopen readback failed")
+    live = packet["value"]
+    if len(live.get("components", [])) != 77 or len(live.get("pads", [])) != 299:
+        raise ValueError("Unexpected native G1 component/pad snapshot; select active CAD revision")
+    if len(live.get("lines", [])) != 98 or len(live.get("vias", [])) != 18:
+        raise ValueError("Active candidate changed: select and review a new routing readback first")
+    old_refs = {x["ref"] for x in base["components"]}
+    new_refs = {x["ref"] for x in live["components"]}
+    if old_refs != new_refs:
+        raise ValueError("Active board refs differ from the original placement; must review ECO")
+    return {"board": base["board"], "tbd_zones": base["tbd_zones"],
+            "components": live["components"], "pads": live["pads"],
+            "lines": live["lines"], "vias": live["vias"],
+            "source_status": "ACTUAL_NATIVE_G1_KELVIN_REOPEN_READBACK"}
 
 
 def core_rects(pads: dict, mag: dict) -> tuple[dict, dict, dict]:
@@ -129,7 +158,7 @@ def rounded_box(b: dict) -> dict:
 
 def report(pads: dict | None = None, mag: dict | None = None) -> dict:
     if pads is None:
-        pads = json.loads(PADS.read_text(encoding="utf-8"))
+        pads = load_current()
     if mag is None:
         mag = json.loads(MAG.read_text(encoding="utf-8"))
     if mag["fabrication_approved"] is not False or mag["maxwell_solved"] is not False:
@@ -170,7 +199,11 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
         "status": "P0_G1_MAGNETIC_PLACEMENT_ECO_REQUIRED" if critical
                   else "XY_SCREEN_CLEARED_3D_STILL_REQUIRED",
         "evidence": {
-            "native_board_pad_readback": PADS.relative_to(ROOT).as_posix(),
+            "native_board_pad_readback": ACTIVE_READBACK.relative_to(ROOT).as_posix(),
+            "original_board_frame": PADS.relative_to(ROOT).as_posix(),
+            "native_readback_sha256": hashlib.sha256(ACTIVE_READBACK.read_bytes()).hexdigest(),
+            "active_copper_lines": len(pads.get("lines", [])),
+            "active_vias": len(pads.get("vias", [])),
             "design_owned_maxwell_geometry": MAG.relative_to(ROOT).as_posix(),
             "magnetics_concept_only": True,
             "actual_maxwell_3d_solve": False,
@@ -216,7 +249,7 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
             "freeze_existing_lr_placement": not critical,
             "approve_g1_magnetic_assembly": False,
             "approve_g2_fab": False,
-            "next_cad_action": "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_15_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr",
+            "next_cad_action": "RELOCATE_OR_REPACK_Lr_ELP38_BODY_AND_ITS_11_CURRENT_NEIGHBOURS_BEFORE_MORE_ROUTING_AT_Lr",
             "conditional_transformer_action": "IF_T1_TO_T4_UPSIZE_TO_ELP38_REPACK_ALL_FOUR_PITCHES_AND_PROVISIONAL_TERMINALS",
         },
         "limitations": [
