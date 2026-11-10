@@ -1,0 +1,49 @@
+name: G1-Lr-Repack-Six-Signal-Stubs-Native-Preflight
+on:
+  push:
+    paths:
+      - 'hardware/dcx_main/g1/route_lr_signal_stubs.py'
+      - 'hardware/dcx_main/g1/apply_lr_signal_stubs.py'
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_native_report.json'
+      - 'hardware/dcx_main/g1/lr_repack_drc_raw.json'
+      - 'tools/test_g1_low_current_stubs.py'
+      - '.github/workflows/g1-lr-six-signal-stubs.yml'
+  pull_request:
+    paths:
+      - 'hardware/dcx_main/g1/route_lr_signal_stubs.py'
+      - 'hardware/dcx_main/g1/apply_lr_signal_stubs.py'
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_native_report.json'
+      - 'hardware/dcx_main/g1/lr_repack_drc_raw.json'
+      - 'tools/test_g1_low_current_stubs.py'
+      - '.github/workflows/g1-lr-six-signal-stubs.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-six-current-source-short-traces:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify post-Lr physical board source and six short traces
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python hardware/dcx_main/g1/route_lr_signal_stubs.py --check > /tmp/g1_signal_stubs_preview.json
+          python hardware/dcx_main/g1/route_lr_signal_stubs.py --emit-js > /tmp/g1_signal_stubs_native.js
+          python hardware/dcx_main/g1/apply_lr_signal_stubs.py --check > /tmp/g1_signal_stubs_apply_gate.json
+          python -m pytest -q tools/test_g1_low_current_stubs.py
+      - name: Publish source-bound native short-trace scripts only (NOT applied)
+        uses: actions/upload-artifact@v4
+        with:
+          name: G1-six-short-current-source-routes-PREVIEW-only
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            /tmp/g1_signal_stubs_preview.json
+            /tmp/g1_signal_stubs_native.js
+            /tmp/g1_signal_stubs_apply_gate.json
