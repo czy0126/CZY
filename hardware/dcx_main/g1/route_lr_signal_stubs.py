@@ -1,8 +1,8 @@
-"""Prepare exactly SIX same-net low-current signal stubs on the applied native G1.
+"""Prepare exactly NINE same-net low-current signal stubs on the applied native G1.
 
-Only the six safe, direct short segments are allowed (no magnet terminals, no
-100 A output rail, no 8 SR gate/VD Kelvin links). Five supply/decoupling
-connections and the controller RUN link are placed on layer 1.
+Only the nine vetted, direct short segments are allowed (no magnet terminals, no
+100 A output rail, no 8 SR gate/VD Kelvin links). Six supply/decoupling connections, the controller RUN link, and two OC
+filter/divider links are planned on layer 1.
 
 Only SOURCE is validated now; actual native EasyEDA routing is separate and
 must be applied to a NEW copy on a licensed/installed Windows EDA host:
@@ -43,10 +43,13 @@ PLAN_OUT = HERE / "lr_signal_route_plan.json"
 PAIRS = (
     ("C101", "1", "U2", "1", "VCC12"),
     ("C102", "1", "U1", "7", "VCC12"),
+    ("C103", "1", "C104", "1", "VCC12"),
     ("C105", "1", "U3", "7", "VCC12_S"),
     ("C107", "1", "U5", "7", "VCC12_S"),
     ("C108", "1", "U6", "7", "VCC12_S"),
     ("R7", "1", "U2", "6", "RUN"),
+    ("R15", "2", "R16", "1", "OC1"),
+    ("R16", "2", "R17", "1", "OC"),
 )
 WIDTH_MM = .20
 CLEARANCE_MM = R.CLEARANCE
@@ -107,7 +110,7 @@ def copper() -> dict:
             raise ValueError(f"Endpoint length changed {ref1}.{pin1}->{ref2}.{pin2}: {length}")
         plan.setdefault(net, {"width": WIDTH_MM, "layer": 1, "paths": []})
         plan[net]["paths"].append([a,b])
-    if len(R.segments(plan))!=6 or sorted(plan)!=["RUN","VCC12","VCC12_S"]:
+    if len(R.segments(plan))!=9 or sorted(plan)!=["OC","OC1","RUN","VCC12","VCC12_S"]:
         raise ValueError("Unexpected low-current routing scope")
     return plan
 
@@ -132,7 +135,7 @@ def problems() -> list:
     issues = R.check_plan(pads,planned,clearance=CLEARANCE_MM)
 
     # Existing lines and vias are actual already-routed power/driver/CT
-    # geometry. Checking only the six NEW lines against themselves is unsafe.
+    # geometry. Checking only the nine NEW lines against themselves is unsafe.
     for route in s:
         for previous in source_segments():
             if previous["net"]==route["net"] or previous["layer"]!=route["layer"]:
@@ -225,8 +228,8 @@ def verify(readback: Path=READBACK_OUT) -> dict:
             len(after["vias"]),after["polylines"]) != (
                 BASE_COMPONENTS,BASE_PADS,BASE_NETS,BASE_VIAS,BASE_POLYLINES):
         layout_problems.append("Native component/pad/net/via/polyline counts changed")
-    if len(after["lines"]) < BASE_LINES+6:
-        layout_problems.append("Not all six intended copper segments added")
+    if len(after["lines"]) < BASE_LINES+9:
+        layout_problems.append("Not all nine intended copper segments added")
     oldorig={x["ref"]:(x["X"],x["Y"]) for x in before["components"]}
     neworig={x["ref"]:(x["X"],x["Y"]) for x in after["components"]}
     if oldorig!=neworig:
