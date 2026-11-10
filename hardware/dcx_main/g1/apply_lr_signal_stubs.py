@@ -1,4 +1,4 @@
-"""Apply the six short, low-current signal nets to a NEW EasyEDA G1 board copy.
+"""Apply nine short, low-current same-net connections to a NEW EasyEDA G1 board copy.
 
 Source is the real, reopened post-Lr-repack board. The parent .eprj2 hash must
 match its native receipt before any EDA invocation. Never overwrite a previous
@@ -57,7 +57,7 @@ def compare_drc() -> dict:
     if added:
         raise ValueError(f"Unexpected native DRC category: {added}")
     if b.get("Connection Error",0) >= a.get("Connection Error",0):
-        raise ValueError("Six new wires must reduce DRC open connection count")
+        raise ValueError("New low-current copper must reduce DRC open connection count")
     if b.get("Physical Error",0) > 0:
         raise ValueError("New trace introduced a physical collision")
     if b.get("Netlist Error",0) > a.get("Netlist Error",0):
