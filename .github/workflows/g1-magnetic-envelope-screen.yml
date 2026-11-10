@@ -6,6 +6,8 @@ on:
       - 'tools/test_g1_magnetics_envelope.py'
       - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
       - 'hardware/dcx_main/g1/g1_pads.json'
+      - 'hardware/dcx_main/g1/kelvin_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
       - 'design/v3/maxwell/diy_magnetics_concept.json'
       - '.github/workflows/g1-magnetic-envelope-screen.yml'
   pull_request:
@@ -14,6 +16,8 @@ on:
       - 'tools/test_g1_magnetics_envelope.py'
       - 'hardware/dcx_main/g1/g1_magnetic_envelope_gate.json'
       - 'hardware/dcx_main/g1/g1_pads.json'
+      - 'hardware/dcx_main/g1/kelvin_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
       - 'design/v3/maxwell/diy_magnetics_concept.json'
       - '.github/workflows/g1-magnetic-envelope-screen.yml'
   workflow_dispatch:

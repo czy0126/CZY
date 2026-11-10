@@ -117,8 +117,8 @@ def native_verify(original:dict, fresh:dict, planned:dict) -> dict:
                 or p["Pad"][:3]!=q["Pad"][:3]
                 or (float(p.get("Rotation") or 0)-float(q.get("Rotation") or 0))%180>.02):
             raise ValueError(f"Lr rotation/pin identity differs at pad {pin}")
-    candidate={"board":G.load_current()["board"],
-               "tbd_zones":G.load_current()["tbd_zones"],
+    candidate={"board":G.load_current(G.SOURCE_READBACK)["board"],
+               "tbd_zones":G.load_current(G.SOURCE_READBACK)["tbd_zones"],
                "pads":v["pads"],"components":v["components"],
                "lines":v["lines"],"vias":v["vias"]}
     physical=G.report(candidate)
@@ -144,7 +144,9 @@ def apply()->int:
         raise RuntimeError("Offline relocation preflight fails; abort native CAD")
     if TARGET.exists():
         raise FileExistsError(f"Refusing to overwrite prior ECO candidate {TARGET}")
-    original=json.loads(G.ACTIVE_READBACK.read_text(encoding="utf-8"))["value"]
+    # Always the frozen pre-ECO parent, never the active candidate: the plan is
+    # locked to kelvin's coordinates and the guarded JS refuses any other board.
+    original=json.loads(G.SOURCE_READBACK.read_text(encoding="utf-8"))["value"]
     md5=D.md5(SOURCE)
     shutil.copy2(SOURCE,TARGET)
     session=A.open_and_ping(TARGET,PREFIX,"apply")
