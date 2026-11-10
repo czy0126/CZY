@@ -156,8 +156,9 @@ python tools/main_board_mechanical.py --check    # A5 摆放 1:1 + DRC，需要 
   `generated` 日期不参与比对；`.github/workflows/ci.yml` 在 windows-latest 上跑同一条命令。
   当前候选基线是 `design/v3/当前候选基线_2026-11-01.md`，`tools/test_baseline_doc.py`
   把表里的数字逐项对回生成它们的 JSON——改工具不改基线会红。
-- **网络检索到的器件参数不等于已核实**：本环境 `WebFetch` 对 `lcsc.com`、`chemi-con.co.jp`
-  返回 "Unable to verify if domain … is safe to fetch"，只能拿到搜索摘要，读不到原厂 datasheet。
+- **网络检索到的器件参数不等于已核实**：本环境 `WebFetch` 对 `lcsc.com`、`chemi-con.co.jp`、
+  `kemet.com`、`tokin.com`、`partstack.com` 返回 "Unable to verify if domain … is safe to fetch"
+  （2026-11-10 试过 A720 的厂商/镜像/汇编三处，全被拦），只能拿到搜索摘要，读不到原厂 datasheet。
   这类数字（如 `cout_bank.py` 的 `CANDIDATES`）必须在文档和 JSON 里标明"检索摘要、未读 datasheet"，
   不得写成 VERIFIED。
 - 模型估计必须带不确定度引用；不得把一次积分当签核值（第三轮"6.8 倍预算"已撤回）。
