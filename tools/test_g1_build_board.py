@@ -13,14 +13,38 @@ dump.
 """
 import importlib.util
 import json
+import subprocess
+import sys
 from pathlib import Path
 
+import pytest
+
 G1 = Path(__file__).resolve().parents[1] / "hardware/dcx_main/g1"
+ROOT = G1.parents[2]
 spec = importlib.util.spec_from_file_location("g1build", G1 / "build_g1_board.py")
 g = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(g)
 
 MIL = 39.37007874015748
+
+
+@pytest.fixture(scope="module")
+def concept_packet_csv(tmp_path_factory):
+    """The 24+2 pad packet is generated, not committed (it is in .gitignore).
+
+    Reading the on-disk copy made these tests true only on a tree where the
+    generator had been run: a fresh CI checkout has no such file, and a stale
+    one would be accepted silently.  Generate it into a temp dir instead.
+    """
+    out = tmp_path_factory.mktemp("concept_packet")
+    subprocess.run([sys.executable, str(ROOT / "tools/maxwell_diy_pcb_envelope.py"),
+                    "--write", "--out", str(out)], check=True)
+    return out / "design_owned_G1_pads_24plus2.csv"
+
+
+@pytest.fixture(autouse=True)
+def _generated_packet(concept_packet_csv, monkeypatch):
+    monkeypatch.setattr(g, "CONCEPT_CSV", concept_packet_csv)
 
 
 def load(name: str) -> dict:
