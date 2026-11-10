@@ -1,3 +1,5 @@
+> **此目录保留 01–49 章作为可追溯技术资料，不是 49 个并行待办或多个“最新路线”。现在的唯一日常入口是 [D1_CURRENT](../D1_CURRENT.md)；需要寻找旧技术来源看 [历史资料索引](../D1_REFERENCE_INDEX.md)；已决事项不重复审核看 [D1_DECISIONS](../D1_DECISIONS.md)。旧章节里的日期数据不替代现行 G1 原生读回，也不改变 `NOT_FOR_FAB`。**
+
 # D1 可执行工程参考包（更新至 2026-11-05）
 
 > **磁件路线更新（2026-11-09，不限制成本）：先做自研 Maxwell，不用等报价。** 6种可生成的概念 STEP 源 [diy_magnetics_concept.json](../../design/v3/maxwell/diy_magnetics_concept.json)，生成器 [maxwell_diy_geometry.py](../../tools/maxwell_diy_geometry.py)，**G1设计自有26位临时 PAD 逻辑映射** [maxwell_diy_pcb_envelope.py](../../tools/maxwell_diy_pcb_envelope.py)，真实 Maxwell 运行入口 [maxwell_diy_run.py](../../tools/maxwell_diy_run.py)。[第49章当前优先级/证据边界](49_D1主功率板PCB唯一执行计划_2026-11-09.md)：已经实现 CAD STEP，不是已经跑完 Maxwell，更不是厂家签版或投板许可。
