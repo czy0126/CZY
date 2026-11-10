@@ -10,6 +10,11 @@ marks read back from `pcb_PrimitivePolyline.getAll()`.
 
 Writes `g1_layout.svg` next to this file.  It is review evidence for G1 only —
 it is not a Gerber, a DRC report, or a manufacturability claim.
+
+The caption names `BOARD` on purpose.  Two boards now exist: this baseline has
+no copper and no DRC, while the `..._driver_eco` / `..._driver_route`
+candidates carry 75 copper segments and a native DRC raw.  "NO COPPER, NO
+ROUTING, NO DRC" is a fact about *this file*, not about the board.
 """
 
 from __future__ import annotations
@@ -20,6 +25,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 MIL = 39.37007874015748  # mil per mm
 MARGIN_MM = 4.0
+
+#: The board `g1_pads.json` was dumped from.  Named in the caption so the
+#: drawing cannot be read as a picture of one of the routed candidates.
+BOARD = "dcx_main_board_g1.eprj2"
 
 # Net classes only affect the fill colour; they carry no electrical meaning here.
 POWER = {"VOUT", "PGND", "VIN_P", "SW", "SEC1_A", "SEC1_B", "SEC2_A", "SEC2_B"}
@@ -65,8 +74,8 @@ def pad_shape_svg(shape: list, w: float, h: float) -> str:
             f'rx="{rx:.3f}"/>')
 
 
-def main() -> int:
-    data = json.loads((HERE / "g1_pads.json").read_text(encoding="utf-8"))
+def render(data: dict) -> str:
+    """Draw the plan view as SVG text; no file is touched."""
     pads = data["pads"]
     board_w, board_d = data["board"]["w_mm"], data["board"]["d_mm"]
 
@@ -80,7 +89,8 @@ def main() -> int:
         'stroke="#f1c40f" stroke-width="0.5"/>',
     ]
 
-    # TBD zones: the six magnetic core bodies (A6 pocket outlines), not envelopes.
+    # TBD zones: the five transformer/CT core bodies (A6 pocket outlines), not
+    # envelopes.  Lr is a placed part on its own footprint, so it has no zone.
     for z in data["tbd_zones"]:
         out.append(
             f'<rect x="{z["x_mm"]:.2f}" y="{z["y_mm"]:.2f}" width="{z["w_mm"]:.2f}" '
@@ -135,11 +145,17 @@ def main() -> int:
         f'({free} boxed provisional magnet terminals, dashed) · '
         f'{board_w:.0f} x {board_d:.0f} mm</text>',
         f'<text x="1.5" y="{board_d - 1.0:.1f}" fill="#e74c3c" font-family="monospace" '
-        'font-size="2.2">NO COPPER, NO ROUTING, NO DRC · NOT FOR FAB</text>',
+        f'font-size="2.2">{BOARD} · NO COPPER, NO ROUTING, NO DRC · NOT FOR FAB</text>',
         "</g></svg>",
     ]
-    (HERE / "g1_layout.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
-    print(f"wrote g1_layout.svg ({len(pads)} pads, {len(data['tbd_zones'])} zones, "
+    return "\n".join(out) + "\n"
+
+
+def main(out: Path | None = None) -> int:
+    data = json.loads((HERE / "g1_pads.json").read_text(encoding="utf-8"))
+    target = out or HERE / "g1_layout.svg"
+    target.write_text(render(data), encoding="utf-8")
+    print(f"wrote {target.name} ({len(data['pads'])} pads, {len(data['tbd_zones'])} zones, "
           f"{len(data['dot_marks'])} dot marks, "
           f"{len(data.get('provisional_marks', []))} provisional marks)")
     return 0
