@@ -1,6 +1,6 @@
 # D1 当前交接面板（唯一日常入口）
 
-> 状态基准：2026-11-10；**工作分支** `feat/d1-fab-package`，而非默认 `main`。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
+> 状态基准：2026-11-10；研发主线 `feat/d1-fab-package`，本轮检出 `feat/g1-live-schematic-netlist`。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
 
 ## 目标与固定范围
 
@@ -13,6 +13,7 @@
 | 对象 | 当前有效源 / 含义 |
 | --- | --- |
 | G1 **父版** | [`g1/dcx_main_board_g1_lr_repack.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2)，sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`；只在**副本**上操作，不回写父版 |
+| **信号增量已验收，待随本轮提交提升基线** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
 | 原生重开读回 | [`lr_repack_readback.json`](../hardware/dcx_main/g1/lr_repack_readback.json)、[`lr_repack_drc_raw.json`](../hardware/dcx_main/g1/lr_repack_drc_raw.json)：77 个 PCB 位号、299 焊盘、65 网络、98 铜线、18 过孔；206 条 Connection、1 条 Netlist、0 条 Physical 错误 |
 | 实际 G1 原理图清册 | [`g1_native_inventory_raw.json`](../hardware/dcx_main/g1/g1_native_inventory_raw.json) / [审计](../hardware/dcx_main/g1/g1_native_inventory_bom_gate.json)：83 个原理图元件、38 项 MPN/目标值冲突，原 R8 被排除并在清册中重编号为 R6（BOM/PCB 双 false） |
 | 当前 原理图↔PCB 差异 | [`g1_schematic_pcb_alignment.json`](../hardware/dcx_main/g1/g1_schematic_pcb_alignment.json)：83−77 对应 CT/T1–T4 的 24 个**匿名临时 PAD**及不应装配的 R6；275 个在板 PAD 与**旧版**网表一致，但**当前** 1 条原生 Netlist Error 的根因未确定 |
@@ -25,22 +26,29 @@
 
 | 工作包 | **下一个有意义的交付** | 完成标准 | 未满足时 |
 | --- | --- | --- | --- |
-| **A · #9**（最高优先） | 在 Windows EasyEDA Pro **实际**将已预检的 **9 条** VCC12/VCC12_S/RUN/OC1/OC 低电流线布到**新副本**；随后在编辑器里检查 Import Changes 的 1 条真实网表差异，处理实体 Cout 和 100 A 两极铜路 | 新 `.eprj2`、实际保存/关闭/重开读回、原生 DRC：206 条 Connection 必须下降，0 新 Physical，Netlist 不上升；不能把预检算完成 | 无可用 EasyEDA 时**停止增加**第十条小信号线的脚本，登记一次工作站条件，切换到 B 或 C |
+| **A · #9**（最高优先） | 九条增量已验收；下一步在该候选的副本读取 Import Changes **逐位号/逐脚差异**，有证据后原生ECO；同时落实实体Cout与100 A VOUT/PGND短宽铜路 | 差异原文、原生CAD、保存重开、实际ERC/DRC；不得仅靠R6改名或匿名磁件猜测Netlist错误根因；新铜路需真实几何与双极电阻预算 | 不继续第十条低电流线的预检；涉及实体端子/工艺缺口则转B/C的具体交付 |
 | **B · #12/#1** | 用现有 [Maxwell 概念入口](../tools/maxwell_diy_run.py)先求解 Lr 3 匝/0.92 µH，并构建可制造的 CT/T1–T4 实绕组与 **24 个正式 PAD/DOT**；2 匝及更大磁芯作为物理备选 | 实际 AEDT 求解/收敛/局部 B/L(I) 原始文件，实体绕组/绝缘/出线/极性/尺寸与 EDA 封装一一对应；合成 B–H 不能当厂家认证 | Maxwell 无授权时不再重复生成概念 STEP；只完成独立真实绕组与端子工程输入 |
 | **C · #36** | 原边与单对 SR 的**低能量**真实关断验证，然后覆盖全部十路 VGS、掉电、故障锁存、复位 | 原始示波器/同步测量与接线、条件、SOA；必须有真实关断默认状态 | 无实验台时仅保留现有接口和待采记录，不用理想 LTspice 再“证明”关断安全 |
 
 严格 **WIP≤3**，A 高于 B/C。除真实 P0 安全故障外，A 未形成下一张原生板前，不再为 A 增加纯分析/检查 PR。
 
-## A 线唯一立即执行命令（需有 EasyEDA Pro 的 Windows 工作站）
+## 本轮信号增量验收与下一操作
 
-在仓库根目录执行；应用前关闭占用目标工程的编辑器，确认工作区无未保存修改：
+9条原生连接已经落板，**不要再次运行`--apply`覆盖或重画**。原先C103.1–C104.1报覆盖失败，是已有0.25/0.30mm同网铜线与新0.20mm线合并后，旧检查器仍要求全程等宽。现检查器同网同层投影裁剪、连续区间合并，signal显式允许更宽铜，保持原坐标容差；异网不能提供覆盖，真实缺口仍失败。原失败回执保留。
+
+本轮只读重新打开该CAD、读取全部图元并运行原生DRC，前后SHA一致；未重画已经覆盖的线段。原生证据：[读回](../hardware/dcx_main/g1/lr_signal_review_readback.json)、[DRC原文](../hardware/dcx_main/g1/lr_signal_review_drc_raw.json)、[绑定SHA的审核结果](../hardware/dcx_main/g1/lr_signal_review_report.json)。
+
+可重复的离线检查：
 
 ```powershell
-python hardware/dcx_main/g1/apply_lr_signal_stubs.py --check
-python hardware/dcx_main/g1/apply_lr_signal_stubs.py --apply
+python -m pytest tools/test_g1_copper_coverage.py tools/test_g1_driver_route_plan.py tools/test_deepseek_settings.py tools/test_d1_fabrication_gate.py -q
 ```
 
-`--check` 只做源板/几何预检。**`--apply` 才写入** `hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2` 新副本；存在同名目标即拒绝覆盖。将新 `.eprj2`、`lr_signal_readback.json`、`lr_signal_drc_raw.json`、`lr_signal_drc_delta.json` 及回执提交到 **同一个 A 交付 PR**。若执行失败，保留原始失败文件，**不要**手调报告数值。A 线不要把临时 CTAP/变压器 PAD、原生 2 mm 连通线称为 100 A 可制造结构。
+本轮57项相关检查通过，不能替代原生DRC。`review_signal_stubs.py --capture`是本轮原生回执的生成器，存在回执即拒绝覆盖；不为刷新日期重复执行。
+
+DeepSeek已通过用户指定的Claude设置恢复连接，配置只提供连接字段，不发送配置内容。已完成[具体修复审核](../deepseek/20261110_signal_review/reply.md)及[下一步任务](../deepseek/20261110_signal_review/next_step_reply.md)。保留异网过滤/原容差等独立复核，未照搬“任意异网线即否决整个列表”的表述。下一步回复中的端子映射不能代替真实绕组/磁场求解；DRC不新增错误也不能代替十路VGS、失电行为和SOA的实测证据，B/C仍按上表验收。运行器支持`--claude-settings`，密钥未进入仓库。
+
+**后续路线：** 当前信号增量提交归档 → 原生Import Changes差异与实体Cout ECO → 双极100 A铜路/端子/磁件剖面 → 同修订ERC/DRC及DFM → 真实低能量关断与分级25/50/100 A验证。B线的自研Maxwell/绕组与C线的台架关断继续并行，120 A和≤10mm仍后置。当前199条未连接与1条网表不一致必须逐步消除；绝不把本轮增量验收表述为可投板。
 
 ## 一轮交付只回答四件事
 

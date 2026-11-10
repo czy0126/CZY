@@ -15,14 +15,13 @@
 
 ## 实际应该先做什么
 
-**A 线优先：** 在有 EasyEDA Pro 的 Windows 工作站上，把已完成离线净距预检的 **9 条控制小信号线**写入现行 G1 原生 PCB 的**新副本**：
+**A 线优先：** 9条控制小信号增量已完成原生重开验收，未连接206→199，Physical 0、Netlist仍1；见[同CAD审核回执](hardware/dcx_main/g1/lr_signal_review_report.json)。下一步处理原生Import Changes逐位号差异、实体Cout和100 A两极铜路，不重复重画已有短线。
 
 ```powershell
-python hardware/dcx_main/g1/apply_lr_signal_stubs.py --check
-python hardware/dcx_main/g1/apply_lr_signal_stubs.py --apply
+python -m pytest tools/test_g1_copper_coverage.py tools/test_g1_driver_route_plan.py -q
 ```
 
-只有产出新的 `.eprj2`、保存/关闭/重开读回、原生 DRC 且 206 条连接错误真实下降，才能计为布局进度。随后立即处理主功率板的**实际 100 A VOUT/PGND 高阻窄颈、真实磁件端子及原理图↔PCB 网表差异**。B（真实 Maxwell/实体 PAD）与 C（D0 真实关断）并行，不得以模拟或脚本绿色替代实际硬件证据。
+上述测试是回归检查，不替代原生DRC；本轮信号候选及失败回执全部保留，尚待随本轮提交提升基线。B（真实 Maxwell/实体 PAD）与 C（D0 真实关断）并行，不得以模拟或脚本绿色替代实际硬件证据。
 
 **工程和开发规则：** [`CLAUDE.md`](CLAUDE.md) · [`docs/agent/EDA.md`](docs/agent/EDA.md) · [PR 模板](.github/PULL_REQUEST_TEMPLATE.md)。任何 PR 应说明真实产物的**改动前后、原始证据和下一次实际交付**。仅更换“最新计划”标题或重复风险总结不算里程碑。
 
