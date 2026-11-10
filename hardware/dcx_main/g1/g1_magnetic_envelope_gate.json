@@ -33,8 +33,8 @@
     },
     "minimum_board_edge_margin_mm": 1,
     "native_footprint_pad_count": 2,
-    "other_pad_envelope_intersections": 31,
-    "other_ref_count": 16,
+    "other_pad_envelope_intersections": 30,
+    "other_ref_count": 15,
     "by_ref": [
       {
         "ref": "C10",
@@ -95,10 +95,6 @@
       {
         "ref": "R7",
         "pads": 2
-      },
-      {
-        "ref": "U2",
-        "pads": 1
       }
     ],
     "intersections": [
@@ -311,13 +307,6 @@
         "net": "PGND",
         "overlap_x_mm": 0.808,
         "overlap_y_mm": 0.864
-      },
-      {
-        "ref": "U2",
-        "pin": "11",
-        "net": "PGND",
-        "overlap_x_mm": null,
-        "overlap_y_mm": null
       }
     ],
     "assessment": "XY_OVERLAP_REQUIRES_Z_OR_COMPONENT_MOVE_REVIEW"
