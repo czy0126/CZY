@@ -245,13 +245,15 @@
   = 提交的读回所推出的摆放"。24 个自由端子焊盘同样在覆盖内——坐标由已提交的端子包
   `design_owned_G1_pads_24plus2.csv` 加板自身的 `tbd_zones` 算出，按位置回对（脚号会跨核重复）。
   **还没覆盖**板框/待锁区/DOT 折线与走线（`frame_js()` 能生成，但没有对着活板的回执）。
-- **两极电流路是离线草案，不是板上铜**：`route_power_rails.py` 从已读回的焊盘画出 VOUT
+- **两极电流路已落到 `_power_rails` 候选**：`route_power_rails.py` 从已读回的焊盘画出 VOUT
   （4 个 CTAP + Cout.1 + J_OUT.1，经两过孔下第 2 层跨过 PGND）与 PGND（8 个 `SR*.3` 源极
-  大焊盘 + Cout.2 + J_OUT.2），报告 `power_rail_plan.json`（`status` 是
-  `DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED`）。焊盘引线只能 1.0 mm——2.0 mm 过不了源极大
-  焊盘与相邻 SEC/漏极焊盘之间 0.856 mm 的净距；`tools/test_g1_power_rails.py` 有用例证明这个
-  检查不是空转。CTAP 正下方 7 mm 是同组 `SEC_B` 焊盘，必须横移 2 mm 再下行。**没有应用到任何
-  `.eprj2`**。
+  大焊盘 + Cout.2 + J_OUT.2），`--check` 把**已有的原边驱动铜一起**放进同一套净距/端点检查
+  （只查两极会漏跨线）。焊盘引线只能 1.0 mm——2.0 mm 过不了源极大焊盘与相邻 SEC/漏极焊盘之间
+  0.856 mm 的净距；`tools/test_g1_power_rails.py` 有用例证明检查不是空转。CTAP 正下方 7 mm
+  是同组 `SEC_B` 焊盘，必须横移 2 mm 再下行。`apply_power_rails.py` 从 `_driver_route` 复制
+  出 `_power_rails`（**只开副本**）、20 s settle + ping 后 invoke，重开读回 84 线/15 过孔、
+  覆盖与摆放漂移全空（`power_rails_report.json`；84 是 50+34，编辑器在 T 型节点拆线）。
+  **DRC 未在这个新候选上重跑**，仍是 `NOT_FOR_FAB`。
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
   `..._driver_route.eprj2`（后者读回 50 条铜线 / 13 个过孔，另有原生 DRC raw

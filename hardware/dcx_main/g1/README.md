@@ -24,8 +24,9 @@
 DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 
 图下方的说明文字写着 `dcx_main_board_g1.eprj2`：现在同目录还有 `..._driver_eco` /
-`..._driver_route` 两个候选（后者读回 50 条铜线、13 个过孔，另有原生 DRC raw），一句不带文件名的
-"无铜、无走线、无 DRC" 会被读成对整块板说的。提交里的 SVG 必须等于由提交里的
+`..._driver_route` / `..._power_rails` 三个候选（`_driver_route` 读回 50 条铜线、13 个过孔，
+另有原生 DRC raw；`_power_rails` 在它基础上再加两极，读回 84 条线、15 个过孔），
+一句不带文件名的 "无铜、无走线、无 DRC" 会被读成对整块板说的。提交里的 SVG 必须等于由提交里的
 `g1_pads.json` 现渲染的结果，`tools/test_g1_layout_svg.py` 逐字节锁住；五个待锁区
 就是 CT+T1–T4 五个磁芯本体，**Lr 是真放上去的器件、没有待锁区**。
 
@@ -122,11 +123,12 @@ DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 **另一个未落地的实体 PAD**：`R8` 的两个焊盘——它不是"阻塞"，是双字段 DNP 的
 `addIntoPcb=false` 落地结果（与"排除装配"一致）。
 
-## 5. 两极电流路与 Kelvin 清单（**均未布线**）
+## 5. 两极电流路与 Kelvin 清单（基板未布线；两极已在 `_power_rails` 候选上落地）
 
 基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**——只有网络赋值和位置
-（`_driver_route` 副本只多了顶部那段原边驱动增量）。所以下面是"要连的端点"，
-不是"已连的路径"；100 A 铜排/铺铜不在本文件里，也不该被读成本文件已解决。
+（`_driver_route` 副本多了顶部那段原边驱动增量；`_power_rails` 副本再加下面的两极，
+仍远未布通）。其余各网下面列出的是"要连的端点"，不是"已连的路径"；100 A 铜排/铺铜
+不在本文件里，也不该被读成本文件已解决。
 
 坐标单位 mm，A5 坐标（Y 向下）。
 
@@ -145,11 +147,12 @@ DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 **返回（PGND）**：**75 个焊盘**——Cout/Cin 地、QL p1–p3、SR 的 p1–p3 + 大焊盘、U1–U6 地、
 J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0, 12.0)。
 
-**两极的离线草案（`route_power_rails.py` / `power_rail_plan.json`，未应用到板上）**
+**两极（`route_power_rails.py`，已应用到 `dcx_main_board_g1_power_rails.eprj2`）**
 
 `output_joint_reduction_cases.json` 的 `next_eda_action` 要求把 VOUT 与 PGND 从 SR–Cout
-焊盘到外部负载画成两条显式物理电流路、逐个列出接口。草案已按**板上读回的焊盘**
+焊盘到外部负载画成两条显式物理电流路、逐个列出接口。路径按**板上读回的焊盘**
 （`driver_route_readback.json`）画出，用 `route_driver_eco` 同一套净距/端点/过孔检查，
+并且把**已在那块候选上的原边驱动铜**一起放进检查（单独查两极会漏掉跨线），
 `--check` 报 0 条问题：
 
 | 量 | VOUT | PGND |
@@ -167,7 +170,17 @@ J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0,
 - **这不是安培数结论**：2 mm 只是形状，100 A 的界面仍是 G2 的铜排/嵌铜；
   `power_rail_plan.json` 的 `status` 是 `DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED`。
   Cout 仍是一个占位件，不是 15×470 µF 的本地电容组；没有任何螺栓/铜排/可拆接头被建模。
-- 草案**没有**应用到任何 `.eprj2`，板上仍无这些线（§7 不变）。
+
+**落地回执**（`apply_power_rails.py`，2026-11-10 第一次 invoke 即成功）：从 `_driver_route`
+复制出 `_power_rails`，headless 打开 → 20 s settle → `return 1;` ping → invoke
+`--emit-js` 的正文 → `created: 24`、`viasCreated: 2`、`failed: []`、`saved: true` → 等 30 s
+越过保存防抖 → `--destroy` 关闭 → 重开读回：**84 条线 / 15 个过孔**，器件 77 / 焊盘 299 /
+网 65 / 折线 38 不变。84 = 原 50 + 34：编辑器在保存时把 T 型节点拆开（8 条源极引线接进
+y=96 母线那几处），所以按「同网、同层、同宽、共线覆盖」判，`power_rails_report.json` 的
+`coverage_problems` / `vias.problems` / `placement_drift` **全空**。原始读数在
+`power_rails_readback.json`，开/关/应用回执是 `power_rails_apply_*` / `power_rails_reopen_*`。
+**原生 DRC 没有在这个新候选上重跑**（`driver_drc_raw.json` 是加两极之前那块板的读数，
+且本身是 0 物理错误 / 224 连接错误，不是通过）；`_driver_route` 的 md5 在复制前后一致。
 
 **Kelvin / 检测对**（各 3 个焊盘，含 CT 临时焊盘）
 
@@ -195,10 +208,11 @@ J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0,
 
 - **不是**可制造件：没有铜厚/层叠/板厂 DFM、没有 ERC、没有 Gerber/钻孔/坐标/装配 BOM。
   本文件对应的基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**；原生 DRC 只跑在
-  `_driver_route` 副本上，且仍有 224 条板级连接错误与 1 条网表错误。`d1_fabrication_gate.json`
-  仍是 `NOT_FOR_FAB`。
+  `_driver_route` 副本上，且仍有 224 条板级连接错误与 1 条网表错误（`_power_rails` 上未重跑）。
+  `d1_fabrication_gate.json` 仍是 `NOT_FOR_FAB`。
 - **不是**布局完成件：器件按功能分行摆在该去的位置；基板**没有一条走线**，`_driver_route`
-  副本也只有原边驱动/自举那一小块（47 段 + 13 过孔），整板远未布通。
+  副本只有原边驱动/自举那一小块（47 段 + 13 过孔），`_power_rails` 再加两极（24 段 + 2 过孔），
+  整板仍远未布通。
 - **不是**磁件已锁版：T1–T4/CT 只有临时焊盘，没有实体封装；Lr 有原生封装但端子间距与
   concept 包对不上（§3）。
 - **不是**原理图已同步的板：A5 机械表里有 28 个位号原生原理图里没有 —— 撬棒组
@@ -213,8 +227,10 @@ python hardware/dcx_main/g1/build_g1_board.py --check  # 摆放文件 vs 读回 
 python hardware/dcx_main/g1/build_g1_board.py --slices DIR  # 生成重建这块板的 JS body
 python hardware/dcx_main/g1/make_g1_report.py        # 从 g1_pads.json + 原理图 refs 重建报告
 python hardware/dcx_main/g1/make_g1_layout_svg.py    # 从 g1_pads.json 重画平面图
-python hardware/dcx_main/g1/route_power_rails.py --check  # 两极离线检查（净距/端点/过孔）
-python hardware/dcx_main/g1/route_power_rails.py --emit-js  # 打印两极的 LCEDA body（未应用）
+python hardware/dcx_main/g1/route_power_rails.py --check  # 两极离线检查（净距/端点/过孔，含已有铜）
+python hardware/dcx_main/g1/route_power_rails.py --emit-js  # 打印两极的 LCEDA body
+python hardware/dcx_main/g1/route_power_rails.py --verify  # 从 power_rails_readback.json 重建报告
+python hardware/dcx_main/g1/apply_power_rails.py           # 复制→应用→重开读回→出报告（改板，仅副本）
 python hardware/dcx_main/g1/route_driver_eco.py --check   # 离线检查走线计划（净距/端点/过孔）
 python hardware/dcx_main/g1/route_driver_eco.py --verify  # 从重开读回重建 driver_route_report.json
 python hardware/dcx_main/g1/run_driver_drc.py             # 只读原生 DRC → driver_drc_raw.json

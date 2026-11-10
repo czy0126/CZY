@@ -87,6 +87,31 @@ def test_only_the_vout_trunk_leaves_layer_one_and_two_vias_join_it():
         ("VOUT", p.VOUT_VIA_LEFT), ("VOUT", p.VOUT_VIA_RIGHT)]
 
 
+def test_verify_on_the_route_readback_names_the_rails_as_missing():
+    """The readback that predates the rails must fail coverage for exactly them."""
+    report = p.verify(p.READBACK)
+    problems = report["lines"]["coverage_problems"]
+    assert {x["kind"] for x in problems} == {"coverage"}
+    assert len(problems) == len(p.R.segments(p.copper()))
+    assert {x["net"] for x in problems} == {"VOUT", "PGND"}
+    assert len(report["vias"]["problems"]) == 2
+    assert report["placement_drift"] == []
+    assert report["layout_counts"]["unchanged"] is True
+    assert report["native_drc_passed"] is False
+    assert report["board"] == p.CANDIDATE
+
+
+def test_the_applier_writes_a_fresh_copy_and_never_opens_the_routed_candidate():
+    spec = importlib.util.spec_from_file_location("g1apply", G1 / "apply_power_rails.py")
+    a = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(a)
+    assert a.SOURCE.name == "dcx_main_board_g1_driver_route.eprj2"
+    assert a.TARGET.name == "dcx_main_board_g1_power_rails.eprj2"
+    assert a.SOURCE != a.TARGET
+    assert '"VOUT"' in a.BODY and '"PGND"' in a.BODY
+    assert "eda.pcb_PrimitiveVia.create(" in a.BODY
+
+
 def test_the_committed_plan_file_is_what_the_module_computes():
     committed = json.loads((G1 / "power_rail_plan.json").read_text(encoding="utf-8"))
     assert committed == p.summary() | {"problems": []}

@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-10",
+  "status": "G1_POWER_RAILS_ON_CANDIDATE_NOT_FOR_FAB",
+  "board": "dcx_main_board_g1_power_rails.eprj2",
+  "geometry_evidence": "NATIVE_REOPEN_READBACK",
+  "native_drc_passed": false,
+  "layout_counts": {
+    "components": 77,
+    "pads": 299,
+    "nets": 65,
+    "polylines": 38,
+    "unchanged": true
+  },
+  "lines": {
+    "readback": 84,
+    "by_layer": {
+      "1": 70,
+      "2": 14
+    },
+    "planned_segments": 71,
+    "power_rail_segments": 24,
+    "power_rail_length_mm": 615.141,
+    "coverage_problems": []
+  },
+  "vias": {
+    "planned": 15,
+    "readback": 15,
+    "power_rail_vias": [
+      [
+        4.3,
+        49.0
+      ],
+      [
+        73.5,
+        110.0
+      ]
+    ],
+    "problems": []
+  },
+  "placement_drift": [],
+  "power_rail_plan_status": "DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED",
+  "native_drc": {
+    "source": "driver_drc_raw.json (route candidate, before the rails)",
+    "why_not_run_here": "the candidate has changed; re-running DRC is a separate open/close and is not claimed by this report"
+  },
+  "limitations": [
+    "The VOUT endpoints are the 24 design-owned provisional pads, not vendor terminals.",
+    "Cout is one placeholder part; the 15 x 470 uF bank is not qualified (ESR screen fails).",
+    "The 2 mm rails are shapes, not an ampacity claim; 100 A is the G2 busbar/inlay.",
+    "Only the driver increment and these two rails are routed; every other net is open.",
+    "Native DRC has not been re-run on this candidate; the route candidate's raw result is not a pass (0 physical errors, 224 connection errors).",
+    "This does not change the NOT_FOR_FAB gate."
+  ]
+}

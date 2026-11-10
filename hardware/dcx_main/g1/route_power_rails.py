@@ -38,7 +38,10 @@ import route_driver_eco as R
 
 HERE = Path(__file__).resolve().parent
 READBACK = HERE / "driver_route_readback.json"
+READBACK_OUT = HERE / "power_rails_readback.json"
 PLAN_OUT = HERE / "power_rail_plan.json"
+REPORT_OUT = HERE / "power_rails_report.json"
+CANDIDATE = "dcx_main_board_g1_power_rails.eprj2"
 
 RAIL_W = 2.0           # the two rails
 LEAD_W = 1.0           # pad -> rail leads; a 2 mm lead cannot clear the neighbours
@@ -103,10 +106,24 @@ def copper() -> list[dict]:
     return [plan(), bus()]
 
 
+def plans_with_existing_route() -> list:
+    """The rails plus the driver increment already on the routed candidate.
+
+    The rails are applied on top of that copper, so checking them alone would
+    miss a rail crossing a driver trace.
+    """
+    return [R.PLAN, R.STUBS, R.BOTTOM, *copper()]
+
+
+def vias_with_existing_route() -> list[dict]:
+    return [*R.VIAS, *vias()]
+
+
 def problems(readback: Path = READBACK) -> list[dict]:
     """Offline conflicts and endpoint failures against the readback."""
     pads = R.load_pads(readback)
-    return R.check_plan(pads, copper(), vias=vias())
+    return R.check_plan(pads, plans_with_existing_route(),
+                        vias=vias_with_existing_route())
 
 
 def summary(readback: Path = READBACK) -> dict:
@@ -146,15 +163,87 @@ def summary(readback: Path = READBACK) -> dict:
     }
 
 
+def verify(readback: Path = READBACK_OUT) -> dict:
+    """Rebuild the increment record from a fresh reopen readback of the candidate.
+
+    The readback contains the driver increment as well, so coverage and vias are
+    checked against the union, not against the rails alone -- a rail that was
+    never created must show up as a coverage problem, not be masked by the
+    driver's copper.
+    """
+    value = json.loads(readback.read_text(encoding="utf-8"))["value"]
+    lines = R.lines_from_readback(readback)
+    rb_vias = R.vias_from_readback(readback)
+    line_problems = R.verify_lines(plans_with_existing_route(), lines)
+    via_problems = R.verify_vias(vias_with_existing_route(), rb_vias)
+    base = json.loads((HERE / "driver_readback.json").read_text(encoding="utf-8"))["value"]
+    old = {c["ref"]: (c["X"], c["Y"]) for c in base["components"]}
+    drift = [{"ref": c["ref"], "dx_mil": round(c["X"] - old[c["ref"]][0], 4),
+              "dy_mil": round(c["Y"] - old[c["ref"]][1], 4)}
+             for c in value["components"] if c["ref"] in old
+             and (abs(c["X"] - old[c["ref"]][0]) > 1e-6 or abs(c["Y"] - old[c["ref"]][1]) > 1e-6)]
+    counts_ok = (len(value["components"]) == 77 and len(value["pads"]) == 299
+                 and len(value["nets"]) == 65 and value["polylines"] == 38)
+    rail_segs = R.segments(copper())
+    return {
+        "date": "2026-11-10",
+        "status": "G1_POWER_RAILS_ON_CANDIDATE_NOT_FOR_FAB",
+        "board": CANDIDATE,
+        "geometry_evidence": "NATIVE_REOPEN_READBACK",
+        "native_drc_passed": False,
+        "layout_counts": {"components": len(value["components"]), "pads": len(value["pads"]),
+                          "nets": len(value["nets"]), "polylines": value["polylines"],
+                          "unchanged": counts_ok},
+        "lines": {"readback": len(lines),
+                  "by_layer": {str(n): sum(1 for s in lines if s.get("layer") == n)
+                               for n in sorted({s.get("layer") for s in lines})},
+                  "planned_segments": len(R.segments(plans_with_existing_route())),
+                  "power_rail_segments": len(rail_segs),
+                  "power_rail_length_mm": round(sum(math.dist(s["a"], s["b"])
+                                                     for s in rail_segs), 3),
+                  "coverage_problems": line_problems},
+        "vias": {"planned": len(vias_with_existing_route()), "readback": len(rb_vias),
+                 "power_rail_vias": [[v["x"], v["y"]] for v in vias()],
+                 "problems": via_problems},
+        "placement_drift": drift,
+        "power_rail_plan_status": summary()["status"],
+        "native_drc": {"source": "driver_drc_raw.json (route candidate, before the rails)",
+                       "why_not_run_here": "the candidate has changed; re-running DRC is a "
+                                           "separate open/close and is not claimed by this report"},
+        "limitations": [
+            "The VOUT endpoints are the 24 design-owned provisional pads, not vendor terminals.",
+            "Cout is one placeholder part; the 15 x 470 uF bank is not qualified (ESR screen fails).",
+            "The 2 mm rails are shapes, not an ampacity claim; 100 A is the G2 busbar/inlay.",
+            "Only the driver increment and these two rails are routed; every other net is open.",
+            "Native DRC has not been re-run on this candidate; the route candidate's raw result "
+            "is not a pass (0 physical errors, 224 connection errors).",
+            "This does not change the NOT_FOR_FAB gate.",
+        ],
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--check", action="store_true", help="offline clearance/endpoint check")
     ap.add_argument("--emit-js", action="store_true", help="print the LCEDA body")
     ap.add_argument("--write-plan", action="store_true", help="write power_rail_plan.json")
+    ap.add_argument("--verify", action="store_true",
+                    help="build power_rails_report.json from a fresh reopen readback")
     args = ap.parse_args(argv)
     if args.emit_js:
         print(R.emit_js(copper(), vias()))
         return 0
+    if args.verify:
+        report = verify()
+        REPORT_OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+                              encoding="utf-8", newline="\n")
+        ok = (report["layout_counts"]["unchanged"]
+              and not report["lines"]["coverage_problems"]
+              and not report["vias"]["problems"]
+              and not report["placement_drift"])
+        print(json.dumps({"ok": ok, "lines": report["lines"], "vias": report["vias"],
+                          "drift": report["placement_drift"]}, ensure_ascii=False, indent=2))
+        return 0 if ok else 1
     issues = problems()
     for p in issues:
         print(p)
