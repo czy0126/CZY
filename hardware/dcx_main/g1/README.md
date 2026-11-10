@@ -365,3 +365,31 @@ python tools/native_inventory_bom_gate.py --write \
 - **没有位号 R8，但 `R6` 在**：面板排除 ECO 会把被排除件重新编号（R8→R6，引脚不变），`R6` 的 `Add into BOM` / `Convert to PCB` 都是 false。这不是"R8 丢了"，也不是"R8 还开着"；`export_native_inventory.py` 的摘要因此只报 `r8_by_designator: null` + `double_dnp_refs: ["R6"]`，不起名。
 - **闸门报告的解析**：`g1_native_inventory_bom_gate.json` 里 `r8_identified_by: double-dnp-designator-fallback`、`r8_capture_designator: R6`、`original_r8_in_bom/pcb: false`，其余 **38 条**厂家 MPN/取值冲突仍在，`manufacturing_approved: false`。
 - **这不是放行依据**：`tools/d1_fabrication_gate.py` 仍审计 Nov 6 默认快照，G1 报告单独成文件。原因写在 `docs/agent/EDA.md §在 G1 候选板上重读清册`：P0 预检要拿"ECO 后清册"去判"ECO 前网表"，两者混用会凭空放行。切默认指向需要另一次评审。
+
+## 2026-11-10 新增：G1 自己的活网表（原理图侧，仍不是 ERC/DRC）
+
+`hardware/dcx_main/g1/g1_schematic_pcb_alignment.json` 写的
+`current_schematic_netlist_reexported_from_same_board: false` 现在有后续了：G1 板有了自己的
+**活网表**，但它是**读图元读出来的**，不是导出的——因为 `--path` 打开的工程
+`getNetlistFile` / `getSimulationNetlistFile` / `getBomFile` **全部返回 `null`**
+（2026-11-10 逐条实测，`sch_Net.*` 也都是 `[]`，打开 P1 页面后同样）。
+为什么不导出、怎么读、那条自证怎么做的，写在 `docs/agent/EDA.md §读活网表`。
+
+```bash
+python hardware/dcx_main/g1/export_live_netlist.py           # 开两块板：参考板自证 + 抓 G1
+python hardware/dcx_main/g1/export_live_netlist.py --check   # 只用已提交 capture 重算，不开编辑器
+python -m pytest tools/test_schematic_connectivity.py -q
+```
+
+- **自证**：同一套重构跑 `hardware/dcx_main/dcx_main_board.eprj2`，**逐脚**复现
+  `hardware/dcx_main/gen/netlist_export_raw.json`（83 个位号 / 285 个引脚 / 连编辑器导成 `""`
+  的 5 个脚都一样）。复现不了就停，不描述别的板子。
+- **G1 读数**（`g1_live_netlist.json`，板 sha256 与清册那份同一个 `552628f0…f87e`）：
+  83 个位号，与 Nov 6 导出**只差一个位号**——`R8` 只在旧导出、`R6` 只在 G1，
+  其余 `diff.changed == []`；`R6` 的两个脚仍是 `VCC12` / `RUN`，与历史 `R8` 完全一致。
+- 文件：`g1_schematic_connectivity_raw.json`（G1 图元 capture）、
+  `hardware/dcx_main/gen/reference_schematic_connectivity.json`（参考板 capture）、
+  回执 `g1_connectivity_*` / `reference_connectivity_*`。
+- **仍然不是**：那条唯一的 EasyEDA `Netlist Error` 是**原理图 vs PCB** 的差，
+  本工具没解决它（`schematic_versus_pcb_netlist_match_proven: false`）；
+  也不是 ERC/DRC 通过、不是投板批准；`d1_fabrication_gate.py` 的默认候选**没有**改指向。

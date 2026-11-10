@@ -10,6 +10,7 @@
 - 嘉立创 EDA（LCEDA Pro）
 - 装配排除 ECO（R8，`hardware/dcx_main/gen/eco_r8_bom_pcb_inhibit.js`）
 - 在 G1 候选板上重读清册（`hardware/dcx_main/g1/export_native_inventory.py`）
+- 读活网表：`--path` 打开时所有制造导出都是 null（`hardware/dcx_main/g1/export_live_netlist.py`）
 - 原生主板的取值 ECO（`tools/native_value_eco.py`）
 - KiCad 10.0 CLI（headless，与 LCEDA 互补）
 - D0 十路保护板的铜（已按 issue #36 延后）
@@ -149,6 +150,56 @@
   网表里 R8（VCC12→RUN）从"无条件上拉"里排除，而 `gen/netlist_export_raw.json` 是 **ECO 前**
   的（有 R8、没有 R6）。让清册指向 G1 就等于拿"ECO 后清册"放行"ECO 前网表"，
   所以 G1 报告另存一份、只作读数证据，不参与放行判定。
+
+### 读活网表：`--path` 打开时所有制造导出都是 null（2026-11-10 实测）
+
+`hardware/dcx_main/g1/export_live_netlist.py` 要的是"同一个板子自己的活网表"，
+但先测到一条硬边界——**`--path` 打开的工程，一个制造导出都拿不到**（同日逐个调用）：
+
+| 调用 | 返回 |
+|---|---|
+| `sch_ManufactureData.getNetlistFile` | `null` |
+| `sch_ManufactureData.getSimulationNetlistFile` | `null` |
+| `sch_ManufactureData.getBomFile` | `null` |
+| `sch_Net.getCurrentProjectAllNets()` / `getAllNets()` / `getAllNetsName()` | `[]`（**打开 P1 页面并等 2.5 s 之后仍是 `[]`**） |
+| `sch_Netlist.getNetlist(...)` | `undefined`（传 `[]`、page uuid、page 对象都是） |
+
+`gen/netlist_export_capture_2026-11-06.json` 的 provenance 写的是
+`.probe_live_netlist.json`、session `D:/workshop/_eco_probe3.eprj2` —— 那次
+`getNetlistFile(...)` **确实返回了网表**，而会话标记是磁盘上的绝对路径（`--path` 的形状）。
+那份 probe 脚本没进仓库，所以**"当时也走 `--path`"是推断、不是实测**。能确定的是：
+同一套加载路径**曾经导出成功**，今天全 `null`，原因未测出。所以不要写死成"API 不存在"，
+也不要反复重试导出。
+
+**能读的是图元库**（不是导出）：`eda.sch_PrimitiveWire` 每条线自带
+`getState_Net()`（编辑器自己算的网名）+ `getState_Line()` 端点坐标；
+`sch_PrimitiveComponent.getAllPinsByPrimitiveId()` 给出每个引脚的 schematic 坐标。
+所以连通性可以**读**出来：
+
+- 读取器 `hardware/dcx_main/gen/read_schematic_connectivity.js`（只读，不 `modify`/`save`/导出；
+  `globalThis.CZY_*` 两个身份覆盖写法与清册读取器一致）。
+- 重构 `tools/schematic_connectivity.py`：引脚坐标 → 落在同一点的所有线 → 该线的网名。
+- 运行 `python hardware/dcx_main/g1/export_live_netlist.py`（两块板前后 sha256 必须不变）；
+  `--check` 用已提交的 capture 重算，不开编辑器，CI 可跑。
+
+**方法必须先自证**，否则只是我们自己的记账：同一套 `reconstruct()` 跑
+`hardware/dcx_main/dcx_main_board.eprj2`，必须**逐脚**复现
+`hardware/dcx_main/gen/netlist_export_raw.json`（Nov 6 编辑器自己导的那份）——
+83 个位号、285 个引脚、连"编辑器导成 `""` 的 5 个脚"（`D_CT1..D_CT4` 的 2 脚、`U2` 的 2 脚）
+也一致。复现不了就 `STOP`，不往下描述任何别的板子。
+
+fail-closed 的三条（任一即 `ValueError`，不猜）：线没有网名；同一坐标上出现两个不同的网；
+引脚落在某条**线段中间**而不是端点上。
+
+G1 读数（`hardware/dcx_main/g1/g1_live_netlist.json`）：83 个位号，
+与 Nov 6 导出**只差一个位号**——`R8` 只在旧导出里、`R6` 只在 G1 里，其余逐脚全同
+（`diff.changed == []`），且 `R6` 的两个脚仍是 `VCC12` / `RUN`，与历史 `R8` 完全一致。
+这填上了 `g1_schematic_pcb_alignment.json` 里 `current_schematic_netlist_reexported_from_same_board: false`
+的空缺，也印证了清册那条"改名不改编线"。
+
+**边界**：这是**原理图侧**。那条唯一的 EasyEDA `Netlist Error`（"PCB and schematic netlist
+does not match"）是**原理图 vs PCB** 的差，本工具**没有**解决它，报告里写死
+`schematic_versus_pcb_netlist_match_proven: false`；也不是 ERC/DRC 通过或投板批准。
 
 ### 原生主板的取值 ECO（`tools/native_value_eco.py`）
 

@@ -35,4 +35,5 @@ sim/v3/poc_*.log -text
 # must not change committed JSON blobs or the original opaque CAD archive.
 hardware/dcx_main/g1/*.json text eol=lf
 hardware/dcx_main/gen/*_raw.json text eol=lf
+hardware/dcx_main/gen/reference_schematic_connectivity.json text eol=lf
 hardware/dcx_main/**/*.eprj2 -text

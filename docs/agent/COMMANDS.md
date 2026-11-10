@@ -80,6 +80,7 @@ python tools/make_fast_oc_pcb.py --check          # 该模块的布线板：重�
 python tools/make_fast_oc_pcb.py --fab            # 同上 + 导出 pcb/fast_oc/fab/（13 个散列文件、9 层、assembly.svg、manifest）
 python tools/manufacturing_index.py --check       # 四块实验板的制造目录 pcb/manufacturing/{index.json,README.md}（--write 重生成）
 python tools/remaining_dependencies.py --check    # 主板剩余依赖表 hardware/dcx_main/remaining_dependencies.{json,md}（--write 重生成）
+python hardware/dcx_main/g1/export_live_netlist.py --check   # G1 活网表：只用已提交 capture 重建，不打开编辑器（可离线/CI 跑；不带 --check 才连 lceda-pro）
 python tools/magnetics_rfq_package.py --write     # 磁件询价单：T1–T4/Lr/CT 各一张，UNKNOWN 必须显式列出
 python tools/magnetics_manufacturing_input.py --write  # 加工输入页：每件冻结一个候选 + 首件判据 + 空白回填
 python tools/magnetics_manufacturing_input.py --check  # 页面是否过期（与 --write 同源，只比字节）
