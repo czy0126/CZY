@@ -201,14 +201,24 @@
       "hardware_qualified": false
     }
   ],
-  "next_eda_action": "CAD engineer must identify VOUT and PGND from SR-Cout pads to external load as two explicit physical rails, draw separately a 4-contact low-R option and a 2-contact integrated copper inlay/busbar option; enumerate every transition, bolt, solder bond and Kelvin probe point. A missing interface cannot be considered 0-ohm; allocate any inseparable joints to the PCB reserve. No pad, clearance or ≤16mm height frozen yet.",
+  "current_native_g1_feeder_screen": {
+    "status": "MUST_REPLACE_NATIVE_G1_NARROW_FEEDERS_BEFORE_G2",
+    "reference": "hardware/dcx_main/g1/g1_100a_copper_neck_screen.json",
+    "native_cad_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+    "optimistic_min_combined_necks_uohm": 627.609,
+    "even_210um_exceeds_whole_loop_budget": true,
+    "candidate_bars_and_joint_arithmetic_includes_these_necks": false,
+    "physical_copper_replacement_required": true,
+    "fab_approved": false
+  },
+  "next_eda_action": "CAD engineer must identify VOUT and PGND from SR-Cout pads to external load as two explicit physical rails, draw separately a 4-contact low-R option and a 2-contact integrated copper inlay/busbar option; enumerate every transition, bolt, solder bond and Kelvin probe point. A missing interface cannot be considered 0-ohm; allocate any inseparable joints to the PCB reserve. Existing native G1 1mm CTAP/SR feeder necks must be replaced with a short high-cross-section interface, not merely thicker foil. No pad, clearance or ≤16mm height frozen yet.",
   "required_measurement": "Kelvin 4-wire resistance for full positive+return loop and each separable joint at specified torque, plating and temperature (incl 100C worst case), plus current balance and contact hot spots at staged loads. Actual copper/inlay geometry, all pad neckdowns/vias and source-to-load terminals must be identified.",
   "not_qualified": [
     "Neither 20 nor 50 microohm per contact is measured.",
     "Reducing counted connections on paper is not reducing real losses.",
     "Current crowding, neckdowns, skin/proximity and thermal rise unknown.",
     "One counted contact/pole requires a manufacturable monolithic or integrated interface; other joints still resistive and must be budgeted.",
-    "No original EasyEDA native routing / 3D envelope or supplier DFM proof.",
+    "The actual reopened G1 native EasyEDA PCB has 1mm CTAP/SR current necks that fail the complete-loop copper budget even with assumed 210um copper; 3D assembly and supplier DFM remain unverified.",
     "R8, OEM manufacturer MPNs, magnetic pads and hardware fault shutoff remain blocked."
   ]
 }
