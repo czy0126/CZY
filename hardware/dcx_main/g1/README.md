@@ -1,5 +1,23 @@
 # G1 原生带网 PCB（非投板）— 2026-11-09
 
+> **2026-11-10 最新原生板布局与审查源纠正**：上一版 PR #77 的 Lr 包络检查从最初没有铜的 `g1_pads.json` 取元件位置，而忽略了后续已经落盘的 U2/C103/C104/R18/R19 等驱动元件移动。已改从最新真实保存、关闭、重开后的 `kelvin_readback.json` 取 77 器件、299 焊盘、98 铜线、18 过孔的位置与形状，原初基板只用于提取板框与四变压器轮廓。**最新 Lr ELP38/I38 38×25.4mm 的 XY 包络覆盖 11 个其他位号、22 只焊盘**，不是先前按旧版图算出的 15 / 30。脚本以 Git blob SHA 锁定真实最新读回；XY 重叠不能直接认定三维实体碰撞。
+
+**本轮已完成的可执行准备（尚未实际搬动原生 CAD）**：[12 件近回路 Lr 重排方案](lr_elp38_repack_plan.json) · [完整离线预检与原生 JS 生成器](../../../tools/g1_lr_repack_ready.py) · [Windows 上的 EasyEDA Pro 安全复制/应用/重开/实际 DRC 执行器](apply_lr_repack.py)。优先保持谐振回路短：候选 Lr 中心 (26,49) mm、180° 转向；对应迁移 C101、C102、C105–C108、R1、R2、R7、R9、R10 共 11 件尚未有相连旧铜线的电容/电阻。其新位置根据 U1/U2/U3–U6 真实同网引脚与已保存的铜线/过孔构建。仅几何为空的远端备选 (99,109)mm 电感端点连线直线下限近188mm，而近端预计约78mm；这是布线距离下限，不是寄生或电感仿真。
+
+**在仓库根目录运行**：
+
+```bash
+python tools/g1_magnetics_envelope.py --check
+python tools/g1_lr_repack_ready.py --check
+python tools/g1_lr_repack_ready.py --emit-js > g1_lr_repack_apply.js
+python hardware/dcx_main/g1/apply_lr_repack.py --check
+# 下一句只能在安装 EasyEDA Pro/lceda-pro 的 Windows 工作站且其它编辑器已关闭时执行
+python hardware/dcx_main/g1/apply_lr_repack.py --apply
+```
+
+`--apply` 一律从已提交的 `dcx_main_board_g1_kelvin.eprj2` 复制为全新的 `dcx_main_board_g1_lr_repack.eprj2`，拒绝覆盖现有文件；实际运行前检查源器件坐标、数量、旋转、98线/18孔；运行后真实关闭、重开、复核元件/焊盘/net/铜线，执行原生 DRC 并保留原始失败计数。**本轮并未执行 --apply，也没有修改实际 .eprj2。生成器和测试通过并不等于原生布局 ECO 已落盘**。物理 Z 向、Maxwell 场求解、绕组出线、Cout 数组和100A铜排仍未被概念算例或脚本通过；NOT_FOR_FAB。
+
+
 2026-11-10增量见 [驱动布局复审](driver_eco_review.md)：基线报告已修复写死的网络检查；7件移动的原生候选已重开读回验收（77件/299焊盘/65网/38折线，`driver_eco_report.json`）。同日的独立副本 `dcx_main_board_g1_driver_route.eprj2` 已建 25 条第 1 层铜线（GH_DRV/GH/GL_DRV/GL/HB），重开后 `driver_route_report.json` 覆盖校验通过、其余计数与摆放不变。
 第二增量是**已落到 `dcx_main_board_g1_driver_route.eprj2` 并经原生 DRC 验收**的两层方案：HB 的 D_BT.1→C5.1、VCC12 的 D_BT.2/U2.1/C103/C104、PGND 的 U2.9/R19.2/C103/C104、SW 的 U2.5/C5.2/R18.2 通过 13 个 **0.3/0.505 mm** 过孔（读回 11.8/19.8 mil，环约 0.10 mm；外径取 0.505 是因为编辑器把 mil 截断到 0.1，0.5 mm 会落成 19.6 mil、低于规则 19.685 mil 的下限）转到第 2 层（13 段第 1 层短引线 + 11 段第 2 层走线）。重开读回 50 条线（47 段计划 + 3 处 T 型拆分）、逐网长度与计划完全一致、覆盖/过孔/摆放检查全空（`driver_route_report.json`）；新网最紧净距 0.156 mm（板规则 0.152，`CLEARANCE` 已对齐到规则值）。原生 DRC 原始结果在 `driver_drc_raw.json`（`pcb_Drc.check(true, false, true)`，规则配置 `JLCPCB Capability(Two Layers Board)`）：**Physical Error 组不存在**（0 条），剩 Connection Error 224、Netlist Error 1，因此 `native_drc_passed` 仍为 false；ERC 未跑，未取代本文基线的投板门禁。钻孔原为 0.2 mm，被 DRC 判了 13 条 `Via Size`（7.9 < 11.8 mil），规则值见 `driver_rules_raw.json`。
 
@@ -318,7 +336,7 @@ mil / Y 取负换算。24 个自由端子焊盘也在覆盖内：它们不是手
 
 **新工程输入**：[自研 Maxwell 磁件几何](../../../design/v3/maxwell/diy_magnetics_concept.json) + [原生板保存后的全部焊盘与位置](g1_pads.json) → [可重复计算的包络检查](../../../tools/g1_magnetics_envelope.py) → [真实当前布局的物理风险表](g1_magnetic_envelope_gate.json)。命令：`python tools/g1_magnetics_envelope.py --check`。检查覆盖了普通焊盘及 EasyEDA 多边形裸露焊盘，不会把U2的异形EP当成鬼影碰撞。
 
-- **Lr 是实际高风险、现在就要解决的 G1 几何 ECO**：现有自研 ELP38/I38 Lr 概念 STEP 的外包络为 **38 × 25.4 mm**，但原生板里 Lr 使用的是**只提供两端焊盘、中心在 (20,52)mm 的现成小封装**。按此实际中心投影，ELP38 本体覆盖 `x=1–39, y=39.3–64.7 mm`，与**15个其他位号、共30个焊盘**的水平投影重叠；需要重新摆放这些位号、重新定位 Lr，或用有Z向间隙/支撑工艺证据的绕组结构证明允许共面投影。它不是只靠加宽铜线就能修复的问题。
+- **Lr 是实际高风险、现在就要解决的 G1 几何 ECO**：现有自研 ELP38/I38 Lr 概念 STEP 的外包络为 **38 × 25.4 mm**，但原生板里 Lr 使用的是**只提供两端焊盘、中心在 (20,52)mm 的现成小封装**。按此实际中心投影，ELP38 本体覆盖 `x=1–39, y=39.3–64.7 mm`，在**初始基板**与15个其他位号30个焊盘发生XY重叠；最新搬迁后的 `_kelvin` 候选已纠正为 **11个其他位号22个焊盘**；按最新 11 个位号清单重新摆放这些位号、重新定位 Lr，或用有Z向间隙/支撑工艺证据的绕组结构证明允许共面投影。它不是只靠加宽铜线就能修复的问题。
 - **T1–T4 当前 ELP32 的体积假设与未来 ELP38 不是同一个方案**：现有3:1:1变压器几何是ELP32 **32 × 20 mm**，原生板四只磁件的水平中心间距为38mm，故当前四只ELP32相邻包络余量为 **6mm**。如果未来也统一改成 **38mm宽**磁芯，三组相邻磁芯仅 **0mm** 水平间距；这是尺寸升级的**条件风险**，不是指当前已有T1–T4正在互相碰撞。
 - **先改摆放，再给绕组加制造件**：下一份实质 G1 ECO 应提交带全尺寸磁件包络的器件重排、至少一个可核查的 Lr位置+控制电容迁移方案、对应PCB重新打开读回与原生DRC、然后才继续在改动后的板上接高频谐振网/门极铜。磁件端子是设计所有的暂定PAD，真实绕组出口、绝缘/安装高度和冷板接口仍需要设计复核；G1不要求等待厂商报价，但G2/G3仍禁止直接投板。
 
