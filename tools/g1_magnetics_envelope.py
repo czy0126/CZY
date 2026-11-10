@@ -44,8 +44,26 @@ def intersection(a: dict, b: dict) -> tuple[float, float]:
 
 def pad_rect(p: dict) -> dict:
     shape = p["Pad"]
-    if len(shape) < 3:
-        raise ValueError("Unknown native pad shape")
+    if not shape:
+        raise ValueError("Missing native pad shape")
+    if shape[0] == "POLYGON":
+        # The EasyEDA readback exports absolute XY mil polygon vertices, not
+        # [shape,width,height]. U2's exposed-power pad 11 has this geometry.
+        # Parsing shape[1] as a width produces NaN or a false overlap.
+        coords = shape[1] if len(shape) > 1 else None
+        if not isinstance(coords, list):
+            raise ValueError("Invalid EasyEDA polygon pad")
+        nums = [float(n) for n in coords if isinstance(n, (int,float))]
+        if len(nums) < 6 or len(nums) % 2:
+            raise ValueError("Malformed EasyEDA polygon XY coordinate list")
+        xs, ys = nums[::2], nums[1::2]
+        if not all(math.isfinite(v) for v in nums):
+            raise ValueError("Non-finite EasyEDA polygon pad vertex")
+        # Stored Y is Cartesian up; model audit uses board Y down.
+        return {"left": min(xs)/MIL_PER_MM, "right": max(xs)/MIL_PER_MM,
+                "top": -max(ys)/MIL_PER_MM, "bottom": -min(ys)/MIL_PER_MM}
+    if len(shape) < 3 or shape[0] not in {"RECT","ELLIPSE","OVAL"}:
+        raise ValueError("Unsupported EasyEDA native pad shape")
     w, h = float(shape[1])/MIL_PER_MM, float(shape[2])/MIL_PER_MM
     # Native readback has component and pad rotation. Axis-aligned bounding
     # boxes of rotated pads *overestimate* occupied XY area conservatively.
