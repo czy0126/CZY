@@ -245,6 +245,13 @@
   = 提交的读回所推出的摆放"。24 个自由端子焊盘同样在覆盖内——坐标由已提交的端子包
   `design_owned_G1_pads_24plus2.csv` 加板自身的 `tbd_zones` 算出，按位置回对（脚号会跨核重复）。
   **还没覆盖**板框/待锁区/DOT 折线与走线（`frame_js()` 能生成，但没有对着活板的回执）。
+- **两极电流路是离线草案，不是板上铜**：`route_power_rails.py` 从已读回的焊盘画出 VOUT
+  （4 个 CTAP + Cout.1 + J_OUT.1，经两过孔下第 2 层跨过 PGND）与 PGND（8 个 `SR*.3` 源极
+  大焊盘 + Cout.2 + J_OUT.2），报告 `power_rail_plan.json`（`status` 是
+  `DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED`）。焊盘引线只能 1.0 mm——2.0 mm 过不了源极大
+  焊盘与相邻 SEC/漏极焊盘之间 0.856 mm 的净距；`tools/test_g1_power_rails.py` 有用例证明这个
+  检查不是空转。CTAP 正下方 7 mm 是同组 `SEC_B` 焊盘，必须横移 2 mm 再下行。**没有应用到任何
+  `.eprj2`**。
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
   `..._driver_route.eprj2`（后者读回 50 条铜线 / 13 个过孔，另有原生 DRC raw

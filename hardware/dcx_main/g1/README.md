@@ -145,6 +145,30 @@ DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 **返回（PGND）**：**75 个焊盘**——Cout/Cin 地、QL p1–p3、SR 的 p1–p3 + 大焊盘、U1–U6 地、
 J_IN p2 (114.5, 52.0)、J_OUT p2 (78.5, 116.0)、T4 `PRI_B` 临时焊盘 (117.0, 12.0)。
 
+**两极的离线草案（`route_power_rails.py` / `power_rail_plan.json`，未应用到板上）**
+
+`output_joint_reduction_cases.json` 的 `next_eda_action` 要求把 VOUT 与 PGND 从 SR–Cout
+焊盘到外部负载画成两条显式物理电流路、逐个列出接口。草案已按**板上读回的焊盘**
+（`driver_route_readback.json`）画出，用 `route_driver_eco` 同一套净距/端点/过孔检查，
+`--check` 报 0 条问题：
+
+| 量 | VOUT | PGND |
+|---|---|---|
+| 端点 | `Cout.1`、`J_OUT.1`、4 个 CTAP 临时焊盘 (37/75/113/151, 20.0) | `Cout.2`、`J_OUT.2`、8 个 SR 源极大焊盘 `SR1A.3`…`SR4B.3` (y 84.47) |
+| 段数 / 长度 | 13 段 / 322.200 mm | 11 段 / 292.941 mm |
+| 层 | 第 1 层 + 第 2 层干线（2 过孔：(4.3,49)、(73.5,110)） | 第 1 层 |
+| 宽度 | 1.0（引线）/ 2.0（y=35.5 母线、第 2 层干线） | 1.0（引线）/ 2.0（y=96 母线） |
+
+- 四个 CTAP 焊盘正下方 7 mm 就是同组 `SEC_B` 焊盘，**竖直落下会穿焊盘**，所以每条先横移
+  2 mm 到间隙 (39/77/115/153) 再下行。
+- 焊盘引线是 **1.0 mm**：2.0 mm 在源极大焊盘与相邻 SEC/漏极焊盘（最小 0.856 mm）之间过不了
+  净距，`tools/test_g1_power_rails.py` 有一个用例专门证明这个门不是空转。
+- VOUT 干线必须跨过 y=96 的 PGND 母线，所以经两过孔下到第 2 层；其余全在第 1 层。
+- **这不是安培数结论**：2 mm 只是形状，100 A 的界面仍是 G2 的铜排/嵌铜；
+  `power_rail_plan.json` 的 `status` 是 `DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED`。
+  Cout 仍是一个占位件，不是 15×470 µF 的本地电容组；没有任何螺栓/铜排/可拆接头被建模。
+- 草案**没有**应用到任何 `.eprj2`，板上仍无这些线（§7 不变）。
+
 **Kelvin / 检测对**（各 3 个焊盘，含 CT 临时焊盘）
 
 | 网 | 端点 |
@@ -189,6 +213,8 @@ python hardware/dcx_main/g1/build_g1_board.py --check  # 摆放文件 vs 读回 
 python hardware/dcx_main/g1/build_g1_board.py --slices DIR  # 生成重建这块板的 JS body
 python hardware/dcx_main/g1/make_g1_report.py        # 从 g1_pads.json + 原理图 refs 重建报告
 python hardware/dcx_main/g1/make_g1_layout_svg.py    # 从 g1_pads.json 重画平面图
+python hardware/dcx_main/g1/route_power_rails.py --check  # 两极离线检查（净距/端点/过孔）
+python hardware/dcx_main/g1/route_power_rails.py --emit-js  # 打印两极的 LCEDA body（未应用）
 python hardware/dcx_main/g1/route_driver_eco.py --check   # 离线检查走线计划（净距/端点/过孔）
 python hardware/dcx_main/g1/route_driver_eco.py --verify  # 从重开读回重建 driver_route_report.json
 python hardware/dcx_main/g1/run_driver_drc.py             # 只读原生 DRC → driver_drc_raw.json

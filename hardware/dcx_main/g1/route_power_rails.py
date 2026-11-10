@@ -1,0 +1,171 @@
+"""The G1 output as two explicit physical rails: VOUT and PGND.
+
+``output_joint_reduction_cases.json`` names the CAD action it is waiting for:
+"identify VOUT and PGND from SR-Cout pads to external load as two explicit
+physical rails ... enumerate every transition ... A missing interface cannot
+be considered 0-ohm."  Until those rails exist as geometry, the 100 A output
+path is an arithmetic assumption, not a board feature.
+
+This module is the offline half: it lays the two rails from the pads that are
+actually on the routed candidate -- the eight SR source tabs (PGND), the output
+capacitor pads, the four provisional transformer centre-tap pads (VOUT) and
+``J_OUT`` -- and checks every segment against the committed readback with the
+same clearance and endpoint rules ``route_driver_eco`` uses.  It does not
+apply anything; ``--emit-js`` prints the body that would create these lines.
+
+Facts this draft does NOT assert:
+
+* The rails are 2.0 mm copper -- layer 1 for both runs and the PGND bus, layer 2
+  only for the VOUT trunk that has to cross the PGND rail (two vias).  2 mm at
+  100 A is not an ampacity claim; the real high-current interface is the output
+  busbar/inlay (G2).  Pad-to-rail necks are 1.0 mm: a 2 mm neck cannot clear the
+  SEC / drain pads 0.86-1.0 mm away on the source tabs.
+* The CTAP endpoints are the 24 design-owned provisional pads, not vendor
+  terminals, so the VOUT connection will move when the winding terminals are
+  frozen.
+* The output capacitor bank is one placeholder part on this board (15 x 470 uF
+  is still TO SELECT and the ESR screen does not yet close), so the "local
+  Cout" branch here reaches the placeholder only.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import math
+from pathlib import Path
+
+import route_driver_eco as R
+
+HERE = Path(__file__).resolve().parent
+READBACK = HERE / "driver_route_readback.json"
+PLAN_OUT = HERE / "power_rail_plan.json"
+
+RAIL_W = 2.0           # the two rails
+LEAD_W = 1.0           # pad -> rail leads; a 2 mm lead cannot clear the neighbours
+RAIL_Y = 96.0          # PGND rail: below the gate resistors (y 88), above J_OUT
+VOUT_BUS_Y = 35.5      # below the transformer envelopes (y <= 32.7), above CT (y 37)
+SR_TAB_Y = 84.470      # SR1..4 source tab centre (readback), y grows downward
+
+#: SR source tab centres read back from the routed candidate.
+SR_TABS = (13.401, 23.401, 51.399, 61.399, 89.400, 99.400, 127.401, 137.401)
+#: CTAP provisional pads (VOUT) and the x each dodge drops through.  A straight
+#: drop at the pad x would run through the SEC_B pad 7 mm below it, so each drop
+#: steps into the inter-transformer gap first.
+CTAP_DODGE = ((37.0, 39.0), (75.0, 77.0), (113.0, 115.0), (151.0, 153.0))
+#: The VOUT trunk crosses the PGND rail, so it leaves through a via and returns
+#: to layer 1 only at the J_OUT.1 stub.
+VOUT_VIA_LEFT = (4.3, 49.0)
+VOUT_VIA_RIGHT = (73.5, 110.0)
+
+
+def plan() -> dict[str, dict]:
+    """Layer-1 polylines for both rails, in board mm (Y down)."""
+    pgnd_leads = [[(x, SR_TAB_Y), (x, RAIL_Y)] for x in SR_TABS]
+    return {
+        "VOUT": {"width": LEAD_W, "paths": [
+            # CTAP pad -> dodge -> bus.
+            *[[(p, 20.0), (d, 20.0), (d, VOUT_BUS_Y)] for p, d in CTAP_DODGE],
+            # The bus itself carries the full output current.
+            [(CTAP_DODGE[0][1], VOUT_BUS_Y), (CTAP_DODGE[-1][1], VOUT_BUS_Y)],
+            # Cout placeholder -> via -> J_OUT.1 (the J_OUT stub closes the run).
+            [(4.3, 47.0), VOUT_VIA_LEFT],
+            [(VOUT_VIA_RIGHT[0], VOUT_VIA_RIGHT[1]), (73.5, 116.0)],
+        ]},
+        "PGND": {"width": LEAD_W, "paths": [
+            [(5.7, 47.0), (5.7, RAIL_Y)],
+            [(78.5, RAIL_Y), (78.5, 116.0)],
+            *pgnd_leads,
+        ]},
+    }
+
+
+def bus() -> dict[str, dict]:
+    """The two full-width rail runs (2 mm) and the VOUT layer-2 trunk."""
+    return {
+        "PGND": {"width": RAIL_W, "paths": [
+            [(5.7, RAIL_Y), (SR_TABS[-1], RAIL_Y)]]},
+        "VOUT": {"width": RAIL_W, "layer": 2, "paths": [
+            [(VOUT_VIA_LEFT[0], VOUT_VIA_LEFT[1]),
+             (VOUT_VIA_LEFT[0], VOUT_VIA_RIGHT[1]),
+             VOUT_VIA_RIGHT]]},
+    }
+
+
+def vias() -> list[dict]:
+    return [{"net": "VOUT", "x": VOUT_VIA_LEFT[0], "y": VOUT_VIA_LEFT[1],
+             "hole": R.VIA_HOLE, "diameter": R.VIA_DIAMETER},
+            {"net": "VOUT", "x": VOUT_VIA_RIGHT[0], "y": VOUT_VIA_RIGHT[1],
+             "hole": R.VIA_HOLE, "diameter": R.VIA_DIAMETER}]
+
+
+def copper() -> list[dict]:
+    """Everything this draft creates, as one plan list for the shared checker."""
+    return [plan(), bus()]
+
+
+def problems(readback: Path = READBACK) -> list[dict]:
+    """Offline conflicts and endpoint failures against the readback."""
+    pads = R.load_pads(readback)
+    return R.check_plan(pads, copper(), vias=vias())
+
+
+def summary(readback: Path = READBACK) -> dict:
+    """The route facts a reviewer needs, computed from the plan and readback."""
+    pads = R.load_pads(readback)
+    segs = R.segments(copper())
+    rails = {}
+    for net in ("VOUT", "PGND"):
+        mine = [s for s in segs if s["net"] == net]
+        length = sum(math.dist(s["a"], s["b"]) for s in mine)
+        ends = {(x, y) for s in mine for x, y in (s["a"], s["b"])}
+        # Provisional pads have no ref on the board; name them by position so the
+        # report never hides which terminal a rail actually reaches.
+        refs = sorted({f"{p['ref']}.{p['pin']}" if p["ref"]
+                       else f"{p['net']}@({p['x']:.2f},{p['y']:.2f})"
+                       for p in pads
+                       if p["net"] == net
+                       and any(math.dist((p["x"], p["y"]), e) <= 0.02 for e in ends)})
+        layers = sorted({s["layer"] for s in mine})
+        widths = sorted({s["width"] for s in mine})
+        vias_on_net = [v for v in vias() if v["net"] == net]
+        rails[net] = {"segments": len(mine), "length_mm": round(length, 3),
+                      "layers": layers, "widths_mm": widths,
+                      "endpoint_refs": refs,
+                      "vias": [[v["x"], v["y"]] for v in vias_on_net]}
+    return {
+        "status": "DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED",
+        "readback": READBACK.name,
+        "rails": rails,
+        "not_qualified": [
+            "the rail widths are shapes, not an ampacity claim; the high-current "
+            "interface is the G2 output busbar/inlay",
+            "the CTAP endpoints are provisional pads, not vendor terminals",
+            "the output capacitor bank is one placeholder part, not 15 x 470 uF",
+            "no bolt, busbar or separable joint is modelled here",
+        ],
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--check", action="store_true", help="offline clearance/endpoint check")
+    ap.add_argument("--emit-js", action="store_true", help="print the LCEDA body")
+    ap.add_argument("--write-plan", action="store_true", help="write power_rail_plan.json")
+    args = ap.parse_args(argv)
+    if args.emit_js:
+        print(R.emit_js(copper(), vias()))
+        return 0
+    issues = problems()
+    for p in issues:
+        print(p)
+    if args.write_plan:
+        PLAN_OUT.write_text(json.dumps(summary() | {"problems": issues}, indent=2,
+                                       ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+        print(f"wrote {PLAN_OUT}")
+    print("power rails ok: 2 rails, 0 problems" if not issues
+          else f"power rails FAILED: {len(issues)} problems")
+    return 0 if not issues else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,67 @@
+{
+  "status": "DRAFT_TWO_RAILS_NOT_AMPACITY_QUALIFIED",
+  "readback": "driver_route_readback.json",
+  "rails": {
+    "VOUT": {
+      "segments": 13,
+      "length_mm": 322.2,
+      "layers": [
+        1,
+        2
+      ],
+      "widths_mm": [
+        1.0,
+        2.0
+      ],
+      "endpoint_refs": [
+        "Cout.1",
+        "J_OUT.1",
+        "VOUT@(113.00,20.00)",
+        "VOUT@(151.00,20.00)",
+        "VOUT@(37.00,20.00)",
+        "VOUT@(75.00,20.00)"
+      ],
+      "vias": [
+        [
+          4.3,
+          49.0
+        ],
+        [
+          73.5,
+          110.0
+        ]
+      ]
+    },
+    "PGND": {
+      "segments": 11,
+      "length_mm": 292.941,
+      "layers": [
+        1
+      ],
+      "widths_mm": [
+        1.0,
+        2.0
+      ],
+      "endpoint_refs": [
+        "Cout.2",
+        "J_OUT.2",
+        "SR1A.3",
+        "SR1B.3",
+        "SR2A.3",
+        "SR2B.3",
+        "SR3A.3",
+        "SR3B.3",
+        "SR4A.3",
+        "SR4B.3"
+      ],
+      "vias": []
+    }
+  },
+  "not_qualified": [
+    "the rail widths are shapes, not an ampacity claim; the high-current interface is the G2 output busbar/inlay",
+    "the CTAP endpoints are provisional pads, not vendor terminals",
+    "the output capacitor bank is one placeholder part, not 15 x 470 uF",
+    "no bolt, busbar or separable joint is modelled here"
+  ],
+  "problems": []
+}
