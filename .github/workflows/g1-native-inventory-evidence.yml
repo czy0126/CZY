@@ -9,6 +9,14 @@ on:
       - 'tools/native_inventory_bom_gate.py'
       - 'tools/test_native_inventory_bom_gate.py'
       - 'tools/test_g1_native_inventory_export.py'
+      - 'tools/g1_schematic_pcb_alignment.py'
+      - 'tools/test_g1_schematic_pcb_alignment.py'
+      - 'hardware/dcx_main/g1/g1_schematic_pcb_alignment.json'
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_drc_raw.json'
+      - 'hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2'
+      - 'hardware/dcx_main/gen/netlist_export_raw.json'
+      - '.gitattributes'
       - '.github/workflows/g1-native-inventory-evidence.yml'
   pull_request:
     paths:
@@ -19,6 +27,14 @@ on:
       - 'tools/native_inventory_bom_gate.py'
       - 'tools/test_native_inventory_bom_gate.py'
       - 'tools/test_g1_native_inventory_export.py'
+      - 'tools/g1_schematic_pcb_alignment.py'
+      - 'tools/test_g1_schematic_pcb_alignment.py'
+      - 'hardware/dcx_main/g1/g1_schematic_pcb_alignment.json'
+      - 'hardware/dcx_main/g1/lr_repack_readback.json'
+      - 'hardware/dcx_main/g1/lr_repack_drc_raw.json'
+      - 'hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2'
+      - 'hardware/dcx_main/gen/netlist_export_raw.json'
+      - '.gitattributes'
       - '.github/workflows/g1-native-inventory-evidence.yml'
   workflow_dispatch:
 permissions:
@@ -41,5 +57,7 @@ jobs:
           python tools/native_inventory_bom_gate.py --check \
             --inventory hardware/dcx_main/g1/g1_native_inventory_raw.json \
             --out hardware/dcx_main/g1/g1_native_inventory_bom_gate.json
+          python tools/g1_schematic_pcb_alignment.py --check
           python -m pytest -q tools/test_native_inventory_bom_gate.py \
-            tools/test_g1_native_inventory_export.py tools/test_d1_fabrication_gate.py
+            tools/test_g1_native_inventory_export.py tools/test_g1_schematic_pcb_alignment.py \
+            tools/test_d1_fabrication_gate.py
