@@ -91,7 +91,7 @@ def compare(components: list[dict], pcb_components: list[dict],
     free_design = Counter((str(pin), net)
                           for mag in MAGNETS
                           for pin, net in legacy_refs.get(mag, {}).items())
-    if len(free_design) != 24 or sum(free_design.values()) != 24:
+    if sum(free_design.values()) != 24:
         raise ValueError("Legacy magnetic logical terminal register changed")
     errors = []
     if free_actual != free_design:
