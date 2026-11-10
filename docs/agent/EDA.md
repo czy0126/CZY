@@ -40,6 +40,11 @@
 - **只能用 `--path` 打开工程，绝不调 `dmt_Project.openProject(uuid)`**：后者会重新解析到
   库/云端副本，之后每次 `save()` 都返回 false、文件 mtime 不变。实测同一份编辑：
   按路径打开 → save true、文件 1572864→1576960 字节；调过 `openProject` → save false、mtime 不动。
+- **`--path` 必须是绝对路径**：相对路径按**编辑器自己的 cwd** 解析，不是调用者的 cwd。
+  失败是静默的——`open` 照样返回 sessionId、`return 1;` ping 照样答，之后每个 `eda` 体都在
+  `getCurrentProjectInfo().data` 里找不到 PCB 而报 `PCB missing`（2026-11-10 为此连跑三次 DRC，
+  收据里 `"path": "dcx_main_board_g1_kelvin.eprj2"` 是相对路径；改成绝对路径后同一份
+  `driver_drc.js` 立刻返回结果）。`run_driver_drc.py` 现在在 `main()` 里 `args.board.resolve()`。
 - **`save()` 是防抖的**：返回 true 后约 20 s 文件才变。判断"写进去了没有"只能看 size/mtime
   （`lceda_place_main_board.py --watch` 就是这么等的），true 本身不是证据。
 - **`getCurrentProjectInfo()` 的 shape**：`{itemType, uuid, friendlyName, … , data}`。
@@ -262,6 +267,12 @@
   **写入协议收进 `apply_increment.py`**：`apply_power_rails.py` / `apply_kelvin.py` 只差
   模块、父候选与回执前缀。该编辑器保存时**合并共线重叠的线** ⇒ 计划里不要给一条长横穿再补
   一段共线支线，回来的读回线是一整条，`_covered` 要求两个读回端点都落在计划段内，会判缺线。
+- **无网焊盘也是铜**：`D_CT1–4.2`、`U2.2` 五只焊盘在原理图里没有网络名，但读回里是真实铜。
+  `route_driver_eco.load_pads()` 第一版把它们跳过了，于是 CS1/CS2 直接竖下、从 D_CT1.2 /
+  D_CT2.2 中间穿过时离线 `--check` 仍报 0 问题，而原生 DRC 报两条 `SMD Pad to Track`
+  （0 mil，规则 ≥ 6 mil）。现在 `load_pads` 按 `net=""` 保留它们（永远不等于任何计划网），
+  `tools/test_g1_driver_route_plan.py` 用一条穿 D_CT1.2 的假线段锁住。离线检查绿不等于
+  DRC 绿：只有原生 DRC 是净距的门，离线检查器只是它的快速近似。
 - **评审图必须写明它画的是哪个板文件**：G1 目录里现在同时有基板
   `dcx_main_board_g1.eprj2`（无铜、无走线、无 DRC）与候选 `..._driver_eco` /
   `..._driver_route` / `..._power_rails` / `..._kelvin`（`_driver_route` 读回 50 条铜线 /

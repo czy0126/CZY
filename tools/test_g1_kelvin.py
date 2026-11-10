@@ -44,6 +44,19 @@ def test_the_plan_has_no_clearance_endpoint_or_via_problem_against_the_board():
     assert k.problems() == []
 
 
+def test_the_sense_nets_clear_the_unassigned_diode_pads():
+    """D_CT1.2 / D_CT2.2 sit between the pads the sense nets serve.
+
+    The direct verticals through (109, ...) and (115, ...) ran straight over
+    them; the native DRC reported it (0 mil to a pad that needs >= 6 mil).
+    The checker only sees these pads now that ``load_pads`` keeps net-less pads.
+    """
+    pads = k.R.load_pads(k.READBACK)
+    none = [p for p in pads if not p["net"]]
+    assert len(none) == 5
+    assert k.R.find_conflicts(none, k.R.segments(k.copper())) == []
+
+
 def test_the_summary_names_every_junction_and_its_layers():
     s = k.summary()
     assert s["status"] == "DRAFT_CT_KELVIN_ON_CS1_CS2"
@@ -53,14 +66,14 @@ def test_the_summary_names_every_junction_and_its_layers():
         "CS2@(104.00,48.00)", "D_CT2.1", "D_CT4.3"}
     assert s["nets"]["CS1"]["layers"] == [1, 2]
     assert s["nets"]["CS2"]["layers"] == [1]
-    assert s["vias"] == [[106.2, 56.0], [109.0, 66.5], [119.0, 69.0]]
-    assert math.isclose(s["nets"]["CS1"]["length_mm"], 33.45)
-    assert math.isclose(s["nets"]["CS2"]["length_mm"], 52.95)
+    assert s["vias"] == [[106.2, 56.0], [110.1, 66.5], [119.0, 69.0]]
+    assert math.isclose(s["nets"]["CS1"]["length_mm"], 34.55)
+    assert math.isclose(s["nets"]["CS2"]["length_mm"], 54.15)
 
 
 def test_the_vias_are_all_cs1_and_join_its_two_layers():
     assert [(v["net"], (v["x"], v["y"])) for v in k.vias()] == [
-        ("CS1", (106.2, 56.0)), ("CS1", (109.0, 66.5)), ("CS1", (119.0, 69.0))]
+        ("CS1", (106.2, 56.0)), ("CS1", (110.1, 66.5)), ("CS1", (119.0, 69.0))]
     assert {s["layer"] for s in k.R.segments(k.copper()) if s["net"] == "CS2"} == {1}
 
 

@@ -101,7 +101,7 @@
 |  | hotfault 覆盖容差是一个积分步长（`.tran` 的 Tmaxstep），不是固定 1 ps | 改覆盖判据 | TRAPS.md §已知工具陷阱 |
 |  | `ascii_raw_window.find_offset` 按 `n_variables + 2` 扫；换变量数更多的 deck 先想这条 | 读新 raw | TRAPS.md §已知工具陷阱 |
 | ★ | 任何"每周期"的量，**构造**也必须限制在窗口内，不能只限制积分 | 改账本 | TRAPS.md §已知工具陷阱 |
-| ★ | 只能用 `--path` 打开 LCEDA 工程；绝不调 `openProject(uuid)`（之后 save 恒 false） | LCEDA 任何操作 | EDA.md §嘉立创 EDA |
+| ★ | 只能用 `--path` 打开 LCEDA 工程，且必须是**绝对路径**；绝不调 `openProject(uuid)`（之后 save 恒 false） | LCEDA 任何操作 | EDA.md §嘉立创 EDA |
 | ★ | `save()` 防抖约 20 s；判"写进去了"只能看被打开那个路径的 size/mtime | LCEDA 保存 | EDA.md §嘉立创 EDA |
 |  | `otherProperty.Footprint` 会毒化整个文档（每次 save 都 false） | 改封装 | EDA.md §嘉立创 EDA |
 | ★ | 保存与导出互斥：先放件→等写盘→内存注入封装 uuid→导出；注入后不能再 save；注入/构建实验**只开副本**——`save()` 写回的是被打开的那个文件 | 导出网表 | EDA.md §嘉立创 EDA |

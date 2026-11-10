@@ -161,15 +161,19 @@ def segments(plan) -> list[dict]:
 
 
 def load_pads(readback: Path) -> list[dict]:
-    """Pads with their true net, layer and rotated bounding box, in board mm (Y down)."""
+    """Pads with their true net, layer and rotated bounding box, in board mm (Y down).
+
+    A pad with no net is still copper: ``net`` becomes ``""`` so it can never
+    equal a planned net, and it stays an obstacle.  Dropping it (the first
+    version skipped them) hid a track running straight through D_CT1.2 - the
+    native DRC reported 0 mil where the rule wants >= 6 mil.
+    """
     value = json.loads(readback.read_text(encoding="utf-8"))["value"]
     pads = []
     for p in value["pads"]:
-        if not p.get("Net"):
-            continue
         x0, y0, x1, y1 = g.pad_bbox_mm(p)
         pads.append({"ref": p.get("ref"), "pin": str(p.get("PadNumber")),
-                     "net": p["Net"], "layer": p.get("Layer", 1),
+                     "net": p.get("Net") or "", "layer": p.get("Layer", 1),
                      "bbox": (x0, y0, x1, y1),
                      "x": (x0 + x1) / 2, "y": (y0 + y1) / 2})
     return pads

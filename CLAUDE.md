@@ -115,7 +115,7 @@ python tools/main_board_mechanical.py --check    # A5 摆放 1:1 + DRC，需要 
 | `checks` 是报告不变量（只有它的 `ok` 是门），`results` 是物理结果 | 写任何 JSON | [MEASUREMENT.md](docs/agent/MEASUREMENT.md) §测量口径 |
 | `primary_freq_khz()` 必须把边沿限制在窗口内 | 改频率指标 | [TRAPS.md](docs/agent/TRAPS.md) §已知工具陷阱 |
 | 任何"每周期"的量，**构造**也必须限制在窗口内，不能只限制积分 | 改账本 | [TRAPS.md](docs/agent/TRAPS.md) §已知工具陷阱 |
-| 只能用 `--path` 打开 LCEDA 工程；绝不调 `openProject(uuid)`（之后 save 恒 false） | LCEDA 任何操作 | [EDA.md](docs/agent/EDA.md) §嘉立创 EDA |
+| 只能用 `--path` 打开 LCEDA 工程，且必须是**绝对路径**；绝不调 `openProject(uuid)`（之后 save 恒 false） | LCEDA 任何操作 | [EDA.md](docs/agent/EDA.md) §嘉立创 EDA |
 | `save()` 防抖约 20 s；判"写进去了"只能看被打开那个路径的 size/mtime | LCEDA 保存 | [EDA.md](docs/agent/EDA.md) §嘉立创 EDA |
 | 保存与导出互斥：先放件→等写盘→内存注入封装 uuid→导出；注入后不能再 save；注入/构建实验**只开副本**——`save()` 写回的是被打开的那个文件 | 导出网表 | [EDA.md](docs/agent/EDA.md) §嘉立创 EDA |
 | kicad-cli 路径不许写进工具（Issue #11）；按 `KICAD_CLI` → PATH → `%LOCALAPPDATA%` 找 | 用 kicad-cli | [EDA.md](docs/agent/EDA.md) §KiCad 10.0 CLI |

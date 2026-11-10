@@ -112,16 +112,25 @@ def main() -> int:
     parser.add_argument("--settle-s", type=float, default=SETTLE_S)
     parser.add_argument("--rules", action="store_true",
                         help="read the board's rule configuration instead of running DRC")
+    parser.add_argument("--prefix", default=None,
+                        help="receipt prefix (default: the mode's own, so an older "
+                             "candidate's receipts are overwritten -- pass one to keep both)")
     args = parser.parse_args()
 
-    body_path, prefix = MODE["rules" if args.rules else "drc"]
+    #: ``open --path`` resolves a relative path against the *app's* working
+    #: directory, not the caller's: the session still opens and the ping still
+    #: answers, but the project is empty and every ``eda`` body reports
+    #: "PCB missing". Always hand the editor an absolute path.
+    board = args.board.resolve()
+    body_path, default_prefix = MODE["rules" if args.rules else "drc"]
+    prefix = args.prefix or default_prefix
 
     def dump(name: str, payload: dict) -> None:
         (HERE / f"{prefix}_{name}.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    before = md5(args.board)
-    opened = call(build_open_args(args.board))
+    before = md5(board)
+    opened = call(build_open_args(board))
     dump("open", opened)
     session = (opened.get("value") or {}).get("sessionId")
     if not session:
@@ -144,7 +153,7 @@ def main() -> int:
         dump("close", call(build_close_args(session)))
 
     dump("raw", raw)
-    after = md5(args.board)
+    after = md5(board)
     value = raw.get("value") or {}
     if args.rules:
         summary = {"rule_config": value.get("name"), "via_minima": via_minima(value),

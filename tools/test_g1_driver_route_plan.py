@@ -51,6 +51,21 @@ def test_an_endpoint_off_its_net_pad_is_reported():
     assert not route.endpoint_problems(pads, path)
 
 
+def test_a_pad_with_no_net_is_still_copper():
+    """The five unassigned pads (D_CT1-4.2, U2.2) are copper to a DRC.
+
+    Dropping them from ``load_pads`` made the offline gate blind to a track
+    running straight through them; the native DRC then reported "distance
+    0mil, should be >= 6mil".
+    """
+    pads = route.load_pads(route.HERE / "driver_readback.json")
+    none = {(p["ref"], p["pin"]) for p in pads if not p["net"]}
+    assert {("D_CT1", "2"), ("D_CT2", "2"), ("D_CT3", "2"), ("D_CT4", "2"),
+            ("U2", "2")} <= none
+    seg = [{"net": "N1", "width": 0.3, "a": (108.0, 69.05), "b": (110.0, 69.05)}]
+    assert route.find_conflicts([p for p in pads if not p["net"]], seg)
+
+
 def test_the_planned_routes_pass_the_offline_check():
     pads = route.load_pads(route.HERE / "driver_readback.json")
     problems = route.check_plan(pads, route.PLAN)

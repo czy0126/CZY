@@ -41,25 +41,30 @@ WIDTH = 0.3
 KELVIN = {
     "CS1": {"width": WIDTH, "paths": [
         [(104.0, 56.0), (106.2, 56.0)],          # CT SEC_A -> via
-        [(109.0, 66.5), (109.0, 70.95)],         # via -> D_CT1.1
+        [(110.1, 66.5), (110.1, 70.95), (109.0, 70.95)],   # via -> D_CT1.1
         [(119.0, 69.0), (119.0, 70.0)],          # via -> D_CT3.3
     ]},
     "CS2": {"width": WIDTH, "paths": [
         [(104.0, 48.0), (102.0, 48.0), (102.0, 65.0), (125.0, 65.0), (125.0, 70.0)],
-        [(115.0, 65.0), (115.0, 70.95)],         # branch -> D_CT2.1
+        [(116.2, 65.0), (116.2, 70.95), (115.0, 70.95)],   # branch -> D_CT2.1
     ]},
 }
 
 #: CS1 crosses CS2's y=65 corridor, so it changes layer instead of weaving.
-#: The y=66.5 run passes through the via at (109, 66.5) -- no separate branch
+#: The y=66.5 run passes through the via at (110.1, 66.5) -- no separate branch
 #: (the editor merges collinear overlapping lines, so a sub-segment of this run
 #: would come back as one longer line and fail the coverage check).
+#:
+#: The D_CT* pin-2 pads carry no net (the schematic has none) but they are
+#: copper: the first version dropped straight down at x=109 / x=115 and ran
+#: through D_CT1.2 / D_CT2.2 -- the native DRC called it at 0 mil.  Both nets
+#: now descend beside the pad and step onto the pin-1 centre from the right.
 CS1_BOTTOM = {"CS1": {"width": WIDTH, "layer": 2, "paths": [
     [(106.2, 56.0), (106.2, 66.5), (119.0, 66.5), (119.0, 69.0)],
 ]}}
 
 VIAS = [{"net": "CS1", "x": 106.2, "y": 56.0, "hole": R.VIA_HOLE, "diameter": R.VIA_DIAMETER},
-        {"net": "CS1", "x": 109.0, "y": 66.5, "hole": R.VIA_HOLE, "diameter": R.VIA_DIAMETER},
+        {"net": "CS1", "x": 110.1, "y": 66.5, "hole": R.VIA_HOLE, "diameter": R.VIA_DIAMETER},
         {"net": "CS1", "x": 119.0, "y": 69.0, "hole": R.VIA_HOLE, "diameter": R.VIA_DIAMETER}]
 
 

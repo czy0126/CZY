@@ -26,7 +26,7 @@ DOT 标记（青色方框）。生成器：`make_g1_layout_svg.py`。
 图下方的说明文字写着 `dcx_main_board_g1.eprj2`：现在同目录还有 `..._driver_eco` /
 `..._driver_route` / `..._power_rails` / `..._kelvin` 四个候选（`_driver_route` 读回 50 条铜线、
 13 个过孔，另有原生 DRC raw；`_power_rails` 在它基础上再加两极，读回 84 条线、15 个过孔；
-`_kelvin` 再加两条 CT 检测网，读回 96 条线、18 个过孔），
+`_kelvin` 再加两条 CT 检测网，读回 98 条线、18 个过孔），
 一句不带文件名的 "无铜、无走线、无 DRC" 会被读成对整块板说的。提交里的 SVG 必须等于由提交里的
 `g1_pads.json` 现渲染的结果，`tools/test_g1_layout_svg.py` 逐字节锁住；五个待锁区
 就是 CT+T1–T4 五个磁芯本体，**Lr 是真放上去的器件、没有待锁区**。
@@ -187,25 +187,37 @@ y=96 母线那几处），所以按「同网、同层、同宽、共线覆盖」
 
 | 网 | 端点 | 已落地的路径（`route_kelvin.py`） |
 |---|---|---|
-| `CS1` | D_CT1 p1 (109.0, 70.9) ↔ D_CT3 p3 (119.0, 70.0) ↔ CT `SEC_A` (104.0, 56.0) | 6 段 / 33.450 mm；第 1 层 + 第 2 层（3 过孔：(106.2,56)、(109,66.5)、(119,69)） |
-| `CS2` | D_CT2 p1 (115.0, 70.9) ↔ D_CT4 p3 (125.0, 70.0) ↔ CT `SEC_B` (104.0, 48.0) | 5 段 / 52.950 mm；全第 1 层 |
+| `CS1` | D_CT1 p1 (109.0, 70.9) ↔ D_CT3 p3 (119.0, 70.0) ↔ CT `SEC_A` (104.0, 56.0) | 7 段 / 34.550 mm；第 1 层 + 第 2 层（3 过孔：(106.2,56)、(110.1,66.5)、(119,69)） |
+| `CS2` | D_CT2 p1 (115.0, 70.9) ↔ D_CT4 p3 (125.0, 70.0) ↔ CT `SEC_B` (104.0, 48.0) | 6 段 / 54.150 mm；全第 1 层 |
 
 - 两条网都在 `_power_rails` 候选上再落地：检查用同一套净距/端点/过孔，且把**已有的驱动铜与
-  两极**一起放进计划（`kelvin_plan.json` 的 `problems: []`，`tools/test_g1_kelvin.py` 9 个用例）。
+  两极**一起放进计划（`kelvin_plan.json` 的 `problems: []`，`tools/test_g1_kelvin.py` 10 个用例）。
 - CS1 要横穿 CS2 的 y=65 走廊，所以它经三只 **0.3/0.505 mm** 过孔绕到第 2 层；CS2 留在第 1 层。
-  第 2 层那条 y=66.5 的长横穿**直接穿过 (109, 66.5) 那只过孔**——不另画一小段支线：
+  第 2 层那条 y=66.5 的长横穿**直接穿过 (110.1, 66.5) 那只过孔**——不另画一小段支线：
   编辑器保存时会把共线重叠的线合并，支线回来是一条更长的线，覆盖检查判「没有这一段的读回线」。
+- **D_CT1–4 的 p2 没有网络，但它们是铜**。第一版在 x=109 / x=115 直接竖下到 p1，正好从
+  D_CT1.2 / D_CT2.2 中间穿过；原生 DRC 报了两条 `SMD Pad to Track`（0 mil，规则 ≥ 6 mil）。
+  离线检查器当时**看不见无网焊盘**（`load_pads` 把它们跳过了），所以第一版 `--check` 是绿的。
+  现在 `load_pads` 把无网焊盘按 `net=""` 保留，两条网各自先下到焊盘**右侧**再横一步进 p1 中心；
+  `tools/test_g1_driver_route_plan.py` 用一条穿 D_CT1.2 的假线段锁住这个盲点。
 - **0.3 mm 是检测线宽，不是电流额定**；SR 门极/漏极的 Kelvin 对（`GA*`/`GB*`）**仍未布**，
   CT 端仍是设计自有临时焊盘，磁件端子上板后这两条网会整体移动。
 
-**落地回执**（`apply_kelvin.py`，2026-11-10 第一次 invoke 即成功）：从 `_power_rails` 复制出
-`_kelvin`，同样的 settle/ping/invoke/防抖/关闭/重开协议，`created: 12`、`viasCreated: 3`、
-`failed: []`、`saved: true` → 重开读回 **96 条线 / 18 个过孔**，器件 77 / 焊盘 299 / 网 65 /
-折线 38 不变。`created: 12` 比计划的 11 段多一条：那一版正文里还带着上述冗余支线，保存时被
-编辑器并进长横穿线，所以**读回的 11 段才是板上真实几何**；`kelvin_report.json` 的
-`coverage_problems` / `vias.problems` / `placement_drift` 全空。原始读数在 `kelvin_readback.json`，
-开/关/应用回执是 `kelvin_apply_*` / `kelvin_reopen_*`。**原生 DRC 没有在 `_kelvin` 上重跑**，
-`_power_rails` 的 md5 在复制前后一致。
+**落地回执**（`apply_kelvin.py`，2026-11-10；共两次，第二次是 DRC 之后改的绕行版）：从
+`_power_rails` 复制出 `_kelvin`，同样的 settle/ping/invoke/防抖/关闭/重开协议，`created: 13`、
+`viasCreated: 3`、`failed: []`、`saved: true` → 重开读回 **98 条线 / 18 个过孔**（第 1 层 81 /
+第 2 层 17），器件 77 / 焊盘 299 / 网 65 / 折线 38 不变；`kelvin_report.json` 的
+`coverage_problems` / `vias.problems` / `placement_drift` 全空，13 段计划长度 88.7 mm。
+第一次落地（12 段 / 96 条线）几何上穿过了 D_CT1.2 / D_CT2.2，DRC 判 2 条净距错误；
+改后的收据覆盖了它，历史在提交 `3a7f9e9` 里。原始读数在 `kelvin_readback.json`，
+开/关/应用回执是 `kelvin_apply_*` / `kelvin_reopen_*`。`_power_rails` 的 md5 在复制前后一致。
+
+**原生 DRC（2026-11-10，`run_driver_drc.py --board ..._kelvin.eprj2`）**：`unchanged: true`，
+规则配置 `JLCPCB Capability(Two Layers Board)`。结果只剩 **Connection Error 206** 与
+**Netlist Error 1**、**没有 Clearance 组**——即两极与两条检测网加进来后**物理错误仍是 0**
+（`_driver_route` 时也是 0；连接错误从 224 降到 206，是这两次增量接通的鼠线）。那条网表错误
+是原理图↔PCB 的既有不符（§2 的 6 个位号 + A5 表），不是走线造成的。原始读数
+`kelvin_drc_raw.json`，开/关/ping 回执 `kelvin_drc_*.json`。
 
 **驱动对**（各 2 个焊盘）：`GH_DRV` R4 p1 (49.2, 57.5) ↔ U2 p4 (130.5, 52.5)；
 `GL_DRV` R5 p1 (58.2, 57.5) ↔ U2 p10 (133.5, 51.0)；`GA1–GA4` / `GB1–GB4` 各
@@ -225,12 +237,12 @@ y=96 母线那几处），所以按「同网、同层、同宽、共线覆盖」
 ## 7. 这份文件**不能**当作什么
 
 - **不是**可制造件：没有铜厚/层叠/板厂 DFM、没有 ERC、没有 Gerber/钻孔/坐标/装配 BOM。
-  本文件对应的基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**；原生 DRC 只跑在
-  `_driver_route` 副本上，且仍有 224 条板级连接错误与 1 条网表错误（`_power_rails`、`_kelvin`
-  上未重跑）。`d1_fabrication_gate.json` 仍是 `NOT_FOR_FAB`。
+  本文件对应的基板 `dcx_main_board_g1.eprj2` **没有铜、没有走线、没有过孔**；原生 DRC 只在
+  `_driver_route` 与 `_kelvin` 副本上跑过（后者 0 物理错误 / 206 连接错误 / 1 条网表错误，
+  `_power_rails` 未单独重跑）。`d1_fabrication_gate.json` 仍是 `NOT_FOR_FAB`。
 - **不是**布局完成件：器件按功能分行摆在该去的位置；基板**没有一条走线**，`_driver_route`
   副本只有原边驱动/自举那一小块（47 段 + 13 过孔），`_power_rails` 再加两极（24 段 + 2 过孔），
-  `_kelvin` 再加 CS1/CS2（11 段 + 3 过孔），整板仍远未布通。
+  `_kelvin` 再加 CS1/CS2（13 段 + 3 过孔），整板仍远未布通。
 - **不是**磁件已锁版：T1–T4/CT 只有临时焊盘，没有实体封装；Lr 有原生封装但端子间距与
   concept 包对不上（§3）。
 - **不是**原理图已同步的板：A5 机械表里有 28 个位号原生原理图里没有 —— 撬棒组
