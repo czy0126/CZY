@@ -1,0 +1,63 @@
+{
+  "status": "G1_SAVED_NATIVE_ALIGNMENT_DIAGNOSTIC_NOT_ERC_OR_FAB",
+  "native_schematic_component_count": 83,
+  "native_pcb_component_count": 77,
+  "native_pcb_pad_count": 299,
+  "native_pcb_placed_pad_count": 275,
+  "native_pcb_anonymous_magnetic_pad_count": 24,
+  "schematic_only_refs": [
+    "CT",
+    "R6",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "pcb_only_refs": [],
+  "unplaced_real_magnetic_footprint_refs": [
+    "CT",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "unplaced_designators_explicitly_double_dnp": [
+    "R6"
+  ],
+  "historical_schematic_ref_renamed_or_missing": [
+    "R8"
+  ],
+  "native_schematic_refs_not_in_legacy_export": [
+    "R6"
+  ],
+  "anonymous_pad_matches_legacy_magnetic_net_multiset": true,
+  "anonymous_pad_is_not_a_physical_magnet_footprint": true,
+  "placed_pads_matching_legacy_netlist": 275,
+  "placed_pads_mismatching_legacy_netlist": [],
+  "native_drc": {
+    "connection_errors": 206,
+    "netlist_errors": 1,
+    "physical_errors": 0
+  },
+  "detected_data_disagreements": [],
+  "current_schematic_netlist_reexported_from_same_board": false,
+  "netlist_drc_error_root_cause_proven": false,
+  "required_next_cad_actions": [
+    "Open Import Changes / schematic-PCB difference on THIS native board; export exact per-ref netlist change report. Do not blindly apply all changes.",
+    "Replace 24 anonymous T1-T4/CT pads with validated independent real device footprints and correct physical terminal/DOT maps.",
+    "Keep the double-DNP R6 (original R8) excluded; recheck source-to-RUN wiring on a newly exported live schematic netlist.",
+    "Resolve the actual existing 1 Netlist Error, then rerun genuine EasyEDA ERC/DRC on the new saved/reopened PCB."
+  ],
+  "fabrication_approved": false,
+  "limitations": [
+    "Old November 6 schematic pin-net file is HISTORICAL, not a live active-G1 netlist.",
+    "Exact root cause of the single EasyEDA netlist error cannot be deduced from the summary DRC category.",
+    "Free-pad multiset matching cannot establish physical DOT, winding connections, insulation or mechanical assembly.",
+    "Native inventory component names are read from schematic; native PCB components come from a separate PCB readback within the same saved archive."
+  ],
+  "native_board_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+  "native_inventory_capture_path": "hardware/dcx_main/g1/g1_native_inventory_raw.json",
+  "historical_netlist_path": "hardware/dcx_main/gen/netlist_export_raw.json",
+  "pcb_readback_path": "hardware/dcx_main/g1/lr_repack_readback.json",
+  "native_drc_path": "hardware/dcx_main/g1/lr_repack_drc_raw.json"
+}
