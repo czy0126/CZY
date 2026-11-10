@@ -77,6 +77,12 @@ def pad_rect(p: dict) -> dict:
                      projected_w, projected_h)
 
 
+def git_blob_sha(path: Path) -> str:
+    """Calculate the exact GitHub Git blob id of this source file."""
+    data = path.read_bytes()
+    return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\\0" + data).hexdigest()
+
+
 def load_current() -> dict:
     """Board frame and magnet keep-outs from BASE, real placements/pads from LAST route.
 
@@ -201,7 +207,7 @@ def report(pads: dict | None = None, mag: dict | None = None) -> dict:
         "evidence": {
             "native_board_pad_readback": ACTIVE_READBACK.relative_to(ROOT).as_posix(),
             "original_board_frame": PADS.relative_to(ROOT).as_posix(),
-            "native_readback_sha256": hashlib.sha256(ACTIVE_READBACK.read_bytes()).hexdigest(),
+            "native_readback_git_blob_sha": git_blob_sha(ACTIVE_READBACK),
             "active_copper_lines": len(pads.get("lines", [])),
             "active_vias": len(pads.get("vias", [])),
             "design_owned_maxwell_geometry": MAG.relative_to(ROOT).as_posix(),
