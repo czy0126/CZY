@@ -44,6 +44,9 @@ def test_lr_elp38_38x25p4_body_overlaps_30_other_copper_pads():
         "left":1.0, "right":39.0, "top":39.3, "bottom":64.7
     }
     assert lr["native_footprint_pad_count"] == 2
+    assert lr["native_footprint_pad_pitch_mm"] == pytest.approx(9.002, abs=.001)
+    assert lr["minimum_board_edge_margin_mm"] == 1.0
+    assert lr["board_edge_reserve_passed"] is False
     assert lr["other_pad_envelope_intersections"] == 30
     assert lr["other_ref_count"] == 15
     refs = {r["ref"] for r in lr["by_ref"]}
@@ -71,6 +74,8 @@ def test_current_elp32_transforms_have_six_mm_gap_but_elp38_does_not():
     assert p["change_to_elp38_is_not_an_existing_design"] is True
     assert p["elp38_stretch_requires_placement_change"] is True
     assert len(p["adjacent_pairs"]) == 3
+    assert p["elp38_if_all_four_single_row_required_board_width_mm"] == 164.0
+    assert p["elp38_if_all_four_single_row_shortfall_mm"] == 9.0
     for x in p["adjacent_pairs"]:
         assert x["current_elp32_gap_mm"] == 6.0
         assert x["if_changed_to_elp38_gap_mm"] == 0.0
