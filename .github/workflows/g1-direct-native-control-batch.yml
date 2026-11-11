@@ -1,0 +1,62 @@
+name: G1 direct native 6-pad-pair copper: no beta autoRouter
+on:
+  pull_request:
+    paths:
+      - 'hardware/dcx_main/g1/route_g1_control_direct.py'
+      - 'hardware/dcx_main/g1/apply_g1_control_direct.py'
+      - 'tools/test_g1_control_direct.py'
+      - 'hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2'
+      - 'hardware/dcx_main/g1/g1_open_batch_reopen_readback.json'
+      - 'hardware/dcx_main/g1/g1_open_batch_drc_raw.json'
+      - '.github/workflows/g1-direct-native-control-batch.yml'
+  push:
+    branches: [feat/d1-fab-package]
+    paths:
+      - 'hardware/dcx_main/g1/route_g1_control_direct.py'
+      - 'hardware/dcx_main/g1/apply_g1_control_direct.py'
+      - 'tools/test_g1_control_direct.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-locked-direct-six-real-pad-pairs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install regression tests
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Verify verified real 132-line board and all new physical clearances
+        run: |
+          python -m pytest -q tools/test_g1_control_direct.py
+          python hardware/dcx_main/g1/apply_g1_control_direct.py --check > g1_direct_actual132_preflight.json
+      - name: Emit actual proven EasyEDA PrimitiveLine.create batch, never beta autoRouting
+        run: |
+          python hardware/dcx_main/g1/apply_g1_control_direct.py --emit-js > g1_direct_real_native_6_pad_pairs.js
+          python - <<'PY'
+          import json
+          p=json.load(open("g1_direct_actual132_preflight.json",encoding="utf-8"))
+          s=open("g1_direct_real_native_6_pad_pairs.js",encoding="utf-8").read()
+          assert p["real_pad_pairs"]==6
+          assert p["native_line_primitives"]==16
+          assert p["native_before_drc"]["Connection Error"]==183
+          assert not p["preflight_problems"]
+          assert "eda.pcb_PrimitiveLine.create(" in s
+          assert "eda.pcb_Document.save()" in s
+          assert "autoRouting(" not in s
+          assert p["native_eda_applied"] is False
+          assert p["fabrication_approved"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: G1-132line-six-pad-pair-native-copper-ONE-SHOT-NOT_FOR_FAB
+          path: |
+            g1_direct_actual132_preflight.json
+            g1_direct_real_native_6_pad_pairs.js
+          if-no-files-found: error
+          retention-days: 30
+# Native EasyEDA application and actual DRC can ONLY run on a licensed
+# workstation. CI pass is not a fabrication release or reduced 183 count.
