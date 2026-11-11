@@ -15,9 +15,11 @@
 python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 ```
 
-下一项 A 交付不再是低电流信号线的预检，而是以149线候选为新冻结父版，在新的副本中实现可制造的实体 Cout、磁件端子及100 A VOUT/PGND 双极铜排。仍有 **173 Connection / 1 Netlist** 未闭合；原有9线/12组、PR #98的17段都不得重画。`NOT_FOR_FAB`。
+**G1 149线仍是冻结设计父版**，173 Connection / 1 Netlist未闭合；G2已有单独144焊盘试排，下一项A不是重复放焊盘，而是以该G2原生候选的**另一个非覆盖副本**完善真实器件封装、原理图对齐与100A VOUT/PGND双极铜路；原有9线/12组、PR #98的17段都不得重画。`NOT_FOR_FAB`。
 
 **不计成本 Cout 备选（PR #93 来源，现以本机149线复核）：** 已以确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）为输入，将72颗（18×4）的XY与既有铜线干涉筛查升级为149线/173 Connection原生CAD同版，见[新版报告](../hardware/dcx_main/g2/cout_t530_72_REAL149_NOT_FOR_FAB.json)及生成器 `tools/cout_t530_72.py`，仍检测65处既有VOUT/PGND铜线穿越。33.84mF、理想ESR 0.0556mΩ仅为25°C/100kHz算术；新PCB上**没有**装入72颗、没有重构VOUT/PGND主铜路。100°C/200kHz、启动均流、厂家正式land、16mm全装配均未核实。15颗A720仍只是2.5V基准模型，不替代高耐压方案。
+
+**本机 G2 实际原生电容焊盘候选（最新布局中间版，不是正式封装）：** 已将原始18×4试排整体下移，J_OUT占位处的 CHV63/CHV64 移至板边第五行，先在149线源板上逐焊盘审核异网络顶层铜线、已有焊盘和过孔，均**0可见冲突**；然后在独立副本实际落下144个VOUT/PGND有网的顶层**试验焊盘**、保存、关闭、重开及执行原生DRC。[可编辑G2候选](../hardware/dcx_main/g2/dcx_main_board_g2_t530_72_PROVISIONAL_PADS_NOT_FOR_FAB.eprj2) SHA256 `3a0e0c9c831c914ec3d9a34ee8b743d597fbe6e575d12b3fc5efc9432e8c0864`，来源和焊盘位号见[唯一路由/落盘计划](../hardware/dcx_main/g2/t530_72_native_pad_plan_149_NOT_FOR_FAB.json)、[原生DRC](../hardware/dcx_main/g2/g2_t530_72_native_drc_delta.json)。原77件、299旧焊盘、149铜线、18过孔、65网络全部不变，焊盘299→**443**；未连接 **173→324**（144焊盘未接母线，**非改善**），Netlist仍1、Physical 0；新件数0，原理图无72颗对应符号，未正式匹配原厂land，未布100A双极铜线。下步首先做正式LCSC `C2158170` 或厂家封装/原理图同版引入、双极母线和可制造端子，**不能用试验焊盘生产**；现有G2副本不可重落144焊盘，只能以它为父版继续走线。
 
 **本机 P0-B 实体软件交付：** 已用安装在 `D:\ANSYS Inc\v252\AnsysEM` 的 AEDT 2025 R2 真实创建并保存原生 [ELP38/Lr 2匝概念工程](../hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.aedt)，输入源哈希和工程SHA见[证据](../hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.evidence.json)，可由 `tools/aedt_native_p0_lr_geometry.py` 复建。几何尺寸全部从 `design/v3/maxwell/diy_magnetics_concept.json` 取得。此轮**未完成 FEM 求解**、两匝铜环之间未串联、库存 ferrite 不是 N97 100°C B-H、未赋电流、也没有局部 B/L(I)、网格收敛或功耗；绝不能视为磁件合格。下一步先建立真正的绕组端子、电流方向及N97磁化特性，再运行 Maxwell 3D 并回填矩阵/场值。T1–T4、CT真实24 PAD/DOT仍未批准。
 

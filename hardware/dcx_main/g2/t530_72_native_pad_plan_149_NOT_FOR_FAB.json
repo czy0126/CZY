@@ -1,0 +1,3430 @@
+{
+  "schema": "G2_T530_72_NATIVE_PROVISIONAL_PAD_PLAN_V1",
+  "status": "SOURCE_LOCKED_149_LINE_NATIVE_PAD_TRIAL_NOT_FOR_FAB",
+  "source_board": "hardware/dcx_main/g1/dcx_main_board_g1_control_direct.eprj2",
+  "source_board_sha256": "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1",
+  "source_native_readback_sha256": "8c452e016409e607510798a00cb0874ce192e60c2a814506e9ba32704305880e",
+  "source_native_drc_sha256": "9fc871223cd29a473110cecf089d70caffd3a8c87ce54dc24bb22c6476112282",
+  "oem_part": "KEMET_T530X477M006ATE004",
+  "lcsc_part_number": "C2158170",
+  "oem_case": "7343-43_X",
+  "footprint_type": "DESIGN_OWNED_RECTANGULAR_TRIAL_NOT_OEM_LAND_PATTERN",
+  "body_mm": [
+    7.6,
+    4.6
+  ],
+  "pad_size_mm": [
+    2.3,
+    2.7
+  ],
+  "pad_centre_offset_mm": 2.5,
+  "pad_polarity": "VOUT_RIGHT_P/PGND_LEFT_N_UNCONFIRMED_ASSEMBLY_MARKING",
+  "original_149_line_connection_errors": 173,
+  "original_149_line_netlist_errors": 1,
+  "original_149_line_copper_preserved": true,
+  "relocations": {
+    "CHV63": [
+      7.0,
+      125.0
+    ],
+    "CHV64": [
+      15.3,
+      125.0
+    ]
+  },
+  "part_count": 72,
+  "pad_count": 144,
+  "problems": [],
+  "placements": [
+    {
+      "ref": "CHV01",
+      "centre_mm": [
+        7.0,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV01_N",
+          "ref": "CHV01",
+          "pin": "N",
+          "centre_mm": [
+            4.5,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV01_P",
+          "ref": "CHV01",
+          "pin": "P",
+          "centre_mm": [
+            9.5,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV02",
+      "centre_mm": [
+        15.3,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV02_N",
+          "ref": "CHV02",
+          "pin": "N",
+          "centre_mm": [
+            12.8,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV02_P",
+          "ref": "CHV02",
+          "pin": "P",
+          "centre_mm": [
+            17.8,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV03",
+      "centre_mm": [
+        23.6,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV03_N",
+          "ref": "CHV03",
+          "pin": "N",
+          "centre_mm": [
+            21.1,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV03_P",
+          "ref": "CHV03",
+          "pin": "P",
+          "centre_mm": [
+            26.1,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV04",
+      "centre_mm": [
+        31.9,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV04_N",
+          "ref": "CHV04",
+          "pin": "N",
+          "centre_mm": [
+            29.4,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV04_P",
+          "ref": "CHV04",
+          "pin": "P",
+          "centre_mm": [
+            34.4,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV05",
+      "centre_mm": [
+        40.2,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV05_N",
+          "ref": "CHV05",
+          "pin": "N",
+          "centre_mm": [
+            37.7,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV05_P",
+          "ref": "CHV05",
+          "pin": "P",
+          "centre_mm": [
+            42.7,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV06",
+      "centre_mm": [
+        48.5,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV06_N",
+          "ref": "CHV06",
+          "pin": "N",
+          "centre_mm": [
+            46.0,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV06_P",
+          "ref": "CHV06",
+          "pin": "P",
+          "centre_mm": [
+            51.0,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV07",
+      "centre_mm": [
+        56.8,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV07_N",
+          "ref": "CHV07",
+          "pin": "N",
+          "centre_mm": [
+            54.3,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV07_P",
+          "ref": "CHV07",
+          "pin": "P",
+          "centre_mm": [
+            59.3,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV08",
+      "centre_mm": [
+        65.1,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV08_N",
+          "ref": "CHV08",
+          "pin": "N",
+          "centre_mm": [
+            62.6,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV08_P",
+          "ref": "CHV08",
+          "pin": "P",
+          "centre_mm": [
+            67.6,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV09",
+      "centre_mm": [
+        73.4,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV09_N",
+          "ref": "CHV09",
+          "pin": "N",
+          "centre_mm": [
+            70.9,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV09_P",
+          "ref": "CHV09",
+          "pin": "P",
+          "centre_mm": [
+            75.9,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV10",
+      "centre_mm": [
+        81.7,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV10_N",
+          "ref": "CHV10",
+          "pin": "N",
+          "centre_mm": [
+            79.2,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV10_P",
+          "ref": "CHV10",
+          "pin": "P",
+          "centre_mm": [
+            84.2,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV11",
+      "centre_mm": [
+        90.0,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV11_N",
+          "ref": "CHV11",
+          "pin": "N",
+          "centre_mm": [
+            87.5,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV11_P",
+          "ref": "CHV11",
+          "pin": "P",
+          "centre_mm": [
+            92.5,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV12",
+      "centre_mm": [
+        98.3,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV12_N",
+          "ref": "CHV12",
+          "pin": "N",
+          "centre_mm": [
+            95.8,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV12_P",
+          "ref": "CHV12",
+          "pin": "P",
+          "centre_mm": [
+            100.8,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV13",
+      "centre_mm": [
+        106.6,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV13_N",
+          "ref": "CHV13",
+          "pin": "N",
+          "centre_mm": [
+            104.1,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV13_P",
+          "ref": "CHV13",
+          "pin": "P",
+          "centre_mm": [
+            109.1,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV14",
+      "centre_mm": [
+        114.9,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV14_N",
+          "ref": "CHV14",
+          "pin": "N",
+          "centre_mm": [
+            112.4,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV14_P",
+          "ref": "CHV14",
+          "pin": "P",
+          "centre_mm": [
+            117.4,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV15",
+      "centre_mm": [
+        123.2,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV15_N",
+          "ref": "CHV15",
+          "pin": "N",
+          "centre_mm": [
+            120.7,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV15_P",
+          "ref": "CHV15",
+          "pin": "P",
+          "centre_mm": [
+            125.7,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV16",
+      "centre_mm": [
+        131.5,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV16_N",
+          "ref": "CHV16",
+          "pin": "N",
+          "centre_mm": [
+            129.0,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV16_P",
+          "ref": "CHV16",
+          "pin": "P",
+          "centre_mm": [
+            134.0,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV17",
+      "centre_mm": [
+        139.8,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV17_N",
+          "ref": "CHV17",
+          "pin": "N",
+          "centre_mm": [
+            137.3,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV17_P",
+          "ref": "CHV17",
+          "pin": "P",
+          "centre_mm": [
+            142.3,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV18",
+      "centre_mm": [
+        148.1,
+        99.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV18_N",
+          "ref": "CHV18",
+          "pin": "N",
+          "centre_mm": [
+            145.6,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV18_P",
+          "ref": "CHV18",
+          "pin": "P",
+          "centre_mm": [
+            150.6,
+            99.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV19",
+      "centre_mm": [
+        7.0,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV19_N",
+          "ref": "CHV19",
+          "pin": "N",
+          "centre_mm": [
+            4.5,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV19_P",
+          "ref": "CHV19",
+          "pin": "P",
+          "centre_mm": [
+            9.5,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV20",
+      "centre_mm": [
+        15.3,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV20_N",
+          "ref": "CHV20",
+          "pin": "N",
+          "centre_mm": [
+            12.8,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV20_P",
+          "ref": "CHV20",
+          "pin": "P",
+          "centre_mm": [
+            17.8,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV21",
+      "centre_mm": [
+        23.6,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV21_N",
+          "ref": "CHV21",
+          "pin": "N",
+          "centre_mm": [
+            21.1,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV21_P",
+          "ref": "CHV21",
+          "pin": "P",
+          "centre_mm": [
+            26.1,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV22",
+      "centre_mm": [
+        31.9,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV22_N",
+          "ref": "CHV22",
+          "pin": "N",
+          "centre_mm": [
+            29.4,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV22_P",
+          "ref": "CHV22",
+          "pin": "P",
+          "centre_mm": [
+            34.4,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV23",
+      "centre_mm": [
+        40.2,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV23_N",
+          "ref": "CHV23",
+          "pin": "N",
+          "centre_mm": [
+            37.7,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV23_P",
+          "ref": "CHV23",
+          "pin": "P",
+          "centre_mm": [
+            42.7,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV24",
+      "centre_mm": [
+        48.5,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV24_N",
+          "ref": "CHV24",
+          "pin": "N",
+          "centre_mm": [
+            46.0,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV24_P",
+          "ref": "CHV24",
+          "pin": "P",
+          "centre_mm": [
+            51.0,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV25",
+      "centre_mm": [
+        56.8,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV25_N",
+          "ref": "CHV25",
+          "pin": "N",
+          "centre_mm": [
+            54.3,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV25_P",
+          "ref": "CHV25",
+          "pin": "P",
+          "centre_mm": [
+            59.3,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV26",
+      "centre_mm": [
+        65.1,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV26_N",
+          "ref": "CHV26",
+          "pin": "N",
+          "centre_mm": [
+            62.6,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV26_P",
+          "ref": "CHV26",
+          "pin": "P",
+          "centre_mm": [
+            67.6,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV27",
+      "centre_mm": [
+        73.4,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV27_N",
+          "ref": "CHV27",
+          "pin": "N",
+          "centre_mm": [
+            70.9,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV27_P",
+          "ref": "CHV27",
+          "pin": "P",
+          "centre_mm": [
+            75.9,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV28",
+      "centre_mm": [
+        81.7,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV28_N",
+          "ref": "CHV28",
+          "pin": "N",
+          "centre_mm": [
+            79.2,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV28_P",
+          "ref": "CHV28",
+          "pin": "P",
+          "centre_mm": [
+            84.2,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV29",
+      "centre_mm": [
+        90.0,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV29_N",
+          "ref": "CHV29",
+          "pin": "N",
+          "centre_mm": [
+            87.5,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV29_P",
+          "ref": "CHV29",
+          "pin": "P",
+          "centre_mm": [
+            92.5,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV30",
+      "centre_mm": [
+        98.3,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV30_N",
+          "ref": "CHV30",
+          "pin": "N",
+          "centre_mm": [
+            95.8,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV30_P",
+          "ref": "CHV30",
+          "pin": "P",
+          "centre_mm": [
+            100.8,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV31",
+      "centre_mm": [
+        106.6,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV31_N",
+          "ref": "CHV31",
+          "pin": "N",
+          "centre_mm": [
+            104.1,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV31_P",
+          "ref": "CHV31",
+          "pin": "P",
+          "centre_mm": [
+            109.1,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV32",
+      "centre_mm": [
+        114.9,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV32_N",
+          "ref": "CHV32",
+          "pin": "N",
+          "centre_mm": [
+            112.4,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV32_P",
+          "ref": "CHV32",
+          "pin": "P",
+          "centre_mm": [
+            117.4,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV33",
+      "centre_mm": [
+        123.2,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV33_N",
+          "ref": "CHV33",
+          "pin": "N",
+          "centre_mm": [
+            120.7,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV33_P",
+          "ref": "CHV33",
+          "pin": "P",
+          "centre_mm": [
+            125.7,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV34",
+      "centre_mm": [
+        131.5,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV34_N",
+          "ref": "CHV34",
+          "pin": "N",
+          "centre_mm": [
+            129.0,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV34_P",
+          "ref": "CHV34",
+          "pin": "P",
+          "centre_mm": [
+            134.0,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV35",
+      "centre_mm": [
+        139.8,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV35_N",
+          "ref": "CHV35",
+          "pin": "N",
+          "centre_mm": [
+            137.3,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV35_P",
+          "ref": "CHV35",
+          "pin": "P",
+          "centre_mm": [
+            142.3,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV36",
+      "centre_mm": [
+        148.1,
+        105.4
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV36_N",
+          "ref": "CHV36",
+          "pin": "N",
+          "centre_mm": [
+            145.6,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV36_P",
+          "ref": "CHV36",
+          "pin": "P",
+          "centre_mm": [
+            150.6,
+            105.4
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV37",
+      "centre_mm": [
+        7.0,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV37_N",
+          "ref": "CHV37",
+          "pin": "N",
+          "centre_mm": [
+            4.5,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV37_P",
+          "ref": "CHV37",
+          "pin": "P",
+          "centre_mm": [
+            9.5,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV38",
+      "centre_mm": [
+        15.3,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV38_N",
+          "ref": "CHV38",
+          "pin": "N",
+          "centre_mm": [
+            12.8,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV38_P",
+          "ref": "CHV38",
+          "pin": "P",
+          "centre_mm": [
+            17.8,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV39",
+      "centre_mm": [
+        23.6,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV39_N",
+          "ref": "CHV39",
+          "pin": "N",
+          "centre_mm": [
+            21.1,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV39_P",
+          "ref": "CHV39",
+          "pin": "P",
+          "centre_mm": [
+            26.1,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV40",
+      "centre_mm": [
+        31.9,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV40_N",
+          "ref": "CHV40",
+          "pin": "N",
+          "centre_mm": [
+            29.4,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV40_P",
+          "ref": "CHV40",
+          "pin": "P",
+          "centre_mm": [
+            34.4,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV41",
+      "centre_mm": [
+        40.2,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV41_N",
+          "ref": "CHV41",
+          "pin": "N",
+          "centre_mm": [
+            37.7,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV41_P",
+          "ref": "CHV41",
+          "pin": "P",
+          "centre_mm": [
+            42.7,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV42",
+      "centre_mm": [
+        48.5,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV42_N",
+          "ref": "CHV42",
+          "pin": "N",
+          "centre_mm": [
+            46.0,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV42_P",
+          "ref": "CHV42",
+          "pin": "P",
+          "centre_mm": [
+            51.0,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV43",
+      "centre_mm": [
+        56.8,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV43_N",
+          "ref": "CHV43",
+          "pin": "N",
+          "centre_mm": [
+            54.3,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV43_P",
+          "ref": "CHV43",
+          "pin": "P",
+          "centre_mm": [
+            59.3,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV44",
+      "centre_mm": [
+        65.1,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV44_N",
+          "ref": "CHV44",
+          "pin": "N",
+          "centre_mm": [
+            62.6,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV44_P",
+          "ref": "CHV44",
+          "pin": "P",
+          "centre_mm": [
+            67.6,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV45",
+      "centre_mm": [
+        73.4,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV45_N",
+          "ref": "CHV45",
+          "pin": "N",
+          "centre_mm": [
+            70.9,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV45_P",
+          "ref": "CHV45",
+          "pin": "P",
+          "centre_mm": [
+            75.9,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV46",
+      "centre_mm": [
+        81.7,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV46_N",
+          "ref": "CHV46",
+          "pin": "N",
+          "centre_mm": [
+            79.2,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV46_P",
+          "ref": "CHV46",
+          "pin": "P",
+          "centre_mm": [
+            84.2,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV47",
+      "centre_mm": [
+        90.0,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV47_N",
+          "ref": "CHV47",
+          "pin": "N",
+          "centre_mm": [
+            87.5,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV47_P",
+          "ref": "CHV47",
+          "pin": "P",
+          "centre_mm": [
+            92.5,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV48",
+      "centre_mm": [
+        98.3,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV48_N",
+          "ref": "CHV48",
+          "pin": "N",
+          "centre_mm": [
+            95.8,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV48_P",
+          "ref": "CHV48",
+          "pin": "P",
+          "centre_mm": [
+            100.8,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV49",
+      "centre_mm": [
+        106.6,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV49_N",
+          "ref": "CHV49",
+          "pin": "N",
+          "centre_mm": [
+            104.1,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV49_P",
+          "ref": "CHV49",
+          "pin": "P",
+          "centre_mm": [
+            109.1,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV50",
+      "centre_mm": [
+        114.9,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV50_N",
+          "ref": "CHV50",
+          "pin": "N",
+          "centre_mm": [
+            112.4,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV50_P",
+          "ref": "CHV50",
+          "pin": "P",
+          "centre_mm": [
+            117.4,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV51",
+      "centre_mm": [
+        123.2,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV51_N",
+          "ref": "CHV51",
+          "pin": "N",
+          "centre_mm": [
+            120.7,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV51_P",
+          "ref": "CHV51",
+          "pin": "P",
+          "centre_mm": [
+            125.7,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV52",
+      "centre_mm": [
+        131.5,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV52_N",
+          "ref": "CHV52",
+          "pin": "N",
+          "centre_mm": [
+            129.0,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV52_P",
+          "ref": "CHV52",
+          "pin": "P",
+          "centre_mm": [
+            134.0,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV53",
+      "centre_mm": [
+        139.8,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV53_N",
+          "ref": "CHV53",
+          "pin": "N",
+          "centre_mm": [
+            137.3,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV53_P",
+          "ref": "CHV53",
+          "pin": "P",
+          "centre_mm": [
+            142.3,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV54",
+      "centre_mm": [
+        148.1,
+        111.8
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV54_N",
+          "ref": "CHV54",
+          "pin": "N",
+          "centre_mm": [
+            145.6,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV54_P",
+          "ref": "CHV54",
+          "pin": "P",
+          "centre_mm": [
+            150.6,
+            111.8
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV55",
+      "centre_mm": [
+        7.0,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV55_N",
+          "ref": "CHV55",
+          "pin": "N",
+          "centre_mm": [
+            4.5,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV55_P",
+          "ref": "CHV55",
+          "pin": "P",
+          "centre_mm": [
+            9.5,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV56",
+      "centre_mm": [
+        15.3,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV56_N",
+          "ref": "CHV56",
+          "pin": "N",
+          "centre_mm": [
+            12.8,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV56_P",
+          "ref": "CHV56",
+          "pin": "P",
+          "centre_mm": [
+            17.8,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV57",
+      "centre_mm": [
+        23.6,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV57_N",
+          "ref": "CHV57",
+          "pin": "N",
+          "centre_mm": [
+            21.1,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV57_P",
+          "ref": "CHV57",
+          "pin": "P",
+          "centre_mm": [
+            26.1,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV58",
+      "centre_mm": [
+        31.9,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV58_N",
+          "ref": "CHV58",
+          "pin": "N",
+          "centre_mm": [
+            29.4,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV58_P",
+          "ref": "CHV58",
+          "pin": "P",
+          "centre_mm": [
+            34.4,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV59",
+      "centre_mm": [
+        40.2,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV59_N",
+          "ref": "CHV59",
+          "pin": "N",
+          "centre_mm": [
+            37.7,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV59_P",
+          "ref": "CHV59",
+          "pin": "P",
+          "centre_mm": [
+            42.7,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV60",
+      "centre_mm": [
+        48.5,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV60_N",
+          "ref": "CHV60",
+          "pin": "N",
+          "centre_mm": [
+            46.0,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV60_P",
+          "ref": "CHV60",
+          "pin": "P",
+          "centre_mm": [
+            51.0,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV61",
+      "centre_mm": [
+        56.8,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV61_N",
+          "ref": "CHV61",
+          "pin": "N",
+          "centre_mm": [
+            54.3,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV61_P",
+          "ref": "CHV61",
+          "pin": "P",
+          "centre_mm": [
+            59.3,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV62",
+      "centre_mm": [
+        65.1,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV62_N",
+          "ref": "CHV62",
+          "pin": "N",
+          "centre_mm": [
+            62.6,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV62_P",
+          "ref": "CHV62",
+          "pin": "P",
+          "centre_mm": [
+            67.6,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV63",
+      "centre_mm": [
+        7.0,
+        125.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV63_N",
+          "ref": "CHV63",
+          "pin": "N",
+          "centre_mm": [
+            4.5,
+            125.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV63_P",
+          "ref": "CHV63",
+          "pin": "P",
+          "centre_mm": [
+            9.5,
+            125.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV64",
+      "centre_mm": [
+        15.3,
+        125.0
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV64_N",
+          "ref": "CHV64",
+          "pin": "N",
+          "centre_mm": [
+            12.8,
+            125.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV64_P",
+          "ref": "CHV64",
+          "pin": "P",
+          "centre_mm": [
+            17.8,
+            125.0
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV65",
+      "centre_mm": [
+        90.0,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV65_N",
+          "ref": "CHV65",
+          "pin": "N",
+          "centre_mm": [
+            87.5,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV65_P",
+          "ref": "CHV65",
+          "pin": "P",
+          "centre_mm": [
+            92.5,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV66",
+      "centre_mm": [
+        98.3,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV66_N",
+          "ref": "CHV66",
+          "pin": "N",
+          "centre_mm": [
+            95.8,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV66_P",
+          "ref": "CHV66",
+          "pin": "P",
+          "centre_mm": [
+            100.8,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV67",
+      "centre_mm": [
+        106.6,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV67_N",
+          "ref": "CHV67",
+          "pin": "N",
+          "centre_mm": [
+            104.1,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV67_P",
+          "ref": "CHV67",
+          "pin": "P",
+          "centre_mm": [
+            109.1,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV68",
+      "centre_mm": [
+        114.9,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV68_N",
+          "ref": "CHV68",
+          "pin": "N",
+          "centre_mm": [
+            112.4,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV68_P",
+          "ref": "CHV68",
+          "pin": "P",
+          "centre_mm": [
+            117.4,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV69",
+      "centre_mm": [
+        123.2,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV69_N",
+          "ref": "CHV69",
+          "pin": "N",
+          "centre_mm": [
+            120.7,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV69_P",
+          "ref": "CHV69",
+          "pin": "P",
+          "centre_mm": [
+            125.7,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV70",
+      "centre_mm": [
+        131.5,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV70_N",
+          "ref": "CHV70",
+          "pin": "N",
+          "centre_mm": [
+            129.0,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV70_P",
+          "ref": "CHV70",
+          "pin": "P",
+          "centre_mm": [
+            134.0,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV71",
+      "centre_mm": [
+        139.8,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV71_N",
+          "ref": "CHV71",
+          "pin": "N",
+          "centre_mm": [
+            137.3,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV71_P",
+          "ref": "CHV71",
+          "pin": "P",
+          "centre_mm": [
+            142.3,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    },
+    {
+      "ref": "CHV72",
+      "centre_mm": [
+        148.1,
+        118.2
+      ],
+      "body_envelope_mm": [
+        7.6,
+        4.6
+      ],
+      "provisional_pads": [
+        {
+          "number": "CHV72_N",
+          "ref": "CHV72",
+          "pin": "N",
+          "centre_mm": [
+            145.6,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "PGND",
+          "oem_footprint_approved": false
+        },
+        {
+          "number": "CHV72_P",
+          "ref": "CHV72",
+          "pin": "P",
+          "centre_mm": [
+            150.6,
+            118.2
+          ],
+          "size_mm": [
+            2.3,
+            2.7
+          ],
+          "layer": 1,
+          "net": "VOUT",
+          "oem_footprint_approved": false
+        }
+      ],
+      "actual_pcb_component": false,
+      "placement_approved": false
+    }
+  ],
+  "hardware_manufacturing_approved": false,
+  "actual_oem_land_pattern_verified": false,
+  "schematic_parity_verified": false,
+  "100A_both_pole_power_copper_done": false,
+  "high_current_bars_connected": false,
+  "hot_esr_current_sharing_verified": false
+}

@@ -1,0 +1,29 @@
+{
+  "status": "ACTUAL_144_PROVISIONAL_PAD_NATIVE_SAVE_REOPEN_NOT_FOR_FAB",
+  "parent_sha256": "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1",
+  "candidate_sha256": "3a0e0c9c831c914ec3d9a34ee8b743d597fbe6e575d12b3fc5efc9432e8c0864",
+  "provisional_land_plan_sha256": "32b89ae5861bd7df3e51227e968652ab8e354a42966f745414ffcb61f19cba6a",
+  "native_reopen_drc": {
+    "Connection Error": 324,
+    "Netlist Error": 1
+  },
+  "readback": {
+    "original_components_preserved": 77,
+    "original_pads_preserved": 299,
+    "new_trial_lands": 144,
+    "original_nets_preserved": 65,
+    "original_lines_preserved": 149,
+    "original_vias_preserved": 18,
+    "native_pad_xy_net_size_verified": true,
+    "schematic_components_added": 0,
+    "fabrication_approved": false
+  },
+  "added_actual_component_instances": 0,
+  "pad_footprint_oem_qualified": false,
+  "schematic_parity_passed": false,
+  "100a_power_copper_done": false,
+  "real_both_pole_busbar_connected": false,
+  "all_unconnected_closed": false,
+  "native_drc_zero": false,
+  "fabrication_approved": false
+}
