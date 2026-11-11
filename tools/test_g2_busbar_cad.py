@@ -62,15 +62,27 @@ def test_reject_nonsensical_joint_geometry():
         B.screen(1.2,-1)
 
 
-def test_real_125c_murata_cout_mpn_is_candidate_not_a_placed_bank():
+def test_correct_primary_polymer_4mF_0p2mohm_bank_and_optional_hot_mlcc():
     d=json.loads((ROOT/"hardware/dcx_main/g2/cout_oem_candidate.json").read_text(encoding="utf-8"))
-    assert d["exact_mpn"]=="GRM32EE70J107ME15L"
-    assert d["rated"]["temp_operating_c"][1]==125
-    assert d["rated"]["capacitance_uF"]==100
-    assert d["rated"]["voltage_vdc"]==6.3
-    assert d["bank_preliminary"]["quantity"]==15
-    assert d["bank_preliminary"]["conservative_no_bias_lower_uF"]==pytest.approx(528)
-    assert d["bank_preliminary"]["effective_uF_at_2V"] is None
-    assert d["original_native_schematic"]["count_of_placed_components"]==1
-    assert d["verification_gates"]["real_15_part_native_eda"] is False
-    assert d["verification_gates"]["manufacturing_approved"] is False
+    assert d["schema"]=="d1_g2_cout_oem_candidate/2"
+    assert d["design_basis"]["min_bank_capacitance_uF_nominal_model"]==4000
+    assert d["design_basis"]["target_bank_esr_mohm_nominal_model"]==0.2
+    main=d["main_energy_storage"]
+    assert main["exact_mpn"]=="A720V477M2R5APE003"
+    assert main["rated"]["capacitance_uF"]==470
+    assert main["rated"]["rated_voltage_v"]==2.5
+    assert main["rated"]["temp_range_c"][1]==105
+    assert main["preliminary_parallel_bank"]["quantity"]==15
+    assert main["preliminary_parallel_bank"]["nominal_capacitance_uF"]==7050
+    assert main["preliminary_parallel_bank"]["capacitance_min_from_initial_tolerance_uF"]==5640
+    assert main["preliminary_parallel_bank"]["ideal_esr_mohm_at_100khz_25c"]==pytest.approx(3/15)
+    assert main["preliminary_parallel_bank"]["copper_spreading_and_rms_share_verified"] is False
+    extra=d["optional_high_frequency_bypass"]
+    assert extra["exact_mpn"]=="GRM32EE70J107ME15L"
+    assert extra["rated"]["temp_range_c"][1]==125
+    assert extra["effective_uF_at_2v"] is None
+    assert extra["quantity"].startswith("NOT_FROZEN")
+    assert "BELOW the 4mF main Cout requirement" in extra["note"]
+    assert d["current_native_G1"]["actual_device_count"]==1
+    assert d["gates"]["actual_15_polymer_devices_in_native_CAD"] is False
+    assert d["gates"]["manufacturing_approved"] is False
