@@ -1,0 +1,69 @@
+{
+  "schema": "d1_g2_cout_oem_candidate/1",
+  "status": "REAL_OEM_MPN_CANDIDATE_NOT_PLACED_NOT_FOR_FAB",
+  "design_stage": "G2_Cout_MCML_100A",
+  "manufacturer": "Murata Manufacturing",
+  "exact_mpn": "GRM32EE70J107ME15L",
+  "supplier_confirmation": "DigiKey product listed Active; OEM 1210/100uF/6.3V/X7U reference sheet applies to the E15 family",
+  "sources": {
+    "murata_reference_sheet": "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM32EE70J107ME15-01.pdf",
+    "murata_2025_dc_dc_example": "https://www.murata.com/products/productdata/8822873751582/MYMGM5R012ELA5RN.pdf",
+    "distributor_current_listing": "https://www.digikey.com/en/products/detail/murata-electronics/GRM32EE70J107ME15L/5027618"
+  },
+  "rated": {
+    "capacitance_uF": 100,
+    "tolerance_fraction": 0.2,
+    "voltage_vdc": 6.3,
+    "dielectric": "X7U",
+    "temp_operating_c": [
+      -55,
+      125
+    ],
+    "temp_coeff_low_fraction": -0.56,
+    "temp_coeff_high_fraction": 0.22,
+    "length_mm_nominal": 3.2,
+    "length_mm_tol": 0.3,
+    "width_mm_nominal": 2.5,
+    "width_mm_tol": 0.2,
+    "thickness_mm_nominal": 2.5,
+    "thickness_mm_tol": 0.2,
+    "terminal_to_terminal_clear_gap_mm_min": 1,
+    "terminal_end_width_mm_min": 0.3
+  },
+  "bank_preliminary": {
+    "quantity": 15,
+    "nominal_parallel_uF": 1500,
+    "conservative_no_bias_lower_fraction": 0.35200000000000004,
+    "conservative_no_bias_lower_uF": 528,
+    "effective_uF_at_2V": null,
+    "bank_esr_at_100C_mohm": null,
+    "bank_esl_nH": null,
+    "bank_ripple_a_rms": null,
+    "thermal_treatment": "rated -55..125C permits screening near 100C; X7U capacitance may change by -56% and 2V DC bias unknown"
+  },
+  "original_native_schematic": {
+    "ref": "Cout",
+    "count_of_placed_components": 1,
+    "coordinate_mm": [
+      5,
+      47
+    ],
+    "actual_pcb_net_pins": {
+      "1": "VOUT",
+      "2": "PGND"
+    },
+    "actual_footprint_is_not_15_x_1210": true
+  },
+  "next_eda_action": "Replace single native Cout design placeholder with 15 explicitly-numbered actual 1210 footprints with real VOUT/PGND pins; reroute close to four SR groups with copperbar topology, avoid J_OUT, submit saved/reopened EasyEDA and DRC; no fabricated bank before bias ESR/ESL/ripple and mounting pad vendor signoff.",
+  "verification_gates": {
+    "part_identity_from_oem_reference": true,
+    "part_status_from_distributor": true,
+    "real_15_part_native_eda": false,
+    "dc_bias_curve_downloaded_and_signed": false,
+    "esr_esl_ripple_current_qualified": false,
+    "land_pattern_from_current_oem_approval": false,
+    "mechanical_coldplate_clearance_signed": false,
+    "manufacturing_approved": false
+  },
+  "disclaimer": "Specific physically dimensioned OEM part candidate, not the final 100A Cout electrical design. No claim of 1500uF effective, actual ripple compliance or native CAD placement."
+}
