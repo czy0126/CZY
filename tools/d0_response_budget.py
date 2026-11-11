@@ -350,7 +350,9 @@ def permit_rail_release(parts: dict) -> dict:
         "guaranteed_uses_vd_is_min": True,
         "sr_pulldown_count": len(sr_pull),
         "sr_pulldowns_carry_most_of_the_discharge": conductance_share > 0.8,
-        "sr_pulldown_conductance_share": conductance_share,
+        # Round dimensionless contribution; CPython 3.11/3.13 differ by one
+        # binary-ULP here and must not invalidate a checked-in safety record.
+        "sr_pulldown_conductance_share": round(conductance_share, 12),
         "without_pulldowns_ceiling_v": ceiling_without,
         "without_pulldowns_never_disables": ceiling_without > UCC27282_VDIS_MAX_V,
         "filter_to_tdis_ratio": (None if fastest is None

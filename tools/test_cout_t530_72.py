@@ -40,11 +40,11 @@ def test_verified_vendor_and_p0_nominal_vs_real_operating_point():
     assert d["hardware_gates"]["fab_approved"] is False
 
 
-def test_actual_132_line_board_72_body_grid_gross_fit_but_copper_requires_eco():
+def test_actual_149_line_board_72_body_grid_gross_fit_but_copper_requires_eco():
     d=C.report()
     p=d["placement"]
-    assert p["board_source_sha256"]=="59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0"
-    assert p["board_readback_lines"]==132
+    assert p["board_source_sha256"]=="9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1"
+    assert p["board_readback_lines"]==149
     assert p["board_readback_pads"]==299
     assert p["board_readback_vias"]==18
     assert p["grid_columns"]==18 and p["grid_rows"]==4
@@ -59,8 +59,8 @@ def test_actual_132_line_board_72_body_grid_gross_fit_but_copper_requires_eco():
     # Existing output copper is still only 1-2mm traces, crosses the body
     # field and must be redesigned BEFORE placing 72 finished components.
     assert p["existing_copper_traversals_count"]>0
-    assert p["board_source"].endswith("dcx_main_board_g1_open_batch.eprj2")
-    assert p["source_native_connection_errors"]==183
+    assert p["board_source"].endswith("dcx_main_board_g1_control_direct.eprj2")
+    assert p["source_native_connection_errors"]==173
     assert set(p["existing_copper_traversals_by_net"])=={"PGND","VOUT"}
     assert p["existing_copper_traversals_count"]==sum(p["existing_copper_traversals_by_net"].values())
     assert p["current_native_component_count_added"]==0
@@ -97,19 +97,19 @@ def test_segment_box_intersection_checks_not_just_endpoints():
     assert C.touches((0,0,7.6,4.6),(8.3,0,15.9,4.6)) is False
 
 
-def test_pr95_132_line_drc_evidence_is_required(tmp_path,monkeypatch):
+def test_pr99_149_line_drc_evidence_is_required(tmp_path,monkeypatch):
     d=json.loads(C.DRC_DELTA.read_text(encoding="utf-8"))
-    d["native_reopen_drc"]["Connection Error"]=199
+    d["native_after_drc"]["Connection Error"]=199
     forged=tmp_path/"bad_drc_delta.json"
     forged.write_text(json.dumps(d),encoding="utf-8")
     monkeypatch.setattr(C,"DRC_DELTA",forged)
-    with pytest.raises(ValueError,match="actually checked native 132-line"):
+    with pytest.raises(ValueError,match="actually checked native 149-line"):
         C.active_native_g1()
 
 
-def test_pr95_saved_reopen_has_to_contain_actual_132_tracks(tmp_path,monkeypatch):
+def test_pr99_saved_reopen_has_to_contain_actual_149_tracks(tmp_path,monkeypatch):
     d=json.loads(C.READBACK.read_text(encoding="utf-8"))
-    d["value"]["lines"]=d["value"]["lines"][:107]
+    d["value"]["lines"]=d["value"]["lines"][:132]
     fake=tmp_path/"old_board_readback.json"
     fake.write_text(json.dumps(d),encoding="utf-8")
     monkeypatch.setattr(C,"READBACK",fake)

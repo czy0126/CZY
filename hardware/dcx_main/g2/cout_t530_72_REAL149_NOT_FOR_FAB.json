@@ -1,0 +1,1498 @@
+{
+  "schema": "g2_t530_72_cost_unrestricted/1",
+  "status": "OEM_VERIFIED_6P3V_COUT_CONCEPT_REQUIRES_POWER_REROUTE_NOT_FOR_FAB",
+  "part": {
+    "mpn": "T530X477M006ATE004",
+    "vendor": "KEMET / YAGEO",
+    "exact_order_oem_url": "https://search.kemet.com/component-documentation/download/specsheet/T530X477M006ATE004",
+    "oem_provenance": "hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json",
+    "capacitance_uF": 470,
+    "rated_v_at_or_below_105c": 6.3,
+    "rated_v_at_125c": 4.22,
+    "esr_mohm_at_100khz_25c": 4,
+    "ripple_a_at_100khz_125c": 2.05,
+    "body_nominal_mm": [
+      7.3,
+      4.3
+    ],
+    "max_height_mm": 4.3,
+    "trial_body_mm_including_0p3_assumed_margin": [
+      7.6,
+      4.6
+    ]
+  },
+  "requirements": {
+    "voltage_p0_min_v": 4.0,
+    "voltage_preferred_v": 6.3,
+    "minimum_nominal_capacity_mF": 7.05,
+    "ripple_p0_arms": 84.092907,
+    "bank_esr_mohm_at_operating_frequency_and_temperature": 0.07,
+    "separate_copper_joints_mohm": 0.03
+  },
+  "arithmetic_100khz_25c_only": {
+    "minimum_count_for_c_nominal": 15,
+    "minimum_count_for_ideal_esr": 58,
+    "chosen_count": 72,
+    "nominal_capacity_mF": 33.84,
+    "initial_tolerance_min_mF": 27.072,
+    "bank_esr_mohm_25c": 0.055555556,
+    "esr_arithmetic_margin_mohm_at_25c": 0.014444444,
+    "maximum_allowed_esr_per_part_mohm_at_hot_frequency": 5.04,
+    "allowed_esr_increase_over_25c_before_limit_pct": 26.0,
+    "bank_125c_ripple_nameplate_sum_a_at_100khz": 147.6,
+    "assumed_equal_ripple_per_unit_a": 1.167957,
+    "125c_ripple_arithmetic_only_pass": true,
+    "voltage_nominal_and_125c_at_least_4v": true,
+    "hot_200khz_esr_qualified": false,
+    "hot_200khz_ripple_qualified": false,
+    "startup_dynamics_qualified": false,
+    "ac_current_sharing_qualified": false,
+    "thermal_qualified": false
+  },
+  "placement": {
+    "board_source_sha256": "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1",
+    "board_readback_lines": 149,
+    "board_readback_pads": 299,
+    "board_readback_vias": 18,
+    "grid_columns": 18,
+    "grid_rows": 4,
+    "row_x_start_mm": 8.0,
+    "column_pitch_mm": 8.3,
+    "row_y_start_mm": 92.0,
+    "row_pitch_mm": 6.4,
+    "body_gap_x_mm": 0.7,
+    "body_gap_y_mm": 1.8,
+    "manufacturer_courtyard_verified": false,
+    "current_native_component_count_added": 0,
+    "existing_pad_body_conflicts": [],
+    "existing_copper_traversals_count": 65,
+    "existing_copper_traversals_by_net": {
+      "PGND": 51,
+      "VOUT": 14
+    },
+    "existing_copper_traversals_for_eco": [
+      {
+        "unit": "CHV01",
+        "net": "PGND",
+        "existing_copper_id": "da05eb672b3347c7"
+      },
+      {
+        "unit": "CHV01",
+        "net": "VOUT",
+        "existing_copper_id": "6ee6f0b4f2a5e7c0"
+      },
+      {
+        "unit": "CHV02",
+        "net": "PGND",
+        "existing_copper_id": "869575685fd74bf3"
+      },
+      {
+        "unit": "CHV03",
+        "net": "PGND",
+        "existing_copper_id": "bdeb167d766b3b27"
+      },
+      {
+        "unit": "CHV06",
+        "net": "PGND",
+        "existing_copper_id": "2ad3e24a63daf52c"
+      },
+      {
+        "unit": "CHV07",
+        "net": "PGND",
+        "existing_copper_id": "1ec048504f3637e7"
+      },
+      {
+        "unit": "CHV11",
+        "net": "PGND",
+        "existing_copper_id": "32256ac2add08f88"
+      },
+      {
+        "unit": "CHV12",
+        "net": "PGND",
+        "existing_copper_id": "aa06e0c4057759b9"
+      },
+      {
+        "unit": "CHV15",
+        "net": "PGND",
+        "existing_copper_id": "3bc6e3e55263d401"
+      },
+      {
+        "unit": "CHV17",
+        "net": "PGND",
+        "existing_copper_id": "09b5726f59204564"
+      },
+      {
+        "unit": "CHV19",
+        "net": "PGND",
+        "existing_copper_id": "da05eb672b3347c7"
+      },
+      {
+        "unit": "CHV19",
+        "net": "PGND",
+        "existing_copper_id": "49ad0daca5e4150b"
+      },
+      {
+        "unit": "CHV19",
+        "net": "VOUT",
+        "existing_copper_id": "6ee6f0b4f2a5e7c0"
+      },
+      {
+        "unit": "CHV20",
+        "net": "PGND",
+        "existing_copper_id": "869575685fd74bf3"
+      },
+      {
+        "unit": "CHV20",
+        "net": "PGND",
+        "existing_copper_id": "49ad0daca5e4150b"
+      },
+      {
+        "unit": "CHV20",
+        "net": "PGND",
+        "existing_copper_id": "aa5ab36fae457bb3"
+      },
+      {
+        "unit": "CHV21",
+        "net": "PGND",
+        "existing_copper_id": "bdeb167d766b3b27"
+      },
+      {
+        "unit": "CHV21",
+        "net": "PGND",
+        "existing_copper_id": "aa5ab36fae457bb3"
+      },
+      {
+        "unit": "CHV21",
+        "net": "PGND",
+        "existing_copper_id": "bebfe2997e682706"
+      },
+      {
+        "unit": "CHV22",
+        "net": "PGND",
+        "existing_copper_id": "bebfe2997e682706"
+      },
+      {
+        "unit": "CHV23",
+        "net": "PGND",
+        "existing_copper_id": "bebfe2997e682706"
+      },
+      {
+        "unit": "CHV24",
+        "net": "PGND",
+        "existing_copper_id": "2ad3e24a63daf52c"
+      },
+      {
+        "unit": "CHV24",
+        "net": "PGND",
+        "existing_copper_id": "bebfe2997e682706"
+      },
+      {
+        "unit": "CHV24",
+        "net": "PGND",
+        "existing_copper_id": "67f4ef6035658394"
+      },
+      {
+        "unit": "CHV25",
+        "net": "PGND",
+        "existing_copper_id": "1ec048504f3637e7"
+      },
+      {
+        "unit": "CHV25",
+        "net": "PGND",
+        "existing_copper_id": "67f4ef6035658394"
+      },
+      {
+        "unit": "CHV25",
+        "net": "PGND",
+        "existing_copper_id": "322a3cbaed4a2e78"
+      },
+      {
+        "unit": "CHV26",
+        "net": "PGND",
+        "existing_copper_id": "67f4ef6035658394"
+      },
+      {
+        "unit": "CHV26",
+        "net": "PGND",
+        "existing_copper_id": "322a3cbaed4a2e78"
+      },
+      {
+        "unit": "CHV27",
+        "net": "PGND",
+        "existing_copper_id": "624f8f1d5ee315da"
+      },
+      {
+        "unit": "CHV27",
+        "net": "PGND",
+        "existing_copper_id": "322a3cbaed4a2e78"
+      },
+      {
+        "unit": "CHV27",
+        "net": "PGND",
+        "existing_copper_id": "b780ecb3f2e9ed15"
+      },
+      {
+        "unit": "CHV28",
+        "net": "PGND",
+        "existing_copper_id": "624f8f1d5ee315da"
+      },
+      {
+        "unit": "CHV28",
+        "net": "PGND",
+        "existing_copper_id": "322a3cbaed4a2e78"
+      },
+      {
+        "unit": "CHV28",
+        "net": "PGND",
+        "existing_copper_id": "b780ecb3f2e9ed15"
+      },
+      {
+        "unit": "CHV29",
+        "net": "PGND",
+        "existing_copper_id": "32256ac2add08f88"
+      },
+      {
+        "unit": "CHV29",
+        "net": "PGND",
+        "existing_copper_id": "b780ecb3f2e9ed15"
+      },
+      {
+        "unit": "CHV29",
+        "net": "PGND",
+        "existing_copper_id": "7cd6e1d68d94c01c"
+      },
+      {
+        "unit": "CHV30",
+        "net": "PGND",
+        "existing_copper_id": "aa06e0c4057759b9"
+      },
+      {
+        "unit": "CHV30",
+        "net": "PGND",
+        "existing_copper_id": "7cd6e1d68d94c01c"
+      },
+      {
+        "unit": "CHV30",
+        "net": "PGND",
+        "existing_copper_id": "370c7ed3b41965dd"
+      },
+      {
+        "unit": "CHV31",
+        "net": "PGND",
+        "existing_copper_id": "370c7ed3b41965dd"
+      },
+      {
+        "unit": "CHV32",
+        "net": "PGND",
+        "existing_copper_id": "370c7ed3b41965dd"
+      },
+      {
+        "unit": "CHV33",
+        "net": "PGND",
+        "existing_copper_id": "3bc6e3e55263d401"
+      },
+      {
+        "unit": "CHV33",
+        "net": "PGND",
+        "existing_copper_id": "370c7ed3b41965dd"
+      },
+      {
+        "unit": "CHV33",
+        "net": "PGND",
+        "existing_copper_id": "e7f34021a17cf589"
+      },
+      {
+        "unit": "CHV34",
+        "net": "PGND",
+        "existing_copper_id": "e7f34021a17cf589"
+      },
+      {
+        "unit": "CHV35",
+        "net": "PGND",
+        "existing_copper_id": "09b5726f59204564"
+      },
+      {
+        "unit": "CHV35",
+        "net": "PGND",
+        "existing_copper_id": "e7f34021a17cf589"
+      },
+      {
+        "unit": "CHV37",
+        "net": "VOUT",
+        "existing_copper_id": "6ee6f0b4f2a5e7c0"
+      },
+      {
+        "unit": "CHV45",
+        "net": "PGND",
+        "existing_copper_id": "624f8f1d5ee315da"
+      },
+      {
+        "unit": "CHV46",
+        "net": "PGND",
+        "existing_copper_id": "624f8f1d5ee315da"
+      },
+      {
+        "unit": "CHV55",
+        "net": "VOUT",
+        "existing_copper_id": "6ee6f0b4f2a5e7c0"
+      },
+      {
+        "unit": "CHV55",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV56",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV57",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV58",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV59",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV60",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV61",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV62",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV63",
+        "net": "VOUT",
+        "existing_copper_id": "822c3a2af0972852"
+      },
+      {
+        "unit": "CHV63",
+        "net": "PGND",
+        "existing_copper_id": "624f8f1d5ee315da"
+      },
+      {
+        "unit": "CHV63",
+        "net": "VOUT",
+        "existing_copper_id": "d1d407aca84c55e7"
+      },
+      {
+        "unit": "CHV64",
+        "net": "PGND",
+        "existing_copper_id": "624f8f1d5ee315da"
+      }
+    ],
+    "board_source": "hardware/dcx_main/g1/dcx_main_board_g1_control_direct.eprj2",
+    "source_native_connection_errors": 173,
+    "units": [
+      {
+        "ref": "CHV01",
+        "candidate_position_mm": [
+          8.0,
+          92.0
+        ],
+        "row": 1,
+        "column": 1,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV02",
+        "candidate_position_mm": [
+          16.3,
+          92.0
+        ],
+        "row": 1,
+        "column": 2,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV03",
+        "candidate_position_mm": [
+          24.6,
+          92.0
+        ],
+        "row": 1,
+        "column": 3,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV04",
+        "candidate_position_mm": [
+          32.9,
+          92.0
+        ],
+        "row": 1,
+        "column": 4,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV05",
+        "candidate_position_mm": [
+          41.2,
+          92.0
+        ],
+        "row": 1,
+        "column": 5,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV06",
+        "candidate_position_mm": [
+          49.5,
+          92.0
+        ],
+        "row": 1,
+        "column": 6,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV07",
+        "candidate_position_mm": [
+          57.8,
+          92.0
+        ],
+        "row": 1,
+        "column": 7,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV08",
+        "candidate_position_mm": [
+          66.1,
+          92.0
+        ],
+        "row": 1,
+        "column": 8,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV09",
+        "candidate_position_mm": [
+          74.4,
+          92.0
+        ],
+        "row": 1,
+        "column": 9,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV10",
+        "candidate_position_mm": [
+          82.7,
+          92.0
+        ],
+        "row": 1,
+        "column": 10,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV11",
+        "candidate_position_mm": [
+          91.0,
+          92.0
+        ],
+        "row": 1,
+        "column": 11,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV12",
+        "candidate_position_mm": [
+          99.3,
+          92.0
+        ],
+        "row": 1,
+        "column": 12,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV13",
+        "candidate_position_mm": [
+          107.6,
+          92.0
+        ],
+        "row": 1,
+        "column": 13,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV14",
+        "candidate_position_mm": [
+          115.9,
+          92.0
+        ],
+        "row": 1,
+        "column": 14,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV15",
+        "candidate_position_mm": [
+          124.2,
+          92.0
+        ],
+        "row": 1,
+        "column": 15,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV16",
+        "candidate_position_mm": [
+          132.5,
+          92.0
+        ],
+        "row": 1,
+        "column": 16,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV17",
+        "candidate_position_mm": [
+          140.8,
+          92.0
+        ],
+        "row": 1,
+        "column": 17,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV18",
+        "candidate_position_mm": [
+          149.1,
+          92.0
+        ],
+        "row": 1,
+        "column": 18,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV19",
+        "candidate_position_mm": [
+          8.0,
+          98.4
+        ],
+        "row": 2,
+        "column": 1,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV20",
+        "candidate_position_mm": [
+          16.3,
+          98.4
+        ],
+        "row": 2,
+        "column": 2,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV21",
+        "candidate_position_mm": [
+          24.6,
+          98.4
+        ],
+        "row": 2,
+        "column": 3,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV22",
+        "candidate_position_mm": [
+          32.9,
+          98.4
+        ],
+        "row": 2,
+        "column": 4,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV23",
+        "candidate_position_mm": [
+          41.2,
+          98.4
+        ],
+        "row": 2,
+        "column": 5,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV24",
+        "candidate_position_mm": [
+          49.5,
+          98.4
+        ],
+        "row": 2,
+        "column": 6,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV25",
+        "candidate_position_mm": [
+          57.8,
+          98.4
+        ],
+        "row": 2,
+        "column": 7,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV26",
+        "candidate_position_mm": [
+          66.1,
+          98.4
+        ],
+        "row": 2,
+        "column": 8,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV27",
+        "candidate_position_mm": [
+          74.4,
+          98.4
+        ],
+        "row": 2,
+        "column": 9,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV28",
+        "candidate_position_mm": [
+          82.7,
+          98.4
+        ],
+        "row": 2,
+        "column": 10,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV29",
+        "candidate_position_mm": [
+          91.0,
+          98.4
+        ],
+        "row": 2,
+        "column": 11,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV30",
+        "candidate_position_mm": [
+          99.3,
+          98.4
+        ],
+        "row": 2,
+        "column": 12,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV31",
+        "candidate_position_mm": [
+          107.6,
+          98.4
+        ],
+        "row": 2,
+        "column": 13,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV32",
+        "candidate_position_mm": [
+          115.9,
+          98.4
+        ],
+        "row": 2,
+        "column": 14,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV33",
+        "candidate_position_mm": [
+          124.2,
+          98.4
+        ],
+        "row": 2,
+        "column": 15,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV34",
+        "candidate_position_mm": [
+          132.5,
+          98.4
+        ],
+        "row": 2,
+        "column": 16,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV35",
+        "candidate_position_mm": [
+          140.8,
+          98.4
+        ],
+        "row": 2,
+        "column": 17,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV36",
+        "candidate_position_mm": [
+          149.1,
+          98.4
+        ],
+        "row": 2,
+        "column": 18,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV37",
+        "candidate_position_mm": [
+          8.0,
+          104.8
+        ],
+        "row": 3,
+        "column": 1,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV38",
+        "candidate_position_mm": [
+          16.3,
+          104.8
+        ],
+        "row": 3,
+        "column": 2,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV39",
+        "candidate_position_mm": [
+          24.6,
+          104.8
+        ],
+        "row": 3,
+        "column": 3,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV40",
+        "candidate_position_mm": [
+          32.9,
+          104.8
+        ],
+        "row": 3,
+        "column": 4,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV41",
+        "candidate_position_mm": [
+          41.2,
+          104.8
+        ],
+        "row": 3,
+        "column": 5,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV42",
+        "candidate_position_mm": [
+          49.5,
+          104.8
+        ],
+        "row": 3,
+        "column": 6,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV43",
+        "candidate_position_mm": [
+          57.8,
+          104.8
+        ],
+        "row": 3,
+        "column": 7,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV44",
+        "candidate_position_mm": [
+          66.1,
+          104.8
+        ],
+        "row": 3,
+        "column": 8,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV45",
+        "candidate_position_mm": [
+          74.4,
+          104.8
+        ],
+        "row": 3,
+        "column": 9,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV46",
+        "candidate_position_mm": [
+          82.7,
+          104.8
+        ],
+        "row": 3,
+        "column": 10,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV47",
+        "candidate_position_mm": [
+          91.0,
+          104.8
+        ],
+        "row": 3,
+        "column": 11,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV48",
+        "candidate_position_mm": [
+          99.3,
+          104.8
+        ],
+        "row": 3,
+        "column": 12,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV49",
+        "candidate_position_mm": [
+          107.6,
+          104.8
+        ],
+        "row": 3,
+        "column": 13,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV50",
+        "candidate_position_mm": [
+          115.9,
+          104.8
+        ],
+        "row": 3,
+        "column": 14,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV51",
+        "candidate_position_mm": [
+          124.2,
+          104.8
+        ],
+        "row": 3,
+        "column": 15,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV52",
+        "candidate_position_mm": [
+          132.5,
+          104.8
+        ],
+        "row": 3,
+        "column": 16,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV53",
+        "candidate_position_mm": [
+          140.8,
+          104.8
+        ],
+        "row": 3,
+        "column": 17,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV54",
+        "candidate_position_mm": [
+          149.1,
+          104.8
+        ],
+        "row": 3,
+        "column": 18,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV55",
+        "candidate_position_mm": [
+          8.0,
+          111.2
+        ],
+        "row": 4,
+        "column": 1,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV56",
+        "candidate_position_mm": [
+          16.3,
+          111.2
+        ],
+        "row": 4,
+        "column": 2,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV57",
+        "candidate_position_mm": [
+          24.6,
+          111.2
+        ],
+        "row": 4,
+        "column": 3,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV58",
+        "candidate_position_mm": [
+          32.9,
+          111.2
+        ],
+        "row": 4,
+        "column": 4,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV59",
+        "candidate_position_mm": [
+          41.2,
+          111.2
+        ],
+        "row": 4,
+        "column": 5,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV60",
+        "candidate_position_mm": [
+          49.5,
+          111.2
+        ],
+        "row": 4,
+        "column": 6,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV61",
+        "candidate_position_mm": [
+          57.8,
+          111.2
+        ],
+        "row": 4,
+        "column": 7,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV62",
+        "candidate_position_mm": [
+          66.1,
+          111.2
+        ],
+        "row": 4,
+        "column": 8,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV63",
+        "candidate_position_mm": [
+          74.4,
+          111.2
+        ],
+        "row": 4,
+        "column": 9,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV64",
+        "candidate_position_mm": [
+          82.7,
+          111.2
+        ],
+        "row": 4,
+        "column": 10,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV65",
+        "candidate_position_mm": [
+          91.0,
+          111.2
+        ],
+        "row": 4,
+        "column": 11,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV66",
+        "candidate_position_mm": [
+          99.3,
+          111.2
+        ],
+        "row": 4,
+        "column": 12,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV67",
+        "candidate_position_mm": [
+          107.6,
+          111.2
+        ],
+        "row": 4,
+        "column": 13,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV68",
+        "candidate_position_mm": [
+          115.9,
+          111.2
+        ],
+        "row": 4,
+        "column": 14,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV69",
+        "candidate_position_mm": [
+          124.2,
+          111.2
+        ],
+        "row": 4,
+        "column": 15,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV70",
+        "candidate_position_mm": [
+          132.5,
+          111.2
+        ],
+        "row": 4,
+        "column": 16,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV71",
+        "candidate_position_mm": [
+          140.8,
+          111.2
+        ],
+        "row": 4,
+        "column": 17,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      },
+      {
+        "ref": "CHV72",
+        "candidate_position_mm": [
+          149.1,
+          111.2
+        ],
+        "row": 4,
+        "column": 18,
+        "positive_net": "VOUT",
+        "negative_net": "PGND",
+        "polarized_device": true,
+        "actual_schematic_component": false,
+        "actual_native_pcb_component": false,
+        "oem_pad_land_pattern_qualified": false
+      }
+    ]
+  },
+  "hardware_gates": {
+    "nominal_esr_arithmetic_at_25c_pass": true,
+    "supplier_6p3v_identity_known": true,
+    "official_25c_100khz_specs_known": true,
+    "actual_pad_polarity_approved": false,
+    "actual_72_components_in_schematic_and_pcb": false,
+    "corrected_100a_high_current_copper_in_native_board": false,
+    "coldplate_and_16mm_full_assembly_qualified": false,
+    "100c_200khz_esr_ripple_current_startup_qualified": false,
+    "complete_original_native_drc_zero": false,
+    "fab_approved": false
+  },
+  "next_real_eda_eco": "Copy current verified 149-line native PCB and revise VOUT/PGND high-current conductors before replacing single Cout placeholder; create 72 real OEM-approved footprints with true VOUT/PGND polarity and confirm 0.7mm provisional body gaps, actual 149-line-board copper traversals, pad geometry, new native DRC, hot 200kHz ESR, 33.84mF startup/soft-start and 16mm full thermal assembly."
+}

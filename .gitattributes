@@ -48,3 +48,8 @@ hardware/dcx_main/g1/*.json text eol=lf
 hardware/dcx_main/gen/*_raw.json text eol=lf
 hardware/dcx_main/gen/reference_schematic_connectivity.json text eol=lf
 hardware/dcx_main/**/*.eprj2 -text
+
+# Ansys Electronics Desktop .aedt is opaque, natively generated binary CAD.
+# Its SHA256 is used in the D1 Maxwell concept evidence; never normalize EOL.
+hardware/dcx_main/maxwell/*.aedt -text
+hardware/dcx_main/maxwell/*.evidence.json text eol=lf

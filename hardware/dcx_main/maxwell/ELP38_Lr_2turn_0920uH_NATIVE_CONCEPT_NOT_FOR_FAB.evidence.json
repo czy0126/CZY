@@ -1,0 +1,29 @@
+{
+  "schema": "D1_AEDT_NATIVE_CONCEPT_EVIDENCE_V1",
+  "kind": "ELP38_2TURN_0920UH_GEOMETRY_ONLY",
+  "cad_project": "hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.aedt",
+  "cad_project_sha256": "4ab265a0c95145979fa3a0f00d5f395d8a333f8d82c8fc06757587343e77e874",
+  "cad_project_bytes": 94201,
+  "concept_source": "design/v3/maxwell/diy_magnetics_concept.json",
+  "concept_source_sha256": "7a9ba973acb0df907eb0f9aee196e5f93206358a9619b3177c028289ec170db3",
+  "native_script": "tools/aedt_native_p0_lr_geometry.py",
+  "native_script_sha256": "b3056bba6ef15177c70a3f71790f606c3c1775a603515f0b43bb65380077977b",
+  "aedt_version": "2025R2",
+  "geometry_solids": [
+    "I38_FERRITE_PROXY",
+    "E_BACK",
+    "LR_OUTER_1",
+    "LR_OUTER_2"
+  ],
+  "magnetic_material": "AEDT_STOCK_FERRITE_PLACEHOLDER_NOT_N97_100C",
+  "physical_winding_connected": false,
+  "validated_terminal_dot": false,
+  "actual_oem_geometry": false,
+  "fem_solver_executed": false,
+  "mesh_converged": false,
+  "l_vs_i_verified": false,
+  "iron_and_copper_loss_verified": false,
+  "fabrication_approved": false,
+  "real_windings_and_24_plus_2_pads_approved": false,
+  "status": "ACTUAL_AEDT_NATIVE_GEOMETRY_SAVED_NO_SOLVER_NOT_FOR_FAB"
+}
