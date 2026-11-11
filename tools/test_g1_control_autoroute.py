@@ -179,7 +179,7 @@ def test_known_60s_timeout_is_safe_to_retry_only_on_identical_unsaved_copy(tmp_p
         M.prepare_stage2_copy()
     approval.unlink()
     receipt.write_text('{"ok":true,"value":{"saved":true}}',encoding="utf-8")
-    with pytest.raises(FileExistsError,match="no known timeout"):
+    with pytest.raises(FileExistsError,match="known timeout failure"):
         M.prepare_stage2_copy()
     receipt.unlink()
     with pytest.raises(FileExistsError,match="no recorded timeout"):
@@ -195,3 +195,19 @@ def test_missing_stage2_copy_is_created_without_overwriting_132_line_parent(tmp_
     assert M.prepare_stage2_copy()=="created fresh copy"
     assert candidate.read_bytes()==source.read_bytes()
     assert source.read_bytes()==b"the accepted G1 first stage"
+
+
+def test_drc_sha_rejects_any_content_change_but_allows_only_documented_lf_crlf(tmp_path):
+    import hashlib
+    raw=b'{"ok":true,\n"native":183}\n'
+    f=tmp_path/"raw_drc.json"
+    f.write_bytes(raw)
+    win_hash=hashlib.sha256(raw.replace(b"\n",b"\r\n")).hexdigest()
+    assert M.original_drc_hash_verified(f,win_hash)
+    assert M.original_drc_hash_verified(f,hashlib.sha256(raw).hexdigest())
+    f.write_bytes(raw.replace(b"183",b"182"))
+    assert not M.original_drc_hash_verified(f,win_hash)
+    f.write_bytes(raw.replace(b"\n",b"\n\n"))
+    assert not M.original_drc_hash_verified(f,win_hash)
+    f.write_bytes(b"{}")
+    assert not M.original_drc_hash_verified(f,"bad")
