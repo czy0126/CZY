@@ -8,7 +8,14 @@
 
 **目前真实状态：`NOT_FOR_FAB`。** 现有 G1 可编辑原生 PCB，但尚未完成 G1 布线、G2 实体封装/100 A 铜路及 G3 原生 ERC/DRC、保护与制造审查。每次回报只引用当前实际产物，不再汇总旧日期的“最新”。
 
-**当前唯一 Windows 原生布线执行入口（PR #97 的实际132线修订）：** 基于已验收的 `dcx_main_board_g1_open_batch.eprj2`，在仓库根目录执行 `python hardware/dcx_main/g1/apply_g1_control_autoroute.py --check` 后执行 `python hardware/dcx_main/g1/apply_g1_control_autoroute.py --apply`。第一阶段12组连接**已经完成，禁止重复布线**。实际132线原生DRC表明 DT、RT、OC1 已不再未连接，因此本轮只对 **RUN(2)、SS(2)、OC(4)、OCD(4)、OCM(6) 共5个仍有DRC的控制/过流网络**调用 EasyEDA `RoutingNets`，**其它60网明示排除**（含所有功率、磁件、SR门极及已布完成的3网）。自动布线API必须返回 `success=true` 且结果不越权；保存、重开、原有铜路和焊盘一致、原生DRC从183继续下降且无新网表/物理问题，才能提升版图基线。**当前原生DRC仍183 Connection/1 Netlist/0 Physical，第二阶段尚无实际成功回执；CI绿灯不代表真实落铜。**
+**下一次唯一实际 EasyEDA 原生工程操作（[#98](https://github.com/czy0126/CZY/pull/98)，替代反复失败的 Beta 自动布线）：** 当前已验收的 **132线、183 Connection／1 Netlist／0 Physical** `dcx_main_board_g1_open_batch.eprj2` 为唯一父版。Windows EasyEDA Pro 的仓库根目录执行：
+
+```powershell
+python hardware/dcx_main/g1/apply_g1_control_direct.py --check
+python hardware/dcx_main/g1/apply_g1_control_direct.py --apply
+```
+
+这个命令**不调用 Beta `autoRouting`**，复用先前在真实 EasyEDA 上把 107线变为132线的 `pcb_PrimitiveLine.create` 成功链路。基于实际 299焊盘／132旧铜／18过孔及磁件禁区，集中创建六组事先避让的控制网：**RUN(C13→R7)、SS(C6→U1)、OC(R16→U1)、OCD(R3→D_CT1)、OCM(C11→C12、D_CT4→R17)**；共16段、零新过孔，拒绝全部功率/磁件/SR驱动等其它网络。程序只修改**新副本**、保存关开并检查旧132线不漂移，必须取得原生DRC **Connection <183、Netlist ≤1、Physical=0、无新增错误**才写通过回执。原有9线/12组已在第一阶段执行，**禁止重跑**；此前 `apply_g1_control_autoroute.py` 的默认60秒超时及Beta失败副本只用于历史诊断，**不再是当前优先执行入口**。本次CI预检不等于已执行原生CAD，运行之前DRC仍183且 `NOT_FOR_FAB`。
 
 **不计成本 Cout 备选（PR #93 已合并）：** 已以既有确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）生成 **72颗（18×4）实际G1板源SHA绑定的XY/现有铜线干涉筛查**，代码 `tools/cout_t530_72.py`、[输入候选](../hardware/dcx_main/g2/cout_oem_candidate.json)。33.84mF、理想ESR 0.0556mΩ（25°C）仅是参考，**历史107线板的VOUT/PGND铜区曾有65处穿越关系**；最新工具已改为从实际验收的**132线/183 Connection**板读取重算，最新具体数量以同版生成的报告为准。现有高电流铜路仍须重构；100°C/200kHz、启动与电流均分、厂家封装和全装配16mm均未核实。15颗A720仍只是2.5V基准模型，不能直接替代高耐压方案。
 
