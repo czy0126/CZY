@@ -63,3 +63,26 @@ def test_readback_sha_change_blocks_stale_drill_review(tmp_path,monkeypatch):
     monkeypatch.setattr(K,"READBACK",fake)
     with pytest.raises(ValueError,match="SHA mismatch"):
         K.read_source()
+
+
+def test_real_native_eprj2_bytes_must_match_readback_source(tmp_path,monkeypatch):
+    assert K.BOARD.is_file()
+    # Read the actual saved EasyEDA archive, not only the already-checked JSON.
+    import hashlib
+    actual=hashlib.sha256(K.BOARD.read_bytes()).hexdigest()
+    assert actual==K.EXPECTED_BOARD_SHA256
+    forged=tmp_path/"changed_board.eprj2"
+    forged.write_bytes(b"corrupted native candidate")
+    monkeypatch.setattr(K,"BOARD",forged)
+    with pytest.raises(ValueError,match="native G1 .eprj2 SHA mismatch"):
+        K.read_source()
+
+
+def test_wrong_native_board_identity_in_report_is_rejected(tmp_path,monkeypatch):
+    report=json.loads(K.REPORT.read_text(encoding="utf-8"))
+    report["candidate"]["sha256"]="0"*64
+    forged=tmp_path/"wrong_report.json"
+    forged.write_text(json.dumps(report),encoding="utf-8")
+    monkeypatch.setattr(K,"REPORT",forged)
+    with pytest.raises(ValueError,match="Unexpected active G1 native CAD identity"):
+        K.read_source()
