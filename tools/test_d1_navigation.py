@@ -73,7 +73,11 @@ def test_current_docs_follow_actual_g1_not_the_old_main_snapshot():
     assert signal["native_drc_passed"] is False
     assert "38" in now and "R6" in now and "206" in now and "199" in now
     assert "107线" in now and "9条原生连接" in now and "24 个" in now
-    assert "唯一继续编辑" in now
+    # The authoritative page must name the board that is actually being edited
+    # now, not the frozen signal-stub parent and not the old main snapshot.
+    assert "本机最新已验收增量" in now and "dcx_main_board_g1_open_batch.eprj2" in now
+    assert "Connection 183" in now and "132线" in now
+    assert "本轮增量的冻结父版" in now
     assert "NOT_FOR_FAB" in now and "NOT_FOR_FAB" in d
     assert "真实" in p and "改前" in p
 

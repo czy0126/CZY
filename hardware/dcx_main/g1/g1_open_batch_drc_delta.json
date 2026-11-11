@@ -1,0 +1,20 @@
+{
+  "status": "ACTUAL_EASYEDA_COPPER_IMPROVED_NOT_FOR_FAB",
+  "parent_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "candidate_sha256": "59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0",
+  "source_drc_sha256": "e5075ead36d4714816d9ae3d4099acacc7db76dbc108451e35027c518839ba87",
+  "candidate_drc_sha256": "5495fd5ad467057daa835eb04c54266c463bd62f7741fd81bab5233c56086d71",
+  "source_drc": {
+    "Connection Error": 199,
+    "Netlist Error": 1
+  },
+  "native_reopen_drc": {
+    "Connection Error": 183,
+    "Netlist Error": 1
+  },
+  "native_connection_errors_reduced": 16,
+  "native_board_saved_reopened": true,
+  "remaining_magnetic_real_terminals_qualified": false,
+  "100a_two_rail_copper_qualified": false,
+  "full_board_fabrication_approved": false
+}

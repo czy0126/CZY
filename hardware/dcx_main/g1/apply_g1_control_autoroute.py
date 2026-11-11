@@ -18,9 +18,11 @@ Use one command ON THE LICENSED WINDOWS EDA HOST:
   6. Run native DRC; accept only if Connection errors further decline,
      Netlist does not grow, Physical stays zero and no existing copper changed.
 
-This is NOT executed by GitHub Linux CI. Do not claim the 199 count changes
-until original EasyEDA evidence is committed. Fails closed if a beta EDA
-version silently ignores the RoutingNets case-sensitive property.
+This is NOT executed by GitHub Linux CI. The first-stage source has now
+actually saved and reopened as a 132-line, 183-Connection G1 PCB. The beta
+second stage timed out at the CLI's 60000ms default and its submitted CAD is
+byte-identical to first-stage. Retry only when independently rechecked as an
+unchanged failed copy. No actual 183-to-lower DRC result exists yet.
 """
 from __future__ import annotations
 
@@ -111,6 +113,16 @@ const excluded={exclude};
 if (allow.length !== 8 || excluded.length !== 57) {{
   throw new Error('Wrong G1 autoRoute net scope; refusing');
 }}
+// A CLI open --path may open only the project tree, not the active PCB tab.
+const project=await eda.dmt_Project.getCurrentProjectInfo();
+const boards=project && project.data;
+if (!Array.isArray(boards) || boards.length !== 1 ||
+    !boards[0].pcb || !boards[0].pcb.uuid) {{
+  throw new Error('Missing uniquely identifiable active G1 PCB document');
+}}
+const pcbUuid=boards[0].pcb.uuid;
+await eda.dmt_EditorControl.openDocument(pcbUuid);
+await new Promise(resolve=>setTimeout(resolve,2500));
 const result=await eda.pcb_Document.autoRouting({{
   RoutingNets: allow,
   ignoreNets: excluded,
@@ -125,6 +137,24 @@ return {{routeResult: result, saved: saved,
          fabricationApproved: false}};"""
 
 
+def original_drc_hash_verified(path:Path, recorded_sha:str) -> bool:
+    """Verify original DRC SHA across Git's explicitly LF-normalized JSON.
+
+    Windows Python text writes can yield CRLF; .gitattributes pins these
+    native G1 JSON snapshots to LF in Git. Only accept exactly one of these
+    two byte sequences: the actual checkout or a pure LF->CRLF transform.
+    Never accept a changed JSON field, different whitespace or missing hash.
+    """
+    if not isinstance(recorded_sha,str) or len(recorded_sha)!=64:
+        return False
+    raw=path.read_bytes()
+    if hashlib.sha256(raw).hexdigest()==recorded_sha:
+        return True
+    if raw.startswith(b"{") and b"\r" not in raw:
+        return hashlib.sha256(raw.replace(b"\n",b"\r\n")).hexdigest()==recorded_sha
+    return False
+
+
 def stage1_verified() -> dict:
     if not STAGE1_BOARD.is_file() or not STAGE1.DELTA.is_file():
         raise FileNotFoundError("Actual first 12 native routes and original DRC evidence are missing")
@@ -132,7 +162,7 @@ def stage1_verified() -> dict:
     if (data.get("status")!="ACTUAL_EASYEDA_COPPER_IMPROVED_NOT_FOR_FAB"
          or data.get("parent_sha256")!=sha(G1.SOURCE)
          or data.get("candidate_sha256")!=sha(STAGE1_BOARD)
-         or data.get("candidate_drc_sha256")!=sha(STAGE1.AFTER_DRC)
+         or not original_drc_hash_verified(STAGE1.AFTER_DRC,data.get("candidate_drc_sha256"))
          or data.get("native_connection_errors_reduced",0)<1
          or data.get("full_board_fabrication_approved") is not False):
         raise ValueError("First 12 native tracks are not bound to their real PCB/DRC")
@@ -229,6 +259,28 @@ def compare_native_drc(first:dict,second:dict)->dict:
     }
 
 
+def prepare_stage2_copy() -> str:
+    """Reuse a timed-out attempt ONLY if the native bytes never changed.
+
+    A first-stage board and an unmodified failed second-stage COPY were both
+    uploaded in PR95. Never delete, overwrite, or reuse a modified .eprj2.
+    """
+    if not STAGE2_BOARD.exists():
+        shutil.copy2(STAGE1_BOARD,STAGE2_BOARD)
+        return "created fresh copy"
+    if STAGE2_REPORT.exists():
+        raise FileExistsError("Stage-2 DRC receipt already exists; refusing reroute")
+    if sha(STAGE2_BOARD)!=sha(STAGE1_BOARD):
+        raise FileExistsError("Existing stage-2 native CAD differs from verified 132-line source")
+    if not STAGE2_APPLY.is_file():
+        raise FileExistsError("Existing stage-2 CAD has no recorded timeout receipt")
+    prior=json.loads(STAGE2_APPLY.read_text(encoding="utf-8"))
+    err=prior.get("error") or {}
+    if prior.get("ok") is not False or err.get("code") not in ("REQUEST_TIMEOUT","CLI_TIMEOUT"):
+        raise FileExistsError("Existing stage-2 CAD does not have a known timeout failure")
+    return "reusing byte-identical failed-timeout copy without overwriting"
+
+
 def apply()->int:
     config=plan()
     # Single command: apply the #91 reviewed batch first if not present.
@@ -236,18 +288,17 @@ def apply()->int:
         if STAGE1.apply():
             raise RuntimeError("First native 12-route batch failed. Do not autoroute unverified parent.")
     first=stage1_verified()
-    if STAGE2_BOARD.exists():
-        raise FileExistsError("Refusing to overwrite prior native autoRoute candidate: "+str(STAGE2_BOARD))
-    shutil.copy2(STAGE1_BOARD,STAGE2_BOARD)
+    prepared=prepare_stage2_copy()
     target=STAGE2_BOARD
     prior=sha(STAGE1_BOARD)
-    print(f"Actual stage-1 12-route SHA: {prior}; copied for selected-net native autoRoute")
+    print(f"Verified 132-line stage-1 SHA: {prior}; {prepared}; native DRC still required")
     session=E.open_and_ping(target,PREFIX,"apply")
     if not session:raise RuntimeError("Native EasyEDA autoroute candidate failed to open")
     result=None
     try:
-        # Native router has an *internal* 900-second hard limit independent
-        # from CLI --timeout. Allow the CLI to return an explicit failure.
+        # CLI defaults to 60000ms and PR95's 59750ms REQUEST_TIMEOUT.
+        # The CLI permits up to 1800000ms. Native beta router separately
+        # limits its own operation to 900s; do not accept partial geometry.
         result=D.call(D.build_invoke_args(session,js_body(config),timeout_ms=930000),
                       timeout_s=960)
     finally:

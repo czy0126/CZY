@@ -13,6 +13,11 @@ import json
 from pathlib import Path
 
 import d1_bom_coverage as cov
+from performance_first_design import (
+    COUT_ESR_RFQ_TARGET_MOHM,
+    COUT_VRATED_MIN,
+    COUT_VRATED_PREFERRED,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 HW = ROOT / "hardware/dcx_main"
@@ -21,6 +26,7 @@ BOM = ROOT / "design/v3/bom/bom_draft.csv"
 CONTRACT = HW / "magnetics_symbol_contract.json"
 REG = HW / "component_decision_register.json"
 VENDOR = HW / "vendor_terminal_request.json"
+COUT_DOSSIER = HW / "g2/cout_oem_candidate.json"
 HIGH = {"T1", "T2", "T3", "T4", "CT", "Lr", "Cr",
         "Cin", "Cout", "D_BT", "J_IN", "J_OUT"}
 
@@ -28,6 +34,60 @@ HIGH = {"T1", "T2", "T3", "T4", "CT", "Lr", "Cr",
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open(encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
+
+
+def _verified_cout(dossier: dict) -> dict:
+    """Identity of the OEM-verified Cout candidate, with its RFQ gaps.
+
+    The datasheet archive is the source of truth.  A verified identity is not a
+    release: the flags below record that the part misses the P0 high-voltage
+    and hot-ESR asks, so the item stays PENDING.
+    """
+    main = dossier["main_energy_storage"]
+    rated = main["rated"]
+    bank = main["preliminary_parallel_bank"]
+    n = bank["quantity"]
+    esr_mohm = rated["esr_mohm_at_100khz_25c_MAX"]
+    bank_esr_mohm = esr_mohm / n
+    v = rated["rated_voltage_v"]
+    f_mid = (rated["F_oem_terminal_mm_min"] + rated["F_oem_terminal_mm_max"]) / 2
+    f_tol = (rated["F_oem_terminal_mm_max"] - rated["F_oem_terminal_mm_min"]) / 2
+    t_max = rated["temp_range_c"][1]
+    life_h = rated["life_at_105c_hours"]
+    mpn = main["exact_mpn"]
+    limits = main["series_datasheet_esr_limits"]
+    eol_multiple = limits["endurance_105c_rated_voltage_2000h_esr_max_multiple_of_initial"]
+    return {
+        "verified_mpn": mpn,
+        "manufacturer_datasheet": main["source_oem"],
+        "status": "PENDING_FOOTPRINT_HV_RATING_AND_HOT_ESR_SIGNOFF",
+        "exact_part_datasheet_archive": main["oem_archive"],
+        "exact_part_datasheet_verified": True,
+        "supplier_rfq_high_voltage_target_met": v >= COUT_VRATED_MIN,
+        "nominal_100khz_25c_esr_screen_met": bank_esr_mohm <= COUT_ESR_RFQ_TARGET_MOHM,
+        # No operating-condition bank ESR evidence is consumed by this generator.
+        # Increasing N must not turn a room-temperature screen into hot approval.
+        "supplier_rfq_low_esr_target_met": False,
+        "operating_condition_esr_evidence_status": "NOT_VERIFIED",
+        "issues": [
+            f"{mpn} is {v:g} V rated, below the P0 performance-first high-voltage RFQ "
+            f">= {COUT_VRATED_MIN:g} V ({COUT_VRATED_PREFERRED:g} V preferred); "
+            "cannot close P0 sourcing/approval",
+            f"Nominal bank ESR {esr_mohm:g} mOhm/{n} = {bank_esr_mohm:g} mOhm at 100 kHz/25 C "
+            f"{'passes' if bank_esr_mohm <= COUT_ESR_RFQ_TARGET_MOHM else 'fails'} only the nominal screen "
+            f"<= {COUT_ESR_RFQ_TARGET_MOHM:g} mOhm; actual temperature/frequency compliance "
+            "remains unverified regardless of parallel count",
+            f"Manufacturer F={f_mid:g} +/-{f_tol:g} mm is a body termination dimension, "
+            "not a released pad/land-pattern; the actual native placeholder differs",
+            f"200 kHz and DC-bias ESR are unpublished for this voltage rating; the series "
+            f"states only a 100 kHz/25 C maximum, and the {t_max} C/{life_h} h endurance "
+            f"limit allows ESR to rise to {eol_multiple:g}x initial "
+            f"({bank_esr_mohm:g} -> {bank_esr_mohm * eol_multiple:g} mOhm parts only), "
+            "so neither hot nor end-of-life ESR can close the same performance-first ask",
+            f"capacitor-to-capacitor current sharing and {v:g} V transient overshoot are "
+            "not certified",
+        ],
+    }
 
 
 def build() -> tuple[dict, dict]:
@@ -67,6 +127,20 @@ def build() -> tuple[dict, dict]:
             "reviewer": None,
             "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE",
         })
+    dossier = json.loads(COUT_DOSSIER.read_text(encoding="utf-8"))
+    for item in selection:
+        if item["ref"] != "Cout":
+            continue
+        if not dossier["gates"]["exact_oem_part_spec_archive_hash_verified"]:
+            continue
+        extra = _verified_cout(dossier)
+        issues = extra.pop("issues")
+        item.update(extra)
+        item["issues"] = item["issues"] + issues
+        item["existing_value_or_rating"] = item["existing_value_or_rating"].replace(
+            "part data unverified",
+            f"{item['verified_mpn']} individual part parameters OEM verified; "
+            "not released for this PCB")
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     devices = []
     for sym in contract["symbols"]:
@@ -129,7 +203,8 @@ def main() -> int:
             path.write_text(serialized, encoding="utf-8", newline="\n")
         elif json.loads(path.read_text(encoding="utf-8")) != data:
             raise SystemExit(f"stale register {path}; rerun --write")
-    print(f"61-part sourcing register and 5-magnetic vendor request: no verified new MPN")
+    print("61-part sourcing register and 5-magnetic vendor request: "
+          "only the dossier-backed Cout identity is verified, and it stays PENDING")
 
 
 if __name__ == "__main__":
