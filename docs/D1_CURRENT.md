@@ -8,6 +8,10 @@
 
 **目前真实状态：`NOT_FOR_FAB`。** 现有 G1 可编辑原生 PCB，但尚未完成 G1 布线、G2 实体封装/100 A 铜路及 G3 原生 ERC/DRC、保护与制造审查。每次回报只引用当前实际产物，不再汇总旧日期的“最新”。
 
+**当前唯一 Windows 原生布线执行入口（PR #94 已合并）：** 基于同一活板，从仓库根目录执行 `python hardware/dcx_main/g1/apply_g1_control_autoroute.py --check` 后执行 `python hardware/dcx_main/g1/apply_g1_control_autoroute.py --apply`。一次性运行先前12个已验证焊盘连接、保存重开及**实测 DRC 下降**；再利用官方 EasyEDA `RoutingNets` 只在 RUN/SS/DT/RT/OC1/OC/OCM/OCD 八个低电流网上执行原生自动布线，**其它57网全部明示排除**，只有不动功率铜/原网且原生DRC继续下降才接受另一份副本。**目前此 Windows 操作仍未执行；真实原生 DRC 仍199/1/0，不能把GitHub CI绿灯当成已布线。**
+
+**不计成本 Cout 备选（PR #93 已合并）：** 已以既有确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）生成 **72颗（18×4）实际G1板源SHA绑定的XY/现有铜线干涉筛查**，代码 `tools/cout_t530_72.py`、[输入候选](../hardware/dcx_main/g2/cout_oem_candidate.json)。33.84mF、理想ESR 0.0556mΩ（25°C）仅是参考，**原107线板的VOUT/PGND铜区存在65处穿越关系，须重做功率层**；100°C/200kHz、启动与电流均分、厂家封装和全装配16mm均未核实。15颗A720仍只是2.5V基准模型，不能直接替代高耐压方案。
+
 ## 唯一可继续编辑的基线
 
 | 对象 | 当前有效源 / 含义 |
