@@ -137,6 +137,24 @@ return {{routeResult: result, saved: saved,
          fabricationApproved: false}};"""
 
 
+def original_drc_hash_verified(path:Path, recorded_sha:str) -> bool:
+    """Verify original DRC SHA across Git's explicitly LF-normalized JSON.
+
+    Windows Python text writes can yield CRLF; .gitattributes pins these
+    native G1 JSON snapshots to LF in Git. Only accept exactly one of these
+    two byte sequences: the actual checkout or a pure LF->CRLF transform.
+    Never accept a changed JSON field, different whitespace or missing hash.
+    """
+    if not isinstance(recorded_sha,str) or len(recorded_sha)!=64:
+        return False
+    raw=path.read_bytes()
+    if hashlib.sha256(raw).hexdigest()==recorded_sha:
+        return True
+    if raw.startswith(b"{") and b"\r" not in raw:
+        return hashlib.sha256(raw.replace(b"\n",b"\r\n")).hexdigest()==recorded_sha
+    return False
+
+
 def stage1_verified() -> dict:
     if not STAGE1_BOARD.is_file() or not STAGE1.DELTA.is_file():
         raise FileNotFoundError("Actual first 12 native routes and original DRC evidence are missing")
@@ -144,7 +162,7 @@ def stage1_verified() -> dict:
     if (data.get("status")!="ACTUAL_EASYEDA_COPPER_IMPROVED_NOT_FOR_FAB"
          or data.get("parent_sha256")!=sha(G1.SOURCE)
          or data.get("candidate_sha256")!=sha(STAGE1_BOARD)
-         or data.get("candidate_drc_sha256")!=sha(STAGE1.AFTER_DRC)
+         or not original_drc_hash_verified(STAGE1.AFTER_DRC,data.get("candidate_drc_sha256"))
          or data.get("native_connection_errors_reduced",0)<1
          or data.get("full_board_fabrication_approved") is not False):
         raise ValueError("First 12 native tracks are not bound to their real PCB/DRC")
