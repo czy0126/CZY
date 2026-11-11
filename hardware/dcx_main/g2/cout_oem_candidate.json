@@ -53,8 +53,8 @@
     "oem_archive": "references/datasheets/a720v477m2r5ape003.provenance.json",
     "series_datasheet_esr_limits": {
       "source": "references/datasheets/kemet_t2078_a720_2024-09-04_performance_notes.txt",
-      "endurance_105c_rated_voltage_2000h_esr_max_multiple_of_initial": 2.0,
-      "high_temp_storage_105c_0v_2000h_esr_max_multiple_of_initial": 2.0,
+      "endurance_105c_rated_voltage_2000h_esr_max_multiple_of_initial": 2,
+      "high_temp_storage_105c_0v_2000h_esr_max_multiple_of_initial": 2,
       "temperature_stability_esr_criterion": "NONE STATED (dC/C, DF and DCL only)",
       "surge_105c_1p32x_rated_1000cycles_esr": "within initial specification",
       "esr_at_200khz": "UNKNOWN",
@@ -147,12 +147,13 @@
     "maximum_hot_frequency_unit_esr_to_meet_0p07_mohm": 5.040000000000001,
     "grid_columns": 18,
     "grid_rows": 4,
-    "pcb_copper_status": "G1 107-line source still has 1-2mm PGND/VOUT copper running beneath trial rows; 72 OEM footprint placement MUST be accompanied by redesigned VOUT/PGND high-current power rails, pad/polarity and native DRC.",
-    "geometry_status": "Actual native PCB pad-gross-collision/audit generated on CI; 0.7mm trial body gap is NOT an approved courtyard/land pattern",
+    "pcb_copper_status": "Current accepted G1 open_batch native 132-line/183-Connection candidate is the locked geometry input for tools/cout_t530_72.py. VOUT/PGND still use old 1-2mm rail traces through the proposed 72 capacitor bodies, requiring complete high-current copper redesign. Recomputed crossings belong to the exact current CI artifact, not the old 107-line report.",
+    "geometry_status": "Latest 132-line .eprj2 SHA is checked with reopen readback and native DRC; body gross clearance remains just a preliminary mechanical filter. OEM solder land, 0.7mm x body gap, 16mm stack and reflow still unapproved.",
     "original_15_cap_2p5v_baseline_overwritten": false,
     "transient_capacitance_model_updated": false,
     "thermal_100c_200khz_esr_verified": false,
     "native_pcb_changed": false,
-    "fab_approved": false
+    "fab_approved": false,
+    "active_native_board_sha256": "59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0"
   }
 }
