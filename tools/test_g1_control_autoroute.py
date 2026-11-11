@@ -16,10 +16,14 @@ import route_open_connections as P
 
 def test_native_autoroute_source_and_two_independent_scope_guards():
     p=M.plan()
-    assert p["source_sha256"]=="17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e"
+    assert p["source_sha256"]=="59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0"
+    assert p["first_stage_parent_sha256"]=="17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e"
+    assert p["active_native_connection_errors"]==183
     assert p["net_count"]==65
-    assert p["routing_nets"]==["RUN","SS","DT","RT","OC1","OC","OCM","OCD"]
-    assert len(p["ignoring_nets"])==57
+    assert p["routing_nets"]==["RUN","SS","OC","OCD","OCM"]
+    assert p["routing_drc_subcategories"]=={"RUN":2,"SS":2,"OC":4,"OCD":4,"OCM":6}
+    assert len(p["ignoring_nets"])==60
+    assert {"DT","RT","OC1"}.issubset(p["ignoring_nets"])
     assert set(p["routing_nets"]).isdisjoint(p["ignoring_nets"])
     assert {"PGND","VOUT","SW","VIN_P","CT_LR","SEC1_A","GA1",
             "VG1_A","REG1","VCC12","VCC12_S"}.issubset(set(p["ignoring_nets"]))
@@ -118,10 +122,10 @@ def test_native_save_reopen_array_reordering_is_not_a_false_layout_failure():
         after[key].reverse()
     after["lines"].append({**original["lines"][0],
                            "id":"NEW_NATIVE_CONTROL_ONLY",
-                           "net":"RT","layer":1})
+                           "net":"OC","layer":1})
     result=M.compare_readback(original,after)
     assert result["problems"] == [], result["problems"]
-    assert result["added_nets"] == ["RT"]
+    assert result["added_nets"] == ["OC"]
     assert result["readback_accepted_for_native_drc"] is True
 
 
@@ -211,3 +215,15 @@ def test_drc_sha_rejects_any_content_change_but_allows_only_documented_lf_crlf(t
     assert not M.original_drc_hash_verified(f,win_hash)
     f.write_bytes(b"{}")
     assert not M.original_drc_hash_verified(f,"bad")
+
+
+def test_native_beta_router_result_must_report_real_success_and_only_allowed_nets():
+    js=M.js_body(M.plan())
+    assert "result.success !== true" in js
+    assert "result.totalNetsCount > allow.length" in js
+    assert "result.failedNets.some(net => !allow.includes(net))" in js
+    assert "result.successNetsCount > result.totalNetsCount" in js
+    assert "if (allow.length !== 5 || excluded.length !== 60)" in js
+    assert "await eda.pcb_Document.save()" in js
+    assert js.index("result.success !== true") < js.index("pcb_Document.save()")
+    assert '"DT"' in js and '"RT"' in js and '"OC1"' in js

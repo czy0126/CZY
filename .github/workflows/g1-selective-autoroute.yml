@@ -6,6 +6,9 @@ on:
       - 'hardware/dcx_main/g1/apply_g1_open_batch.py'
       - 'tools/test_g1_control_autoroute.py'
       - 'hardware/dcx_main/g1/lr_signal_review_readback.json'
+      - 'hardware/dcx_main/g1/g1_open_batch_drc_raw.json'
+      - 'hardware/dcx_main/g1/g1_open_batch_reopen_readback.json'
+      - 'hardware/dcx_main/g1/g1_open_batch_drc_delta.json'
       - '.github/workflows/g1-selective-autoroute.yml'
   push:
     branches: [feat/d1-fab-package]
@@ -36,8 +39,9 @@ jobs:
           import json
           d=json.load(open("g1_control_autoroute_scope.json",encoding="utf-8"))
           s=open("g1_control_autoroute_native.js",encoding="utf-8").read()
-          assert len(d["routing_nets"])==8
-          assert len(d["ignoring_nets"])==57
+          assert len(d["routing_nets"])==5
+          assert d["active_native_connection_errors"]==183
+          assert len(d["ignoring_nets"])==60
           assert "RoutingNets: allow" in s
           assert "ignoreNets: excluded" in s
           assert "layers: [1]" in s
@@ -45,11 +49,11 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: G1-source-hashed-8-net-EasyEDA-beta-autorouter-NOT_FOR_FAB
+          name: G1-132-line-183-open-5-net-EasyEDA-beta-autorouter-NOT_FOR_FAB
           path: |
             g1_control_autoroute_scope.json
             g1_control_autoroute_native.js
           if-no-files-found: error
           retention-days: 30
 # CI cannot run proprietary Windows EasyEDA: this is an executable input,
-# not native layout or actual improvement from the 199 open connections.
+# not native layout or actual improvement from the 183 remaining open connections.
