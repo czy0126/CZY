@@ -109,3 +109,17 @@ def test_native_drc_must_be_real_decline_without_new_error(tmp_path,monkeypatch)
     b.write_text(json.dumps(fake(197,physical=1)),encoding="utf-8")
     with pytest.raises(ValueError,match="physical"):
         M.compare_native_drc({}, {})
+
+
+def test_native_save_reopen_array_reordering_is_not_a_false_layout_failure():
+    original=P.source()
+    after=json.loads(json.dumps(original))
+    for key in ("components","pads","vias","nets"):
+        after[key].reverse()
+    after["lines"].append({**original["lines"][0],
+                           "id":"NEW_NATIVE_CONTROL_ONLY",
+                           "net":"RT","layer":1})
+    result=M.compare_readback(original,after)
+    assert result["problems"] == [], result["problems"]
+    assert result["added_nets"] == ["RT"]
+    assert result["readback_accepted_for_native_drc"] is True
