@@ -118,3 +118,10 @@ def test_native_drc_has_to_decrease_without_new_errors(tmp_path,monkeypatch):
     native.write_text(json.dumps(drc(182,missing=True)))
     with pytest.raises(ValueError,match="disappeared"):
         A.compare_native_drc()
+
+
+def test_old_beta_autoroute_apply_entry_is_explicitly_disabled(monkeypatch):
+    import apply_g1_control_autoroute as obsolete
+    monkeypatch.setattr(sys, "argv", ["apply_g1_control_autoroute.py", "--apply"])
+    with pytest.raises(SystemExit, match="DEPRECATED: beta autoRouting"):
+        obsolete.main()
