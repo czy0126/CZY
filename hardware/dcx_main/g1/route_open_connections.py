@@ -139,7 +139,7 @@ def copper() -> dict:
             raise ValueError(f"Degenerate geometry for {pair}")
         plans.setdefault(net,{"width":WIDTH,"layer":1,"paths":[]})
         plans[net]["paths"].append(xy)
-    if len(PAIRS)!=12 or len(plans)!=9:
+    if len(PAIRS)!=12 or len(plans)!=10:
         raise ValueError("Route scope changed: review 12 connections before native applying")
     return plans
 
