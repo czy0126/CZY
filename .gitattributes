@@ -31,6 +31,13 @@ sim/v3/poc_*.cir text eol=lf
 # Store the run's bytes exactly.
 sim/v3/poc_*.log -text
 
+# Datasheet archive is evidence: the provenance JSON records the SHA256 of the
+# bytes actually downloaded/extracted.  Git eol conversion would make those
+# hashes fail on a fresh checkout even though the file content is unchanged.
+# The extracted .txt files carry 0xB0/0xB1/0xB5 bytes and are read as latin-1.
+references/datasheets/*.pdf -text
+references/datasheets/*.txt -text
+
 # Native EasyEDA G1 evidence is SHA/source-locked. Windows core.autocrlf=true
 # must not change committed JSON blobs or the original opaque CAD archive.
 hardware/dcx_main/g1/*.json text eol=lf
