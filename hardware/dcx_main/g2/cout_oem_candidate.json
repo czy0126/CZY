@@ -1,69 +1,104 @@
 {
-  "schema": "d1_g2_cout_oem_candidate/1",
-  "status": "REAL_OEM_MPN_CANDIDATE_NOT_PLACED_NOT_FOR_FAB",
-  "design_stage": "G2_Cout_MCML_100A",
-  "manufacturer": "Murata Manufacturing",
-  "exact_mpn": "GRM32EE70J107ME15L",
-  "supplier_confirmation": "DigiKey product listed Active; OEM 1210/100uF/6.3V/X7U reference sheet applies to the E15 family",
-  "sources": {
-    "murata_reference_sheet": "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM32EE70J107ME15-01.pdf",
-    "murata_2025_dc_dc_example": "https://www.murata.com/products/productdata/8822873751582/MYMGM5R012ELA5RN.pdf",
-    "distributor_current_listing": "https://www.digikey.com/en/products/detail/murata-electronics/GRM32EE70J107ME15L/5027618"
+  "schema": "d1_g2_cout_oem_candidate/2",
+  "status": "MAIN_POLYMER_AND_OPTIONAL_MLCC_CANDIDATES_NOT_PLACED_NOT_FOR_FAB",
+  "design_stage": "G2_Cout_100A",
+  "design_basis": {
+    "file": "design/v3/bom/cout_bank.json",
+    "min_bank_capacitance_uF_nominal_model": 4000,
+    "target_bank_esr_mohm_nominal_model": 0.2,
+    "ripple_rms_a_at_100a_from_existing_model": 52.478279189636574,
+    "ripple_rms_a_at_120a_overload_from_existing_model": 56.061937679462794,
+    "model_is_not_a_manufacturing_requirement": true
   },
-  "rated": {
-    "capacitance_uF": 100,
-    "tolerance_fraction": 0.2,
-    "voltage_vdc": 6.3,
-    "dielectric": "X7U",
-    "temp_operating_c": [
-      -55,
-      125
-    ],
-    "temp_coeff_low_fraction": -0.56,
-    "temp_coeff_high_fraction": 0.22,
-    "length_mm_nominal": 3.2,
-    "length_mm_tol": 0.3,
-    "width_mm_nominal": 2.5,
-    "width_mm_tol": 0.2,
-    "thickness_mm_nominal": 2.5,
-    "thickness_mm_tol": 0.2,
-    "terminal_to_terminal_clear_gap_mm_min": 1,
-    "terminal_end_width_mm_min": 0.3
+  "main_energy_storage": {
+    "manufacturer": "KEMET (YAGEO)",
+    "exact_mpn": "A720V477M2R5APE003",
+    "part_status": "Active according to distributors",
+    "type": "aluminum solid polymer, POLARIZED",
+    "source_oem": "https://content.kemet.com/datasheets/KEM_T2078_A720.pdf",
+    "current_listing": "https://www.digikey.com/en/products/detail/kemet/A720V477M2R5APE003/11689459",
+    "rated": {
+      "capacitance_uF": 470,
+      "tolerance_pct": 20,
+      "rated_voltage_v": 2.5,
+      "temp_range_c": [
+        -55,
+        105
+      ],
+      "esr_mohm_at_100khz_25c_MAX": 3,
+      "ripple_a_rms_at_100khz_qualified_basis": 11.69,
+      "length_mm": 7.3,
+      "width_mm": 4.3,
+      "height_mm_MAX": 2.1
+    },
+    "preliminary_parallel_bank": {
+      "quantity": 15,
+      "nominal_capacitance_uF": 7050,
+      "capacitance_min_from_initial_tolerance_uF": 5640,
+      "ideal_esr_mohm_at_100khz_25c": 0.2,
+      "ideal_rms_nameplate_sum_a": 175.35,
+      "ideal_rms_share_per_cap_at_100a_model_a": 3.4985519459757715,
+      "copper_spreading_and_rms_share_verified": false,
+      "hot_self_heating_and_lifetime_verified": false,
+      "rated_output_overshoot_below_2p5v_verified": false,
+      "note": "Main Cout bank selection already in design/v3/bom/cout_bank.json; correct primary 4mF/0.2mΩ target. 15 caps must be physically laid out, not the one native Cout symbol."
+    },
+    "pin_polarity": "VOUT to positive terminal; PGND to negative terminal; double-check OEM pin stripe/footprint approval"
   },
-  "bank_preliminary": {
-    "quantity": 15,
-    "nominal_parallel_uF": 1500,
-    "conservative_no_bias_lower_fraction": 0.35200000000000004,
-    "conservative_no_bias_lower_uF": 528,
-    "effective_uF_at_2V": null,
-    "bank_esr_at_100C_mohm": null,
-    "bank_esl_nH": null,
-    "bank_ripple_a_rms": null,
-    "thermal_treatment": "rated -55..125C permits screening near 100C; X7U capacitance may change by -56% and 2V DC bias unknown"
+  "optional_high_frequency_bypass": {
+    "manufacturer": "Murata",
+    "exact_mpn": "GRM32EE70J107ME15L",
+    "type": "MLCC X7U, nonpolar",
+    "source_oem": "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM32EE70J107ME15-01.pdf",
+    "murata_2025_application": "https://www.murata.com/products/productdata/8822873751582/MYMGM5R012ELA5RN.pdf",
+    "current_listing": "https://www.digikey.com/en/products/detail/murata-electronics/GRM32EE70J107ME15L/5027618",
+    "rated": {
+      "capacitance_uF": 100,
+      "tolerance_pct": 20,
+      "voltage_v": 6.3,
+      "dielectric": "X7U",
+      "temp_range_c": [
+        -55,
+        125
+      ],
+      "temperature_capacitance_delta_pct_range": [
+        -56,
+        22
+      ],
+      "length_mm": 3.2,
+      "width_mm": 2.5,
+      "height_mm_MAX": 2.7
+    },
+    "quantity": "NOT_FROZEN; optional high-frequency bypass only",
+    "effective_uF_at_2v": null,
+    "esr_esl_ac_model_verified": false,
+    "note": "15 x 100uF = 1.5mF nominal is BELOW the 4mF main Cout requirement. This MLCC is NEVER a drop-in replacement for the 15x470uF polymer primary bank."
   },
-  "original_native_schematic": {
+  "current_native_G1": {
     "ref": "Cout",
-    "count_of_placed_components": 1,
-    "coordinate_mm": [
+    "actual_device_count": 1,
+    "centre_mm": [
       5,
       47
     ],
-    "actual_pcb_net_pins": {
+    "nets": {
       "1": "VOUT",
       "2": "PGND"
     },
-    "actual_footprint_is_not_15_x_1210": true
+    "placed_15_part_polymer_bank": false,
+    "placed_supplemental_mlcc": false,
+    "baseline_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e"
   },
-  "next_eda_action": "Replace single native Cout design placeholder with 15 explicitly-numbered actual 1210 footprints with real VOUT/PGND pins; reroute close to four SR groups with copperbar topology, avoid J_OUT, submit saved/reopened EasyEDA and DRC; no fabricated bank before bias ESR/ESL/ripple and mounting pad vendor signoff.",
-  "verification_gates": {
-    "part_identity_from_oem_reference": true,
-    "part_status_from_distributor": true,
-    "real_15_part_native_eda": false,
-    "dc_bias_curve_downloaded_and_signed": false,
-    "esr_esl_ripple_current_qualified": false,
-    "land_pattern_from_current_oem_approval": false,
-    "mechanical_coldplate_clearance_signed": false,
+  "gates": {
+    "main_polymer_oem_part_identity_source_verified": true,
+    "actual_15_polymer_devices_in_native_CAD": false,
+    "primary_2p5v_overshoot_verified": false,
+    "primary_100c_thermal_lifetime_verified": false,
+    "main_200khz_esr_rms_derating_and_current_sharing_verified": false,
+    "actual_oem_land_pattern_and_signoff": false,
+    "suitable_hot_mounted_area_and_16mm_assembly_verified": false,
+    "supplemental_mlcc_2v_bias_esl_verified": false,
     "manufacturing_approved": false
   },
-  "disclaimer": "Specific physically dimensioned OEM part candidate, not the final 100A Cout electrical design. No claim of 1500uF effective, actual ripple compliance or native CAD placement."
+  "next_actual_eda_action": "Use existing proven 15 x 470uF KEMET polymer bank as primary. Replace single Cout schematic/PCB placeholder with a distributed 15-device array of verified manufacturer footprints; keep polarity; position near actual SR output and copperbar transition after mechanical reroute; then same native PCB save/reopen/DRC and DC surge+thermal model. 100uF Murata only as supplemental bypass if measured models warrant."
 }
