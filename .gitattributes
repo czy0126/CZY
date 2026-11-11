@@ -55,3 +55,5 @@ hardware/dcx_main/**/*.eprj2 -text
 # Its SHA256 is used in the D1 Maxwell concept evidence; never normalize EOL.
 hardware/dcx_main/maxwell/*.aedt -text
 hardware/dcx_main/maxwell/*.evidence.json text eol=lf
+hardware/dcx_main/maxwell/*.receipt.json text eol=lf
+hardware/dcx_main/maxwell/*.results.zip -text

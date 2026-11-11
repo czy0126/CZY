@@ -25,6 +25,8 @@ python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 
 **本机 P0-B 实体软件交付：** 已用安装在 `D:\ANSYS Inc\v252\AnsysEM` 的 AEDT 2025 R2 真实创建并保存原生 [ELP38/Lr 2匝概念工程](../hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.aedt)，输入源哈希和工程SHA见[证据](../hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.evidence.json)，可由 `tools/aedt_native_p0_lr_geometry.py` 复建。几何尺寸全部从 `design/v3/maxwell/diy_magnetics_concept.json` 取得。此轮**未完成 FEM 求解**、两匝铜环之间未串联、库存 ferrite 不是 N97 100°C B-H、未赋电流、也没有局部 B/L(I)、网格收敛或功耗；绝不能视为磁件合格。下一步先建立真正的绕组端子、电流方向及N97磁化特性，再运行 Maxwell 3D 并回填矩阵/场值。T1–T4、CT真实24 PAD/DOT仍未批准。
 
+**本轮 Maxwell FEM 实际更新（覆盖上一段早期“未求解”的历史状态）：** 已在本机 Ansys 2025R2 创建[单一连续双匝铜体的原生 `.aedt`](../hardware/dcx_main/maxwell/ELP38_Lr_CONNECTED_2TURN_SPIRAL_GEOMETRY_ONLY_NOT_FOR_FAB.aedt)及[来源哈希](../hardware/dcx_main/maxwell/ELP38_Lr_CONNECTED_2TURN_SPIRAL_GEOMETRY_ONLY_NOT_FOR_FAB.evidence.json)。独立1A Magnetostatic试验板将铜线外引至计算域边界，**Maxwell ValidateDesign及导电路径验证均通过，求解器实际正常结束**；但3次和10次两组自适应网格都**不收敛**，原始EDA工程、场数据压缩包、两次回执和校验哈希已绑定于[唯一FEM证据](../hardware/dcx_main/maxwell/ELP38_Lr_1A_connected_spiral_fem_nonconverged.evidence.json)。这只是软件可求解性验证：外引线非可制造结构、材料仍是库存ferrite而非N97 100°C非线性B-H，且只跑1A。**0.92µH目标、L(I)、磁密/损耗/100A/热表现一律未签核**。下一步先完成实际绕组/26端子的工程结构与磁性曲线、网格收敛曲线，再做偏置和AC损耗验证。
+
 **本机 P0-C 安全核验：** D0 保护原理图以原生 KiCad CLI `--severity-all` 校验ERC **0**；单独A/C代码测试 **136通过、1跳过**（`D:\anaconda3\envs\dc-dc`）。修复 `d0_response_budget.py` 浮点计算在Python 3.11/3.13的末位漂移，刷新源生成的响应预算JSON。**这只是静态ERC+逻辑及响应估计**，不代表十路VGS实测、物理同步、保护SOA、SR UVLO真实关断或可高能量上电，保护/制造门禁仍为false。
 
 ## 唯一可继续编辑的基线
