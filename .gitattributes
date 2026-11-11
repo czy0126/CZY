@@ -35,8 +35,12 @@ sim/v3/poc_*.log -text
 # bytes actually downloaded/extracted.  Git eol conversion would make those
 # hashes fail on a fresh checkout even though the file content is unchanged.
 # The extracted .txt files carry 0xB0/0xB1/0xB5 bytes and are read as latin-1.
+# Scope -text to the files a hash contract points at; a blanket *.txt rule
+# renormalizes older archived dumps that no provenance record covers.
 references/datasheets/*.pdf -text
-references/datasheets/*.txt -text
+references/datasheets/a720v477m2r5ape003_* -text
+references/datasheets/kemet_t2078_a720_* -text
+references/datasheets/yageo_pb_a720_* -text
 
 # Native EasyEDA G1 evidence is SHA/source-locked. Windows core.autocrlf=true
 # must not change committed JSON blobs or the original opaque CAD archive.
