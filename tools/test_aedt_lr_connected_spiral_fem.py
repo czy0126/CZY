@@ -16,13 +16,22 @@ SPIRAL=BASE/"ELP38_Lr_CONNECTED_2TURN_SPIRAL_GEOMETRY_ONLY_NOT_FOR_FAB.evidence.
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def original_windows_contract_sha(path):
+    """Match the actual CRLF input bytes used by native AEDT on Windows.
+
+    Git normalizes this original concept contract to LF on CI. Converting
+    back to original CRLF is an identity check, not a fabricated result.
+    """
+    data=path.read_bytes().replace(b"\r\n",b"\n")
+    return hashlib.sha256(data.replace(b"\n",b"\r\n")).hexdigest()
+
 def test_actual_native_spiral_is_one_connected_conductor_and_source_bound():
     e=json.loads(SPIRAL.read_text(encoding="utf-8"))
     cad=ROOT/e["project_file"]
     assert cad.is_file() and cad.stat().st_size>100000
     assert sha(cad)==e["project_sha256"]
     assert e["project_bytes"]==cad.stat().st_size
-    assert sha(ROOT/e["source_contract"])==e["source_contract_sha256"]
+    assert original_windows_contract_sha(ROOT/e["source_contract"])==e["source_contract_sha256"]
     assert sha(ROOT/e["native_generation_script"])==e["native_generation_script_sha256"]
     assert e["solids"]==["I38_FERRITE_PROXY","E_BACK","LR_SERIES_2TURN_COPPER"]
     assert e["conductor_one_piece_connected_geometry"] is True
