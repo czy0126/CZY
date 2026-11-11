@@ -1,6 +1,6 @@
 # D1 当前交接面板（唯一日常入口）
 
-> 状态基准：2026-11-10；研发主线 `feat/d1-fab-package`，本轮检出 `feat/g1-live-schematic-netlist`。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
+> 状态基准：2026-11-11；研发主线 `feat/d1-fab-package`，[PR #87](https://github.com/czy0126/CZY/pull/87) 已合并实际原生增量。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
 
 ## 目标与固定范围
 
@@ -12,8 +12,8 @@
 
 | 对象 | 当前有效源 / 含义 |
 | --- | --- |
-| G1 **父版** | [`g1/dcx_main_board_g1_lr_repack.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2)，sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`；只在**副本**上操作，不回写父版 |
-| **信号增量已验收，待随本轮提交提升基线** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
+| G1 **历史冻结父版（只用于追溯）** | [`g1/dcx_main_board_g1_lr_repack.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2)，sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`；只在**副本**上操作，不回写父版 |
+| **当前 G1 唯一继续编辑的原生候选** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
 | 原生重开读回 | [`lr_repack_readback.json`](../hardware/dcx_main/g1/lr_repack_readback.json)、[`lr_repack_drc_raw.json`](../hardware/dcx_main/g1/lr_repack_drc_raw.json)：77 个 PCB 位号、299 焊盘、65 网络、98 铜线、18 过孔；206 条 Connection、1 条 Netlist、0 条 Physical 错误 |
 | 实际 G1 原理图清册 | [`g1_native_inventory_raw.json`](../hardware/dcx_main/g1/g1_native_inventory_raw.json) / [审计](../hardware/dcx_main/g1/g1_native_inventory_bom_gate.json)：83 个原理图元件、38 项 MPN/目标值冲突，原 R8 被排除并在清册中重编号为 R6（BOM/PCB 双 false） |
 | 当前 原理图↔PCB 逐脚差异 | [`g1_import_changes_diff.json`](../hardware/dcx_main/g1/g1_import_changes_diff.json)（2026-11-10 实测）：原理图 65 网/278 脚 vs PCB 62 网/254 脚；**不配对 24 脚全部是 CT(4)+T1–T4(各5) 的逻辑端**，PCB 侧不配对脚 0，`PRI_12/23/34` 只见于原理图，47 个共有网逐脚相同，两侧未分配的 5 脚一致。编辑器对比器 `netlistComparison` 的 PCB 列恒空，差异取自 `pcb_Net.getNetlist('JLCEDA')`；1 条原生 Netlist Error 与之**相容**，但 DRC 只报条数、逐项映射仍是推断。旧 [`g1_schematic_pcb_alignment.json`](../hardware/dcx_main/g1/g1_schematic_pcb_alignment.json) 是 Nov 6 网表口径的 83−77 计数，不再作当前差异 |
@@ -24,6 +24,8 @@
 
 ## 接下来仅允许 A/B/C 三个工作包
 
+**当前 CAD 继承规则**：后续原生布线/磁件/输出铜路 ECO 必须从 `dcx_main_board_g1_signal_stubs.eprj2` 复制成**新的非覆盖候选**；旧 Lr-repack 仅是冻结父版。不得重新运行 `apply_lr_signal_stubs.py --apply`，也不得把新的原生99条以上布线与旧98条基线混作同一张板。
+
 | 工作包 | **下一个有意义的交付** | 完成标准 | 未满足时 |
 | --- | --- | --- | --- |
 | **A · #9**（最高优先） | Import Changes **逐脚差异已实测**（24 脚仅 CT/T1–T4 逻辑端，PCB 侧不配对脚 0）；**100 A 铜路拓扑已预筛**（D-12：中央双端子需 39×5 mm 且舌宽 ≥21.26 mm；4 mm 在 50 µΩ 接点下全面失败，20 µΩ 场景可通过；J_OUT 按图不可实现）。下一步落实**实体 Cout** 与**真实铜排/端子几何**，待 B 给出可制造端子后再做原生 ECO；Cout 在仓库内**无法选型**（`references/datasheets/` 无任何电容手册，RFQ 行仍 `PENDING`，需外部原厂数据，不得用 RFQ 摘要倒推 MPN） | 差异原文（已有）、原生CAD、保存重开、实际ERC/DRC；不得仅靠R6改名或匿名磁件猜测Netlist错误根因；新铜路需真实几何与双极电阻预算（已有离线预算，未进 CAD） | 不继续第十条低电流线的预检；涉及实体端子/工艺缺口则转B/C的具体交付 |
@@ -32,11 +34,11 @@
 
 严格 **WIP≤3**，A 高于 B/C。除真实 P0 安全故障外，A 未形成下一张原生板前，不再为 A 增加纯分析/检查 PR。
 
-## 本轮信号增量验收与下一操作
+## 已合并的 G1 信号增量与下一操作
 
 9条原生连接已经落板，**不要再次运行`--apply`覆盖或重画**。原先C103.1–C104.1报覆盖失败，是已有0.25/0.30mm同网铜线与新0.20mm线合并后，旧检查器仍要求全程等宽。现检查器同网同层投影裁剪、连续区间合并，signal显式允许更宽铜，保持原坐标容差；异网不能提供覆盖，真实缺口仍失败。原失败回执保留。
 
-本轮只读重新打开该CAD、读取全部图元并运行原生DRC，前后SHA一致；未重画已经覆盖的线段。原生证据：[读回](../hardware/dcx_main/g1/lr_signal_review_readback.json)、[DRC原文](../hardware/dcx_main/g1/lr_signal_review_drc_raw.json)、[绑定SHA的审核结果](../hardware/dcx_main/g1/lr_signal_review_report.json)。
+PR #87 已合并；验收期间只读重新打开该CAD、读取全部图元并运行原生DRC，前后SHA一致；未重画已经覆盖的线段。原生证据：[读回](../hardware/dcx_main/g1/lr_signal_review_readback.json)、[DRC原文](../hardware/dcx_main/g1/lr_signal_review_drc_raw.json)、[绑定SHA的审核结果](../hardware/dcx_main/g1/lr_signal_review_report.json)。
 
 可重复的离线检查：
 
