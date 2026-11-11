@@ -1,6 +1,6 @@
 {
   "schema": "d1_g2_cout_oem_candidate/2",
-  "status": "MAIN_POLYMER_AND_OPTIONAL_MLCC_CANDIDATES_NOT_PLACED_NOT_FOR_FAB",
+  "status": "OFFICIAL_PART_SPEC_VERIFIED_BUT_P0_HIGH_VOLTAGE_TARGET_FAILED_NOT_FOR_FAB",
   "design_stage": "G2_Cout_100A",
   "design_basis": {
     "file": "design/v3/bom/cout_bank.json",
@@ -15,7 +15,7 @@
     "exact_mpn": "A720V477M2R5APE003",
     "part_status": "Active according to distributors",
     "type": "aluminum solid polymer, POLARIZED",
-    "source_oem": "https://content.kemet.com/datasheets/KEM_T2078_A720.pdf",
+    "source_oem": "https://yageogroup.com/download/specsheet/A720V477M2R5APE003",
     "current_listing": "https://www.digikey.com/en/products/detail/kemet/A720V477M2R5APE003/11689459",
     "rated": {
       "capacitance_uF": 470,
@@ -29,7 +29,13 @@
       "ripple_a_rms_at_100khz_qualified_basis": 11.69,
       "length_mm": 7.3,
       "width_mm": 4.3,
-      "height_mm_MAX": 2.1
+      "height_mm_MAX": 2.1,
+      "F_oem_terminal_mm_min": 2.3,
+      "F_oem_terminal_mm_max": 2.5,
+      "S_oem_terminal_mm_min": 1,
+      "S_oem_terminal_mm_max": 1.6,
+      "F_and_S_are_NOT_approved_land_pattern": true,
+      "life_at_105c_hours": 2000
     },
     "preliminary_parallel_bank": {
       "quantity": 15,
@@ -41,9 +47,10 @@
       "copper_spreading_and_rms_share_verified": false,
       "hot_self_heating_and_lifetime_verified": false,
       "rated_output_overshoot_below_2p5v_verified": false,
-      "note": "Main Cout bank selection already in design/v3/bom/cout_bank.json; correct primary 4mF/0.2mΩ target. 15 caps must be physically laid out, not the one native Cout symbol."
+      "note": "Part-specific A720 vendor sheet now archived, but only part ratings verified; 15pcs at ideal 100kHz/25C give 7.05mF / 0.2mOhm. Does NOT meet P0 >=4V high-voltage RFQ or <=0.07mOhm operating-temperature ESR target. Original G1 only one 0603 Cout placeholder; manufacturing land/polarity approval absent."
     },
-    "pin_polarity": "VOUT to positive terminal; PGND to negative terminal; double-check OEM pin stripe/footprint approval"
+    "pin_polarity": "VOUT to positive terminal; PGND to negative terminal; double-check OEM pin stripe/footprint approval",
+    "oem_archive": "references/datasheets/a720v477m2r5ape003.provenance.json"
   },
   "optional_high_frequency_bypass": {
     "manufacturer": "Murata",
@@ -98,7 +105,10 @@
     "actual_oem_land_pattern_and_signoff": false,
     "suitable_hot_mounted_area_and_16mm_assembly_verified": false,
     "supplemental_mlcc_2v_bias_esl_verified": false,
-    "manufacturing_approved": false
+    "manufacturing_approved": false,
+    "exact_oem_part_spec_archive_hash_verified": true,
+    "p0_high_voltage_rfq_4v_met": false,
+    "p0_high_performance_esr_0p07_mohm_met": false
   },
-  "next_actual_eda_action": "Use existing proven 15 x 470uF KEMET polymer bank as primary. Replace single Cout schematic/PCB placeholder with a distributed 15-device array of verified manufacturer footprints; keep polarity; position near actual SR output and copperbar transition after mechanical reroute; then same native PCB save/reopen/DRC and DC surge+thermal model. 100uF Murata only as supplemental bypass if measured models warrant."
+  "next_actual_eda_action": "A720 is verified only as a 2.5V base-model part; independent P0 RFQ requires >=4V (6.3V preferred) and <=0.07mOhm hot/high-frequency bank ESR, neither met. Treat 15-unit design as design-owned placement input, not approved final MPN. For any selected replacement: validate OEM pad/courtyard and positive/negative pin map, place 15 actual components in a new G1 EasyEDA native copy, then save/reopen/native DRC, verify overshoot/hot ESR/ripple and both-pole 100A connections."
 }
