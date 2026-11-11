@@ -75,7 +75,7 @@ def test_changed_actual_132line_board_rejected_even_when_readback_unchanged(tmp_
     p=tmp_path/"fake_new.eprj2"
     p.write_bytes(b"some other PCB")
     monkeypatch.setattr(P,"SOURCE",p)
-    with pytest.raises(ValueError,match="native.*changed"):
+    with pytest.raises(ValueError,match="132-line G1 CAD bytes changed"):
         P.source()
 
 
@@ -94,7 +94,7 @@ def test_native_drc_has_to_decrease_without_new_errors(tmp_path,monkeypatch):
         def g(name,count):
             return {"name":name,"list":[{"name":name,"list":[{} for _ in range(count)]}]}
         return {"ok":True,"value":{"count":2 if missing else 3,
-          "raw":([g("Connection Error",n),g("Netlist Error",netlist)]
+          "raw":([g("Connection Error",n),g("Physical Error",physical)]
             if missing else [g("Connection Error",n),g("Netlist Error",netlist),
                              g("Physical Error",physical)])}}
     monkeypatch.setattr(A,"TARGET",target)
