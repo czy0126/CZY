@@ -1,0 +1,52 @@
+name: G1 199-open actual native copper batch preflight
+on:
+  pull_request:
+    paths:
+      - 'hardware/dcx_main/g1/route_open_connections.py'
+      - 'hardware/dcx_main/g1/apply_g1_open_batch.py'
+      - 'tools/test_g1_open_batch.py'
+      - 'hardware/dcx_main/g1/lr_signal_review_readback.json'
+      - 'hardware/dcx_main/g1/lr_signal_review_drc_raw.json'
+      - 'hardware/dcx_main/g1/g1_100a_output_interface.json'
+      - 'hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2'
+      - '.github/workflows/g1-199-open-batch.yml'
+  push:
+    branches: [feat/d1-fab-package]
+    paths:
+      - 'hardware/dcx_main/g1/route_open_connections.py'
+      - 'hardware/dcx_main/g1/apply_g1_open_batch.py'
+      - 'tools/test_g1_open_batch.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checked-route-batch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify actual 107-line parent and 199-native-open baseline
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tools/test_g1_open_batch.py
+          python hardware/dcx_main/g1/apply_g1_open_batch.py --check > g1_open_batch_preflight.json
+      - name: Generate EXACT EasyEDA copper API body for twelve net connections
+        run: |
+          python hardware/dcx_main/g1/route_open_connections.py --emit-js > g1_open_batch_native_create.js
+          python hardware/dcx_main/g1/route_open_connections.py --write-plan
+          test -s g1_open_batch_native_create.js
+          test -s hardware/dcx_main/g1/g1_open_batch_route_plan.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: G1-199-open-12-route-EasyEDA-execution-input-NOT-FOR-FAB
+          path: |
+            g1_open_batch_native_create.js
+            g1_open_batch_preflight.json
+            hardware/dcx_main/g1/g1_open_batch_route_plan.json
+          if-no-files-found: error
+          retention-days: 30
+# A green preflight NEVER means native PCB modified or 199 opens removed.
+# Only the Windows '--apply' copy/reopen/actual DRC evidence closes them.
