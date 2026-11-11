@@ -159,8 +159,10 @@ python tools/main_board_mechanical.py --check    # A5 摆放 1:1 + DRC，需要 
 - **网络检索到的器件参数不等于已核实**：本环境 `WebFetch` 对 `lcsc.com`、`chemi-con.co.jp`、
   `kemet.com`、`tokin.com`、`partstack.com` 返回 "Unable to verify if domain … is safe to fetch"
   （2026-11-10 试过 A720 的厂商/镜像/汇编三处，全被拦），只能拿到搜索摘要，读不到原厂 datasheet。
-  这类数字（如 `cout_bank.py` 的 `CANDIDATES`）必须在文档和 JSON 里标明"检索摘要、未读 datasheet"，
-  不得写成 VERIFIED。
+  原厂**直属**域名可能可达：2026-11-11 从 `yageogroup.com/download/specsheet/<MPN>` 直接取到 A720
+  单件规格页并归档（`references/datasheets/`）。能取到 PDF 才叫已核实，搜索摘要仍按未核实处理。
+  这类数字（如 `cout_bank.py` 的 `CANDIDATES`）必须在文档和 JSON 里标明来源：
+  读过的写 VERIFIED/`verified: true`，只有摘要的写"检索摘要、未读 datasheet"。
 - 模型估计必须带不确定度引用；不得把一次积分当签核值（第三轮"6.8 倍预算"已撤回）。
 - 未验证的假设要单列（如 CPIN 是数值正则化参数，不是器件参数；SR 驱动是理想源，
   不取自 VDD/REG，故 VDD/REG 的静态电流**未被建模**；原边自举同理——`Bgh` 不取自 `Cbt`，

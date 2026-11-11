@@ -444,20 +444,28 @@
       "ref": "Cout",
       "priority": "P0",
       "part_role": "output capacitor bank",
-      "existing_value_or_rating": "15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=56.06 A RMS at 200 kHz at the 50 V/120 A overload point, measured I(Cout) (52.48 A at the rated 100 A is a four-SR reconstruction that reads ~1.2% high, so the comparison is conservative); bank ESR <=0.2 mohm; part data unverified",
-      "current_mpn": "TO SELECT",
+      "existing_value_or_rating": "15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=56.06 A RMS at 200 kHz at the 50 V/120 A overload point, measured I(Cout) (52.48 A at the rated 100 A is a four-SR reconstruction that reads ~1.2% high, so the comparison is conservative); bank ESR <=0.2 mohm; A720 individual part parameters OEM verified; not released for this PCB",
+      "current_mpn": "TO SELECT (native Cout is still a 0603 placeholder)",
       "current_package": "polymer SMD",
       "source_path": "computed",
       "issues": [
-        "PLACEHOLDER 100 nF 0603; the design is 15 x 470 uF (TO SELECT)"
+        "Existing native Cout is a single placeholder 100 nF/0603; correct implementation needs 15x true polarized polymer footprint and updated electrical schematic/BOM",
+        "A720 is 2.5 V rated, below P0 performance-first high-voltage Cout RFQ >=4 V (6.3 V preferred); cannot close P0 sourcing/approval",
+        "Nominal bank ESR 3 mOhm/15=0.2 mOhm at 100kHz 25C, fails independent performance-first RFQ <=0.07 mOhm at actual temperature/frequency",
+        "Manufacturer F=2.4 +/-0.1 mm is body termination dimension, not released pad/land-pattern. Actual native placeholder differs",
+        "105 C/2000 h, 200 kHz ripple/temperature, capacitor-to-capacitor sharing and 2.5 V transient overshoot not yet certified"
       ],
       "requested_decision": "select real purchasable part or approved designed assembly; verify footprint/pad/voltage/current",
-      "verified_mpn": null,
-      "manufacturer_datasheet": null,
+      "verified_mpn": "A720V477M2R5APE003",
+      "manufacturer_datasheet": "https://yageogroup.com/download/specsheet/A720V477M2R5APE003",
       "eda_footprint_verified": false,
       "decision_owner": null,
       "reviewer": null,
-      "status": "PENDING_VENDOR_OR_ENGINEER_EVIDENCE"
+      "status": "PENDING_FOOTPRINT_HV_RATING_AND_HOT_ESR_SIGNOFF",
+      "exact_part_datasheet_archive": "references/datasheets/a720v477m2r5ape003.provenance.json",
+      "exact_part_datasheet_verified": true,
+      "supplier_rfq_high_voltage_target_met": false,
+      "supplier_rfq_low_esr_target_met": false
     },
     {
       "ref": "Cr",

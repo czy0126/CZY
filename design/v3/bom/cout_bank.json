@@ -1,5 +1,36 @@
 {
-  "status": "sizing only; part data is search-sourced, not datasheet-verified",
+  "status": "sizing only; A720 is datasheet-verified, A798 and Chemi-Con are still network search summaries",
+  "datasheet": {
+    "part": "KEMET A720V477M2R5APE003",
+    "manufacturer_document": "https://yageogroup.com/download/specsheet/A720V477M2R5APE003",
+    "archive": "references/datasheets/a720v477m2r5ape003_yageo_spec_2026-11-11.txt",
+    "series_cross_check": "references/datasheets/kemet_t2078_a720_2024-09-04_p5-p7_ja.txt",
+    "product_brief": "references/datasheets/yageo_pb_a720_a798_revA.txt",
+    "provenance": "references/datasheets/a720v477m2r5ape003.provenance.json",
+    "spec_generated": "11/11/2026",
+    "esr_condition": "3 mOhm maximum at 100 kHz, 25 C",
+    "ripple_condition": "11.69 A rms at 100 kHz, +20 C rise",
+    "height_is_maximum": true,
+    "voltage_derating_required": false,
+    "facts": {
+      "case": "V/7343-21",
+      "c_f": 0.00047,
+      "v_rated": 2.5,
+      "esr_ohm": 0.003,
+      "irms_a": 11.69,
+      "height_max_mm": 2.1,
+      "length_mm": 7.3,
+      "width_mm": 4.3,
+      "lead_pitch_mm": 2.4,
+      "leakage_ua": 70.5,
+      "df_pct": 6.0,
+      "life_h": 2000,
+      "rated_temp_c": 105,
+      "ripple_frequency_khz": 100,
+      "ripple_delta_t_c": 20,
+      "voltage_derating_required": false
+    }
+  },
   "requirements": {
     "capacitance_f": 0.004,
     "esr_ohm": 0.0002,
@@ -127,6 +158,8 @@
       "bank_irms_a": 175.35,
       "v_rated": 2.5,
       "height_mm": 2.1,
+      "verified": true,
+      "source": "https://yageogroup.com/download/specsheet/A720V477M2R5APE003",
       "esr_margin_frac": 1.0
     },
     {
@@ -143,6 +176,8 @@
       "bank_irms_a": 193.8,
       "v_rated": 2.5,
       "height_mm": 3.1,
+      "verified": false,
+      "source": "network search summary; no datasheet read",
       "esr_margin_frac": 1.0
     },
     {
@@ -159,6 +194,8 @@
       "bank_irms_a": 147.5,
       "v_rated": 2.5,
       "height_mm": 8.0,
+      "verified": false,
+      "source": "network search summary; no datasheet read",
       "esr_margin_frac": 1.0
     }
   ],
@@ -167,7 +204,8 @@
   "caveats": [
     "bank ESR = part ESR / N assumes zero interconnect resistance; at N>=15 the copper spreading resistance is not negligible and is not modelled here",
     "0.2 mohm is the value the simulation ran with, not a specified limit; at 0.1 mohm the count doubles",
-    "part data is a vendor page summary; capacitance at 2 V bias, ESR at temperature and end of life are not included",
+    "the selected part's ratings are its datasheet maximum at 100 kHz/25 C; capacitance at 2 V bias and ESR at temperature and end of life are not included",
+    "the 2.1 mm is the mechanical maximum, not a nominal height",
     "the rated point ran with the 4 mF model capacitance and both overload points with the 7.05 mF candidate value; the ripple current is the difference of the measured SR and load currents, so the capacitance does not enter it, but the voltage ripple does and is not comparable across the three points"
   ]
 }

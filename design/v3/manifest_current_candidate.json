@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-09",
+  "generated": "2026-11-11",
   "scope": "100 A design delivery: v3 decks/raws, magnetics package, stage-F protocol, BOM package, 48 V/110 A and 120 A candidate records + deck-derived run metadata",
   "supersedes": {
     "path": "design/v2/manifest_current_candidate.json",
@@ -388,7 +388,7 @@
       "path": "tools/ascii_raw_window.py",
       "kind": "script",
       "bytes": 12734,
-      "mtime": 1794193023.0751245,
+      "mtime": 1794247287.6989362,
       "sha256": "a7a524040df747f28c8ac4b3c53a8c75f8ce913646ed1b54199430def7853e39"
     },
     {
@@ -443,9 +443,9 @@
     {
       "path": "tools/cout_bank.py",
       "kind": "script",
-      "bytes": 12634,
-      "mtime": 1793926283.7875085,
-      "sha256": "0f0b6cca71c382c89f9c820affc526b0bd3724f3ffac99226964d776b35c1914"
+      "bytes": 18575,
+      "mtime": 1794376145.7243521,
+      "sha256": "b1f8792e944fc20cf13e16c3867e2bd3375d66d210638bd7ec60c9cfa09aefdd"
     },
     {
       "path": "tools/cr_bank.py",
@@ -591,14 +591,14 @@
       "path": "tools/current_manifest.py",
       "kind": "script",
       "bytes": 52087,
-      "mtime": 1793942593.5651138,
+      "mtime": 1794247287.699936,
       "sha256": "fa1d17e53279d337c5cfe6926627b001f7b2b803beeb2cbb07d320dc4bbddb52"
     },
     {
       "path": "tools/test_ascii_raw_window.py",
       "kind": "script",
       "bytes": 6058,
-      "mtime": 1794192991.6959462,
+      "mtime": 1794247287.7039495,
       "sha256": "e003977983134b5b8d086938898f5d5e3e7a2a38ba6cbf0d4729c5922c8c2395"
     },
     {
@@ -646,9 +646,9 @@
     {
       "path": "tools/test_cout_bank.py",
       "kind": "script",
-      "bytes": 9570,
-      "mtime": 1793926234.2744577,
-      "sha256": "63b368e3461519b603f306f9a23dc571f320cfd9440c816c1daf7bffdecad7f5"
+      "bytes": 10125,
+      "mtime": 1794375967.773426,
+      "sha256": "49cd26b59cf9a99e8447007b1889feff3ca686a9a61980896a8fedac7eff7aa7"
     },
     {
       "path": "tools/test_cr_bank.py",
@@ -1081,21 +1081,21 @@
       "path": "design/v3/magnetics/winding_polarity.json",
       "kind": "result",
       "bytes": 23776,
-      "mtime": 1793510323.2781987,
+      "mtime": 1793981042.5647428,
       "sha256": "63ff49593661f7bf0501deaaef086cb6bd97c5a4fafd6545571c85769fb9c704"
     },
     {
       "path": "design/v3/magnetics/winding_polarity.csv",
       "kind": "result",
       "bytes": 1955,
-      "mtime": 1793502476.2251115,
+      "mtime": 1793981042.5647428,
       "sha256": "de6e2faf743657cdbda10864b509345ad86d921e43f620826f5f69bb4fa40baf"
     },
     {
       "path": "design/v3/magnetics/first_article_polarity_record.csv",
       "kind": "result",
       "bytes": 2684,
-      "mtime": 1793510323.2781987,
+      "mtime": 1793981042.5647428,
       "sha256": "5a4c8a784b36f75d7a132bcedd5de57da777e068bc6ba474f81d658105cab013"
     },
     {
@@ -1122,9 +1122,9 @@
     {
       "path": "design/v3/bom/cout_bank.json",
       "kind": "result",
-      "bytes": 5970,
-      "mtime": 1793926339.8356652,
-      "sha256": "5cd83be405a73ee8066e53811bada68147fc8c0e577bfbf51a5b55c39c51f51e"
+      "bytes": 7533,
+      "mtime": 1794376155.8066914,
+      "sha256": "d1430e0ddc0a504099040f793aceaca5fe9107652605d2d72c793bafcce2b80c"
     },
     {
       "path": "design/v3/bom/cr_bank.json",
@@ -1689,121 +1689,87 @@
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
       "kind": "raw",
-      "bytes": 313272885,
-      "mtime": 1793460852.3873262,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.raw",
       "kind": "raw",
-      "bytes": 323786842,
-      "mtime": 1793466779.9403882,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
       "kind": "raw",
-      "bytes": 424201312,
-      "mtime": 1793500090.4126365,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.raw",
       "kind": "raw",
-      "bytes": 423432645,
-      "mtime": 1793504499.5669048,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw",
       "kind": "raw",
-      "bytes": 333900714,
-      "mtime": 1793504059.583435,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw",
       "kind": "raw",
-      "bytes": 325540155,
-      "mtime": 1793503174.708234,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
       "kind": "raw",
-      "bytes": 2440722591,
-      "mtime": 1793507709.565322,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
       "kind": "raw",
-      "bytes": 2247195062,
-      "mtime": 1793517457.6778996,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.raw",
       "kind": "raw",
-      "bytes": 3781605817,
-      "mtime": 1793523665.6113186,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.raw",
       "kind": "raw",
-      "bytes": 3647496897,
-      "mtime": 1793604721.4735725,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw",
       "kind": "raw",
-      "bytes": 359483293,
-      "mtime": 1793535548.2831655,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
       "kind": "raw",
-      "bytes": 486828020,
-      "mtime": 1793537107.4558449,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.raw",
       "kind": "raw",
-      "bytes": 373202868,
-      "mtime": 1793592942.7806866,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
       "kind": "raw",
-      "bytes": 505404440,
-      "mtime": 1793592197.2961447,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw",
       "kind": "raw",
-      "bytes": 404618104,
-      "mtime": 1793596975.1540136,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
       "kind": "raw",
-      "bytes": 409962124,
-      "mtime": 1793597201.8201654,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
       "kind": "raw",
-      "bytes": 1051638412,
-      "mtime": 1793629489.1141574,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw",
@@ -1813,118 +1779,119 @@
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw",
       "kind": "raw",
-      "bytes": 1436166458,
-      "mtime": 1793625956.8223403,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw",
       "kind": "raw",
-      "bytes": 1395195030,
-      "mtime": 1793623971.9950135,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.raw",
       "kind": "raw",
-      "bytes": 941858736,
-      "mtime": 1793670700.981676,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
       "kind": "raw",
-      "bytes": 1205532932,
-      "mtime": 1793634632.788649,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.raw",
       "kind": "raw",
-      "bytes": 1079779478,
-      "mtime": 1793671261.9380884,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.raw",
       "kind": "raw",
-      "bytes": 1055527140,
-      "mtime": 1793671957.9968457,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
       "kind": "raw",
-      "bytes": 1209980429,
-      "mtime": 1793672005.6503298,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
       "kind": "raw",
-      "bytes": 408026706,
-      "mtime": 1793605041.7675376,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
       "kind": "raw",
-      "bytes": 2266080981,
-      "mtime": 1793605786.1218648,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.raw",
       "kind": "raw",
-      "bytes": 1256482999,
-      "mtime": 1793678298.0711854,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.raw",
       "kind": "raw",
-      "bytes": 1074269155,
-      "mtime": 1793678308.9924915,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.raw",
       "kind": "raw",
-      "bytes": 176950736,
-      "mtime": 1793678528.1323295,
-      "sha256": "8471b8b9afeb910017917deb62e9e8f7f0be528b629166ff1b682493e0e6704b"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.raw",
       "kind": "raw",
-      "bytes": 2481930130,
-      "mtime": 1793680274.9798195,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.raw",
       "kind": "raw",
-      "bytes": 2157824686,
-      "mtime": 1793681659.9633555,
-      "sha256": "skipped-large-raw"
+      "status": "missing"
     },
     {
       "path": "sim/v3/prot_latch_uvlo_check.raw",
       "kind": "raw",
-      "bytes": 3958643,
-      "mtime": 1793682587.0960295,
-      "sha256": "18e98e62be535f7c5925312168c9c39395ca79036794169602539faee58ae318"
+      "status": "missing"
     },
     {
       "path": "sim/v3/prot_latch_restart_check.raw",
       "kind": "raw",
-      "bytes": 236361838,
-      "mtime": 1793682527.8691118,
-      "sha256": "1b2761af7cdf6dadcda726ceb30d5cb5ceab1959f9df268a60fceded475985eb"
+      "status": "missing"
     }
   ],
   "missing": [
-    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw"
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cin.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_ledger2n.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_cout7m.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_phys.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned2n.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned1n.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_100a_aligned0p5n.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i110_cin.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin48_i120_cin.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i110_cin.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_diag.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_diag.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_cshunt_srprobe.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_2n.raw",
+    "sim/v3/sr_tank_dual_v33_ss_1ms_vin50_i120_cin_aligned.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_a_oc1v.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_fast10u_1p8v.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_48v_120a_srprobe_prot_b_unarmed.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_a_oc1v.raw",
+    "sim/v3/sr_tank_dual_v33_ss_hotfault_50v_120a_cshunt_srprobe_prot_b_fast10u_1p8v.raw",
+    "sim/v3/prot_latch_uvlo_check.raw",
+    "sim/v3/prot_latch_restart_check.raw"
   ],
   "deck_timing": [
     {

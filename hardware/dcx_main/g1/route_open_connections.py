@@ -96,8 +96,17 @@ def source() -> dict:
 
 
 def categories(data: dict) -> dict:
-    gr=data["value"]["raw"]
-    if not isinstance(gr,list):raise ValueError("DRC category list missing")
+    if not isinstance(data,dict) or data.get("ok") is not True or not isinstance(data.get("value"),dict):
+        raise ValueError("Native DRC response failed or missing")
+    gr=data["value"].get("raw")
+    if not isinstance(gr,list) or not gr:raise ValueError("DRC category list missing or empty; require explicit native result")
+    if "count" in data["value"] and data["value"]["count"] != len(gr):
+        raise ValueError("Native DRC category count mismatch")
+    for group in gr:
+        if not isinstance(group,dict) or not isinstance(group.get("name"),str) or not group["name"] or not isinstance(group.get("list"),list):
+            raise ValueError("Malformed native DRC category")
+        if any(not isinstance(t,dict) or not isinstance(t.get("list"),list) for t in group["list"]):
+            raise ValueError("Malformed native DRC error list")
     names=[x["name"] for x in gr]
     if len(set(names))!=len(names):raise ValueError("Duplicate native DRC categories")
     return {x["name"]:sum(len(t.get("list") or []) for t in x.get("list") or []) for x in gr}

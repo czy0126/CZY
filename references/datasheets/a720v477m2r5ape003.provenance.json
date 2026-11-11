@@ -1,0 +1,42 @@
+{
+  "part": "A720V477M2R5APE003",
+  "manufacturer": "KEMET (YAGEO Group)",
+  "retrieved": "2026-11-11",
+  "documents": [
+    {
+      "kind": "part_spec_sheet",
+      "title": "A720V477M2R5APE003 - A720, Polymer Aluminum, 470 uF, 20%, 2.5 VDC, -55/+105 C, 2.1 mm, 1.3 mm, 2817 / 7343",
+      "url": "https://yageogroup.com/download/specsheet/A720V477M2R5APE003",
+      "generated": "11/11/2026",
+      "pdf": "references/datasheets/a720v477m2r5ape003_yageo_spec_2026-11-11.pdf",
+      "pdf_sha256": "179975820791364469b94de0d04aef839c02ae2ecd9099d0790720c7dbd349a3",
+      "text": "references/datasheets/a720v477m2r5ape003_yageo_spec_2026-11-11.txt",
+      "text_sha256": "fa80ced0b5e6ced916c2741ff1e709aa7eac4f118f5cab076310148f32a5c867"
+    },
+    {
+      "kind": "series_datasheet_excerpt",
+      "document": "KEMET T2078_A720",
+      "revision": "9/4/2024",
+      "edition": "Japanese; pages 5-7 only",
+      "url": "https://www.tokin.com/datasheets_distributor/pdf/TOK_T2078_A720.pdf",
+      "text": "references/datasheets/kemet_t2078_a720_2024-09-04_p5-p7_ja.txt",
+      "text_sha256": "748f987904862b8c56c07087a006f464e61649884042c6fd069d50571a64e7e1",
+      "note": "Full 4.3 MB PDF not archived. The excerpt keeps the ratings row, the +20 C ripple-rise header, the Pmax formula and the reverse-voltage table."
+    },
+    {
+      "kind": "product_brief",
+      "document": "PB_A720_A798 Ext Capability",
+      "revision": "Rev. A (7.25)",
+      "url": "https://yageogroup.com/content/Resource%20Library/Product%20Guide-Catalog/PB_A720_A798%20Ext%20Capability_28thAug2026_rev00.pdf",
+      "pdf": "references/datasheets/yageo_pb_a720_a798_revA.pdf",
+      "pdf_sha256": "3eb24809e1852963af491121bfbb685225a94c76f51a7f48ac84841b3c2ad759",
+      "text": "references/datasheets/yageo_pb_a720_a798_revA.txt",
+      "text_sha256": "cf7d56b7d748c389fbc9554aa221618dd4c544bb8174ee50015e1cb9410ac88b"
+    }
+  ],
+  "limitations": [
+    "The part spec sheet is a generated parametric sheet, not the series datasheet; the series datasheet is archived as a page excerpt only.",
+    "The series datasheet copy is the Japanese edition hosted by a distributor mirror; the KEMET document number and revision are visible on every page.",
+    "No vendor land-pattern approval is claimed: F=2.4 mm and S=1.3 mm are body/lead dimensions, not a released footprint."
+  ]
+}
