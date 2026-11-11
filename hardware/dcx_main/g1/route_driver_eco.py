@@ -445,7 +445,8 @@ def emit_js(plan, vias: list[dict] | None = None) -> str:
 })();""" % (json.dumps(rows), json.dumps(via_rows))
 
 
-def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01) -> tuple[bool, list[dict]]:
+def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01,
+             *, allow_wider: bool = False) -> tuple[bool, list[dict]]:
     """Is every point of ``plan_seg`` covered by collinear same-net readback lines?
 
     The editor splits a polyline at a T-junction on save, so a planned segment
@@ -456,13 +457,21 @@ def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01) -> tuple[bool,
     bx, by = plan_seg["b"]
     dx, dy = bx - ax, by - ay
     length = math.hypot(dx, dy)
+    if length <= 1e-12:
+        return False, [{"reason": "zero-length planned segment"}]
     spans = []
     for s in mine:
-        if abs(s["width"] - plan_seg["width"]) > tol:
+        if s["net"] != plan_seg["net"]:
+            continue
+        width_ok = (s["width"] >= plan_seg["width"] - tol if allow_wider
+                    else abs(s["width"] - plan_seg["width"]) <= tol)
+        if not width_ok:
             continue
         if s.get("layer", 1) != plan_seg.get("layer", 1):
             continue
-        if any(abs(_point_segment(pt[0], pt[1], plan_seg["a"], plan_seg["b"])) > tol
+        # Distance to the infinite supporting line; longer actual copper may
+        # extend past either planned endpoint. Clip projected intervals below.
+        if any(abs(dx*(pt[1]-ay)-dy*(pt[0]-ax))/length > tol
                for pt in (s["a"], s["b"])):
             continue  # a different segment of the same net, not part of this wall
         ts = sorted(((p[0] - ax) * dx + (p[1] - ay) * dy) / (length * length) for p in (s["a"], s["b"]))
@@ -477,7 +486,9 @@ def _covered(plan_seg: dict, mine: list[dict], tol: float = 0.01) -> tuple[bool,
         if lo > end + tol / max(length, 1e-9):
             return False, [{"reason": "gap in coverage", "at_t": round(end, 4)}]
         end = max(end, hi)
-    return end >= 1.0 - tol / max(length, 1e-9), []
+    if end < 1.0 - tol / length:
+        return False, [{"reason": "trailing gap in coverage", "at_t": round(end, 6)}]
+    return True, []
 
 
 def verify_lines(plan, lines_mm: list[dict], tol: float = 0.01) -> list[dict]:

@@ -1,0 +1,46 @@
+{
+  "status": "NATIVE_SIGNAL_INCREMENT_ACCEPTED_NOT_FOR_FAB",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "cad_sha256_before": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "cad_sha256_after": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "cad_unchanged": true,
+  "readback_sha256": "b8b0550bc4a44a7c030fe20929f1a3bb71859e5ed7a00ec116c0769b157d6060",
+  "drc_sha256": "ed022aa3d5500140c9269de15b404ecfa9c4e86666dd11ab02c2e6736e678cbc",
+  "parent_cad_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+  "parent_drc_sha256": "338b0c392f08154665d4caf0da51cc0251fffb32deb91eaabd8dffb5b00a7d54",
+  "geometry": {
+    "status": "REOPENED_NATIVE_SIGNAL_STUBS_PENDING_ACTUAL_DRC",
+    "source_cad": "hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2",
+    "candidate": "dcx_main_board_g1_signal_stubs.eprj2",
+    "new_seg_count": 9,
+    "layout_counts": {
+      "unchanged": true,
+      "errors": []
+    },
+    "lines": {
+      "planned_segments": 9,
+      "coverage_problems": []
+    },
+    "vias": {
+      "planned": 0,
+      "problems": []
+    },
+    "placement_drift": [],
+    "native_drc_passed": false,
+    "fab_release": false
+  },
+  "drc_before": {
+    "Connection Error": 206,
+    "Netlist Error": 1
+  },
+  "drc_after": {
+    "Connection Error": 199,
+    "Netlist Error": 1
+  },
+  "connection_errors_reduced": 7,
+  "native_drc_passed": false,
+  "fabrication_approved": false,
+  "hardware_qualified": false,
+  "note": "Increment accepted only; existing wider same-net copper covers C103-C104. No CAD rewritten. Old failed receipts retained.",
+  "hash_convention": "sha256 of LF-canonical text bytes (tools/text_identity.py)"
+}

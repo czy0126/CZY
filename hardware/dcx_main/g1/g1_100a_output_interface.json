@@ -1,0 +1,1361 @@
+{
+  "schema": "g1_100a_output_interface/3",
+  "status": "CONCEPT_ONLY_NOT_FOR_FAB",
+  "candidate": {
+    "path": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+    "sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+    "parent_path": "hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2",
+    "parent_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+    "readback": "hardware/dcx_main/g1/lr_signal_review_readback.json",
+    "readback_sha256": "b8b0550bc4a44a7c030fe20929f1a3bb71859e5ed7a00ec116c0769b157d6060",
+    "readback_value_sha256": "655562fab06e6a52a6d421671f96e2cbe89cdbe66162dfe42aecf2423a67b7fa"
+  },
+  "design_basis": {
+    "both_rails_budget_uohm": 150.0,
+    "transition_allowance_uohm": 30.0,
+    "transition_allowance_is_unverified": true,
+    "joint_scenarios_uohm": [
+      20.0,
+      50.0
+    ],
+    "joint_scenarios_are_unverified": true,
+    "joints_per_pole": 1,
+    "requires_one_verified_separable_joint_per_pole": true,
+    "four_joint_total_uohm": 200.0,
+    "external_link_uohm": 6.798,
+    "external_link_case": "reduced_2_contacts_50x2x15",
+    "external_link_is_unverified": true,
+    "external_link_cases_are_math_only": true,
+    "external_link_alternatives": [
+      {
+        "id": "reduced_2_contacts_30x2x25",
+        "bar_pair_uohm": 18.884
+      },
+      {
+        "id": "reduced_2_contacts_50x1x15",
+        "bar_pair_uohm": 13.596
+      },
+      {
+        "id": "reduced_2_contacts_50x2x15",
+        "bar_pair_uohm": 6.798
+      },
+      {
+        "id": "reduced_2_contacts_50x2x25",
+        "bar_pair_uohm": 11.33
+      }
+    ],
+    "external_link_source": "hardware/dcx_main/output_joint_reduction_cases.json",
+    "source_status": "UNVERIFIED_INTERFACE_TOPOLOGY_REDESIGN_NOT_FOR_FAB",
+    "source_hardware_qualified": false,
+    "design_basis_is_internal_not_regulatory_or_measured": true,
+    "temperature_c_assumed": 100.0,
+    "current_a_assumed": 100.0
+  },
+  "source_lands": {
+    "vout": [
+      {
+        "x_mm": 37.0002,
+        "y_mm": 20.0,
+        "half_x_mm": 0.9995,
+        "half_y_mm": 0.9995,
+        "rotation_deg": 0,
+        "provisional": true
+      },
+      {
+        "x_mm": 75.0011,
+        "y_mm": 20.0,
+        "half_x_mm": 0.9995,
+        "half_y_mm": 0.9995,
+        "rotation_deg": 0,
+        "provisional": true
+      },
+      {
+        "x_mm": 112.9995,
+        "y_mm": 20.0,
+        "half_x_mm": 0.9995,
+        "half_y_mm": 0.9995,
+        "rotation_deg": 0,
+        "provisional": true
+      },
+      {
+        "x_mm": 151.0005,
+        "y_mm": 20.0,
+        "half_x_mm": 0.9995,
+        "half_y_mm": 0.9995,
+        "rotation_deg": 0,
+        "provisional": true
+      }
+    ],
+    "pgnd": [
+      {
+        "x_mm": 13.401,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR1A",
+        "pad": "3"
+      },
+      {
+        "x_mm": 23.401,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR1B",
+        "pad": "3"
+      },
+      {
+        "x_mm": 51.3994,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR2A",
+        "pad": "3"
+      },
+      {
+        "x_mm": 61.3994,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR2B",
+        "pad": "3"
+      },
+      {
+        "x_mm": 89.4004,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR3A",
+        "pad": "3"
+      },
+      {
+        "x_mm": 99.4004,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR3B",
+        "pad": "3"
+      },
+      {
+        "x_mm": 127.4013,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR4A",
+        "pad": "3"
+      },
+      {
+        "x_mm": 137.4013,
+        "y_mm": 84.4702,
+        "half_x_mm": 1.6497,
+        "half_y_mm": 0.2997,
+        "rotation_deg": 90,
+        "ref": "SR4B",
+        "pad": "3"
+      }
+    ],
+    "jout": [
+      {
+        "x_mm": 73.5,
+        "y_mm": 115.9993,
+        "net": "VOUT",
+        "pad": "1"
+      },
+      {
+        "x_mm": 78.5012,
+        "y_mm": 115.9993,
+        "net": "PGND",
+        "pad": "2"
+      }
+    ]
+  },
+  "geometry": {
+    "board_mm": [
+      155.0,
+      131.0
+    ],
+    "board_outline_source": "hardware/dcx_main/g1/g1_native_pcb_report.json (base board hardware/dcx_main/g1/dcx_main_board_g1.eprj2, file md5 0d516efecae4c95b9baf2648b14c0a4f verified; this is neither the candidate nor its D-02 parent dcx_main_board_g1_lr_repack.eprj2)",
+    "board_outline_is_base_board_provenance": true,
+    "board_outline_is_parent_provenance": false,
+    "base_board_file_md5_verified": true,
+    "board_outline_dimensions_verified": false,
+    "board_outline_dimensions_note": "the md5 binds the base-board file bytes; the outline_mm field itself is read from the same report and is not independently re-measured, so the bars-inside-board gate is only as good as that field",
+    "board_outline_sha256": "3311c31a44eb3ec1add129b97119abf6cdc2029895a06c55c64e40ff8cd9cb41",
+    "board_outline_report_sha256": "2ee63c2e6fca0db71999c98a3004582a94bb5f4182b32d240128371440742e51",
+    "board_outline_consistent_with_lands": true,
+    "bars_inside_board": true,
+    "source_row_y_mm": {
+      "vout": 20.0,
+      "pgnd": 84.4702
+    },
+    "terminal_y_mm": 52.2351,
+    "max_centred_bar_width_mm": 39.4,
+    "width_limits_mm": {
+      "centred_vout_bar_to_y0_edge": 39.4,
+      "between_source_rows": 62.4702
+    },
+    "bar_width_mm": 39.0,
+    "vout_bar_rect_mm": {
+      "x": [
+        36.001,
+        152.0
+      ],
+      "y": [
+        0.5,
+        39.5
+      ]
+    },
+    "pgnd_bar_rect_mm": {
+      "x": [
+        11.751,
+        139.051
+      ],
+      "y": [
+        64.97,
+        103.97
+      ]
+    },
+    "bar_edge_clearance_mm": {
+      "vout_bar_to_y0_edge": 0.5,
+      "pgnd_bar_to_y131_edge": 27.03,
+      "between_bars": 25.47
+    },
+    "jout_inside_bar_pair": false,
+    "bottom_tracks_under_vout_bar": [],
+    "bottom_tracks_under_pgnd_bar": [
+      {
+        "id": "ef4ecb1b26e8eb66",
+        "net": "VCC12",
+        "x_mm": [
+          56.299,
+          56.299
+        ],
+        "y_mm": [
+          64.8,
+          66.0
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "4640c6e9addde531",
+        "net": "PGND",
+        "x_mm": [
+          57.701,
+          57.701
+        ],
+        "y_mm": [
+          63.9,
+          66.0
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "e479a414afb11daa",
+        "net": "CS1",
+        "x_mm": [
+          106.2,
+          106.2
+        ],
+        "y_mm": [
+          56.0,
+          66.5
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "43ba75b0a5530bcb",
+        "net": "CS1",
+        "x_mm": [
+          106.2,
+          119.0
+        ],
+        "y_mm": [
+          66.5,
+          66.5
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "5cce7797876bb12f",
+        "net": "CS1",
+        "x_mm": [
+          119.0,
+          119.0
+        ],
+        "y_mm": [
+          66.5,
+          69.0
+        ],
+        "width_mm": 0.3
+      }
+    ],
+    "bottom_vias_under_vout_bar": [],
+    "bottom_vias_under_pgnd_bar": [
+      {
+        "id": "bcd05047e6669858",
+        "net": "VCC12",
+        "x_mm": 56.299,
+        "y_mm": 66.0,
+        "diameter_mm": 0.503
+      },
+      {
+        "id": "a41f82cdb289bc38",
+        "net": "PGND",
+        "x_mm": 57.701,
+        "y_mm": 66.0,
+        "diameter_mm": 0.503
+      },
+      {
+        "id": "ddef507a81605723",
+        "net": "CS1",
+        "x_mm": 110.1,
+        "y_mm": 66.5,
+        "diameter_mm": 0.503
+      },
+      {
+        "id": "3b72234c0bd23193",
+        "net": "CS1",
+        "x_mm": 119.0,
+        "y_mm": 69.0,
+        "diameter_mm": 0.503
+      }
+    ],
+    "bottom_copper_under_pgnd_bar": [
+      {
+        "id": "ef4ecb1b26e8eb66",
+        "net": "VCC12",
+        "x_mm": [
+          56.299,
+          56.299
+        ],
+        "y_mm": [
+          64.8,
+          66.0
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "4640c6e9addde531",
+        "net": "PGND",
+        "x_mm": [
+          57.701,
+          57.701
+        ],
+        "y_mm": [
+          63.9,
+          66.0
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "e479a414afb11daa",
+        "net": "CS1",
+        "x_mm": [
+          106.2,
+          106.2
+        ],
+        "y_mm": [
+          56.0,
+          66.5
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "43ba75b0a5530bcb",
+        "net": "CS1",
+        "x_mm": [
+          106.2,
+          119.0
+        ],
+        "y_mm": [
+          66.5,
+          66.5
+        ],
+        "width_mm": 0.3
+      },
+      {
+        "id": "5cce7797876bb12f",
+        "net": "CS1",
+        "x_mm": [
+          119.0,
+          119.0
+        ],
+        "y_mm": [
+          66.5,
+          69.0
+        ],
+        "width_mm": 0.3
+      }
+    ],
+    "bottom_copper_note": "A bottom bar is a mechanical part with a standoff, not PCB copper; an overlap in plan is an insulation/standoff item, not a PCB DRC result. The readback exports polylines only as a count and has no zone or component-side primitives, so the bottom side is not shown clear."
+  },
+  "topologies": {
+    "board_only_existing": {
+      "computed_from": "g1_current_neck_screen.analyze(value['lines'])",
+      "reference_report": "hardware/dcx_main/g1/g1_100a_copper_neck_screen.json",
+      "scope": "1 mm necks only; excludes trunks, pads, vias, joints and current spreading",
+      "scenarios": [
+        {
+          "nominal_thickness_um": 35,
+          "vout_necks_uohm": 2832.536,
+          "pgnd_necks_uohm": 933.119,
+          "combined_necks_uohm": 3765.655,
+          "ideal_100a_neck_loss_w": 37.657,
+          "times_complete_rail_budget": 25.104,
+          "within_complete_rail_budget": false
+        },
+        {
+          "nominal_thickness_um": 70,
+          "vout_necks_uohm": 1416.268,
+          "pgnd_necks_uohm": 466.559,
+          "combined_necks_uohm": 1882.827,
+          "ideal_100a_neck_loss_w": 18.828,
+          "times_complete_rail_budget": 12.552,
+          "within_complete_rail_budget": false
+        },
+        {
+          "nominal_thickness_um": 105,
+          "vout_necks_uohm": 944.179,
+          "pgnd_necks_uohm": 311.04,
+          "combined_necks_uohm": 1255.218,
+          "ideal_100a_neck_loss_w": 12.552,
+          "times_complete_rail_budget": 8.368,
+          "within_complete_rail_budget": false
+        },
+        {
+          "nominal_thickness_um": 210,
+          "vout_necks_uohm": 472.089,
+          "pgnd_necks_uohm": 155.52,
+          "combined_necks_uohm": 627.609,
+          "ideal_100a_neck_loss_w": 6.276,
+          "times_complete_rail_budget": 4.184,
+          "within_complete_rail_budget": false
+        }
+      ],
+      "times_budget_at_70um": 12.552,
+      "meets_150_uohm": false,
+      "model_limitations": [
+        "Optimistic uniform copper cross section and ideal parallel load sharing, not actual transient SR RMS currents.",
+        "Excludes even the existing 2mm VOUT/PGND trunks, joints, pads, connectors, vias, current spreading and AC loss.",
+        "Four CTAPs are provisional design-owned pads, not qualified physical winding terminals.",
+        "Thick foil scenario is hypothetical: actual EDA PCB stackup and manufactured copper thickness are not verified.",
+        "No IPC-2152 thermal/current carrying qualification, Maxwell 3D current distribution or PCB fab approval.",
+        "Source-locked to the saved/reopened signal-stubs candidate readback 17fbae57; the times-budget ratio is the 1 mm necks only, not the whole loop."
+      ]
+    },
+    "central_two_pole_bar": {
+      "description": "Two bottom-side flat bars centred on their source rows with a two-lug terminal between the rows.  The collector loss is flat over a whole feed interval, so the pole pitch (hence the lug width) is a design choice: a narrower pitch at the same collector loss is worse, and the centre feed is one mid-pitch choice, not a bound.",
+      "transverse_allowance": {
+        "squares_per_rail": 0.5,
+        "total_squares": 1.0,
+        "rule": "pads sit on the bar centreline and the terminal draws from the inner edge: half a bar width at the bar-width cross-section per rail",
+        "is_a_screening_estimate_not_a_2d_solve": true
+      },
+      "feeds": {
+        "centre": {
+          "vout_x_mm": 94.0002,
+          "pgnd_x_mm": 75.401,
+          "pole_pitch_mm": 18.5992,
+          "leg_width_mm": 16.5992,
+          "collector_length_mm": {
+            "vout": 14.2497,
+            "pgnd": 13.6252
+          }
+        },
+        "widest_equal_loss": {
+          "vout_x_mm": 112.9995,
+          "pgnd_x_mm": 61.3994,
+          "pole_pitch_mm": 51.6001,
+          "leg_width_mm": 39.0,
+          "collector_length_mm": {
+            "vout": 14.2497,
+            "pgnd": 13.6252
+          },
+          "vout_flat_interval_mm": [
+            75.0011,
+            112.9995
+          ],
+          "pgnd_flat_interval_mm": [
+            61.3994,
+            89.4004
+          ]
+        }
+      },
+      "leg_length_mm_each": 12.7351,
+      "configurations": [
+        {
+          "feed": "centre",
+          "pole_pitch_mm": 18.599,
+          "leg_width_mm": 16.5992,
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 4.0,
+          "one_dimensional_uohm": 12.742,
+          "transverse_allowance_uohm": 5.665,
+          "bar_uohm": 18.407,
+          "separable_joint_uohm_each": 50.0,
+          "total_uohm": 155.205,
+          "margin_uohm": -5.205,
+          "meets_150_uohm": false,
+          "max_separable_joint_uohm_each": 47.398
+        },
+        {
+          "feed": "centre",
+          "pole_pitch_mm": 18.599,
+          "leg_width_mm": 16.5992,
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 5.0,
+          "one_dimensional_uohm": 10.193,
+          "transverse_allowance_uohm": 4.532,
+          "bar_uohm": 14.725,
+          "separable_joint_uohm_each": 50.0,
+          "total_uohm": 151.523,
+          "margin_uohm": -1.523,
+          "meets_150_uohm": false,
+          "max_separable_joint_uohm_each": 49.238
+        },
+        {
+          "feed": "centre",
+          "pole_pitch_mm": 18.599,
+          "leg_width_mm": 16.5992,
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 6.0,
+          "one_dimensional_uohm": 8.494,
+          "transverse_allowance_uohm": 3.777,
+          "bar_uohm": 12.271,
+          "separable_joint_uohm_each": 50.0,
+          "total_uohm": 149.069,
+          "margin_uohm": 0.931,
+          "meets_150_uohm": true,
+          "max_separable_joint_uohm_each": 50.465
+        },
+        {
+          "feed": "widest_equal_loss",
+          "pole_pitch_mm": 51.6,
+          "leg_width_mm": 39.0,
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 4.0,
+          "one_dimensional_uohm": 7.749,
+          "transverse_allowance_uohm": 5.665,
+          "bar_uohm": 13.414,
+          "separable_joint_uohm_each": 50.0,
+          "total_uohm": 150.212,
+          "margin_uohm": -0.212,
+          "meets_150_uohm": false,
+          "max_separable_joint_uohm_each": 49.894
+        },
+        {
+          "feed": "widest_equal_loss",
+          "pole_pitch_mm": 51.6,
+          "leg_width_mm": 39.0,
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 5.0,
+          "one_dimensional_uohm": 6.199,
+          "transverse_allowance_uohm": 4.532,
+          "bar_uohm": 10.731,
+          "separable_joint_uohm_each": 50.0,
+          "total_uohm": 147.529,
+          "margin_uohm": 2.471,
+          "meets_150_uohm": true,
+          "max_separable_joint_uohm_each": 51.235
+        },
+        {
+          "feed": "widest_equal_loss",
+          "pole_pitch_mm": 51.6,
+          "leg_width_mm": 39.0,
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 6.0,
+          "one_dimensional_uohm": 5.166,
+          "transverse_allowance_uohm": 3.777,
+          "bar_uohm": 8.943,
+          "separable_joint_uohm_each": 50.0,
+          "total_uohm": 145.741,
+          "margin_uohm": 4.259,
+          "meets_150_uohm": true,
+          "max_separable_joint_uohm_each": 52.13
+        }
+      ],
+      "reference": {
+        "bar_width_mm": 39.0,
+        "bar_thickness_mm": 5.0,
+        "one_dimensional_uohm": 6.199,
+        "transverse_allowance_uohm": 4.532,
+        "bar_uohm": 10.731,
+        "separable_joint_uohm_each": 50.0,
+        "total_uohm": 147.529,
+        "margin_uohm": 2.471,
+        "meets_150_uohm": true,
+        "max_separable_joint_uohm_each": 51.235
+      },
+      "leg_width_sensitivity": [
+        {
+          "leg_width_mm": 39.0,
+          "bar_uohm": 10.731,
+          "total_uohm": 147.529,
+          "meets_150_uohm": true
+        },
+        {
+          "leg_width_mm": 35.0,
+          "bar_uohm": 11.069,
+          "total_uohm": 147.867,
+          "meets_150_uohm": true
+        },
+        {
+          "leg_width_mm": 30.0,
+          "bar_uohm": 11.619,
+          "total_uohm": 148.417,
+          "meets_150_uohm": true
+        },
+        {
+          "leg_width_mm": 25.0,
+          "bar_uohm": 12.389,
+          "total_uohm": 149.187,
+          "meets_150_uohm": true
+        },
+        {
+          "leg_width_mm": 22.0,
+          "bar_uohm": 13.018,
+          "total_uohm": 149.816,
+          "meets_150_uohm": true
+        },
+        {
+          "leg_width_mm": 20.0,
+          "bar_uohm": 13.543,
+          "total_uohm": 150.341,
+          "meets_150_uohm": false
+        },
+        {
+          "leg_width_mm": 16.5992,
+          "bar_uohm": 14.725,
+          "total_uohm": 151.523,
+          "meets_150_uohm": false
+        },
+        {
+          "leg_width_mm": 12.0,
+          "bar_uohm": 17.391,
+          "total_uohm": 154.189,
+          "meets_150_uohm": false
+        },
+        {
+          "leg_width_mm": 10.0,
+          "bar_uohm": 19.315,
+          "total_uohm": 156.113,
+          "meets_150_uohm": false
+        },
+        {
+          "leg_width_mm": 8.0,
+          "bar_uohm": 22.2,
+          "total_uohm": 158.998,
+          "meets_150_uohm": false
+        }
+      ],
+      "scenarios_at_widest_feed": [
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 2.0,
+          "leg_length_mm": {
+            "vout": 17.2351,
+            "pgnd": 17.2351
+          },
+          "one_dimensional_uohm": 23.546,
+          "transverse_allowance_uohm": 11.33,
+          "bar_uohm": 34.876,
+          "max_separable_joint_uohm_each": 39.163,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 111.674,
+              "margin_uohm": 38.326,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 171.674,
+              "margin_uohm": -21.674,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 3.0,
+          "leg_length_mm": {
+            "vout": 17.2351,
+            "pgnd": 17.2351
+          },
+          "one_dimensional_uohm": 15.697,
+          "transverse_allowance_uohm": 7.553,
+          "bar_uohm": 23.251,
+          "max_separable_joint_uohm_each": 44.976,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 100.049,
+              "margin_uohm": 49.951,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 160.049,
+              "margin_uohm": -10.049,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 4.0,
+          "leg_length_mm": {
+            "vout": 17.2351,
+            "pgnd": 17.2351
+          },
+          "one_dimensional_uohm": 11.773,
+          "transverse_allowance_uohm": 5.665,
+          "bar_uohm": 17.438,
+          "max_separable_joint_uohm_each": 47.882,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 94.236,
+              "margin_uohm": 55.764,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 154.236,
+              "margin_uohm": -4.236,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 5.0,
+          "leg_length_mm": {
+            "vout": 17.2351,
+            "pgnd": 17.2351
+          },
+          "one_dimensional_uohm": 9.418,
+          "transverse_allowance_uohm": 4.532,
+          "bar_uohm": 13.95,
+          "max_separable_joint_uohm_each": 49.626,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 90.748,
+              "margin_uohm": 59.252,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 150.748,
+              "margin_uohm": -0.748,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 6.0,
+          "leg_length_mm": {
+            "vout": 17.2351,
+            "pgnd": 17.2351
+          },
+          "one_dimensional_uohm": 7.849,
+          "transverse_allowance_uohm": 3.777,
+          "bar_uohm": 11.625,
+          "max_separable_joint_uohm_each": 50.788,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 88.423,
+              "margin_uohm": 61.577,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 148.423,
+              "margin_uohm": 1.577,
+              "meets_150_uohm": true
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 2.0,
+          "leg_length_mm": {
+            "vout": 12.7351,
+            "pgnd": 12.7351
+          },
+          "one_dimensional_uohm": 15.498,
+          "transverse_allowance_uohm": 11.33,
+          "bar_uohm": 26.828,
+          "max_separable_joint_uohm_each": 43.187,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 103.626,
+              "margin_uohm": 46.374,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 163.626,
+              "margin_uohm": -13.626,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 3.0,
+          "leg_length_mm": {
+            "vout": 12.7351,
+            "pgnd": 12.7351
+          },
+          "one_dimensional_uohm": 10.332,
+          "transverse_allowance_uohm": 7.553,
+          "bar_uohm": 17.885,
+          "max_separable_joint_uohm_each": 47.658,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 94.683,
+              "margin_uohm": 55.317,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 154.683,
+              "margin_uohm": -4.683,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 4.0,
+          "leg_length_mm": {
+            "vout": 12.7351,
+            "pgnd": 12.7351
+          },
+          "one_dimensional_uohm": 7.749,
+          "transverse_allowance_uohm": 5.665,
+          "bar_uohm": 13.414,
+          "max_separable_joint_uohm_each": 49.894,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 90.212,
+              "margin_uohm": 59.788,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 150.212,
+              "margin_uohm": -0.212,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 5.0,
+          "leg_length_mm": {
+            "vout": 12.7351,
+            "pgnd": 12.7351
+          },
+          "one_dimensional_uohm": 6.199,
+          "transverse_allowance_uohm": 4.532,
+          "bar_uohm": 10.731,
+          "max_separable_joint_uohm_each": 51.235,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 87.529,
+              "margin_uohm": 62.471,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 147.529,
+              "margin_uohm": 2.471,
+              "meets_150_uohm": true
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 6.0,
+          "leg_length_mm": {
+            "vout": 12.7351,
+            "pgnd": 12.7351
+          },
+          "one_dimensional_uohm": 5.166,
+          "transverse_allowance_uohm": 3.777,
+          "bar_uohm": 8.943,
+          "max_separable_joint_uohm_each": 52.13,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 85.741,
+              "margin_uohm": 64.259,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 145.741,
+              "margin_uohm": 4.259,
+              "meets_150_uohm": true
+            }
+          ]
+        }
+      ]
+    },
+    "jout_terminated_bar": {
+      "description": "The bars routed to the existing J_OUT at y = 116 mm; the VOUT leg alone is 76.5 mm, and its straight path crosses the PGND bar.",
+      "feeds": {
+        "vout_x_mm": 73.5,
+        "pgnd_x_mm": 78.5012
+      },
+      "collector_equivalent_length_mm": {
+        "vout": 15.0003,
+        "pgnd": 13.6252
+      },
+      "leg_width_is_a_lower_bound": true,
+      "vout_leg_crosses_pgnd_bar": true,
+      "realizable_as_drawn": false,
+      "scenarios": [
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 2.0,
+          "leg_length_mm": {
+            "vout": 80.9993,
+            "pgnd": 16.5291
+          },
+          "one_dimensional_uohm": 47.645,
+          "transverse_allowance_uohm": 11.33,
+          "bar_uohm": 58.975,
+          "max_separable_joint_uohm_each": 27.114,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 135.773,
+              "margin_uohm": 14.227,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 195.773,
+              "margin_uohm": -45.773,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 3.0,
+          "leg_length_mm": {
+            "vout": 80.9993,
+            "pgnd": 16.5291
+          },
+          "one_dimensional_uohm": 31.763,
+          "transverse_allowance_uohm": 7.553,
+          "bar_uohm": 39.317,
+          "max_separable_joint_uohm_each": 36.943,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 116.115,
+              "margin_uohm": 33.885,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 176.115,
+              "margin_uohm": -26.115,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 4.0,
+          "leg_length_mm": {
+            "vout": 80.9993,
+            "pgnd": 16.5291
+          },
+          "one_dimensional_uohm": 23.822,
+          "transverse_allowance_uohm": 5.665,
+          "bar_uohm": 29.487,
+          "max_separable_joint_uohm_each": 41.857,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 106.285,
+              "margin_uohm": 43.715,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 166.285,
+              "margin_uohm": -16.285,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 5.0,
+          "leg_length_mm": {
+            "vout": 80.9993,
+            "pgnd": 16.5291
+          },
+          "one_dimensional_uohm": 19.058,
+          "transverse_allowance_uohm": 4.532,
+          "bar_uohm": 23.59,
+          "max_separable_joint_uohm_each": 44.806,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 100.388,
+              "margin_uohm": 49.612,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 160.388,
+              "margin_uohm": -10.388,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 30.0,
+          "bar_thickness_mm": 6.0,
+          "leg_length_mm": {
+            "vout": 80.9993,
+            "pgnd": 16.5291
+          },
+          "one_dimensional_uohm": 15.882,
+          "transverse_allowance_uohm": 3.777,
+          "bar_uohm": 19.658,
+          "max_separable_joint_uohm_each": 46.772,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 96.456,
+              "margin_uohm": 53.544,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 156.456,
+              "margin_uohm": -6.456,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 2.0,
+          "leg_length_mm": {
+            "vout": 76.4993,
+            "pgnd": 12.0291
+          },
+          "one_dimensional_uohm": 34.035,
+          "transverse_allowance_uohm": 11.33,
+          "bar_uohm": 45.365,
+          "max_separable_joint_uohm_each": 33.918,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 122.163,
+              "margin_uohm": 27.837,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 182.163,
+              "margin_uohm": -32.163,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 3.0,
+          "leg_length_mm": {
+            "vout": 76.4993,
+            "pgnd": 12.0291
+          },
+          "one_dimensional_uohm": 22.69,
+          "transverse_allowance_uohm": 7.553,
+          "bar_uohm": 30.243,
+          "max_separable_joint_uohm_each": 41.479,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 107.041,
+              "margin_uohm": 42.959,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 167.041,
+              "margin_uohm": -17.041,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 4.0,
+          "leg_length_mm": {
+            "vout": 76.4993,
+            "pgnd": 12.0291
+          },
+          "one_dimensional_uohm": 17.018,
+          "transverse_allowance_uohm": 5.665,
+          "bar_uohm": 22.683,
+          "max_separable_joint_uohm_each": 45.26,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 99.481,
+              "margin_uohm": 50.519,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 159.481,
+              "margin_uohm": -9.481,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 5.0,
+          "leg_length_mm": {
+            "vout": 76.4993,
+            "pgnd": 12.0291
+          },
+          "one_dimensional_uohm": 13.614,
+          "transverse_allowance_uohm": 4.532,
+          "bar_uohm": 18.146,
+          "max_separable_joint_uohm_each": 47.528,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 94.944,
+              "margin_uohm": 55.056,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 154.944,
+              "margin_uohm": -4.944,
+              "meets_150_uohm": false
+            }
+          ]
+        },
+        {
+          "bar_width_mm": 39.0,
+          "bar_thickness_mm": 6.0,
+          "leg_length_mm": {
+            "vout": 76.4993,
+            "pgnd": 12.0291
+          },
+          "one_dimensional_uohm": 11.345,
+          "transverse_allowance_uohm": 3.777,
+          "bar_uohm": 15.122,
+          "max_separable_joint_uohm_each": 49.04,
+          "cases": [
+            {
+              "separable_joint_uohm_each": 20.0,
+              "total_uohm": 91.92,
+              "margin_uohm": 58.08,
+              "meets_150_uohm": true
+            },
+            {
+              "separable_joint_uohm_each": 50.0,
+              "total_uohm": 151.92,
+              "margin_uohm": -1.92,
+              "meets_150_uohm": false
+            }
+          ]
+        }
+      ],
+      "reference": {
+        "bar_width_mm": 39.0,
+        "bar_thickness_mm": 5.0,
+        "one_dimensional_uohm": 13.614,
+        "transverse_allowance_uohm": 4.532,
+        "bar_uohm": 18.146,
+        "separable_joint_uohm_each": 50.0,
+        "total_uohm": 154.944,
+        "margin_uohm": -4.944,
+        "meets_150_uohm": false,
+        "max_separable_joint_uohm_each": 47.528
+      }
+    }
+  },
+  "conclusion": {
+    "board_only_impossible": true,
+    "board_only_times_budget_at_2oz": 12.552,
+    "jout_terminated_bar_is_the_100a_path": false,
+    "jout_lower_bound_uohm": 154.944,
+    "jout_realizable_as_drawn": false,
+    "four_mm_fails_at_every_lug_width_at_50_uohm_joints": true,
+    "verdict_joint_scenario_uohm": 50.0,
+    "four_mm_best_case_uohm": 150.212,
+    "four_mm_configurations": [
+      {
+        "feed": "centre",
+        "pole_pitch_mm": 18.599,
+        "leg_width_mm": 16.5992,
+        "bar_width_mm": 39.0,
+        "bar_thickness_mm": 4.0,
+        "one_dimensional_uohm": 12.742,
+        "transverse_allowance_uohm": 5.665,
+        "bar_uohm": 18.407,
+        "separable_joint_uohm_each": 50.0,
+        "total_uohm": 155.205,
+        "margin_uohm": -5.205,
+        "meets_150_uohm": false,
+        "max_separable_joint_uohm_each": 47.398
+      },
+      {
+        "feed": "widest_equal_loss",
+        "pole_pitch_mm": 51.6,
+        "leg_width_mm": 39.0,
+        "bar_width_mm": 39.0,
+        "bar_thickness_mm": 4.0,
+        "one_dimensional_uohm": 7.749,
+        "transverse_allowance_uohm": 5.665,
+        "bar_uohm": 13.414,
+        "separable_joint_uohm_each": 50.0,
+        "total_uohm": 150.212,
+        "margin_uohm": -0.212,
+        "meets_150_uohm": false,
+        "max_separable_joint_uohm_each": 49.894
+      }
+    ],
+    "per_joint_verdicts": [
+      {
+        "separable_joint_uohm_each": 20.0,
+        "four_mm_best_uohm": 90.212,
+        "four_mm_meets_150_uohm": true,
+        "thinnest_modelled_passing_bar_mm": 2.0,
+        "scan_floor_is_a_model_choice": true
+      },
+      {
+        "separable_joint_uohm_each": 50.0,
+        "four_mm_best_uohm": 150.212,
+        "four_mm_meets_150_uohm": false,
+        "thinnest_modelled_passing_bar_mm": 5.0,
+        "scan_floor_is_a_model_choice": true
+      }
+    ],
+    "minimum_modelled_passing_thickness_at_50_uohm_mm": 5.0,
+    "reference_configuration": {
+      "feed": "widest_equal_loss",
+      "pole_pitch_mm": 51.6001,
+      "leg_width_mm": 39.0,
+      "bar_width_mm": 39.0,
+      "bar_thickness_mm": 5.0,
+      "one_dimensional_uohm": 6.199,
+      "transverse_allowance_uohm": 4.532,
+      "bar_uohm": 10.731,
+      "separable_joint_uohm_each": 50.0,
+      "total_uohm": 147.529,
+      "margin_uohm": 2.471,
+      "meets_150_uohm": true,
+      "max_separable_joint_uohm_each": 51.235
+    },
+    "centre_fed_four_mm": {
+      "bar_width_mm": 39.0,
+      "bar_thickness_mm": 4.0,
+      "one_dimensional_uohm": 12.742,
+      "transverse_allowance_uohm": 5.665,
+      "bar_uohm": 18.407,
+      "separable_joint_uohm_each": 50.0,
+      "total_uohm": 155.205,
+      "margin_uohm": -5.205,
+      "meets_150_uohm": false,
+      "max_separable_joint_uohm_each": 47.398
+    },
+    "centre_fed_reference_thickness": {
+      "bar_width_mm": 39.0,
+      "bar_thickness_mm": 5.0,
+      "one_dimensional_uohm": 10.193,
+      "transverse_allowance_uohm": 4.532,
+      "bar_uohm": 14.725,
+      "separable_joint_uohm_each": 50.0,
+      "total_uohm": 151.523,
+      "margin_uohm": -1.523,
+      "meets_150_uohm": false,
+      "max_separable_joint_uohm_each": 49.238
+    },
+    "leg_width_break_even_mm": 21.2551,
+    "transition_break_even_uohm": 32.471,
+    "transition_modelled_bounds_uohm": {
+      "one_post_per_rail_in_series": 41.034,
+      "all_12_lands_paralleled": 7.694
+    },
+    "joint_break_even_uohm": 51.235,
+    "joint_break_even_depends_on_thickness": true,
+    "external_link_uohm": 6.798,
+    "external_link_is_unverified": true,
+    "external_link_same_joint_alternatives": [
+      {
+        "id": "reduced_2_contacts_30x2x25",
+        "bar_pair_uohm": 18.884,
+        "total_uohm": 159.615
+      },
+      {
+        "id": "reduced_2_contacts_50x1x15",
+        "bar_pair_uohm": 13.596,
+        "total_uohm": 154.327
+      },
+      {
+        "id": "reduced_2_contacts_50x2x25",
+        "bar_pair_uohm": 11.33,
+        "total_uohm": 152.061
+      }
+    ],
+    "current_sharing": "equal (25 A per CTAP, 12.5 A per SR land)",
+    "single_land_total_uohm": 161.953,
+    "reference_statement": "At 39 x 5 mm with 39.000 mm lugs and a 51.600 mm pole pitch, a 30 uohm unverified transition, the unverified reduced_2_contacts_50x2x15 pair (6.798 uohm) and 50 uohm joints, the central termination is 147.529 uohm: a pass with 2.471 uohm margin. At the same 50 uohm joints the same thickness centre-fed (16.599 mm lugs) is 151.523 uohm and fails, and 4 mm fails at every lug width; at the 20 uohm joint scenario 4 mm passes. J_OUT is 154.944 uohm as a lower bound and not realizable as drawn.",
+    "next_physical_deliverables": [
+      "Real CTAP winding terminals and SR source attachment (D-07), not the 24 provisional pads.",
+      "A 2-D/FE current-distribution solve for the transverse path; the 0.5-square-per-rail allowance is a screen, not a bound.",
+      "Measured pad-to-bar transition resistance; the 30 uohm allowance breaks even at 32.471 uohm.",
+      "Measured separable joint resistance; the acceptance number is 51.235 uohm per pole at 39 x 5 mm, not the 50 uohm placeholder.",
+      "Lugs at least 21.26 mm wide, i.e. a terminal pitch of at least 23.26 mm.",
+      "Measured current sharing across the four CTAP and eight SR lands; a single-land worst case is 162.0 uohm.",
+      "Bottom-side standoff, insulation, the thermal/cold-plate interface, 3D height and PCB fab DFM; the bars occupy the bottom of the board."
+    ]
+  },
+  "not_qualified": [
+    "No finite-element current distribution, local hot spot or 2D spreading solve; the transverse term is a screening allowance that a real solve must replace.",
+    "Equal DC current sharing is assumed; the single-land worst case is reported.",
+    "The 30 uohm transition, the 20/50 uohm joints and the 6.798 uohm external pair are unverified math cases, not measurements.",
+    "The external pair assumes one separable joint per pole; the budget's four-joint alternative is reported and cannot pass at 50 uohm per joint.",
+    "The 39 mm lug and the 51.6 mm pole pitch are a design choice inside the flat-loss feed interval, not a physical bound; a narrower terminal requires more copper or a thicker bar.",
+    "The 20/50 uohm joint scenarios disagree about thin bars (4 mm fails at 50, passes at 20), so every thickness verdict names its joint scenario.",
+    "The four CTAP pads are design-owned placeholders, not physical terminals.",
+    "The bottom bars are not in CAD; no native DRC or fab DFM has run on them.",
+    "The readback exports polylines only as a count and carries no zone or component-side primitives; the bottom side is not shown clear.",
+    "The board outline comes from the base-board report (dcx_main_board_g1.eprj2), not from the candidate or its D-02 parent; the report's md5 binds the base-board file, but the outline_mm field itself is not independently re-measured, so the bars-inside-board gate and every clearance share that unverified field.",
+    "The canonical readback value hash binds the value passed to build() to the file read in the same call; it is not a capture-time attestation, and review_signal_stubs.py --resign would refresh the file hash without re-verifying geometry.",
+    "The 16 mm assembly height and the cold-plate/thermal interface are unverified."
+  ],
+  "fabrication_approved": false
+}

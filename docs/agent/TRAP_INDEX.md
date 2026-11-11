@@ -117,6 +117,10 @@
 |  | 供应商回件审核只对当时那两份字节成立；合同重生成后必须重跑审核 | 审核回件 | EDA.md §嘉立创 EDA |
 |  | R8 ECO 分两相：phase 1 注入**绝不保存**，phase 2 clean session 凭 attestation 应用 | 跑 R8 ECO | EDA.md §装配排除 ECO |
 |  | 导出会把被排除件重新编号（R8 → R6）；对回原件的键是导出的 uid；清册闸门按"注册库器件 + 双 DNP"解析改名，不按位号 | 对回原件 / 审 R8 的 BOM 标志 | EDA.md §在 G1 候选板上重读清册 |
+|  | `--path` 打开的工程拿不到任何制造导出（Netlist/BOM/SPICE 全 `null`，`sch_Net` 全 `[]`，开页面也一样）⇒ 活网表只能**读图元**（线自带 `getState_Net()` + 引脚坐标），且必须先在参考板上逐脚复现 Nov 6 导出 | 要"活网表"/重导导出 | EDA.md §读活网表 |
+|  | `sys_Tool.netlistComparison` 在本类板上 PCB 列**恒空**（65 网全 `[]`，含逐脚相同的网）⇒ 它不是差异清单；逐脚差异用 `pcb_Net.getNetlist('JLCEDA')` 自己导（该板 165 556 字符，与恒 `null` 的 `getNetlistFile` 不是一回事） | 读 Import Changes | EDA.md §原理图↔PCB 逐脚差异 |
+|  | **一个 invoke 只问一个有把握的问题**：捆绑 `getNetlist`+`getAllNets`+5× `getAllPrimitivesByNet` 的体三次都 59 750 ms 超时、整次结果全丢；拆成一问一体后 9.6 s / 2 ms / 5 ms / 1 ms / 1.0–1.2 s | 写 LCEDA 探针 | EDA.md §原理图↔PCB 逐脚差异 |
+|  | `pinInfoMap[pin].net == ""` 是"未分配"，不是 `null`；按 `None` 统计会得到 0，把 5 个未分配脚藏起来 | 统计未分配脚 | EDA.md §原理图↔PCB 逐脚差异 |
 |  | `sch_PrimitiveComponent.modify` 整表替换 `otherProperty`；只传部分键会清空厂家属性 | 改原生取值 | EDA.md §原生主板的取值 ECO |
 |  | 写完必须用**新句柄**读回（旧句柄是快照）；校验用发出去的表当期望值 | 改原生取值 | EDA.md §原生主板的取值 ECO |
 |  | GBK 命令行带不了 `Ω`；invoke 正文必须纯 ASCII | 跑 value ECO | EDA.md §原生主板的取值 ECO |

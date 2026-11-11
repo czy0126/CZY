@@ -1,0 +1,41 @@
+name: G1-live-schematic-netlist-proven-against-nov6-export
+on:
+  push:
+    paths:
+      - 'hardware/dcx_main/g1/export_live_netlist.py'
+      - 'hardware/dcx_main/g1/g1_schematic_connectivity_raw.json'
+      - 'hardware/dcx_main/g1/g1_live_netlist.json'
+      - 'hardware/dcx_main/gen/read_schematic_connectivity.js'
+      - 'hardware/dcx_main/gen/reference_schematic_connectivity.json'
+      - 'tools/schematic_connectivity.py'
+      - 'tools/test_schematic_connectivity.py'
+      - '.github/workflows/g1-live-netlist-evidence.yml'
+  pull_request:
+    paths:
+      - 'hardware/dcx_main/g1/export_live_netlist.py'
+      - 'hardware/dcx_main/g1/g1_schematic_connectivity_raw.json'
+      - 'hardware/dcx_main/g1/g1_live_netlist.json'
+      - 'hardware/dcx_main/gen/read_schematic_connectivity.js'
+      - 'hardware/dcx_main/gen/reference_schematic_connectivity.json'
+      - 'tools/schematic_connectivity.py'
+      - 'tools/test_schematic_connectivity.py'
+      - '.github/workflows/g1-live-netlist-evidence.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reconstruction-reproduces-the-editor-export-then-describes-g1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild the G1 netlist from the committed captures without the editor
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          # Reconstructs the reference board and refuses unless it equals the
+          # Nov 6 editor export pin for pin, then rebuilds the G1 report.
+          python hardware/dcx_main/g1/export_live_netlist.py --check
+          python -m pytest -q tools/test_schematic_connectivity.py

@@ -17,6 +17,8 @@ import json
 import math
 from pathlib import Path
 
+from text_identity import canonical_bytes
+
 ROOT = Path(__file__).resolve().parents[1]
 G1 = ROOT / "hardware/dcx_main/g1"
 READBACK = G1 / "lr_repack_readback.json"
@@ -34,7 +36,13 @@ THICKNESSES_UM = (35, 70, 105, 210)
 
 
 def git_blob_sha(path: Path) -> str:
-    data = path.read_bytes()
+    """Git blob id of the canonical stored content.
+
+    Git stores text as LF; a default Windows checkout has CRLF in the worktree.
+    The gate records the LF blob id, so hash the canonical bytes or the same
+    committed readback compares unequal by checkout alone (docs/agent/TRAPS.md).
+    """
+    data = canonical_bytes(path)
     return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
 
 

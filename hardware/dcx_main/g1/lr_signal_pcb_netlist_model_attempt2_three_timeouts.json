@@ -1,0 +1,72 @@
+{
+  "status": "PCB_NETLIST_MODEL_PROBE",
+  "attempted": "read-only: opened a copy, asked the PCB API for its netlist, never saved",
+  "candidate": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+  "candidate_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "probe_copy_sha256_after": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+  "editor_ok": false,
+  "readback_error": {
+    "code": "REQUEST_TIMEOUT",
+    "message": "invoke timed out after 59750ms (budget 60000ms; gave up waiting; the code may still be running in the render, and its result will be discarded)"
+  },
+  "invoke_attempts": [
+    {
+      "attempt": 1,
+      "ok": false,
+      "error": {
+        "code": "REQUEST_TIMEOUT",
+        "message": "invoke timed out after 59750ms (budget 60000ms; gave up waiting; the code may still be running in the render, and its result will be discarded)"
+      },
+      "durationMs": null
+    },
+    {
+      "attempt": 2,
+      "ok": false,
+      "error": {
+        "code": "REQUEST_TIMEOUT",
+        "message": "invoke timed out after 59750ms (budget 60000ms; gave up waiting; the code may still be running in the render, and its result will be discarded)"
+      },
+      "durationMs": null
+    },
+    {
+      "attempt": 3,
+      "ok": false,
+      "error": {
+        "code": "REQUEST_TIMEOUT",
+        "message": "invoke timed out after 59750ms (budget 60000ms; gave up waiting; the code may still be running in the render, and its result will be discarded)"
+      },
+      "durationMs": null
+    }
+  ],
+  "board": null,
+  "net_names": null,
+  "all_nets": null,
+  "primitives_by_net": null,
+  "pcb_netlist": null,
+  "sch_netlist": null,
+  "native_readback_summary": {
+    "components": 77,
+    "pads": 299,
+    "net_names": 65,
+    "pads_without_net": 0,
+    "distinct_pad_nets": 65,
+    "anonymous_pads": 24,
+    "anonymous_pad_terminals": [
+      "CTAP",
+      "PRI_A",
+      "PRI_B",
+      "SEC_A",
+      "SEC_B"
+    ],
+    "net_names_absent_from_pads": []
+  },
+  "raw": {
+    "ok": false,
+    "error": {
+      "code": "REQUEST_TIMEOUT",
+      "message": "invoke timed out after 59750ms (budget 60000ms; gave up waiting; the code may still be running in the render, and its result will be discarded)"
+    }
+  },
+  "not_erc_not_drc_not_fab": true
+}

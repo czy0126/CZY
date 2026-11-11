@@ -1,0 +1,542 @@
+{
+  "status": "G1_LIVE_SCHEMATIC_NETLIST_NOT_ERC_OR_FAB",
+  "method": "read the editor's primitives (sch_PrimitiveWire net name + pin coordinates); every manufacturing export returns null on a --path-opened project",
+  "method_validation": {
+    "reference_board": "hardware/dcx_main/dcx_main_board.eprj2",
+    "reference_board_sha256": "11b444eb8b8945752a6dc85cf412cfe7ba3940d75431b6dc0a19c18d79a1726e",
+    "compared_to": "hardware/dcx_main/gen/netlist_export_raw.json",
+    "identical": true,
+    "designators": 83,
+    "pins": 285,
+    "unconnected_pins": [
+      [
+        "D_CT1",
+        "2"
+      ],
+      [
+        "D_CT2",
+        "2"
+      ],
+      [
+        "D_CT3",
+        "2"
+      ],
+      [
+        "D_CT4",
+        "2"
+      ],
+      [
+        "U2",
+        "2"
+      ]
+    ]
+  },
+  "board": "dcx_main_board_g1_lr_repack.eprj2",
+  "board_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+  "page": "P1",
+  "wire_count": 280,
+  "designators": 83,
+  "unconnected_pins": [
+    [
+      "D_CT1",
+      "2"
+    ],
+    [
+      "D_CT2",
+      "2"
+    ],
+    [
+      "D_CT3",
+      "2"
+    ],
+    [
+      "D_CT4",
+      "2"
+    ],
+    [
+      "U2",
+      "2"
+    ]
+  ],
+  "netlist": {
+    "J_IN": {
+      "1": "VIN_P",
+      "2": "PGND"
+    },
+    "Cin": {
+      "1": "VIN_P",
+      "2": "PGND"
+    },
+    "Cr": {
+      "1": "SW",
+      "2": "CR_CT"
+    },
+    "C7": {
+      "1": "REG1",
+      "2": "PGND"
+    },
+    "C8": {
+      "1": "REG2",
+      "2": "PGND"
+    },
+    "C9": {
+      "1": "REG3",
+      "2": "PGND"
+    },
+    "C10": {
+      "1": "REG4",
+      "2": "PGND"
+    },
+    "C105": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C106": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C107": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C108": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C109": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C110": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C111": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C112": {
+      "1": "VCC12_S",
+      "2": "PGND"
+    },
+    "C6": {
+      "1": "SS",
+      "2": "PGND"
+    },
+    "C13": {
+      "1": "RUN",
+      "2": "PGND"
+    },
+    "C101": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "C102": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "C103": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "C104": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "C5": {
+      "1": "HB",
+      "2": "SW"
+    },
+    "C11": {
+      "1": "OC1",
+      "2": "OCM"
+    },
+    "C12": {
+      "1": "OC",
+      "2": "OCM"
+    },
+    "Cout": {
+      "1": "VOUT",
+      "2": "PGND"
+    },
+    "QH": {
+      "9": "VIN_P",
+      "8": "VIN_P",
+      "7": "VIN_P",
+      "6": "VIN_P",
+      "5": "VIN_P",
+      "4": "GH",
+      "3": "SW",
+      "2": "SW",
+      "1": "SW"
+    },
+    "QL": {
+      "9": "SW",
+      "8": "SW",
+      "7": "SW",
+      "6": "SW",
+      "5": "SW",
+      "4": "GL",
+      "3": "PGND",
+      "2": "PGND",
+      "1": "PGND"
+    },
+    "R4": {
+      "2": "GH",
+      "1": "GH_DRV"
+    },
+    "R5": {
+      "2": "GL",
+      "1": "GL_DRV"
+    },
+    "R18": {
+      "2": "SW",
+      "1": "GH"
+    },
+    "R19": {
+      "2": "PGND",
+      "1": "GL"
+    },
+    "R3": {
+      "2": "OCM",
+      "1": "OCD"
+    },
+    "R20": {
+      "2": "GA1",
+      "1": "VG1_A"
+    },
+    "R21": {
+      "2": "GB1",
+      "1": "VG1_B"
+    },
+    "R22": {
+      "2": "GA2",
+      "1": "VG2_A"
+    },
+    "R23": {
+      "2": "GB2",
+      "1": "VG2_B"
+    },
+    "R24": {
+      "2": "GA3",
+      "1": "VG3_A"
+    },
+    "R25": {
+      "2": "GB3",
+      "1": "VG3_B"
+    },
+    "R26": {
+      "2": "GA4",
+      "1": "VG4_A"
+    },
+    "R27": {
+      "2": "GB4",
+      "1": "VG4_B"
+    },
+    "R28": {
+      "2": "VD1_A",
+      "1": "SEC1_A"
+    },
+    "R29": {
+      "2": "VD1_B",
+      "1": "SEC1_B"
+    },
+    "R30": {
+      "2": "VD2_A",
+      "1": "SEC2_A"
+    },
+    "R31": {
+      "2": "VD2_B",
+      "1": "SEC2_B"
+    },
+    "R32": {
+      "2": "VD3_A",
+      "1": "SEC3_A"
+    },
+    "R33": {
+      "2": "VD3_B",
+      "1": "SEC3_B"
+    },
+    "R34": {
+      "2": "VD4_A",
+      "1": "SEC4_A"
+    },
+    "R35": {
+      "2": "VD4_B",
+      "1": "SEC4_B"
+    },
+    "R1": {
+      "2": "PGND",
+      "1": "DT"
+    },
+    "R2": {
+      "2": "PGND",
+      "1": "RT"
+    },
+    "R7": {
+      "2": "PGND",
+      "1": "RUN"
+    },
+    "R6": {
+      "2": "RUN",
+      "1": "VCC12"
+    },
+    "R9": {
+      "2": "PGND",
+      "1": "GD1"
+    },
+    "R10": {
+      "2": "PGND",
+      "1": "GD2"
+    },
+    "R15": {
+      "2": "OC1",
+      "1": "OCD"
+    },
+    "R16": {
+      "2": "OC",
+      "1": "OC1"
+    },
+    "R17": {
+      "2": "OCM",
+      "1": "OC"
+    },
+    "Lr": {
+      "2": "PRI_T1",
+      "1": "CT_LR"
+    },
+    "CT": {
+      "PRI_A": "CR_CT",
+      "PRI_B": "CT_LR",
+      "SEC_A": "CS1",
+      "SEC_B": "CS2"
+    },
+    "D_CT1": {
+      "2": "",
+      "3": "OCD",
+      "1": "CS1"
+    },
+    "D_CT2": {
+      "2": "",
+      "3": "OCD",
+      "1": "CS2"
+    },
+    "D_CT3": {
+      "2": "",
+      "3": "CS1",
+      "1": "OCM"
+    },
+    "D_CT4": {
+      "2": "",
+      "3": "CS2",
+      "1": "OCM"
+    },
+    "T1": {
+      "PRI_A": "PRI_T1",
+      "PRI_B": "PRI_12",
+      "SEC_A": "SEC1_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC1_B"
+    },
+    "T2": {
+      "PRI_A": "PRI_12",
+      "PRI_B": "PRI_23",
+      "SEC_A": "SEC2_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC2_B"
+    },
+    "T3": {
+      "PRI_A": "PRI_23",
+      "PRI_B": "PRI_34",
+      "SEC_A": "SEC3_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC3_B"
+    },
+    "T4": {
+      "PRI_A": "PRI_34",
+      "PRI_B": "PGND",
+      "SEC_A": "SEC4_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC4_B"
+    },
+    "U3": {
+      "1": "VG1_A",
+      "2": "PGND",
+      "3": "REG1",
+      "4": "VD1_A",
+      "5": "PGND",
+      "6": "VD1_B",
+      "7": "VCC12_S",
+      "8": "VG1_B"
+    },
+    "U4": {
+      "1": "VG2_A",
+      "2": "PGND",
+      "3": "REG2",
+      "4": "VD2_A",
+      "5": "PGND",
+      "6": "VD2_B",
+      "7": "VCC12_S",
+      "8": "VG2_B"
+    },
+    "U5": {
+      "1": "VG3_A",
+      "2": "PGND",
+      "3": "REG3",
+      "4": "VD3_A",
+      "5": "PGND",
+      "6": "VD3_B",
+      "7": "VCC12_S",
+      "8": "VG3_B"
+    },
+    "U6": {
+      "1": "VG4_A",
+      "2": "PGND",
+      "3": "REG4",
+      "4": "VD4_A",
+      "5": "PGND",
+      "6": "VD4_B",
+      "7": "VCC12_S",
+      "8": "VG4_B"
+    },
+    "SR1A": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GA1",
+      "5": "SEC1_A",
+      "6": "SEC1_A",
+      "7": "SEC1_A",
+      "8": "SEC1_A"
+    },
+    "SR1B": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GB1",
+      "5": "SEC1_B",
+      "6": "SEC1_B",
+      "7": "SEC1_B",
+      "8": "SEC1_B"
+    },
+    "SR2A": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GA2",
+      "5": "SEC2_A",
+      "6": "SEC2_A",
+      "7": "SEC2_A",
+      "8": "SEC2_A"
+    },
+    "SR2B": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GB2",
+      "5": "SEC2_B",
+      "6": "SEC2_B",
+      "7": "SEC2_B",
+      "8": "SEC2_B"
+    },
+    "SR3A": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GA3",
+      "5": "SEC3_A",
+      "6": "SEC3_A",
+      "7": "SEC3_A",
+      "8": "SEC3_A"
+    },
+    "SR3B": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GB3",
+      "5": "SEC3_B",
+      "6": "SEC3_B",
+      "7": "SEC3_B",
+      "8": "SEC3_B"
+    },
+    "SR4A": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GA4",
+      "5": "SEC4_A",
+      "6": "SEC4_A",
+      "7": "SEC4_A",
+      "8": "SEC4_A"
+    },
+    "SR4B": {
+      "1": "PGND",
+      "2": "PGND",
+      "3": "PGND",
+      "4": "GB4",
+      "5": "SEC4_B",
+      "6": "SEC4_B",
+      "7": "SEC4_B",
+      "8": "SEC4_B"
+    },
+    "U1": {
+      "1": "DT",
+      "2": "RT",
+      "3": "OC",
+      "4": "SS",
+      "5": "GD2",
+      "6": "PGND",
+      "7": "VCC12",
+      "8": "GD1"
+    },
+    "U2": {
+      "1": "VCC12",
+      "2": "",
+      "3": "HB",
+      "4": "GH_DRV",
+      "5": "SW",
+      "6": "RUN",
+      "7": "GD1",
+      "8": "GD2",
+      "9": "PGND",
+      "10": "GL_DRV",
+      "11": "PGND"
+    },
+    "D_BT": {
+      "2": "VCC12",
+      "1": "HB"
+    },
+    "J_OUT": {
+      "1": "VOUT",
+      "2": "PGND"
+    }
+  },
+  "diff": {
+    "refs_only_in_reference": [
+      "R8"
+    ],
+    "refs_only_in_candidate": [
+      "R6"
+    ],
+    "changed": [],
+    "changed_ref_count": 0,
+    "identical": false
+  },
+  "excluded_pullup": {
+    "capture_designator": "R6",
+    "historical_designator": "R8",
+    "pins": {
+      "2": "RUN",
+      "1": "VCC12"
+    },
+    "same_wiring_as_historical_r8": true
+  },
+  "schematic_versus_pcb_netlist_match_proven": false,
+  "native_cad_modified": false,
+  "manufacturing_approved": false,
+  "limitations": [
+    "This is the schematic side only; the single EasyEDA 'Netlist Error' is a schematic-versus-PCB difference and is not resolved here.",
+    "Unconnected pins are those the editor draws with no wire; the reconstruction does not invent a net for them.",
+    "The method is validated on one reference board; a board drawn with wire-endpoint-less pins would be refused, not silently misread."
+  ]
+}
