@@ -29,6 +29,11 @@ def test_two_actual_source_rail_polygons_and_trial_holes():
         assert 0<=B.bbox(out[n])[0] and B.bbox(out[n])[2]<=155
         assert 0<=B.bbox(out[n])[1] and B.bbox(out[n])[3]<=131
     assert centers["VOUT"][0]-centers["PGND"][0]==pytest.approx(51.6001)
+    # These are ideal electrical FEED positions, not approved drilled bolt holes.
+    case=B.screen(1.2,20)
+    assert case["no_m3_holes_exported"] is True
+    assert case["known_old_m3_drill_conflict"]["VOUT"]["nearest_known_conductor"]["ref"]=="J_IN"
+    assert case["mechanical_alternate_drill_locations_not_approved"]["VOUT"]["fab_drill_approved"] is False
 
 
 def test_5mm_arithmetic_pass_but_reject_excess_16mm_height():
