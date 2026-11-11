@@ -16,7 +16,7 @@
 
 | 对象 | 当前有效源 / 含义 |
 | --- | --- |
-| **本机最新已验收增量** | [`dcx_main_board_g1_open_batch.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2)，SHA256 `59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0`；77件/299焊盘/65网/132线/18过孔，[原生DRC回执](../hardware/dcx_main/g1/g1_open_batch_drc_delta.json)为Connection 183、Netlist 1、Physical 0。12组连接已执行，禁止再次apply覆盖。原生文件尚在本地待归档，不表示远端已同步。 |
+| **本机最新已验收增量** | [`dcx_main_board_g1_open_batch.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2)，SHA256 `59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0`；77件/299焊盘/65网/132线/18过孔，[原生DRC回执](../hardware/dcx_main/g1/g1_open_batch_drc_delta.json)为Connection 183、Netlist 1、Physical 0。12组连接已执行，禁止再次apply覆盖。原生文件与 DRC 回执已随本次提交入库，可从干净克隆复核。 |
 | G1 **历史冻结父版（只用于追溯）** | [`g1/dcx_main_board_g1_lr_repack.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2)，sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`；只在**副本**上操作，不回写父版 |
 | **本轮增量的冻结父版** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
 | 原生重开读回 | [`lr_repack_readback.json`](../hardware/dcx_main/g1/lr_repack_readback.json)、[`lr_repack_drc_raw.json`](../hardware/dcx_main/g1/lr_repack_drc_raw.json)：77 个 PCB 位号、299 焊盘、65 网络、98 铜线、18 过孔；206 条 Connection、1 条 Netlist、0 条 Physical 错误 |
