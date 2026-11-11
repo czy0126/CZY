@@ -151,12 +151,26 @@ def stage1_verified() -> dict:
 
 def compare_readback(original:dict,current:dict) -> dict:
     problems=[]
-    for key in ("components","pads","nets"):
-        # PCB routing must never change components, pad nets/XY or set of nets.
-        # Stable original editor sessions preserve these source arrays.
-        if original[key]!=current.get(key):
-            problems.append(f"Existing {key} changed by autorouter")
-    if original["vias"]!=current.get("vias"):
+    # The native EDA may return otherwise identical objects in a different
+    # enumeration order after save/reopen; compare identities/geometry rather
+    # than rejecting a harmless reordered JSON array (PR87's false-negative
+    # copper-coverage lesson). Still fail closed on any actual pad/net drift.
+    comps=lambda arr:{x["ref"]:(x["X"],x["Y"],x["Rotation"])
+                       for x in arr}
+    before_c=comps(original["components"])
+    after_c=comps(current.get("components",[]))
+    if len(before_c)!=len(original["components"]) or len(after_c)!=len(current.get("components",[])) or before_c!=after_c:
+        problems.append("Existing components changed identity/position/rotation")
+    if sorted(original["nets"])!=sorted(current.get("nets",[])):
+        problems.append("Native PCB nets were added/removed/relabelled")
+    if not A.pads_match(original["pads"],{k:v[:2] for k,v in before_c.items()},
+                        current.get("pads",[]),{k:v[:2] for k,v in after_c.items()}):
+        problems.append("Native PCB pad identity/net/geometry changed")
+    old_vias={x["id"]:x for x in original["vias"]}
+    now_vias={x["id"]:x for x in current.get("vias",[])}
+    if (len(old_vias)!=len(original["vias"]) or
+            len(now_vias)!=len(current.get("vias",[])) or
+            old_vias!=now_vias):
         problems.append("Autorouter created/removed/modified vias despite L1-only configuration")
     old={s["id"]:s for s in original["lines"]}
     new={s["id"]:s for s in current.get("lines",[])}
