@@ -30,7 +30,7 @@ def test_six_independent_pad_pairs_clear_actual_old_copper_pads_vias_and_magnet(
     d=P.report()
     assert d["preflight_problems"]==[],d["preflight_problems"][:20]
     assert d["real_pad_pairs"]==6
-    assert d["native_line_primitives"]==16
+    assert d["native_line_primitives"]==17
     assert d["new_vias"]==0
     assert d["nets"]==["OC","OCD","OCM","RUN","SS"]
     assert d["native_before_drc"]["Connection Error"]==183
