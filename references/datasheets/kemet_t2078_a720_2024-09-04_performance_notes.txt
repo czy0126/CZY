@@ -1,0 +1,74 @@
+KEMET T2078_A720 -- A720 polymer aluminum series datasheet, 9/4/2024, Japanese edition.
+Transcribed by hand on 2026-11-11 from the archived full PDF
+(kemet_t2078_a720_2024-09-04_ja_full.pdf, 15 pages).  Page numbers are the printed ones.
+Numbers are copied, not derived; the figure interpretation is marked where it is an interpretation.
+
+p.2  Ratings
+     Operating temperature -55 to +105 C
+     Capacitance range 22-470 uF at 120 Hz / 25 C, tolerance M (+/-20%)
+     Rated voltage 2-35 V
+     ESR specified at 100 kHz (per the characteristics table)
+
+p.3  Performance (specification) table -- the only ESR limits the series states
+     Endurance: 105 C, rated voltage, 2,000 h
+       dC/C  within +/-10% of initial (parts <= 16 V), +/-20% (parts >= 16 V)
+       DF    within the initial specification
+       DCL   <= 1.25 x initial
+       ESR   <= 2.0 x initial
+     High-temperature storage: 105 C, 0 V, 2,000 h
+       dC/C  within +/-10% of initial (parts <= 16 V), +/-20% (parts >= 16 V)
+       DF    within the initial specification
+       DCL   <= 1.25 x initial
+       ESR   <= 2.0 x initial
+     Damp heat: 60 C, 90% RH, 500 h, unbiased
+       dC/C  within -20/+50%
+       DF    <= 2.0 x initial
+       DCL   <= 5.0 x initial
+       (no ESR criterion in this row)
+     Temperature characteristics: 25 C -> -55 C -> +25 C -> +85 C -> +105 C -> +25 C
+       dC/C  +/-15% at -55 C and +85 C, +/-20% at +105 C
+       DF    within the initial limit
+       DCL   initial limit; n/a at -55 C; 2 x initial at +85 C and +105 C
+       (no ESR criterion in this row)
+     Surge: 105 C, 1.32 x rated voltage through 33 ohm, 1,000 cycles
+       ESR   within the initial specification
+     Shock / vibration: MIL-STD-202 method 213 condition I (100 G peak) and
+       method 204 condition D (10-2,000 Hz, 20 G peak); ESR within the initial specification
+
+p.4  Electrical characteristics
+     "ESR vs. frequency" is a log-log plot: frequency 100 Hz to 1 MHz on x,
+     impedance / ESR 0.001 to 100 ohm on y.  The plotted parts are
+     A720V477M002 (2 V) and A720V226M035 (35 V).  The 2.5 V 470 uF part used in
+     this design is NOT plotted, and the plot carries no tabulated values.
+     The document contains no ESR-vs-temperature and no ESR-vs-DC-bias curve.
+     The only other curve is capacitance vs frequency for the same two parts.
+
+p.6  Ripple current / ripple voltage
+     Pmax = 410 mW at 25 C for a +20 C rise, case V / EIA 7343-21.
+     I(max) = sqrt(Pmax / R), with R the ESR at the frequency of interest.
+     The rated ripple current in the characteristics table is therefore a
+     100 kHz number, not a 200 kHz number.
+
+p.7  Table 2 -- recommended land dimensions, case V / EIA 7343-21, millimetres,
+     three density levels, values in the order W L S V1 V2:
+       Level A (maximum land protrusion)       2.55 2.77 3.67 10.22 5.60
+       Level B (nominal, recommended reflow)   2.43 2.37 3.87  9.12 5.10
+       Level C (minimum, IPC-7351 test first)  2.33 1.99 4.03  8.26 4.84
+     This is an OEM-recommended land table.  It is not yet an approved EDA
+     footprint: the W/L/S/V1/V2 mapping has to be read off the figure on the
+     same page, and the density level, courtyard and polarity marking are
+     engineering decisions.  Level C is explicitly conditional on IPC-7351
+     qualification testing.
+
+     (Land-table row cross-check, same order as the machine dump:
+      "V 7343-21 2.55 2.77 3.67 10.22 5.60 2.43 2.37 3.87 9.12 5.10 2.33 1.99 4.03 8.26 4.84")
+
+p.7  Reverse voltage: allowable transient reverse voltage is 60% of rated at
+     25 C, 50% at 55 C, 40% at 85 C, 30% at 105 C.  Continuous reverse
+     operation is not allowed at any of these levels.
+
+Why this file exists: the P0 RFQ asks for ESR at 200 kHz, 2.5 V bias, operating
+temperature and end of life.  The series answers only the last one, and only as
+a certified LIMIT (ESR <= 2.0 x initial after 2,000 h at 105 C / rated voltage).
+The other three stay UNKNOWN; a 200 kHz number must not be inferred from the
+100 kHz plot of a different voltage rating.

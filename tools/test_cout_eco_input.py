@@ -7,7 +7,6 @@ pads, or that F=2.4 mm is an OEM-approved solder-land pattern.
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 from pathlib import Path
 import sys
@@ -21,6 +20,7 @@ from cout_bank import spec_facts
 import g2_board_keepout as K
 
 PLACEMENT = ROOT / "hardware/dcx_main/g2/cout_a720_15part_eda_input.json"
+DOSSIER = ROOT / "hardware/dcx_main/g2/cout_oem_candidate.json"
 REGISTRY = ROOT / "hardware/dcx_main/component_decision_register.json"
 RFQ = ROOT / "hardware/dcx_main/performance_first_component_rfq.csv"
 
@@ -93,6 +93,14 @@ def test_verified_2p5v_model_candidate_must_fail_independent_4v_p0_rfq():
     assert d["rfq_conflicts"]["min_no_interconnect_units_at_3mohm_0p07mohm"] == 43
     assert d["passes_native_eda"] is False
     assert d["passes_p0_high_voltage_rfq"] is False
+    dossier = json.loads(DOSSIER.read_text(encoding="utf-8"))
+    lim = dossier["main_energy_storage"]["series_datasheet_esr_limits"]
+    assert lim["endurance_105c_rated_voltage_2000h_esr_max_multiple_of_initial"] == 2.0
+    assert lim["esr_at_200khz"] == "UNKNOWN"
+    assert lim["esr_vs_dc_bias_2p5v"] == "UNKNOWN"
+    assert lim["esr_at_100c_operating"] == "UNKNOWN"
+    assert dossier["oem_land_pattern"]["status"] == (
+        "OEM_RECOMMENDED_LAND_DIMENSIONS_PUBLISHED_NOT_RELEASED_IN_EDA")
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
     c = next(x for x in reg["items"] if x["ref"] == "Cout")
     assert c["verified_mpn"] == "A720V477M2R5APE003"

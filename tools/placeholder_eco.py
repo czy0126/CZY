@@ -505,7 +505,13 @@ def rows() -> list[dict]:
             "next_action": next_action(ref, role, status, blocked, traced is not None),
             "decision_owner": item["decision_owner"],
             "reviewer": item["reviewer"],
-            "verified_mpn": item["verified_mpn"],
+            # An ECO may only claim a verified MPN once the footprint is verified
+            # too: the register's ``verified_mpn`` means "OEM identity confirmed",
+            # while ``eda_footprint_verified`` is what makes a part releasable on
+            # this board.  Until both hold the ECO row stays empty, even if the
+            # part identity is real.
+            "verified_mpn": (item["verified_mpn"]
+                             if item.get("eda_footprint_verified") else None),
             **eco(ref, role),
         })
     return out

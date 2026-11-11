@@ -8,12 +8,17 @@
 
 **目前真实状态：`NOT_FOR_FAB`。** 现有 G1 可编辑原生 PCB，但尚未完成 G1 布线、G2 实体封装/100 A 铜路及 G3 原生 ERC/DRC、保护与制造审查。每次回报只引用当前实际产物，不再汇总旧日期的“最新”。
 
+**当前唯一 Windows 原生布线执行入口（PR #94 已合并）：** 基于同一活板，从仓库根目录执行 `python hardware/dcx_main/g1/apply_g1_control_autoroute.py --check` 后执行 `python hardware/dcx_main/g1/apply_g1_control_autoroute.py --apply`。一次性运行先前12个已验证焊盘连接、保存重开及**实测 DRC 下降**；再利用官方 EasyEDA `RoutingNets` 只在 RUN/SS/DT/RT/OC1/OC/OCM/OCD 八个低电流网上执行原生自动布线，**其它57网全部明示排除**，只有不动功率铜/原网且原生DRC继续下降才接受另一份副本。**本机本轮已完成第一阶段，真实原生DRC为183/1/0；第二阶段结果另列。CI绿灯不代表原生布线完成。**
+
+**不计成本 Cout 备选（PR #93 已合并）：** 已以既有确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）生成 **72颗（18×4）实际G1板源SHA绑定的XY/现有铜线干涉筛查**，代码 `tools/cout_t530_72.py`、[输入候选](../hardware/dcx_main/g2/cout_oem_candidate.json)。33.84mF、理想ESR 0.0556mΩ（25°C）仅是参考，**原107线板的VOUT/PGND铜区存在65处穿越关系，须重做功率层**；100°C/200kHz、启动与电流均分、厂家封装和全装配16mm均未核实。15颗A720仍只是2.5V基准模型，不能直接替代高耐压方案。
+
 ## 唯一可继续编辑的基线
 
 | 对象 | 当前有效源 / 含义 |
 | --- | --- |
+| **本机最新已验收增量** | [`dcx_main_board_g1_open_batch.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2)，SHA256 `59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0`；77件/299焊盘/65网/132线/18过孔，[原生DRC回执](../hardware/dcx_main/g1/g1_open_batch_drc_delta.json)为Connection 183、Netlist 1、Physical 0。12组连接已执行，禁止再次apply覆盖。原生文件尚在本地待归档，不表示远端已同步。 |
 | G1 **历史冻结父版（只用于追溯）** | [`g1/dcx_main_board_g1_lr_repack.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2)，sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`；只在**副本**上操作，不回写父版 |
-| **当前 G1 唯一继续编辑的原生候选** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
+| **本轮增量的冻结父版** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
 | 原生重开读回 | [`lr_repack_readback.json`](../hardware/dcx_main/g1/lr_repack_readback.json)、[`lr_repack_drc_raw.json`](../hardware/dcx_main/g1/lr_repack_drc_raw.json)：77 个 PCB 位号、299 焊盘、65 网络、98 铜线、18 过孔；206 条 Connection、1 条 Netlist、0 条 Physical 错误 |
 | 实际 G1 原理图清册 | [`g1_native_inventory_raw.json`](../hardware/dcx_main/g1/g1_native_inventory_raw.json) / [审计](../hardware/dcx_main/g1/g1_native_inventory_bom_gate.json)：83 个原理图元件、38 项 MPN/目标值冲突，原 R8 被排除并在清册中重编号为 R6（BOM/PCB 双 false） |
 | 当前 原理图↔PCB 逐脚差异 | [`g1_import_changes_diff.json`](../hardware/dcx_main/g1/g1_import_changes_diff.json)（2026-11-10 实测）：原理图 65 网/278 脚 vs PCB 62 网/254 脚；**不配对 24 脚全部是 CT(4)+T1–T4(各5) 的逻辑端**，PCB 侧不配对脚 0，`PRI_12/23/34` 只见于原理图，47 个共有网逐脚相同，两侧未分配的 5 脚一致。编辑器对比器 `netlistComparison` 的 PCB 列恒空，差异取自 `pcb_Net.getNetlist('JLCEDA')`；1 条原生 Netlist Error 与之**相容**，但 DRC 只报条数、逐项映射仍是推断。旧 [`g1_schematic_pcb_alignment.json`](../hardware/dcx_main/g1/g1_schematic_pcb_alignment.json) 是 Nov 6 网表口径的 83−77 计数，不再作当前差异 |
@@ -24,7 +29,7 @@
 
 ## 接下来仅允许 A/B/C 三个工作包
 
-**当前 CAD 继承规则**：后续原生布线/磁件/输出铜路 ECO 必须从 `dcx_main_board_g1_signal_stubs.eprj2` 复制成**新的非覆盖候选**；旧 Lr-repack 仅是冻结父版。不得重新运行 `apply_lr_signal_stubs.py --apply`，也不得把新的原生99条以上布线与旧98条基线混作同一张板。
+**当前 CAD 继承规则**：后续原生布线/磁件/输出铜路 ECO 必须从上表最新已验收候选复制成**新的非覆盖候选**；signal_stubs只作本轮父版追溯；旧 Lr-repack 仅是冻结父版。不得重新运行 `apply_lr_signal_stubs.py --apply`，也不得把新的原生99条以上布线与旧98条基线混作同一张板。
 
 | 工作包 | **下一个有意义的交付** | 完成标准 | 未满足时 |
 | --- | --- | --- | --- |
@@ -52,7 +57,7 @@ DeepSeek已通过用户指定的Claude设置恢复连接，配置只提供连接
 
 **本轮 Import Changes 差异（2026-11-10）：** 在候选的**副本**上只读完成四步（对比器读数 → PCB 网表模型探针 → PCB 网表导出 → 离线配对），前后 SHA 一致，证据 [`lr_signal_import_changes.json`](../hardware/dcx_main/g1/lr_signal_import_changes.json) · [`lr_signal_pcb_netlist_model.json`](../hardware/dcx_main/g1/lr_signal_pcb_netlist_model.json) · [`lr_repack_pcb_netlist_jlc.json`](../hardware/dcx_main/g1/lr_repack_pcb_netlist_jlc.json) · [`g1_import_changes_diff.json`](../hardware/dcx_main/g1/g1_import_changes_diff.json)。`sys_Tool.netlistComparison` 可调用但 PCB 列对本板恒空（65 网全 `[]`，含逐脚完全相同的 47 个），**不能当差异清单**；逐脚比对改用 PCB 自己的 `pcb_Net.getNetlist('JLCEDA')`（165 556 字符 / 77 器件 / 62 网 / 254 脚）。这只是**配平**证据，不等于实体端子/DOT（D-07），也不把 1 条 Netlist Error 说成已定位根因。操作陷阱已记 [EDA.md](agent/EDA.md)。
 
-**后续路线：** 信号增量归档 → Import Changes 逐脚差异实测（已完成）→ 100 A 铜路拓扑预筛（已完成，D-12）→ 实体 Cout 与真实铜排/端子/磁件剖面 → 原生 ECO、同修订 ERC/DRC 及 DFM → 真实低能量关断与分级25/50/100 A验证。B线的自研Maxwell/绕组与C线的台架关断继续并行，120 A和≤10mm仍后置。当前199条未连接与1条网表不一致必须逐步消除；绝不把本轮增量验收表述为可投板。
+**后续路线：** 信号增量归档 → Import Changes 逐脚差异实测（已完成）→ 100 A 铜路拓扑预筛（已完成，D-12）→ 实体 Cout 与真实铜排/端子/磁件剖面 → 原生 ECO、同修订 ERC/DRC 及 DFM → 真实低能量关断与分级25/50/100 A验证。B线的自研Maxwell/绕组与C线的台架关断继续并行，120 A和≤10mm仍后置。当前183条未连接与1条网表不一致必须逐步消除；绝不把本轮增量验收表述为可投板。
 
 ## 一轮交付只回答四件事
 
@@ -74,8 +79,39 @@ DeepSeek已通过用户指定的Claude设置恢复连接，配置只提供连接
 
 - A720 的 **2.5 V / 470 µF / 3 mΩ** 单件参数有厂家原文，但与现有 [P0 高耐压 RFQ](../hardware/dcx_main/performance_first_component_rfq.csv) 的 **≥4 V（优选 6.3 V）、整组热态 ESR ≤0.07 mΩ** 不一致。**最终采购/装配 MPN 不放行**；15×A720 仅为现有 2.5 V 模型候选，见 [Cout 决策登记](../hardware/dcx_main/component_decision_register.json)。厂商 F=2.4 mm 属端子尺寸，不是获批的焊盘间距。
 - 已提供 [15 颗 Cout 的原生 ECO 输入](../hardware/dcx_main/g2/cout_a720_15part_eda_input.json)：Cout1～Cout15、既有机械方案中的初步 XY 外形和极性网络；**0.6 mm 最大外形间隔不是批准的 courtyard**。重新排布后要重算 Cout 铜扩散阻抗。
-- DeepSeek 评审对话中出现“132 线／183 Connection”数字，但 **PR #92 尚未提交绑定它的新原生 .eprj2、重开读回和原生 DRC**；不能将讨论数字提升为活板基线。当前唯一可复核仍是 **107 线／199 Connection／1 Netlist／0 Physical**。收到实际 CAD 后直接提升基线，不重复执行旧 12 线批次。
+- DeepSeek 评审对话中出现“132 线／183 Connection”数字，但 **PR #92 尚未提交绑定它的新原生 .eprj2、重开读回和原生 DRC**；不能将讨论数字提升为活板基线。该句为PR #92历史状态；本轮已在本机重新执行并取得132线/183 Connection的真实CAD与绑定回执，见上表，禁止再次执行旧12组批次。
 
 - `tools/cout_bank.py` 现在从归档的 YAGEO 单件规格页读取选型值，并用 KEMET T2078 A720 系列节选交叉核对泄漏/ESR/纹波，产品简介确认 "No voltage derating"；`spec_facts()` 在缺行或数值不一致时拒绝。归档、URL 与逐文件 SHA256 见 [`references/datasheets/`](../references/datasheets/a720v477m2r5ape003.provenance.json)；选型行 `verified: true`，A798/Chemi-Con 两行仍标 `verified: false`（网络摘要）。
 - 这关掉的是“Cout 无原厂手册、无法选型”的桌面阻塞，**不关落板**：现有单个 `Cout` 焊盘 F≈1.4 mm 与 A720 的 F=2.4 mm 不兼容，15 只阵列仍是本地原生 ECO。`NOT_FOR_FAB` 不变。
 - `apply_g1_open_batch.py` 追加两条 DRC 旁路防护：`after` 缺失任何基线非零类别按截断拒绝；类别比较取 `before`/`after` 并集，新增类别不再被忽略。`route_open_connections.categories` 拒绝 `ok:false`、空 `raw`、坏嵌套与类别数不一致。相关离线测试通过；原生回执不放宽，也不把离线测试当成同修订 DRC。
+
+**PR #92 遗留检查项（2026-11-11 后续）：**
+
+- **寄存器可复现**：合并后的 `component_decision_register.json` 曾是手改，与生成器不一致。`tools/d1_sourcing_register.py` 现在从 G2 候选档案派生 Cout 的已验证身份与全部未决项，`test_checked_in_supplier_requests_are_current` 重新成立；RFQ 仍空白/`PENDING_*`，封装仍未放行。
+- **支路铜阻 ↔ 阵列间距**：`tools/cout_bank_path.py` 的 lane 直接取机械摆放的实测中心距（15 只同为 x=14+8.2i、y=98）。新增测试把 15 颗 ECO 输入与铜模型逐位钉住（ref、x、y、pitch）；任一侧重排而未同步即红。该模型仍是“独立支路”示意，不是 PCB 阻抗上界。
+- **原厂 ESR 曲线**：已归档 KEMET T2078_A720 日文版全 15 页 PDF，并手抄页级摘要。系列只在 p.3 给 ESR 限值：105 °C/额定电压 2,000 h 耐久与 105 °C/0 V 存放后 **ESR ≤2.0× 初值**。p.4 的 ESR-频率图只画 A720V477M002（2 V）与 A720V226M035（35 V），**没有 2.5 V 470 µF 的曲线，也没有表列数值**；全文无 ESR-温度、ESR-偏置曲线。故 200 kHz、2.5 V 偏置、100 °C 保持 `UNKNOWN`；寿命只有“×2 上限”，不是曲线。另：p.7 表 2 实际发布了 case V/7343-21 的推荐焊盘尺寸（A/B/C 三档），此前“系列无焊盘表”的说法过强——但尚未映射进 EDA，`actual_oem_land_pattern_and_signoff` 仍为 false。
+- **生成视图**：v3 manifest 与 3 个生成视图未受 BOM 变化影响（`ci_check --skip-tests` 绿）；RFQ 视图仍由 `performance_first_design.py` 唯一生成，寄存器由 `d1_sourcing_register.py` 唯一生成，两者都不接受手改。
+
+### Cout后续独立审核（2026-11-11，本轮）
+
+已调用DeepSeek完成[针对当前代码的审核](../deepseek/20261111_cout_followup/reply.md)，实际修复 `_verified_cout`：室温100 kHz的ESR/N仅输出 `nominal_100khz_25c_esr_screen_met`；实际工况证据尚未接入生成器，`supplier_rfq_low_esr_target_met`保持false并标NOT_VERIFIED。新增100颗并联负例，确保室温筛选通过也不能误签热态目标；已重生成决策登记。候选档案删除“任意替代型号仍装15颗”的指令，改为按容量容差、实际频温ESR、纹波裕量和均流重新计算数量。
+
+DeepSeek建议的“hot ESR直接乘2寿命系数”未直接采用：当前原厂耐久条款的测试条件不等于任意热态频率的通用乘数。额定电压筛选仍只是单体>=4V筛选，并不表示过冲合格；本方案并联，不额外引入串联均压任务。
+
+下一份实体交付仍是Cout原生阵列，但先冻结满足>=4V（优选6.3V）的具体型号与数量。原厂新检索入口：[YAGEO T2091 A700/A720，2026-04-01](https://www.yageogroup.com/content/datasheet/asset/file/KEM_T2091_A700-A720)；这是另一版系列资料，不自动覆盖已归档的T2078或将其焊盘表套给不同case。只对逐型号核对的额定值、land图及页码建选型记录，未知的200kHz/热态数据仍未知，不把搜索摘要当型号认证。
+
+执行顺序：①精确MPN及N、原厂land/极性与阵列布局；②基于当前可核验父板的新副本，原理图/BOM/PCB同步，保存重开与DRC；③两极铜排/接点/高度预算及真实磁件端子；④低能量控制/SR换流、掉电与故障恢复实测；⑤同修订制造检查及25/50/100A分级热验证。缺失的132线候选应恢复CAD与绑定回执后复核，不能仅恢复一个数字，也不重跑旧批次。
+
+本轮改动为选型逻辑、候选执行要求及登记修复；未新增原生PCB铜线、未完成Cout实体阵列或控制/SR实测，NOT_FOR_FAB不变。
+
+### 主线与本地整合（2026-11-11）
+
+已核对并引入远端 `033b348` 的PR #93/#94：72颗T530布局工具、受限8网布线入口及对应测试，保留本地原厂资料、可复现登记与热态ESR修复。没有覆盖未提交的在途工作，未执行远端提交/推送。
+
+本轮第一阶段已真实执行：26个生成线段经编辑器合并后铜线107→132，DRC199→183，父版未改、布局无漂移。原先缺失的历史132线副本不再作为证据，本轮新副本有独立SHA与原生回执。自动布线入口修复CLI超时超过60000ms及缺少显式打开PCB文档的问题；超时仍判失败，不接受中间结果。
+
+已导出[72颗T530坐标与干涉清单](../hardware/dcx_main/g2/cout_t530_72_layout.json)，它仍绑定107线父版，不能伪称对132线或后续板已完成布局净距检查。下一次Cout与功率铜共同ECO必须重新绑定最新读回并重算65处穿越，而不是复制旧统计。72颗只是试排，不冻结制造数量；热态200kHz、厂家land和均流未通过。
+
+[DeepSeek综合建议](../deepseek/20261111_integrated/reply.md)已取得。其“现有样机抽查”没有本地实物证据支持，不作为已完成或立即可执行的台架步骤。33.84mF相对7.05mF为4.8倍，理想2V储能从14.1mJ增至67.68mJ；这是电容能量计算，不是输入损耗或充电峰值。先用新容量及实际阻抗验证启动/限流/磁通，再低能量实测；不能沿用旧模型的启动结论。
+
+统一下一路线：T530实际land/极性及72颗阵列与两极铜路联合ECO → 重新核对≤16mm装配、接点电阻和磁件真实端子 → 同修订原生网表/BOM/DRC → 控制/SR低能量关断和换流 → 25/50/100A热验证。5mm底排19.25mm方案淘汰；1.2mm底排的20µΩ接点场景仍待实测。NOT_FOR_FAB不变。

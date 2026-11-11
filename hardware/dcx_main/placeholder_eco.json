@@ -829,7 +829,7 @@
       "ref": "Cout",
       "priority": "P0",
       "part_role": "output capacitor bank",
-      "existing_value_or_rating": "15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=56.06 A RMS at 200 kHz at the 50 V/120 A overload point, measured I(Cout) (52.48 A at the rated 100 A is a four-SR reconstruction that reads ~1.2% high, so the comparison is conservative); bank ESR <=0.2 mohm; part data unverified",
+      "existing_value_or_rating": "15 x 470 uF 2.5 V 3 mohm (ESR-driven: cap needs 9, RMS needs 5); >=4 mF; >=56.06 A RMS at 200 kHz at the 50 V/120 A overload point, measured I(Cout) (52.48 A at the rated 100 A is a four-SR reconstruction that reads ~1.2% high, so the comparison is conservative); bank ESR <=0.2 mohm; A720V477M2R5APE003 individual part parameters OEM verified; not released for this PCB",
       "current_package": "polymer SMD",
       "netlist_governance": "GOLDEN_NETLIST",
       "native_pin_review": "MAPPED",

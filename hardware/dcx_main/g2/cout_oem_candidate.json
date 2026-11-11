@@ -1,6 +1,6 @@
 {
   "schema": "d1_g2_cout_oem_candidate/2",
-  "status": "OFFICIAL_PART_SPEC_VERIFIED_BUT_P0_HIGH_VOLTAGE_TARGET_FAILED_NOT_FOR_FAB",
+  "status": "BASELINE_2P5V_15xA720_OEM_VERIFIED_PLUS_6P3V_T530_COST_UNLIMITED_ALTERNATIVE_BOTH_NOT_FOR_FAB",
   "design_stage": "G2_Cout_100A",
   "design_basis": {
     "file": "design/v3/bom/cout_bank.json",
@@ -50,7 +50,23 @@
       "note": "Part-specific A720 vendor sheet now archived, but only part ratings verified; 15pcs at ideal 100kHz/25C give 7.05mF / 0.2mOhm. Does NOT meet P0 >=4V high-voltage RFQ or <=0.07mOhm operating-temperature ESR target. Original G1 only one 0603 Cout placeholder; manufacturing land/polarity approval absent."
     },
     "pin_polarity": "VOUT to positive terminal; PGND to negative terminal; double-check OEM pin stripe/footprint approval",
-    "oem_archive": "references/datasheets/a720v477m2r5ape003.provenance.json"
+    "oem_archive": "references/datasheets/a720v477m2r5ape003.provenance.json",
+    "series_datasheet_esr_limits": {
+      "source": "references/datasheets/kemet_t2078_a720_2024-09-04_performance_notes.txt",
+      "endurance_105c_rated_voltage_2000h_esr_max_multiple_of_initial": 2.0,
+      "high_temp_storage_105c_0v_2000h_esr_max_multiple_of_initial": 2.0,
+      "temperature_stability_esr_criterion": "NONE STATED (dC/C, DF and DCL only)",
+      "surge_105c_1p32x_rated_1000cycles_esr": "within initial specification",
+      "esr_at_200khz": "UNKNOWN",
+      "esr_vs_dc_bias_2p5v": "UNKNOWN",
+      "esr_at_100c_operating": "UNKNOWN",
+      "note": "The part spec sheet rates ESR at 100 kHz/25 C.  Series page 4 plots ESR vs frequency only for A720V477M002 (2 V) and A720V226M035 (35 V), with no tabulated values, and publishes no ESR-vs-temperature and no ESR-vs-bias curve.  End of life is bounded, not a curve: at the endurance limit the bank ESR doubles, which is still far above the P0 <= 0.07 mOhm ask."
+    }
+  },
+  "oem_land_pattern": {
+    "source": "references/datasheets/kemet_t2078_a720_2024-09-04_performance_notes.txt p.7 Table 2",
+    "status": "OEM_RECOMMENDED_LAND_DIMENSIONS_PUBLISHED_NOT_RELEASED_IN_EDA",
+    "note": "Case V / EIA 7343-21, density levels A/B/C.  The transcribed W/L/S/V1/V2 values still have to be mapped through the figure on the same page; density choice, courtyard and polarity marking remain engineering work.  Level C is conditional on IPC-7351 qualification."
   },
   "optional_high_frequency_bypass": {
     "manufacturer": "Murata",
@@ -110,5 +126,33 @@
     "p0_high_voltage_rfq_4v_met": false,
     "p0_high_performance_esr_0p07_mohm_met": false
   },
-  "next_actual_eda_action": "A720 is verified only as a 2.5V base-model part; independent P0 RFQ requires >=4V (6.3V preferred) and <=0.07mOhm hot/high-frequency bank ESR, neither met. Treat 15-unit design as design-owned placement input, not approved final MPN. For any selected replacement: validate OEM pad/courtyard and positive/negative pin map, place 15 actual components in a new G1 EasyEDA native copy, then save/reopen/native DRC, verify overshoot/hot ESR/ripple and both-pole 100A connections."
+  "next_actual_eda_action": "Continue the integrated T530 72-unit high-voltage candidate from PR93; A720 15-unit bank remains the old simulation reference. Use cout_t530_72_layout.json for source-locked trial XY, not approved pads. Verify OEM land/polarity/courtyard and redesign the intersecting VOUT/PGND conductors together with the capacitor array. Recheck startup with 33.84mF versus 7.05mF; verify operating ESR/current sharing and <=16mm complete assembly. Rebind geometry to the latest accepted native CAD/readback before ECO. Save/reopen with matching schematic/BOM and actual DRC; do not inherit old hashes or certify hot ESR from room-temperature division.",
+  "unlimited_cost_voltage_upgrade": {
+    "status": "SOURCE_GROUNDED_HIGH_VOLTAGE_DESIGN_ALTERNATIVE_NOT_FOR_FAB",
+    "factory_part": "T530X477M006ATE004",
+    "manufacturer": "KEMET/YAGEO",
+    "official_part_sheet": "https://search.kemet.com/component-documentation/download/specsheet/T530X477M006ATE004",
+    "existing_sourcing_provenance": "hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json",
+    "generator": "tools/cout_t530_72.py",
+    "rated_volts_at_105c": 6.3,
+    "rated_volts_at_125c": 4.22,
+    "unit_capacitance_uF": 470,
+    "unit_esr_mohm_at_100khz_25c": 4,
+    "unit_max_height_mm": 4.3,
+    "source_125c_100khz_ripple_a_each": 2.05,
+    "selected_trial_count": 72,
+    "nominal_bank_capacitance_mF": 33.84,
+    "nominal_25c_100khz_ideal_bank_esr_mohm": 0.05555555555555555,
+    "min_esr_count_only_at_25c": 58,
+    "maximum_hot_frequency_unit_esr_to_meet_0p07_mohm": 5.040000000000001,
+    "grid_columns": 18,
+    "grid_rows": 4,
+    "pcb_copper_status": "G1 107-line source still has 1-2mm PGND/VOUT copper running beneath trial rows; 72 OEM footprint placement MUST be accompanied by redesigned VOUT/PGND high-current power rails, pad/polarity and native DRC.",
+    "geometry_status": "Actual native PCB pad-gross-collision/audit generated on CI; 0.7mm trial body gap is NOT an approved courtyard/land pattern",
+    "original_15_cap_2p5v_baseline_overwritten": false,
+    "transient_capacitance_model_updated": false,
+    "thermal_100c_200khz_esr_verified": false,
+    "native_pcb_changed": false,
+    "fab_approved": false
+  }
 }

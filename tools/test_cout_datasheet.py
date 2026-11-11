@@ -17,6 +17,10 @@ from cout_bank import CANDIDATES, DATASHEET_TEXT, REPO, SERIES_TEXT, TEXT_ENCODI
 
 PROVENANCE = REPO / "references/datasheets/a720v477m2r5ape003.provenance.json"
 BRIEF_TEXT = REPO / "references/datasheets/yageo_pb_a720_a798_revA.txt"
+SERIES_FULL_PDF = REPO / "references/datasheets/kemet_t2078_a720_2024-09-04_ja_full.pdf"
+SERIES_NOTES = REPO / "references/datasheets/kemet_t2078_a720_2024-09-04_performance_notes.txt"
+LAND_ROW = ("V 7343-21 2.55 2.77 3.67 10.22 5.60 2.43 2.37 3.87 "
+            "9.12 5.10 2.33 1.99 4.03 8.26 4.84")
 
 
 def test_every_archived_document_hashes_to_its_provenance_record():
@@ -87,6 +91,32 @@ def test_the_alternates_are_still_marked_unverified():
 def test_the_product_brief_records_no_voltage_derating_for_a720():
     brief = BRIEF_TEXT.read_text(encoding=TEXT_ENCODING)
     assert "No voltage derating" in brief
+
+
+def test_the_full_series_datasheet_is_archived_and_transcribed():
+    record = json.loads(PROVENANCE.read_text(encoding="utf-8"))
+    full = [d for d in record["documents"] if d["kind"] == "series_datasheet_full"]
+    assert len(full) == 1
+    assert REPO / full[0]["pdf"] == SERIES_FULL_PDF
+    assert REPO / full[0]["text"] == SERIES_NOTES
+    assert SERIES_FULL_PDF.is_file()
+    assert SERIES_NOTES.read_text(encoding="utf-8").startswith("KEMET T2078_A720")
+
+
+def test_the_series_states_one_esr_limit_and_no_hot_or_bias_curve():
+    """End of life is a certified multiple; 200 kHz, bias and temperature are not
+    published for this voltage rating, so they must stay UNKNOWN."""
+    notes = SERIES_NOTES.read_text(encoding="utf-8")
+    assert "ESR   <= 2.0 x initial" in notes
+    assert "no ESR-vs-temperature and no ESR-vs-DC-bias curve" in notes
+    assert "NOT plotted" in notes
+    assert LAND_ROW in notes
+
+
+def test_the_transcribed_land_row_matches_the_machine_dump():
+    """One row is in both the hand transcription and the pdftotext dump; they
+    must not drift, or the transcription is not a transcription any more."""
+    assert LAND_ROW in SERIES_TEXT.read_text(encoding=TEXT_ENCODING)
 
 
 def test_a_truncated_or_empty_spec_sheet_is_refused(tmp_path):

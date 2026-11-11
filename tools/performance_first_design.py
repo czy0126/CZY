@@ -30,6 +30,7 @@ OPTIONAL_FOUR_TURN_AE_MM2 = 150.0
 COUT_VRATED_MIN = 4.0
 COUT_VRATED_PREFERRED = 6.3
 COUT_ESR_TOTAL_MOHM = 0.10
+COUT_ESR_RFQ_TARGET_MOHM = 0.07
 COUT_PCB_ESR_BUDGET_MOHM = 0.03
 COUT_RIPPLE_MARGIN = 1.50
 SR_PEAK_MARGIN = 1.25
@@ -238,7 +239,8 @@ def build() -> tuple[dict, list[dict[str, str]]]:
             f"({r_ripple_rated:.2f}A at the rated 100A, a four-SR reconstruction), "
             "7.05mF, ideal 0.2mOhm",
             f">=4V rated, 6.3V preferred within D1 <=16mm full stack; >=7.05mF; "
-            f"bank ripple >={r_target:.2f}Arms; ESR bank <=0.07mOhm at operating frequency/temperature",
+            f"bank ripple >={r_target:.2f}Arms; "
+            f"ESR bank <={COUT_ESR_RFQ_TARGET_MOHM:g}mOhm at operating frequency/temperature",
             "Original datasheets; actual PCB copper/joints <=0.03mOhm; overshoot/ripple/reliability and envelope"),
         row("Cin_high_ripple",
             f"{cin_ripple:.2f}A bridge AC ripple at the 120A overload "
