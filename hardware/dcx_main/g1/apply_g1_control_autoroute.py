@@ -354,6 +354,14 @@ def main()->int:
     exclusive.add_argument("--emit-js",action="store_true")
     exclusive.add_argument("--apply",action="store_true")
     args=parser.parse_args()
+    if args.apply:
+        raise SystemExit(
+            "DEPRECATED: beta autoRouting repeatedly timed out on accepted "
+            "132-line G1. Do NOT use this entry point. Run "
+            "'python hardware/dcx_main/g1/apply_g1_control_direct.py --check' "
+            "then '--apply'; it uses verified native PrimitiveLine.create "
+            "for six physically checked control pad pairs."
+        )
     d=plan()
     if args.check:
         print(json.dumps(d,ensure_ascii=False,indent=2))
