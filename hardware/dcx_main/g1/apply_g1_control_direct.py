@@ -111,7 +111,7 @@ def main()->int:
         print(json.dumps(d,ensure_ascii=False,indent=2))
         return int(bool(d["preflight_problems"]))
     if args.emit_js:
-        return P.main_from_native_export() if hasattr(P,"main_from_native_export") else _emit()
+        return _emit()
     return apply()
 
 def _emit()->int:
