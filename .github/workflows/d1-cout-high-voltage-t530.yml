@@ -1,0 +1,59 @@
+name: D1 high-voltage no-cost-limit Cout 72-part OEM and real G1 geometry
+on:
+  pull_request:
+    paths:
+      - 'tools/cout_t530_72.py'
+      - 'tools/test_cout_t530_72.py'
+      - 'hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json'
+      - 'hardware/dcx_main/oem_sourcing_screen_2026-11-09.json'
+      - 'hardware/dcx_main/g1/lr_signal_review_readback.json'
+      - 'hardware/dcx_main/g2/cout_oem_candidate.json'
+      - '.github/workflows/d1-cout-high-voltage-t530.yml'
+  push:
+    branches: [feat/d1-fab-package]
+    paths:
+      - 'tools/cout_t530_72.py'
+      - 'tools/test_cout_t530_72.py'
+      - 'hardware/dcx_main/g2/cout_oem_candidate.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source_locked_72_cap_native_collision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install regression tests
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Verify actual OEM part and original saved/reopened G1 board
+        run: |
+          python -m pytest -q tools/test_cout_t530_72.py
+          python tools/cout_t530_72.py --check
+      - name: Generate 72 real OEM MPN placements and output copper rework blockers
+        run: python tools/cout_t530_72.py --export cout_t530_72_REAL_G1_REWORK_NOT_FOR_FAB.json
+      - name: Reject substitution for 2.5V baseline or thermal/EDA release
+        run: |
+          python - <<'PY'
+          import json
+          p="cout_t530_72_REAL_G1_REWORK_NOT_FOR_FAB.json"
+          x=json.load(open(p,encoding="utf-8"))
+          assert len(x["placement"]["units"])==72
+          assert x["part"]["rated_v_at_125c"]>=4
+          assert x["arithmetic_100khz_25c_only"]["bank_esr_mohm_25c"]<.07
+          assert x["placement"]["existing_copper_traversals_count"]>0
+          assert x["arithmetic_100khz_25c_only"]["hot_200khz_esr_qualified"] is False
+          assert x["hardware_gates"]["actual_72_components_in_schematic_and_pcb"] is False
+          assert x["hardware_gates"]["fab_approved"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: G2-72x6V3-T530-XY-actual107linePCB-power-rework-NOT_FOR_FAB
+          path: cout_t530_72_REAL_G1_REWORK_NOT_FOR_FAB.json
+          if-no-files-found: error
+          retention-days: 30
+# This test does NOT perform native EasyEDA ECO, capacitor thermals or 200kHz
+# ESR validation. It cannot change fabrication state.
