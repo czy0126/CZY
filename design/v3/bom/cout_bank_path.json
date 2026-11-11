@@ -293,8 +293,9 @@
       "the independent-lane square count is not a rigorous bound on actual PCB impedance: at 200 kHz AC crowding can increase local resistance, but shared copper/vias/return may reduce the resistance of the assumed independent branches",
       "per-unit pad, via and solder-joint geometry does not exist in this repository; the 50 uohm joint is the connector placeholder, not a capacitor-joint measurement",
       "each unit is assigned to the nearest SR-group centre; a real plane splits its current between two groups",
+      "the lane width is the full centre-to-centre pitch measured from the placement study, so each unit is credited the whole pitch of plane copper -- the optimistic side; the 15-unit ECO placement input repeats that pitch, and test_cout_bank_path fails if the two rows diverge",
       "the vertical run is copper shared with the SR-to-busbar path in output_path_budget.json; the two resistances are not additive",
-      "the placed part's ESR is the datasheet maximum at 100 kHz/25 C; ESR at 200 kHz, at 2 V bias and at end of life is not included",
+      "the placed part's ESR is the datasheet maximum at 100 kHz/25 C; the series publishes no 200 kHz and no bias curve, and its 105 C/2,000 h endurance limit allows ESR to double, so an end-of-life bank can be worse than the value above",
       "no thermal model: the current share below is a resistance ratio, not a temperature",
       "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) used an ideal 0.200 mohm Rser; no monotonic ripple bound is justified without a time-domain rerun with actual distributed capacitor impedance"
     ],
@@ -419,8 +420,9 @@
       "the independent-lane square count is not a rigorous bound on actual PCB impedance: at 200 kHz AC crowding can increase local resistance, but shared copper/vias/return may reduce the resistance of the assumed independent branches",
       "per-unit pad, via and solder-joint geometry does not exist in this repository; the 50 uohm joint is the connector placeholder, not a capacitor-joint measurement",
       "each unit is assigned to the nearest SR-group centre; a real plane splits its current between two groups",
+      "the lane width is the full centre-to-centre pitch measured from the placement study, so each unit is credited the whole pitch of plane copper -- the optimistic side; the 15-unit ECO placement input repeats that pitch, and test_cout_bank_path fails if the two rows diverge",
       "the vertical run is copper shared with the SR-to-busbar path in output_path_budget.json; the two resistances are not additive",
-      "the placed part's ESR is the datasheet maximum at 100 kHz/25 C; ESR at 200 kHz, at 2 V bias and at end of life is not included",
+      "the placed part's ESR is the datasheet maximum at 100 kHz/25 C; the series publishes no 200 kHz and no bias curve, and its 105 C/2,000 h endurance limit allows ESR to double, so an end-of-life bank can be worse than the value above",
       "no thermal model: the current share below is a resistance ratio, not a temperature",
       "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) used an ideal 0.200 mohm Rser; no monotonic ripple bound is justified without a time-domain rerun with actual distributed capacitor impedance"
     ]

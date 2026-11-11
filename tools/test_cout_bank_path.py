@@ -28,6 +28,7 @@ import output_path_budget as opb  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 JSON_OUT = ROOT / "design/v3/bom/cout_bank_path.json"
+EDA_INPUT = ROOT / "hardware/dcx_main/g2/cout_a720_15part_eda_input.json"
 
 
 def cout_json() -> dict:
@@ -88,6 +89,23 @@ def test_the_units_come_from_the_placement_study():
 def test_the_lane_width_is_the_measured_unit_pitch():
     placed = cp.units(mbm.report())
     assert cp.unit_pitch_mm(placed) == pytest.approx(8.2, abs=1e-9)
+
+
+def test_the_eco_input_row_is_the_same_array_the_copper_model_measures():
+    """The 15-unit ECO placement input and the branch model must be one array.
+
+    Both trace back to main_board_mechanical.py today, but nothing stopped a
+    re-pitch in the ECO input from leaving the copper model quoting the old
+    lane width.  Pin the refs, both axes and the pitch.
+    """
+    ecos = json.loads(EDA_INPUT.read_text(encoding="utf-8"))["placement_proposal"]["units"]
+    measured = cp.units(mbm.report())
+    assert [u["ref"] for u in ecos] == [u["ref"] for u in measured]
+    assert [u["proposed_centre_mm"][0] for u in ecos] == pytest.approx(
+        [u["x_mm"] for u in measured])
+    assert [u["proposed_centre_mm"][1] for u in ecos] == pytest.approx(
+        [u["y_mm"] for u in measured])
+    assert cp.unit_pitch_mm(measured) == pytest.approx(8.2, abs=1e-9)
 
 
 def test_each_unit_is_assigned_to_the_nearest_group_centre():
