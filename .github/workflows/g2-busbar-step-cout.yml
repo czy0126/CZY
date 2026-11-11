@@ -1,0 +1,65 @@
+name: G2 native-source busbar 3D geometry and Cout sourcing (NOT FOR FAB)
+on:
+  pull_request:
+    paths:
+      - 'tools/g2_busbar_cad.py'
+      - 'tools/test_g2_busbar_cad.py'
+      - 'hardware/dcx_main/g2/cout_oem_candidate.json'
+      - 'hardware/dcx_main/g1/g1_100a_output_interface.json'
+      - 'design/v3/maxwell/diy_magnetics_concept.json'
+      - '.github/workflows/g2-busbar-step-cout.yml'
+  push:
+    branches:
+      - feat/d1-fab-package
+    paths:
+      - 'tools/g2_busbar_cad.py'
+      - 'tools/test_g2_busbar_cad.py'
+      - 'hardware/dcx_main/g2/cout_oem_candidate.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  trial-machined-bars-and-mechanical-height:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install engineering CAD/export libraries
+        run: python -m pip install 'cadquery==2.8.0' 'ezdxf>=1.4,<2' 'pytest>=8,<10'
+      - name: Verify frozen real native G1 provenance, 16mm contradiction and OEM Cout
+        run: |
+          python -m pytest -q tools/test_g2_busbar_cad.py
+          python tools/g2_busbar_cad.py --check
+      - name: Export physically modelled solid copper and unapproved DXF for both thicknesses
+        run: python tools/g2_busbar_cad.py --export g2_trial_cad
+      - name: Check STEP can be re-imported as a 3D solid assembly and audit DXF layers
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import cadquery as cq
+          import ezdxf
+          d = Path("g2_trial_cad")
+          for tag in ("1.2", "5"):
+              step = d / f"G2_{tag}mm_NOT_FOR_FAB.step"
+              model = cq.importers.importStep(str(step))
+              solids = model.solids().vals()
+              assert len(solids) >= 7, (tag, len(solids))
+              assert all(v.Volume() > 0 for v in solids)
+              dr = ezdxf.readfile(d / f"G2_{tag}mm_NOT_FOR_FAB.dxf")
+              layers = set(dr.layers.entries.keys())
+              assert "vout_copper_trial" in layers and "pgnd_copper_trial" in layers
+              assert len(list(dr.modelspace().query("LWPOLYLINE"))) == 2
+              assert len(list(dr.modelspace().query("CIRCLE"))) == 2
+              print(tag, "mm", len(solids), "solids", "NOT_FOR_FAB")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: G2-design-owned-busbar-DXF-STEP-NOT_FOR_FAB
+          path: g2_trial_cad/
+          if-no-files-found: error
+          retention-days: 30
+# Green means the geometry and assumptions are reproducible, not native G1
+# board connectivity, 100A thermal qualification, MPN release or production.
