@@ -83,8 +83,10 @@ def test_verified_2p5v_model_candidate_must_fail_independent_4v_p0_rfq():
     assert target["decision"] == "PENDING"
     assert ">=4V rated" in target["unlimited_cost_request"]
     assert "<=0.07mOhm" in target["unlimited_cost_request"]
-    assert "FAILS >=4V" in target["supplier_mpn_or_custom_drawing"]
-    assert "FAILS <=0.07mOhm" in target["supplier_mpn_or_custom_drawing"]
+    # This RFQ is generator-owned by tools/performance_first_design.py.
+    # An actual P0 vendor selection has NOT happened; keep its view PENDING.
+    assert target["supplier_mpn_or_custom_drawing"] == ""
+    assert target["manufacturer_datasheet_or_signed_drawing"] == ""
     assert d["rfq_conflicts"]["high_voltage_pass"] is False
     assert d["rfq_conflicts"]["esr_target_pass"] is False
     assert d["rfq_conflicts"]["rated_2p5v_cannot_pass_by_increasing_parallel_count"] is True
