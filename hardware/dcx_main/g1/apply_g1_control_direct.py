@@ -11,6 +11,8 @@ or magnetic power-net autorouting. NOT_FOR_FAB even on successful DRC delta.
 On the Windows workstation, with EasyEDA Pro available:
     python hardware/dcx_main/g1/apply_g1_control_direct.py --check
     python hardware/dcx_main/g1/apply_g1_control_direct.py --apply
+    # If the save succeeded but the immediate readback failed:
+    python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 """
 from __future__ import annotations
 
@@ -30,9 +32,15 @@ TARGET=HERE/P.CANDIDATE
 PREFIX="g1_control_direct"
 RAW_DRC=HERE/(PREFIX+"_drc_raw.json")
 DELTA=HERE/(PREFIX+"_drc_delta.json")
+APPLY_RECEIPT=HERE/(PREFIX+"_apply.json")
 
 def sha(path:Path)->str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def sha_repo_text(path:Path)->str:
+    """Hash Git's LF-normalized JSON, independent of native Windows CRLF."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 def compare_native_drc()->dict:
     old=OLD.categories(json.loads(P.BASE_DRC.read_text(encoding="utf-8")))
@@ -61,7 +69,8 @@ def compare_native_drc()->dict:
       "status":"ACTUAL_G1_DIRECT_COPPER_DRC_IMPROVED_NOT_FOR_FAB",
       "source_sha256":sha(P.SOURCE),
       "candidate_sha256":sha(TARGET),
-      "candidate_drc_sha256":sha(RAW_DRC),
+      "candidate_drc_sha256":sha_repo_text(RAW_DRC),
+      "workstation_raw_drc_sha256":sha(RAW_DRC),
       "native_before_drc":old,"native_after_drc":new,
       "real_connection_errors_removed":183-new["Connection Error"],
       "native_saved_reopened":True,
@@ -72,6 +81,19 @@ def compare_native_drc()->dict:
       "real_72_part_Cout_qualified":False,
       "fabrication_approved":False
     }
+
+def verify_native_drc()->int:
+    result=subprocess.run([sys.executable,str(HERE/"run_driver_drc.py"),
+                           "--board",str(TARGET),"--prefix",PREFIX+"_drc"],
+                          check=False)
+    if result.returncode:
+        raise RuntimeError("Native DRC command failed; zero changes NOT assumed")
+    d=compare_native_drc()
+    DELTA.write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",
+                     encoding="utf-8",newline="\n")
+    print(json.dumps(d,ensure_ascii=False,indent=2))
+    return 0
+
 
 def apply()->int:
     plan=P.report()
@@ -85,19 +107,28 @@ def apply()->int:
     # Uses the SAME working native EasyEDA PrimitiveLine.create path that
     # produced the accepted 107->132 source in PR95. Does NOT invoke beta.
     if E.apply(P,P.SOURCE,PREFIX):
-        raise RuntimeError("Native EasyEDA could not save/reopen/verify direct-route copy")
+        raise RuntimeError("Native EasyEDA could not save/reopen/verify direct-route copy; use --resume, never --apply twice")
     if sha(P.SOURCE)!=parent_sha:
         raise ValueError("Source changed during native direct copper creation")
-    result=subprocess.run([sys.executable,str(HERE/"run_driver_drc.py"),
-                           "--board",str(TARGET),"--prefix",PREFIX+"_drc"],
-                          check=False)
-    if result.returncode:
-        raise RuntimeError("Native DRC command failed; zero changes NOT assumed")
-    d=compare_native_drc()
-    DELTA.write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",
-                     encoding="utf-8",newline="\n")
-    print(json.dumps(d,ensure_ascii=False,indent=2))
-    return 0
+    return verify_native_drc()
+
+
+def resume()->int:
+    """Verify a previously saved candidate without changing its copper."""
+    plan=P.report()
+    if plan["preflight_problems"] or sha(P.SOURCE)!=P.EXPECTED_SHA:
+        raise ValueError("Accepted parent no longer matches original preflight")
+    if not TARGET.is_file() or sha(TARGET)==sha(P.SOURCE):
+        raise ValueError("No modified saved native candidate to resume")
+    receipt=json.loads(APPLY_RECEIPT.read_text(encoding="utf-8"))
+    value=receipt.get("value") or {}
+    if (receipt.get("ok") is not True or value.get("saved") is not True
+            or len(value.get("created") or [])!=17 or value.get("failed")
+            or value.get("viasCreated") or value.get("lines")!=149):
+        raise ValueError("Native saved 17-line apply receipt missing or invalid")
+    if E.verify_existing(P,P.SOURCE,PREFIX):
+        raise RuntimeError("Native saved candidate failed readback; no new copper created")
+    return verify_native_drc()
 
 def main()->int:
     ap=argparse.ArgumentParser(description=__doc__)
@@ -105,6 +136,7 @@ def main()->int:
     g.add_argument("--check",action="store_true")
     g.add_argument("--emit-js",action="store_true")
     g.add_argument("--apply",action="store_true")
+    g.add_argument("--resume",action="store_true",help="verify saved candidate without drawing again")
     args=ap.parse_args()
     if args.check:
         d=P.report()
@@ -112,7 +144,7 @@ def main()->int:
         return int(bool(d["preflight_problems"]))
     if args.emit_js:
         return _emit()
-    return apply()
+    return resume() if args.resume else apply()
 
 def _emit()->int:
     d=P.report()

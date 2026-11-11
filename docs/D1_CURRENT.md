@@ -1,6 +1,6 @@
 # D1 当前交接面板（唯一日常入口）
 
-> 状态基准：2026-11-11；研发主线 `feat/d1-fab-package`，[PR #87](https://github.com/czy0126/CZY/pull/87) 已合并实际原生增量。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
+> 状态基准：2026-11-11 本机实跑；研发主线 `feat/d1-fab-package`，PR #98 原生直连方案已在 Windows EasyEDA 创建并验收 149 铜线/173 Connection。下述本地新增候选及回执须随本轮提交入库才是共享研发基线。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
 
 ## 目标与固定范围
 
@@ -8,14 +8,14 @@
 
 **目前真实状态：`NOT_FOR_FAB`。** 现有 G1 可编辑原生 PCB，但尚未完成 G1 布线、G2 实体封装/100 A 铜路及 G3 原生 ERC/DRC、保护与制造审查。每次回报只引用当前实际产物，不再汇总旧日期的“最新”。
 
-**下一次唯一实际 EasyEDA 原生工程操作（[#98](https://github.com/czy0126/CZY/pull/98)，替代反复失败的 Beta 自动布线）：** 当前已验收的 **132线、183 Connection／1 Netlist／0 Physical** `dcx_main_board_g1_open_batch.eprj2` 为唯一父版。Windows EasyEDA Pro 的仓库根目录执行：
+**本机已执行 PR #98 六组控制网的原生铜线增量，并通过保存、重开、图元核对和真实 DRC。** 在冻结的 132线/183 Connection 父板副本中，以 `pcb_PrimitiveLine.create` 创建 RUN、SS、OC、OCD、OCM 五网六组共17段、0过孔；实际铜线132→149，Connection 183→**173**，Netlist **1不变**、Physical **0不变**。77件、299焊盘、65网、18过孔及全部旧132条铜线不漂移。[原生DRC回执](../hardware/dcx_main/g1/g1_control_direct_drc_delta.json)和[重开对照](../hardware/dcx_main/g1/g1_control_direct_reopen_report.json)绑定新候选哈希。首次立即重开返回 `PCB missing`，已保留原失败信息，未重落铜；通过新增只验证候选的 `--resume` 二次只读打开成功并取得原生 DRC。**新候选存在后严禁再次运行 `--apply`**。
 
 ```powershell
-python hardware/dcx_main/g1/apply_g1_control_direct.py --check
-python hardware/dcx_main/g1/apply_g1_control_direct.py --apply
+# 只在后续核验已保存149线候选时使用；不会再创建铜线
+python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 ```
 
-这个命令**不调用 Beta `autoRouting`**，复用先前在真实 EasyEDA 上把 107线变为132线的 `pcb_PrimitiveLine.create` 成功链路。基于实际 299焊盘／132旧铜／18过孔及磁件禁区，集中创建六组事先避让的控制网：**RUN(C13→R7)、SS(C6→U1)、OC(R16→U1)、OCD(R3→D_CT1)、OCM(C11→C12、D_CT4→R17)**；共17段、零新过孔，拒绝全部功率/磁件/SR驱动等其它网络。程序只修改**新副本**、保存关开并检查旧132线不漂移，必须取得原生DRC **Connection <183、Netlist ≤1、Physical=0、无新增错误**才写通过回执。原有9线/12组已在第一阶段执行，**禁止重跑**；此前 `apply_g1_control_autoroute.py` 的默认60秒超时及Beta失败副本只用于历史诊断，**不再是当前优先执行入口**。本次CI预检不等于已执行原生CAD，运行之前DRC仍183且 `NOT_FOR_FAB`。
+下一项 A 交付不再是低电流信号线的预检，而是以149线候选为新冻结父版，在新的副本中实现可制造的实体 Cout、磁件端子及100 A VOUT/PGND 双极铜排。仍有 **173 Connection / 1 Netlist** 未闭合；原有9线/12组、PR #98的17段都不得重画。`NOT_FOR_FAB`。
 
 **不计成本 Cout 备选（PR #93 已合并）：** 已以既有确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）生成 **72颗（18×4）实际G1板源SHA绑定的XY/现有铜线干涉筛查**，代码 `tools/cout_t530_72.py`、[输入候选](../hardware/dcx_main/g2/cout_oem_candidate.json)。33.84mF、理想ESR 0.0556mΩ（25°C）仅是参考，**历史107线板的VOUT/PGND铜区曾有65处穿越关系**；最新工具已改为从实际验收的**132线/183 Connection**板读取重算，最新具体数量以同版生成的报告为准。现有高电流铜路仍须重构；100°C/200kHz、启动与电流均分、厂家封装和全装配16mm均未核实。15颗A720仍只是2.5V基准模型，不能直接替代高耐压方案。
 
@@ -23,7 +23,8 @@ python hardware/dcx_main/g1/apply_g1_control_direct.py --apply
 
 | 对象 | 当前有效源 / 含义 |
 | --- | --- |
-| **本机最新已验收增量** | [`dcx_main_board_g1_open_batch.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2)，SHA256 `59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0`；77件/299焊盘/65网/132线/18过孔，[原生DRC回执](../hardware/dcx_main/g1/g1_open_batch_drc_delta.json)为Connection 183、Netlist 1、Physical 0。12组连接已执行，禁止再次apply覆盖。原生文件与 DRC 回执已随本次提交入库，可从干净克隆复核。 |
+| **当前最新已验收可编辑 G1 候选（149线）** | [`dcx_main_board_g1_control_direct.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_control_direct.eprj2)，SHA256 `9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1`；77件/299焊盘/65网/149线/18过孔；[原生DRC回执](../hardware/dcx_main/g1/g1_control_direct_drc_delta.json)为Connection **173**、Netlist **1**、Physical **0**。17段六组控制铜线真实保存重开、覆盖完整、旧铜不变；新副本继续G2，不覆盖本候选。|
+| G1 **冻结直连父版（132线）** | [`dcx_main_board_g1_open_batch.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2)，SHA256 `59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0`；77件/299焊盘/65网/132线/18过孔，Connection 183/Netlist 1/Physical 0；原12组连接已完成，禁止再次运行其 `--apply`。旧 [132线原生DRC](../hardware/dcx_main/g1/g1_open_batch_drc_delta.json)继续保留为对照。|
 | G1 **历史冻结父版（只用于追溯）** | [`g1/dcx_main_board_g1_lr_repack.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2)，sha256 `552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e`；只在**副本**上操作，不回写父版 |
 | **本轮增量的冻结父版** | [`dcx_main_board_g1_signal_stubs.eprj2`](../hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2)，SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`；[本轮同会话重开/DRC审核](../hardware/dcx_main/g1/lr_signal_review_report.json)：77件/299焊盘/65网/107线/18过孔，未连接206→199，Physical 0，Netlist仍1；仅接受增量，不是整板通过 |
 | 原生重开读回 | [`lr_repack_readback.json`](../hardware/dcx_main/g1/lr_repack_readback.json)、[`lr_repack_drc_raw.json`](../hardware/dcx_main/g1/lr_repack_drc_raw.json)：77 个 PCB 位号、299 焊盘、65 网络、98 铜线、18 过孔；206 条 Connection、1 条 Netlist、0 条 Physical 错误 |
@@ -36,7 +37,7 @@ python hardware/dcx_main/g1/apply_g1_control_direct.py --apply
 
 ## 接下来仅允许 A/B/C 三个工作包
 
-**当前 CAD 继承规则**：后续原生布线/磁件/输出铜路 ECO 必须从上表最新已验收候选复制成**新的非覆盖候选**；signal_stubs只作本轮父版追溯；旧 Lr-repack 仅是冻结父版。不得重新运行 `apply_lr_signal_stubs.py --apply`，也不得把新的原生99条以上布线与旧98条基线混作同一张板。
+**当前 CAD 继承规则**：后续 Cout/双极功率铜路/磁件端子原生 ECO 必须从上表最新验收的 **149线 `dcx_main_board_g1_control_direct.eprj2`** 复制成**新的非覆盖候选**；132线 `open_batch`、107线 `signal_stubs`、旧 `lr_repack` 仅用于追溯。不得重复运行已执行过的铜线 `--apply`，不能混用不同修订的 DRC、BOM 或铜路物理筛查。72颗 T530 目前的 XY 干涉筛查仍绑定132线冻结父版，须在149线实体 ECO 前重新按同版计算，不能据旧筛查批准新铜路。
 
 | 工作包 | **下一个有意义的交付** | 完成标准 | 未满足时 |
 | --- | --- | --- | --- |
@@ -64,7 +65,7 @@ DeepSeek已通过用户指定的Claude设置恢复连接，配置只提供连接
 
 **本轮 Import Changes 差异（2026-11-10）：** 在候选的**副本**上只读完成四步（对比器读数 → PCB 网表模型探针 → PCB 网表导出 → 离线配对），前后 SHA 一致，证据 [`lr_signal_import_changes.json`](../hardware/dcx_main/g1/lr_signal_import_changes.json) · [`lr_signal_pcb_netlist_model.json`](../hardware/dcx_main/g1/lr_signal_pcb_netlist_model.json) · [`lr_repack_pcb_netlist_jlc.json`](../hardware/dcx_main/g1/lr_repack_pcb_netlist_jlc.json) · [`g1_import_changes_diff.json`](../hardware/dcx_main/g1/g1_import_changes_diff.json)。`sys_Tool.netlistComparison` 可调用但 PCB 列对本板恒空（65 网全 `[]`，含逐脚完全相同的 47 个），**不能当差异清单**；逐脚比对改用 PCB 自己的 `pcb_Net.getNetlist('JLCEDA')`（165 556 字符 / 77 器件 / 62 网 / 254 脚）。这只是**配平**证据，不等于实体端子/DOT（D-07），也不把 1 条 Netlist Error 说成已定位根因。操作陷阱已记 [EDA.md](agent/EDA.md)。
 
-**后续路线：** 信号增量归档 → Import Changes 逐脚差异实测（已完成）→ 100 A 铜路拓扑预筛（已完成，D-12）→ 实体 Cout 与真实铜排/端子/磁件剖面 → 原生 ECO、同修订 ERC/DRC 及 DFM → 真实低能量关断与分级25/50/100 A验证。B线的自研Maxwell/绕组与C线的台架关断继续并行，120 A和≤10mm仍后置。当前183条未连接与1条网表不一致必须逐步消除；绝不把本轮增量验收表述为可投板。
+**后续路线：** 信号增量归档 → Import Changes 逐脚差异实测（已完成）→ 100 A 铜路拓扑预筛（已完成，D-12）→ 实体 Cout 与真实铜排/端子/磁件剖面 → 原生 ECO、同修订 ERC/DRC 及 DFM → 真实低能量关断与分级25/50/100 A验证。B线的自研Maxwell/绕组与C线的台架关断继续并行，120 A和≤10mm仍后置。最新149线候选仍有173条未连接与1条网表不一致，必须逐步消除；绝不把本轮增量验收表述为可投板。
 
 ## 一轮交付只回答四件事
 
@@ -115,7 +116,7 @@ DeepSeek建议的“hot ESR直接乘2寿命系数”未直接采用：当前原�
 
 已核对并引入远端 `033b348` 的PR #93/#94：72颗T530布局工具、受限8网布线入口及对应测试，保留本地原厂资料、可复现登记与热态ESR修复。没有覆盖未提交的在途工作，未执行远端提交/推送。
 
-本轮第一阶段已真实执行：26个生成线段经编辑器合并后铜线107→132，DRC199→183，父版未改、布局无漂移。当前唯一真实编辑起点是**已验收132线的 open_batch.eprj2**，严禁再次执行旧12组或9组铜线脚本。第二阶段 `control_autoroute.eprj2` 与132线工程**二进制完全相同**，其 `g1_control_autoroute_apply.json` 记录的是CLI默认60s超时、没有生成新铜，因此不是更高版本。`apply_g1_control_autoroute.py --apply` 已在本PR修复为**显式打开PCB图纸并使用930000ms调用超时**（CLI允许≤1800000ms，原生Beta自动布线内限900s）；只有当旧失败副本字节与132线第一阶段完全相同、失败回执标识超时且不存在有效第二阶段DRC时才会安全重试，任何变化/已有有效结果都拒绝覆盖。超时仍判失败、不接受中间结果；要得到新的 **同修订保存重开与原生 DRC 低于183/1/0** 才可提升基线。
+本轮第一阶段已真实执行：26个生成线段经编辑器合并后铜线107→132，DRC199→183，父版未改、布局无漂移。PR #95 阶段的真实编辑起点曾是**已验收132线的 open_batch.eprj2**；本轮更新后的起点为上表149线候选，严禁再次执行旧12组或9组铜线脚本。第二阶段 `control_autoroute.eprj2` 与132线工程**二进制完全相同**，其 `g1_control_autoroute_apply.json` 记录的是CLI默认60s超时、没有生成新铜，因此不是更高版本。`apply_g1_control_autoroute.py --apply` 已在本PR修复为**显式打开PCB图纸并使用930000ms调用超时**（CLI允许≤1800000ms，原生Beta自动布线内限900s）；只有当旧失败副本字节与132线第一阶段完全相同、失败回执标识超时且不存在有效第二阶段DRC时才会安全重试，任何变化/已有有效结果都拒绝覆盖。超时仍判失败、不接受中间结果；要得到新的 **同修订保存重开与原生 DRC 低于183/1/0** 才可提升基线。
 
 72颗T530的[实际132线源板再验证程序](../tools/cout_t530_72.py)已将主板输入由107线升级为 **132线/183 Connection 的 `open_batch.eprj2`**，固定核对本体SHA、重新打开的299焊盘/132铜线/18过孔与原生DRC来源；执行 `python tools/cout_t530_72.py --export cout_t530_72_REAL_G1_REWORK_NOT_FOR_FAB.json` 可产生带每颗坐标、VOUT/PGND原线穿越ID的新版报告（GitHub Actions工件同样自动生成）。旧版65处穿越属于107线，不得沿用作最新统计；项目内此前指向未入库 `g2/cout_t530_72_layout.json` 的死链已修正。72颗仍只是试排，热态200kHz、原厂正式land与均流未通过，仍为 `NOT_FOR_FAB`。
 
