@@ -1,21 +1,15 @@
-# G1 原生带网 PCB（非投板）
+# G1 原生带网 PCB — 当前候选（非投板）
 
-> **从此处进入 [D1 唯一当前交接面板](../../../docs/D1_CURRENT.md)；本文件后半部分是原生 PCB 形成过程的历史证据。** 即使下面过去有“六条下一增量”的表述，**当前脚本已由 PR #84 扩展到九条**。不得从旧过程片段重开同一任务。
+> **唯一日常执行：[D1_CURRENT](../../../docs/D1_CURRENT.md)。** PR [#87](https://github.com/czy0126/CZY/pull/87) 已合并，因此下面的早期“六条预案”和“九条尚未布线”**均为历史**；本页顶部只显示最新有效的原生候选和下一项实际 ECO。
 
-## 当前唯一待执行原生操作（2026-11-10）
+## 已保存/重新打开的实际工程（2026-11-11）
 
-原生父版 `dcx_main_board_g1_lr_repack.eprj2` 已真实保存、关闭、重开；77 个 PCB 元件 / 299 PAD / 65 NET / 98 LINE / 18 VIA。现有真实原生 DRC 为 **206 Connection、1 Netlist、0 Physical**；不表示可制造。
+- **当前唯一可继续编辑的候选**：`dcx_main_board_g1_signal_stubs.eprj2`，原生 SHA256 `17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e`。旧 `dcx_main_board_g1_lr_repack.eprj2` 为**冻结父版**，不要在旧父版重复加线。
+- 实际在 EasyEDA Pro 创建了 9 段 L1 0.20mm 低电流铜线，0 新过孔；关闭/重新打开后读回 **77组件 / 299焊盘 / 65网 / 107线 / 18过孔**。原生 DRC **Connection 206→199、Netlist 1→1、Physical 0**。验收原始数据：[`lr_signal_review_readback.json`](lr_signal_review_readback.json)、[`lr_signal_review_drc_raw.json`](lr_signal_review_drc_raw.json)、[`lr_signal_review_report.json`](lr_signal_review_report.json)。旧版一次等宽误判的失败收据保留，不作为最新结论。
+- 当前 [同版网表逐脚差异](g1_import_changes_diff.json)：原理图与 PCB 有 **24 个 CT/T1–T4 逻辑端子无法按正式器件位号配对**，PCB 侧无其它未配对脚；一条原生 Netlist Error 尚未真正消除。
+- 当前 [两极铜路概念筛查](g1_100a_output_interface.json) **未改变原生 CAD**：旧 4+8 条 1mm 长窄颈不满足 100A 双极电阻目标；39×5mm 假设铜排仅算术筛过且余量极小，缺乏真实绝缘/热/接点/实体输出端子及制造 DFM，不能作为 G2 放行。
 
-已完成的 **9 条 0.20 mm、L1、0 新过孔**低电流短线离线预检：`C101.1→U2.1`、`C102.1→U1.7`、`C103.1→C104.1`（VCC12），`C105.1→U3.7`、`C107.1→U5.7`、`C108.1→U6.7`（VCC12_S），`R7.1→U2.6`（RUN），`R15.2→R16.1`（OC1），`R16.2→R17.1`（OC）。**这些线尚未真正写入原生板。** `C106.1→U4.7` 的直连因与其它网络焊盘干涉仍明确排除。
-
-在授权 Windows EasyEDA Pro 工作站、关闭其他占用工程的编辑器后，从仓库根目录执行：
-
-```powershell
-python hardware/dcx_main/g1/apply_lr_signal_stubs.py --check
-python hardware/dcx_main/g1/apply_lr_signal_stubs.py --apply
-```
-
-仅当新候选 `dcx_main_board_g1_signal_stubs.eprj2` 的**原生保存/关闭/重开、铜线读回、原生 DRC 回执**真实存在，并证明连接错误下降、不新增 Physical/Netlist 错误，才算 A 线进展。下一项是 1 条实际 schematic↔PCB Netlist Error 的 GUI 差异定位，以及 100 A 的 4+8 条旧窄颈实体铜路重构；24 个磁件自由 PAD 仍不可当实物端子。所有结论保持 `NOT_FOR_FAB`。
+**下一步只提交实物工程变更**：以当前 `signal_stubs.eprj2` 复制新候选，集中完成实体 Cout、正式磁件接口（需 B 线实际绕组/端子输入）、双极 VOUT+PGND 100 A 铜排与 J_OUT；得到新的原生保存重开、网络连接变化、DRC 和真实机械/层叠证据后再更新本页。**不要重跑九条线的 `--apply`，不要继续新增只做短线预检的 PR。** 保持 `NOT_FOR_FAB`。
 
 ---
 
