@@ -123,3 +123,75 @@ def test_native_save_reopen_array_reordering_is_not_a_false_layout_failure():
     assert result["problems"] == [], result["problems"]
     assert result["added_nets"] == ["RT"]
     assert result["readback_accepted_for_native_drc"] is True
+
+
+def test_latest_checked_in_first_stage_is_a_real_native_132_line_183_open_board():
+    actual=M.stage1_verified()
+    assert len(actual["lines"]) == 132
+    assert len(actual["pads"]) == 299
+    assert len(actual["vias"]) == 18
+    assert len(actual["nets"]) == 65
+    assert M.sha(M.STAGE1_BOARD) == (
+        "59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0"
+    )
+    import json
+    d=json.loads(M.STAGE1.DELTA.read_text(encoding="utf-8"))
+    assert d["native_reopen_drc"]["Connection Error"]==183
+    assert d["native_reopen_drc"]["Netlist Error"]==1
+    assert d["native_connection_errors_reduced"]==16
+    assert d["full_board_fabrication_approved"] is False
+
+
+def test_beta_native_pcb_document_must_be_opened_and_cli_budget_exceed_60s():
+    js=M.js_body(M.plan())
+    assert "eda.dmt_Project.getCurrentProjectInfo()" in js
+    assert "eda.dmt_EditorControl.openDocument(pcbUuid)" in js
+    assert js.index("openDocument(pcbUuid)") < js.index("pcb_Document.autoRouting")
+    assert "RoutingNets: allow" in js
+    assert "ignoreNets: excluded" in js
+    import inspect
+    body=inspect.getsource(M.apply)
+    assert "timeout_ms=930000" in body
+    assert "timeout_s=960" in body
+
+
+def test_known_60s_timeout_is_safe_to_retry_only_on_identical_unsaved_copy(tmp_path,monkeypatch):
+    parent=tmp_path/"real_first_stage_132.eprj2"
+    target=tmp_path/"previous_failed_copy.eprj2"
+    receipt=tmp_path/"previous_failed_apply.json"
+    approval=tmp_path/"approved_native_drc.json"
+    parent.write_bytes(b"actual validated board")
+    target.write_bytes(parent.read_bytes())
+    receipt.write_text('{"ok":false,"error":{"code":"REQUEST_TIMEOUT"}}',encoding="utf-8")
+    monkeypatch.setattr(M,"STAGE1_BOARD",parent)
+    monkeypatch.setattr(M,"STAGE2_BOARD",target)
+    monkeypatch.setattr(M,"STAGE2_APPLY",receipt)
+    monkeypatch.setattr(M,"STAGE2_REPORT",approval)
+    before=target.read_bytes()
+    assert "byte-identical" in M.prepare_stage2_copy()
+    assert target.read_bytes()==before
+    target.write_bytes(before+b"unverified copper")
+    with pytest.raises(FileExistsError,match="differs"):
+        M.prepare_stage2_copy()
+    target.write_bytes(before)
+    approval.write_text('{"status":"approved"}',encoding="utf-8")
+    with pytest.raises(FileExistsError,match="already exists"):
+        M.prepare_stage2_copy()
+    approval.unlink()
+    receipt.write_text('{"ok":true,"value":{"saved":true}}',encoding="utf-8")
+    with pytest.raises(FileExistsError,match="no known timeout"):
+        M.prepare_stage2_copy()
+    receipt.unlink()
+    with pytest.raises(FileExistsError,match="no recorded timeout"):
+        M.prepare_stage2_copy()
+
+
+def test_missing_stage2_copy_is_created_without_overwriting_132_line_parent(tmp_path,monkeypatch):
+    source=tmp_path/"valid.eprj2"
+    candidate=tmp_path/"candidate.eprj2"
+    source.write_bytes(b"the accepted G1 first stage")
+    monkeypatch.setattr(M,"STAGE1_BOARD",source)
+    monkeypatch.setattr(M,"STAGE2_BOARD",candidate)
+    assert M.prepare_stage2_copy()=="created fresh copy"
+    assert candidate.read_bytes()==source.read_bytes()
+    assert source.read_bytes()==b"the accepted G1 first stage"
