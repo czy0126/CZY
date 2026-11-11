@@ -72,4 +72,4 @@ DeepSeek已通过用户指定的Claude设置恢复连接，配置只提供连接
 
 - `tools/cout_bank.py` 现在从归档的 YAGEO 单件规格页读取选型值，并用 KEMET T2078 A720 系列节选交叉核对泄漏/ESR/纹波，产品简介确认 "No voltage derating"；`spec_facts()` 在缺行或数值不一致时拒绝。归档、URL 与逐文件 SHA256 见 [`references/datasheets/`](../references/datasheets/a720v477m2r5ape003.provenance.json)；选型行 `verified: true`，A798/Chemi-Con 两行仍标 `verified: false`（网络摘要）。
 - 这关掉的是“Cout 无原厂手册、无法选型”的桌面阻塞，**不关落板**：现有单个 `Cout` 焊盘 F≈1.4 mm 与 A720 的 F=2.4 mm 不兼容，15 只阵列仍是本地原生 ECO。`NOT_FOR_FAB` 不变。
-- `apply_g1_open_batch.py` 追加两条 DRC 旁路防护：`after` 缺失任何基线非零类别按截断拒绝；类别比较取 `before`/`after` 并集，新增类别不再被忽略。`route_open_connections.categories` 拒绝 `ok:false`、空 `raw`、坏嵌套与类别数不一致。相关测试 33 项通过；原生回执不放宽，也不把离线测试当成同修订 DRC。
+- `apply_g1_open_batch.py` 追加两条 DRC 旁路防护：`after` 缺失任何基线非零类别按截断拒绝；类别比较取 `before`/`after` 并集，新增类别不再被忽略。`route_open_connections.categories` 拒绝 `ok:false`、空 `raw`、坏嵌套与类别数不一致。相关离线测试通过；原生回执不放宽，也不把离线测试当成同修订 DRC。
