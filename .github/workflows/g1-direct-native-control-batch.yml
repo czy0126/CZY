@@ -41,7 +41,7 @@ jobs:
           p=json.load(open("g1_direct_actual132_preflight.json",encoding="utf-8"))
           s=open("g1_direct_real_native_6_pad_pairs.js",encoding="utf-8").read()
           assert p["real_pad_pairs"]==6
-          assert p["native_line_primitives"]==16
+          assert p["native_line_primitives"]==17
           assert p["native_before_drc"]["Connection Error"]==183
           assert not p["preflight_problems"]
           assert "eda.pcb_PrimitiveLine.create(" in s
