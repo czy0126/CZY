@@ -57,9 +57,9 @@ jobs:
               assert "vout_copper_trial" in layers and "pgnd_copper_trial" in layers
               assert len(list(dr.modelspace().query("LWPOLYLINE"))) == 2
               assert len(list(dr.modelspace().query("CIRCLE"))) == 0, "Unsafe M3 drill reintroduced"
-          assert "no_drill_reason" in __import__("json").loads(
-              (d / f"G2_{tag}mm_NOT_FOR_FAB.json").read_text())
-              print(tag, "mm", len(solids), "solids", "NOT_FOR_FAB")
+              assert "no_drill_reason" in __import__("json").loads(
+                  (d / f"G2_{tag}mm_NOT_FOR_FAB.json").read_text())
+              print(tag, "mm", len(solids), "solids", "NO_DRILL_NOT_FOR_FAB")
           PY
       - uses: actions/upload-artifact@v4
         with:
