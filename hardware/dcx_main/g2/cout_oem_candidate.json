@@ -1,6 +1,6 @@
 {
   "schema": "d1_g2_cout_oem_candidate/2",
-  "status": "OFFICIAL_PART_SPEC_VERIFIED_BUT_P0_HIGH_VOLTAGE_TARGET_FAILED_NOT_FOR_FAB",
+  "status": "BASELINE_2P5V_15xA720_OEM_VERIFIED_PLUS_6P3V_T530_COST_UNLIMITED_ALTERNATIVE_BOTH_NOT_FOR_FAB",
   "design_stage": "G2_Cout_100A",
   "design_basis": {
     "file": "design/v3/bom/cout_bank.json",
@@ -110,5 +110,33 @@
     "p0_high_voltage_rfq_4v_met": false,
     "p0_high_performance_esr_0p07_mohm_met": false
   },
-  "next_actual_eda_action": "A720 is verified only as a 2.5V base-model part; independent P0 RFQ requires >=4V (6.3V preferred) and <=0.07mOhm hot/high-frequency bank ESR, neither met. Treat 15-unit design as design-owned placement input, not approved final MPN. For any selected replacement: validate OEM pad/courtyard and positive/negative pin map, place 15 actual components in a new G1 EasyEDA native copy, then save/reopen/native DRC, verify overshoot/hot ESR/ripple and both-pole 100A connections."
+  "next_actual_eda_action": "Priority high-voltage no-cost-limit alternative: generate 72xT530X477M006ATE004 XY and visible 107-line PCB copper conflicts from tools/cout_t530_72.py. Need reroute original VOUT/PGND 1-2mm rails, select original manufacturer land+polarity, native schematic/PCB ECO, coldplate + <=16mm assembly, 33.84mF new startup simulation, and true 100C/200kHz ESR/current sharing. 15xA720 remains an unqualified 2.5V simulated-base reference, not a >=4V P0 supply or approved purchase.",
+  "unlimited_cost_voltage_upgrade": {
+    "status": "SOURCE_GROUNDED_HIGH_VOLTAGE_DESIGN_ALTERNATIVE_NOT_FOR_FAB",
+    "factory_part": "T530X477M006ATE004",
+    "manufacturer": "KEMET/YAGEO",
+    "official_part_sheet": "https://search.kemet.com/component-documentation/download/specsheet/T530X477M006ATE004",
+    "existing_sourcing_provenance": "hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json",
+    "generator": "tools/cout_t530_72.py",
+    "rated_volts_at_105c": 6.3,
+    "rated_volts_at_125c": 4.22,
+    "unit_capacitance_uF": 470,
+    "unit_esr_mohm_at_100khz_25c": 4,
+    "unit_max_height_mm": 4.3,
+    "source_125c_100khz_ripple_a_each": 2.05,
+    "selected_trial_count": 72,
+    "nominal_bank_capacitance_mF": 33.84,
+    "nominal_25c_100khz_ideal_bank_esr_mohm": 0.05555555555555555,
+    "min_esr_count_only_at_25c": 58,
+    "maximum_hot_frequency_unit_esr_to_meet_0p07_mohm": 5.040000000000001,
+    "grid_columns": 18,
+    "grid_rows": 4,
+    "pcb_copper_status": "G1 107-line source still has 1-2mm PGND/VOUT copper running beneath trial rows; 72 OEM footprint placement MUST be accompanied by redesigned VOUT/PGND high-current power rails, pad/polarity and native DRC.",
+    "geometry_status": "Actual native PCB pad-gross-collision/audit generated on CI; 0.7mm trial body gap is NOT an approved courtyard/land pattern",
+    "original_15_cap_2p5v_baseline_overwritten": false,
+    "transient_capacitance_model_updated": false,
+    "thermal_100c_200khz_esr_verified": false,
+    "native_pcb_changed": false,
+    "fab_approved": false
+  }
 }
