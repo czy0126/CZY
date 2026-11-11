@@ -18,6 +18,17 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def original_windows_text_sha(path: Path) -> str:
+    """Hash originally recorded AEDT input bytes with CRLF on any checkout.
+
+    The initial geometry evidence was captured on Windows before Git
+    normalized the contract JSON to LF. The original SHA is correct; reconstruct
+    that byte representation without changing either source or native CAD.
+    """
+    data = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(data.replace(b"\n", b"\r\n")).hexdigest()
+
+
 def test_aedt_native_geometry_is_real_and_bound_to_concept_source():
     e = json.loads(META.read_text(encoding="utf-8"))
     cad = ROOT / e["cad_project"]
@@ -27,7 +38,7 @@ def test_aedt_native_geometry_is_real_and_bound_to_concept_source():
     assert cad.stat().st_size >= 20000
     assert e["cad_project_sha256"] == sha(cad)
     assert e["cad_project_bytes"] == cad.stat().st_size
-    assert e["concept_source_sha256"] == sha(contract)
+    assert e["concept_source_sha256"] == original_windows_text_sha(contract)
     assert e["native_script_sha256"] == sha(script)
     spec = json.loads(contract.read_text(encoding="utf-8"))
     candidates = [c for c in spec["cases"] if c["id"] == "ELP38_Lr_2turn_0920uH"]
