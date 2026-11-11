@@ -16,6 +16,9 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 REPORT=ROOT/"hardware/dcx_main/g1/g1_100a_output_interface.json"
 READBACK=ROOT/"hardware/dcx_main/g1/lr_signal_review_readback.json"
+EXPECTED_BOARD_REL="hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2"
+BOARD=ROOT/EXPECTED_BOARD_REL
+EXPECTED_BOARD_SHA256="17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e"
 MIL_TO_MM=.0254
 M3_TRIAL_DIAMETER_MM=3.4
 MIN_KNOWN_COPPER_EDGE_GAP_MM=.75  # screen, not validated process minimum
@@ -23,7 +26,13 @@ MIN_KNOWN_COPPER_EDGE_GAP_MM=.75  # screen, not validated process minimum
 
 def read_source() -> dict:
     report=json.loads(REPORT.read_text(encoding="utf-8"))
-    if hashlib.sha256(READBACK.read_bytes()).hexdigest()!=report["candidate"]["readback_sha256"]:
+    candidate=report["candidate"]
+    if (candidate["path"]!=EXPECTED_BOARD_REL
+            or candidate["sha256"]!=EXPECTED_BOARD_SHA256):
+        raise ValueError("Unexpected active G1 native CAD identity in report")
+    if hashlib.sha256(BOARD.read_bytes()).hexdigest()!=EXPECTED_BOARD_SHA256:
+        raise ValueError("Actual native G1 .eprj2 SHA mismatch; recapture current PCB")
+    if hashlib.sha256(READBACK.read_bytes()).hexdigest()!=candidate["readback_sha256"]:
         raise ValueError("G2 input changed: G1 saved/reopened native readback SHA mismatch")
     d=json.loads(READBACK.read_text(encoding="utf-8"))
     if d.get("ok") is not True:

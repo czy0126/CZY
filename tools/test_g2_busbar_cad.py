@@ -91,3 +91,11 @@ def test_correct_primary_polymer_4mF_0p2mohm_bank_and_optional_hot_mlcc():
     assert d["current_native_G1"]["actual_device_count"]==1
     assert d["gates"]["actual_15_polymer_devices_in_native_CAD"] is False
     assert d["gates"]["manufacturing_approved"] is False
+
+
+def test_reject_5mm_thick_machining_exports_before_writing_any_file(tmp_path):
+    # Keep electrical arithmetic for comparison, not an invalid physical CAD.
+    assert B.screen(5,50)["height_arithmetic_only_pass"] is False
+    with pytest.raises(ValueError,match="exceeds D1 16mm"):
+        B.export(tmp_path,5)
+    assert list(tmp_path.iterdir()) == []

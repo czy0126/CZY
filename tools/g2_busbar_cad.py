@@ -1,7 +1,9 @@
 """Physical G2 output-bar trial from the real reopened G1 source rows.
 
-Unlike the 100A arithmetic screen, generates *two metal bodies* with explicit
-lug geometry and trial M3 holes, plus a PCB/TDK core clearance assembly STEP.
+Unlike the 100A arithmetic screen, generates *two undrilled metal bodies* with
+lug geometry, plus a PCB/TDK core clearance assembly STEP. Only thicknesses
+with a height-arithmetic pass are exportable; the 5mm rejected trial remains
+in numerical screening but is no longer exported as machining geometry.
 This does NOT connect copper to the native PCB's 12 source lands. Previous
 trial M3 drill locations collide with real J_IN/QL copper; this exporter now
 creates SOLID UNDRILLED bars. Alternate screw coordinates are only saved to
@@ -158,6 +160,8 @@ def export(folder:Path,thickness:float) -> None:
     Never emit unsafe M3 drill instructions over the J_IN and QL regions.
     A separate source-locked keepout report flags the known collisions.
     """
+    if not screen(thickness,20)["height_arithmetic_only_pass"]:
+        raise ValueError("Reject export: copper thickness exceeds D1 16mm height arithmetic")
     import cadquery as cq
     import ezdxf
     folder.mkdir(parents=True,exist_ok=True)
@@ -199,6 +203,7 @@ def export(folder:Path,thickness:float) -> None:
         "low_joint_scenario":screen(thickness,20),
         "high_joint_scenario":screen(thickness,50),
         "no_drill_reason": keepout.report(),
+        "excluded_5mm_height_fail_reference": screen(5.0,50),
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
 
@@ -214,7 +219,9 @@ def main():
     if not cases[0]["resistance_arithmetic_only_pass"] or cases[1]["resistance_arithmetic_only_pass"]:
         raise SystemExit("Separable contact assumptions no longer separate outcomes")
     if args.export:
-        for t in THICKNESSES_MM:export(args.export,t)
+        for t in THICKNESSES_MM:
+            if screen(t,20)["height_arithmetic_only_pass"]:
+                export(args.export,t)
     print(json.dumps([{
         "bar_mm":c["bar_thickness_mm"],"joint_uohm":c["assumed_joint_per_pole_uohm"],
         "height_margin_mm":c["height_margin_without_TIM_clamp_mm"],
