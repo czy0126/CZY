@@ -59,8 +59,8 @@ LIMITS = [
     "current between two groups",
     "the vertical run is copper shared with the SR-to-busbar path in "
     "output_path_budget.json; the two resistances are not additive",
-    "part ESR is a vendor-page summary; ESR at 200 kHz, at 2 V bias and at end of "
-    "life is not included",
+    "the placed part's ESR is the datasheet maximum at 100 kHz/25 C; ESR at "
+    "200 kHz, at 2 V bias and at end of life is not included",
     "no thermal model: the current share below is a resistance ratio, not a temperature",
     "the 42.76 mVpp output ripple on file (operating_point_100a_cout7m.json, 7.05 mF) "
     "used an ideal 0.200 mohm Rser; no monotonic ripple bound is justified without "
@@ -266,7 +266,8 @@ def report(thickness_m: float = 2 * opb.OZ_M, temp_c: float = opb.T_C) -> dict:
     worst_versus_ten = core["worst_branch_mohm"] * 1e-3 / allowance(esr, n, 0.10)
     core["worst_branch_over_ten_percent_allowance"] = round(worst_versus_ten, 2)
     return {
-        "status": "geometry + sheet resistance; part data still search-sourced",
+        "status": "geometry + sheet resistance; placed part ESR is the datasheet "
+                  "maximum, alternates unverified",
         "placed_bank": {"part": bank["part"], "n": n, "governed_by": bank["governed_by"]},
         "results": core,
         "model": {

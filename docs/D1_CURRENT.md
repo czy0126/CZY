@@ -28,7 +28,7 @@
 
 | 工作包 | **下一个有意义的交付** | 完成标准 | 未满足时 |
 | --- | --- | --- | --- |
-| **A · #9**（最高优先） | Import Changes **逐脚差异已实测**（24 脚仅 CT/T1–T4 逻辑端，PCB 侧不配对脚 0）；**100 A 铜路拓扑已预筛**（D-12：中央双端子需 39×5 mm 且舌宽 ≥21.26 mm；4 mm 在 50 µΩ 接点下全面失败，20 µΩ 场景可通过；J_OUT 按图不可实现）。下一步落实**实体 Cout** 与**真实铜排/端子几何**，待 B 给出可制造端子后再做原生 ECO；**Cout主电容已有原厂实号候选**（[`g2/cout_oem_candidate.json`](../hardware/dcx_main/g2/cout_oem_candidate.json)：15×KEMET `A720V477M2R5APE003`，标称7.05mF/理想ESR0.2mΩ，100°C/200kHz纹波均流、2.5V超调与原厂实装焊盘**仍未核实**；Murata 100µF只作可选高频旁路，不能代替4mF主Cout） | 差异原文（已有）、原生CAD、保存重开、实际ERC/DRC；不得仅靠R6改名或匿名磁件猜测Netlist错误根因；新铜路需真实几何与双极电阻预算（已有离线预算，未进 CAD） | 不继续第十条低电流线的预检；涉及实体端子/工艺缺口则转B/C的具体交付 |
+| **A · #9**（最高优先） | Import Changes **逐脚差异已实测**（24 脚仅 CT/T1–T4 逻辑端，PCB 侧不配对脚 0）；**100 A 铜路拓扑已预筛**（D-12：中央双端子需 39×5 mm 且舌宽 ≥21.26 mm；4 mm 在 50 µΩ 接点下全面失败，20 µΩ 场景可通过；J_OUT 按图不可实现）。下一步落实**实体 Cout** 与**真实铜排/端子几何**，待 B 给出可制造端子后再做原生 ECO；**Cout主电容已有原厂实号候选**（[`g2/cout_oem_candidate.json`](../hardware/dcx_main/g2/cout_oem_candidate.json)：15×KEMET `A720V477M2R5APE003`，标称7.05mF/理想ESR0.2mΩ；**原厂规格页已于2026-11-11归档并核验** 470µF/2.5V/3mΩ@100kHz·25°C/11.69A rms@ΔT=+20°C/Hmax 2.1mm/F 2.4mm/无正向电压降额，[来源与哈希](../references/datasheets/a720v477m2r5ape003.provenance.json)；100°C/200kHz 温升、2.5V 超调与**原厂实装焊盘仍未核实**；Murata 100µF只作可选高频旁路，不能代替4mF主Cout） | 差异原文（已有）、原生CAD、保存重开、实际ERC/DRC；不得仅靠R6改名或匿名磁件猜测Netlist错误根因；新铜路需真实几何与双极电阻预算（已有离线预算，未进 CAD）；Cout 需同修订 BOM/几何读回/原生 DRC/CAD 哈希 | 不继续第十条低电流线的预检；涉及实体端子/工艺缺口则转B/C的具体交付 |
 | **B · #12/#1** | 用现有 [Maxwell 概念入口](../tools/maxwell_diy_run.py)先求解 Lr 3 匝/0.92 µH，并构建可制造的 CT/T1–T4 实绕组与 **24 个正式 PAD/DOT**；2 匝及更大磁芯作为物理备选 | 实际 AEDT 求解/收敛/局部 B/L(I) 原始文件，实体绕组/绝缘/出线/极性/尺寸与 EDA 封装一一对应；合成 B–H 不能当厂家认证 | Maxwell 无授权时不再重复生成概念 STEP；只完成独立真实绕组与端子工程输入 |
 | **C · #36** | 原边与单对 SR 的**低能量**真实关断验证，然后覆盖全部十路 VGS、掉电、故障锁存、复位 | 原始示波器/同步测量与接线、条件、SOA；必须有真实关断默认状态 | 无实验台时仅保留现有接口和待采记录，不用理想 LTspice 再“证明”关断安全 |
 
@@ -67,3 +67,9 @@ DeepSeek已通过用户指定的Claude设置恢复连接，配置只提供连接
 - 已决定 / 何时可重新讨论：[D1 决策与停止重复登记](D1_DECISIONS.md)
 - 原厂来源、历史路线及工具：[参考资料与历史索引](D1_REFERENCE_INDEX.md) · [EDA 操作环境](agent/EDA.md) · [完整命令表](agent/COMMANDS.md)
 - **唯一制造判定：** [`d1_fabrication_gate.json`](../hardware/dcx_main/d1_fabrication_gate.json) 的独立原生证据、审核签字；CI 绿色/PR 合并本身**不能**许可投板或高能量上电。
+
+## 2026-11-11 Cout 原厂数据核验与 DRC 旁路修复
+
+- `tools/cout_bank.py` 现在从归档的 YAGEO 单件规格页读取选型值，并用 KEMET T2078 A720 系列节选交叉核对泄漏/ESR/纹波，产品简介确认 "No voltage derating"；`spec_facts()` 在缺行或数值不一致时拒绝。归档、URL 与逐文件 SHA256 见 [`references/datasheets/`](../references/datasheets/a720v477m2r5ape003.provenance.json)；选型行 `verified: true`，A798/Chemi-Con 两行仍标 `verified: false`（网络摘要）。
+- 这关掉的是“Cout 无原厂手册、无法选型”的桌面阻塞，**不关落板**：现有单个 `Cout` 焊盘 F≈1.4 mm 与 A720 的 F=2.4 mm 不兼容，15 只阵列仍是本地原生 ECO。`NOT_FOR_FAB` 不变。
+- `apply_g1_open_batch.py` 追加两条 DRC 旁路防护：`after` 缺失任何基线非零类别按截断拒绝；类别比较取 `before`/`after` 并集，新增类别不再被忽略。`route_open_connections.categories` 拒绝 `ok:false`、空 `raw`、坏嵌套与类别数不一致。相关测试 33 项通过；原生回执不放宽，也不把离线测试当成同修订 DRC。

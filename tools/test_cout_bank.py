@@ -73,10 +73,21 @@ def test_lowering_the_esr_target_adds_parts():
     assert strict["governed_by"] == "esr"
 
 
-def test_report_flags_that_the_part_data_is_unverified():
+def test_report_says_which_rows_are_datasheet_verified():
+    """The selected row is verified; the alternates are still search summaries.
+
+    A single "unverified" flag would now be wrong in both directions: it would
+    hide the archived spec sheet and it would promote the two alternates that
+    were never read.
+    """
     data = report()
     assert data["no_output_ripple_spec"] is True
-    assert "not datasheet-verified" in data["status"]
+    rows = {bank["part"]: bank for bank in data["banks"]}
+    assert rows["KEMET A720V477M2R5APE003"]["verified"] is True
+    assert rows["KEMET A798D477M2R5PTE006"]["verified"] is False
+    assert rows["Chemi-Con APSF2R5ELL471MF08S"]["verified"] is False
+    assert "datasheet-verified" in data["status"]
+    assert "A798" in data["status"]
     assert {bank["part"] for bank in data["banks"]} == {part["mpn"] for part in CANDIDATES}
 
 

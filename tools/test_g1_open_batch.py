@@ -85,7 +85,7 @@ def test_unchanged_native_drc_does_not_count_as_routing_improvement(tmp_path,mon
     def make(n,netlist=1,physical=0):
         def group(k,count):
             return {"name":k,"list":[{"list":[{"errorType":"test"} for _ in range(count)]}]}
-        fake.write_text(json.dumps({"value":{"raw":[group("Connection Error",n),
+        fake.write_text(json.dumps({"ok":True,"value":{"raw":[group("Connection Error",n),
                             group("Netlist Error",netlist),group("Physical Error",physical)]}}))
     monkeypatch.setattr(A,"AFTER_DRC",fake)
     make(199)
@@ -94,6 +94,51 @@ def test_unchanged_native_drc_does_not_count_as_routing_improvement(tmp_path,mon
     make(198,2,0)
     with pytest.raises(ValueError,match="netlist or physical"):
         A.compare_actual_drc()
+
     make(198,1,1)
     with pytest.raises(ValueError,match="netlist or physical"):
+        A.compare_actual_drc()
+
+
+@pytest.mark.parametrize("payload",[
+    {"ok":False,"value":{"raw":[]}},
+    {"ok":True,"value":{"raw":[]}},
+    {"ok":True,"value":{"raw":[{"name":"Connection Error","list":None}]}},
+    {"ok":True,"value":{"raw":[{"name":"Connection Error","list":[{}]}]}},
+])
+def test_invalid_native_drc_cannot_be_zero_errors(payload):
+    with pytest.raises(ValueError):
+        P.categories(payload)
+
+
+def test_new_error_category_is_not_ignored(tmp_path,monkeypatch):
+    data=json.loads(P.DRC.read_text(encoding="utf-8"))
+    data["value"]["raw"]=[
+        {"name":"Connection Error","list":[{"list":[{}]*183}]},
+        {"name":"Netlist Error","list":[{"list":[{}]}]},
+        {"name":"Unexpected Rule Error","list":[{"list":[{}]}]},
+    ]
+    data["value"]["count"]=3
+    path=tmp_path/"new_category.json"
+    path.write_text(json.dumps(data),encoding="utf-8")
+    monkeypatch.setattr(A,"AFTER_DRC",path)
+    with pytest.raises(ValueError,match="new native DRC"):
+        A.compare_actual_drc()
+
+
+def test_a_nonzero_baseline_category_cannot_disappear(tmp_path,monkeypatch):
+    """An absent category is not zero errors: it is a truncated payload.
+
+    The 199 baseline is the denominator of the whole comparison, so an ``after``
+    report that simply omits "Connection Error" must be refused rather than read
+    as 0 < 199.  Categories that are zero in the baseline may be omitted by the
+    native reporter; only a category that carried errors is mandatory.
+    """
+    def group(name,count):
+        return {"name":name,"list":[{"list":[{"errorType":"test"} for _ in range(count)]}]}
+    after=tmp_path/"dropped_category.json"
+    after.write_text(json.dumps({"ok":True,"value":{"raw":[
+        group("Netlist Error",1),group("Physical Error",0)]}}),encoding="utf-8")
+    monkeypatch.setattr(A,"AFTER_DRC",after)
+    with pytest.raises(ValueError,match="disappeared"):
         A.compare_actual_drc()

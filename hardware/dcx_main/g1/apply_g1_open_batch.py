@@ -33,16 +33,25 @@ def compare_actual_drc()->dict:
     after=P.categories(json.loads(AFTER_DRC.read_text(encoding="utf-8")))
     if before["Connection Error"]!=199 or before["Netlist Error"]!=1:
         raise ValueError("Original native 199/1 DRC baseline changed")
+    # A missing category is not zero errors.  Only categories the native reporter
+    # can legitimately omit (those that were zero in the baseline) may be absent;
+    # dropping one that carried errors would read as 0 < 199 and pass silently.
+    disappeared=[k for k,v in before.items() if v>0 and k not in after]
+    if disappeared:
+        raise ValueError("DRC category "+", ".join(sorted(disappeared))
+                         +" disappeared in after; suspect truncation")
     if after.get("Connection Error",0)>=before["Connection Error"]:
         raise ValueError("Native routing did NOT reduce the 199 open connections")
     if after.get("Netlist Error",0)>1 or after.get("Physical Error",0)>0:
         raise ValueError("Native routing introduced netlist or physical error")
-    if any(after.get(k,0)>v for k,v in before.items()):
+    if any(after.get(k,0)>before.get(k,0) for k in before.keys() | after.keys()):
         raise ValueError("Unexpected new native DRC category/error")
     return {
         "status":"ACTUAL_EASYEDA_COPPER_IMPROVED_NOT_FOR_FAB",
         "parent_sha256":hashlib.sha256(P.SOURCE.read_bytes()).hexdigest(),
         "candidate_sha256":hashlib.sha256(TARGET.read_bytes()).hexdigest(),
+        "source_drc_sha256":hashlib.sha256(P.DRC.read_bytes()).hexdigest(),
+        "candidate_drc_sha256":hashlib.sha256(AFTER_DRC.read_bytes()).hexdigest(),
         "source_drc":before,"native_reopen_drc":after,
         "native_connection_errors_reduced":
             before["Connection Error"]-after.get("Connection Error",0),

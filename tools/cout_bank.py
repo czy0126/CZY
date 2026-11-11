@@ -19,9 +19,10 @@ wherever both exist, so the max() is a documented comparison rather than an
 assumption that three numbers mean the same thing.
 
 They do not scale together, so the bank size is set by whichever needs the most
-parts.  Part data below is a *candidate*, not a selection: the numbers were
-taken from a vendor page summary and no datasheet was read, so every row must be
-confirmed before it enters a purchase order.
+parts.  The selected row is read from the archived YAGEO part spec sheet (and
+cross-checked against the KEMET T2078 series excerpt); the two alternates are
+still vendor-page summaries, so every unverified row must be confirmed before it
+enters a purchase order.
 
 Usage:
     python tools/cout_bank.py --json design/v3/bom/cout_bank.json
@@ -32,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -41,6 +43,17 @@ REPO = Path(__file__).resolve().parent.parent
 PASSIVE = REPO / "design/v3/bom/passive_requirements.json"
 STRESS_48V_120A = REPO / "design/v3/power_priority/stress_48v_120a.json"
 STRESS_50V_120A = REPO / "design/v3/power_priority/stress_50v_120a.json"
+
+DATASHEET_TEXT = REPO / "references/datasheets/a720v477m2r5ape003_yageo_spec_2026-11-11.txt"
+SERIES_TEXT = REPO / "references/datasheets/kemet_t2078_a720_2024-09-04_p5-p7_ja.txt"
+BRIEF_TEXT = REPO / "references/datasheets/yageo_pb_a720_a798_revA.txt"
+PROVENANCE = REPO / "references/datasheets/a720v477m2r5ape003.provenance.json"
+SPEC_URL = "https://yageogroup.com/download/specsheet/A720V477M2R5APE003"
+SERIES_URL = "https://www.tokin.com/datasheets_distributor/pdf/TOK_T2078_A720.pdf"
+# pdftotext wrote these text dumps in a Windows code page: they carry 0xB0/0xB1/0xB5
+# (degree and micro signs) and are not UTF-8.  latin-1 is a lossless byte-to-codepoint
+# map for every byte these files contain, so the archived hash stays valid.
+TEXT_ENCODING = "latin-1"
 
 CAPACITANCE_F = 4.0e-3
 ESR_OHM = 0.2e-3
@@ -55,14 +68,96 @@ MEAN_CHECK_LIMIT_PCT = 0.5
 # by the data and the check goes false rather than picking one.
 METHOD_OFFSET_SAFETY = 5.0
 
-# Candidate parts (network search summary, NOT datasheet-verified).
+def _field(text: str, pattern: str, label: str) -> float:
+    """One numeric field, or a refusal that names what the document lost."""
+    match = re.search(pattern, text, re.MULTILINE)
+    if match is None:
+        raise ValueError(f"spec sheet is missing {label}")
+    return float(match.group(1))
+
+
+def spec_facts(datasheet: Path = DATASHEET_TEXT, series: Path = SERIES_TEXT,
+               brief: Path = BRIEF_TEXT) -> dict[str, object]:
+    """Read the selected part's ratings out of the archived manufacturer documents.
+
+    The part-specific YAGEO sheet supplies every value the bank uses.  The KEMET
+    T2078 excerpt is an independent cross-check of leakage, ESR and the 100 kHz
+    ripple rating, and it also supplies the +20 C rise that qualifies that ripple
+    rating.  The product brief supplies the derating statement.  A truncated or
+    substituted document raises rather than letting a stale literal stand.
+    """
+    text = datasheet.read_text(encoding=TEXT_ENCODING)
+    c_f = _field(text, r"^Capacitance ([0-9.]+) uF$", "Capacitance") * 1e-6
+    v_rated = _field(text, r"^Voltage DC ([0-9.]+) VDC$", "Voltage DC")
+    esr_ohm = _field(text, r"^ESR ([0-9.]+) mOhms \(100kHz 25C\)$", "ESR") * 1e-3
+    irms_ma = _field(text, r"^Ripple Current ([0-9]+) mA \(rms 100kHz\)$", "Ripple Current")
+    height_max_mm = _field(text, r"^H ([0-9.]+)mm MAX$", "H MAX")
+    length_mm = _field(text, r"^L ([0-9.]+)mm \+/-0\.3mm$", "L")
+    width_mm = _field(text, r"^W ([0-9.]+)mm \+/-0\.3mm$", "W")
+    lead_pitch_mm = _field(text, r"^F ([0-9.]+)mm \+/-0\.1mm$", "F")
+    leakage_ua = _field(text, r"^Leakage Current ([0-9.]+) uA", "Leakage Current")
+    df_pct = _field(text, r"^Dissipation Factor ([0-9.]+)%$", "Dissipation Factor")
+    life_h = int(_field(text, r"^Life ([0-9]+) Hrs", "Life"))
+    rated_temp_c = int(_field(text, r"^Rated Temperature ([0-9]+)", "Rated Temperature"))
+    case_match = re.search(r"^Notes ([A-Z]/[0-9-]+)\.$", text, re.MULTILINE)
+    if case_match is None:
+        raise ValueError("spec sheet is missing the case code (Notes)")
+    frequency_khz = int(_field(text, r"\(rms ([0-9]+)kHz\)", "ripple frequency"))
+
+    series_text = series.read_text(encoding=TEXT_ENCODING)
+    row = re.search(
+        r"^2\.5\s+470\s+V/7343-21\s+A720V477M2R5APE003\s+"
+        r"([0-9.]+)\s+[0-9.]+\s+([0-9.]+)\s+([0-9,]+)",
+        series_text, re.MULTILINE)
+    if row is None:
+        raise ValueError("series datasheet is missing the A720V477M2R5APE003 row")
+    series_leakage_ua = float(row.group(1))
+    series_esr_ohm = float(row.group(2)) * 1e-3
+    series_irms_a = float(row.group(3).replace(",", "")) * 1e-3
+    if not (math.isclose(series_leakage_ua, leakage_ua, rel_tol=1e-12)
+            and math.isclose(series_esr_ohm, esr_ohm, rel_tol=1e-12)
+            and math.isclose(series_irms_a, irms_ma * 1e-3, rel_tol=1e-12)):
+        raise ValueError("series row disagrees with the part spec sheet")
+    delta_t_c = int(_field(series_text, r"with/T = \+([0-9.]+)", "ripple temperature rise"))
+
+    if "No voltage derating" not in brief.read_text(encoding=TEXT_ENCODING):
+        raise ValueError("product brief no longer states 'No voltage derating'")
+
+    return {
+        "case": case_match.group(1),
+        "c_f": c_f,
+        "v_rated": v_rated,
+        "esr_ohm": esr_ohm,
+        "irms_a": irms_ma * 1e-3,
+        "height_max_mm": height_max_mm,
+        "length_mm": length_mm,
+        "width_mm": width_mm,
+        "lead_pitch_mm": lead_pitch_mm,
+        "leakage_ua": leakage_ua,
+        "df_pct": df_pct,
+        "life_h": life_h,
+        "rated_temp_c": rated_temp_c,
+        "ripple_frequency_khz": frequency_khz,
+        "ripple_delta_t_c": delta_t_c,
+        "voltage_derating_required": False,
+    }
+
+
+_FACTS = spec_facts()
+
+# The selected part is read from the archived spec sheet; the alternates are still
+# network summaries and must not inherit the selected part's verification.
 CANDIDATES = [
-    {"mpn": "KEMET A720V477M2R5APE003", "c_f": 470e-6, "v_rated": 2.5, "esr_ohm": 3e-3,
-     "irms_a": 11.69, "case": "2917 (7.3 x 4.3 mm)", "height_mm": 2.1},
+    {"mpn": "KEMET A720V477M2R5APE003",
+     "c_f": _FACTS["c_f"], "v_rated": _FACTS["v_rated"], "esr_ohm": _FACTS["esr_ohm"],
+     "irms_a": _FACTS["irms_a"], "case": _FACTS["case"],
+     "height_mm": _FACTS["height_max_mm"], "verified": True, "source": SPEC_URL},
     {"mpn": "KEMET A798D477M2R5PTE006", "c_f": 470e-6, "v_rated": 2.5, "esr_ohm": 6e-3,
-     "irms_a": 6.46, "case": "SMD", "height_mm": 3.1},
+     "irms_a": 6.46, "case": "SMD", "height_mm": 3.1, "verified": False,
+     "source": "network search summary; no datasheet read"},
     {"mpn": "Chemi-Con APSF2R5ELL471MF08S", "c_f": 470e-6, "v_rated": 2.5, "esr_ohm": 5e-3,
-     "irms_a": 5.9, "case": "radial 6.3 x 8 mm", "height_mm": 8.0},
+     "irms_a": 5.9, "case": "radial 6.3 x 8 mm", "height_mm": 8.0, "verified": False,
+     "source": "network search summary; no datasheet read"},
 ]
 
 
@@ -151,6 +246,8 @@ def parts_needed(part: dict[str, float], requirements: dict[str, object] = REQUI
         "bank_irms_a": n * part["irms_a"],
         "v_rated": part["v_rated"],
         "height_mm": part["height_mm"],
+        "verified": part.get("verified", False),
+        "source": part.get("source", ""),
         "esr_margin_frac": requirements["esr_ohm"] / (part["esr_ohm"] / n),
     }
 
@@ -185,7 +282,22 @@ def report(requirements: dict[str, object] = REQUIREMENTS) -> dict[str, object]:
         })
 
     return {
-        "status": "sizing only; part data is search-sourced, not datasheet-verified",
+        "status": "sizing only; A720 is datasheet-verified, A798 and Chemi-Con are "
+                  "still network search summaries",
+        "datasheet": {
+            "part": CANDIDATES[0]["mpn"],
+            "manufacturer_document": SPEC_URL,
+            "archive": DATASHEET_TEXT.relative_to(REPO).as_posix(),
+            "series_cross_check": SERIES_TEXT.relative_to(REPO).as_posix(),
+            "product_brief": BRIEF_TEXT.relative_to(REPO).as_posix(),
+            "provenance": PROVENANCE.relative_to(REPO).as_posix(),
+            "spec_generated": "11/11/2026",
+            "esr_condition": "3 mOhm maximum at 100 kHz, 25 C",
+            "ripple_condition": "11.69 A rms at 100 kHz, +20 C rise",
+            "height_is_maximum": True,
+            "voltage_derating_required": _FACTS["voltage_derating_required"],
+            "facts": _FACTS,
+        },
         "requirements": {
             "capacitance_f": requirements["capacitance_f"],
             "esr_ohm": requirements["esr_ohm"],
@@ -234,8 +346,9 @@ def report(requirements: dict[str, object] = REQUIREMENTS) -> dict[str, object]:
             "copper spreading resistance is not negligible and is not modelled here",
             "0.2 mohm is the value the simulation ran with, not a specified limit; "
             "at 0.1 mohm the count doubles",
-            "part data is a vendor page summary; capacitance at 2 V bias, ESR at "
-            "temperature and end of life are not included",
+            "the selected part's ratings are its datasheet maximum at 100 kHz/25 C; "
+            "capacitance at 2 V bias and ESR at temperature and end of life are not included",
+            "the 2.1 mm is the mechanical maximum, not a nominal height",
             "the rated point ran with the 4 mF model capacitance and both overload points "
             "with the 7.05 mF candidate value; the ripple current is the difference of the "
             "measured SR and load currents, so the capacitance does not enter it, but the "
