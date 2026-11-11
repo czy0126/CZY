@@ -1,0 +1,316 @@
+{
+  "schema": "g1_cout_15_part_eda_input/1",
+  "purpose": "Single actionable G1 schematic+PCB ECO input; NOT an approved native land pattern",
+  "design_source": "tools/main_board_mechanical.py lines 597-607, 15 Cout1..Cout15 along y=98mm, x=14+8.2i",
+  "oem_source": "references/datasheets/a720v477m2r5ape003.provenance.json",
+  "base_board": {
+    "path": "hardware/dcx_main/g1/dcx_main_board_g1_signal_stubs.eprj2",
+    "sha256": "17fbae57bebdab6e0e18b6e4ddd177da98e25ca646bcb71d5e482a3b8db7b37e",
+    "actual_placed_Cout_count": 1,
+    "actually_connected_new_15_parts": 0
+  },
+  "part": {
+    "manufacturer": "KEMET / YAGEO",
+    "exact_mpn": "A720V477M2R5APE003",
+    "capacitance_uF": 470,
+    "dc_rated_v": 2.5,
+    "maximum_esr_mohm_at_100kHz_25C": 3,
+    "maximum_body_length_mm": 7.6,
+    "maximum_body_width_mm": 4.6,
+    "maximum_body_height_mm": 2.1,
+    "F_oem_terminal_dimension_mm": [
+      2.3,
+      2.5
+    ],
+    "S_oem_terminal_dimension_mm": [
+      1,
+      1.6
+    ],
+    "oem_pad_pitch_known": false,
+    "land_pattern_approved": false,
+    "solder_reflow_and_courtyard_approved": false
+  },
+  "bank": {
+    "n": 15,
+    "nominal_uF": 7050,
+    "minimum_initial_tolerance_uF": 5640,
+    "ideal_100kHz_25C_parallel_esr_mohm": 0.2,
+    "final_actual_copper_and_hot_esr_approved": false
+  },
+  "placement_proposal": {
+    "units": [
+      {
+        "ref": "Cout1",
+        "proposed_centre_mm": [
+          14,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout2",
+        "proposed_centre_mm": [
+          22.2,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout3",
+        "proposed_centre_mm": [
+          30.4,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout4",
+        "proposed_centre_mm": [
+          38.6,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout5",
+        "proposed_centre_mm": [
+          46.8,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout6",
+        "proposed_centre_mm": [
+          55,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout7",
+        "proposed_centre_mm": [
+          63.2,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout8",
+        "proposed_centre_mm": [
+          71.4,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout9",
+        "proposed_centre_mm": [
+          79.6,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout10",
+        "proposed_centre_mm": [
+          87.8,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout11",
+        "proposed_centre_mm": [
+          96,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout12",
+        "proposed_centre_mm": [
+          104.2,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout13",
+        "proposed_centre_mm": [
+          112.4,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout14",
+        "proposed_centre_mm": [
+          120.6,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      },
+      {
+        "ref": "Cout15",
+        "proposed_centre_mm": [
+          128.8,
+          98
+        ],
+        "rotation_deg": null,
+        "net_positive": "VOUT",
+        "net_negative": "PGND",
+        "body_outline_max_mm": [
+          7.6,
+          4.6
+        ],
+        "actual_native_footprint_added": false,
+        "manufacturer_polarity_pin_map_approved": false
+      }
+    ],
+    "max_body_y_mm": [
+      95.7,
+      100.3
+    ],
+    "adjacent_body_gap_mm": 0.6,
+    "body_gap_is_NOT_manufacturing_courtyard": true,
+    "actual_layout_may_require_repitch_and_copper_model_recompute": true
+  },
+  "rfq_conflicts": {
+    "performance_first_file": "hardware/dcx_main/performance_first_component_rfq.csv",
+    "high_voltage_required_v": 4,
+    "high_voltage_preferred_v": 6.3,
+    "selected_a720_v": 2.5,
+    "high_voltage_pass": false,
+    "bank_max_esr_mohm_hot_and_operating_frequency": 0.07,
+    "ideal_a720_bank_esr_mohm_100kHz_25C": 0.2,
+    "esr_target_pass": false,
+    "min_no_interconnect_units_at_3mohm_0p07mohm": 43,
+    "rated_2p5v_cannot_pass_by_increasing_parallel_count": true
+  },
+  "implementation_steps": [
+    "Replace existing single schematic Cout and real-board 0603 with 15 uniquely numbered polarized components and 15 actual OEM-approved footprints",
+    "Do not use F/S package terminal dimensions as physical SMD copper pad centres; require exact manufacturer land drawing and polarity stripe",
+    "Recompute spacing/courtyard and main_board_mechanical + cout_bank_path after any change from proposed 8.2 mm pitch",
+    "Connect actual positive lead to VOUT and negative lead to PGND; maintain Kelvin reference/short bank ties, not arbitrary 0.2mm tracks",
+    "Check overshoot, hot/200kHz ESR and ripple current share; HIGH-VOLTAGE P0 still requires alternative ≥4V even if this 2.5V candidate fits model",
+    "Submit new separate EasyEDA native .eprj2, save/reopen/DRC/ERC and same-revision BOM/footprint review"
+  ],
+  "status": "SOURCE_VERIFIED_PART_PLACEMENT_PROPOSAL_NOT_FOR_FAB",
+  "passes_native_eda": false,
+  "passes_p0_high_voltage_rfq": false,
+  "passes_actual_electrical_bank": false,
+  "fabrication_approved": false
+}
