@@ -2,7 +2,7 @@
 
 Why: native DRC 199 Connection Errors repeatedly survive offline PRECHECK PRs.
 The EasyEDA Pro extension API actually supports selected-net autorouting since
-v3.2.150. Scope the editor's betatype router to eight named LOW-CURRENT
+v3.2.150. Scope the editor's beta router to five still-open LOW-CURRENT
 control/protection nets, NEVER PGND/VOUT/SW/VIN_P/SEC/PRI/SR gates or Kelvin.
 
 Use one command ON THE LICENSED WINDOWS EDA HOST:
@@ -55,9 +55,7 @@ PREFIX="g1_control_autoroute"
 # Top-side, low-current CONTROL/FAULT nets. OC/OCM/OCD still need noise and
 # fault-capture timing review; DRC reduction alone does not sign their quality.
 # Deliberately EXCLUDE all 100A, resonant, power, Kelvin and SR gate networks.
-ROUTE_NETS=(
-    "RUN","SS","DT","RT","OC1","OC","OCM","OCD"
-)
+ROUTE_NETS=("RUN","SS","OC","OCD","OCM")
 
 
 def sha(path:Path)->str:
@@ -65,28 +63,33 @@ def sha(path:Path)->str:
 
 
 def plan() -> dict:
-    current=G1.source()  # signed current 107-line, 299-pad, SHA, 199 DRC
+    current=stage1_verified()  # real signed 132-line, 299-pad, SHA, 183 DRC
     names=current["nets"]
     if not isinstance(names,list) or len(names)!=65 or len(set(names))!=65:
         raise ValueError("Active EasyEDA G1 net inventory changed")
-    if len(ROUTE_NETS)!=8 or len(set(ROUTE_NETS))!=8:
+    if len(ROUTE_NETS)!=5 or len(set(ROUTE_NETS))!=5:
         raise ValueError("Native low-risk autorouter whitelist changed")
     if not set(ROUTE_NETS).issubset(set(names)):
         raise ValueError("Selected native control net is absent from G1")
     banned=[x for x in names if x not in ROUTE_NETS]
-    if len(banned)!=57:raise ValueError("Not all excluded power and gate nets were forbidden")
+    if len(banned)!=60:raise ValueError("Not all excluded power and gate nets were forbidden")
     if not {"PGND","VOUT","VIN_P","SW","CT_LR","SEC1_A","GA1","VG1_A","REG1"}.issubset(banned):
         raise ValueError("Dangerous output/driver net escaped exclusion")
-    before=G1.categories(json.loads(G1.DRC.read_text(encoding="utf-8")))
-    found={x["name"]:len(x["list"]) for x in
-           json.loads(G1.DRC.read_text(encoding="utf-8"))["value"]["raw"][0]["list"]}
-    # The original DRC export has the selected eight nets, but the DRC
-    # subcategory's number of *reports* differs from the actual wire count.
-    if any(x not in found for x in ROUTE_NETS):
-        raise ValueError("Auto-routing selected a net with no original native DRC evidence")
+    before=G1.categories(json.loads(STAGE1.AFTER_DRC.read_text(encoding="utf-8")))
+    group=next(z for z in json.loads(STAGE1.AFTER_DRC.read_text(encoding="utf-8"))["value"]["raw"]
+               if z["name"]=="Connection Error")
+    found={x["name"]:len(x["list"]) for x in group["list"]}
+    # Lock the true *remaining* 132-line DRC, not the superseded 107-line
+    # pre-12-batch audit: DT/RT/OC1 already have no connection errors.
+    if any(found.get(x,0)<=0 for x in ROUTE_NETS):
+        raise ValueError("Selected G1 control net has no current 183-open DRC evidence")
+    if any(x in found for x in ("DT","RT","OC1")):
+        raise ValueError("Previously completed first-stage control net reopened")
     return {
         "status":"SOURCE_LOCKED_SELECTED_NATIVE_AUTOROUTER_READY_NOT_EXECUTED",
-        "source_sha256":sha(G1.SOURCE),
+        "source_sha256":sha(STAGE1_BOARD),
+        "first_stage_parent_sha256":sha(G1.SOURCE),
+        "active_native_connection_errors":before["Connection Error"],
         "net_count":len(names),
         "routing_nets":list(ROUTE_NETS),
         "ignoring_nets":banned,
@@ -110,7 +113,7 @@ def js_body(config:dict) -> str:
     return f"""// Generated EasyEDA native PCB script; never use on original G1 parent.
 const allow={allow};
 const excluded={exclude};
-if (allow.length !== 8 || excluded.length !== 57) {{
+if (allow.length !== 5 || excluded.length !== 60) {{
   throw new Error('Wrong G1 autoRoute net scope; refusing');
 }}
 // A CLI open --path may open only the project tree, not the active PCB tab.
@@ -128,8 +131,17 @@ const result=await eda.pcb_Document.autoRouting({{
   ignoreNets: excluded,
   layers: [1]
 }});
-if (!result || typeof result !== 'object') {{
-  throw new Error('EasyEDA autoRouting did not provide a completion result');
+if (!result || typeof result !== 'object' || result.success !== true) {{
+  throw new Error('EasyEDA autoRouting did not start successfully');
+}}
+if (!Array.isArray(result.failedNets) ||
+    typeof result.totalNetsCount !== 'number' ||
+    typeof result.successNetsCount !== 'number' ||
+    result.totalNetsCount > allow.length ||
+    result.successNetsCount > result.totalNetsCount ||
+    result.successNetsCount < 0 ||
+    result.failedNets.some(net => !allow.includes(net))) {{
+  throw new Error('EasyEDA beta autoRouting result exceeds the 5-net allowlist');
 }}
 const saved=await eda.pcb_Document.save();
 return {{routeResult: result, saved: saved,
@@ -305,7 +317,7 @@ def apply()->int:
         E.dump(PREFIX,"apply",result or {"ok":False,"why":"CLI_EXCEPTION"})
         time.sleep(30)  # ensure EDA's asynchronous save debounce completes
         E.dump(PREFIX,"close",D.call(D.build_close_args(session)))
-    if sha(STAGE1_BOARD)!=prior or sha(G1.SOURCE)!=config["source_sha256"]:
+    if sha(STAGE1_BOARD)!=config["source_sha256"] or sha(G1.SOURCE)!=config["first_stage_parent_sha256"]:
         raise RuntimeError("Source board changed during native autoRoute")
     info=(result or {}).get("value") or {}
     if not result or not result.get("ok") or not info.get("saved"):
