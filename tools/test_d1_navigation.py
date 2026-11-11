@@ -63,17 +63,28 @@ def test_current_docs_follow_actual_g1_not_the_old_main_snapshot():
     assert actual["native_pcb_anonymous_magnetic_pad_count"] == 24
     assert actual["native_drc"]["netlist_errors"] == 1
     assert neck["fabrication_approved"] is False
-    assert "38" in now and "R6" in now and "206" in now
-    assert "9 条" in now and "24 个" in now
+    signal = json.loads((ROOT / "hardware/dcx_main/g1/lr_signal_review_report.json").read_text(encoding="utf-8"))
+    assert signal["status"] == "NATIVE_SIGNAL_INCREMENT_ACCEPTED_NOT_FOR_FAB"
+    assert signal["connection_errors_reduced"] == 7
+    assert signal["drc_before"]["Connection Error"] == 206
+    assert signal["drc_after"]["Connection Error"] == 199
+    assert signal["drc_after"]["Netlist Error"] == 1
+    assert signal["fabrication_approved"] is False
+    assert signal["native_drc_passed"] is False
+    assert "38" in now and "R6" in now and "206" in now and "199" in now
+    assert "107线" in now and "9条原生连接" in now and "24 个" in now
+    assert "唯一继续编辑" in now
     assert "NOT_FOR_FAB" in now and "NOT_FOR_FAB" in d
     assert "真实" in p and "改前" in p
 
 
-def test_g1_readme_starts_with_real_nine_route_handoff_not_six_route_preview():
+def test_g1_readme_promotes_accepted_native_nine_route_candidate():
     first = G1_README.read_text(encoding="utf-8").split(
         "## 形成过程记录（历史", 1)[0]
-    assert "9 条" in first
-    assert "尚未真正写入" in first
-    assert "apply_lr_signal_stubs.py --apply" in first
-    assert "206 Connection" in first
+    assert "9 段" in first
+    assert "107线" in first
+    assert "206→199" in first
+    assert "signal_stubs.eprj2" in first
+    assert "不要重跑" in first
+    assert "尚未真正写入原生板" not in first
     assert "NOT_FOR_FAB" in first
