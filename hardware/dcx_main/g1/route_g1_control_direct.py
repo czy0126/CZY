@@ -86,7 +86,12 @@ def path(a,b,kind):
     if kind=="direct":return[a,b]
     if kind=="C6_row_below":return[a,(x,y+1.0),(u,y+1.0),b]
     if kind=="horizontal_below_R16":return[a,(x,y+1.0),(u,y+1.0),b]
-    if kind=="OCD_lower_corridor":return[a,(x,y+3.6),(u,y+3.6),b]
+    if kind=="OCD_lower_corridor":
+        # Enter D_CT1.3 diagonally: the accepted board already has a
+        # collinear same-net stub leaving this pad downward. Continuing
+        # vertically through its centre could make EasyEDA re-ID/merge the
+        # ORIGINAL copper, invalidating its 132-line source-chain check.
+        return[a,(x,y+3.6),(u-.8,y+3.6),(u-.8,v-.75),b]
     if kind=="above_caps":return[a,(x,y-1.0),(u,y-1.0),b]
     if kind=="below_DCT4":return[a,(x,y+1.0),(u,y+1.0),b]
     raise ValueError("Unknown reviewed trace shape: "+str(kind))
@@ -106,8 +111,8 @@ def copper()->dict:
         if any(math.dist(a,b)<.02 for a,b in zip(route,route[1:])):
             raise ValueError("Degenerate zero-length copper segment")
         out.setdefault(net,{"width":WIDTH,"layer":1,"paths":[]})["paths"].append(route)
-    if len(R.segments(out))!=16:
-        raise ValueError("Expected 16 controlled native line primitives")
+    if len(R.segments(out))!=17:
+        raise ValueError("Expected 17 controlled native line primitives")
     return out
 
 def vias()->list:
