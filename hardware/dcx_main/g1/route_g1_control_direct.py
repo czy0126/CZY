@@ -39,7 +39,7 @@ CLEARANCE=R.CLEARANCE
 # Fewer physical segments/risks than the full beta 5-net autoRouter.
 PAIRS=(
   ("RUN","C13","1","R7","1","direct"),
-  ("SS","C6","1","U1","4","horizontal_above_C6"),
+  ("SS","C6","1","U1","4","C6_row_below"),
   ("OC","R16","2","U1","3","horizontal_below_R16"),
   ("OCD","R3","1","D_CT1","3","OCD_lower_corridor"),
   ("OCM","C11","2","C12","2","above_caps"),
@@ -84,7 +84,7 @@ def at(p:dict,ref:str,pin:str,net:str)->tuple[float,float]:
 def path(a,b,kind):
     x,y=a;u,v=b
     if kind=="direct":return[a,b]
-    if kind=="horizontal_above_C6":return[a,(x,y+1.0),(u,y+1.0),b]
+    if kind=="C6_row_below":return[a,(x,y+1.0),(u,y+1.0),b]
     if kind=="horizontal_below_R16":return[a,(x,y+1.0),(u,y+1.0),b]
     if kind=="OCD_lower_corridor":return[a,(x,y+3.6),(u,y+3.6),b]
     if kind=="above_caps":return[a,(x,y-1.0),(u,y-1.0),b]
