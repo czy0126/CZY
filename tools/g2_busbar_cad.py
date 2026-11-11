@@ -2,9 +2,12 @@
 
 Unlike the 100A arithmetic screen, generates *two metal bodies* with explicit
 lug geometry and trial M3 holes, plus a PCB/TDK core clearance assembly STEP.
-This does NOT connect copper to the native PCB's 12 source lands. Manufacturer
-DFM, solder/press-fit attachments, insulation, cold plate/TIM, and Kelvin all
-remain unqualified. Never export these files as production Gerbers.
+This does NOT connect copper to the native PCB's 12 source lands. Previous
+trial M3 drill locations collide with real J_IN/QL copper; this exporter now
+creates SOLID UNDRILLED bars. Alternate screw coordinates are only saved to
+an audit report for a later real mechanical/electrical redesign. Manufacturer
+DFM, attachments, insulation, cold plate/TIM and Kelvin remain unqualified.
+Never export these trial outlines as production Gerbers or drilled fabrication.
 
 python tools/g2_busbar_cad.py --check
 python tools/g2_busbar_cad.py --export /tmp/g2-cad
@@ -14,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import g2_board_keepout as keepout
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/"hardware/dcx_main/g1/g1_100a_output_interface.json"
@@ -24,7 +28,8 @@ PCB_THICKNESS_MM=1.6           # ASSUMED, not stackup DFM
 BOTTOM_INSULATION_MM=0.3       # ASSUMED, not dielectric qualification
 ELP38_I38_MAX_MM=8.25+.15+3.80+.15  # TDK ELP38/I38 catalogue max
 ELP32_I32_PROXY_MM=6.35+.15+3.15+.15
-HOLE_DIAMETER_MM=3.4           # trial M3 clearance; no mating spec
+# NO M3 drill is exported: native J_IN and QL keepouts are violated.
+HOLE_DIAMETER_MM=3.4           # previous trial only; audit without cutting
 THICKNESSES_MM=(1.2,5.0)
 
 TDK="https://www.tdk-electronics.tdk.com/inf/80/db/fer/elp_38_8_25.pdf"
@@ -91,8 +96,9 @@ def overlap(a,b):
 def screen(t:float,joint_uohm_each:float=20) -> dict:
     if t<=0 or joint_uohm_each<0:raise ValueError("Nonphysical bar/joint scenario")
     r=load();o=outlines(r);c=centres(r)
-    if any(not is_inside(c[n],o[n]) for n in o):
-        raise ValueError("Trial hole centre outside copper lug")
+    hole_audit=keepout.report()
+    if hole_audit["prior_unsafe_m3_trial_centres"]["VOUT"]["passes_visible_native_copper_clearance_only"]:
+        raise ValueError("Old J_IN M3 hole collision not detected; do not export")
     if any(not (0<=a<155 and 0<=b<131 and x<=155 and y<=131)
            for a,b,x,y in map(bbox,o.values())):
         raise ValueError("Bar footprint outside assumed board outline")
@@ -129,8 +135,13 @@ def screen(t:float,joint_uohm_each:float=20) -> dict:
        "resistance_arithmetic_only_pass":resistance<=150,
        "metal_outline_mm":{n:[[round(x,4),round(y,4)] for x,y in poly]
                            for n,poly in o.items()},
-       "hole_centres_mm":{n:[round(x,4),round(y,4)] for n,(x,y) in c.items()},
-       "hole_diameter_mm_TRIAL_ONLY":HOLE_DIAMETER_MM,
+       "electrical_feed_reference_centres_mm":{n:[round(x,4),round(y,4)]
+                                                for n,(x,y) in c.items()},
+       "known_old_m3_drill_conflict":hole_audit["prior_unsafe_m3_trial_centres"],
+       "mechanical_alternate_drill_locations_not_approved":
+           hole_audit["alternate_positions_for_further_engineering_ONLY"],
+       "no_m3_holes_exported":True,
+       "all_299_native_pads_and_107_traces_18_vias_looked_up":True,
        "bottom_copper_over_other_nets_requires_certified_insulation":True,
        "no_source_land_to_bar_interconnect_model":True,
        "Cout_and_mating_terminal_unplaced":True,
@@ -142,9 +153,10 @@ def screen(t:float,joint_uohm_each:float=20) -> dict:
 
 
 def export(folder:Path,thickness:float) -> None:
-    """Emit machine-readable 2D copper cut profiles and 3D assembly *trials*.
+    """Emit undrilled copper blank DXF and 3D mechanical assembly *trials*.
 
-    The DXF M3 holes are design-owned and NOT a validated mating connector.
+    Never emit unsafe M3 drill instructions over the J_IN and QL regions.
+    A separate source-locked keepout report flags the known collisions.
     """
     import cadquery as cq
     import ezdxf
@@ -155,22 +167,25 @@ def export(folder:Path,thickness:float) -> None:
     for n in ("VOUT","PGND"):
         drawing.layers.new(n+"_COPPER_TRIAL")
         msp.add_lwpolyline(o[n],close=True,dxfattribs={"layer":n+"_COPPER_TRIAL"})
-        msp.add_circle(c[n],HOLE_DIAMETER_MM/2,
-                       dxfattribs={"layer":n+"_COPPER_TRIAL"})
+        # Deliberately NO CIRCLE: prior VOUT trial M3 hole intersects
+        # J_IN PGND copper on the actual reopened native G1 board.
     stem=f"G2_{thickness:g}mm_NOT_FOR_FAB"
     drawing.saveas(folder/(stem+".dxf"))
     assy=cq.Assembly(name="G2_NONFAB_MECHANICAL_PROPOSAL")
     z=-BOTTOM_INSULATION_MM-thickness
     for n,color in (("VOUT",cq.Color(.92,.47,.18)),("PGND",cq.Color(.60,.23,.15))):
         p=cq.Workplane("XY").polyline(o[n]).close().extrude(thickness).translate((0,0,z))
-        x,y=c[n]
-        cut=(cq.Workplane("XY").center(x,y).circle(HOLE_DIAMETER_MM/2)
-             .extrude(thickness).translate((0,0,z)))
-        p=p.cut(cut)
+        # Keep copper a single UNDRILLED solid; any future bolt-through-hole
+        # needs inner-layer, pad, connector body, insulation and CAD DRC checks.
         if len(p.solids().vals())!=1:raise ValueError("Invalid copperbar solid")
         assy.add(p,name=n+"_COPPER_TRIAL",color=color)
     pcb=cq.Workplane("XY").box(155,131,PCB_THICKNESS_MM,centered=(False,False,False))
     assy.add(pcb,name="PCB_1p6mm_ASSUMED",color=cq.Color(.15,.50,.24,.40))
+    dielectric=(cq.Workplane("XY")
+                .box(155,131,BOTTOM_INSULATION_MM,centered=(False,False,False))
+                .translate((0,0,-BOTTOM_INSULATION_MM)))
+    assy.add(dielectric,name="BOTTOM_INSULATION_0p3mm_ASSUMED_NOT_QUALIFIED",
+             color=cq.Color(.83,.85,.93,.55))
     lr=(cq.Workplane("XY").box(38,25.4,ELP38_I38_MAX_MM,centered=(True,True,False))
         .translate((26,49,PCB_THICKNESS_MM)))
     assy.add(lr,name="LR_ELP38_I38_CATALOGUE_ENVELOPE",color=cq.Color(.15,.17,.19,.55))
@@ -182,7 +197,8 @@ def export(folder:Path,thickness:float) -> None:
     assy.save(str(folder/(stem+".step")))
     (folder/(stem+".json")).write_text(json.dumps({
         "low_joint_scenario":screen(thickness,20),
-        "high_joint_scenario":screen(thickness,50)
+        "high_joint_scenario":screen(thickness,50),
+        "no_drill_reason": keepout.report(),
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
 
