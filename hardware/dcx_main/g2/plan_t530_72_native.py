@@ -40,6 +40,17 @@ MIL=1/0.0254
 def sha(path:Path)->str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+
+def sha_original_windows_readback(path:Path)->str:
+    """Bind the saved native EasyEDA readback's original CRLF bytes.
+
+    Git checks out this JSON as LF on CI while the original Windows readback
+    receipt was captured as CRLF. Reconstruct the original bytes exactly;
+    never reinterpret the native board archive or alter its identity hash.
+    """
+    lf=path.read_bytes().replace(b"\r\n",b"\n")
+    return hashlib.sha256(lf.replace(b"\n",b"\r\n")).hexdigest()
+
 def rect(x,y,w,h):
     return (x-w/2,y-h/2,x+w/2,y+h/2)
 
@@ -112,7 +123,7 @@ def make()->dict:
       "status":"SOURCE_LOCKED_149_LINE_NATIVE_PAD_TRIAL_NOT_FOR_FAB",
       "source_board":C.BASE.relative_to(ROOT).as_posix(),
       "source_board_sha256":sha(C.BASE),
-      "source_native_readback_sha256":sha(C.READBACK),
+      "source_native_readback_sha256":sha_original_windows_readback(C.READBACK),
       "source_native_drc_sha256":sha(C.DRC_DELTA),
       "oem_part":"KEMET_T530X477M006ATE004",
       "lcsc_part_number":"C2158170",
