@@ -51,9 +51,23 @@ def test_r6_is_real_design_reference_but_missing_native_component():
     assert r["r6_real_mpn_footprint_and_position_approved"] is False
     assert r["r6_historical_r8_reference_DNP"] is True
     assert r["r6_old_R8_renaming_proven_by_pin_net"] is True
-    assert r["r6_v9_P1_addIntoPcb_verified"] is None
-    assert r["r6_v9_P1_addIntoBom_verified"] is None
-    assert r["r6_must_be_assembled"] is None
+    assert r["r6_v9_P1_addIntoPcb_verified"] is False
+    assert r["r6_v9_P1_addIntoBom_verified"] is False
+    assert r["r6_must_be_assembled"] is False
+    assert r["p1_required_native_component_gaps"]==["CT","T1","T2","T3","T4"]
+    assert r["p1_intentional_DNP_ref_no_PCB_component"]==["R6"]
+    assert r["r6_current_native_primitive_id"]=="c36641dcb5f791fe"
+    assert r["r6_current_native_readback_sha256"]==P.sha(P.R6_V9_NATIVE)
+
+
+def test_current_native_v9_r6_dnp_confirmation_fail_closed_when_tampered(tmp_path,monkeypatch):
+    receipt=json.loads(P.R6_V9_NATIVE.read_text("utf8"))
+    receipt["native_P1"]["R6"]["addIntoPcb"]=True
+    fake=tmp_path/"tampered_r6_native.json"
+    fake.write_text(json.dumps(receipt),encoding="utf8")
+    monkeypatch.setattr(P,"R6_V9_NATIVE",fake)
+    with pytest.raises(ValueError,match="Current saved V9 native R6 DNP verification inconsistent"):
+        P.report()
 
 
 def test_native_cout72_all_144_pcb_pin_net_assignments_are_real():
