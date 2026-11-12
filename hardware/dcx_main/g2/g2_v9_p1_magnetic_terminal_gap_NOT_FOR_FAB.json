@@ -1,0 +1,524 @@
+{
+  "schema": "G2_V9_P1_NATIVE_PAD_TERMINAL_RECONCILIATION_V1",
+  "status": "R6_AND_5_MAGNETIC_COMPONENTS_MISSING_FROM_NATIVE_PCB_NOT_FOR_FAB",
+  "v9_source_native_sha256": "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2",
+  "historical_p1_source_sha256": "552628f0ef68fddca1411b808990274505a1d6a219038829c89261bd73abf87e",
+  "historical_p1_netlist_sha256": "65a2d5dd21d073c93f897a8aaa0f7dd0eb3bdbfc99f07631d4689fe34c522982",
+  "cross_version_assumption_not_yet_revalidated": "P1 in G2 V9 must be independently recaptured and compared to frozen G1 P1; V9 COUT72 page is independently checked.",
+  "p1_schematic_refs": 83,
+  "p1_schematic_wires": 280,
+  "p1_schematic_native_snapshot_source": "G1_P1_83_REF_280_WIRE",
+  "real_pcb_component_refs": 149,
+  "p1_refs_with_matching_real_pcb_component": 77,
+  "p1_connected_pin_net_matches": 259,
+  "p1_connected_pin_net_disagreements": [],
+  "p1_reference_missing_native_components": [
+    "CT",
+    "R6",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "r6_required_pin_nets": {
+    "2": "RUN",
+    "1": "VCC12"
+  },
+  "r6_native_component_present": false,
+  "r6_historical_r8_reference_DNP": true,
+  "r6_historical_r8_eco_sha256": "c7de8b77917246894f10c81e78eaeb690376a0db546f10ec2dc775c0762f8cb5",
+  "r6_old_R8_renaming_proven_by_pin_net": true,
+  "r6_v9_P1_addIntoPcb_verified": null,
+  "r6_v9_P1_addIntoBom_verified": null,
+  "r6_must_be_assembled": null,
+  "r6_action": "Verify native V9 P1 DNP flag; if still addIntoPcb=false, treat it as intended DNP, not missing hardware. If true, formal ECO with validated 2-pad footprint and BOM.",
+  "magnetics_required_pin_nets": {
+    "T1": {
+      "PRI_A": "PRI_T1",
+      "PRI_B": "PRI_12",
+      "SEC_A": "SEC1_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC1_B"
+    },
+    "T2": {
+      "PRI_A": "PRI_12",
+      "PRI_B": "PRI_23",
+      "SEC_A": "SEC2_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC2_B"
+    },
+    "T3": {
+      "PRI_A": "PRI_23",
+      "PRI_B": "PRI_34",
+      "SEC_A": "SEC3_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC3_B"
+    },
+    "T4": {
+      "PRI_A": "PRI_34",
+      "PRI_B": "PGND",
+      "SEC_A": "SEC4_A",
+      "CTAP": "VOUT",
+      "SEC_B": "SEC4_B"
+    },
+    "CT": {
+      "PRI_A": "CR_CT",
+      "PRI_B": "CT_LR",
+      "SEC_A": "CS1",
+      "SEC_B": "CS2"
+    }
+  },
+  "magnetics_bare_pad_count": 24,
+  "magnetics_bare_pads_with_matching_pin_and_net": 24,
+  "magnetics_native_component_instances": 0,
+  "magnetics_bare_pad_to_component_assignments": [
+    {
+      "ref": "T1",
+      "terminal": "PRI_A",
+      "net": "PRI_T1",
+      "xy_mm": [
+        2.99974,
+        28.00096
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T1",
+      "terminal": "PRI_B",
+      "net": "PRI_12",
+      "xy_mm": [
+        2.99974,
+        11.99896
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T1",
+      "terminal": "SEC_A",
+      "net": "SEC1_A",
+      "xy_mm": [
+        37.00018,
+        27.0002
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T1",
+      "terminal": "SEC_B",
+      "net": "SEC1_B",
+      "xy_mm": [
+        37.00018,
+        12.99972
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T1",
+      "terminal": "CTAP",
+      "net": "VOUT",
+      "xy_mm": [
+        37.00018,
+        19.99996
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T2",
+      "terminal": "PRI_A",
+      "net": "PRI_12",
+      "xy_mm": [
+        41.00068,
+        28.00096
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T2",
+      "terminal": "PRI_B",
+      "net": "PRI_23",
+      "xy_mm": [
+        41.00068,
+        11.99896
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T2",
+      "terminal": "SEC_A",
+      "net": "SEC2_A",
+      "xy_mm": [
+        75.00112,
+        27.0002
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T2",
+      "terminal": "SEC_B",
+      "net": "SEC2_B",
+      "xy_mm": [
+        75.00112,
+        12.99972
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T2",
+      "terminal": "CTAP",
+      "net": "VOUT",
+      "xy_mm": [
+        75.00112,
+        19.99996
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T3",
+      "terminal": "PRI_A",
+      "net": "PRI_23",
+      "xy_mm": [
+        78.99908,
+        28.00096
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T3",
+      "terminal": "PRI_B",
+      "net": "PRI_34",
+      "xy_mm": [
+        78.99908,
+        11.99896
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T3",
+      "terminal": "SEC_A",
+      "net": "SEC3_A",
+      "xy_mm": [
+        112.99952,
+        27.0002
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T3",
+      "terminal": "SEC_B",
+      "net": "SEC3_B",
+      "xy_mm": [
+        112.99952,
+        12.99972
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T3",
+      "terminal": "CTAP",
+      "net": "VOUT",
+      "xy_mm": [
+        112.99952,
+        19.99996
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T4",
+      "terminal": "PRI_A",
+      "net": "PRI_34",
+      "xy_mm": [
+        117.00002,
+        28.00096
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T4",
+      "terminal": "PRI_B",
+      "net": "PGND",
+      "xy_mm": [
+        117.00002,
+        11.99896
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T4",
+      "terminal": "SEC_A",
+      "net": "SEC4_A",
+      "xy_mm": [
+        151.00046,
+        27.0002
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T4",
+      "terminal": "SEC_B",
+      "net": "SEC4_B",
+      "xy_mm": [
+        151.00046,
+        12.99972
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "T4",
+      "terminal": "CTAP",
+      "net": "VOUT",
+      "xy_mm": [
+        151.00046,
+        19.99996
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "CT",
+      "terminal": "PRI_A",
+      "net": "CR_CT",
+      "xy_mm": [
+        79.99984,
+        55.99938
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "CT",
+      "terminal": "PRI_B",
+      "net": "CT_LR",
+      "xy_mm": [
+        79.99984,
+        48.00092
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "CT",
+      "terminal": "SEC_A",
+      "net": "CS1",
+      "xy_mm": [
+        104.0003,
+        55.99938
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    },
+    {
+      "ref": "CT",
+      "terminal": "SEC_B",
+      "net": "CS2",
+      "xy_mm": [
+        104.0003,
+        48.00092
+      ],
+      "native_layer": 1,
+      "pad_shape": [
+        "ELLIPSE",
+        78.7,
+        78.7
+      ],
+      "component_owned": false,
+      "physical_drawing_from_vendor_signed": false,
+      "terminal_dot_signed": false
+    }
+  ],
+  "cout72_component_and_144_native_pin_pair_verified": true,
+  "native_drc_connection_errors": 168,
+  "native_drc_netlist_errors": 1,
+  "physical_component_gate_passed": false,
+  "magnetic_vendor_terminal_geometry_and_dot_approved": false,
+  "r6_real_mpn_footprint_and_position_approved": false,
+  "native_new_component_save_and_independent_reopen_verified": false,
+  "safety_fault_matrix_verified": false,
+  "fabrication_approved": false,
+  "next_required_actions": [
+    "Native V9 P1 rescan: independently verify no P1 changes since G1 source",
+    "Verify latest native R6 addIntoPcb/addIntoBom against historical R8 confirmed DNP and its R6 rename. Only fit a real R6 if latest schematic intentionally requires it; do not silently reverse DNP ECO",
+    "Create T1-T4 and CT *native devices* with manufacturer physical pin/DOT proof; reuse actual 24 net-matched pad locations only after approved terminal geometry",
+    "Rebuild editable new V11 PCB and synchronize schematic before native DRC",
+    "Close remaining native connection and netlist errors and verify independently; four-wire/thermal/DFM and D0 remain separately required"
+  ]
+}
