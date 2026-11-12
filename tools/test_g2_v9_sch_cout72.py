@@ -46,7 +46,10 @@ def test_six_native_batch_receipts_and_frozen_bounded_layout():
 
 def test_final_native_cap_symbol_pcb_parity_is_source_bound():
     p=receipt("g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json")
-    assert p["candidate_sha256"]==PCB.sha(PCB.V9)
+    # Cout parity was certified before the *subsequent* VOUT feeder ECO.
+    import g2_v9_vout_source_feeder_pilot as FEEDER
+    assert p["candidate_sha256"] == FEEDER.CANDIDATE_SHA
+    assert PCB.sha(PCB.V9) == receipt("g2_v9_vout_source_bottom_feeder_verified_NOT_FOR_FAB.json")["source_sha256"]
     assert p["schematic_sheet"]=="COUT_T530_72"
     assert p["schematic_72_parts"]==p["pcb_72_parts"]==72
     assert p["schematic_pin_number_pair_per_part"]==["1","2"]

@@ -25,7 +25,11 @@ def test_v9_saved_real_72_pcb_board_and_source_identity():
     # Historical PCB-only save predates the added native Cout schematic page.
     assert r["candidate_sha256"] != C.sha(C.V9)
     assert r["v8_sha256"] == C.sha(C.V8) == C.EXPECTED_V8_SHA
-    assert C.sha(C.V9) == load(G2 / "g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json")["candidate_sha256"]
+    # The immutable Cout SCH/PCB parity receipt refers to the *pre-feeder*
+    # CAD revision. The newest source-locked native feeder receipt owns V9.
+    import g2_v9_vout_source_feeder_pilot as FEEDER
+    assert FEEDER.CANDIDATE_SHA == load(G2 / "g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json")["candidate_sha256"]
+    assert C.sha(C.V9) == load(FEEDER.VERIFY_RECEIPT)["source_sha256"]
     assert r["candidate_sha256"] != r["v8_sha256"]
 
 

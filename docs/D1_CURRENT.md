@@ -6,7 +6,7 @@
 
 **D1**：48 V → 约 2 V、固定约 24:1、目标 100 A、完整装配高度目标 ≤16 mm；成本暂不设上限，但安全、热、机械和制造验证不能省。D2 120 A 与 D3 ≤10 mm 均不占本轮 G1–G3 的资源。上位设计合同是 [第 49 章](D1_EXECUTION_KIT/49_D1主功率板PCB唯一执行计划_2026-11-09.md)，旧版本路线仅为历史证据。
 
-**制造状态：`NOT_FOR_FAB`。** G2 V9 已有真实 72 个 T530 footprint-Device 实例及 144 个封装焊盘，**同版 Cout 第二原理图页已通过 72 个符号、144 条 VOUT/PGND 线及脚号逐件核对**，见 [Cout 原生双侧校验](../hardware/dcx_main/g2/g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json)。仍缺：极性丝印与正式封装厂签核、100 A 双极主铜路、磁件物理 PAD/DOT、其余器件逐脚配平、D0 保护实物验证和制造审查。可见嘉立创 GUI 持续保留，不再因 API 调试而关闭。
+**制造状态：`NOT_FOR_FAB`。** G2 V9 已完成真实 72 个 T530 器件的 PCB 封装及同版 Cout 原理图 72 个符号/144 条连接线逐脚核对；进一步在原生 PCB 真正连接了**变压器 CTAP 所在 VOUT 源铜岛与 Cout 电容 VOUT 铜岛**，3 个 0.4mm 金属孔和 3 条 1.6mm 底层铜线经原生 DRC 验证，Connection=**168**、Netlist=1、Physical=0。[最新 VOUT 原生铜岛证据](../hardware/dcx_main/g2/g2_v9_vout_source_bottom_feeder_verified_NOT_FOR_FAB.json)。**重要：这只是物理连通，不是 100A 载流设计合格**；极性丝印及原厂封装签核、100A VOUT/PGND 两极功率铜路、磁件物理 PAD/DOT、其余器件逐脚配平、D0 实物保护验证与制造审查均未完成。可见 EDA GUI 继续保留，不因 API 调试而关闭。
 
 **本机已执行 PR #98 六组控制网的原生铜线增量，并通过保存、重开、图元核对和真实 DRC。** 在冻结的 132线/183 Connection 父板副本中，以 `pcb_PrimitiveLine.create` 创建 RUN、SS、OC、OCD、OCM 五网六组共17段、0过孔；实际铜线132→149，Connection 183→**173**，Netlist **1不变**、Physical **0不变**。77件、299焊盘、65网、18过孔及全部旧132条铜线不漂移。[原生DRC回执](../hardware/dcx_main/g1/g1_control_direct_drc_delta.json)和[重开对照](../hardware/dcx_main/g1/g1_control_direct_reopen_report.json)绑定新候选哈希。首次立即重开返回 `PCB missing`，已保留原失败信息，未重落铜；通过新增只验证候选的 `--resume` 二次只读打开成功并取得原生 DRC。**新候选存在后严禁再次运行 `--apply`**。
 

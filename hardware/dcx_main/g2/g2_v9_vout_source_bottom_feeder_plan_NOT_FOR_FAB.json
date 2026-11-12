@@ -1,0 +1,85 @@
+{
+  "status": "REVIEWED_NATIVE_V9_TRIAL_BOTTOM_VOUT_SOURCE_FEEDERS_NOT_FOR_FAB",
+  "source_sha256": "598e896935093e3c7c86bb18258c3e00c11edf1005c13fd0c885cb33085c6ce9",
+  "net": "VOUT",
+  "bottom_layer": 2,
+  "source_connected_vout_island_count": 2,
+  "source_ctap_pad_count": 4,
+  "target_cout_native_capacitor_count": 72,
+  "tracks": [
+    {
+      "net": "VOUT",
+      "layer": 2,
+      "a_mm": [
+        37,
+        20
+      ],
+      "b_mm": [
+        37,
+        94
+      ],
+      "width_mm": 1.6
+    },
+    {
+      "net": "VOUT",
+      "layer": 2,
+      "a_mm": [
+        75,
+        20
+      ],
+      "b_mm": [
+        75,
+        94
+      ],
+      "width_mm": 1.6
+    },
+    {
+      "net": "VOUT",
+      "layer": 2,
+      "a_mm": [
+        151,
+        20
+      ],
+      "b_mm": [
+        151,
+        94
+      ],
+      "width_mm": 1.6
+    }
+  ],
+  "vias": [
+    {
+      "net": "VOUT",
+      "xy_mm": [
+        37,
+        20
+      ],
+      "diameter_mm": 1.0,
+      "hole_mm": 0.4
+    },
+    {
+      "net": "VOUT",
+      "xy_mm": [
+        75,
+        20
+      ],
+      "diameter_mm": 1.0,
+      "hole_mm": 0.4
+    },
+    {
+      "net": "VOUT",
+      "xy_mm": [
+        151,
+        20
+      ],
+      "diameter_mm": 1.0,
+      "hole_mm": 0.4
+    }
+  ],
+  "physical_preflight_problems": [],
+  "one_through_via_per_feeder_NOT_100A_RATED": true,
+  "feeder_mm": 1.6,
+  "full_100a_copper_ampacity_qualified": false,
+  "magnetic_physical_pins_qualified": false,
+  "fabrication_approved": false
+}

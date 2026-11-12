@@ -468,6 +468,13 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - 原生 sch_Document.save() 各页返回 true，PCB pcb_Document.save() 返回 true。之后逐一跨页比对 72 个原理图器件和 72 个 PCB 器件的 1、2 脚编号、PCB 1=VOUT 2=PGND，结果绑定最新 eprj2 SHA256 598e896935093e3c7c86bb18258c3e00c11edf1005c13fd0c885cb33085c6ce9，见 g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json。只能说明 Cout 72 颗脚号/网络匹配，不代表其他 77 个器件都已配平。
 - 同版原生 DRC（g2_v9_schematic_cap72_native_drc.json）：Connection 170 / Netlist 1 / Physical 0；未解决 100 A VOUT/PGND 主铜路、磁件 24 物理 PAD/DOT、D0 保护及投板。保持 NOT_FOR_FAB。后续不再重复打开新的 EDA GUI 窗口。
 
+
+### G2 V9 真实 VOUT 变压器输出至 Cout 铜岛馈电试验（2026-11-12）
+
+- 以新 V9 已保存的双页原理图与 72 个真实 T530 PCB 器件为基准，原生 readback 显示 VOUT 分成两个独立实际铜岛：四个变压器 CTAP 裸物理焊盘所在的源铜岛，以及 72 个 Cout 正极和负载输出端所在的阵列铜岛。直接基于 V9 443 焊盘 / 403 铜线 / 90 孔原生数据预扫对异网的几何间隙，沿 x=37、75、151 mm、y=20→94 mm 在底层布三条 1.6mm 铜线，并在三个 CTAP 源头放置直径 1.0mm / 钻孔 0.4mm 金属化孔；x=113mm 路径因异网 pad/trace 撞线未写入。plan: g2_v9_vout_source_bottom_feeder_plan_NOT_FOR_FAB.json。操作全部使用持续可见的 V9 原生编辑器窗口，没有新开、关闭或重启 EDA GUI。
+- 本次 native PCB API 实际创建 3 个过孔和 3 条馈线（原生重合线自动拆段，实际总线数 403→407、过孔 90→93），pcb_Document.save() 返回 true，并经原生 PCB 再读回确认 149 器件 / 443 焊盘 / 407 线 / 93 孔 / 65 网；VOUT 的**源 CTAP 与 Cout 正极不再分离**，实际铜岛几何筛查由 2→1。同一文件真实 EDA DRC Connection 170→168、Netlist 1、Physical 0，见 g2_v9_vout_source_bottom_feeder_verified_NOT_FOR_FAB.json，最新 V9 源 SHA256 d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2。
+- **必须严守功率额定界限**：这三条 1.6mm PCB 铜线、3 个 0.4mm 钻孔过孔和既有 1.6mm Cout 收集母线仅证明实际连通，*绝不等于 100A 电流容量*，不存在温升、via 金属孔壁、并联均流、板厚铜厚/环境温度、金属接触/螺栓孔、底层叠层绝缘验证，不能发布制造 Gerber。剩余 PGND 仍有 39 个独立几何铜岛，多条逻辑网仍开路。继续需要重新设计 VOUT/PGND 两极成体系的实质载流铜结构；当前保持 NOT_FOR_FAB，不为形式 DRC 数字宣称完成。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
