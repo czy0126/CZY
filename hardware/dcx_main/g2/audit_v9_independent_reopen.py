@@ -27,8 +27,8 @@ import route_open_connections as ROUTE
 
 D = V9.D
 SOURCE = V9.V9
-EVIDENCE = HERE / "g2_v9_independent_gui_reopen_verified_NOT_FOR_FAB.json"
-ATTEMPT = HERE / "g2_v9_independent_gui_reopen_attempt_NOT_FOR_FAB.json"
+EVIDENCE = HERE / "g2_v9_independent_gui_reopen_v2_verified_NOT_FOR_FAB.json"
+ATTEMPT = HERE / "g2_v9_independent_gui_reopen_v2_attempt_NOT_FOR_FAB.json"
 CAP_COUNTS = {"components": 149, "pads": 443, "lines": 407, "vias": 93, "nets": 65}
 DRC_COUNTS = {"Connection Error": 168, "Netlist Error": 1}
 
@@ -77,7 +77,10 @@ def run() -> dict:
     original = validate_saved_source()
     before = D.call([str(D.LEDA), "session", "list"], timeout_s=20)
     required(before, "list pre-existing GUI sessions")
-    scratch = Path(tempfile.mkdtemp(prefix="czy_v9_readonly_reopen_", dir=str(HERE)))
+    # Fresh scratch OUTSIDE git worktree: a closed native GUI can temporarily
+    # retain a Windows file lock, so cleanup may safely fail without adding
+    # an untracked 3MB .eprj2 to the engineering repository.
+    scratch = Path(tempfile.mkdtemp(prefix="czy_v9_readonly_reopen_v2_", dir=str(ROOT.parent)))
     target = scratch / SOURCE.name  # filename must be identical for project name
     shutil.copy2(SOURCE, target)
     if V9.sha(target) != original:
@@ -144,17 +147,29 @@ def run() -> dict:
         if len(vout) != 1 or not any("RAW.CTAP" in x["pads"] and
                                       "CHB01.1" in x["pads"] for x in vout):
             raise RuntimeError("Saved VOUT source-to-cap bank physical copper not joined")
-        sch_value = required(invoke(sid, SCH.js_verify(page_id)), "read saved Cout72 schematic")
-        if (sch_value.get("count") != 72 or sch_value.get("wires") != 144
-            or sch_value.get("physical_component_ref_count") != 72
-            or sch_value.get("issues")):
-            raise RuntimeError("Reopened schematic Cout72 pin/wire parity failed")
+        # V1 ran SCH verification *before* DRC; the subsequent SCH->PCB
+        # context switch failed its independent DRC invoke. Keep PCB active
+        # for DRC first, recording the native reply status even on failure.
+        result.update({"native_counts": sizes,
+                       "native_capacitor_instances_and_144_pins_verified": True,
+                       "vout_and_pgnd_copper_islands": count,
+                       "vout_ctap_and_cout_saved_copper_joined": True})
         drc = invoke(sid, D.JS.read_text(encoding="utf-8"))
+        result["native_drc_invocation"] = {
+            "ok": drc.get("ok") is True,
+            "error": drc.get("error"),
+            "duration_ms": drc.get("durationMs")}
         parsed = ROUTE.categories(drc)
         if any(parsed.get(k) != v for k, v in DRC_COUNTS.items()):
             raise RuntimeError(f"Saved native DRC changed {parsed}")
         if any(v for k, v in parsed.items() if k == "Physical Error"):
             raise RuntimeError("Native physical DRC is not zero")
+        result["native_drc"] = parsed
+        sch_value = required(invoke(sid, SCH.js_verify(page_id)), "read saved Cout72 schematic")
+        if (sch_value.get("count") != 72 or sch_value.get("wires") != 144
+            or sch_value.get("physical_component_ref_count") != 72
+            or sch_value.get("issues")):
+            raise RuntimeError("Reopened schematic Cout72 pin/wire parity failed")
         result.update({
             "status": "INDEPENDENT_NATIVE_GUI_REOPEN_VERIFIED_NOT_FOR_FAB",
             "native_counts": sizes,

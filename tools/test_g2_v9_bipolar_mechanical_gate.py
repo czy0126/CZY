@@ -108,3 +108,25 @@ def test_original_visible_v9_native_drc_readonly_returns_168_and_netlist_one():
     assert r["response"]["ok"] is True
     assert ROUTE.categories(r["response"])=={"Connection Error":168,"Netlist Error":1}
     assert r["fab_approved"] is False
+
+
+def test_new_independent_reopen_v2_really_reads_native_drc_and_schematic():
+    r=json.loads((G2/"g2_v9_independent_gui_reopen_v2_verified_NOT_FOR_FAB.json")
+                 .read_text("utf8"))
+    attempt=json.loads((G2/"g2_v9_independent_gui_reopen_v2_attempt_NOT_FOR_FAB.json")
+                       .read_text("utf8"))
+    assert r["status"]=="INDEPENDENT_NATIVE_GUI_REOPEN_VERIFIED_NOT_FOR_FAB"
+    assert r["source_sha256"]==r["source_sha256_after"]==G.V9.sha(G.V9.V9)
+    assert r["native_saved_source_unchanged"] is True
+    assert r["copy_unchanged"] is True
+    assert r["other_gui_preserved"] is True
+    assert r["new_verification_gui_closed"] is True
+    assert r["native_counts"]=={"components":149,"pads":443,"lines":407,"vias":93,"nets":65}
+    assert r["native_capacitor_instances_and_144_pins_verified"] is True
+    assert r["native_schematic_72_symbols_144_wires_verified"] is True
+    assert r["native_pcb_schematic_cout72_pin_parity"] is True
+    assert r["vout_ctap_and_cout_saved_copper_joined"] is True
+    assert r["native_drc_invocation"]["ok"] is True
+    assert r["native_drc"]=={"Connection Error":168,"Netlist Error":1}
+    assert r["fabrication_approved"] is False and r["100A_qualified"] is False
+    assert attempt["preexisting_visible_sessions"]>=3

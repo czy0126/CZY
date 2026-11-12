@@ -479,6 +479,7 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 
 - `audit_v9_independent_reopen.py` 使用**已保存 V9 的独立逐字节副本**，在另一个可见 GUI 会话只读打开，逐项核查 149/443/407/93/65、72颗 CHB01–72 真实封装脚1=VOUT/脚2=PGND、COUT_T530_72 原理图72件/144线、实际 VOUT CTAP+电容一铜岛；相关检查已经运行，但该次**独立会话的原生DRC读取失败**，回执 `g2_v9_independent_gui_reopen_verified_NOT_FOR_FAB.json` 必须保留 `INDEPENDENT_REOPEN_NOT_VERIFIED_NOT_FOR_FAB`，绝不可当全部通过。原始V9和V8字节、原有V5/V8/V9三个可见窗口均保持不变；仅新增验证会话已关闭。失败的副本不能再次作为单步施工目标。
 - 使用既有 V9 可见会话原生 API 对同一保存文件重新执行只读 DRC，得 **Connection 168 / Netlist 1**，来源 SHA 未变，原始原生DRC回执 `g2_v9_live_drc_readonly_followup_NOT_FOR_FAB.json`。此结果证明该原工程编辑器DRC可以运行，**不能**弥补独立会话DRC失败，也不证明整板无断线。保存的 native PCB 读取 `g2_v9_live_native_full_readback_20261112_NOT_FOR_FAB.json` 用于100A铜排机械覆叠而非额定证明。
+- **第二次独立新副本真正完成所有只读验收**：针对首次失败时先切到 SCH 再切回 PCB 运行 DRC 的顺序，V2 改为**原生 PCB 图元→DRC→72颗原理图**，所有 API 调用成功。唯一新会话实际 readback **149/443/407/93/65**、72颗原生PIN1/PIN2 与一份COUT_T530_72第二页72器件/144线、VOUT一个铜岛，**原生DRC在独立会话返回168 Connection/1 Netlist**（调用耗时13.672s）。SHA前后完全一致，旧三GUI仍alive，新验证GUI已关闭，`g2_v9_independent_gui_reopen_v2_verified_NOT_FOR_FAB.json` 的状态是 `INDEPENDENT_NATIVE_GUI_REOPEN_VERIFIED_NOT_FOR_FAB`。历史V1失败回执保持原样不可覆盖。V2只证明可独立重开和当前DRC可执行，**168/1不合格、无100A资格**。
 - 原生两焊盘 `.efoo` 与 CAP `.esym` 在默认 Windows `core.autocrlf` 下会变为CRLF而不改变电路图元；`-text` Git属性和 LF 正规化SHA 校验解决平台误报，但真正内容篡改仍然触发失败。完整72颗的原生器件与原理图已存在，不应再重复添加，未闭合的是其他原理图/PCB网表和真正100A双极实体载流连接。保持 `NOT_FOR_FAB`。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
