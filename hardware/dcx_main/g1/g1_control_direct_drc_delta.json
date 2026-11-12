@@ -1,0 +1,23 @@
+{
+  "status": "ACTUAL_G1_DIRECT_COPPER_DRC_IMPROVED_NOT_FOR_FAB",
+  "source_sha256": "59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0",
+  "candidate_sha256": "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1",
+  "candidate_drc_sha256": "93114dbf7b3c1313bba56d78cebca81600d6d52f4f14efc6957c0a2a91c9a1dc",
+  "workstation_raw_drc_sha256": "9384d9ad34b7c4f0d0ce601ed1b6f39108b584d2d5c7ddd2d52683728d3caae9",
+  "native_before_drc": {
+    "Connection Error": 183,
+    "Netlist Error": 1
+  },
+  "native_after_drc": {
+    "Connection Error": 173,
+    "Netlist Error": 1
+  },
+  "real_connection_errors_removed": 10,
+  "native_saved_reopened": true,
+  "number_of_direct_pad_pairs": 6,
+  "beta_autorouter_used": false,
+  "100a_two_pole_copper_qualified": false,
+  "magnet_terminals_qualified": false,
+  "real_72_part_Cout_qualified": false,
+  "fabrication_approved": false
+}

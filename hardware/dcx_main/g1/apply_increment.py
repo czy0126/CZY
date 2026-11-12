@@ -80,6 +80,20 @@ def apply(plan, source: Path, prefix: str) -> int:
         print(json.dumps({"ok": False, "why": "the parent candidate changed"}, ensure_ascii=False))
         return 1
 
+    return verify_existing(plan, source, prefix)
+
+
+def verify_existing(plan, source: Path, prefix: str) -> int:
+    """Read-only native reopen/verification of an already saved candidate.
+
+    Recovery does not repeat any PrimitiveLine.create calls or overwrite the PCB.
+    A prior save response alone never counts as validated copper.
+    """
+    target = HERE / plan.CANDIDATE
+    if not target.is_file():
+        raise FileNotFoundError("No saved candidate to verify: " + str(target))
+    before_source = D.md5(source)
+    before_target = D.md5(target)
     session = open_and_ping(target, prefix, "reopen")
     if not session:
         return 1
@@ -89,6 +103,8 @@ def apply(plan, source: Path, prefix: str) -> int:
         dump(prefix, "reopen_close", D.call(D.build_close_args(session)))
     plan.READBACK_OUT.write_text(json.dumps(readback, ensure_ascii=False, indent=2),
                                  encoding="utf-8")
+    if D.md5(source) != before_source or D.md5(target) != before_target:
+        raise ValueError("Native verification unexpectedly changed a PCB")
     rb = readback.get("value") or {}
     print(json.dumps({"readback_ok": readback.get("ok"),
                       "components": len(rb.get("components") or []),

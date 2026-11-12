@@ -125,3 +125,57 @@ def test_old_beta_autoroute_apply_entry_is_explicitly_disabled(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["apply_g1_control_autoroute.py", "--apply"])
     with pytest.raises(SystemExit, match="DEPRECATED: beta autoRouting"):
         obsolete.main()
+
+
+def test_drc_receipt_hash_survives_git_crlf_to_lf_normalization(tmp_path):
+    raw = tmp_path / "native.json"
+    raw.write_bytes(b'{"ok": true,\r\n"value": []}\r\n')
+    source_hash = A.sha(raw)
+    canonical_hash = A.sha_repo_text(raw)
+    raw.write_bytes(raw.read_bytes().replace(b"\r\n", b"\n"))
+    assert A.sha(raw) == canonical_hash
+    assert A.sha_repo_text(raw) == canonical_hash
+    assert source_hash != canonical_hash
+
+
+def test_recovery_checks_saved_receipt_without_repeating_native_copper(tmp_path, monkeypatch):
+    target = tmp_path / "already_saved.eprj2"
+    target.write_bytes(b"previous native save must not be overwritten")
+    original = target.read_bytes()
+    receipt = tmp_path / "apply.json"
+    receipt.write_text(json.dumps({
+        "ok": True, "value": {
+            "saved": True, "created": [None] * 17, "failed": [],
+            "viasCreated": [], "lines": 149
+        }
+    }))
+    monkeypatch.setattr(A, "TARGET", target)
+    monkeypatch.setattr(A, "APPLY_RECEIPT", receipt)
+    verified = []
+    monkeypatch.setattr(A.E, "verify_existing",
+                        lambda module, source, prefix: verified.append((module, source, prefix)) or 0)
+    monkeypatch.setattr(A, "verify_native_drc", lambda: 0)
+    assert A.resume() == 0
+    assert verified == [(P, P.SOURCE, A.PREFIX)]
+    assert target.read_bytes() == original
+    with pytest.raises(FileExistsError, match="Refusing to overwrite"):
+        A.apply()
+    assert target.read_bytes() == original
+
+    failed = json.loads(receipt.read_text())
+    failed["value"]["saved"] = False
+    receipt.write_text(json.dumps(failed))
+    with pytest.raises(ValueError, match="receipt missing or invalid"):
+        A.resume()
+    assert len(verified) == 1
+    assert target.read_bytes() == original
+
+
+def test_recovery_does_not_accept_an_unmodified_or_missing_native_candidate(tmp_path, monkeypatch):
+    target = tmp_path / "never_routed.eprj2"
+    monkeypatch.setattr(A, "TARGET", target)
+    with pytest.raises(ValueError, match="No modified saved native candidate"):
+        A.resume()
+    target.write_bytes(P.SOURCE.read_bytes())
+    with pytest.raises(ValueError, match="No modified saved native candidate"):
+        A.resume()
