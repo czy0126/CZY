@@ -1,0 +1,505 @@
+{
+  "schema": "NATIVE_OEM_G2_COPPER_ISLAND_BASELINE_V2_V1",
+  "status": "GENUINE_173_OPEN_NATIVE_CAD_GRAPH_SCREEN_NOT_FOR_FAB",
+  "source_native_16x5_eprj2_sha256": "be764dcc89b5317a5739c1910dc038f89959c7bb0201b72e0d5c0812e2dbf1e9",
+  "source_native_readback_canonical_lf_sha256": "7f69c616f7348732a7215d31ca4970e96ce9a4c78b1b2a3d2582ec82f568657e",
+  "native_drc": {
+    "Connection Error": 173,
+    "Netlist Error": 1
+  },
+  "independent_topological_screen_not_a_DRC_substitute": true,
+  "geometry_pad_bbox_may_overconnect_rotated_and_circular_pads": true,
+  "physical_island_candidates_not_native_DRC_fixes": [
+    {
+      "net": "VCC12_S",
+      "start": "C111.1",
+      "end": "C112.1",
+      "physically_distinct_source_copper_islands": true,
+      "native_link_routed_and_DRC_improved": false
+    },
+    {
+      "net": "OCM",
+      "start": "R17.2",
+      "end": "C11.2",
+      "physically_distinct_source_copper_islands": true,
+      "native_link_routed_and_DRC_improved": false
+    }
+  ],
+  "true_72_component_instances_and_schematic_parity": false,
+  "100A_or_fabrication_approved": false,
+  "per_control_net": {
+    "GD1": {
+      "island_count_geometry_screen": 3,
+      "native_pad_count": 3,
+      "all_objects": 3,
+      "islands": [
+        {
+          "pads": [
+            "U2.7"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            55.499,
+            62.499
+          ],
+          "identity_tag": "6fd9e6ccf34154"
+        },
+        {
+          "pads": [
+            "R9.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            59.245,
+            67.0
+          ],
+          "identity_tag": "f71a1b68ed0464"
+        },
+        {
+          "pads": [
+            "U1.8"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            110.094,
+            42.296
+          ],
+          "identity_tag": "dcb497d8ee57bf"
+        }
+      ]
+    },
+    "GD2": {
+      "island_count_geometry_screen": 3,
+      "native_pad_count": 3,
+      "all_objects": 3,
+      "islands": [
+        {
+          "pads": [
+            "U2.8"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            55.499,
+            61.999
+          ],
+          "identity_tag": "da17e7c0583725"
+        },
+        {
+          "pads": [
+            "R10.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            59.245,
+            65.001
+          ],
+          "identity_tag": "acdbb2ae0a9f9b"
+        },
+        {
+          "pads": [
+            "U1.5"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            113.904,
+            42.296
+          ],
+          "identity_tag": "7f3a58075549f6"
+        }
+      ]
+    },
+    "OC": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 4,
+      "all_objects": 8,
+      "islands": [
+        {
+          "pads": [
+            "R16.2",
+            "R17.1",
+            "U1.3"
+          ],
+          "copper_tracks": 4,
+          "vias": 0,
+          "all_objects": 7,
+          "anchor_mm": [
+            112.634,
+            47.706
+          ],
+          "identity_tag": "a1fee1624b5e0f"
+        },
+        {
+          "pads": [
+            "C12.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            147.3,
+            62.4
+          ],
+          "identity_tag": "bdb8d59780876e"
+        }
+      ]
+    },
+    "OCD": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 4,
+      "all_objects": 11,
+      "islands": [
+        {
+          "pads": [
+            "D_CT1.3",
+            "D_CT2.3",
+            "R3.1"
+          ],
+          "copper_tracks": 7,
+          "vias": 0,
+          "all_objects": 10,
+          "anchor_mm": [
+            76.246,
+            62.4
+          ],
+          "identity_tag": "64b0f3b69a9fd0"
+        },
+        {
+          "pads": [
+            "R15.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            131.247,
+            62.4
+          ],
+          "identity_tag": "a29d009f89478f"
+        }
+      ]
+    },
+    "OCM": {
+      "island_count_geometry_screen": 3,
+      "native_pad_count": 6,
+      "all_objects": 13,
+      "islands": [
+        {
+          "pads": [
+            "D_CT3.1",
+            "D_CT4.1",
+            "R17.2"
+          ],
+          "copper_tracks": 4,
+          "vias": 0,
+          "all_objects": 7,
+          "anchor_mm": [
+            121.001,
+            70.95
+          ],
+          "identity_tag": "bf8dfbe1c5c992"
+        },
+        {
+          "pads": [
+            "C11.2",
+            "C12.2"
+          ],
+          "copper_tracks": 3,
+          "vias": 0,
+          "all_objects": 5,
+          "anchor_mm": [
+            144.701,
+            61.9
+          ],
+          "identity_tag": "afeffac79f64d7"
+        },
+        {
+          "pads": [
+            "R3.2"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            77.754,
+            62.4
+          ],
+          "identity_tag": "111e096f237b83"
+        }
+      ]
+    },
+    "REG1": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 2,
+      "all_objects": 2,
+      "islands": [
+        {
+          "pads": [
+            "U3.3"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            19.634,
+            74.6
+          ],
+          "identity_tag": "40672035765a3d"
+        },
+        {
+          "pads": [
+            "C7.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            77.899,
+            43.0
+          ],
+          "identity_tag": "0f53a1f718b452"
+        }
+      ]
+    },
+    "REG2": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 2,
+      "all_objects": 2,
+      "islands": [
+        {
+          "pads": [
+            "U4.3"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            57.635,
+            74.6
+          ],
+          "identity_tag": "cd7a42cca8fa97"
+        },
+        {
+          "pads": [
+            "C8.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            82.499,
+            43.0
+          ],
+          "identity_tag": "29059475230c80"
+        }
+      ]
+    },
+    "REG3": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 2,
+      "all_objects": 2,
+      "islands": [
+        {
+          "pads": [
+            "C9.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            87.099,
+            43.0
+          ],
+          "identity_tag": "c56a49f17e2336"
+        },
+        {
+          "pads": [
+            "U5.3"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            95.636,
+            74.6
+          ],
+          "identity_tag": "eaddbd742bc153"
+        }
+      ]
+    },
+    "REG4": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 2,
+      "all_objects": 2,
+      "islands": [
+        {
+          "pads": [
+            "C10.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            4.3,
+            43.0
+          ],
+          "identity_tag": "93338740fe94c3"
+        },
+        {
+          "pads": [
+            "U6.3"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            133.634,
+            74.6
+          ],
+          "identity_tag": "ebee8ac524e387"
+        }
+      ]
+    },
+    "VCC12": {
+      "island_count_geometry_screen": 2,
+      "native_pad_count": 7,
+      "all_objects": 23,
+      "islands": [
+        {
+          "pads": [
+            "C101.1",
+            "C103.1",
+            "C104.1",
+            "D_BT.2",
+            "U2.1"
+          ],
+          "copper_tracks": 11,
+          "vias": 4,
+          "all_objects": 20,
+          "anchor_mm": [
+            48.174,
+            61.999
+          ],
+          "identity_tag": "413f30efdcc832"
+        },
+        {
+          "pads": [
+            "C102.1",
+            "U1.7"
+          ],
+          "copper_tracks": 1,
+          "vias": 0,
+          "all_objects": 3,
+          "anchor_mm": [
+            110.299,
+            40.0
+          ],
+          "identity_tag": "c2d0e71b50a45a"
+        }
+      ]
+    },
+    "VCC12_S": {
+      "island_count_geometry_screen": 6,
+      "native_pad_count": 12,
+      "all_objects": 23,
+      "islands": [
+        {
+          "pads": [
+            "C109.1",
+            "C110.1",
+            "C111.1"
+          ],
+          "copper_tracks": 5,
+          "vias": 0,
+          "all_objects": 8,
+          "anchor_mm": [
+            45.7,
+            43.0
+          ],
+          "identity_tag": "a9088dbf6c629c"
+        },
+        {
+          "pads": [
+            "C106.1",
+            "U4.7"
+          ],
+          "copper_tracks": 3,
+          "vias": 0,
+          "all_objects": 5,
+          "anchor_mm": [
+            53.299,
+            67.0
+          ],
+          "identity_tag": "94474f947b4e69"
+        },
+        {
+          "pads": [
+            "C105.1",
+            "U3.7"
+          ],
+          "copper_tracks": 1,
+          "vias": 0,
+          "all_objects": 3,
+          "anchor_mm": [
+            17.3,
+            67.0
+          ],
+          "identity_tag": "2213343bbe13e1"
+        },
+        {
+          "pads": [
+            "C107.1",
+            "U5.7"
+          ],
+          "copper_tracks": 1,
+          "vias": 0,
+          "all_objects": 3,
+          "anchor_mm": [
+            93.299,
+            67.0
+          ],
+          "identity_tag": "6a4be434b8dfe8"
+        },
+        {
+          "pads": [
+            "C108.1",
+            "U6.7"
+          ],
+          "copper_tracks": 1,
+          "vias": 0,
+          "all_objects": 3,
+          "anchor_mm": [
+            131.3,
+            67.0
+          ],
+          "identity_tag": "cb9e2fd6029151"
+        },
+        {
+          "pads": [
+            "C112.1"
+          ],
+          "copper_tracks": 0,
+          "vias": 0,
+          "all_objects": 1,
+          "anchor_mm": [
+            59.499,
+            43.0
+          ],
+          "identity_tag": "73eec0ba1f7468"
+        }
+      ]
+    }
+  },
+  "next": "Use actual distinct copper islands for any new physical native routes, require GUI save/re-open and true decreasing native DRC"
+}
