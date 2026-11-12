@@ -433,7 +433,9 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - 下一单独控制网候选 `route_t530_oem_v6_ocm_one_real_island_join.py --check`：V5 实际读回中 `OCM R17.2` 与 `C11.2` 位于不同铜岛；0.15 mm 顶层三段走线在 y=63.4 mm 的预扫描中未发现异网/磁芯区域冲突。**此时只是几何计划，不等于已保存的 PCB 铜线。**
 - 首次 V6 `--apply` 取得原生 open/ping，但写入时返回 `REQUEST_TIMEOUT`（59750 ms）。该次实际候选路径与 V5 父文件在异常后 **SHA256 相同** (`6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863`)，未得到可核验的保存新铜或原生 DRC 下降。其日志回执应保留，**V6 副本绝不再次执行 `--apply`**；如果主进程仍卡死，先核实 render 是否健康，修复进程状态后从冻结 V5 建立**另一个全新路径**的后续试验。
 - 代码已补 `open_board` **真实 readback API 探活**（而非只信 `return 1;`），并核对打开板的 77/443/400/90/65 件/焊盘/线/孔/网计数；真实 API 超时/对象数漂移即拒绝任何写入。未来任一后续批次仍需原生保存→防抖落盘→关闭→只读重开→已验证铜面连续→真实 DRC Connection 下降且 Physical 不增加，不能把独立几何筛查替代 EDA 或制造签核。
-- 仍未取得 72 颗正式原理图/封装的同版匹配、100 A 双极母线和端子、五磁件供应商 24 个 PAD/DOT、D0 十路实物失电与故障保护；V5/V6 一律 `NOT_FOR_FAB`。
+- **V7 独立恢复实验实测**：通过 `lceda-pro session list` 核实仅有已关闭的 headless 会话，`lceda-pro stop` 成功，然后用唯一未覆盖的 V7 路径从相同冻结 V5 复制。重启后的新 renderId=1，open 14.097s、ping 2ms **成功**；紧随其后的真实 native readback probe 再次 `REQUEST_TIMEOUT` 59750ms。增强守卫生效，没有创建新铜或调用保存，V7 副本和 V5 父 SHA256 依然相同。原始 open/ping/probe/close 与源锁定 route_plan 均在 `hardware/dcx_main/g2/g2_t530_oem_v7_ocm_r17_c11_*`。不能再对同一 V7 运行 `--apply`。
+- **停止无效重试的条件**：V6 写入超时，V7 重启后的首次真实只读 API 同样超时，证明根因尚未解决。恢复下一阶段先独立验证：已打开 PCB document、真实 API 最小只读请求在正常时限内完成、完整 77/443/400/90/65 readback、GUI 端无挂起 render/模态对话框，然后**再**生成唯一新副本。未取得这四项不得反复 V8/V9 或降低 DRC/安全门槛。
+- 仍未取得 72 颗正式原理图/封装的同版匹配、100 A 双极母线和端子、五磁件供应商 24 个 PAD/DOT、D0 十路实物失电与故障保护；V5/V6/V7 一律 `NOT_FOR_FAB`。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 

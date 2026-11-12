@@ -1,0 +1,79 @@
+{
+  "schema": "D1_G2_NATIVE_V6_REAL_OCM_SINGLE_COPPER_ISLAND_JOIN",
+  "source_eprj2_sha256": "6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863",
+  "source_native_readback_canonical_lf_sha256": "03d91cd04bbc197167b2772de91446d3c34680b41bda60a38638cbf800a724dd",
+  "native_drc_before": {
+    "Connection Error": 172,
+    "Netlist Error": 1
+  },
+  "path": {
+    "net": "OCM",
+    "start": "R17.2",
+    "end": "C11.2",
+    "path_mm": [
+      [
+        140.7541,
+        62.40017999999999
+      ],
+      [
+        140.7541,
+        63.4
+      ],
+      [
+        144.70126,
+        63.4
+      ],
+      [
+        144.70126,
+        62.40017999999999
+      ]
+    ],
+    "source_copper_islands_distinct": true
+  },
+  "tracks": [
+    {
+      "net": "OCM",
+      "layer": 1,
+      "a_mm": [
+        140.7541,
+        62.4002
+      ],
+      "b_mm": [
+        140.7541,
+        63.4
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "net": "OCM",
+      "layer": 1,
+      "a_mm": [
+        140.7541,
+        63.4
+      ],
+      "b_mm": [
+        144.7013,
+        63.4
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "net": "OCM",
+      "layer": 1,
+      "a_mm": [
+        144.7013,
+        63.4
+      ],
+      "b_mm": [
+        144.7013,
+        62.4002
+      ],
+      "width_mm": 0.15
+    }
+  ],
+  "preflight_problems": [],
+  "high_current_and_sense_nets_untouched": true,
+  "oem_72_components_schematic_parity_verified": false,
+  "100A_power_copper_qualified": false,
+  "manufacturing_approved": false
+}
