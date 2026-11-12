@@ -1,0 +1,24 @@
+{
+  "status": "REAL_G2_OEM_DENSITY_B_LOCAL_COLUMN_NATIVE_REOPEN_DRC_NOT_FOR_FAB",
+  "parent_sha256": "d04d1d6750df9bfd1f5b76735d0a530f82d4503422caf21aa0fa39e73ddf7f70",
+  "candidate_sha256": "ff0c849ce8c46b8c95006b7300375a5e6eeb6766ef6d0b94cec05305bc06948b",
+  "plan_sha256": "a3daa461d1fab58f7e611df1388c6f4e2b7fa95032eac50bdfa8277591f8ad78",
+  "previous_native_drc": {
+    "Connection Error": 321,
+    "Netlist Error": 1
+  },
+  "actual_native_drc": {
+    "Connection Error": 223,
+    "Netlist Error": 1
+  },
+  "readback": {
+    "old_149_tracks_preserved": true,
+    "new_actual_top_copper_segments": 112,
+    "real_pad_count": 443,
+    "component_count": 77,
+    "all_112_real_pad_pairs_covered": true
+  },
+  "both_pole_bar_connected": false,
+  "true_oem_cout_component_instances": false,
+  "manufacturing_approved": false
+}

@@ -1,0 +1,22 @@
+{
+  "status": "REAL_144_OEM_DIMENSIONED_PROVISIONAL_NATIVE_PAD_CAD_NOT_FOR_FAB",
+  "source_sha256": "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1",
+  "candidate_sha256": "d04d1d6750df9bfd1f5b76735d0a530f82d4503422caf21aa0fa39e73ddf7f70",
+  "plan_sha256": "4f09fc331a7d899877730af780b48dfcba29a3d6b18ff015a88285de4032f3f2",
+  "native_drc": {
+    "Connection Error": 321,
+    "Netlist Error": 1
+  },
+  "readback": {
+    "original_77_components_149_lines_18_vias_65_nets_299_pads_preserved": true,
+    "new_144_netted_manufacturer_nominal_lands": 144,
+    "true_72_component_instances_added": 0,
+    "real_schematic_parity_qualified": false,
+    "manufacturer_nominal_courtyard_grid_screened": true,
+    "fabrication_approved": false
+  },
+  "real_72_schematic_component_instances": false,
+  "manufacturer_official_land_dimensions_met": true,
+  "real_100A_both_pole_copper_qualified": false,
+  "fabrication_approved": false
+}
