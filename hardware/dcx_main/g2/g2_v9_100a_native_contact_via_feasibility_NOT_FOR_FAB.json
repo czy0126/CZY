@@ -1,0 +1,410 @@
+{
+  "schema": "G2_V9_REAL_CAD_100A_ELECTRICAL_CONTACT_FEASIBILITY_V1",
+  "status": "NATIVE_VIA_ONLY_REJECTED_REDESIGN_POWER_CONNECTIONS",
+  "source_native_sha256": "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2",
+  "source_counts": {
+    "components": 149,
+    "pads": 443,
+    "lines": 407,
+    "vias": 93,
+    "nets": 65
+  },
+  "legacy_bars_2d_only_not_actual_bolted_or_soldered_contacts": true,
+  "via_OD_mm": 1.0,
+  "via_drill_mm": 0.4,
+  "assumed_via_plating_mm": 0.025,
+  "source_search_radius_mm": 5.0,
+  "pitch_mm": 1.6,
+  "unlike_net_clearance_screen_mm": 0.3,
+  "hypothetical_100C_via_only_loss_budget_per_pole_W": 0.2,
+  "per_source_required_sites_computed_from_loss_and_equal_currents_not_ampacity_standard": true,
+  "screen_assumes_perfect_existing_top_copper_via_contact": true,
+  "input_PAD_bbox_screen_conservative_for_rotated_shapes": true,
+  "P0_redesign_options": [
+    "Vendor-confirmed through-board copper pillar/coin with current-rated solder/weld interface, linked to native magnetic winding terminals",
+    "Separate top-side plated copper power plate/straps with independent isolation and adjusted <=16mm core/board/coldplate package",
+    "Thick-copper or embedded metal bus with source/output via geometry fully re-architected and validated by native DRC+manufacturer stackup"
+  ],
+  "requires_vendor_DFM_for_drill_copper_fill_solder_wicking_insulation": true,
+  "requires_full_3D_mechanical_and_thermal_FE_analysis": true,
+  "rated_100A_measured": false,
+  "PCB_changed": false,
+  "fabrication_approved": false,
+  "results": {
+    "VOUT": {
+      "anchors": [
+        {
+          "source": "CTAP1",
+          "native_anchor_xy_mm": [
+            37.0,
+            20.0
+          ],
+          "potential_via_centers_mm": [
+            [
+              38.6,
+              20.0
+            ],
+            [
+              38.6,
+              21.6
+            ],
+            [
+              38.6,
+              23.2
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "CTAP2",
+          "native_anchor_xy_mm": [
+            75.001,
+            20.0
+          ],
+          "potential_via_centers_mm": [
+            [
+              76.601,
+              20.0
+            ],
+            [
+              76.601,
+              21.6
+            ],
+            [
+              76.601,
+              23.2
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "CTAP3",
+          "native_anchor_xy_mm": [
+            113.0,
+            20.0
+          ],
+          "potential_via_centers_mm": [
+            [
+              113.0,
+              20.0
+            ],
+            [
+              114.6,
+              20.0
+            ],
+            [
+              114.6,
+              21.6
+            ],
+            [
+              114.6,
+              23.2
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "CTAP4",
+          "native_anchor_xy_mm": [
+            151.0,
+            20.0
+          ],
+          "potential_via_centers_mm": [],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        }
+      ],
+      "hypothetical_per_source_current_A": 25.0,
+      "hypothetical_per_source_via_loss_budget_W": 0.05,
+      "minimum_100C_parallel_vias_per_source_arithmetic": 15,
+      "candidate_count": 10,
+      "target_contact_sites_for_one_hypothetical_via_strategy": 60,
+      "missing_candidate_sites": 50,
+      "each_source_has_target_count": false,
+      "feasible_via_only_under_current_top_copper": false,
+      "actual_pcb_vias_created": 0,
+      "actual_bar_to_board_conduction_proven": false,
+      "ideal_all_10_barrels_at_20C": {
+        "ohm": 8.78026e-05,
+        "100a_loss_w": 0.878,
+        "all_sources_share_current_evenly_assumption_only": true
+      },
+      "ideal_all_10_barrels_at_100C": {
+        "ohm": 0.0001154077,
+        "100a_loss_w": 1.1541,
+        "all_sources_share_current_evenly_assumption_only": true
+      }
+    },
+    "PGND": {
+      "anchors": [
+        {
+          "source": "SR1A",
+          "native_anchor_xy_mm": [
+            13.401,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              13.401,
+              84.47
+            ],
+            [
+              13.401,
+              86.07
+            ],
+            [
+              13.401,
+              87.67
+            ],
+            [
+              13.401,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR1B",
+          "native_anchor_xy_mm": [
+            23.401,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              21.801,
+              84.47
+            ],
+            [
+              23.401,
+              84.47
+            ],
+            [
+              23.401,
+              86.07
+            ],
+            [
+              23.401,
+              87.67
+            ],
+            [
+              23.401,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR2A",
+          "native_anchor_xy_mm": [
+            51.399,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              49.799,
+              84.47
+            ],
+            [
+              51.399,
+              84.47
+            ],
+            [
+              51.399,
+              86.07
+            ],
+            [
+              51.399,
+              87.67
+            ],
+            [
+              51.399,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR2B",
+          "native_anchor_xy_mm": [
+            61.399,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              59.799,
+              84.47
+            ],
+            [
+              61.399,
+              84.47
+            ],
+            [
+              61.399,
+              86.07
+            ],
+            [
+              61.399,
+              87.67
+            ],
+            [
+              61.399,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR3A",
+          "native_anchor_xy_mm": [
+            89.4,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              87.8,
+              84.47
+            ],
+            [
+              89.4,
+              84.47
+            ],
+            [
+              89.4,
+              86.07
+            ],
+            [
+              89.4,
+              87.67
+            ],
+            [
+              89.4,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR3B",
+          "native_anchor_xy_mm": [
+            99.4,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              97.8,
+              84.47
+            ],
+            [
+              99.4,
+              84.47
+            ],
+            [
+              99.4,
+              86.07
+            ],
+            [
+              99.4,
+              87.67
+            ],
+            [
+              99.4,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR4A",
+          "native_anchor_xy_mm": [
+            127.401,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              125.801,
+              84.47
+            ],
+            [
+              127.401,
+              84.47
+            ],
+            [
+              127.401,
+              86.07
+            ],
+            [
+              127.401,
+              87.67
+            ],
+            [
+              127.401,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        },
+        {
+          "source": "SR4B",
+          "native_anchor_xy_mm": [
+            137.401,
+            84.47
+          ],
+          "potential_via_centers_mm": [
+            [
+              135.801,
+              84.47
+            ],
+            [
+              137.401,
+              84.47
+            ],
+            [
+              137.401,
+              86.07
+            ],
+            [
+              137.401,
+              87.67
+            ],
+            [
+              137.401,
+              89.27
+            ]
+          ],
+          "native_top_copper_contact_screened": true,
+          "factory_plated_or_bar_attached": false
+        }
+      ],
+      "hypothetical_per_source_current_A": 12.5,
+      "hypothetical_per_source_via_loss_budget_W": 0.025,
+      "minimum_100C_parallel_vias_per_source_arithmetic": 8,
+      "candidate_count": 39,
+      "target_contact_sites_for_one_hypothetical_via_strategy": 64,
+      "missing_candidate_sites": 25,
+      "each_source_has_target_count": false,
+      "feasible_via_only_under_current_top_copper": false,
+      "actual_pcb_vias_created": 0,
+      "actual_bar_to_board_conduction_proven": false,
+      "ideal_all_39_barrels_at_20C": {
+        "ohm": 2.25135e-05,
+        "100a_loss_w": 0.2251,
+        "all_sources_share_current_evenly_assumption_only": true
+      },
+      "ideal_all_39_barrels_at_100C": {
+        "ohm": 2.95917e-05,
+        "100a_loss_w": 0.2959,
+        "all_sources_share_current_evenly_assumption_only": true
+      }
+    }
+  }
+}

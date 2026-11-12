@@ -1,0 +1,239 @@
+{
+  "schema": "D1_100A_BIPOLAR_EMBEDDED_COPPER_COIN_VENDOR_ENGINEERING_REQUEST_V1",
+  "package_state": "FOR_VENDOR_DESIGN_AND_DFM_QUOTE_NOT_FOR_FAB",
+  "native_parent_board": "G2_V9_REAL_72_DEVICE",
+  "native_board_sha256": "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2",
+  "project": "48V_to_2V_fixed_ratio_D1",
+  "electrical_target": {
+    "vin_nominal_V": 48,
+    "vout_nominal_V": 2,
+    "continuous_output_total_A": 100,
+    "vout_and_return_poles": [
+      "VOUT",
+      "PGND"
+    ],
+    "ideal_transformer_CTAP_branch_A": 25,
+    "ideal_synchronous_rectifier_branch_A": 12.5,
+    "equal_current_sharing_NOT_YET_PROVEN": true,
+    "allowed_interconnect_hotspot_K": "VENDOR_PROPOSE_AND_MEASURE",
+    "metal_contact_four_wire_microohm": "VENDOR_SPECIFY_AND_MEASURE",
+    "current_derating_high_ambient": "VENDOR_SPECIFY"
+  },
+  "mechanical_target": {
+    "board_XY_nominal_mm": [
+      155,
+      131
+    ],
+    "board_outline_independently_measured": false,
+    "complete_assembly_height_limit_mm": 16.0,
+    "bare_1p2mm_bar_old_trial_height_without_TIM_clamp_mm": 15.45,
+    "old_trial_with_assumed_TIM_clamp_and_tolerance_mm": 16.45,
+    "old_trial_exceeds_height": true,
+    "interface_to_cold_plate_and_clamping": "VENDOR_CO_DESIGN_REQUIRED",
+    "actual_magnetics_terminal_3D_and_DOT": "NOT_SIGNED",
+    "top_to_bottom_contact_method": "VENDOR_PROPOSE_EMBEDDED_COIN_OR_COPPER_PILLAR",
+    "fastener_location_and_thread": "NOT_DESIGNED_MUST_AVOID_NATIVE_COPPER",
+    "insulation_dielectric_and_creepage": "NOT_QUALIFIED"
+  },
+  "original_real_native_terminals": {
+    "CTAP": [
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          37.0,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          75.001,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          113.0,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          151.0,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      }
+    ],
+    "SR_source_lands": [
+      {
+        "pad": "SR1A.3",
+        "xy_mm": [
+          14.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR1A.3",
+        "xy_mm": [
+          13.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR1B.3",
+        "xy_mm": [
+          24.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR1B.3",
+        "xy_mm": [
+          23.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2A.3",
+        "xy_mm": [
+          52.634,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2A.3",
+        "xy_mm": [
+          51.399,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2B.3",
+        "xy_mm": [
+          62.634,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2B.3",
+        "xy_mm": [
+          61.399,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3A.3",
+        "xy_mm": [
+          90.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3A.3",
+        "xy_mm": [
+          89.4,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3B.3",
+        "xy_mm": [
+          100.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3B.3",
+        "xy_mm": [
+          99.4,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4A.3",
+        "xy_mm": [
+          128.636,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4A.3",
+        "xy_mm": [
+          127.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4B.3",
+        "xy_mm": [
+          138.636,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4B.3",
+        "xy_mm": [
+          137.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      }
+    ],
+    "magnetics_24_placeholder_pad_reference": "g2_v9_p1_magnetic_terminal_gap_NOT_FOR_FAB.json",
+    "component_owned_magnetic_terminal_land": false
+  },
+  "why_ordinary_small_via_array_not_accepted": {
+    "method": "1.0mm OD / 0.4mm hole, 1.6mm pitch; all native unlike-net and top existing connection geometry screened",
+    "plating_mm_assumed": 0.025,
+    "limited_top_contact_candidate_count_VOUT": 10,
+    "limited_top_contact_candidate_count_PGND": 39,
+    "hypothetical_via_loss_budget_per_pole_w": 0.2,
+    "required_VOUT_at_100C_ideal_only": 60,
+    "required_PGND_at_100C_ideal_only": 64,
+    "current_copper_insufficient_to_native_layout_target": true
+  },
+  "old_busbar_clearance_screen": {
+    "VOUT_opposite_net_vias_needing_isolation": 1,
+    "PGND_opposite_net_vias_needing_isolation": 25,
+    "legacy_bar_not_a_valid_manufacturing_solid": true
+  },
+  "supplier_required_outputs": [
+    "Signed PCB native land/pad-number/DOT drawing for T1-T4 and CT with toleranced 3D package envelope",
+    "Copper coin, pillar or stamped power-strap geometry with actual VOUT/PGND isolated mechanical contacts, including annotated source and terminal pad map",
+    "PCB stackup, local cavity/recess, drill/fill/plating processes and IPC accept/reject dimensional tolerances",
+    "Two-pole separation, surface contamination/ionics, dielectric/creepage, underside insulation and cold-plate isolation drawing",
+    "Full worst-case 16mm Z-stack including magnetics, standoff, clamp, TIM, tolerance and deflection",
+    "Continuously-rated 100A current/thermal simulation with unequal branch currents and contact resistance distribution",
+    "Fabrication-compatible step/2D CAD, Gerbers, drill/PTH and assembly drawings after approved native PCB revision",
+    "Four-wire contact resistance test points, 100A steady state thermal test method and pass thresholds agreed before order",
+    "DFM objections, approval revisions and written acknowledgement of not-for-fabrication until corrected"
+  ],
+  "manufacturer_rfq_ready_to_send_for_engineering_review": true,
+  "fabrication_files_ready_to_send": false,
+  "vendor_signature_recorded": false,
+  "native_cad_output_bar_contact_created": false,
+  "actual_100a_cold_plate_test_passed": false,
+  "hardware_safety_D0_10channel_shutdown_passed": false,
+  "design_and_fab_approved": false
+}
