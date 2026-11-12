@@ -1,12 +1,12 @@
 # D1 当前交接面板（唯一日常入口）
 
-> 状态基准：2026-11-11 本机实跑；研发主线 `feat/d1-fab-package`，PR #98 原生直连方案已在 Windows EasyEDA 创建并验收 149 铜线/173 Connection。下述本地新增候选及回执须随本轮提交入库才是共享研发基线。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
+> 当前状态基准：2026-11-12 可见 GUI 原生复核。最新可编辑 G2 候选为 [V8 独立 PCB](../hardware/dcx_main/g2/dcx_main_board_g2_T530_OEM_DENSITY_B_V8_GUI_REAL_OCM_NOT_FOR_FAB.eprj2)，实际写入、保存、原生图元和 DRC 审核仅以 [V8 验证回执](../hardware/dcx_main/g2/g2_t530_oem_v8_gui_ocm_verification.json) 为准；执行细节、保留 GUI 原则和仍阻塞项统一见 [EDA 操作事实](agent/EDA.md)。下面以日期表述的 G1/G2 旧候选均是历史快照，不能覆盖最新回执。进展见 [PR #114](https://github.com/czy0126/CZY/pull/114) 与 [Issue #4](https://github.com/czy0126/CZY/issues/4)，实物和制造仍按 [D1 门禁](../hardware/dcx_main/d1_fabrication_gate.json) 审批。
 
 ## 目标与固定范围
 
 **D1**：48 V → 约 2 V、固定约 24:1、目标 100 A、完整装配高度目标 ≤16 mm；成本暂不设上限，但安全、热、机械和制造验证不能省。D2 120 A 与 D3 ≤10 mm 均不占本轮 G1–G3 的资源。上位设计合同是 [第 49 章](D1_EXECUTION_KIT/49_D1主功率板PCB唯一执行计划_2026-11-09.md)，旧版本路线仅为历史证据。
 
-**目前真实状态：`NOT_FOR_FAB`。** 现有 G1 可编辑原生 PCB，但尚未完成 G1 布线、G2 实体封装/100 A 铜路及 G3 原生 ERC/DRC、保护与制造审查。每次回报只引用当前实际产物，不再汇总旧日期的“最新”。
+**目前真实状态：`NOT_FOR_FAB`。** G2 最新 V8 已是真实可编辑原生 PCB，但 72 个正式电容器件及原理图一致性、100 A 双极主铜路、磁件物理 PAD/DOT、D0 保护实物验证与制造审查尚未完成。可见嘉立创 GUI 需要持续保留，不再因 API 调试而关闭。每次回报只引用当前实际产物及其源文件哈希。
 
 **本机已执行 PR #98 六组控制网的原生铜线增量，并通过保存、重开、图元核对和真实 DRC。** 在冻结的 132线/183 Connection 父板副本中，以 `pcb_PrimitiveLine.create` 创建 RUN、SS、OC、OCD、OCM 五网六组共17段、0过孔；实际铜线132→149，Connection 183→**173**，Netlist **1不变**、Physical **0不变**。77件、299焊盘、65网、18过孔及全部旧132条铜线不漂移。[原生DRC回执](../hardware/dcx_main/g1/g1_control_direct_drc_delta.json)和[重开对照](../hardware/dcx_main/g1/g1_control_direct_reopen_report.json)绑定新候选哈希。首次立即重开返回 `PCB missing`，已保留原失败信息，未重落铜；通过新增只验证候选的 `--resume` 二次只读打开成功并取得原生 DRC。**新候选存在后严禁再次运行 `--apply`**。
 
