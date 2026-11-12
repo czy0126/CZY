@@ -1,0 +1,53 @@
+{
+  "schema": "REAL_NATIVE_KICAD_THREE_TURN_MAXWELL_MESH_INDEPENDENCE_V1",
+  "status": "REAL_STRICTER_MESH_SOLVER_CONVERGED_REQUIRES_INDEPENDENCE_AUDIT",
+  "base": "D:\\workshop\\.webcodex-worktrees\\design-48v-2v-0e49c4ad\\hardware\\dcx_main\\maxwell\\ELP38_Lr_PCB_3TURN_6LAYER_1A_GENERIC_FERRITE_FEM_NOT_FOR_FAB.aedt",
+  "candidate": "D:\\workshop\\.webcodex-worktrees\\design-48v-2v-0e49c4ad\\design\\v3\\maxwell\\local_runs\\ELP38_Lr_PCB_3TURN_1A_GENERIC_FERRITE_ADAPTIVE_1PCT_TRIAL_NOT_FOR_FAB.aedt",
+  "requested_energy_error_pct": 1.0,
+  "maximum_adaptive_passes": 24,
+  "minimum_converged_passes": 2,
+  "refinement_percent": 25,
+  "same_geometry_as_parent": true,
+  "material_stock_ferrite_not_n97": true,
+  "current_a": 1.0,
+  "actual_maxwell_solver_finished": true,
+  "native_solver_converged": true,
+  "numerical_grid_independence_accepted": false,
+  "real_n97_100c_L_I_or_200khz_loss_qualified": false,
+  "fabrication_approved": false,
+  "base_sha256": "a55de33185e5a078bbec1f040b6606736a4376e66c4b006fdd3713bdff5182a2",
+  "steps": [
+    "SOURCE_LOCKED_COPIED_INDEPENDENTLY",
+    "SAME_NATIVE_KICAD_COPPER_AND_1A_CURRENT_EXCITATION",
+    "STRICTER_1PCT_SETUP_SAVED"
+  ],
+  "actual_native_solids": [
+    "E_BACK",
+    "I38_GENERIC_FERRITE",
+    "PCB_LR_CU_000",
+    "Region"
+  ],
+  "native_assignments": [
+    "PCB_LR_DC_1A_IN",
+    "Current",
+    "PCB_LR_DC_1A_OUT",
+    "Current"
+  ],
+  "native_validate_design_passed": true,
+  "native_validation_messages": [
+    "Project: *Global - Messages, [info] GRPC server running on port: 50051. \r\n",
+    "Project: ELP38_Lr_PCB_3TURN_1A_GENERIC_FERRITE_ADAPTIVE_1PCT_TRIAL_NOT_FOR_FAB, Design: Lr_PCB_3turn_geometry (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (05:15:36 PM  Nov 12, 2026)\r\n"
+  ],
+  "seconds": 105.8,
+  "analyze_return": "0",
+  "last_native_messages": [
+    "Project: *Global - Messages, [info] GRPC server running on port: 50051. \r\n",
+    "Project: ELP38_Lr_PCB_3TURN_1A_GENERIC_FERRITE_ADAPTIVE_1PCT_TRIAL_NOT_FOR_FAB, Design: Lr_PCB_3turn_geometry (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (05:15:36 PM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_PCB_3TURN_1A_GENERIC_FERRITE_ADAPTIVE_1PCT_TRIAL_NOT_FOR_FAB, Design: Lr_PCB_3turn_geometry (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (05:15:38 PM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_PCB_3TURN_1A_GENERIC_FERRITE_ADAPTIVE_1PCT_TRIAL_NOT_FOR_FAB, Design: Lr_PCB_3turn_geometry (Magnetostatic), [info] Normal completion of simulation on server: Local Machine. (05:17:21 PM  Nov 12, 2026)\r\n"
+  ],
+  "convergence_sha256": "da2ce4c3fb1fa214284bae801d42316657e841ac48004572df6c82f95881237e",
+  "convergence_bytes": 736,
+  "candidate_sha256": "4830bb5e47fdc467d1e5e2b0d66b9c43de8c4aa7d9d3b3ab7395065a08fbc659",
+  "candidate_size_bytes": 381057
+}
