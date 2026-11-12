@@ -12,6 +12,7 @@
 - 在 G1 候选板上重读清册（`hardware/dcx_main/g1/export_native_inventory.py`）
 - 读活网表：`--path` 打开时所有制造导出都是 null（`hardware/dcx_main/g1/export_live_netlist.py`）
 - 原生主板的取值 ECO（`tools/native_value_eco.py`）
+- G2 OEM V5→V6 原生连通验收与超时隔离（2026-11-12）
 - KiCad 10.0 CLI（headless，与 LCEDA 互补）
 - D0 十路保护板的铜（已按 issue #36 延后）
 
@@ -425,6 +426,14 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 里内径 0.3–6.3 mm、外径 0.5–10 mm、Track/Via 间距 0.152 mm（1 oz 表），0.2 mm 钻孔会被 DRC 判 13 条
 `Via Size`。编辑器把 mil **截断**到 0.1（0.5 mm → 19.6 mil、0.3 mm → 11.8 mil），所以贴着规则
 下限的尺寸要往上留 0.1 mil（外径写 0.505 mm 才落到 19.8 mil）。
+
+## G2 OEM V5→V6 原生连通验收与超时隔离（2026-11-12）
+
+- V5 源头是已保存、关闭、重开并运行原生 DRC 的真实 16×5 OEM PCB：`g2_t530_oem_v5_vcc12s_c111_c112_drc_delta.json` 记录 Connection **173→172**、Netlist **1**、Physical **0**。新增强制 `confirm_island_joins()`：只有目标 `C111.1` 与 `C112.1` 在**实际读回的铜岛图中合并**才认可，不能只看 DRC 项数下降；反例测试会把未经连接的源板拒绝。
+- 下一单独控制网候选 `route_t530_oem_v6_ocm_one_real_island_join.py --check`：V5 实际读回中 `OCM R17.2` 与 `C11.2` 位于不同铜岛；0.15 mm 顶层三段走线在 y=63.4 mm 的预扫描中未发现异网/磁芯区域冲突。**此时只是几何计划，不等于已保存的 PCB 铜线。**
+- 首次 V6 `--apply` 取得原生 open/ping，但写入时返回 `REQUEST_TIMEOUT`（59750 ms）。该次实际候选路径与 V5 父文件在异常后 **SHA256 相同** (`6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863`)，未得到可核验的保存新铜或原生 DRC 下降。其日志回执应保留，**V6 副本绝不再次执行 `--apply`**；如果主进程仍卡死，先核实 render 是否健康，修复进程状态后从冻结 V5 建立**另一个全新路径**的后续试验。
+- 代码已补 `open_board` **真实 readback API 探活**（而非只信 `return 1;`），并核对打开板的 77/443/400/90/65 件/焊盘/线/孔/网计数；真实 API 超时/对象数漂移即拒绝任何写入。未来任一后续批次仍需原生保存→防抖落盘→关闭→只读重开→已验证铜面连续→真实 DRC Connection 下降且 Physical 不增加，不能把独立几何筛查替代 EDA 或制造签核。
+- 仍未取得 72 颗正式原理图/封装的同版匹配、100 A 双极母线和端子、五磁件供应商 24 个 PAD/DOT、D0 十路实物失电与故障保护；V5/V6 一律 `NOT_FOR_FAB`。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 

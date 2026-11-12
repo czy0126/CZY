@@ -18,6 +18,16 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def git_normalized_script_sha(path: Path) -> str:
+    """Compare committed source bytes, not Windows autocrlf checkout bytes.
+
+    The native evidence records the Git blob's LF-normalized script hash;
+    preserving the original frozen evidence is safer than rewriting history
+    whenever a Windows checkout expands LF to CRLF.
+    """
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def original_windows_text_sha(path: Path) -> str:
     """Hash originally recorded AEDT input bytes with CRLF on any checkout.
 
@@ -39,7 +49,7 @@ def test_aedt_native_geometry_is_real_and_bound_to_concept_source():
     assert e["cad_project_sha256"] == sha(cad)
     assert e["cad_project_bytes"] == cad.stat().st_size
     assert e["concept_source_sha256"] == original_windows_text_sha(contract)
-    assert e["native_script_sha256"] == sha(script)
+    assert e["native_script_sha256"] == git_normalized_script_sha(script)
     spec = json.loads(contract.read_text(encoding="utf-8"))
     candidates = [c for c in spec["cases"] if c["id"] == "ELP38_Lr_2turn_0920uH"]
     assert len(candidates) == 1
