@@ -1,0 +1,26 @@
+{
+  "schema": "D1_PCB_EMBEDDED_LR_VIA_DFM_SENSITIVITY_V1",
+  "source_board_contract": "design/v3/maxwell/pcb_embedded_lr_3turn_candidate.json",
+  "manufacturer_plating_verified": false,
+  "manufacturer_stackup_verified": false,
+  "assumed_finished_drill_mm": 0.35,
+  "assumed_barrel_plating_um": [
+    18,
+    25,
+    35
+  ],
+  "copper_barrel_temperature_c": 100,
+  "board_thickness_mm": 1.6,
+  "copper_via_idealisation": "uniform round plated cylinder, no pad neck/spoke/thermal bottleneck; DC only",
+  "comparison_reference": "current density relative to existing paired two-layer foil, NOT a safe current-density or IPC ampacity allowance",
+  "manufacturing_questions": [
+    "Confirm six copper layers with 70um copper on each internal and outer layer, and finished thickness/tolerance",
+    "Provide minimum plated-through-hole barrel copper thickness and post-plate finished drill tolerance",
+    "Quantify 9.45 A Lr RMS / 11.22 A overload plus >=104.17 A fault peak on each series transition via, measured resistance and temperature rise",
+    "Confirm all three ferrite-leg cutouts are manufacturable with clearance and routed/finished slot tolerance",
+    "Provide laminate dielectric, creepage and breakdown limits for PCB winding near N97 core and primary circuitry",
+    "Confirm ferrite clamp, insulation, TIM, cold plate, attachment hardware, and 16mm full worst-case assembly height",
+    "Review 200.622kHz proximity/fringing heating and thermal via / copper reference design",
+    "Confirm test coupon and sectioned micrograph after manufacture; provide magnetic B-H and measured 100C incremental L(I)"
+  ]
+}
