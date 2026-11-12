@@ -1,0 +1,57 @@
+{
+  "schema": "ACTUAL_KICAD_PCB_6LAYER_3TURN_AEDT_GEOMETRY_V1",
+  "status": "REAL_6LAYER_PCB_WINDING_SOLIDS_SAVED_NOT_SOLVED_NOT_FOR_FAB",
+  "source_kicad_lf_sha256": "a3a7c5b1ec3d49dcedc9106c4a65392547f7d1e3f3d5a330986f9f2f55b8ad21",
+  "source_rounded_config_lf_sha256": "5dbd2f000c8cb48f4dccb9b3544ee1c242468c0329b45f6efcb31c8286903cef",
+  "source_core_contract_lf_sha256": "e5445fa003e12d33d2f239d1e0c76d28932355406eba84db08a536313697cf92",
+  "source_script_lf_sha256": "f83ff03b824d21e0a558ea87677097268cb092fbd3e8beb229631e80b38b73c2",
+  "mesh_solved": false,
+  "bias_1a_solved": false,
+  "real_N97_100c_nonlinear_BH_applied": false,
+  "real_100A_L_I_verified": false,
+  "200kHz_AC_loss_verified": false,
+  "ferrite_core_mechanical_approved": false,
+  "plated_through_hole_25um_manufacturer_verified": false,
+  "16mm_assembly_qualified": false,
+  "fabrication_approved": false,
+  "warnings": [
+    "Six copper layer z and cylindrical PTH plating are conceptual 3D extrusions of actual KiCad coordinates; dielectric/FR4 & rounded slot arcs are NOT yet modeled as solids",
+    "Core ELP38 dimensions and 2.356mm centre gap are design-owned concept, not OEM 3D verified",
+    "Stock ferrite is not manufacturer N97 100C nonlinear B-H",
+    "No AC proximity, skin or gap fringing solver result",
+    "External long terminal leads are artificial for future current injection and will affect inductance",
+    "All copper-connection current crowding, pad neck, actual 25um barrel and 4-via sharing unqualified",
+    "Actual T1..T4 and CT multiwinding turn/DOT/isolation absent"
+  ],
+  "actual_kicad_segments": 46,
+  "real_kicad_transition_PTH": 8,
+  "real_kicad_external_terminals": 2,
+  "six_layer_z_bottom_mm": {
+    "B.Cu": 4.4,
+    "In4.Cu": 4.72,
+    "In3.Cu": 5.04,
+    "In2.Cu": 5.35,
+    "In1.Cu": 5.66,
+    "F.Cu": 5.93
+  },
+  "pcb_stack_z0_and_height_mm": [
+    4.4,
+    1.6
+  ],
+  "ferrite_core_bodies": [
+    "I38_GENERIC_FERRITE",
+    "E_BACK"
+  ],
+  "kicad_layer_and_copper_boxes": 46,
+  "hollow_plated_pth_solid_count": 10,
+  "copper_before_unite": 58,
+  "objects_after_unite": [
+    "I38_GENERIC_FERRITE",
+    "E_BACK",
+    "PCB_LR_CU_000"
+  ],
+  "three_series_turns_one_copper_solid": true,
+  "native_project_sha256": "a1940f5ce7da1d1938c02523dbf5bfa7ddb9d48802a7684a00ba6ff937233048",
+  "native_project_size_bytes": 375620,
+  "save_completed": true
+}
