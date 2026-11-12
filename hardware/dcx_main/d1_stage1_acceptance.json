@@ -1,0 +1,82 @@
+{
+  "schema": "D1_FIRST_ARTICLE_48V_100A_16MM_ACCEPTANCE_V1",
+  "status": "NOT_STAGE1_DELIVERED",
+  "target": {
+    "vin_nominal_v": 48,
+    "ratio": 24,
+    "load_class_a": 100,
+    "assembled_height_limit_mm": 16
+  },
+  "physical_hardware_delivery_approved": false,
+  "power_stage_fabrication_approved": false,
+  "acceptance_checks": {
+    "real_protection_built_and_ten_VGS_across_faults": false,
+    "magnetics_100C_non_linear_L_I_and_five_physical_PIN_DOT": false,
+    "oem_cout_component_symbol_footprint_and_native_parity": false,
+    "100A_two_pole_copper_contact_soA_and_full_thermal": false,
+    "real_native_gui_erc_drc_and_manufacturing_package": false,
+    "height_including_board_bond_clamp_cold_plate_under_16mm": false,
+    "25_50_75_100A_measured_staged_46_48_50V": false,
+    "same_revision_fabrication_safety_gate": false
+  },
+  "missing_acceptance": [
+    "100A_two_pole_copper_contact_soA_and_full_thermal",
+    "25_50_75_100A_measured_staged_46_48_50V",
+    "height_including_board_bond_clamp_cold_plate_under_16mm",
+    "magnetics_100C_non_linear_L_I_and_five_physical_PIN_DOT",
+    "oem_cout_component_symbol_footprint_and_native_parity",
+    "real_native_gui_erc_drc_and_manufacturing_package",
+    "real_protection_built_and_ten_VGS_across_faults",
+    "same_revision_fabrication_safety_gate"
+  ],
+  "hard_stop_facts": {
+    "two_turn_092uH_fails_121p515A_flux_prescreen": true,
+    "two_turn_1uH_fails_121p515A_flux_prescreen": true,
+    "published_3turn_example_gap_out_of_screen_range": true,
+    "converged_trial_is_unqualified_1A_stock_ferrite": true,
+    "converged_trial_does_not_meet_nominal_0p92uH": true,
+    "G2_native_board_still_unrouted": true,
+    "D0_six_scenario_hardware_evidence_absent": true
+  },
+  "engineering_observations": {
+    "native_G2_connections_remaining": 175,
+    "native_G2_netlist_errors": 1,
+    "two_turn_0p92uH_121p515A_flux_T": 0.29113,
+    "screen_flux_limit_T": 0.248,
+    "three_turn_0p92uH_121p515A_flux_T": 0.194086,
+    "maxwell_1A_energy_equivalent_uH_NOT_QUALIFIED": 1.416673577389414,
+    "maxwell_1A_target_uH": 0.92,
+    "manufacturing_gate_blocker_categories": [
+      "all_golden_refs_and_magnetic_physical_pads_verified",
+      "no_electrical_placeholders_or_unselected_bom",
+      "native_manufacturer_ids_and_r8_dnp_verified",
+      "native_erc_evidence",
+      "routed_pcb_to_schematic_evidence",
+      "manufacturing_package_evidence",
+      "independent_fault_shutdown_design_evidence"
+    ]
+  },
+  "source_hashes": [
+    {
+      "path": "design/v3/power_priority/d1_staged_target_policy.json",
+      "sha256": "a2489c9b2520365dae7f6ff106c88876066ed9aaca306be8df73979916781557"
+    },
+    {
+      "path": "design/v3/bom/lr_design.json",
+      "sha256": "c35169cda2fe7743777b078f34490cb8128db68d0fc51aad0d44973726587394"
+    },
+    {
+      "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.evidence.json",
+      "sha256": "ddd635e600a6b753a51ed13aa5808e4e0d4381a5c904480d93948691ee1add66"
+    },
+    {
+      "path": "hardware/dcx_main/g2/g2_t530_bipolar_drc_delta.json",
+      "sha256": "ed9a006631b16dbbb951ee2c64e7db8220d7469586f88fc77655baffd5213af0"
+    },
+    {
+      "path": "hardware/dcx_main/g2/dcx_main_board_g2_t530_72_BIPOLAR_ARRAY_NOT_FOR_FAB.eprj2",
+      "sha256": "fefb565e10bc37b37ea0d2045c39ed8d8b20f64a4489e8a82f2406b4eecb9353"
+    }
+  ],
+  "note": "All results are source-reproducible engineering checks, NOT a laboratory 100A first-article validation. Do not promote stage-one or start high-current operation."
+}
