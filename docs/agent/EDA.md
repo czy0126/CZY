@@ -446,6 +446,13 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - **Cout 真正器件库仍未配平**：可见 GUI 中系统库 lib_Device.search(T530X477M006ATE004)、lib_Device.search(C2158170)、lib_Device.searchByProperties({supplierId:C2158170}) 均无命中；通用 7343 类型封装不代表匹配厂家 Table2 的 Density-B 双焊盘尺寸、极性或 72 个原理图实例。当前 144 裸焊盘仍不是 72 个真实器件，100A 双极铜排、磁件 24 物理 PAD/DOT 与 D0 实物故障关断均未验收，保持 NOT_FOR_FAB。
 
 
+### P0-A：已做的原生 KEMET 封装试验（沿用可见 V9，2026-11-12）
+
+- 只在现有 V9 可见嘉立创窗口的内部标签，使用 G1_R34_REC10K_v3_TEST 试验库生成 X1 / 7343-43 Density-B 试验封装（UUID c9bdf53e779d4dd6a2eee1e6cecd4462），原生创建 PAD 1（右侧正极）与 PAD 2（左侧负极）。采用 KEMET 2026 年 Table 2 的 L=2.37 mm、W=2.43 mm、S=3.87 mm，端子中心 x=±3.12 mm。封装 API 的 pcb_Document.save() 返回 true；本次没有跨编辑器独立重开验收。
+- 原生封装源为 hardware/dcx_main/g2/T530X477M006ATE004_X1_DENSITY_B_NATIVE_FOOTPRINT_NOT_FOR_FAB.efoo，证据为 t530_x1_density_b_library_pilot.json，测试为 tools/test_g2_t530_native_footprint.py。实际保存源中两个 PAD 记录均为矩形、顶层，且尺寸/坐标与原厂规划脚位在 mil 量化误差内一致。
+- 重要限制：PCB 上通过 footprint search-item、简单库 UUID、带 numeric type 的 PCB_PrimitiveComponent.create 仍不能实例化此自制封装，三种均失败，V9 PCB 保持原 77 器件、443 焊盘；还需真正建立 device / symbol / footprint 关联、补足 courtyard / 丝印、完成 72 位号匹配和厂家审查。**当前封装不准用于正式下单生产**。
+- 用户要求所有后续 EDA 工作优先沿用已经打开的 V5、V8、V9 窗口及其内部标签，不允许每一步重新 open GUI；不得自行关闭、重启或 stop 现有会话。只有确有安全隔离必要且现有会话无法复用时才单独处理新会话。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
