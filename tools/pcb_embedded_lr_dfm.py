@@ -105,7 +105,7 @@ def evaluate():
             a.relative_to(ROOT).as_posix():sha_lf(a)
             for a in (ASSUMPTIONS,native.CONFIG,native.REPORT,
                       ROOT/trial["load_source"])},
-        "native_cad_exact_sha256":hashlib.sha256(native.PCB.read_bytes()).hexdigest(),
+        "native_cad_canonical_lf_sha256":sha_lf(native.PCB),
         "model_construction":"three series turns, each two equal parallel 70um x 2.5mm copper layers",
         "Lr_rms_at_100A_output_A":i_rms,
         "Lr_overload_rms_A":i_overload,

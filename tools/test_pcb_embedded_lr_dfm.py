@@ -51,10 +51,20 @@ def test_native_3turn_cad_geometry_is_source_locked():
     for name,sha in r["source_sha256_canonical_lf"].items():
         f=d.ROOT/name
         assert d.sha_lf(f)==sha
-    assert hashlib.sha256(d.native.PCB.read_bytes()).hexdigest()==r["native_cad_exact_sha256"]
+    assert d.sha_lf(d.native.PCB)==r["native_cad_canonical_lf_sha256"]
     assert d.native.PCB.is_file()
     assert d.native.REPORT.is_file()
     assert d.native.DRC.is_file()
+
+
+def test_native_board_crlf_and_lf_are_same_design_but_different_raw_hashes(tmp_path):
+    original=d.native.PCB.read_bytes().replace(b"\r\n",b"\n")
+    lf=tmp_path/"candidate_lf.kicad_pcb"
+    crlf=tmp_path/"candidate_crlf.kicad_pcb"
+    lf.write_bytes(original)
+    crlf.write_bytes(original.replace(b"\n",b"\r\n"))
+    assert d.sha_lf(lf)==d.sha_lf(crlf)
+    assert hashlib.sha256(lf.read_bytes()).hexdigest()!=hashlib.sha256(crlf.read_bytes()).hexdigest()
 
 
 def test_saved_dfm_json_and_vendor_review_csv_are_reproducible():
