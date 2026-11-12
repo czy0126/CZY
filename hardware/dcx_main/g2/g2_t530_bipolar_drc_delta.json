@@ -1,0 +1,26 @@
+{
+  "status": "REAL_G2_BIPOLAR_ARRAY_NETS_SAVED_REOPENED_DRC_NOT_100A_QUALIFIED",
+  "parent_sha256": "b204932c39a058e894a599b8206c3a0f7999c08fbe4e168ca9899224c34ee501",
+  "candidate_sha256": "fefb565e10bc37b37ea0d2045c39ed8d8b20f64a4489e8a82f2406b4eecb9353",
+  "plan_sha256": "2a4dc24783bffc885b116526a755ffcf9d4d3847822f15cb7da12a4fad8d8b3e",
+  "previous_drc": {
+    "Connection Error": 227,
+    "Netlist Error": 1
+  },
+  "actual_drc": {
+    "Connection Error": 175,
+    "Netlist Error": 1
+  },
+  "native_readback": {
+    "old_257_real_copper_lines_covered": true,
+    "all_52_new_bipolar_tracks_covered": true,
+    "new_bottom_vout_through_vias": 18,
+    "original_77_components_443_pads_65_nets_preserved": true,
+    "fabrication_approved": false
+  },
+  "both_polarity_cap_array_electrically_joined": true,
+  "oem_package_added_as_real_components": false,
+  "100a_current_carrying_and_contacts_qualified": false,
+  "manufacturer_height_thermal_and_hot_esr_qualified": false,
+  "fabrication_approved": false
+}

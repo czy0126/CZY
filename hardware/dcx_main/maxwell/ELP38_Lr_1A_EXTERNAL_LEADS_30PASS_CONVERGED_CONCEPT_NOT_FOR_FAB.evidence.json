@@ -1,0 +1,74 @@
+{
+  "schema": "D1_MAXWELL_1A_CONCEPT_TRUE_18_PASS_CONVERGED_EVIDENCE_V1",
+  "status": "REAL_AEDT_2025R2_ADAPTIVE_SOLVED_2PERCENT_CONCEPT_NOT_HARDWARE_APPROVAL",
+  "provenance": [
+    {
+      "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.aedt",
+      "sha256": "b9395425fcce9d0e6af669e9b1735e11e6387f2af0970fe07fb94a9c8eff7037",
+      "bytes": 174313
+    },
+    {
+      "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.conv",
+      "sha256": "d0649473e652265a9f35de0537497ee3dbb7e010295ca6aae7939dd8ab0f6091",
+      "bytes": 1588
+    },
+    {
+      "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.postprocess.json",
+      "sha256": "9813a7ce1edc65f6bedd123f11fb69bfcfee52d5469dcfafd328b6b3cb286013",
+      "bytes": 1241
+    },
+    {
+      "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.receipt.json",
+      "sha256": "ad3a51c190ed740d35c328963b29119620c0664fd6310adcf36742c5d9118756",
+      "bytes": 2157
+    },
+    {
+      "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.results.zip",
+      "sha256": "b6e71986b3fe0a184a248137c9ca95233c4633cf28e1e51ed9c3b6b4cec20f0a",
+      "bytes": 9601514,
+      "raw_file_count": 46
+    }
+  ],
+  "source_solver_script": "tools/aedt_lr_converge_30pass.py",
+  "source_postprocess_script": "tools/aedt_lr_30pass_postprocess.py",
+  "native_convergence": {
+    "passes": 18,
+    "max_passes": 30,
+    "target_energy_error_percent": 2,
+    "target_delta_energy_percent": 2,
+    "minimum_converged_passes": 2,
+    "last_two_passes": [
+      {
+        "pass_no": 17,
+        "tetrahedra": 28774,
+        "energy_j": 7.0995e-07,
+        "energy_error_pct": 1.5606,
+        "delta_energy_pct": 0.28869
+      },
+      {
+        "pass_no": 18,
+        "tetrahedra": 35976,
+        "energy_j": 7.0834e-07,
+        "energy_error_pct": 1.1857,
+        "delta_energy_pct": 0.22767
+      }
+    ],
+    "last_pass": {
+      "pass_no": 18,
+      "tetrahedra": 35976,
+      "energy_j": 7.0834e-07,
+      "energy_error_pct": 1.1857,
+      "delta_energy_pct": 0.22767
+    }
+  },
+  "magnetic_energy_J_from_native_field_calculator": 7.08336788694707e-07,
+  "static_dc_energy_equivalent_L_uH_unqualified": 1.416673577389414,
+  "target_Lr_uH": 0.92,
+  "gap_vs_target_status": "CONCEPT_GEOMETRY_MISMATCH_NO_QUALIFIED_L",
+  "oem_n97_100c_bh_verified": false,
+  "manufacturer_connected_winding_terminal_construction_verified": false,
+  "model_has_two_artificial_long_current_leads": true,
+  "operating_point_ac_and_high_bias_sweeps_verified": false,
+  "t1_t4_ct_24_pin_dot_footprints_verified": false,
+  "manufacturing_approved": false
+}

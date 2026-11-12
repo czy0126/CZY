@@ -57,3 +57,7 @@ hardware/dcx_main/maxwell/*.aedt -text
 hardware/dcx_main/maxwell/*.evidence.json text eol=lf
 hardware/dcx_main/maxwell/*.receipt.json text eol=lf
 hardware/dcx_main/maxwell/*.results.zip -text
+hardware/dcx_main/maxwell/*.conv -text -diff
+hardware/dcx_main/maxwell/*.postprocess.json text eol=lf
+# Actual native Ansys diagnostic on Windows is SHA-locked as received (CRLF).
+hardware/dcx_main/maxwell/*30PASS*.receipt.json -text -eol -diff
