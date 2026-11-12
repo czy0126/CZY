@@ -1,0 +1,25 @@
+{
+  "status": "REAL_NATIVE_OEM_CONTROL_LINKS_REOPEN_DRC_NOT_FOR_FAB",
+  "source_sha256": "be764dcc89b5317a5739c1910dc038f89959c7bb0201b72e0d5c0812e2dbf1e9",
+  "candidate_sha256": "6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863",
+  "plan_sha256": "0dee76efacfc355271ac2929f8e7a49b3df7fb251f6712fcb203740b9fc18575",
+  "previous_native_drc": {
+    "Connection Error": 173,
+    "Netlist Error": 1
+  },
+  "actual_native_drc": {
+    "Connection Error": 172,
+    "Netlist Error": 1
+  },
+  "reopen": {
+    "components": 77,
+    "pads": 443,
+    "nets": 65,
+    "original_copper_physically_covered": true,
+    "new_control_stubs_physically_covered": 3,
+    "existing_90_vias_preserved": true,
+    "manufacturer_approved": false
+  },
+  "100A_busbar_or_protection_approved": false,
+  "fabrication_approved": false
+}
