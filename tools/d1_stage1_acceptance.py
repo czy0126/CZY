@@ -46,8 +46,16 @@ def _read(path:Path)->dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 def _source(path:Path)->dict:
+    # Text-only evidence is Git-normalized to LF on hosted CI, while Windows
+    # working trees can retain CRLF. Bind the same UTF-8 content on both;
+    # native PCB/FEM/field archives remain HASHED AS ORIGINAL RAW BYTES.
+    original=path.read_bytes()
+    payload=(original.replace(b"\r\n",b"\n") if path.suffix==".json"
+             else original)
     return {"path":path.relative_to(ROOT).as_posix(),
-            "sha256":_hash(path)}
+            "sha256":hashlib.sha256(payload).hexdigest(),
+            "digest_basis":("utf8_lf_canonical" if path.suffix==".json"
+                            else "exact_native_bytes")}
 
 def evaluate()->dict:
     policy=_read(POLICY)

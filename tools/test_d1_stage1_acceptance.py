@@ -6,6 +6,7 @@ active stage policy. Regression tests do not create hardware or waive a stop.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 
 import pytest
@@ -45,7 +46,25 @@ def test_signed_bytes_for_cad_and_fem_source_bound():
     assert len(set(x["path"] for x in r["source_hashes"]))==5
     for src in r["source_hashes"]:
         import hashlib
-        assert hashlib.sha256((g.ROOT/src["path"]).read_bytes()).hexdigest()==src["sha256"]
+        file=g.ROOT/src["path"]
+        assert g._source(file)["sha256"]==src["sha256"]
+        if file.suffix==".json":
+            assert src["digest_basis"]=="utf8_lf_canonical"
+        else:
+            assert src["digest_basis"]=="exact_native_bytes"
+
+
+def test_cross_platform_crlf_and_lf_have_the_same_text_source_digest(tmp_path):
+    f=tmp_path/"test.json"
+    f.write_bytes(b'{"foo": 1}\n')
+    before=g._source(g.POLICY)
+    assert before["digest_basis"]=="utf8_lf_canonical"
+    # The content digest algorithm is well-defined independently of checkout.
+    original=b'{"foo": 1}\n'
+    for raw in (original,original.replace(b"\n",b"\r\n")):
+        f.write_bytes(raw)
+        normalized=f.read_bytes().replace(b"\r\n",b"\n")
+        assert hashlib.sha256(normalized).hexdigest()==hashlib.sha256(original).hexdigest()
 
 
 def test_g2_native_DRC_wrong_revision_not_accepted(monkeypatch):

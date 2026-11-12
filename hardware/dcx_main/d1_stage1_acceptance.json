@@ -59,23 +59,28 @@
   "source_hashes": [
     {
       "path": "design/v3/power_priority/d1_staged_target_policy.json",
-      "sha256": "a2489c9b2520365dae7f6ff106c88876066ed9aaca306be8df73979916781557"
+      "sha256": "7168d31deac23fc714d248136ad4b89edc846070eed1a9277e56c61846f299b4",
+      "digest_basis": "utf8_lf_canonical"
     },
     {
       "path": "design/v3/bom/lr_design.json",
-      "sha256": "c35169cda2fe7743777b078f34490cb8128db68d0fc51aad0d44973726587394"
+      "sha256": "a29d678793ba34b20e6c7f381d3697d1c421d49425677ed85b3d403256ff79e8",
+      "digest_basis": "utf8_lf_canonical"
     },
     {
       "path": "hardware/dcx_main/maxwell/ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_CONVERGED_CONCEPT_NOT_FOR_FAB.evidence.json",
-      "sha256": "ddd635e600a6b753a51ed13aa5808e4e0d4381a5c904480d93948691ee1add66"
+      "sha256": "ddd635e600a6b753a51ed13aa5808e4e0d4381a5c904480d93948691ee1add66",
+      "digest_basis": "utf8_lf_canonical"
     },
     {
       "path": "hardware/dcx_main/g2/g2_t530_bipolar_drc_delta.json",
-      "sha256": "ed9a006631b16dbbb951ee2c64e7db8220d7469586f88fc77655baffd5213af0"
+      "sha256": "ed9a006631b16dbbb951ee2c64e7db8220d7469586f88fc77655baffd5213af0",
+      "digest_basis": "utf8_lf_canonical"
     },
     {
       "path": "hardware/dcx_main/g2/dcx_main_board_g2_t530_72_BIPOLAR_ARRAY_NOT_FOR_FAB.eprj2",
-      "sha256": "fefb565e10bc37b37ea0d2045c39ed8d8b20f64a4489e8a82f2406b4eecb9353"
+      "sha256": "fefb565e10bc37b37ea0d2045c39ed8d8b20f64a4489e8a82f2406b4eecb9353",
+      "digest_basis": "exact_native_bytes"
     }
   ],
   "note": "All results are source-reproducible engineering checks, NOT a laboratory 100A first-article validation. Do not promote stage-one or start high-current operation."
