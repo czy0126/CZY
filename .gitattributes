@@ -50,6 +50,10 @@ hardware/dcx_main/g2/*.json text eol=lf
 hardware/dcx_main/gen/*_raw.json text eol=lf
 hardware/dcx_main/gen/reference_schematic_connectivity.json text eol=lf
 hardware/dcx_main/**/*.eprj2 -text
+# EasyEDA native library footprint source is exact-byte evidence even when
+# represented as a UTF-8 record stream; never let Windows Git rewrite it.
+hardware/dcx_main/g2/*.efoo -text
+hardware/dcx_main/g2/*.esym -text
 
 # Ansys Electronics Desktop .aedt is opaque, natively generated binary CAD.
 # Its SHA256 is used in the D1 Maxwell concept evidence; never normalize EOL.

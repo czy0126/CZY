@@ -101,8 +101,16 @@ def test_exported_device_symbol_and_footprint_are_source_locked():
     assert r["native_symbol_uuid"] == "5652f930fe894ea781b22cdf204e03a9"
     sym = G2 / r["symbol_source"]
     footprint = G2 / r["footprint_source"]
-    assert hashlib.sha256(sym.read_bytes()).hexdigest() == r["symbol_sha256"]
-    assert hashlib.sha256(footprint.read_bytes()).hexdigest() == r["footprint_sha256"]
+    # Archived native symbol/footprint streams have Git LF byte identity.
+    # Windows autocrlf does not constitute a CAD edit; any other edit must fail.
+    for source, expected in ((sym, r["symbol_sha256"]),
+                             (footprint, r["footprint_sha256"])):
+        raw = source.read_bytes()
+        assert b"\x00" not in raw
+        canonical = raw.replace(b"\r\n", b"\n")
+        assert b"\r" not in canonical
+        assert hashlib.sha256(canonical).hexdigest() == expected
+        assert hashlib.sha256(canonical + b"tamper").hexdigest() != expected
     symbols = []
     for row in sym.read_text(encoding="utf8").splitlines():
         if "||" not in row:

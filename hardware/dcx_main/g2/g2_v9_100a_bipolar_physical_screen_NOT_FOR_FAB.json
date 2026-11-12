@@ -1,0 +1,560 @@
+{
+  "schema": "G2_V9_ACTUAL_NATIVE_BIPOLAR_AND_MECHANICAL_SCREEN_V1",
+  "status": "NOT_FOR_FAB_NO_100A_AMPACITY_OR_ACTUAL_CONTACTS",
+  "source_native_sha256": "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2",
+  "native_count": {
+    "components": 149,
+    "pads": 443,
+    "lines": 407,
+    "vias": 93,
+    "nets": 65
+  },
+  "native_islands": {
+    "VOUT": 1,
+    "PGND": 39
+  },
+  "main_power_poles_physically_connected_at_graph_level": true,
+  "native_drc_open_connections": 168,
+  "native_drc_netlist_errors": 1,
+  "feeder_via_diameter_mm": 1.0,
+  "feeder_via_drill_mm": 0.4,
+  "assumed_plating_thickness_mm": 0.025,
+  "assumed_copper_foil_mm": 0.07,
+  "feeder_via_count": 3,
+  "cross_section_scenarios": {
+    "20": {
+      "rho_ohm_m": 1.724e-08,
+      "three_via_total_resistance_uohm": 292.675,
+      "three_via_only_if_100a_loss_w": 2.927,
+      "three_74mm_1p6mm_feeder_scenario_uohm": 3796.905,
+      "three_feeder_only_if_100a_loss_w": 37.969,
+      "note": "hypothetical three equal full-length paths, NOT a validated current flow solution"
+    },
+    "100": {
+      "rho_ohm_m": 2.2660256e-08,
+      "three_via_total_resistance_uohm": 384.692,
+      "three_via_only_if_100a_loss_w": 3.847,
+      "three_74mm_1p6mm_feeder_scenario_uohm": 4990.652,
+      "three_feeder_only_if_100a_loss_w": 49.907,
+      "note": "hypothetical three equal full-length paths, NOT a validated current flow solution"
+    }
+  },
+  "contact_anchors": {
+    "CTAP": [
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          37.0,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          75.001,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          113.0,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "RAW.CTAP",
+        "xy_mm": [
+          151.0,
+          20.0
+        ],
+        "inside_legacy_bar": true
+      }
+    ],
+    "SR_SOURCE": [
+      {
+        "pad": "SR1A.3",
+        "xy_mm": [
+          14.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR1A.3",
+        "xy_mm": [
+          13.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR1B.3",
+        "xy_mm": [
+          24.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR1B.3",
+        "xy_mm": [
+          23.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2A.3",
+        "xy_mm": [
+          52.634,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2A.3",
+        "xy_mm": [
+          51.399,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2B.3",
+        "xy_mm": [
+          62.634,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR2B.3",
+        "xy_mm": [
+          61.399,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3A.3",
+        "xy_mm": [
+          90.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3A.3",
+        "xy_mm": [
+          89.4,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3B.3",
+        "xy_mm": [
+          100.635,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR3B.3",
+        "xy_mm": [
+          99.4,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4A.3",
+        "xy_mm": [
+          128.636,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4A.3",
+        "xy_mm": [
+          127.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4B.3",
+        "xy_mm": [
+          138.636,
+          84.818
+        ],
+        "inside_legacy_bar": true
+      },
+      {
+        "pad": "SR4B.3",
+        "xy_mm": [
+          137.401,
+          84.47
+        ],
+        "inside_legacy_bar": true
+      }
+    ]
+  },
+  "legacy_bar_polygons_mm": {
+    "VOUT": [
+      [
+        36.001,
+        0.5
+      ],
+      [
+        152.0,
+        0.5
+      ],
+      [
+        152.0,
+        39.5
+      ],
+      [
+        132.4995,
+        39.5
+      ],
+      [
+        132.4995,
+        55.5
+      ],
+      [
+        93.4995,
+        55.5
+      ],
+      [
+        93.4995,
+        39.5
+      ],
+      [
+        36.001,
+        39.5
+      ]
+    ],
+    "PGND": [
+      [
+        11.751,
+        103.97
+      ],
+      [
+        139.051,
+        103.97
+      ],
+      [
+        139.051,
+        64.97
+      ],
+      [
+        80.8994,
+        64.97
+      ],
+      [
+        80.8994,
+        49.5
+      ],
+      [
+        41.8994,
+        49.5
+      ],
+      [
+        41.8994,
+        64.97
+      ],
+      [
+        11.751,
+        64.97
+      ]
+    ]
+  },
+  "opposite_net_native_vias_needing_bottom_bar_insulation": {
+    "VOUT": [
+      {
+        "other_net": "CS1",
+        "at_mm": [
+          106.2,
+          56.0
+        ],
+        "via_outer_diameter_mm": 0.503
+      }
+    ],
+    "PGND": [
+      {
+        "other_net": "HB",
+        "at_mm": [
+          44.8,
+          61.999
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "HB",
+        "at_mm": [
+          50.9,
+          59.0
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "VCC12",
+        "at_mm": [
+          48.174,
+          63.5
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "VCC12",
+        "at_mm": [
+          51.6,
+          61.001
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "VCC12",
+        "at_mm": [
+          56.299,
+          63.9
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "VCC12",
+        "at_mm": [
+          56.299,
+          66.0
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "SW",
+        "at_mm": [
+          52.499,
+          63.9
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "SW",
+        "at_mm": [
+          51.699,
+          59.0
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "SW",
+        "at_mm": [
+          49.754,
+          54.0
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "CS1",
+        "at_mm": [
+          110.1,
+          66.5
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "CS1",
+        "at_mm": [
+          119.0,
+          69.0
+        ],
+        "via_outer_diameter_mm": 0.503
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          19.82,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          29.02,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          38.22,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          47.42,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          56.62,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          65.82,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          75.02,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          84.22,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          93.42,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          102.62,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          111.82,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          121.02,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          130.22,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      },
+      {
+        "other_net": "VOUT",
+        "at_mm": [
+          139.42,
+          102.2
+        ],
+        "via_outer_diameter_mm": 1.001
+      }
+    ]
+  },
+  "test_assembly_height_scenarios": {
+    "none": {
+      "cases": [
+        {
+          "thickness_mm": 1.2,
+          "assumed_contact_each_pole_uohm": 20.0,
+          "model_resistance_uohm": 121.511,
+          "model_loss_100a_w": 1.215,
+          "assembled_envelope_mm": 15.45,
+          "remaining_16mm_allowance_mm": 0.55,
+          "screen_both_pole_150uohm": true,
+          "screen_full_height": true,
+          "contacts_and_real_temperature_measured": false,
+          "manufacturer_approved": false
+        },
+        {
+          "thickness_mm": 1.2,
+          "assumed_contact_each_pole_uohm": 50.0,
+          "model_resistance_uohm": 181.511,
+          "model_loss_100a_w": 1.815,
+          "assembled_envelope_mm": 15.45,
+          "remaining_16mm_allowance_mm": 0.55,
+          "screen_both_pole_150uohm": false,
+          "screen_full_height": true,
+          "contacts_and_real_temperature_measured": false,
+          "manufacturer_approved": false
+        }
+      ],
+      "maximum_contact_uohm_each_if_other_assumptions_hold": 34.2445,
+      "no_bolt_holes_or_actual_pcb_bar_connection": true
+    },
+    "trial_TIM_clamp_tolerance": {
+      "cases": [
+        {
+          "thickness_mm": 1.2,
+          "assumed_contact_each_pole_uohm": 20.0,
+          "model_resistance_uohm": 121.511,
+          "model_loss_100a_w": 1.215,
+          "assembled_envelope_mm": 16.45,
+          "remaining_16mm_allowance_mm": -0.45,
+          "screen_both_pole_150uohm": true,
+          "screen_full_height": false,
+          "contacts_and_real_temperature_measured": false,
+          "manufacturer_approved": false
+        },
+        {
+          "thickness_mm": 1.2,
+          "assumed_contact_each_pole_uohm": 50.0,
+          "model_resistance_uohm": 181.511,
+          "model_loss_100a_w": 1.815,
+          "assembled_envelope_mm": 16.45,
+          "remaining_16mm_allowance_mm": -0.45,
+          "screen_both_pole_150uohm": false,
+          "screen_full_height": false,
+          "contacts_and_real_temperature_measured": false,
+          "manufacturer_approved": false
+        }
+      ],
+      "maximum_contact_uohm_each_if_other_assumptions_hold": 34.2445,
+      "no_bolt_holes_or_actual_pcb_bar_connection": true
+    }
+  },
+  "actual_dual_busbar_contact_created_on_v9": false,
+  "actual_terminal_drilled_and_copper_bar_fabricated": false,
+  "TIM_clamp_stackup_manufacturer_signed": false,
+  "battery_of_thermal_and_100A_measurements_passed": false,
+  "magnetics_and_D0_qualified": false,
+  "fabrication_approved": false
+}
