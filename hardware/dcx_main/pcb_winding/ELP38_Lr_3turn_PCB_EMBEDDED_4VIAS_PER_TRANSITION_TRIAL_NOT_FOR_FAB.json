@@ -1,0 +1,87 @@
+{
+  "schema": "D1_ELP38_NATIVE_MULTIVIA_3TURN_6LAYER_TRIAL_V1",
+  "status": "NATIVE_KICAD_ADDITIONAL_VIA_ARRAY_NOT_CURRENT_QUALIFIED_NOT_FOR_FAB",
+  "parent_two_via_board_sha256": "081a8b837849c71be7c458f499b1171b980c5f7807850fde8caca0ad832a094e",
+  "result_kicad_board_sha256": "5ea6b46543dc998b6d6071e45de9b37272b68d5a2ec79caf97f1f8adec49f26d",
+  "source_assumptions_sha256_lf": "039d6c4a668adc9e075f9394884dd4adeb61f8d7a6848a30269b0cc021cfb830",
+  "bridge_groups": [
+    {
+      "bridge_index": 1,
+      "original_endpoint_mm": [
+        11,
+        -22
+      ],
+      "new_vias_mm": [
+        [
+          9.5,
+          -22
+        ],
+        [
+          8.0,
+          -22
+        ],
+        [
+          6.5,
+          -22
+        ]
+      ],
+      "additional_preceding_turn_stubs_on_layers": [
+        "F.Cu",
+        "In1.Cu"
+      ],
+      "stub_end_mm": [
+        6.5,
+        -22
+      ],
+      "clearance_checked": true
+    },
+    {
+      "bridge_index": 2,
+      "original_endpoint_mm": [
+        14.5,
+        -25
+      ],
+      "new_vias_mm": [
+        [
+          13.0,
+          -25
+        ],
+        [
+          11.5,
+          -25
+        ],
+        [
+          10.0,
+          -25
+        ]
+      ],
+      "additional_preceding_turn_stubs_on_layers": [
+        "In2.Cu",
+        "In3.Cu"
+      ],
+      "stub_end_mm": [
+        10.0,
+        -25
+      ],
+      "clearance_checked": true
+    }
+  ],
+  "series_via_groups": 2,
+  "vias_per_transition": 4,
+  "total_transition_PTH": 8,
+  "new_tracks": 4,
+  "new_PTH": 6,
+  "all_through_holes_on_all_six_copper_layers": true,
+  "parent_3turn_kinematic_and_CORE_slots_preserved": true,
+  "self_short_and_non_adjacent_through_barrel_screen_passed": true,
+  "ideal_100c_single_via_rated_dc_loss_W_at_25um": 0.109936,
+  "ideal_equal_sharing_four_vias_pdc_series_pair_W_UNQUALIFIED": 0.054968,
+  "real_current_distribution_among_vias_verified": false,
+  "new_stubs_and_turn_2_effective_path_inductance_verified": false,
+  "plated_barrel_min_thickness_and_reliability_verified": false,
+  "nonlinear_N97_100C_and_200kHz_AC_loss_verified": false,
+  "manufacturable_electric_insulation_and_16mm_height_verified": false,
+  "manufacturer_first_article_approved": false,
+  "power_board_CAD_integrated": false,
+  "fabrication_approved": false
+}

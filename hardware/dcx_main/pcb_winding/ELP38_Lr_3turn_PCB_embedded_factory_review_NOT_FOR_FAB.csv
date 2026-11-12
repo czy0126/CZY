@@ -1,0 +1,14 @@
+item,source_or_required_fact,requested_supplier_qualification,evidence_status
+native_geometry,hardware/dcx_main/pcb_winding/ELP38_Lr_3turn_PCB_EMBEDDED_CONCEPT_NOT_FOR_FAB.kicad_pcb,"actual 3-turn 6-layer copper, three ferrite apertures and winding terminals",ENGINEERING_TRIAL_ONLY
+series_via_18um_trial,0.0208099mm² / 0.155594W nominal,"Obtain actual minimum plated barrel copper per coupon, demonstrate local rise at 9.45A RMS / >=104A pulse",UNVERIFIED_COMPUTED_DC_ONLY
+series_via_25um_trial,0.0294524mm² / 0.109936W nominal,"Obtain actual minimum plated barrel copper per coupon, demonstrate local rise at 9.45A RMS / >=104A pulse",UNVERIFIED_COMPUTED_DC_ONLY
+series_via_35um_trial,0.042333mm² / 0.076486W nominal,"Obtain actual minimum plated barrel copper per coupon, demonstrate local rise at 9.45A RMS / >=104A pulse",UNVERIFIED_COMPUTED_DC_ONLY
+DFM_Q01,,"Confirm six copper layers with 70um copper on each internal and outer layer, and finished thickness/tolerance",PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q02,,Provide minimum plated-through-hole barrel copper thickness and post-plate finished drill tolerance,PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q03,,"Quantify 9.45 A Lr RMS / 11.22 A overload plus >=104.17 A fault peak on each series transition via, measured resistance and temperature rise",PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q04,,Confirm all three ferrite-leg cutouts are manufacturable with clearance and routed/finished slot tolerance,PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q05,,"Provide laminate dielectric, creepage and breakdown limits for PCB winding near N97 core and primary circuitry",PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q06,,"Confirm ferrite clamp, insulation, TIM, cold plate, attachment hardware, and 16mm full worst-case assembly height",PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q07,,Review 200.622kHz proximity/fringing heating and thermal via / copper reference design,PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+DFM_Q08,,Confirm test coupon and sectioned micrograph after manufacture; provide magnetic B-H and measured 100C incremental L(I),PENDING_VENDOR_DOCUMENT_OR_FIRST_ARTICLE
+release,,"No first-article PCB fabrication or high-energy gate approval without N97 L(I), insulation, thermal and current evidence",NOT_FOR_FAB
