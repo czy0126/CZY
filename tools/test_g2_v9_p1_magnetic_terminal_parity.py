@@ -49,6 +49,11 @@ def test_r6_is_real_design_reference_but_missing_native_component():
     assert r["r6_required_pin_nets"]=={"2":"RUN","1":"VCC12"}
     assert r["r6_native_component_present"] is False
     assert r["r6_real_mpn_footprint_and_position_approved"] is False
+    assert r["r6_historical_r8_reference_DNP"] is True
+    assert r["r6_old_R8_renaming_proven_by_pin_net"] is True
+    assert r["r6_v9_P1_addIntoPcb_verified"] is None
+    assert r["r6_v9_P1_addIntoBom_verified"] is None
+    assert r["r6_must_be_assembled"] is None
 
 
 def test_native_cout72_all_144_pcb_pin_net_assignments_are_real():

@@ -25,6 +25,13 @@
     "1": "VCC12"
   },
   "r6_native_component_present": false,
+  "r6_historical_r8_reference_DNP": true,
+  "r6_historical_r8_eco_sha256": "c7de8b77917246894f10c81e78eaeb690376a0db546f10ec2dc775c0762f8cb5",
+  "r6_old_R8_renaming_proven_by_pin_net": true,
+  "r6_v9_P1_addIntoPcb_verified": null,
+  "r6_v9_P1_addIntoBom_verified": null,
+  "r6_must_be_assembled": null,
+  "r6_action": "Verify native V9 P1 DNP flag; if still addIntoPcb=false, treat it as intended DNP, not missing hardware. If true, formal ECO with validated 2-pad footprint and BOM.",
   "magnetics_required_pin_nets": {
     "T1": {
       "PRI_A": "PRI_T1",
@@ -509,7 +516,7 @@
   "fabrication_approved": false,
   "next_required_actions": [
     "Native V9 P1 rescan: independently verify no P1 changes since G1 source",
-    "Create/approve R6 package+value/MPN or formally ECO it off the P1 schematic, never invent DNP",
+    "Verify latest native R6 addIntoPcb/addIntoBom against historical R8 confirmed DNP and its R6 rename. Only fit a real R6 if latest schematic intentionally requires it; do not silently reverse DNP ECO",
     "Create T1-T4 and CT *native devices* with manufacturer physical pin/DOT proof; reuse actual 24 net-matched pad locations only after approved terminal geometry",
     "Rebuild editable new V11 PCB and synchronize schematic before native DRC",
     "Close remaining native connection and netlist errors and verify independently; four-wire/thermal/DFM and D0 remain separately required"

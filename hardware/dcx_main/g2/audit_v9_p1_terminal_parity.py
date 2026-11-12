@@ -23,6 +23,7 @@ NATIVE = HERE / "g2_v9_live_native_full_readback_20261112_NOT_FOR_FAB.json"
 INDEPENDENT = HERE / "g2_v9_independent_gui_reopen_v2_verified_NOT_FOR_FAB.json"
 G1_SCH = ROOT / "hardware/dcx_main/g1/g1_live_netlist.json"
 G1_P1 = ROOT / "hardware/dcx_main/g1/dcx_main_board_g1_lr_repack.eprj2"
+HISTORICAL_R8_ECO = ROOT / "hardware/dcx_main/gen/r8_eco_run_2026-11-06.json"
 OUT = HERE / "g2_v9_p1_magnetic_terminal_gap_NOT_FOR_FAB.json"
 NATIVE_SHA = "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2"
 MAGS = ["T1", "T2", "T3", "T4", "CT"]
@@ -117,6 +118,16 @@ def report():
         q=byref[ref]
         if set(q)!={"1","2"} or q["1"]!=["VOUT"] or q["2"]!=["PGND"]:
             raise ValueError("Native CHB pad/net parity drift at "+ref)
+    old_r8=json.loads(HISTORICAL_R8_ECO.read_text("utf8"))
+    phase3=old_r8.get("phase_3_reopen",{})
+    alias=sch.get("excluded_pullup",{})
+    if (phase3.get("status")!="ALREADY_DNP"
+        or phase3.get("before")!={"addIntoBom":False,"addIntoPcb":False}
+        or old_r8.get("phase_1_verify",{}).get("pin_map",{}).get("pullup",{}).get("pads")!=expected["R6"]
+        or alias.get("capture_designator")!="R6"
+        or alias.get("historical_designator")!="R8"
+        or alias.get("same_wiring_as_historical_r8") is not True):
+        raise ValueError("R6 historical R8 DNP/provenance mismatch")
     return {
         "schema":"G2_V9_P1_NATIVE_PAD_TERMINAL_RECONCILIATION_V1",
         "status":"R6_AND_5_MAGNETIC_COMPONENTS_MISSING_FROM_NATIVE_PCB_NOT_FOR_FAB",
@@ -135,6 +146,13 @@ def report():
         "p1_reference_missing_native_components":missing,
         "r6_required_pin_nets":expected["R6"],
         "r6_native_component_present":False,
+        "r6_historical_r8_reference_DNP":True,
+        "r6_historical_r8_eco_sha256":sha(HISTORICAL_R8_ECO),
+        "r6_old_R8_renaming_proven_by_pin_net":True,
+        "r6_v9_P1_addIntoPcb_verified":None,
+        "r6_v9_P1_addIntoBom_verified":None,
+        "r6_must_be_assembled":None,
+        "r6_action":"Verify native V9 P1 DNP flag; if still addIntoPcb=false, treat it as intended DNP, not missing hardware. If true, formal ECO with validated 2-pad footprint and BOM.",
         "magnetics_required_pin_nets":magnetic_pin_nets,
         "magnetics_bare_pad_count":len(native_magnet),
         "magnetics_bare_pads_with_matching_pin_and_net":24,
@@ -151,7 +169,7 @@ def report():
         "fabrication_approved":False,
         "next_required_actions":[
             "Native V9 P1 rescan: independently verify no P1 changes since G1 source",
-            "Create/approve R6 package+value/MPN or formally ECO it off the P1 schematic, never invent DNP",
+            "Verify latest native R6 addIntoPcb/addIntoBom against historical R8 confirmed DNP and its R6 rename. Only fit a real R6 if latest schematic intentionally requires it; do not silently reverse DNP ECO",
             "Create T1-T4 and CT *native devices* with manufacturer physical pin/DOT proof; reuse actual 24 net-matched pad locations only after approved terminal geometry",
             "Rebuild editable new V11 PCB and synchronize schematic before native DRC",
             "Close remaining native connection and netlist errors and verify independently; four-wire/thermal/DFM and D0 remain separately required"
