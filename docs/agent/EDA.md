@@ -475,6 +475,12 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - 本次 native PCB API 实际创建 3 个过孔和 3 条馈线（原生重合线自动拆段，实际总线数 403→407、过孔 90→93），pcb_Document.save() 返回 true，并经原生 PCB 再读回确认 149 器件 / 443 焊盘 / 407 线 / 93 孔 / 65 网；VOUT 的**源 CTAP 与 Cout 正极不再分离**，实际铜岛几何筛查由 2→1。同一文件真实 EDA DRC Connection 170→168、Netlist 1、Physical 0，见 g2_v9_vout_source_bottom_feeder_verified_NOT_FOR_FAB.json，最新 V9 源 SHA256 d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2。
 - **必须严守功率额定界限**：这三条 1.6mm PCB 铜线、3 个 0.4mm 钻孔过孔和既有 1.6mm Cout 收集母线仅证明实际连通，*绝不等于 100A 电流容量*，不存在温升、via 金属孔壁、并联均流、板厚铜厚/环境温度、金属接触/螺栓孔、底层叠层绝缘验证，不能发布制造 Gerber。剩余 PGND 仍有 39 个独立几何铜岛，多条逻辑网仍开路。继续需要重新设计 VOUT/PGND 两极成体系的实质载流铜结构；当前保持 NOT_FOR_FAB，不为形式 DRC 数字宣称完成。
 
+### G2 V9 跨进程独立重开与源锁定只读审核（2026-11-12）
+
+- `audit_v9_independent_reopen.py` 使用**已保存 V9 的独立逐字节副本**，在另一个可见 GUI 会话只读打开，逐项核查 149/443/407/93/65、72颗 CHB01–72 真实封装脚1=VOUT/脚2=PGND、COUT_T530_72 原理图72件/144线、实际 VOUT CTAP+电容一铜岛；相关检查已经运行，但该次**独立会话的原生DRC读取失败**，回执 `g2_v9_independent_gui_reopen_verified_NOT_FOR_FAB.json` 必须保留 `INDEPENDENT_REOPEN_NOT_VERIFIED_NOT_FOR_FAB`，绝不可当全部通过。原始V9和V8字节、原有V5/V8/V9三个可见窗口均保持不变；仅新增验证会话已关闭。失败的副本不能再次作为单步施工目标。
+- 使用既有 V9 可见会话原生 API 对同一保存文件重新执行只读 DRC，得 **Connection 168 / Netlist 1**，来源 SHA 未变，原始原生DRC回执 `g2_v9_live_drc_readonly_followup_NOT_FOR_FAB.json`。此结果证明该原工程编辑器DRC可以运行，**不能**弥补独立会话DRC失败，也不证明整板无断线。保存的 native PCB 读取 `g2_v9_live_native_full_readback_20261112_NOT_FOR_FAB.json` 用于100A铜排机械覆叠而非额定证明。
+- 原生两焊盘 `.efoo` 与 CAP `.esym` 在默认 Windows `core.autocrlf` 下会变为CRLF而不改变电路图元；`-text` Git属性和 LF 正规化SHA 校验解决平台误报，但真正内容篡改仍然触发失败。完整72颗的原生器件与原理图已存在，不应再重复添加，未闭合的是其他原理图/PCB网表和真正100A双极实体载流连接。保持 `NOT_FOR_FAB`。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
