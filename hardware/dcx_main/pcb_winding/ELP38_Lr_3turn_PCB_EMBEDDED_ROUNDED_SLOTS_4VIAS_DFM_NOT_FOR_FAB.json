@@ -1,0 +1,68 @@
+{
+  "schema": "D1_ELP38_NATIVE_ROUNDED_SLOT_4VIA_EXPERIMENT_V1",
+  "status": "REAL_KICAD_PCB_ROUTE_TOOL_FILLETED_3TURN_NOT_FOR_FAB",
+  "source_config_lf_sha256": "5dbd2f000c8cb48f4dccb9b3544ee1c242468c0329b45f6efcb31c8286903cef",
+  "native_kicad_sha256_normalized_lf": "a3a7c5b1ec3d49dcedc9106c4a65392547f7d1e3f3d5a330986f9f2f55b8ad21",
+  "parent_two_via_and_four_via_square_corner_boards_preserved": true,
+  "core_slot_routing_corner_radius_mm": 0.8,
+  "winding_copper_outshift_and_aperture_expansion_mm": 0.8,
+  "winding_turns": 3,
+  "parallel_copper_layers_per_turn": 2,
+  "three_actual_rounded_ferrite_cutouts": true,
+  "original_unchanged_nominal_inner_leg_rectangle_still_fits": true,
+  "slot_bounding_before": [
+    [
+      -4.17,
+      -13.049999999999999,
+      4.17,
+      13.049999999999999
+    ],
+    [
+      -19.35,
+      -13.049999999999999,
+      -9.82,
+      13.049999999999999
+    ],
+    [
+      9.82,
+      -13.049999999999999,
+      19.35,
+      13.049999999999999
+    ]
+  ],
+  "slot_bounding_after": [
+    [
+      -4.97,
+      -13.85,
+      4.97,
+      13.85
+    ],
+    [
+      -20.15,
+      -13.85,
+      -9.02,
+      13.85
+    ],
+    [
+      9.02,
+      -13.85,
+      20.15,
+      13.85
+    ]
+  ],
+  "native_new_12_slot_arcs": true,
+  "turn_transition_bundles": 2,
+  "pth_per_bundle": 4,
+  "new_through_vias": 6,
+  "new_branch_copper_segments": 4,
+  "physical_turn_topology_rechecked": true,
+  "industry_vendor_nominal_corner_machining_guidance": "https://jlcpcb.com/capabilities/pcb-capabilities",
+  "slot_mill_tool_radius_vendor_approved": false,
+  "slot_vs_actual_TDK_ferrite_feasibility_approved": false,
+  "ELP38_Window_core_and_partial_copper_DC_safe": false,
+  "Lr_100C_N97_L_I_and_200kHz_AC_loss_qualified": false,
+  "via_fault_SOA_and_hot_Rac_qualified": false,
+  "total_16mm_coldplate_stack_and_mechanical_approved": false,
+  "transformer_4x3to1to1_and_CT_integrated": false,
+  "fabrication_approved": false
+}
