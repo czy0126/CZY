@@ -461,6 +461,13 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - **真实保存**：调用 pcb_Document.save() 返回 true，等待写盘后，最新二进制 dcx_main_board_g2_T530_OEM_DENSITY_B_V9_REAL_72_COMPONENT_TRIAL_NOT_FOR_FAB.eprj2 SHA256 为 b4b09841247ae9c15bad1e3de6acde44f47bd907ec08ed5a4077138e6d459960，V8 原版未变。原生 DRC Connection=170、Netlist=1、Physical=0；记录在 g2_v9_real_t530_72_native_drc.json。**这不是完整消除 DRC**。
 - 库资源保留有实际二焊盘 .efoo 原生源、CAP 两引脚 .esym 原生源及 t530_x1_real_device_association_NOT_FOR_FAB.json 器件符号/封装关联可追溯。**仍未在同版本原理图添加并连接 72 个 CAP 符号**，现有 CAP 符号未显式标正负极，丝印、courtyard 及厂家最终生产 land signoff 均未做；100A VOUT/PGND 完整主铜、磁件 24 物理 PAD/DOT、D0 保护实测及全部剩余 DRC 也未闭环，因此保持 NOT_FOR_FAB。
 
+
+### G2 V9 Cout 同版真实原理图与 PCB 验证（2026-11-12）
+
+- 保留全部可见嘉立创 EDA V5 / V8 / V9 窗口；只在原 V9 内部打开原理图标签页。在原生 Schematic1 中创建 Cout 第二页 COUT_T530_72，UUID 4de189e79beba629，第一页 P1 保持原有 83 件、280 条线（临时 CHB01 探针已删除）。第二页通过原生 API 新增 72 个 CHB01–CHB72 关联库器件符号及 144 条网线，脚 1=VOUT、脚 2=PGND。g2_v9_sch_cout72_native_checkpoint_NOT_FOR_FAB.json 原生读回 72/72 符号、144 条线、无缺失；批次见 g2_v9_sch_chb_*_NOT_FOR_FAB.json。
+- 原生 sch_Document.save() 各页返回 true，PCB pcb_Document.save() 返回 true。之后逐一跨页比对 72 个原理图器件和 72 个 PCB 器件的 1、2 脚编号、PCB 1=VOUT 2=PGND，结果绑定最新 eprj2 SHA256 598e896935093e3c7c86bb18258c3e00c11edf1005c13fd0c885cb33085c6ce9，见 g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json。只能说明 Cout 72 颗脚号/网络匹配，不代表其他 77 个器件都已配平。
+- 同版原生 DRC（g2_v9_schematic_cap72_native_drc.json）：Connection 170 / Netlist 1 / Physical 0；未解决 100 A VOUT/PGND 主铜路、磁件 24 物理 PAD/DOT、D0 保护及投板。保持 NOT_FOR_FAB。后续不再重复打开新的 EDA GUI 窗口。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。

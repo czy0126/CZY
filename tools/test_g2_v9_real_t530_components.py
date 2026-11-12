@@ -22,8 +22,10 @@ def test_v9_saved_real_72_pcb_board_and_source_identity():
     assert r["72_real_pcb_footprint_instances"] is True
     assert r["72_schematic_symbols_added"] is False
     assert r["fab_approved"] is False
-    assert r["candidate_sha256"] == C.sha(C.V9)
+    # Historical PCB-only save predates the added native Cout schematic page.
+    assert r["candidate_sha256"] != C.sha(C.V9)
     assert r["v8_sha256"] == C.sha(C.V8) == C.EXPECTED_V8_SHA
+    assert C.sha(C.V9) == load(G2 / "g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json")["candidate_sha256"]
     assert r["candidate_sha256"] != r["v8_sha256"]
 
 
@@ -45,7 +47,9 @@ def test_native_drc_keeps_original_170_connections_without_physical_violations()
     r = load(G2 / "g2_v9_real_t530_72_native_drc.json")
     assert r["status"] == "REAL_NATIVE_DRC_V9_CAP72_NOT_FOR_FAB"
     assert r["native_category"] == {"Connection Error": 170, "Netlist Error": 1}
-    assert r["source_hash_after_read"] == C.sha(C.V9)
+    # Historic V9 PCB-only DRC: schematic edits subsequently changed file hash.
+    assert r["source_hash_after_read"] != C.sha(C.V9)
+    assert load(G2 / "g2_v9_schematic_cap72_native_drc.json")["drc_categories"] == r["native_category"]
     assert r["fabrication_approved"] is False
 
 
