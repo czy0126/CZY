@@ -161,6 +161,25 @@ def open_board(stage):
         return None
     return sid
 
+def confirm_island_joins(actual,order):
+    """Require target pads to share copper, not just a lower native DRC count.
+
+    This independent geometric check complements native save/reopen and DRC;
+    it is not manufacturing or full netlist approval.
+    """
+    for path in order["paths"]:
+        net=path["net"]
+        groups=ISLAND.islands(actual,{net}).get(net,{}).get("islands",[])
+        joined=[]
+        for name in (path["start"],path["end"]):
+            hits=[i for i,g in enumerate(groups) if name in g["pads"]]
+            if len(hits)!=1:
+                raise ValueError("Missing/ambiguous target copper island: "+str((net,name,hits)))
+            joined.append(hits[0])
+        if joined[0]!=joined[1]:
+            raise ValueError("Native target pads still on separate copper islands: "+str((net,path["start"],path["end"])))
+
+
 def verify(actual,order):
     before,_=raw_source()
     if tuple(len(actual[k]) for k in ("components","pads","nets"))!=(77,443,65):
@@ -182,6 +201,7 @@ def verify(actual,order):
         if not C.coverage(wire,actual["lines"]) and not C.physical_copper_covers(
                 wire,actual["lines"],full_original_width=False):
             raise ValueError("Native new low-current copper absent "+str(wire))
+    confirm_island_joins(actual,order)
     return {"components":77,"pads":443,"nets":65,"original_copper_physically_covered":True,
             "new_control_stubs_physically_covered":len(order["tracks"]),
             "existing_90_vias_preserved":True,"manufacturer_approved":False}

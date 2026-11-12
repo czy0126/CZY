@@ -12,6 +12,7 @@
 - 在 G1 候选板上重读清册（`hardware/dcx_main/g1/export_native_inventory.py`）
 - 读活网表：`--path` 打开时所有制造导出都是 null（`hardware/dcx_main/g1/export_live_netlist.py`）
 - 原生主板的取值 ECO（`tools/native_value_eco.py`）
+- G2 OEM V5→V6 原生连通验收与超时隔离（2026-11-12）
 - KiCad 10.0 CLI（headless，与 LCEDA 互补）
 - D0 十路保护板的铜（已按 issue #36 延后）
 
@@ -425,6 +426,54 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 里内径 0.3–6.3 mm、外径 0.5–10 mm、Track/Via 间距 0.152 mm（1 oz 表），0.2 mm 钻孔会被 DRC 判 13 条
 `Via Size`。编辑器把 mil **截断**到 0.1（0.5 mm → 19.6 mil、0.3 mm → 11.8 mil），所以贴着规则
 下限的尺寸要往上留 0.1 mil（外径写 0.505 mm 才落到 19.8 mil）。
+
+## G2 OEM V5→V6 原生连通验收与超时隔离（2026-11-12）
+
+- V5 源头是已保存、关闭、重开并运行原生 DRC 的真实 16×5 OEM PCB：`g2_t530_oem_v5_vcc12s_c111_c112_drc_delta.json` 记录 Connection **173→172**、Netlist **1**、Physical **0**。新增强制 `confirm_island_joins()`：只有目标 `C111.1` 与 `C112.1` 在**实际读回的铜岛图中合并**才认可，不能只看 DRC 项数下降；反例测试会把未经连接的源板拒绝。
+- 下一单独控制网候选 `route_t530_oem_v6_ocm_one_real_island_join.py --check`：V5 实际读回中 `OCM R17.2` 与 `C11.2` 位于不同铜岛；0.15 mm 顶层三段走线在 y=63.4 mm 的预扫描中未发现异网/磁芯区域冲突。**此时只是几何计划，不等于已保存的 PCB 铜线。**
+- 首次 V6 `--apply` 取得原生 open/ping，但写入时返回 `REQUEST_TIMEOUT`（59750 ms）。该次实际候选路径与 V5 父文件在异常后 **SHA256 相同** (`6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863`)，未得到可核验的保存新铜或原生 DRC 下降。其日志回执应保留，**V6 副本绝不再次执行 `--apply`**；如果主进程仍卡死，先核实 render 是否健康，修复进程状态后从冻结 V5 建立**另一个全新路径**的后续试验。
+- 代码已补 `open_board` **真实 readback API 探活**（而非只信 `return 1;`），并核对打开板的 77/443/400/90/65 件/焊盘/线/孔/网计数；真实 API 超时/对象数漂移即拒绝任何写入。未来任一后续批次仍需原生保存→防抖落盘→关闭→只读重开→已验证铜面连续→真实 DRC Connection 下降且 Physical 不增加，不能把独立几何筛查替代 EDA 或制造签核。
+- **V7 独立恢复实验实测**：通过 `lceda-pro session list` 核实仅有已关闭的 headless 会话，`lceda-pro stop` 成功，然后用唯一未覆盖的 V7 路径从相同冻结 V5 复制。重启后的新 renderId=1，open 14.097s、ping 2ms **成功**；紧随其后的真实 native readback probe 再次 `REQUEST_TIMEOUT` 59750ms。增强守卫生效，没有创建新铜或调用保存，V7 副本和 V5 父 SHA256 依然相同。原始 open/ping/probe/close 与源锁定 route_plan 均在 `hardware/dcx_main/g2/g2_t530_oem_v7_ocm_r17_c11_*`。不能再对同一 V7 运行 `--apply`。
+- **停止无效重试的条件**：V6 写入超时，V7 重启后的首次真实只读 API 同样超时，证明根因尚未解决。恢复下一阶段先独立验证：已打开 PCB document、真实 API 最小只读请求在正常时限内完成、完整 77/443/400/90/65 readback、GUI 端无挂起 render/模态对话框，然后**再**生成唯一新副本。未取得这四项不得反复 V8/V9 或降低 DRC/安全门槛。
+- 仍未取得 72 颗正式原理图/封装的同版匹配、100 A 双极母线和端子、五磁件供应商 24 个 PAD/DOT、D0 十路实物失电与故障保护；V5/V6/V7 一律 `NOT_FOR_FAB`。
+
+## G2 V8：保留可见 GUI 后的原生写入恢复（2026-11-12 实跑）
+
+- **真实阻塞不在铜线规划，而在被关闭的 GUI 与未激活的 PCB 文档**：早期 headless V6 真实写入超时、V7 真实读回超时，不可重新对这两份副本写入。Windows 交互用户任务 ChatGPT-CZY-EasyEDA-Visible-20261112 拉起真实可见窗口，使用绝对路径及 --headless false。后续通过现存 sessionId 直接调用 API：先 getCurrentProjectInfo 确认工程，再 dmt_EditorControl.openDocument(pcb.uuid) 激活，再 read_driver_route.js 读回。不要以 return 1 ping 作为真实文档可用证据，**不得因为只读检查失败擅自关闭/停止现有可见 GUI**。
+- **V5 真实 readback + DRC**：会话 alive 时，openDocument 返回正常（约 7.4 s）；原生 77 components / 443 pads / 400 lines / 90 vias / 65 nets 完整读回；原生 DRC Connection=172，Netlist=1，Physical=0；原版源 SHA256 为 6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863，检查前后未变。
+- **V8 单独新副本，已真实写入而不是计划**：route_t530_oem_v8_gui_real_ocm.py --apply 绑定唯一可见 V8 工程，确认 V5 原始哈希及原生 77/443/400/90/65，确认 OCM 的 R17.2 与 C11.2 原本属于不同铜岛；写入前建立只允许一次的 attempt 回执。随后经 pcb_PrimitiveLine.create 真实新增 3 段 0.15 mm 顶层 OCM 铜，pcb_Document.save() 返回 true，等待防抖后独立 V8 .eprj2 源 SHA256 改为 058e67293932ab7b6b46efd8200dc3f7642a03166814829f23b2385592123b3d。V5 仍原字节。--verify 在**同一个仍然打开的可见 V8 GUI** 实读 77/443/403/90/65，验证铜岛合并、旧铜完整覆盖、原生 DRC Connection 172→170 / Netlist 1 / Physical 0；原生证据为 g2_t530_oem_v8_gui_ocm_verification.json。**这不是关闭重开的独立读回，不能声称那一步已完成。**
+- V5 与 V8 界面保持可见且会话 alive，禁止对 V8 重复 --apply，也不得执行 lceda-pro stop 或 session close --destroy。需要下一次正式变更，必须从已存版再建不覆盖的新文件并进行图元/DRC 实验。
+- **Cout 真正器件库仍未配平**：可见 GUI 中系统库 lib_Device.search(T530X477M006ATE004)、lib_Device.search(C2158170)、lib_Device.searchByProperties({supplierId:C2158170}) 均无命中；通用 7343 类型封装不代表匹配厂家 Table2 的 Density-B 双焊盘尺寸、极性或 72 个原理图实例。当前 144 裸焊盘仍不是 72 个真实器件，100A 双极铜排、磁件 24 物理 PAD/DOT 与 D0 实物故障关断均未验收，保持 NOT_FOR_FAB。
+
+
+### P0-A：已做的原生 KEMET 封装试验（沿用可见 V9，2026-11-12）
+
+- 只在现有 V9 可见嘉立创窗口的内部标签，使用 G1_R34_REC10K_v3_TEST 试验库生成 X1 / 7343-43 Density-B 试验封装（UUID c9bdf53e779d4dd6a2eee1e6cecd4462），原生创建 PAD 1（右侧正极）与 PAD 2（左侧负极）。采用 KEMET 2026 年 Table 2 的 L=2.37 mm、W=2.43 mm、S=3.87 mm，端子中心 x=±3.12 mm。封装 API 的 pcb_Document.save() 返回 true；本次没有跨编辑器独立重开验收。
+- 原生封装源为 hardware/dcx_main/g2/T530X477M006ATE004_X1_DENSITY_B_NATIVE_FOOTPRINT_NOT_FOR_FAB.efoo，证据为 t530_x1_density_b_library_pilot.json，测试为 tools/test_g2_t530_native_footprint.py。实际保存源中两个 PAD 记录均为矩形、顶层，且尺寸/坐标与原厂规划脚位在 mil 量化误差内一致。
+- 重要限制：PCB 上通过 footprint search-item、简单库 UUID、带 numeric type 的 PCB_PrimitiveComponent.create 仍不能实例化此自制封装，三种均失败，V9 PCB 保持原 77 器件、443 焊盘；还需真正建立 device / symbol / footprint 关联、补足 courtyard / 丝印、完成 72 位号匹配和厂家审查。**当前封装不准用于正式下单生产**。
+- 用户要求所有后续 EDA 工作优先沿用已经打开的 V5、V8、V9 窗口及其内部标签，不允许每一步重新 open GUI；不得自行关闭、重启或 stop 现有会话。只有确有安全隔离必要且现有会话无法复用时才单独处理新会话。
+
+
+### P0-A：V9 72 颗真实 T530 原生 PCB 器件已验收（2026-11-12）
+
+- **解决器件放置的根因**：先以 lib_Device.create 将已保存 T530 X1 Density-B native footprint 和系统 CAP symbol 真实关联成试验库 Device（UUID 903d14a6c07f4df992b7da8bfe2d4952），再以完整 lib_Device.search 返回值调用 pcb_PrimitiveComponent.create；单给 footprint 的三种参数都是前轮历史失败。这一流程在已打开的 V9 GUI 内成功放置 72 个 CHB01..CHB72，并经 pcb_PrimitivePad.modify 分别将真实编号 1=VOUT、2=PGND 连接，检查坐标完全重合后删除原有 144 个 CHBxx_N/P 裸焊盘。未增加额外嘉立创 GUI 窗口。
+- **真实原生独立读回**：149 个器件（原 77 + 新 72）、443 焊盘（原 299 + 新 144）、403 铜线、90 过孔、65 网络；每颗 CHB 的两个数字焊盘原生网络都正确，原有 144 个裸焊盘计数归零。g2_v9_real_t530_72_checkpoint_NOT_FOR_FAB.json 记录逐位号验证、g2_v9_chb_*_native_NOT_FOR_FAB.json 记录每个可复核小批次及首次 CHB03 native 0.1mil 双坐标量化故障恢复（原有 0.06mil 二维欧氏容差过小，改为 0.11mil）。
+- **真实保存**：调用 pcb_Document.save() 返回 true，等待写盘后，最新二进制 dcx_main_board_g2_T530_OEM_DENSITY_B_V9_REAL_72_COMPONENT_TRIAL_NOT_FOR_FAB.eprj2 SHA256 为 b4b09841247ae9c15bad1e3de6acde44f47bd907ec08ed5a4077138e6d459960，V8 原版未变。原生 DRC Connection=170、Netlist=1、Physical=0；记录在 g2_v9_real_t530_72_native_drc.json。**这不是完整消除 DRC**。
+- 库资源保留有实际二焊盘 .efoo 原生源、CAP 两引脚 .esym 原生源及 t530_x1_real_device_association_NOT_FOR_FAB.json 器件符号/封装关联可追溯。**仍未在同版本原理图添加并连接 72 个 CAP 符号**，现有 CAP 符号未显式标正负极，丝印、courtyard 及厂家最终生产 land signoff 均未做；100A VOUT/PGND 完整主铜、磁件 24 物理 PAD/DOT、D0 保护实测及全部剩余 DRC 也未闭环，因此保持 NOT_FOR_FAB。
+
+
+### G2 V9 Cout 同版真实原理图与 PCB 验证（2026-11-12）
+
+- 保留全部可见嘉立创 EDA V5 / V8 / V9 窗口；只在原 V9 内部打开原理图标签页。在原生 Schematic1 中创建 Cout 第二页 COUT_T530_72，UUID 4de189e79beba629，第一页 P1 保持原有 83 件、280 条线（临时 CHB01 探针已删除）。第二页通过原生 API 新增 72 个 CHB01–CHB72 关联库器件符号及 144 条网线，脚 1=VOUT、脚 2=PGND。g2_v9_sch_cout72_native_checkpoint_NOT_FOR_FAB.json 原生读回 72/72 符号、144 条线、无缺失；批次见 g2_v9_sch_chb_*_NOT_FOR_FAB.json。
+- 原生 sch_Document.save() 各页返回 true，PCB pcb_Document.save() 返回 true。之后逐一跨页比对 72 个原理图器件和 72 个 PCB 器件的 1、2 脚编号、PCB 1=VOUT 2=PGND，结果绑定最新 eprj2 SHA256 598e896935093e3c7c86bb18258c3e00c11edf1005c13fd0c885cb33085c6ce9，见 g2_v9_native_72_cout_schematic_pcb_pin_parity_NOT_FOR_FAB.json。只能说明 Cout 72 颗脚号/网络匹配，不代表其他 77 个器件都已配平。
+- 同版原生 DRC（g2_v9_schematic_cap72_native_drc.json）：Connection 170 / Netlist 1 / Physical 0；未解决 100 A VOUT/PGND 主铜路、磁件 24 物理 PAD/DOT、D0 保护及投板。保持 NOT_FOR_FAB。后续不再重复打开新的 EDA GUI 窗口。
+
+
+### G2 V9 真实 VOUT 变压器输出至 Cout 铜岛馈电试验（2026-11-12）
+
+- 以新 V9 已保存的双页原理图与 72 个真实 T530 PCB 器件为基准，原生 readback 显示 VOUT 分成两个独立实际铜岛：四个变压器 CTAP 裸物理焊盘所在的源铜岛，以及 72 个 Cout 正极和负载输出端所在的阵列铜岛。直接基于 V9 443 焊盘 / 403 铜线 / 90 孔原生数据预扫对异网的几何间隙，沿 x=37、75、151 mm、y=20→94 mm 在底层布三条 1.6mm 铜线，并在三个 CTAP 源头放置直径 1.0mm / 钻孔 0.4mm 金属化孔；x=113mm 路径因异网 pad/trace 撞线未写入。plan: g2_v9_vout_source_bottom_feeder_plan_NOT_FOR_FAB.json。操作全部使用持续可见的 V9 原生编辑器窗口，没有新开、关闭或重启 EDA GUI。
+- 本次 native PCB API 实际创建 3 个过孔和 3 条馈线（原生重合线自动拆段，实际总线数 403→407、过孔 90→93），pcb_Document.save() 返回 true，并经原生 PCB 再读回确认 149 器件 / 443 焊盘 / 407 线 / 93 孔 / 65 网；VOUT 的**源 CTAP 与 Cout 正极不再分离**，实际铜岛几何筛查由 2→1。同一文件真实 EDA DRC Connection 170→168、Netlist 1、Physical 0，见 g2_v9_vout_source_bottom_feeder_verified_NOT_FOR_FAB.json，最新 V9 源 SHA256 d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2。
+- **必须严守功率额定界限**：这三条 1.6mm PCB 铜线、3 个 0.4mm 钻孔过孔和既有 1.6mm Cout 收集母线仅证明实际连通，*绝不等于 100A 电流容量*，不存在温升、via 金属孔壁、并联均流、板厚铜厚/环境温度、金属接触/螺栓孔、底层叠层绝缘验证，不能发布制造 Gerber。剩余 PGND 仍有 39 个独立几何铜岛，多条逻辑网仍开路。继续需要重新设计 VOUT/PGND 两极成体系的实质载流铜结构；当前保持 NOT_FOR_FAB，不为形式 DRC 数字宣称完成。
 
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 

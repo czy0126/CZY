@@ -1,12 +1,12 @@
 # D1 当前交接面板（唯一日常入口）
 
-> 状态基准：2026-11-11 本机实跑；研发主线 `feat/d1-fab-package`，PR #98 原生直连方案已在 Windows EasyEDA 创建并验收 149 铜线/173 Connection。下述本地新增候选及回执须随本轮提交入库才是共享研发基线。本页是操作入口，不是第二份任务总表，也不批准制造。实际结论以最新**同一 CAD 修订版**的原生证据和 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json)为准。总进展只回填 [Issue #4](https://github.com/czy0126/CZY/issues/4)。
+> 2026-11-12 当前 CAD 基准：**[G2 V9 72 个原生真实 T530 器件 PCB](../hardware/dcx_main/g2/dcx_main_board_g2_T530_OEM_DENSITY_B_V9_REAL_72_COMPONENT_TRIAL_NOT_FOR_FAB.eprj2)**，真实器件 149 / 焊盘 443 / 铜线 403 / 过孔 90 / 网络 65，原生 DRC Connection=170、Netlist=1、Physical=0；[V9 原生确认](../hardware/dcx_main/g2/g2_v9_real_t530_72_checkpoint_NOT_FOR_FAB.json)、[保存回执](../hardware/dcx_main/g2/g2_v9_72_native_devices_save_evidence.json)以及[真实 DRC](../hardware/dcx_main/g2/g2_v9_real_t530_72_native_drc.json)。此处才是最新 G2；此前 G1、V5、V8 数字均为历史阶段。EDA 会话优先复用打开的窗口，详见 [EDA 操作事实](agent/EDA.md)。推进见 [PR #114](https://github.com/czy0126/CZY/pull/114)，投板仍按 [D1 制造门禁](../hardware/dcx_main/d1_fabrication_gate.json) 核准。
 
 ## 目标与固定范围
 
 **D1**：48 V → 约 2 V、固定约 24:1、目标 100 A、完整装配高度目标 ≤16 mm；成本暂不设上限，但安全、热、机械和制造验证不能省。D2 120 A 与 D3 ≤10 mm 均不占本轮 G1–G3 的资源。上位设计合同是 [第 49 章](D1_EXECUTION_KIT/49_D1主功率板PCB唯一执行计划_2026-11-09.md)，旧版本路线仅为历史证据。
 
-**目前真实状态：`NOT_FOR_FAB`。** 现有 G1 可编辑原生 PCB，但尚未完成 G1 布线、G2 实体封装/100 A 铜路及 G3 原生 ERC/DRC、保护与制造审查。每次回报只引用当前实际产物，不再汇总旧日期的“最新”。
+**制造状态：`NOT_FOR_FAB`。** G2 V9 已完成真实 72 个 T530 器件的 PCB 封装及同版 Cout 原理图 72 个符号/144 条连接线逐脚核对；进一步在原生 PCB 真正连接了**变压器 CTAP 所在 VOUT 源铜岛与 Cout 电容 VOUT 铜岛**，3 个 0.4mm 金属孔和 3 条 1.6mm 底层铜线经原生 DRC 验证，Connection=**168**、Netlist=1、Physical=0。[最新 VOUT 原生铜岛证据](../hardware/dcx_main/g2/g2_v9_vout_source_bottom_feeder_verified_NOT_FOR_FAB.json)。**重要：这只是物理连通，不是 100A 载流设计合格**；极性丝印及原厂封装签核、100A VOUT/PGND 两极功率铜路、磁件物理 PAD/DOT、其余器件逐脚配平、D0 实物保护验证与制造审查均未完成。可见 EDA GUI 继续保留，不因 API 调试而关闭。
 
 **本机已执行 PR #98 六组控制网的原生铜线增量，并通过保存、重开、图元核对和真实 DRC。** 在冻结的 132线/183 Connection 父板副本中，以 `pcb_PrimitiveLine.create` 创建 RUN、SS、OC、OCD、OCM 五网六组共17段、0过孔；实际铜线132→149，Connection 183→**173**，Netlist **1不变**、Physical **0不变**。77件、299焊盘、65网、18过孔及全部旧132条铜线不漂移。[原生DRC回执](../hardware/dcx_main/g1/g1_control_direct_drc_delta.json)和[重开对照](../hardware/dcx_main/g1/g1_control_direct_reopen_report.json)绑定新候选哈希。首次立即重开返回 `PCB missing`，已保留原失败信息，未重落铜；通过新增只验证候选的 `--resume` 二次只读打开成功并取得原生 DRC。**新候选存在后严禁再次运行 `--apply`**。
 
@@ -15,9 +15,9 @@
 python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 ```
 
-**G1 149线仍是冻结设计父版**，173 Connection / 1 Netlist未闭合；G2已有单独144焊盘试排，下一项A不是重复放焊盘，而是以该G2原生候选的**另一个非覆盖副本**完善真实器件封装、原理图对齐与100A VOUT/PGND双极铜路；原有9线/12组、PR #98的17段都不得重画。`NOT_FOR_FAB`。
+**历史设计父版 G1 149 铜线**仍保留为复现源；其 173 Connection / 1 Netlist 不能冒充 G2 当前结果。新 V9 已完成 72 个真实 PCB 器件的放置与引脚网络配平，下一步聚焦剩余原理图同版一致性、VOUT/PGND 100 A 双极铜路和物理磁件。`NOT_FOR_FAB`。
 
-**不计成本 Cout 备选（PR #93 来源，现以本机149线复核）：** 已以确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）为输入，将72颗（18×4）的XY与既有铜线干涉筛查升级为149线/173 Connection原生CAD同版，见[新版报告](../hardware/dcx_main/g2/cout_t530_72_REAL149_NOT_FOR_FAB.json)及生成器 `tools/cout_t530_72.py`，仍检测65处既有VOUT/PGND铜线穿越。33.84mF、理想ESR 0.0556mΩ仅为25°C/100kHz算术；新PCB上**没有**装入72颗、没有重构VOUT/PGND主铜路。100°C/200kHz、启动均流、厂家正式land、16mm全装配均未核实。15颗A720仍只是2.5V基准模型，不替代高耐压方案。
+**Cout 最新 G2 V9**：KEMET T530X477M006ATE004（6.3V、470µF、25°C/100kHz ESR=4mΩ）共 72 颗，在 16列×5行的筛选 72 位点完成**真实 PCB 器件实例化**；33.84mF 和理想并联 ESR=0.0556mΩ 仍只是名义算术，不能代替 100°C/200kHz、均流、自热和实际滤波动态验证。原先 18列×4行/149 线的 [历史几何初筛](../hardware/dcx_main/g2/cout_t530_72_REAL149_NOT_FOR_FAB.json) 已失去当前 CAD 资格。**当前仍没有完整 100A 双极主铜路或已验收的制造封装/冷板接口**。
 
 **本轮 D1 T530 原厂尺寸替代布局（2026-11-12，当前电容土地尺寸基准）：** 查KEMET T52x/T530原厂Table2，X1/7343–43在Density-B下采用双焊盘各**2.37×2.43 mm**、内间隙**3.87 mm**、Courtyard **9.12×5.10 mm**。原18列间距8.3 mm比原厂Courtyard宽度窄0.82 mm，**旧18×4/G2双极铜线副本不可用于投板**。现以G1真实149线为来源重新分配16×5阵列的72个有效位置（80潜在位置、78个无冲突位置、实选72），在原生嘉立创EDA独立副本分6批实际创建**144个有PGND/VOUT网络的厂家尺寸顶层焊盘**，真实保存、关闭重开读回逐项相符、原生DRC Connection **321** / Netlist **1** / Physical **0**，原77器件、299旧焊盘、149原始铜线、18原始过孔和65网全部原封保留。可编辑[原生16×5新候选](../hardware/dcx_main/g2/dcx_main_board_g2_T530_OEM_DENSITY_B_V2_144_LANDS_NOT_FOR_FAB.eprj2)、[厂家尺寸/避让规划](../hardware/dcx_main/g2/t530_72_oem_density_b_16x5_pad_plan_NOT_FOR_FAB.json)、[实际原生DRC与源码哈希回执](../hardware/dcx_main/g2/g2_t530_oem_density_b_v2_drc_delta.json)；这**仍是144个裸原生焊盘而不是72颗正式器件**，同版原理图72个符号、厂家库封装实例、正确极性、真正100A主铜路、热设计/16mm高度均未签核，严格`NOT_FOR_FAB`。原始一次导入失败已定位并修复：第二批错误沿用首批299焊盘断言，现按299+批次计数逐批检查，**原始失败工程未覆盖**。
 

@@ -1,0 +1,24 @@
+{
+  "status": "G2_V9_REAL_NATIVE_VOUT_SOURCE_TO_COUT_FEEDERS_NOT_FOR_FAB",
+  "source_sha256": "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2",
+  "source_sha_after_checks": "d26197ca04d986d010e9a6af096a6b71edbb188e1b076c41e1ff8e21ce0a43a2",
+  "native_counts": {
+    "components": 149,
+    "pads": 443,
+    "lines": 407,
+    "vias": 93,
+    "nets": 65
+  },
+  "native_drc": {
+    "Connection Error": 168,
+    "Netlist Error": 1
+  },
+  "vout_island_count_geometry_screen": 1,
+  "vout_source_ctap_and_cout_same_physical_island": true,
+  "new_vias": 3,
+  "new_bottom_tracks_requested": 3,
+  "actual_tracks_increased_by": 4,
+  "actual_split_on_native_same_net_intersection": true,
+  "ampacity_100A_verified": false,
+  "fabrication_approved": false
+}

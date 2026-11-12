@@ -54,6 +54,16 @@ def test_real_eda_readback_and_drc_prove_actual_new_copper():
     assert A.R.categories(drc)=={"Connection Error":172,"Netlist Error":1}
     assert "Physical Error" not in A.R.categories(drc)
 
+def test_native_saved_link_is_one_copper_island_not_only_fewer_drc_items():
+    V.confirm_island_joins(read(V.REOPEN)["value"],V.plan())
+
+
+def test_unmodified_parent_fails_target_island_join_check():
+    source,_=V.raw_source()
+    with pytest.raises(ValueError,match="still on separate copper islands"):
+        V.confirm_island_joins(source,V.plan())
+
+
 def test_standalone_copper_connects_both_real_different_islands():
     order=V.plan()
     assert order["schema"]=="D1_G2_REAL_NATIVE_V5_VCC12S_C111_C112_ONE_ISLAND_JOIN"

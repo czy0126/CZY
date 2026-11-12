@@ -1,0 +1,39 @@
+{
+  "schema": "D1_T530_REAL_EASYEDA_LIBRARY_FOOTPRINT_V1",
+  "status": "2_PAD_SOURCE_EXPORTED_NOT_FOR_FAB",
+  "library_uuid": "G1_R34_REC10K_v3_TEST",
+  "footprint_uuid": "c9bdf53e779d4dd6a2eee1e6cecd4462",
+  "official_source": "https://content.kemet.com/datasheets/KEM_T2076_T52X-530.pdf",
+  "footprint_source": "hardware/dcx_main/g2/T530X477M006ATE004_X1_DENSITY_B_NATIVE_FOOTPRINT_NOT_FOR_FAB.efoo",
+  "footprint_sha256": "15fcfa365b51ada5054aaeb6594a027219605f0030affde5c7d500a06cf606f5",
+  "pad_readback": [
+    {
+      "number": "1",
+      "x": 122.8,
+      "y": 0,
+      "shape": [
+        "RECT",
+        93.3,
+        95.7,
+        0
+      ]
+    },
+    {
+      "number": "2",
+      "x": -122.8,
+      "y": 0,
+      "shape": [
+        "RECT",
+        93.3,
+        95.7,
+        0
+      ]
+    }
+  ],
+  "native_editor_save_acknowledged": true,
+  "native_footprint_saved_and_reopened": false,
+  "native_import_into_main_pcb": false,
+  "72_native_components_instantiated": false,
+  "library_courtyard_and_polarity_review_approved": false,
+  "fabrication_approved": false
+}

@@ -1,0 +1,26 @@
+{
+  "status": "V8_REAL_GUI_NATIVE_OCM_ISLAND_JOIN_NOT_FOR_FAB",
+  "candidate_sha256": "058e67293932ab7b6b46efd8200dc3f7642a03166814829f23b2385592123b3d",
+  "v5_sha256": "6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863",
+  "native_counts": {
+    "components": 77,
+    "pads": 443,
+    "lines": 403,
+    "vias": 90,
+    "nets": 65
+  },
+  "native_drc": {
+    "Connection Error": 170,
+    "Netlist Error": 1
+  },
+  "route": {
+    "old_native_copper_preserved": true,
+    "new_ocm_tracks_physically_covered": 3,
+    "ocm_target_island_joined": true,
+    "manufacturer_approved": false
+  },
+  "gui_kept_open": true,
+  "100A_approved": false,
+  "72_caps_real_instances_verified": false,
+  "fabrication_approved": false
+}
