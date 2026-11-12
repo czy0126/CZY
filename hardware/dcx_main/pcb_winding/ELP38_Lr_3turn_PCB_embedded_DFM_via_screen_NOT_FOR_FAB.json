@@ -1,0 +1,77 @@
+{
+  "schema": "D1_EMBEDDED_PCB_LR_MANUFACTURABILITY_SCREEN_V1",
+  "status": "DFM_AND_100C_VIA_RESISTANCE_TRIAL_NOT_FOR_FAB",
+  "source_sha256_canonical_lf": {
+    "design/v3/maxwell/pcb_embedded_lr_dfm_assumptions.json": "039d6c4a668adc9e075f9394884dd4adeb61f8d7a6848a30269b0cc021cfb830",
+    "design/v3/maxwell/pcb_embedded_lr_3turn_candidate.json": "434018e533924780801ce91b6adc6ccaf92a0a1f82549e1d73a627d8a72311f0",
+    "hardware/dcx_main/pcb_winding/ELP38_Lr_3turn_PCB_EMBEDDED_CONCEPT_NOT_FOR_FAB.json": "295a201816bfa39271c0e006fed5adb49f8dda0759f754bb411b0b73eab2d14f",
+    "design/v3/bom/lr_design.json": "a29d678793ba34b20e6c7f381d3697d1c421d49425677ed85b3d403256ff79e8"
+  },
+  "native_cad_exact_sha256": "fb9ca35bca041ca0bc778117b781a8d10ce30febb612d53281ede9b242132b93",
+  "model_construction": "three series turns, each two equal parallel 70um x 2.5mm copper layers",
+  "Lr_rms_at_100A_output_A": 9.450157,
+  "Lr_overload_rms_A": 11.222295,
+  "highest_existing_Lr_transient_peak_A": 104.17,
+  "one_turn_pair_parallel_copper_area_mm2": 0.35000000000000003,
+  "pair_foil_rated_RMS_current_density_A_mm2": 27.0,
+  "three_turns_no_via_Pdc_100C_W": 1.939731,
+  "via_count_in_series": 2,
+  "barrel_length_mm": 1.6,
+  "barrel_assumed_finished_drill_mm": 0.35,
+  "via_plating_sensitivity": [
+    {
+      "trial_barrel_thickness_um": 18,
+      "copper_barrel_annulus_area_mm2": 0.0208099,
+      "via_R_100C_ohm_DC_ideal": 0.001742267,
+      "rated_RMS_9p45A_current_density_A_mm2": 454.118,
+      "overload_RMS_11p22A_current_density_A_mm2": 539.276,
+      "fault_peak_ge_104A_current_density_A_mm2": 5005.8,
+      "single_via_Pdc_rated_W": 0.155594,
+      "two_vias_series_Pdc_rated_W": 0.311188,
+      "single_via_Pdc_overload_W": 0.219421,
+      "current_density_vs_bilayer_foil_ratio": 16.819,
+      "plating_and_thermal_unverified": true
+    },
+    {
+      "trial_barrel_thickness_um": 25,
+      "copper_barrel_annulus_area_mm2": 0.0294524,
+      "via_R_100C_ohm_DC_ideal": 0.001231016,
+      "rated_RMS_9p45A_current_density_A_mm2": 320.862,
+      "overload_RMS_11p22A_current_density_A_mm2": 381.031,
+      "fault_peak_ge_104A_current_density_A_mm2": 3536.9,
+      "single_via_Pdc_rated_W": 0.109936,
+      "two_vias_series_Pdc_rated_W": 0.219873,
+      "single_via_Pdc_overload_W": 0.155034,
+      "current_density_vs_bilayer_foil_ratio": 11.884,
+      "plating_and_thermal_unverified": true
+    },
+    {
+      "trial_barrel_thickness_um": 35,
+      "copper_barrel_annulus_area_mm2": 0.042333,
+      "via_R_100C_ohm_DC_ideal": 0.000856458,
+      "rated_RMS_9p45A_current_density_A_mm2": 223.234,
+      "overload_RMS_11p22A_current_density_A_mm2": 265.096,
+      "fault_peak_ge_104A_current_density_A_mm2": 2460.7,
+      "single_via_Pdc_rated_W": 0.076486,
+      "two_vias_series_Pdc_rated_W": 0.152973,
+      "single_via_Pdc_overload_W": 0.107862,
+      "current_density_vs_bilayer_foil_ratio": 8.268,
+      "plating_and_thermal_unverified": true
+    }
+  ],
+  "critical_conclusions": [
+    "The Lr winding carries about 9.45A RMS at 100A converter output, NOT 100A DC output",
+    "A SINGLE finished 0.35mm PTH per series transition is a high-current-density choke relative to the two-layer foil",
+    "Two transition barrels, pads, plating and hot-spot thermal resistance are unqualified; computed DC losses omit pad/return spreading",
+    "No 200kHz fringing/proximity/eddy current or thermal field result can be inferred from these DC values",
+    "The 3-turn analytic 2.356mm gap lies outside the cited 2mm sample equation; OEM N97 100C L(I) and tolerances are unverified",
+    "Standalone KiCad winding is not placed into, or net-parity checked against, the full EasyEDA power motherboard",
+    "T1–T4 multiport 3:1:1 and CT require independent PCB layer winding designs and DOT/insulation approvals"
+  ],
+  "manufacturer_copper_barrel_qualified": false,
+  "manufacturer_6layer_thickcopper_stackup_qualified": false,
+  "fault_peak_and_200kHz_ac_current_qualified": false,
+  "actual_total_16mm_assembly_qualified": false,
+  "main_power_board_winding_integrated": false,
+  "not_for_fab": true
+}
