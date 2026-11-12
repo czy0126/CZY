@@ -19,6 +19,7 @@ import shutil
 import time
 
 import route_t530_oem_v5_one_real_island_join as V
+import g2_native_render_health as HEALTH
 
 HERE = Path(__file__).resolve().parent
 SOURCE = V.TARGET
@@ -143,15 +144,29 @@ def open_board(stage):
     session = (reply.get("value") or {}).get("sessionId")
     if not session:
         return None
-    time.sleep(V.A.D.SETTLE_S)
+    # An opened large G2 copy may not yet have an active PCB document.
+    time.sleep(max(35, V.A.D.SETTLE_S))
     ping = V.A.D.call(V.A.D.build_ping_args(session), timeout_s=32)
     dump(stage + "_ping", ping)
     if not ping.get("ok"):
         dump(stage + "_close", V.A.D.call(V.A.D.build_close_args(session)))
         return None
-    # The renderer can accept return 1 while every actual EDA API call hangs.
-    # Establish real document readiness BEFORE even attempting a write.  If
-    # this probe times out, do not retry a possibly still-running mutation.
+    # Ping success is NOT proof of an actual project. A 45-second settled V5
+    # copy can answer 'return 1' while getCurrentProjectInfo() reports null.
+    # Probe the lightweight project/document first to avoid poisoning the
+    # renderer by requesting 443 pads when no PCB was actually activated.
+    project_probe = V.A.invoke(session, HEALTH.INFO_JS)
+    info = project_probe.get("value") or {}
+    document_ready = bool(project_probe.get("ok") and info.get("project_present")
+                          and info.get("board_uuids"))
+    dump(stage + "_document_probe", {"ok": document_ready,
+          "project_present": info.get("project_present"),
+          "pcb_document_count": len(info.get("board_uuids") or []),
+          "error": project_probe.get("error")})
+    if not document_ready:
+        dump(stage + "_close", V.A.D.call(V.A.D.build_close_args(session)))
+        return None
+    # Only after a real PCB document exists may a full native read be attempted.
     native_probe = V.A.invoke(session, V.A.READ_JS.read_text(encoding="utf-8"))
     probe_value = native_probe.get("value") or {}
     measured = tuple(len(probe_value.get(k, [])) for k in

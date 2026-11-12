@@ -65,11 +65,41 @@ def test_v6_ready_probe_requires_exact_frozen_native_object_counts(monkeypatch):
             return {"ok": True, "value": {"sessionId": "dummy"}}
         return {"ok": True, "value": 1}
     monkeypatch.setattr(V6.V.A.D, "call", fake_call)
-    monkeypatch.setattr(V6.V.A, "invoke", lambda *_: {"ok": True, "value": native})
+    invoked = []
+    def invoke(session, code):
+        invoked.append(code)
+        if len(invoked) == 1:
+            assert code == V6.HEALTH.INFO_JS
+            return {"ok": True, "value": {"project_present": True,
+                                              "board_uuids": ["pcb-real"]}}
+        return {"ok": True, "value": native}
+    monkeypatch.setattr(V6.V.A, "invoke", invoke)
     monkeypatch.setattr(V6.time, "sleep", lambda *_: None)
     monkeypatch.setattr(V6, "dump", lambda *_: None)
     assert V6.open_board("apply") == "dummy"
     assert len(calls) == 2  # successful open and ping only
+    assert len(invoked) == 2  # lightweight project check, then full PCB read
+
+
+def test_v6_missing_native_document_blocks_full_read_and_writes(monkeypatch):
+    calls, invoked = [], []
+    def fake_call(args, timeout_s=None):
+        calls.append(args)
+        if len(calls) == 1:
+            return {"ok": True, "value": {"sessionId": "dummy"}}
+        return {"ok": True, "value": 1}
+    def fake_invoke(session, code):
+        invoked.append(code)
+        assert code == V6.HEALTH.INFO_JS  # never progress to 443-pad read
+        return {"ok": True, "value": {"project_present": False,
+                                         "board_uuids": []}}
+    monkeypatch.setattr(V6.V.A.D, "call", fake_call)
+    monkeypatch.setattr(V6.V.A, "invoke", fake_invoke)
+    monkeypatch.setattr(V6.time, "sleep", lambda *_: None)
+    monkeypatch.setattr(V6, "dump", lambda *_: None)
+    assert V6.open_board("apply") is None
+    assert len(invoked) == 1
+    assert len(calls) == 3  # open, ping, close
 
 
 def test_v6_wrong_source_netlist_fails_no_shortcut_to_drc_approval(monkeypatch):

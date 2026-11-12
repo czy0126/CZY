@@ -437,6 +437,15 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - **停止无效重试的条件**：V6 写入超时，V7 重启后的首次真实只读 API 同样超时，证明根因尚未解决。恢复下一阶段先独立验证：已打开 PCB document、真实 API 最小只读请求在正常时限内完成、完整 77/443/400/90/65 readback、GUI 端无挂起 render/模态对话框，然后**再**生成唯一新副本。未取得这四项不得反复 V8/V9 或降低 DRC/安全门槛。
 - 仍未取得 72 颗正式原理图/封装的同版匹配、100 A 双极母线和端子、五磁件供应商 24 个 PAD/DOT、D0 十路实物失电与故障保护；V5/V6/V7 一律 `NOT_FOR_FAB`。
 
+## G2 V8：保留可见 GUI 后的原生写入恢复（2026-11-12 实跑）
+
+- **真实阻塞不在铜线规划，而在被关闭的 GUI 与未激活的 PCB 文档**：早期 headless V6 真实写入超时、V7 真实读回超时，不可重新对这两份副本写入。Windows 交互用户任务 ChatGPT-CZY-EasyEDA-Visible-20261112 拉起真实可见窗口，使用绝对路径及 --headless false。后续通过现存 sessionId 直接调用 API：先 getCurrentProjectInfo 确认工程，再 dmt_EditorControl.openDocument(pcb.uuid) 激活，再 read_driver_route.js 读回。不要以 return 1 ping 作为真实文档可用证据，**不得因为只读检查失败擅自关闭/停止现有可见 GUI**。
+- **V5 真实 readback + DRC**：会话 alive 时，openDocument 返回正常（约 7.4 s）；原生 77 components / 443 pads / 400 lines / 90 vias / 65 nets 完整读回；原生 DRC Connection=172，Netlist=1，Physical=0；原版源 SHA256 为 6635ddd9c7d0b48f1b6189f2989045101d4df17d4ff1a3f38d36a360c0b38863，检查前后未变。
+- **V8 单独新副本，已真实写入而不是计划**：route_t530_oem_v8_gui_real_ocm.py --apply 绑定唯一可见 V8 工程，确认 V5 原始哈希及原生 77/443/400/90/65，确认 OCM 的 R17.2 与 C11.2 原本属于不同铜岛；写入前建立只允许一次的 attempt 回执。随后经 pcb_PrimitiveLine.create 真实新增 3 段 0.15 mm 顶层 OCM 铜，pcb_Document.save() 返回 true，等待防抖后独立 V8 .eprj2 源 SHA256 改为 058e67293932ab7b6b46efd8200dc3f7642a03166814829f23b2385592123b3d。V5 仍原字节。--verify 在**同一个仍然打开的可见 V8 GUI** 实读 77/443/403/90/65，验证铜岛合并、旧铜完整覆盖、原生 DRC Connection 172→170 / Netlist 1 / Physical 0；原生证据为 g2_t530_oem_v8_gui_ocm_verification.json。**这不是关闭重开的独立读回，不能声称那一步已完成。**
+- V5 与 V8 界面保持可见且会话 alive，禁止对 V8 重复 --apply，也不得执行 lceda-pro stop 或 session close --destroy。需要下一次正式变更，必须从已存版再建不覆盖的新文件并进行图元/DRC 实验。
+- **Cout 真正器件库仍未配平**：可见 GUI 中系统库 lib_Device.search(T530X477M006ATE004)、lib_Device.search(C2158170)、lib_Device.searchByProperties({supplierId:C2158170}) 均无命中；通用 7343 类型封装不代表匹配厂家 Table2 的 Density-B 双焊盘尺寸、极性或 72 个原理图实例。当前 144 裸焊盘仍不是 72 个真实器件，100A 双极铜排、磁件 24 物理 PAD/DOT 与 D0 实物故障关断均未验收，保持 NOT_FOR_FAB。
+
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
