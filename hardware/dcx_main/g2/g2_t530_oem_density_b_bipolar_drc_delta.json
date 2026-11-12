@@ -1,0 +1,27 @@
+{
+  "status": "REAL_NATIVE_OEM_16X5_TWO_POLE_LOCAL_COPPER_REOPEN_NOT_FOR_FAB",
+  "parent_sha256": "ff0c849ce8c46b8c95006b7300375a5e6eeb6766ef6d0b94cec05305bc06948b",
+  "candidate_sha256": "be764dcc89b5317a5739c1910dc038f89959c7bb0201b72e0d5c0812e2dbf1e9",
+  "plan_sha256": "18a737a8de1db9864d6a91868fff1f98b0e662ee7ee43611011043d082744549",
+  "previous_native_drc": {
+    "Connection Error": 223,
+    "Netlist Error": 1
+  },
+  "actual_native_drc": {
+    "Connection Error": 173,
+    "Netlist Error": 1
+  },
+  "readback": {
+    "preserved_77_components_443_pads_65_nets": true,
+    "old_261_source_copper_covered": true,
+    "source_lines_native_snap_normalized": [
+      "869575685fd74bf3"
+    ],
+    "new_134_native_lines_covered": true,
+    "new_72_individual_vout_vias_reopened": 72,
+    "manufacturer_library_footprint_instantiated": false,
+    "manufacturing_approved": false
+  },
+  "continuous_100a_copper_or_busbar_qualified": false,
+  "hardware_or_fabrication_approved": false
+}
