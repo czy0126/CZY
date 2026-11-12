@@ -453,6 +453,14 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - 重要限制：PCB 上通过 footprint search-item、简单库 UUID、带 numeric type 的 PCB_PrimitiveComponent.create 仍不能实例化此自制封装，三种均失败，V9 PCB 保持原 77 器件、443 焊盘；还需真正建立 device / symbol / footprint 关联、补足 courtyard / 丝印、完成 72 位号匹配和厂家审查。**当前封装不准用于正式下单生产**。
 - 用户要求所有后续 EDA 工作优先沿用已经打开的 V5、V8、V9 窗口及其内部标签，不允许每一步重新 open GUI；不得自行关闭、重启或 stop 现有会话。只有确有安全隔离必要且现有会话无法复用时才单独处理新会话。
 
+
+### P0-A：V9 72 颗真实 T530 原生 PCB 器件已验收（2026-11-12）
+
+- **解决器件放置的根因**：先以 lib_Device.create 将已保存 T530 X1 Density-B native footprint 和系统 CAP symbol 真实关联成试验库 Device（UUID 903d14a6c07f4df992b7da8bfe2d4952），再以完整 lib_Device.search 返回值调用 pcb_PrimitiveComponent.create；单给 footprint 的三种参数都是前轮历史失败。这一流程在已打开的 V9 GUI 内成功放置 72 个 CHB01..CHB72，并经 pcb_PrimitivePad.modify 分别将真实编号 1=VOUT、2=PGND 连接，检查坐标完全重合后删除原有 144 个 CHBxx_N/P 裸焊盘。未增加额外嘉立创 GUI 窗口。
+- **真实原生独立读回**：149 个器件（原 77 + 新 72）、443 焊盘（原 299 + 新 144）、403 铜线、90 过孔、65 网络；每颗 CHB 的两个数字焊盘原生网络都正确，原有 144 个裸焊盘计数归零。g2_v9_real_t530_72_checkpoint_NOT_FOR_FAB.json 记录逐位号验证、g2_v9_chb_*_native_NOT_FOR_FAB.json 记录每个可复核小批次及首次 CHB03 native 0.1mil 双坐标量化故障恢复（原有 0.06mil 二维欧氏容差过小，改为 0.11mil）。
+- **真实保存**：调用 pcb_Document.save() 返回 true，等待写盘后，最新二进制 dcx_main_board_g2_T530_OEM_DENSITY_B_V9_REAL_72_COMPONENT_TRIAL_NOT_FOR_FAB.eprj2 SHA256 为 b4b09841247ae9c15bad1e3de6acde44f47bd907ec08ed5a4077138e6d459960，V8 原版未变。原生 DRC Connection=170、Netlist=1、Physical=0；记录在 g2_v9_real_t530_72_native_drc.json。**这不是完整消除 DRC**。
+- 库资源保留有实际二焊盘 .efoo 原生源、CAP 两引脚 .esym 原生源及 t530_x1_real_device_association_NOT_FOR_FAB.json 器件符号/封装关联可追溯。**仍未在同版本原理图添加并连接 72 个 CAP 符号**，现有 CAP 符号未显式标正负极，丝印、courtyard 及厂家最终生产 land signoff 均未做；100A VOUT/PGND 完整主铜、磁件 24 物理 PAD/DOT、D0 保护实测及全部剩余 DRC 也未闭环，因此保持 NOT_FOR_FAB。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。
