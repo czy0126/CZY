@@ -1,0 +1,83 @@
+{
+  "schema": "D1_G2_REAL_NATIVE_V5_VCC12S_C111_C112_ONE_ISLAND_JOIN",
+  "source_eprj2_sha256": "be764dcc89b5317a5739c1910dc038f89959c7bb0201b72e0d5c0812e2dbf1e9",
+  "source_native_readback_canonical_lf_sha256": "7f69c616f7348732a7215d31ca4970e96ce9a4c78b1b2a3d2582ec82f568657e",
+  "original_native_drc": {
+    "Connection Error": 173,
+    "Netlist Error": 1
+  },
+  "paths": [
+    {
+      "net": "VCC12_S",
+      "start": "C111.1",
+      "end": "C112.1",
+      "path_mm": [
+        [
+          54.89956,
+          42.99966
+        ],
+        [
+          54.89956,
+          42.0
+        ],
+        [
+          59.4995,
+          42.0
+        ],
+        [
+          59.4995,
+          42.99966
+        ]
+      ],
+      "track_count": 3,
+      "verified_distinct_native_copper_islands": true
+    }
+  ],
+  "tracks": [
+    {
+      "net": "VCC12_S",
+      "layer": 1,
+      "a_mm": [
+        54.8996,
+        42.9997
+      ],
+      "b_mm": [
+        54.8996,
+        42.0
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "net": "VCC12_S",
+      "layer": 1,
+      "a_mm": [
+        54.8996,
+        42.0
+      ],
+      "b_mm": [
+        59.4995,
+        42.0
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "net": "VCC12_S",
+      "layer": 1,
+      "a_mm": [
+        59.4995,
+        42.0
+      ],
+      "b_mm": [
+        59.4995,
+        42.9997
+      ],
+      "width_mm": 0.15
+    }
+  ],
+  "preflight_problems": [],
+  "high_current_nets_untouched": true,
+  "gate_kelvin_and_mag_terminal_nets_untouched": true,
+  "true_oem_72_schematic_components_present": false,
+  "100A_power_copper_qualified": false,
+  "manufacturing_approved": false
+}
