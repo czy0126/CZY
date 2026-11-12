@@ -17,7 +17,11 @@ python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 
 下一项 A 交付不再是低电流信号线的预检，而是以149线候选为新冻结父版，在新的副本中实现可制造的实体 Cout、磁件端子及100 A VOUT/PGND 双极铜排。仍有 **173 Connection / 1 Netlist** 未闭合；原有9线/12组、PR #98的17段都不得重画。`NOT_FOR_FAB`。
 
-**不计成本 Cout 备选（PR #93 已合并）：** 已以既有确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）生成 **72颗（18×4）实际G1板源SHA绑定的XY/现有铜线干涉筛查**，代码 `tools/cout_t530_72.py`、[输入候选](../hardware/dcx_main/g2/cout_oem_candidate.json)。33.84mF、理想ESR 0.0556mΩ（25°C）仅是参考，**历史107线板的VOUT/PGND铜区曾有65处穿越关系**；最新工具已改为从实际验收的**132线/183 Connection**板读取重算，最新具体数量以同版生成的报告为准。现有高电流铜路仍须重构；100°C/200kHz、启动与电流均分、厂家封装和全装配16mm均未核实。15颗A720仍只是2.5V基准模型，不能直接替代高耐压方案。
+**不计成本 Cout 备选（PR #93 来源，现以本机149线复核）：** 已以确切原厂资料 KEMET `T530X477M006ATE004`（6.3V、470µF、4mΩ@100kHz/25°C）为输入，将72颗（18×4）的XY与既有铜线干涉筛查升级为149线/173 Connection原生CAD同版，见[新版报告](../hardware/dcx_main/g2/cout_t530_72_REAL149_NOT_FOR_FAB.json)及生成器 `tools/cout_t530_72.py`，仍检测65处既有VOUT/PGND铜线穿越。33.84mF、理想ESR 0.0556mΩ仅为25°C/100kHz算术；新PCB上**没有**装入72颗、没有重构VOUT/PGND主铜路。100°C/200kHz、启动均流、厂家正式land、16mm全装配均未核实。15颗A720仍只是2.5V基准模型，不替代高耐压方案。
+
+**本机 P0-B 实体软件交付：** 已用安装在 `D:\ANSYS Inc\v252\AnsysEM` 的 AEDT 2025 R2 真实创建并保存原生 [ELP38/Lr 2匝概念工程](../hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.aedt)，输入源哈希和工程SHA见[证据](../hardware/dcx_main/maxwell/ELP38_Lr_2turn_0920uH_NATIVE_CONCEPT_NOT_FOR_FAB.evidence.json)，可由 `tools/aedt_native_p0_lr_geometry.py` 复建。几何尺寸全部从 `design/v3/maxwell/diy_magnetics_concept.json` 取得。此轮**未完成 FEM 求解**、两匝铜环之间未串联、库存 ferrite 不是 N97 100°C B-H、未赋电流、也没有局部 B/L(I)、网格收敛或功耗；绝不能视为磁件合格。下一步先建立真正的绕组端子、电流方向及N97磁化特性，再运行 Maxwell 3D 并回填矩阵/场值。T1–T4、CT真实24 PAD/DOT仍未批准。
+
+**本机 P0-C 安全核验：** D0 保护原理图以原生 KiCad CLI `--severity-all` 校验ERC **0**；单独A/C代码测试 **136通过、1跳过**（`D:\anaconda3\envs\dc-dc`）。修复 `d0_response_budget.py` 浮点计算在Python 3.11/3.13的末位漂移，刷新源生成的响应预算JSON。**这只是静态ERC+逻辑及响应估计**，不代表十路VGS实测、物理同步、保护SOA、SR UVLO真实关断或可高能量上电，保护/制造门禁仍为false。
 
 ## 唯一可继续编辑的基线
 
@@ -37,7 +41,7 @@ python hardware/dcx_main/g1/apply_g1_control_direct.py --resume
 
 ## 接下来仅允许 A/B/C 三个工作包
 
-**当前 CAD 继承规则**：后续 Cout/双极功率铜路/磁件端子原生 ECO 必须从上表最新验收的 **149线 `dcx_main_board_g1_control_direct.eprj2`** 复制成**新的非覆盖候选**；132线 `open_batch`、107线 `signal_stubs`、旧 `lr_repack` 仅用于追溯。不得重复运行已执行过的铜线 `--apply`，不能混用不同修订的 DRC、BOM 或铜路物理筛查。72颗 T530 目前的 XY 干涉筛查仍绑定132线冻结父版，须在149线实体 ECO 前重新按同版计算，不能据旧筛查批准新铜路。
+**当前 CAD 继承规则**：后续 Cout/双极功率铜路/磁件端子原生 ECO 必须从上表最新验收的 **149线 `dcx_main_board_g1_control_direct.eprj2`** 复制成**新的非覆盖候选**；132线 `open_batch`、107线 `signal_stubs`、旧 `lr_repack` 仅用于追溯。不得重复运行已执行过的铜线 `--apply`，不能混用不同修订的 DRC、BOM 或铜路物理筛查。72颗 T530 的 XY 干涉筛查已迁移并锁定149线实际原生CAD：`hardware/dcx_main/g2/cout_t530_72_REAL149_NOT_FOR_FAB.json`，65处既有铜线穿越（PGND 51、VOUT 14），均未重构实体铜路。该布局依然只是试排，需真实land、极性、热态ESR和连接设计；不能据此批准原生 ECO 或制造。
 
 | 工作包 | **下一个有意义的交付** | 完成标准 | 未满足时 |
 | --- | --- | --- | --- |

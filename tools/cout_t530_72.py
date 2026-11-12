@@ -1,6 +1,6 @@
 """Cost-unrestricted, original-OEM-sourced 6.3V alternative to 2.5V Cout.
 
-This is a REAL 72-body G1 XY geometry study, not a bill of materials released to
+This is a REAL 72-body, SHA-bound 149-line G1 XY geometry study, not a bill of materials released to
 manufacture. It keeps high-voltage P0 targets separate from the earlier
 15x A720 2.5V simulation model.
 
@@ -30,10 +30,10 @@ import g2_board_keepout as K
 ROOT = Path(__file__).resolve().parents[1]
 SOURCING = ROOT / "hardware/dcx_main/oem_sourcing_inputs_2026-11-09.json"
 TARGETS = ROOT / "hardware/dcx_main/oem_sourcing_screen_2026-11-09.json"
-BASE = ROOT / "hardware/dcx_main/g1/dcx_main_board_g1_open_batch.eprj2"
-READBACK = ROOT / "hardware/dcx_main/g1/g1_open_batch_reopen_readback.json"
-DRC_DELTA = ROOT / "hardware/dcx_main/g1/g1_open_batch_drc_delta.json"
-EXPECTED_BOARD_SHA256 = "59ec7ab3f8dd17ba76b465e9686bce58647db66b76770a4762c0b7e33e33afb0"
+BASE = ROOT / "hardware/dcx_main/g1/dcx_main_board_g1_control_direct.eprj2"
+READBACK = ROOT / "hardware/dcx_main/g1/g1_control_direct_reopen_readback.json"
+DRC_DELTA = ROOT / "hardware/dcx_main/g1/g1_control_direct_drc_delta.json"
+EXPECTED_BOARD_SHA256 = "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1"
 COLS, ROWS = 18, 4
 X0_MM, XPITCH_MM = 8.0, 8.3
 Y0_MM, YPITCH_MM = 92.0, 6.4
@@ -116,22 +116,23 @@ def units(w,h) -> list:
 
 
 def active_native_g1() -> dict:
-    """Read the real 132-line native first-stage candidate, not old 107-line preflight."""
+    """Read the actual accepted 149-line native G1 candidate, never stale 132-line geometry."""
     if hashlib.sha256(BASE.read_bytes()).hexdigest()!=EXPECTED_BOARD_SHA256:
         raise ValueError("Wrong native G1 source for T530 placement")
     delta=json.loads(DRC_DELTA.read_text(encoding="utf-8"))
-    if (delta.get("status")!="ACTUAL_EASYEDA_COPPER_IMPROVED_NOT_FOR_FAB"
+    if (delta.get("status")!="ACTUAL_G1_DIRECT_COPPER_DRC_IMPROVED_NOT_FOR_FAB"
             or delta.get("candidate_sha256")!=EXPECTED_BOARD_SHA256
-            or delta.get("native_reopen_drc",{}).get("Connection Error")!=183
-            or delta.get("native_reopen_drc",{}).get("Netlist Error")!=1
-            or delta.get("full_board_fabrication_approved") is not False):
-        raise ValueError("T530 source is not the actually checked native 132-line/183-open board")
+            or delta.get("native_after_drc",{}).get("Connection Error")!=173
+            or delta.get("native_after_drc",{}).get("Netlist Error")!=1
+            or delta.get("native_before_drc",{}).get("Connection Error")!=183
+            or delta.get("fabrication_approved") is not False):
+        raise ValueError("T530 source is not the actually checked native 149-line/173-open board")
     saved=json.loads(READBACK.read_text(encoding="utf-8"))
     if saved.get("ok") is not True or not isinstance(saved.get("value"),dict):
         raise ValueError("Missing real native reopened G1 readback")
     native=saved["value"]
     if (len(native["components"]),len(native["pads"]),len(native["nets"]),
-            len(native["lines"]),len(native["vias"]))!=(77,299,65,132,18):
+            len(native["lines"]),len(native["vias"]))!=(77,299,65,149,18):
         raise ValueError("T530 source G1 native geometry/counts changed")
     return native
 
@@ -238,7 +239,7 @@ def report() -> dict:
         "existing_copper_traversals_by_net":dict(sorted(Counter(x["net"] for x in crossing).items())),
         "existing_copper_traversals_for_eco":crossing,
         "board_source":BASE.relative_to(ROOT).as_posix(),
-        "source_native_connection_errors":183,
+        "source_native_connection_errors":173,
         "units":items},
       "hardware_gates":{
         "nominal_esr_arithmetic_at_25c_pass":bank_esr<=t["bank_cap_esr_budget_mohm"],
@@ -251,7 +252,7 @@ def report() -> dict:
         "100c_200khz_esr_ripple_current_startup_qualified":False,
         "complete_original_native_drc_zero":False,
         "fab_approved":False},
-      "next_real_eda_eco":"Copy current verified 132-line native PCB and revise VOUT/PGND high-current conductors before replacing single Cout placeholder; create 72 real OEM-approved footprints with true VOUT/PGND polarity and confirm 0.7mm provisional body gaps, 65 copper traversals, pad geometry, new native DRC, hot 200kHz ESR, 33.84mF startup/soft-start and 16mm full thermal assembly.",
+      "next_real_eda_eco":"Copy current verified 149-line native PCB and revise VOUT/PGND high-current conductors before replacing single Cout placeholder; create 72 real OEM-approved footprints with true VOUT/PGND polarity and confirm 0.7mm provisional body gaps, actual 149-line-board copper traversals, pad geometry, new native DRC, hot 200kHz ESR, 33.84mF startup/soft-start and 16mm full thermal assembly.",
     }
 
 
