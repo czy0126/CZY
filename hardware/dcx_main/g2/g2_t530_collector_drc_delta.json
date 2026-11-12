@@ -1,0 +1,24 @@
+{
+  "status": "REAL_G2_CAPACITOR_COLUMN_COPPER_NATIVE_REOPEN_DRC_NOT_FOR_FAB",
+  "parent_sha256": "3a0e0c9c831c914ec3d9a34ee8b743d597fbe6e575d12b3fc5efc9432e8c0864",
+  "candidate_sha256": "b204932c39a058e894a599b8206c3a0f7999c08fbe4e168ca9899224c34ee501",
+  "plan_sha256": "7e96895c21d41aebb2ba4fb31bcee5195f867f9a6fb3d49ad0bb5fc4220ce3f9",
+  "previous_native_drc": {
+    "Connection Error": 324,
+    "Netlist Error": 1
+  },
+  "actual_native_drc": {
+    "Connection Error": 227,
+    "Netlist Error": 1
+  },
+  "readback": {
+    "old_149_tracks_preserved": true,
+    "new_actual_top_copper_segments": 108,
+    "real_pad_count": 443,
+    "component_count": 77,
+    "all_108_real_pad_pairs_covered": true
+  },
+  "both_pole_bar_connected": false,
+  "true_oem_cout_footprint": false,
+  "manufacturing_approved": false
+}
