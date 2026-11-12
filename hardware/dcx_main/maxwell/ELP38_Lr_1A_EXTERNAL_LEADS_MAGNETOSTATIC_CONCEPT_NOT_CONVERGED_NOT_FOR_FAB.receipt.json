@@ -1,0 +1,57 @@
+{
+  "validation_messages": [
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_MAGNETOSTATIC_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (01:17:22 AM  Nov 12, 2026)\r\n"
+  ],
+  "hardware_fab_approved": false,
+  "validation_result": true,
+  "flux_and_L_I_extracted": false,
+  "contact_faces": [
+    [
+      "IN",
+      454,
+      [
+        4.77,
+        -60.0,
+        6.5
+      ]
+    ],
+    [
+      "OUT",
+      482,
+      [
+        4.77,
+        -60.0,
+        7.86
+      ]
+    ]
+  ],
+  "status": "MAXWELL_1A_CONCEPT_SOLVER_RETURNED_NOT_ENGINEERING_SIGNOFF",
+  "field_solution_converged": false,
+  "exterior_leads_manufacturable": false,
+  "solver_completed": true,
+  "kind": "LR_2TURN_EXTERNAL_LEADS_SOLVER_FEASIBILITY",
+  "solids_after_union": [
+    "I38_FERRITE_PROXY",
+    "E_BACK",
+    "LR_SERIES_2TURN_COPPER"
+  ],
+  "material_oem_n97_100c_verified": false,
+  "analyze_return": "0",
+  "steps": [
+    "copied original connected spiral model",
+    "one continuous physical copper conductor including two external leads",
+    "created explicit vacuum boundary meeting lead ends at y=-60",
+    "identified two external copper faces on region boundary",
+    "assigned 1A direct current IN",
+    "assigned 1A direct current OUT",
+    "saved region-boundary-excited Maxwell native project",
+    "NATIVE DESIGN VALIDATION PASSED",
+    "MAXWELL MAGNETOSTATIC SOLVER RETURNED"
+  ],
+  "solver_messages": [
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_MAGNETOSTATIC_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (01:17:22 AM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_MAGNETOSTATIC_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (01:17:25 AM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_MAGNETOSTATIC_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [warning] Adaptive Passes did not converge based on specified criteria. (01:17:29 AM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_MAGNETOSTATIC_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Normal completion of simulation on server: Local Machine. (01:17:29 AM  Nov 12, 2026)\r\n"
+  ]
+}

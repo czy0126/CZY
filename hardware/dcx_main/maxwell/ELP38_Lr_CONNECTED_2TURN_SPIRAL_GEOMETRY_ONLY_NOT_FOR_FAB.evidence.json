@@ -1,0 +1,38 @@
+{
+  "schema": "D1_LR_CONNECTED_SPIRAL_ACTUAL_NATIVE_CAD_V1",
+  "status": "CONTINUOUS_FOIL_AEDT_NATIVE_GEOMETRY_ONLY_NOT_SOLVED_NOT_FAB",
+  "project_file": "hardware/dcx_main/maxwell/ELP38_Lr_CONNECTED_2TURN_SPIRAL_GEOMETRY_ONLY_NOT_FOR_FAB.aedt",
+  "project_sha256": "7786ed98aec98209731be409825e4054f8037a69bf93d0807aee57143db27121",
+  "project_bytes": 134255,
+  "source_contract": "design/v3/maxwell/diy_magnetics_concept.json",
+  "source_contract_sha256": "7a9ba973acb0df907eb0f9aee196e5f93206358a9619b3177c028289ec170db3",
+  "native_generation_script": "tools/aedt_lr_connected_spiral_concept.py",
+  "native_generation_script_sha256": "d079758eb15a74c48690b3ed8e31f59a3093254b54defe73887aa034b6d7c9e2",
+  "ansys_version": "2025R2",
+  "solids": [
+    "I38_FERRITE_PROXY",
+    "E_BACK",
+    "LR_SERIES_2TURN_COPPER"
+  ],
+  "end_face_centres": [
+    [
+      4.76999999999998,
+      -13.65,
+      7.86000000000001
+    ],
+    [
+      4.77,
+      -13.65,
+      6.5
+    ]
+  ],
+  "conductor_one_piece_connected_geometry": true,
+  "physical_terminal_assigned_and_validated": false,
+  "oem_material_n97_100c_verified": false,
+  "manufacturer_winding_process_verified": false,
+  "fem_solved": false,
+  "mesh_converged": false,
+  "L_vs_I_verified": false,
+  "current_density_and_ac_loss_verified": false,
+  "fabrication_approved": false
+}

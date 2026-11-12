@@ -1,0 +1,24 @@
+{
+  "kind": "REAL_AEDT_MAGNETOSTATIC_MESH_CONVERGENCE_TRIAL",
+  "geometry": "CONNECTED_TWO_TURN_PLUS_TWO_ARTIFICIAL_EXTERNAL_LEADS",
+  "solver_messages": [
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_10PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (01:21:18 AM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_10PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (01:21:20 AM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_10PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [warning] Adaptive Passes did not converge based on specified criteria. (01:21:29 AM  Nov 12, 2026)\r\n",
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_10PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Normal completion of simulation on server: Local Machine. (01:21:30 AM  Nov 12, 2026)\r\n"
+  ],
+  "status": "SOLVER_RETURNED_BUT_MESH_NOT_CONVERGED_CONCEPT_ONLY",
+  "mesh_converged": false,
+  "validated": true,
+  "saturation_and_L_I_verified": false,
+  "solver_returned": true,
+  "current_a": 1,
+  "ac_loss_verified": false,
+  "manufacturing_approved": false,
+  "return_value": "0",
+  "validation_messages": [
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_10PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (01:21:18 AM  Nov 12, 2026)\r\n"
+  ],
+  "core_material": "STOCK_FERRITE_NOT_N97_100C",
+  "requested_maximum_passes": 10
+}
