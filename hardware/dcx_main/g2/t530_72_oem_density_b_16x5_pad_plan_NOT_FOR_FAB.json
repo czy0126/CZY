@@ -1,0 +1,3727 @@
+{
+  "schema": "G2_T530X477M006ATE004_OEM_DENSITY_B_16x5_PLACEMENT_V1",
+  "status": "MANUFACTURER_DERIVED_LAND_GEOMETRY_NOT_ACTUAL_COMPONENT_NOT_FOR_FAB",
+  "source_149line_PCB": "hardware/dcx_main/g1/dcx_main_board_g1_control_direct.eprj2",
+  "source_149line_sha256": "9cbeb298287d2f0c4e5cad84ecfa151e44a211a65fd47ced1334daada3c4e1c1",
+  "manufacturer_datasheet": "https://content.kemet.com/datasheets/KEM_T2076_T52X-530.pdf",
+  "manufacturer_datasheet_revision": "T2076_T52X-530 2026-09-09 Table 2 p37",
+  "component": "KEMET T530X477M006ATE004",
+  "land_case": "X1/7343-43",
+  "density": "B",
+  "pad_x_length_mm": 2.37,
+  "pad_y_width_mm": 2.43,
+  "inner_gap_mm": 3.87,
+  "pad_x_centre_offset_mm": 3.12,
+  "courtyard_x_mm": 9.12,
+  "courtyard_y_mm": 5.1,
+  "max_body_x_mm": 7.6,
+  "max_body_y_mm": 4.6,
+  "prior_18_column_pitch_mm": 8.3,
+  "prior_18_column_overlaps_density_b_courtyard_by_mm": 0.82,
+  "new_cols": 16,
+  "new_rows": 5,
+  "grid_pitch_x_mm": 9.2,
+  "grid_pitch_y_mm": 6.4,
+  "total_slots": 80,
+  "collision_free_slots": 78,
+  "placement_count": 72,
+  "trial_pad_count": 144,
+  "invalid_slots": [
+    {
+      "row": 3,
+      "column": 7,
+      "reason": [
+        "old PCB pad under capacitor body 1",
+        "old PCB pad under courtyard 1"
+      ]
+    },
+    {
+      "row": 3,
+      "column": 8,
+      "reason": [
+        "old PCB pad under capacitor body 2",
+        "old PCB pad under courtyard 2"
+      ]
+    }
+  ],
+  "placement": [
+    {
+      "ref": "CHB01",
+      "row": 0,
+      "column": 0,
+      "centre_mm": [
+        7.5,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB01_N",
+          "ref": "CHB01",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            4.38,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB01_P",
+          "ref": "CHB01",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            10.62,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB02",
+      "row": 0,
+      "column": 1,
+      "centre_mm": [
+        16.7,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB02_N",
+          "ref": "CHB02",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            13.58,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB02_P",
+          "ref": "CHB02",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            19.82,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB03",
+      "row": 0,
+      "column": 2,
+      "centre_mm": [
+        25.9,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB03_N",
+          "ref": "CHB03",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            22.78,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB03_P",
+          "ref": "CHB03",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            29.02,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB04",
+      "row": 0,
+      "column": 3,
+      "centre_mm": [
+        35.1,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB04_N",
+          "ref": "CHB04",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            31.98,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB04_P",
+          "ref": "CHB04",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            38.22,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB05",
+      "row": 0,
+      "column": 4,
+      "centre_mm": [
+        44.3,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB05_N",
+          "ref": "CHB05",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            41.18,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB05_P",
+          "ref": "CHB05",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            47.42,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB06",
+      "row": 0,
+      "column": 5,
+      "centre_mm": [
+        53.5,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB06_N",
+          "ref": "CHB06",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            50.38,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB06_P",
+          "ref": "CHB06",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            56.62,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB07",
+      "row": 0,
+      "column": 6,
+      "centre_mm": [
+        62.7,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB07_N",
+          "ref": "CHB07",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            59.58,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB07_P",
+          "ref": "CHB07",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            65.82,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB08",
+      "row": 0,
+      "column": 7,
+      "centre_mm": [
+        71.9,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB08_N",
+          "ref": "CHB08",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            68.78,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB08_P",
+          "ref": "CHB08",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            75.02,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB09",
+      "row": 0,
+      "column": 8,
+      "centre_mm": [
+        81.1,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB09_N",
+          "ref": "CHB09",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            77.98,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB09_P",
+          "ref": "CHB09",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            84.22,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB10",
+      "row": 0,
+      "column": 9,
+      "centre_mm": [
+        90.3,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB10_N",
+          "ref": "CHB10",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            87.18,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB10_P",
+          "ref": "CHB10",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            93.42,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB11",
+      "row": 0,
+      "column": 10,
+      "centre_mm": [
+        99.5,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB11_N",
+          "ref": "CHB11",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            96.38,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB11_P",
+          "ref": "CHB11",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            102.62,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB12",
+      "row": 0,
+      "column": 11,
+      "centre_mm": [
+        108.7,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB12_N",
+          "ref": "CHB12",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            105.58,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB12_P",
+          "ref": "CHB12",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            111.82,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB13",
+      "row": 0,
+      "column": 12,
+      "centre_mm": [
+        117.9,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB13_N",
+          "ref": "CHB13",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            114.78,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB13_P",
+          "ref": "CHB13",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            121.02,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB14",
+      "row": 0,
+      "column": 13,
+      "centre_mm": [
+        127.1,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB14_N",
+          "ref": "CHB14",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            123.98,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB14_P",
+          "ref": "CHB14",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            130.22,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB15",
+      "row": 0,
+      "column": 14,
+      "centre_mm": [
+        136.3,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB15_N",
+          "ref": "CHB15",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            133.18,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB15_P",
+          "ref": "CHB15",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            139.42,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB16",
+      "row": 0,
+      "column": 15,
+      "centre_mm": [
+        145.5,
+        99.0
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB16_N",
+          "ref": "CHB16",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            142.38,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB16_P",
+          "ref": "CHB16",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            148.62,
+            99.0
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB17",
+      "row": 1,
+      "column": 0,
+      "centre_mm": [
+        7.5,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB17_N",
+          "ref": "CHB17",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            4.38,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB17_P",
+          "ref": "CHB17",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            10.62,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB18",
+      "row": 1,
+      "column": 1,
+      "centre_mm": [
+        16.7,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB18_N",
+          "ref": "CHB18",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            13.58,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB18_P",
+          "ref": "CHB18",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            19.82,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB19",
+      "row": 1,
+      "column": 2,
+      "centre_mm": [
+        25.9,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB19_N",
+          "ref": "CHB19",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            22.78,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB19_P",
+          "ref": "CHB19",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            29.02,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB20",
+      "row": 1,
+      "column": 3,
+      "centre_mm": [
+        35.1,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB20_N",
+          "ref": "CHB20",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            31.98,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB20_P",
+          "ref": "CHB20",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            38.22,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB21",
+      "row": 1,
+      "column": 4,
+      "centre_mm": [
+        44.3,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB21_N",
+          "ref": "CHB21",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            41.18,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB21_P",
+          "ref": "CHB21",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            47.42,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB22",
+      "row": 1,
+      "column": 5,
+      "centre_mm": [
+        53.5,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB22_N",
+          "ref": "CHB22",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            50.38,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB22_P",
+          "ref": "CHB22",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            56.62,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB23",
+      "row": 1,
+      "column": 6,
+      "centre_mm": [
+        62.7,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB23_N",
+          "ref": "CHB23",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            59.58,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB23_P",
+          "ref": "CHB23",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            65.82,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB24",
+      "row": 1,
+      "column": 7,
+      "centre_mm": [
+        71.9,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB24_N",
+          "ref": "CHB24",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            68.78,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB24_P",
+          "ref": "CHB24",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            75.02,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB25",
+      "row": 1,
+      "column": 8,
+      "centre_mm": [
+        81.1,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB25_N",
+          "ref": "CHB25",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            77.98,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB25_P",
+          "ref": "CHB25",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            84.22,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB26",
+      "row": 1,
+      "column": 9,
+      "centre_mm": [
+        90.3,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB26_N",
+          "ref": "CHB26",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            87.18,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB26_P",
+          "ref": "CHB26",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            93.42,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB27",
+      "row": 1,
+      "column": 10,
+      "centre_mm": [
+        99.5,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB27_N",
+          "ref": "CHB27",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            96.38,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB27_P",
+          "ref": "CHB27",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            102.62,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB28",
+      "row": 1,
+      "column": 11,
+      "centre_mm": [
+        108.7,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB28_N",
+          "ref": "CHB28",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            105.58,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB28_P",
+          "ref": "CHB28",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            111.82,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB29",
+      "row": 1,
+      "column": 12,
+      "centre_mm": [
+        117.9,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB29_N",
+          "ref": "CHB29",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            114.78,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB29_P",
+          "ref": "CHB29",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            121.02,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB30",
+      "row": 1,
+      "column": 13,
+      "centre_mm": [
+        127.1,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB30_N",
+          "ref": "CHB30",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            123.98,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB30_P",
+          "ref": "CHB30",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            130.22,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB31",
+      "row": 1,
+      "column": 14,
+      "centre_mm": [
+        136.3,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB31_N",
+          "ref": "CHB31",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            133.18,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB31_P",
+          "ref": "CHB31",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            139.42,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB32",
+      "row": 1,
+      "column": 15,
+      "centre_mm": [
+        145.5,
+        105.4
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB32_N",
+          "ref": "CHB32",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            142.38,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB32_P",
+          "ref": "CHB32",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            148.62,
+            105.4
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB33",
+      "row": 2,
+      "column": 0,
+      "centre_mm": [
+        7.5,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB33_N",
+          "ref": "CHB33",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            4.38,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB33_P",
+          "ref": "CHB33",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            10.62,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB34",
+      "row": 2,
+      "column": 1,
+      "centre_mm": [
+        16.7,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB34_N",
+          "ref": "CHB34",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            13.58,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB34_P",
+          "ref": "CHB34",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            19.82,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB35",
+      "row": 2,
+      "column": 2,
+      "centre_mm": [
+        25.9,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB35_N",
+          "ref": "CHB35",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            22.78,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB35_P",
+          "ref": "CHB35",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            29.02,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB36",
+      "row": 2,
+      "column": 3,
+      "centre_mm": [
+        35.1,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB36_N",
+          "ref": "CHB36",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            31.98,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB36_P",
+          "ref": "CHB36",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            38.22,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB37",
+      "row": 2,
+      "column": 4,
+      "centre_mm": [
+        44.3,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB37_N",
+          "ref": "CHB37",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            41.18,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB37_P",
+          "ref": "CHB37",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            47.42,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB38",
+      "row": 2,
+      "column": 5,
+      "centre_mm": [
+        53.5,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB38_N",
+          "ref": "CHB38",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            50.38,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB38_P",
+          "ref": "CHB38",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            56.62,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB39",
+      "row": 2,
+      "column": 6,
+      "centre_mm": [
+        62.7,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB39_N",
+          "ref": "CHB39",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            59.58,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB39_P",
+          "ref": "CHB39",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            65.82,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB40",
+      "row": 2,
+      "column": 7,
+      "centre_mm": [
+        71.9,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB40_N",
+          "ref": "CHB40",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            68.78,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB40_P",
+          "ref": "CHB40",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            75.02,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB41",
+      "row": 2,
+      "column": 8,
+      "centre_mm": [
+        81.1,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB41_N",
+          "ref": "CHB41",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            77.98,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB41_P",
+          "ref": "CHB41",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            84.22,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB42",
+      "row": 2,
+      "column": 9,
+      "centre_mm": [
+        90.3,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB42_N",
+          "ref": "CHB42",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            87.18,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB42_P",
+          "ref": "CHB42",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            93.42,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB43",
+      "row": 2,
+      "column": 10,
+      "centre_mm": [
+        99.5,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB43_N",
+          "ref": "CHB43",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            96.38,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB43_P",
+          "ref": "CHB43",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            102.62,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB44",
+      "row": 2,
+      "column": 11,
+      "centre_mm": [
+        108.7,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB44_N",
+          "ref": "CHB44",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            105.58,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB44_P",
+          "ref": "CHB44",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            111.82,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB45",
+      "row": 2,
+      "column": 12,
+      "centre_mm": [
+        117.9,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB45_N",
+          "ref": "CHB45",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            114.78,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB45_P",
+          "ref": "CHB45",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            121.02,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB46",
+      "row": 2,
+      "column": 13,
+      "centre_mm": [
+        127.1,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB46_N",
+          "ref": "CHB46",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            123.98,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB46_P",
+          "ref": "CHB46",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            130.22,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB47",
+      "row": 2,
+      "column": 14,
+      "centre_mm": [
+        136.3,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB47_N",
+          "ref": "CHB47",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            133.18,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB47_P",
+          "ref": "CHB47",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            139.42,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB48",
+      "row": 2,
+      "column": 15,
+      "centre_mm": [
+        145.5,
+        111.8
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB48_N",
+          "ref": "CHB48",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            142.38,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB48_P",
+          "ref": "CHB48",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            148.62,
+            111.8
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB49",
+      "row": 3,
+      "column": 0,
+      "centre_mm": [
+        7.5,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB49_N",
+          "ref": "CHB49",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            4.38,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB49_P",
+          "ref": "CHB49",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            10.62,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB50",
+      "row": 3,
+      "column": 1,
+      "centre_mm": [
+        16.7,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB50_N",
+          "ref": "CHB50",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            13.58,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB50_P",
+          "ref": "CHB50",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            19.82,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB51",
+      "row": 3,
+      "column": 2,
+      "centre_mm": [
+        25.9,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB51_N",
+          "ref": "CHB51",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            22.78,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB51_P",
+          "ref": "CHB51",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            29.02,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB52",
+      "row": 3,
+      "column": 3,
+      "centre_mm": [
+        35.1,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB52_N",
+          "ref": "CHB52",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            31.98,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB52_P",
+          "ref": "CHB52",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            38.22,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB53",
+      "row": 3,
+      "column": 4,
+      "centre_mm": [
+        44.3,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB53_N",
+          "ref": "CHB53",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            41.18,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB53_P",
+          "ref": "CHB53",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            47.42,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB54",
+      "row": 3,
+      "column": 5,
+      "centre_mm": [
+        53.5,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB54_N",
+          "ref": "CHB54",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            50.38,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB54_P",
+          "ref": "CHB54",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            56.62,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB55",
+      "row": 3,
+      "column": 6,
+      "centre_mm": [
+        62.7,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB55_N",
+          "ref": "CHB55",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            59.58,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB55_P",
+          "ref": "CHB55",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            65.82,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB56",
+      "row": 3,
+      "column": 9,
+      "centre_mm": [
+        90.3,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB56_N",
+          "ref": "CHB56",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            87.18,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB56_P",
+          "ref": "CHB56",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            93.42,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB57",
+      "row": 3,
+      "column": 10,
+      "centre_mm": [
+        99.5,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB57_N",
+          "ref": "CHB57",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            96.38,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB57_P",
+          "ref": "CHB57",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            102.62,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB58",
+      "row": 3,
+      "column": 11,
+      "centre_mm": [
+        108.7,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB58_N",
+          "ref": "CHB58",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            105.58,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB58_P",
+          "ref": "CHB58",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            111.82,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB59",
+      "row": 3,
+      "column": 12,
+      "centre_mm": [
+        117.9,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB59_N",
+          "ref": "CHB59",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            114.78,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB59_P",
+          "ref": "CHB59",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            121.02,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB60",
+      "row": 3,
+      "column": 13,
+      "centre_mm": [
+        127.1,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB60_N",
+          "ref": "CHB60",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            123.98,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB60_P",
+          "ref": "CHB60",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            130.22,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB61",
+      "row": 3,
+      "column": 14,
+      "centre_mm": [
+        136.3,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB61_N",
+          "ref": "CHB61",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            133.18,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB61_P",
+          "ref": "CHB61",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            139.42,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB62",
+      "row": 3,
+      "column": 15,
+      "centre_mm": [
+        145.5,
+        118.2
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB62_N",
+          "ref": "CHB62",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            142.38,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB62_P",
+          "ref": "CHB62",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            148.62,
+            118.2
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB63",
+      "row": 4,
+      "column": 0,
+      "centre_mm": [
+        7.5,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB63_N",
+          "ref": "CHB63",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            4.38,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB63_P",
+          "ref": "CHB63",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            10.62,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB64",
+      "row": 4,
+      "column": 2,
+      "centre_mm": [
+        25.9,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB64_N",
+          "ref": "CHB64",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            22.78,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB64_P",
+          "ref": "CHB64",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            29.02,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB65",
+      "row": 4,
+      "column": 3,
+      "centre_mm": [
+        35.1,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB65_N",
+          "ref": "CHB65",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            31.98,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB65_P",
+          "ref": "CHB65",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            38.22,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB66",
+      "row": 4,
+      "column": 5,
+      "centre_mm": [
+        53.5,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB66_N",
+          "ref": "CHB66",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            50.38,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB66_P",
+          "ref": "CHB66",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            56.62,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB67",
+      "row": 4,
+      "column": 6,
+      "centre_mm": [
+        62.7,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB67_N",
+          "ref": "CHB67",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            59.58,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB67_P",
+          "ref": "CHB67",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            65.82,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB68",
+      "row": 4,
+      "column": 9,
+      "centre_mm": [
+        90.3,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB68_N",
+          "ref": "CHB68",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            87.18,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB68_P",
+          "ref": "CHB68",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            93.42,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB69",
+      "row": 4,
+      "column": 10,
+      "centre_mm": [
+        99.5,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB69_N",
+          "ref": "CHB69",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            96.38,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB69_P",
+          "ref": "CHB69",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            102.62,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB70",
+      "row": 4,
+      "column": 12,
+      "centre_mm": [
+        117.9,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB70_N",
+          "ref": "CHB70",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            114.78,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB70_P",
+          "ref": "CHB70",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            121.02,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB71",
+      "row": 4,
+      "column": 13,
+      "centre_mm": [
+        127.1,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB71_N",
+          "ref": "CHB71",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            123.98,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB71_P",
+          "ref": "CHB71",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            130.22,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    },
+    {
+      "ref": "CHB72",
+      "row": 4,
+      "column": 15,
+      "centre_mm": [
+        145.5,
+        124.6
+      ],
+      "courtyard_mm": [
+        9.12,
+        5.1
+      ],
+      "body_max_mm": [
+        7.6,
+        4.6
+      ],
+      "pads": [
+        {
+          "number": "CHB72_N",
+          "ref": "CHB72",
+          "pin": "N",
+          "net": "PGND",
+          "centre_mm": [
+            142.38,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        },
+        {
+          "number": "CHB72_P",
+          "ref": "CHB72",
+          "pin": "P",
+          "net": "VOUT",
+          "centre_mm": [
+            148.62,
+            124.6
+          ],
+          "size_mm": [
+            2.37,
+            2.43
+          ],
+          "layer": 1
+        }
+      ],
+      "actual_schematic_component": false,
+      "manufacturer_library_footprint_instantiated": false
+    }
+  ],
+  "preflight_problems": [],
+  "nominal_land_geometry_derived_from_manufacturer": true,
+  "actual_72_components_and_schematic_symbols": false,
+  "real_100A_pole_busbars": false,
+  "high_temperature_esr_verified": false,
+  "fabrication_approved": false
+}
