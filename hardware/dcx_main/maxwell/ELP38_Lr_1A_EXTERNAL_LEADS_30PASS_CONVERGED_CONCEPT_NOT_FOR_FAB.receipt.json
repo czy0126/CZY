@@ -1,0 +1,32 @@
+{
+  "analyze_return": "0", 
+  "source_material_verified_N97_100C": false, 
+  "native_validation_passed": true, 
+  "minimum_converged_passes": 2, 
+  "destination": "D:\\workshop\\.webcodex-worktrees\\design-48v-2v-0b4e8d4d\\design\\v3\\maxwell\\local_runs\\ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_NOT_FOR_FAB.aedt", 
+  "ac_loss_or_SO\u0410_qualified": false, 
+  "percent_error_requested": 2.0, 
+  "status": "REAL_SOLVER_RETURNED_MESH_CONVERGED_CONCEPT_ONLY_NOT_FAB", 
+  "real_terminal_winding_qualified": false, 
+  "schema": "MAXWELL_N97_UNQUALIFIED_1A_30PASS_SOLVER_TRIAL", 
+  "target_inductance_extracted": false, 
+  "solver_messages": [
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (11:00:52 AM  Nov 12, 2026)\r\n", 
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (11:00:55 AM  Nov 12, 2026)\r\n", 
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Normal completion of simulation on server: Local Machine. (11:01:24 AM  Nov 12, 2026)\r\n"
+  ], 
+  "validation_messages": [
+    "Project: ELP38_Lr_1A_EXTERNAL_LEADS_30PASS_NOT_FOR_FAB, Design: Lr_2turn_geometry_only (Magnetostatic), [info] Verify conduction path: Conduction path validate success. (11:00:52 AM  Nov 12, 2026)\r\n"
+  ], 
+  "solver_success": true, 
+  "core_gap_manufacturing_verified": false, 
+  "non_convergence_reported": false, 
+  "output_sha256": "b9395425fcce9d0e6af669e9b1735e11e6387f2af0970fe07fb94a9c8eff7037", 
+  "fabrication_approved": false, 
+  "maximum_passes": 30, 
+  "input_sha256": "e8620e97403c049229928b3ce31de6cd0f437be4a191a5a7529ff99d38f602b7", 
+  "input": "D:\\workshop\\.webcodex-worktrees\\design-48v-2v-0b4e8d4d\\hardware\\dcx_main\\maxwell\\ELP38_Lr_1A_EXTERNAL_LEADS_10PASS_CONCEPT_NOT_CONVERGED_NOT_FOR_FAB.aedt", 
+  "L_vs_I_qualified": false, 
+  "requested_refine_percent": 25, 
+  "mesh_convergence_verified": true
+}

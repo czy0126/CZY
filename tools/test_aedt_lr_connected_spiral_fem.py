@@ -32,7 +32,10 @@ def test_actual_native_spiral_is_one_connected_conductor_and_source_bound():
     assert sha(cad)==e["project_sha256"]
     assert e["project_bytes"]==cad.stat().st_size
     assert original_windows_contract_sha(ROOT/e["source_contract"])==e["source_contract_sha256"]
-    assert sha(ROOT/e["native_generation_script"])==e["native_generation_script_sha256"]
+    # Original native CAD generator was recorded as Git-normalized LF text.
+    # On Windows, core.autocrlf may have converted it to CRLF.
+    script=ROOT/e["native_generation_script"]
+    assert hashlib.sha256(script.read_bytes().replace(b"\r\n",b"\n")).hexdigest()==e["native_generation_script_sha256"]
     assert e["solids"]==["I38_FERRITE_PROXY","E_BACK","LR_SERIES_2TURN_COPPER"]
     assert e["conductor_one_piece_connected_geometry"] is True
     assert e["physical_terminal_assigned_and_validated"] is False
