@@ -108,4 +108,3 @@ def test_original_visible_v9_native_drc_readonly_returns_168_and_netlist_one():
     assert r["response"]["ok"] is True
     assert ROUTE.categories(r["response"])=={"Connection Error":168,"Netlist Error":1}
     assert r["fab_approved"] is False
-
