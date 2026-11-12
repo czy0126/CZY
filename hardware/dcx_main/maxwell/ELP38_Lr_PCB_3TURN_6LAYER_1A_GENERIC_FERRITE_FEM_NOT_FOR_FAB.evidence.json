@@ -1,0 +1,87 @@
+{
+  "schema": "D1_REAL_NATIVE_MAXWELL_3TURN_1A_PROVENANCE_AND_GATES_V1",
+  "status": "NATIVE_REAL_6LAYER_3TURN_PCB_1A_FEM_CONVERGED_GENERIC_FERRITE_ONLY_NOT_FOR_FAB",
+  "origin": "Ansys Electronics Desktop 2025R2 local actual Maxwell3D Solve",
+  "actual_KiCad_derived_native_copper": true,
+  "native_3turn_CAD_model_sha256": "a1940f5ce7da1d1938c02523dbf5bfa7ddb9d48802a7684a00ba6ff937233048",
+  "retained_files_sha256": {
+    "native_aedt": "a55de33185e5a078bbec1f040b6606736a4376e66c4b006fdd3713bdff5182a2",
+    "convergence": "ea29bbf1538e76121bfd28ec38fc849518170c302a64c2e4a58ea4cc88c6d17f",
+    "native_receipt": "7ef3c2d5758692e857b2a0a7fc723d008f9e653f634907f9576221a7d37b5df6",
+    "field_energy": "b780e56796634929f04398a1e02812af0c1207e3ee66967f86a167d8062b302d"
+  },
+  "results_archive_sha256": "1bbf986e7bf30b2b63b6d206b412b7922740b32bb76ab92dbb329f136e0c0352",
+  "results_archive": {
+    "count": 29,
+    "native_result_members": [
+      "Lr_PCB_3turn_geometry.asol",
+      "Lr_PCB_3turn_geometry.results/DV126_MI0_V85.sd/initial.stats",
+      "Lr_PCB_3turn_geometry.results/DV126_S89_MI0_V0.sd/current.stats",
+      "Lr_PCB_3turn_geometry.results/DV126_S89_V0.cmesh129/current.ngmesh",
+      "Lr_PCB_3turn_geometry.results/DV126_S89_V0.profile",
+      "Lr_PCB_3turn_geometry.results/DV126_S89_V0_P1.adp",
+      "Lr_PCB_3turn_geometry.results/DV126_S89_V0_P2.adp",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL90_NFSP10_V0.sd",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL90_PD0_V0.sd",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_PD0_V0.sd",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.blo",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.elo",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.hdr",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.hlo",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.sat",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.sls",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.sstr",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.str",
+      "Lr_PCB_3turn_geometry.results/DV126_SOL91_V0.Field131/fields.stt",
+      "Lr_PCB_3turn_geometry.results/DV126_V85.imesh/initial.ngmesh",
+      "ManagedFiles_Design0.asol",
+      "mf_0/GeometryCache/BodyCache/0000034.x_b",
+      "mf_0/GeometryCache/BodyCache/0000153.fct",
+      "mf_0/GeometryCache/BodyCache/0000153.x_b",
+      "mf_0/GeometryCache/CacheDataVersion.tmp",
+      "mf_0/GeometryCache/InterrogationCache.tmp",
+      "mf_0/GeometryCache/OperationDataCache.tmp",
+      "mf_0/svcache/HDR6AD66519217944731663.tmp",
+      "mf_0/ValidationCache"
+    ],
+    "total_uncompressed_bytes": 30487044
+  },
+  "actual_native_solver_mesh_passes": 2,
+  "actual_mesh_tetrahedra_last": 58262,
+  "actual_last_mesh_energy_error_pct": 5.7135,
+  "actual_last_mesh_delta_energy_pct": 5.3555,
+  "actual_native_solver_energy_rows": [
+    {
+      "pass": 1,
+      "tetrahedra": 48577,
+      "energy_j": 9.4317e-07,
+      "error_pct": 24.325,
+      "delta_energy_pct": null
+    },
+    {
+      "pass": 2,
+      "tetrahedra": 58262,
+      "energy_j": 8.9266e-07,
+      "error_pct": 5.7135,
+      "delta_energy_pct": 5.3555
+    }
+  ],
+  "Ansys_field_reporter_energy_j": 8.92655401743118e-07,
+  "Ansys_field_reporter_energy_equivalent_1A_uH": 1.7853108034862362,
+  "bias_1A_DC": true,
+  "source_script_canonical_lf_sha256": {
+    "tools/aedt_pcb_embedded_3turn_solve_1a.py": "4e81c0e8f295afce3b820c91c516afc3bcf3311e49655d87399d93018b6ab9f1",
+    "tools/aedt_pcb_embedded_3turn_postprocess_1a.py": "7f237a66a00bae81bfb21546a8b163d26e8805194894c43cc7b20cc84b8a2482"
+  },
+  "model_contains_external_artificial_leads": true,
+  "generic_stock_ferrite_not_OEM_N97": true,
+  "N97_100C_appropriate_BH_verified": false,
+  "full_range_L_I_and_0p92uH_nominal_inductance_verified": false,
+  "200kHz_AC_and_100C_core_copper_loss_verified": false,
+  "manufacturer_core_machining_and_6layer_barrel_qualified": false,
+  "16mm_total_assembly_and_safety_qualified": false,
+  "OEM_real_transformer_T1_T4_CT_validated": false,
+  "hardware_or_100A_delivery_approved": false,
+  "fabrication_approved": false,
+  "interpretation": "True 1A nonlinear-unqualified generic-ferrite FEA. Its ~1.785uH energy equivalence includes artificial leads, inaccurate actual vendor B-H/gap and absent PCB laminate; do not compare as OEM component specification."
+}

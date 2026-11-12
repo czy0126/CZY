@@ -1,0 +1,22 @@
+{
+  "schema": "REAL_6LAYER_PCB_3TURN_MAXWELL_1A_ENERGY_SOURCE_V1",
+  "source_project": "D:\\workshop\\.webcodex-worktrees\\design-48v-2v-0e49c4ad\\design\\v3\\maxwell\\local_runs\\ELP38_Lr_PCB_3TURN_6LAYER_REAL_1A_FEM_GENERIC_FERRITE_V2_NOT_FOR_FAB.aedt",
+  "energy_j": 8.92655401743118e-07,
+  "energy_equivalent_uH": 1.7853108034862362,
+  "status": "ACTUAL_AEDT_ENERGY_EXTRACTED_UNQUALIFIED_3TURN",
+  "N97_100C_nonlin_BH_verified": false,
+  "actual_magnet_inductance_L_I_verified": false,
+  "AC_200khz_loss_verified": false,
+  "fabrication_approved": false,
+  "source_sha256_before": "a55de33185e5a078bbec1f040b6606736a4376e66c4b006fdd3713bdff5182a2",
+  "real_convergence_sha256": "7e3c94d4edf42ef69b1c3ceb91e10e91afa264f5f6382b6b72be5b71f12f7db8",
+  "native_solve_receipt_sha256": "1b3747bdd598e1667239d2b7de1ce5824b6132a89d8122438b9052b4cea1bd39",
+  "model_source_geometry_sha256": "a1940f5ce7da1d1938c02523dbf5bfa7ddb9d48802a7684a00ba6ff937233048",
+  "ansys_energy_calculator_raw": [
+    "8.92655401743118E-07"
+  ],
+  "native_solution_name": "Setup1:LastAdaptive",
+  "energy_identity": "W=0.5 L I_DC^2; artificial external leads included, generic ferrite; not OEM Lr",
+  "source_sha256_after": "a55de33185e5a078bbec1f040b6606736a4376e66c4b006fdd3713bdff5182a2",
+  "source_project_unchanged": true
+}
