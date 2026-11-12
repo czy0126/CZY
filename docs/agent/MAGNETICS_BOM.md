@@ -11,6 +11,11 @@
 - 磁件加工输入页（`hardware/dcx_main/manufacturing/`）
 - 61 占位责任清单（`hardware/dcx_main/placeholder_eco.{json,csv}`）
 
+## G2 V9 24 个磁件裸焊盘与 6 件原生缺件（2026-11-13）
+
+- [源锁定逐端子审核](../../hardware/dcx_main/g2/g2_v9_p1_magnetic_terminal_gap_NOT_FOR_FAB.json)由 [可复算脚本](../../hardware/dcx_main/g2/audit_v9_p1_terminal_parity.py) 产生：以真实已保存/独立重开 V9 PCB（149件/443 pad/407 line/93 via）对照源校准的旧 G1 P1 83件/280导线原生原理图；**77个已落板 P1 器件的259个带网脚没有发现网络不一致**，但还有6个原理图位号没有原生 PCB 元器件：**T1–T4、CT、R6**。V9 PCB 上磁件的 **24个裸焊盘**（T1–T4各5脚，CT4脚）按当初原始顺序、脚号、网络逐一匹配，因此线路定义不缺，但这24个焊盘至今**不属于真实的原生器件封装**。R6 两脚在 P1 是1=VCC12、2=RUN，PCB没有该实体；不能把缺失 R6 自动解释为DNP。
+- **P1证据的版本边界**：原理图侧来自旧G1的原生连接性文件，尚未再次在 V9 的第一页逐脚导出；V9 Cout 第二页72件/144线已经独立重开验过。故这是一份从真实封装推出的缺件清单，而不是已经通过的最新 V9 **全** SCH/PCB网表等价证据。Native DRC仍有 1 项聚合的Netlist Error、168项Connection Error。不可通过删除/豁免磁件、改成无网自由焊盘或硬改网表解决；必须取得厂商实际端子尺寸/DOT与脚号，再建5个关联符号与真实PCB封装；对R6确定实际装配/修改原理图并做原生ERC/DRC。`NOT_FOR_FAB`。
+
 ## 磁件询价单（`hardware/dcx_main/rfq/`）
 
 `tools/magnetics_rfq_package.py` 生成 6 张独立询价单（T1–T4、Lr、CT），**放在
