@@ -1,0 +1,135 @@
+{
+  "schema": "D1_REAL_NATIVE_SIX_LAYER_PCB_WINDING_CONCEPT_V1",
+  "status": "PCB_LR_THREE_SERIES_TURNS_TWO_PARALLEL_LAYERS_PER_TURN_PRELIMINARY_NOT_FOR_FAB",
+  "main_power_board_modified": false,
+  "source_hashes_canonical_lf": {
+    "design/v3/maxwell/pcb_embedded_lr_3turn_candidate.json": "434018e533924780801ce91b6adc6ccaf92a0a1f82549e1d73a627d8a72311f0",
+    "design/v3/maxwell/diy_magnetics_concept.json": "e5445fa003e12d33d2f239d1e0c76d28932355406eba84db08a536313697cf92",
+    "design/v3/bom/lr_design.json": "a29d678793ba34b20e6c7f381d3697d1c421d49425677ed85b3d403256ff79e8"
+  },
+  "source_hash_method": "SHA256(UTF-8 text with CRLF normalized to LF)",
+  "case_id": "ELP38_Lr_3turn_0920uH",
+  "geometry": {
+    "central_leg_slot_mm": [
+      -4.17,
+      -13.049999999999999,
+      4.17,
+      13.049999999999999
+    ],
+    "outer_leg_slots_mm": [
+      [
+        -19.35,
+        -13.049999999999999,
+        -9.82,
+        13.049999999999999
+      ],
+      [
+        9.82,
+        -13.049999999999999,
+        19.35,
+        13.049999999999999
+      ]
+    ],
+    "board_edge_mm": [
+      -24,
+      -34,
+      24,
+      22
+    ],
+    "coil_centreline_x_mm": 5.92,
+    "coil_centreline_y_mm": 14.799999999999999,
+    "winding_copper_width_mm": 2.5,
+    "core_window_each_side_mm": 6.35,
+    "copper_core_cutout_clearance_mm": 0.5,
+    "copper_pair_layers": [
+      [
+        "F.Cu",
+        "In1.Cu"
+      ],
+      [
+        "In2.Cu",
+        "In3.Cu"
+      ],
+      [
+        "In4.Cu",
+        "B.Cu"
+      ]
+    ],
+    "serial_turn_endpoint_nodes_mm": [
+      [
+        -13,
+        -19
+      ],
+      [
+        11,
+        -22
+      ],
+      [
+        14.5,
+        -25
+      ],
+      [
+        18,
+        -28
+      ]
+    ],
+    "track_lengths_mm": [
+      94.6,
+      113.94,
+      126.94
+    ],
+    "through_current_nodes": 4,
+    "transition_via_count": 2,
+    "through_via_barrel_peak_and_rms_current_qualified": false,
+    "topological_no_accidental_cross_layer_short_screen_passed": true
+  },
+  "dc_copper_only_estimate": {
+    "rated_output_current_a": 100,
+    "Lr_coil_rms_a_at_rated_output": 9.450157,
+    "Lr_coil_rms_a_at_120a_output": 11.222295,
+    "not_coil_rms_100a": true,
+    "pcb_copper_oz_assumed": 2.0,
+    "copper_t_per_layer_mm": 0.07,
+    "effective_copper_section_per_turn_mm2": 0.35000000000000003,
+    "total_three_turns_cu_path_mm": 335.48,
+    "r_20c_ohm": 0.016524786,
+    "r_100c_ohm": 0.021720179,
+    "Pdc_100c_100a_output_w": 1.939731,
+    "Pdc_100c_120a_output_w": 2.735437,
+    "skin_depth_at_100c_and_clock_mm": 0.16915,
+    "fundamental_freq_hz": 200622.0,
+    "skin_only_not_full_proximity_loss": true,
+    "via_and_end_connection_resistance_omitted": true,
+    "fringing_and_AC_Rac_Rdc_omitted": true,
+    "relative_copper_thermal_limit_not_proven": true
+  },
+  "magnetic_and_z_screen": {
+    "nominal_target_inductance_uH": 0.92,
+    "analytical_gap_mm": 2.356,
+    "linear_flux_at_121p515A_T": 0.194086,
+    "flux_screen_limit_T": 0.248,
+    "magnetic_screen_only_not_actual_L_I": true,
+    "ELP38_slot_window_height_min_mm_from_catalogue": 4.3,
+    "pcb_thickness_nominal_mm": 1.6,
+    "pcb_plus_two_face_insulation_trial_mm": 2.6,
+    "core_plus_PCB_coldplate_height_verified": false
+  },
+  "qualification": {
+    "real_tdk_n97_100c_nonlin_BH": false,
+    "measured_L_incremental_vs_current": false,
+    "200khz_proximity_and_gap_fringe_losses": false,
+    "factory_6layer_70um_internal_copper_DFM": false,
+    "through_via_impulse_and_rms_rating": false,
+    "primary_secondary_or_core_creepage_certified": false,
+    "mounting_and_coldplate_16mm_stack": false,
+    "fabrication_approved": false
+  },
+  "limitations": [
+    "Standalone KiCad PCB test artifact; NOT an EasyEDA production motherboard ECO.",
+    "No OEM approved slots, copper layer manufacturing stack-up or ferrite seating.",
+    "Three real series turns require two transition through vias; physical plating and current crowding NOT rated.",
+    "DC copper resistance is a geometry model, AC proximity/fringe and interlayer loss NOT simulated.",
+    "Additional coldplate/PCB mounting, isolation, N97 100C nonlinear L(I), 200kHz losses and fault SOA required.",
+    "Four 3:1:1 transformers and CT require a separate turn/DOT/layer/isolation design."
+  ]
+}

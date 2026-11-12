@@ -1,0 +1,76 @@
+{
+  "schema": "D1_ELP38_THREE_TURN_PCB_COIL_CONCEPT_V1",
+  "case_id": "ELP38_Lr_3turn_0920uH",
+  "design_source": "design/v3/maxwell/diy_magnetics_concept.json",
+  "load_source": "design/v3/bom/lr_design.json",
+  "purpose": "Standalone 6-layer through-slotted PCB winding candidate to measure/solve before any main-board substitution",
+  "status": "NOT_FOR_FAB_OEM_NONLINEAR_AND_AC_LOSS_NOT_PROVEN",
+  "board": {
+    "x_min_mm": -24,
+    "x_max_mm": 24,
+    "y_min_mm": -34,
+    "y_max_mm": 22,
+    "nominal_thickness_mm": 1.6,
+    "layers": [
+      "F.Cu",
+      "In1.Cu",
+      "In2.Cu",
+      "In3.Cu",
+      "In4.Cu",
+      "B.Cu"
+    ],
+    "trace_width_mm": 2.5,
+    "copper_thickness_per_layer_mm": 0.07,
+    "copper_to_slot_edge_mm": 0.5,
+    "core_slot_extra_each_side_mm": 0.35,
+    "copper_to_copper_clearance_mm": 0.3,
+    "terminal_pth_diameter_mm": 1.8,
+    "terminal_pth_drill_mm": 0.8,
+    "transition_via_diameter_mm": 0.8,
+    "transition_via_drill_mm": 0.35,
+    "via_fault_current_qualified": false,
+    "plane_and_vias_thermally_rated": false
+  },
+  "assembly": {
+    "manufacturer_core_window_min_height_mm": 4.3,
+    "board_nominal_height_mm": 1.6,
+    "min_insulation_each_face_mm_trial": 0.5,
+    "actual_total_16mm_stack_verified": false
+  },
+  "routing": {
+    "input_terminal_xy_mm": [
+      -13,
+      -19
+    ],
+    "turn1_end_turn2_start_via_xy_mm": [
+      11,
+      -22
+    ],
+    "turn2_end_turn3_start_via_xy_mm": [
+      14.5,
+      -25
+    ],
+    "output_terminal_xy_mm": [
+      18,
+      -28
+    ]
+  },
+  "physics": {
+    "copper_rho20_ohm_m": 1.724e-8,
+    "copper_alpha_per_k": 0.00393,
+    "reference_hot_temp_c": 100,
+    "nominal_reference_temp_c": 20,
+    "copper_mu_r": 1,
+    "relative_proximity_loss_unverified": true
+  },
+  "qualification": {
+    "real_tdk_n97_100c_nonlin_BH": false,
+    "measured_L_incremental_vs_current": false,
+    "200khz_proximity_and_gap_fringe_losses": false,
+    "factory_6layer_70um_internal_copper_DFM": false,
+    "through_via_impulse_and_rms_rating": false,
+    "primary_secondary_or_core_creepage_certified": false,
+    "mounting_and_coldplate_16mm_stack": false,
+    "fabrication_approved": false
+  }
+}
