@@ -1,0 +1,34 @@
+{
+  "status": "THREE_NATIVE_BOARDOUTLINE_CUTOUT_CONTOURS_CREATED_NOT_FOR_FAB",
+  "source_plan_sha256": "ecd7c9c50ddfddaa126d888e5b7554b3cc59dfd20e9a9d77689ddf97c075ee18",
+  "native_response": {
+    "ok": true,
+    "value": {
+      "project": "dcx_main_board_g2_V13_FIVE_MAGNETICS_LOGICAL_LANDING_TRIAL_NOT_FOR_FAB",
+      "created": [
+        {
+          "name": "LEFT",
+          "id": "85af73394f1b029f",
+          "layer": 11
+        },
+        {
+          "name": "CENTRE",
+          "id": "773c884239622a4e",
+          "layer": 11
+        },
+        {
+          "name": "RIGHT",
+          "id": "2b35df4fa3353097",
+          "layer": 11
+        }
+      ],
+      "count": 3,
+      "pad_count": 0
+    },
+    "logs": [],
+    "durationMs": 5045
+  },
+  "session_id": "562c826b-c273-4908-b686-ff81369692a5",
+  "native_library_uuid": "d5e95cf104ff4eb082a0566ebcc7d830",
+  "fabrication_approved": false
+}
