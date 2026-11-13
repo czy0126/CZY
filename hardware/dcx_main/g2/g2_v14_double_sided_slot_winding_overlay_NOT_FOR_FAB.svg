@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -18 161.0 154.0" width="775.0" height="715.0">
+<style>
+    .bg{fill:#f9fbff}.pcb{fill:#eff4f9;stroke:#1c4664;stroke-width:.9}
+    .core{fill:none;stroke:#244ea0;stroke-width:.35;stroke-dasharray:1.5 1.5}
+    .slot{fill:#f8ebe8;stroke:#cd493d;stroke-width:.45}
+    .keep{fill:none;stroke:#ed8f22;stroke-width:.22;stroke-dasharray:.8 .5}
+    .winding{fill:none;stroke:#14967f;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+    .old{fill:#cd493d;stroke:#fff;stroke-width:.3}
+    .label{fill:#23394b;font:2.8px sans-serif;text-anchor:middle}
+    .small{fill:#23394b;font:2.2px sans-serif}
+    </style>
+<rect class="bg" x="-3" y="-18" width="161.0" height="154.0"/>
+<text class="small" x="2" y="-12" style="font-weight:bold;font-size:4px">D1 G2 V14 — ELP32 12 slot concept · NOT FOR FAB</text>
+<text class="small" x="2" y="-7">Red = NPTH  |  Orange = 0.5 mm copper keepout  |  Green = 1-turn U track concept  |  Red dots = obsolete 20 native pads</text>
+<rect class="pcb" x="0" y="0" width="155.0" height="131.0"/>
+<rect class="core" x="4.125" y="9.825" width="31.75" height="20.35"/>
+<text class="label" x="20.0" y="2.5">T1</text>
+<polyline class="winding" points="13.100,34.000 13.100,6.000 26.900,6.000 26.900,34.000"/>
+<rect class="core" x="42.125" y="9.825" width="31.75" height="20.35"/>
+<text class="label" x="58.0" y="2.5">T2</text>
+<polyline class="winding" points="51.100,34.000 51.100,6.000 64.900,6.000 64.900,34.000"/>
+<rect class="core" x="80.125" y="9.825" width="31.75" height="20.35"/>
+<text class="label" x="96.0" y="2.5">T3</text>
+<polyline class="winding" points="89.100,34.000 89.100,6.000 102.900,6.000 102.900,34.000"/>
+<rect class="core" x="118.125" y="9.825" width="31.75" height="20.35"/>
+<text class="label" x="134.0" y="2.5">T4</text>
+<polyline class="winding" points="127.100,34.000 127.100,6.000 140.900,6.000 140.900,34.000"/>
+<rect class="keep" x="2.4625" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="2.9625" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="15.600000000000001" y="8.5" width="8.8" height="23.0"/>
+<rect class="slot" x="16.1" y="9.0" width="7.8" height="22.0" rx="0.6"/>
+<rect class="keep" x="31.0375" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="31.5375" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="40.4625" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="40.9625" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="53.6" y="8.5" width="8.8" height="23.0"/>
+<rect class="slot" x="54.1" y="9.0" width="7.8" height="22.0" rx="0.6"/>
+<rect class="keep" x="69.0375" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="69.5375" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="78.4625" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="78.9625" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="91.6" y="8.5" width="8.8" height="23.0"/>
+<rect class="slot" x="92.1" y="9.0" width="7.8" height="22.0" rx="0.6"/>
+<rect class="keep" x="107.0375" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="107.5375" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="116.4625" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="116.9625" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<rect class="keep" x="129.6" y="8.5" width="8.8" height="23.0"/>
+<rect class="slot" x="130.1" y="9.0" width="7.8" height="22.0" rx="0.6"/>
+<rect class="keep" x="145.0375" y="8.5" width="6.5" height="23.0"/>
+<rect class="slot" x="145.5375" y="9.0" width="5.5" height="22.0" rx="0.6"/>
+<circle class="old" cx="2.9997" cy="11.999" r=".95"/>
+<circle class="old" cx="2.9997" cy="28.001" r=".95"/>
+<circle class="old" cx="37.0002" cy="12.9997" r=".95"/>
+<circle class="old" cx="37.0002" cy="20.0" r=".95"/>
+<circle class="old" cx="37.0002" cy="27.0002" r=".95"/>
+<circle class="old" cx="41.0007" cy="11.999" r=".95"/>
+<circle class="old" cx="41.0007" cy="28.001" r=".95"/>
+<circle class="old" cx="75.0011" cy="12.9997" r=".95"/>
+<circle class="old" cx="75.0011" cy="20.0" r=".95"/>
+<circle class="old" cx="75.0011" cy="27.0002" r=".95"/>
+<circle class="old" cx="78.9991" cy="11.999" r=".95"/>
+<circle class="old" cx="78.9991" cy="28.001" r=".95"/>
+<circle class="old" cx="112.9995" cy="12.9997" r=".95"/>
+<circle class="old" cx="112.9995" cy="20.0" r=".95"/>
+<circle class="old" cx="112.9995" cy="27.0002" r=".95"/>
+<circle class="old" cx="117.0" cy="11.999" r=".95"/>
+<circle class="old" cx="117.0" cy="28.001" r=".95"/>
+<circle class="old" cx="151.0005" cy="12.9997" r=".95"/>
+<circle class="old" cx="151.0005" cy="20.0" r=".95"/>
+<circle class="old" cx="151.0005" cy="27.0002" r=".95"/>
+<text class="small" x="2" y="41">⚠ 20 old pads, 7 VOUT tracks and 3 vias must move</text>
+<text class="small" x="2" y="124">155 × 131 mm saved G2 outline · bottom-side layout not yet routed · DXF is NOT a PCB fabrication file</text>
+</svg>

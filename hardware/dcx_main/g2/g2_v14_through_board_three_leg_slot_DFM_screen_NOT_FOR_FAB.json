@@ -1,0 +1,696 @@
+{
+  "schema": "G2_D1_V14_FOUR_ELP32_12_NPTH_SLOT_WITH_PCB_WINDING_V1",
+  "status": "12_SLOT_20_PAD_7_TRACK_3_VIA_REDESIGN_REQUIRED_NOT_FOR_FAB",
+  "sources": {
+    "TDK_ELP32_2022_datasheet": "https://www.tdk-electronics.tdk.com/inf/80/db/fer/elp_32_6_20.pdf",
+    "JLCPCB_PCB_capabilities": "https://jlcpcb.com/capabilities/pcb-capabilities",
+    "native_V11_saved_eprj2_sha256": "d90ca22079ad7245e8c3904eb8369da58c705ae39b56574bf7843dad34cad89b",
+    "native_V11_independent_PCB_readback_sha256": "6992dd37339d034d6b35083fa924c9d741a60d5425da000ae5ffeaed4846c0b4",
+    "five_magnetics_24pin_logical_native_evidence_sha256": "1c6ccbf922e62c801bea17cf1234583fd262fb5f9d0df12d809f65e4f62dd123",
+    "native_V13_same_existing_GUI_component_side_receipt_sha256": "49b7cc0092513f0ab8a97812c8c4320c620802df24f70f2b0be07c06c0bd4f64"
+  },
+  "board_dimensions_mm": [
+    155.0,
+    131.0
+  ],
+  "ELP32_E_and_I_N97_TDK": {
+    "ELP_ordering_code": "B66287G0000X197",
+    "I_plate_ordering_code": "B66287K0000X197",
+    "outer_x_nom_mm": 31.75,
+    "outer_x_plusminus_mm": 0.65,
+    "outer_leg_inner_span_nom_mm": 25.4,
+    "outer_leg_inner_span_plusminus_mm": 0.5,
+    "center_leg_x_nom_mm": 6.35,
+    "center_leg_x_plusminus_mm": 0.15,
+    "core_y_nom_mm": 20.35,
+    "core_y_plusminus_mm": 0.4,
+    "magnetic_window_height_nom_mm": 3.2,
+    "ELP_E_height_nom_mm": 6.35,
+    "I_plate_height_nom_mm": 3.15,
+    "core_e_plus_I_nominal_total_mm": 9.5,
+    "all_3_legs_electric_grounded_and_metalized": false
+  },
+  "PCB_slot_design_assumptions": {
+    "nonplated_routed_slots_only": true,
+    "slot_centers_are_nominal_not_oem_assembly_datums": true,
+    "max_router_tolerance_per_side_mm": 0.2,
+    "desired_core_to_actual_routed_wall_gap_each_side_mm": 0.25,
+    "routed_slot_copper_keepout_mm": 0.5,
+    "minimum_non_plated_slot_width_from_JLCPCB_mm": 1.0,
+    "standard_milling_corner_radius_mm": 0.6,
+    "supplier_slot_vendor_DFM_and_3D_signed": false
+  },
+  "slot_count": 12,
+  "slots": [
+    {
+      "id": "T1_LEFT",
+      "device": "T1",
+      "leg": "LEFT",
+      "center_x_mm": 5.7125,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 2.9625,
+      "x_max_mm": 8.4625,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T1_CENTRE",
+      "device": "T1",
+      "leg": "CENTRE",
+      "center_x_mm": 20.0,
+      "center_y_mm": 20.0,
+      "width_mm": 7.8,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 16.1,
+      "x_max_mm": 23.9,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T1_RIGHT",
+      "device": "T1",
+      "leg": "RIGHT",
+      "center_x_mm": 34.2875,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 31.5375,
+      "x_max_mm": 37.0375,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T2_LEFT",
+      "device": "T2",
+      "leg": "LEFT",
+      "center_x_mm": 43.7125,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 40.9625,
+      "x_max_mm": 46.4625,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T2_CENTRE",
+      "device": "T2",
+      "leg": "CENTRE",
+      "center_x_mm": 58.0,
+      "center_y_mm": 20.0,
+      "width_mm": 7.8,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 54.1,
+      "x_max_mm": 61.9,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T2_RIGHT",
+      "device": "T2",
+      "leg": "RIGHT",
+      "center_x_mm": 72.2875,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 69.5375,
+      "x_max_mm": 75.0375,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T3_LEFT",
+      "device": "T3",
+      "leg": "LEFT",
+      "center_x_mm": 81.7125,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 78.9625,
+      "x_max_mm": 84.4625,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T3_CENTRE",
+      "device": "T3",
+      "leg": "CENTRE",
+      "center_x_mm": 96.0,
+      "center_y_mm": 20.0,
+      "width_mm": 7.8,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 92.1,
+      "x_max_mm": 99.9,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T3_RIGHT",
+      "device": "T3",
+      "leg": "RIGHT",
+      "center_x_mm": 110.2875,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 107.5375,
+      "x_max_mm": 113.0375,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T4_LEFT",
+      "device": "T4",
+      "leg": "LEFT",
+      "center_x_mm": 119.7125,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 116.9625,
+      "x_max_mm": 122.4625,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T4_CENTRE",
+      "device": "T4",
+      "leg": "CENTRE",
+      "center_x_mm": 134.0,
+      "center_y_mm": 20.0,
+      "width_mm": 7.8,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 130.1,
+      "x_max_mm": 137.9,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    },
+    {
+      "id": "T4_RIGHT",
+      "device": "T4",
+      "leg": "RIGHT",
+      "center_x_mm": 148.2875,
+      "center_y_mm": 20.0,
+      "width_mm": 5.5,
+      "length_mm": 22.0,
+      "corner_radius_mm": 0.6,
+      "x_min_mm": 145.5375,
+      "x_max_mm": 151.0375,
+      "y_min_mm": 9.0,
+      "y_max_mm": 31.0
+    }
+  ],
+  "actual_native_V11_overlap_counts": {
+    "PAD": 20,
+    "COPPER_TRACK": 7,
+    "VIA": 3
+  },
+  "actual_native_V11_overlap_details": [
+    {
+      "slot": "T1_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_A",
+      "net": "PRI_T1",
+      "point_mm": [
+        2.9997,
+        28.001
+      ]
+    },
+    {
+      "slot": "T1_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_B",
+      "net": "PRI_12",
+      "point_mm": [
+        2.9997,
+        11.999
+      ]
+    },
+    {
+      "slot": "T1_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_A",
+      "net": "SEC1_A",
+      "point_mm": [
+        37.0002,
+        27.0002
+      ]
+    },
+    {
+      "slot": "T1_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_B",
+      "net": "SEC1_B",
+      "point_mm": [
+        37.0002,
+        12.9997
+      ]
+    },
+    {
+      "slot": "T1_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "CTAP",
+      "net": "VOUT",
+      "point_mm": [
+        37.0002,
+        20.0
+      ]
+    },
+    {
+      "slot": "T1_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "4472fd8093206096",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T1_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "43a93b5dcef770eb",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T1_RIGHT",
+      "kind": "VIA",
+      "native_via_uuid": "893cdf24704d64cf",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T2_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_A",
+      "net": "PRI_12",
+      "point_mm": [
+        41.0007,
+        28.001
+      ]
+    },
+    {
+      "slot": "T2_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_B",
+      "net": "PRI_23",
+      "point_mm": [
+        41.0007,
+        11.999
+      ]
+    },
+    {
+      "slot": "T2_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_A",
+      "net": "SEC2_A",
+      "point_mm": [
+        75.0011,
+        27.0002
+      ]
+    },
+    {
+      "slot": "T2_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_B",
+      "net": "SEC2_B",
+      "point_mm": [
+        75.0011,
+        12.9997
+      ]
+    },
+    {
+      "slot": "T2_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "CTAP",
+      "net": "VOUT",
+      "point_mm": [
+        75.0011,
+        20.0
+      ]
+    },
+    {
+      "slot": "T2_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "e44829dd823551dc",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T2_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "ff1c66e95ae097de",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T2_RIGHT",
+      "kind": "VIA",
+      "native_via_uuid": "74d62abc6446b7d8",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T3_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_A",
+      "net": "PRI_23",
+      "point_mm": [
+        78.9991,
+        28.001
+      ]
+    },
+    {
+      "slot": "T3_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_B",
+      "net": "PRI_34",
+      "point_mm": [
+        78.9991,
+        11.999
+      ]
+    },
+    {
+      "slot": "T3_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_A",
+      "net": "SEC3_A",
+      "point_mm": [
+        112.9995,
+        27.0002
+      ]
+    },
+    {
+      "slot": "T3_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_B",
+      "net": "SEC3_B",
+      "point_mm": [
+        112.9995,
+        12.9997
+      ]
+    },
+    {
+      "slot": "T3_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "CTAP",
+      "net": "VOUT",
+      "point_mm": [
+        112.9995,
+        20.0
+      ]
+    },
+    {
+      "slot": "T3_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "5c02a141e09b24a0",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T4_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_A",
+      "net": "PRI_34",
+      "point_mm": [
+        117.0,
+        28.001
+      ]
+    },
+    {
+      "slot": "T4_LEFT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "PRI_B",
+      "net": "PGND",
+      "point_mm": [
+        117.0,
+        11.999
+      ]
+    },
+    {
+      "slot": "T4_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_A",
+      "net": "SEC4_A",
+      "point_mm": [
+        151.0005,
+        27.0002
+      ]
+    },
+    {
+      "slot": "T4_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "SEC_B",
+      "net": "SEC4_B",
+      "point_mm": [
+        151.0005,
+        12.9997
+      ]
+    },
+    {
+      "slot": "T4_RIGHT",
+      "kind": "PAD",
+      "pcb_ref": "UNLINKED_MAGNETIC_RAW_PAD",
+      "pad_number": "CTAP",
+      "net": "VOUT",
+      "point_mm": [
+        151.0005,
+        20.0
+      ]
+    },
+    {
+      "slot": "T4_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "7d2f84aa4e6691a5",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T4_RIGHT",
+      "kind": "COPPER_TRACK",
+      "native_line_uuid": "091e4eece808422d",
+      "net": "VOUT"
+    },
+    {
+      "slot": "T4_RIGHT",
+      "kind": "VIA",
+      "native_via_uuid": "c4ef4bd3eba5f13b",
+      "net": "VOUT"
+    }
+  ],
+  "requires_remove_or_rebuild_all_20_old_magnetics_raw_pads": true,
+  "requires_rewire_output_VOUT_lines_and_vias_around_slots": true,
+  "ELP38_Lr_same_layout_suitable_for_throughboard_cutdown": false,
+  "CT_remains_separate_real_4terminal_sensing_device_pending_vendor_PIN_DOT": true,
+  "winding_electrothermal_and_double_sided_preliminary": {
+    "channel_between_center_and_outer_slot_mm": 7.6375,
+    "usable_channel_copper_width_mm": 6.6375,
+    "screened_copper_trace_width_mm": 5.0,
+    "U_turn_centerline_side_offset_mm": 6.9,
+    "U_turn_centerline_y_mm": [
+      6.0,
+      34.0
+    ],
+    "conductor_U_turn_length_mm": 69.8,
+    "upper_copper_path_clearance_to_slot_mm": 0.5,
+    "primary_rms_assumed_A": 9.45014,
+    "secondary_each_transformer_output_dc_A": 25.0,
+    "secondary_each_half_rms_concept_A": 17.6777,
+    "TDK_3p2mm_core_window_mechanical_fit": true,
+    "PCB_thickness_candidate_mm": 2.0,
+    "nominal_E_plus_I_core_total_height_mm": 9.5,
+    "nominal_per_side_ferrite_protrusion_with_centered_2mm_board_mm": 3.75,
+    "existing_native_component_top_count": 149,
+    "existing_native_component_bottom_count": 0,
+    "actual_board_has_12layer_stackup_configured_and_vendor_signed": false,
+    "required_interlayer_anti_pad_microvia_layout_done": false,
+    "primary_3turns_magnetic_dot_and_CTAP_polarity_verified": false,
+    "12layer_copper_feasibility_and_16mm_coldplate_full_stackup_verified": false,
+    "candidate_12layer_4oz_winding_assignment_not_routed": [
+      {
+        "layer": 1,
+        "functional_name": "P1",
+        "net_start": "PRI_A",
+        "net_end": "P12_VIA_BURIED_TBD"
+      },
+      {
+        "layer": 2,
+        "functional_name": "SA1",
+        "net_start": "SEC_A",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 3,
+        "functional_name": "SB1",
+        "net_start": "SEC_B",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 4,
+        "functional_name": "P2",
+        "net_start": "P12_VIA_BURIED_TBD",
+        "net_end": "P23_VIA_BURIED_TBD"
+      },
+      {
+        "layer": 5,
+        "functional_name": "SA2",
+        "net_start": "SEC_A",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 6,
+        "functional_name": "SB2",
+        "net_start": "SEC_B",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 7,
+        "functional_name": "P3",
+        "net_start": "P23_VIA_BURIED_TBD",
+        "net_end": "PRI_B"
+      },
+      {
+        "layer": 8,
+        "functional_name": "SA3",
+        "net_start": "SEC_A",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 9,
+        "functional_name": "SB3",
+        "net_start": "SEC_B",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 10,
+        "functional_name": "SA4",
+        "net_start": "SEC_A",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 11,
+        "functional_name": "SB4",
+        "net_start": "SEC_B",
+        "net_end": "CTAP"
+      },
+      {
+        "layer": 12,
+        "functional_name": "RESERVED",
+        "net_start": null,
+        "net_end": null
+      }
+    ],
+    "scenarios": [
+      {
+        "scenario": "8L_2OZ_secondary2_each",
+        "pcb_layer_count": 8,
+        "assumed_every_winding_layer_copper_um": 70,
+        "primary_series_turns": 3,
+        "primary_parallel_layers_per_turn": 1,
+        "secondary_half_A_one_turn_parallel_layers": 2,
+        "secondary_half_B_one_turn_parallel_layers": 2,
+        "occupied_ideal_winding_layers": 7,
+        "remaining_ideal_layers": 1,
+        "single_winding_U_centerline_length_mm": 69.8,
+        "single_layer_hot_100C_dc_resistance_mOhm": 4.5191,
+        "four_core_primary_dc_copper_loss_100C_W": 4.8429,
+        "four_core_secondary_dc_copper_loss_100C_W": 5.6489,
+        "four_core_total_dc_copper_loss_100C_W": 10.4918,
+        "vs_original_100A_20C_model_W": 8.3573,
+        "underestimates_actual_AC_proximity_via_DOT_and_hotspots": true,
+        "fabricator_can_build_this_stackup_approved": false
+      },
+      {
+        "scenario": "12L_2OZ_secondary4_each",
+        "pcb_layer_count": 12,
+        "assumed_every_winding_layer_copper_um": 70,
+        "primary_series_turns": 3,
+        "primary_parallel_layers_per_turn": 1,
+        "secondary_half_A_one_turn_parallel_layers": 4,
+        "secondary_half_B_one_turn_parallel_layers": 4,
+        "occupied_ideal_winding_layers": 11,
+        "remaining_ideal_layers": 1,
+        "single_winding_U_centerline_length_mm": 69.8,
+        "single_layer_hot_100C_dc_resistance_mOhm": 4.5191,
+        "four_core_primary_dc_copper_loss_100C_W": 4.8429,
+        "four_core_secondary_dc_copper_loss_100C_W": 2.8244,
+        "four_core_total_dc_copper_loss_100C_W": 7.6674,
+        "vs_original_100A_20C_model_W": 5.5328,
+        "underestimates_actual_AC_proximity_via_DOT_and_hotspots": true,
+        "fabricator_can_build_this_stackup_approved": false
+      },
+      {
+        "scenario": "12L_4OZ_secondary4_each",
+        "pcb_layer_count": 12,
+        "assumed_every_winding_layer_copper_um": 140,
+        "primary_series_turns": 3,
+        "primary_parallel_layers_per_turn": 1,
+        "secondary_half_A_one_turn_parallel_layers": 4,
+        "secondary_half_B_one_turn_parallel_layers": 4,
+        "occupied_ideal_winding_layers": 11,
+        "remaining_ideal_layers": 1,
+        "single_winding_U_centerline_length_mm": 69.8,
+        "single_layer_hot_100C_dc_resistance_mOhm": 2.25955,
+        "four_core_primary_dc_copper_loss_100C_W": 2.4215,
+        "four_core_secondary_dc_copper_loss_100C_W": 1.4122,
+        "four_core_total_dc_copper_loss_100C_W": 3.8337,
+        "vs_original_100A_20C_model_W": 1.6991,
+        "underestimates_actual_AC_proximity_via_DOT_and_hotspots": true,
+        "fabricator_can_build_this_stackup_approved": false
+      },
+      {
+        "scenario": "16L_4OZ_secondary6_each",
+        "pcb_layer_count": 16,
+        "assumed_every_winding_layer_copper_um": 140,
+        "primary_series_turns": 3,
+        "primary_parallel_layers_per_turn": 1,
+        "secondary_half_A_one_turn_parallel_layers": 6,
+        "secondary_half_B_one_turn_parallel_layers": 6,
+        "occupied_ideal_winding_layers": 15,
+        "remaining_ideal_layers": 1,
+        "single_winding_U_centerline_length_mm": 69.8,
+        "single_layer_hot_100C_dc_resistance_mOhm": 2.25955,
+        "four_core_primary_dc_copper_loss_100C_W": 2.4215,
+        "four_core_secondary_dc_copper_loss_100C_W": 0.9415,
+        "four_core_total_dc_copper_loss_100C_W": 3.363,
+        "vs_original_100A_20C_model_W": 1.2284,
+        "underestimates_actual_AC_proximity_via_DOT_and_hotspots": true,
+        "fabricator_can_build_this_stackup_approved": false
+      }
+    ]
+  },
+  "required_before_fab": [
+    "Change V14 native outline with 12 real internal NPTH routs; delete/relocate 20 raw pads and 7 original VOUT lines/3 vias through copper exclusion; verify independent saved native DRC",
+    "Electromagnetically and physically route 3 series primary turns and two 1-turn centered secondary half-windings for each of four cores with verified plated vs NPTH barriers, blind/buried via antipads, copper and 200kHz Maxwell nonlinear losses",
+    "Factory approve high layer count and inner 140um Cu manufacturability/insulation; no unapproved 12L 4oz assumption",
+    "Reintegrate 100A separate VOUT & PGND physical current bar and SR; validate 100A copper thermals and current sharing",
+    "Reverse-side component layout only after real part heights, placement/assembly access, cooling plate machining and full 16mm worst case",
+    "Supplier ELP32 E/I orientation, radius, fixture 3D, torque, gap, thermal stress and Core DOT/CT physical 4 terminal signed",
+    "Native PCB Connection/Netlist/Physical DRC all zero, GUI reopened, first article V48/2V 100A safe protection and thermal test"
+  ],
+  "released_copper_stackup": false,
+  "native_cutouts_already_applied": false,
+  "native_winding_tracks_already_applied": false,
+  "fabrication_approved": false,
+  "fab_release": "NOT_FOR_FAB"
+}
