@@ -1,0 +1,283 @@
+{
+  "schema": "D1_V15_REAL_EASYEDA_T4_RIGID_POWER_UNIT_REPOSITION_V1",
+  "source_V14_verified_SHA256": "7dd77910bcf7ff3fd0e2be1e4194439a22189aaf353f105bbe1280c104e4f6fc",
+  "source_native_149_components_423_pads_484_lines_104_vias_SHA256": "ce66757903c0b99169225e458a2530585dbf0dc8a594d2c00cbf1511e9c77cf1",
+  "original_PCB1_uuid": "2f6fa2d508d3f9a8",
+  "original_V14_uuid": "8c496410b2877d3c",
+  "target_distinct_V15_uuid": "9b212da9a255a2af",
+  "source_EI_T4_core_centre_mm": [
+    134.0,
+    20.0
+  ],
+  "translation_mm": {
+    "x": 0,
+    "y": -30.0
+  },
+  "rigid_cell_9_refdes": [
+    "C10",
+    "C108",
+    "R26",
+    "R27",
+    "R34",
+    "R35",
+    "SR4A",
+    "SR4B",
+    "U6"
+  ],
+  "move_true_40_native_pads_by_component": true,
+  "move_18_real_native_line_IDs": [
+    {
+      "id": "07dd95ca03dfd5d6",
+      "net": "VCC12_S",
+      "layer": 1,
+      "startX": 5169.300000000001,
+      "startY": -2637.8,
+      "endX": 5211.2,
+      "endY": -2732.3,
+      "width": 7.874
+    },
+    {
+      "id": "a44303f3fbf3ff18",
+      "net": "VD4_A",
+      "layer": 1,
+      "startX": 5129,
+      "startY": -3464.6,
+      "endX": 5311.2,
+      "endY": -2937,
+      "width": 7.874
+    },
+    {
+      "id": "8aa65a727e0baefb",
+      "net": "SEC4_A",
+      "layer": 1,
+      "startX": 5114.4,
+      "startY": -3117.3,
+      "endX": 5064.37,
+      "endY": -3117.3,
+      "width": 35.4331
+    },
+    {
+      "id": "c9b1e4aab6659dee",
+      "net": "SEC4_A",
+      "layer": 1,
+      "startX": 5064.37,
+      "startY": -3117.3,
+      "endX": 5014.37,
+      "endY": -3117.3,
+      "width": 35.4331
+    },
+    {
+      "id": "a5acaa1f3a84d51b",
+      "net": "SEC4_A",
+      "layer": 1,
+      "startX": 5014.37,
+      "startY": -3117.3,
+      "endX": 4964.4,
+      "endY": -3117.3,
+      "width": 35.4331
+    },
+    {
+      "id": "304cbbf03e77de68",
+      "net": "SEC4_B",
+      "layer": 1,
+      "startX": 5508.1,
+      "startY": -3117.3,
+      "endX": 5458.071,
+      "endY": -3117.3,
+      "width": 35.4331
+    },
+    {
+      "id": "6369117540e16e95",
+      "net": "SEC4_B",
+      "layer": 1,
+      "startX": 5458.071,
+      "startY": -3117.3,
+      "endX": 5408.071,
+      "endY": -3117.3,
+      "width": 35.4331
+    },
+    {
+      "id": "194671d6c845c812",
+      "net": "SEC4_B",
+      "layer": 1,
+      "startX": 5408.071,
+      "startY": -3117.3,
+      "endX": 5358.1,
+      "endY": -3117.3,
+      "width": 35.4331
+    },
+    {
+      "id": "8820f8cac9452980",
+      "net": "GA4",
+      "layer": 1,
+      "startX": 4926.4,
+      "startY": -3464.6,
+      "endX": 4926.4,
+      "endY": -3302.7559,
+      "width": 5.9055
+    },
+    {
+      "id": "f48d1ea80459c1ca",
+      "net": "GA4",
+      "layer": 1,
+      "startX": 4926.4,
+      "startY": -3302.7559,
+      "endX": 5114.4,
+      "endY": -3302.7559,
+      "width": 5.9055
+    },
+    {
+      "id": "321d675a6c09a20d",
+      "net": "GA4",
+      "layer": 1,
+      "startX": 5114.4,
+      "startY": -3302.7559,
+      "endX": 5114.4,
+      "endY": -3339.3,
+      "width": 5.9055
+    },
+    {
+      "id": "af6375343e0752de",
+      "net": "GB4",
+      "layer": 1,
+      "startX": 5320.1,
+      "startY": -3464.6,
+      "endX": 5320.1,
+      "endY": -3302.7559,
+      "width": 5.9055
+    },
+    {
+      "id": "f3fc2a83943b28e2",
+      "net": "GB4",
+      "layer": 1,
+      "startX": 5320.1,
+      "startY": -3302.7559,
+      "endX": 5508.1,
+      "endY": -3302.7559,
+      "width": 5.9055
+    },
+    {
+      "id": "480c403a2ecc701b",
+      "net": "GB4",
+      "layer": 1,
+      "startX": 5508.1,
+      "startY": -3302.7559,
+      "endX": 5508.1,
+      "endY": -3339.3,
+      "width": 5.9055
+    },
+    {
+      "id": "0e9461d160f7d644",
+      "net": "REG4",
+      "layer": 1,
+      "startX": 5261.2,
+      "startY": -2937,
+      "endX": 5261.2,
+      "endY": -2992.1259842519685,
+      "width": 7.874015748031498
+    },
+    {
+      "id": "1534a4aaddfaaeee",
+      "net": "REG4",
+      "layer": 2,
+      "startX": 5261.2,
+      "startY": -2952.7559055118118,
+      "endX": 5261.2,
+      "endY": -2992.1259842519685,
+      "width": 7.874015748031498
+    },
+    {
+      "id": "45e3e649e7174057",
+      "net": "PGND",
+      "layer": 1,
+      "startX": 5211.2,
+      "startY": -2937,
+      "endX": 5206.1,
+      "endY": -2992.1259842519685,
+      "width": 7.874015748031498
+    },
+    {
+      "id": "76153b04288a8bc8",
+      "net": "PGND",
+      "layer": 2,
+      "startX": 5206.1,
+      "startY": -2952.7559055118118,
+      "endX": 5206.1,
+      "endY": -2992.1259842519685,
+      "width": 7.874015748031498
+    }
+  ],
+  "move_2_real_native_via_IDs": [
+    {
+      "id": "82b3626aea28af1a",
+      "net": "REG4",
+      "x": 5261.2,
+      "y": -2992.1259842519685
+    },
+    {
+      "id": "4754ac6e3413c4bd",
+      "net": "PGND",
+      "x": 5206.1,
+      "y": -2992.1259842519685
+    }
+  ],
+  "original_component_positions_mil": {
+    "C10": {
+      "X": 5233.65,
+      "Y": -2952.7559055118118,
+      "Rotation": 180
+    },
+    "C108": {
+      "X": 5196.850400000001,
+      "Y": -2637.7953,
+      "Rotation": 0
+    },
+    "R26": {
+      "X": 4896.752,
+      "Y": -3464.567,
+      "Rotation": 0
+    },
+    "R27": {
+      "X": 5290.4529999999995,
+      "Y": -3464.567,
+      "Rotation": 0
+    },
+    "R34": {
+      "X": 5099.311,
+      "Y": -3464.567,
+      "Rotation": 0
+    },
+    "R35": {
+      "X": 5493.012,
+      "Y": -3464.567,
+      "Rotation": 0
+    },
+    "SR4A": {
+      "X": 5039.37,
+      "Y": -3228.3460000000005,
+      "Rotation": 0
+    },
+    "SR4B": {
+      "X": 5433.071,
+      "Y": -3228.3460000000005,
+      "Rotation": 0
+    },
+    "U6": {
+      "X": 5236.220000000001,
+      "Y": -2834.646,
+      "Rotation": 0
+    }
+  },
+  "T4_to_SR4A_centre_before_mm": 62.29,
+  "T4_to_SR4A_centre_after_mm": 32.558,
+  "T4_to_SR4A_centre_reduction_pct": 47.7,
+  "slot_lower_edge_to_SR4A_SEC_pad_before_mm": 48.179,
+  "slot_lower_edge_to_SR4A_SEC_pad_after_mm": 18.179,
+  "unlike_net_static_copper_clearance_min_mm": 0.19,
+  "unlike_net_static_copper_comparisons": 45667,
+  "top_and_bottom_components_preserved": true,
+  "original_100A_PGND_and_VOUT_straps_must_be_rerouted": true,
+  "all_electrical_connections_closed": false,
+  "true_vendor_CORE_DOT_PINOUT_validated": false,
+  "fabrication_approved": false
+}

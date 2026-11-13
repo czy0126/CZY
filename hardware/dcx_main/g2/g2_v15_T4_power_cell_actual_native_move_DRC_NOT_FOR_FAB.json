@@ -1,0 +1,12 @@
+{
+  "status": "NATIVE_V15_T4_OPERATION_UNVERIFIED_STOP_NO_REPLAY",
+  "api": {
+    "ok": false,
+    "error": {
+      "code": "REQUEST_TIMEOUT",
+      "message": "invoke timed out after 58750ms (budget 59000ms; gave up waiting; the code may still be running in the render, and its result will be discarded)"
+    }
+  },
+  "plan_sha256": "19c17eada8f5c3aeb520829becd16fe8de5db0267e11c8e3db290a0990e37150",
+  "fabrication_approved": false
+}
