@@ -1,0 +1,73 @@
+{
+  "schema": "G2_V12_GENUINE_NATIVE_PRIMARY_RESONANT_COPPER_PILOT_V1",
+  "source_V11_native_sha256": "d90ca22079ad7245e8c3904eb8369da58c705ae39b56574bf7843dad34cad89b",
+  "source_native_counts": {
+    "components": 149,
+    "pads": 443,
+    "lines": 465,
+    "vias": 93,
+    "nets": 65
+  },
+  "native_DRC_before": {
+    "Connection Error": 149,
+    "Netlist Error": 1
+  },
+  "new_top_primary_net_tracks": [
+    {
+      "net": "CR_CT",
+      "layer": 1,
+      "start_designator": "Cr",
+      "start_pin": "2",
+      "end_designator": "RAW_MAGNETIC_TERMINAL",
+      "end_pin": "PRI_A",
+      "a_mm": [
+        72.69988,
+        51.99888
+      ],
+      "b_mm": [
+        79.99984,
+        55.99938
+      ],
+      "width_mm": 1.2,
+      "length_mm": 8.32427,
+      "upper_uniform_copper_R_100C_mOhm": 2.2456,
+      "9p45A_RMS_100C_straight_trace_model_W": 0.20054,
+      "unverified_copper_thickness_um": 70
+    },
+    {
+      "net": "PRI_T1",
+      "layer": 1,
+      "start_designator": "Lr",
+      "start_pin": "2",
+      "end_designator": "RAW_MAGNETIC_TERMINAL",
+      "end_pin": "PRI_A",
+      "a_mm": [
+        21.5011,
+        48.99914
+      ],
+      "b_mm": [
+        2.99974,
+        28.00096
+      ],
+      "width_mm": 3.0,
+      "length_mm": 27.98614,
+      "upper_uniform_copper_R_100C_mOhm": 3.01987,
+      "9p45A_RMS_100C_straight_trace_model_W": 0.26969,
+      "unverified_copper_thickness_um": 70
+    }
+  ],
+  "physical_preflight_issues": [],
+  "source_native_islands": {
+    "CR_CT": 2,
+    "PRI_T1": 2
+  },
+  "proposed_native_islands": {
+    "CR_CT": 1,
+    "PRI_T1": 1
+  },
+  "source_magnetics_bare_pads_instead_of_approved_devices": true,
+  "not_an_output_100A_bus": true,
+  "N97_100C_LI_current_safety_qualified": false,
+  "manufacturer_DFM_approved": false,
+  "fabrication_approved": false
+}
