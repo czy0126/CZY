@@ -1,0 +1,823 @@
+{
+  "schema": "D1_V17_TIGHT_EMC_LAYOUT_NO_NATIVE_COPPER_V1",
+  "source_v15_native_sha256": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+  "source_v15_pad_readback_sha256": "aaf47b0a4386e18c295fddedf503379495445a497bebab83a156e7957cceaed3",
+  "source_v14_ferrite_slot_DFM_sha256": "3cf7318710d3bce380574990e9eada3d21e20dd7f5404edd435319df991f27ce",
+  "manufacturing_status": "CONCEPT_ONLY_NOT_FOR_FAB",
+  "board_envelope_candidate_mm": [
+    155.0,
+    113.0,
+    16.0
+  ],
+  "board_area_candidate_mm2": 17515.0,
+  "old_v15_board_envelope_mm": [
+    155.0,
+    131.0,
+    16.0
+  ],
+  "old_nominal_envelope_density_kW_L": 0.616,
+  "candidate_nominal_envelope_density_kW_L": 0.714,
+  "relative_geometric_density_increase_pct": 15.93,
+  "height_change_mm": -18.0,
+  "magnet_centres_mm": [
+    [
+      20.0,
+      33.0
+    ],
+    [
+      58.0,
+      33.0
+    ],
+    [
+      96.0,
+      33.0
+    ],
+    [
+      134.0,
+      33.0
+    ]
+  ],
+  "core_full_body_outer_dimension_screen_mm": [
+    33.05,
+    21.150000000000002
+  ],
+  "core_to_other_pad_min_clearance_mm": 1.5,
+  "core_full_body_bboxes_mm": {
+    "T1": [
+      3.475,
+      22.425,
+      36.525,
+      43.575
+    ],
+    "T2": [
+      41.475,
+      22.425,
+      74.525,
+      43.575
+    ],
+    "T3": [
+      79.475,
+      22.425,
+      112.525,
+      43.575
+    ],
+    "T4": [
+      117.475,
+      22.425,
+      150.525,
+      43.575
+    ]
+  },
+  "core_body_to_component_pad_failures": [],
+  "new_true_npth_slot_list_with_keepouts_mm": [
+    {
+      "id": "T1_LEFT",
+      "bounds_mm": [
+        2.462,
+        21.5,
+        8.963,
+        44.5
+      ]
+    },
+    {
+      "id": "T1_CENTRE",
+      "bounds_mm": [
+        15.6,
+        21.5,
+        24.4,
+        44.5
+      ]
+    },
+    {
+      "id": "T1_RIGHT",
+      "bounds_mm": [
+        31.038,
+        21.5,
+        37.538,
+        44.5
+      ]
+    },
+    {
+      "id": "T2_LEFT",
+      "bounds_mm": [
+        40.462,
+        21.5,
+        46.962,
+        44.5
+      ]
+    },
+    {
+      "id": "T2_CENTRE",
+      "bounds_mm": [
+        53.6,
+        21.5,
+        62.4,
+        44.5
+      ]
+    },
+    {
+      "id": "T2_RIGHT",
+      "bounds_mm": [
+        69.037,
+        21.5,
+        75.537,
+        44.5
+      ]
+    },
+    {
+      "id": "T3_LEFT",
+      "bounds_mm": [
+        78.463,
+        21.5,
+        84.963,
+        44.5
+      ]
+    },
+    {
+      "id": "T3_CENTRE",
+      "bounds_mm": [
+        91.6,
+        21.5,
+        100.4,
+        44.5
+      ]
+    },
+    {
+      "id": "T3_RIGHT",
+      "bounds_mm": [
+        107.037,
+        21.5,
+        113.537,
+        44.5
+      ]
+    },
+    {
+      "id": "T4_LEFT",
+      "bounds_mm": [
+        116.463,
+        21.5,
+        122.963,
+        44.5
+      ]
+    },
+    {
+      "id": "T4_CENTRE",
+      "bounds_mm": [
+        129.6,
+        21.5,
+        138.4,
+        44.5
+      ]
+    },
+    {
+      "id": "T4_RIGHT",
+      "bounds_mm": [
+        145.037,
+        21.5,
+        151.537,
+        44.5
+      ]
+    }
+  ],
+  "slot_to_pad_conflicts": [],
+  "real_native_associated_pads_checked": 419,
+  "real_native_components_placed": 149,
+  "pad_net_clearance_min_mm": 0.19,
+  "cross_net_pad_clearance_fail_count": 0,
+  "cross_net_pad_clearance_fail_examples": [],
+  "trial_nonbank_courtyard_pad_envelope_margin_mm": 0.45,
+  "trial_nonbank_courtyard_min_separation_mm": 0.5,
+  "trial_nonbank_courtyard_pad_envelope_conflicts": [],
+  "chb_cap_count": 72,
+  "cap_courtyard_trial_mm": [
+    7.7,
+    4.7
+  ],
+  "board_edge_cap_courtyard_min_mm": 2.0,
+  "output_throat_xyxy_mm": [
+    66.0,
+    78.0,
+    86.0,
+    111.0
+  ],
+  "cap_envelope_in_output_throat": [],
+  "cap_envelope_too_close_to_board_edge": [],
+  "input_loop_pad_distance_proxy_mm": 12.407,
+  "sr_to_magnet_slot_end_mm": 13.179,
+  "output_terminal_xy_mm": [
+    76.0000004,
+    100.0
+  ],
+  "placements_mm": {
+    "C10": [
+      132.933,
+      52.0
+    ],
+    "C101": [
+      49.0,
+      19.8
+    ],
+    "C102": [
+      105.0,
+      6.0
+    ],
+    "C103": [
+      75.0,
+      19.0
+    ],
+    "C104": [
+      80.0,
+      19.0
+    ],
+    "C105": [
+      25.0,
+      52.0
+    ],
+    "C106": [
+      63.0,
+      52.0
+    ],
+    "C107": [
+      101.0,
+      52.0
+    ],
+    "C108": [
+      139.0,
+      52.0
+    ],
+    "C109": [
+      25.0,
+      47.0
+    ],
+    "C11": [
+      141.0,
+      17.0
+    ],
+    "C110": [
+      63.0,
+      47.0
+    ],
+    "C111": [
+      101.0,
+      47.0
+    ],
+    "C112": [
+      139.0,
+      47.0
+    ],
+    "C12": [
+      147.0,
+      17.0
+    ],
+    "C13": [
+      85.0,
+      12.0
+    ],
+    "C5": [
+      45.0,
+      18.0
+    ],
+    "C6": [
+      83.0,
+      9.0
+    ],
+    "C7": [
+      18.933,
+      52.0
+    ],
+    "C8": [
+      56.933,
+      52.0
+    ],
+    "C9": [
+      94.933,
+      52.0
+    ],
+    "CHB01": [
+      15.2,
+      75.0
+    ],
+    "CHB02": [
+      24.4,
+      75.0
+    ],
+    "CHB03": [
+      33.6,
+      75.0
+    ],
+    "CHB04": [
+      42.8,
+      75.0
+    ],
+    "CHB05": [
+      52.0,
+      75.0
+    ],
+    "CHB06": [
+      61.2,
+      75.0
+    ],
+    "CHB07": [
+      90.8,
+      75.0
+    ],
+    "CHB08": [
+      100.0,
+      75.0
+    ],
+    "CHB09": [
+      109.2,
+      75.0
+    ],
+    "CHB10": [
+      118.4,
+      75.0
+    ],
+    "CHB11": [
+      127.6,
+      75.0
+    ],
+    "CHB12": [
+      136.8,
+      75.0
+    ],
+    "CHB13": [
+      6.0,
+      81.4
+    ],
+    "CHB14": [
+      15.2,
+      81.4
+    ],
+    "CHB15": [
+      33.6,
+      81.4
+    ],
+    "CHB16": [
+      42.8,
+      81.4
+    ],
+    "CHB17": [
+      52.0,
+      81.4
+    ],
+    "CHB18": [
+      61.2,
+      81.4
+    ],
+    "CHB19": [
+      90.8,
+      81.4
+    ],
+    "CHB20": [
+      100.0,
+      81.4
+    ],
+    "CHB21": [
+      109.2,
+      81.4
+    ],
+    "CHB22": [
+      118.4,
+      81.4
+    ],
+    "CHB23": [
+      136.8,
+      81.4
+    ],
+    "CHB24": [
+      146.0,
+      81.4
+    ],
+    "CHB25": [
+      6.0,
+      87.8
+    ],
+    "CHB26": [
+      15.2,
+      87.8
+    ],
+    "CHB27": [
+      24.4,
+      87.8
+    ],
+    "CHB28": [
+      33.6,
+      87.8
+    ],
+    "CHB29": [
+      52.0,
+      87.8
+    ],
+    "CHB30": [
+      61.2,
+      87.8
+    ],
+    "CHB31": [
+      90.8,
+      87.8
+    ],
+    "CHB32": [
+      100.0,
+      87.8
+    ],
+    "CHB33": [
+      118.4,
+      87.8
+    ],
+    "CHB34": [
+      127.6,
+      87.8
+    ],
+    "CHB35": [
+      136.8,
+      87.8
+    ],
+    "CHB36": [
+      146.0,
+      87.8
+    ],
+    "CHB37": [
+      6.0,
+      94.2
+    ],
+    "CHB38": [
+      24.4,
+      94.2
+    ],
+    "CHB39": [
+      33.6,
+      94.2
+    ],
+    "CHB40": [
+      42.8,
+      94.2
+    ],
+    "CHB41": [
+      52.0,
+      94.2
+    ],
+    "CHB42": [
+      61.2,
+      94.2
+    ],
+    "CHB43": [
+      90.8,
+      94.2
+    ],
+    "CHB44": [
+      100.0,
+      94.2
+    ],
+    "CHB45": [
+      109.2,
+      94.2
+    ],
+    "CHB46": [
+      118.4,
+      94.2
+    ],
+    "CHB47": [
+      127.6,
+      94.2
+    ],
+    "CHB48": [
+      146.0,
+      94.2
+    ],
+    "CHB49": [
+      6.0,
+      100.6
+    ],
+    "CHB50": [
+      15.2,
+      100.6
+    ],
+    "CHB51": [
+      24.4,
+      100.6
+    ],
+    "CHB52": [
+      42.8,
+      100.6
+    ],
+    "CHB53": [
+      52.0,
+      100.6
+    ],
+    "CHB54": [
+      61.2,
+      100.6
+    ],
+    "CHB55": [
+      90.8,
+      100.6
+    ],
+    "CHB56": [
+      100.0,
+      100.6
+    ],
+    "CHB57": [
+      109.2,
+      100.6
+    ],
+    "CHB58": [
+      127.6,
+      100.6
+    ],
+    "CHB59": [
+      136.8,
+      100.6
+    ],
+    "CHB60": [
+      146.0,
+      100.6
+    ],
+    "CHB61": [
+      6.0,
+      107.0
+    ],
+    "CHB62": [
+      15.2,
+      107.0
+    ],
+    "CHB63": [
+      24.4,
+      107.0
+    ],
+    "CHB64": [
+      33.6,
+      107.0
+    ],
+    "CHB65": [
+      42.8,
+      107.0
+    ],
+    "CHB66": [
+      61.2,
+      107.0
+    ],
+    "CHB67": [
+      90.8,
+      107.0
+    ],
+    "CHB68": [
+      109.2,
+      107.0
+    ],
+    "CHB69": [
+      118.4,
+      107.0
+    ],
+    "CHB70": [
+      127.6,
+      107.0
+    ],
+    "CHB71": [
+      136.8,
+      107.0
+    ],
+    "CHB72": [
+      146.0,
+      107.0
+    ],
+    "Cin": [
+      51.5,
+      13.5
+    ],
+    "Cout": [
+      76.0,
+      72.0
+    ],
+    "Cr": [
+      40.0,
+      7.0
+    ],
+    "D_BT": [
+      40.0,
+      18.0
+    ],
+    "D_CT1": [
+      95.0,
+      18.0
+    ],
+    "D_CT2": [
+      102.0,
+      18.0
+    ],
+    "D_CT3": [
+      109.0,
+      18.0
+    ],
+    "D_CT4": [
+      116.0,
+      18.0
+    ],
+    "J_IN": [
+      68.0,
+      7.0
+    ],
+    "J_OUT": [
+      76.0,
+      100.0
+    ],
+    "Lr": [
+      25.0,
+      7.0
+    ],
+    "QH": [
+      48.0,
+      7.0
+    ],
+    "QL": [
+      57.0,
+      7.0
+    ],
+    "R1": [
+      84.0,
+      15.0
+    ],
+    "R10": [
+      69.0,
+      19.0
+    ],
+    "R15": [
+      123.0,
+      17.0
+    ],
+    "R16": [
+      129.0,
+      17.0
+    ],
+    "R17": [
+      135.0,
+      17.0
+    ],
+    "R18": [
+      43.0,
+      12.0
+    ],
+    "R19": [
+      66.0,
+      11.0
+    ],
+    "R2": [
+      84.0,
+      18.0
+    ],
+    "R20": [
+      10.378,
+      66.0
+    ],
+    "R21": [
+      20.378,
+      66.0
+    ],
+    "R22": [
+      48.378,
+      66.0
+    ],
+    "R23": [
+      58.378,
+      66.0
+    ],
+    "R24": [
+      86.378,
+      66.0
+    ],
+    "R25": [
+      96.378,
+      66.0
+    ],
+    "R26": [
+      124.378,
+      66.0
+    ],
+    "R27": [
+      134.378,
+      66.0
+    ],
+    "R28": [
+      15.522,
+      68.0
+    ],
+    "R29": [
+      25.523,
+      68.0
+    ],
+    "R3": [
+      89.0,
+      15.0
+    ],
+    "R30": [
+      53.522,
+      68.0
+    ],
+    "R31": [
+      63.523,
+      68.0
+    ],
+    "R32": [
+      91.522,
+      68.0
+    ],
+    "R33": [
+      101.523,
+      68.0
+    ],
+    "R34": [
+      129.522,
+      68.0
+    ],
+    "R35": [
+      139.523,
+      68.0
+    ],
+    "R4": [
+      47.0,
+      14.0
+    ],
+    "R5": [
+      60.0,
+      14.0
+    ],
+    "R7": [
+      63.0,
+      20.0
+    ],
+    "R9": [
+      69.0,
+      16.0
+    ],
+    "SR1A": [
+      14.0,
+      60.0
+    ],
+    "SR1B": [
+      24.0,
+      60.0
+    ],
+    "SR2A": [
+      52.0,
+      60.0
+    ],
+    "SR2B": [
+      62.0,
+      60.0
+    ],
+    "SR3A": [
+      90.0,
+      60.0
+    ],
+    "SR3B": [
+      100.0,
+      60.0
+    ],
+    "SR4A": [
+      128.0,
+      60.0
+    ],
+    "SR4B": [
+      138.0,
+      60.0
+    ],
+    "U1": [
+      76.0,
+      11.0
+    ],
+    "U2": [
+      54.0,
+      18.0
+    ],
+    "U3": [
+      19.0,
+      49.0
+    ],
+    "U4": [
+      57.0,
+      49.0
+    ],
+    "U5": [
+      95.0,
+      49.0
+    ],
+    "U6": [
+      133.0,
+      49.0
+    ]
+  },
+  "NOT_TESTED": [
+    "Thermal, overmolded core profile and actual component courtyard full 3D fit",
+    "Actual native 12-layer copper winding and power/return paired busbar",
+    "Schematic pad association and DRC 112 old errors reconciliation",
+    "CISPR 32 emissions, EFT/surge and IEC 61000-4-x tests",
+    "Switch-node parasitic extracted L/C, transformer leakage, SR source Kelvin continuity",
+    "48V actual input bypass/capacitors, genuine resonant capacitor RMS, 100A connector",
+    "Current sharing and power/ground copper joint/via current density and FEM",
+    "Coldplate 16mm/3LPM and backside components clearance"
+  ],
+  "native_eprj2_written": false,
+  "native_routed": false,
+  "emc_compliant_verified": false,
+  "released_to_fab": false
+}
