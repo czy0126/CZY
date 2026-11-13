@@ -29,6 +29,8 @@ LAYOUT=G/"g2_v17_compact_emc_first_screen_LOCKED_NOT_FOR_FAB.json"
 COPPER=G/"g2_v17_integrated_pgnd_vout_review_LOCKED_NOT_FOR_FAB.json"
 SIGNAL=G/"g2_v17_signal_legal_route_plan_NOT_FOR_FAB.json"
 BRIDGE=G/"g2_v17_bcu_short_control_bridges_NOT_FOR_FAB.json"
+GD_ESCAPE=G/"g2_v17_u2_gd1_gd2_layer_escape_NOT_FOR_FAB.json"
+LOCAL_GATE=G/"g2_v17_local_primary_gate_routes_NOT_FOR_FAB.json"
 SOURCE_SHA="02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75"
 CORE_X=(20.,58.,96.,134.)
 
@@ -238,7 +240,8 @@ def build():
                   ground_model["additional_local_driver_reg_pgnd_and_Cout_stitches"]+
                   ground_model["control_U1_U2_PGND_via_sites"]+
                   ground_model["auxiliary_12V_S_and_12V_via_sites"]+
-                  ground_model["auxiliary_pgnd_return_via_sites"])
+                  ground_model["auxiliary_pgnd_return_via_sites"]+
+                  ground_model["control_U1_VCC12_feed_via_sites"])
     for v in all_critical:
         via(board,v,net_obj[v["net"]])
     # Trial isolated primary decoupling PGND to QL: actually routed segment.
@@ -286,6 +289,73 @@ def build():
         for points in bridge["segments"]:
             segment(board,net_obj[net],pcb.B_Cu,points[0],points[1],
                     bridge["width_mm"])
+    # Complete real U2 GD1/GD2 fine-pitch escape on separate F/B layers.
+    # U2.8 has 0.5-mm pin pitch; NO 0.70-mm drill in its pad. The GD2
+    # via is away from U2, and a separate thru-via returns at R10.1.
+    # Source-locked geometry preflight independently checks both-net copper.
+    gd_model=loadjson(GD_ESCAPE)
+    required_sha={"source_native_sha":sha(SOURCE),
+                  "source_layout_sha":sha(LAYOUT),
+                  "source_signal_sha":sha(SIGNAL),
+                  "source_bcu_sha":sha(BRIDGE),
+                  "source_pgnd_sha":sha(COPPER)}
+    if any(gd_model.get(k)!=v for k,v in required_sha.items()):
+        raise ValueError("U2 GD1/GD2 source projection is outdated")
+    if [r["net"] for r in gd_model["routes"]] != ["GD1","GD2","GD2"]:
+        raise ValueError("Unexpected U2 breakout net inventory")
+    for v in gd_model["via_sites"]:
+        if v["ref"]!="U2_ESC_GD2":
+            matched=[pad for footprint in board.GetFootprints()
+                     if footprint.GetReference()==v["ref"]
+                     for pad in footprint.Pads()
+                     if pad.GetNumber()==v["pad"] and pad.GetNetname()==v["net"]]
+            if len(matched)!=1 or math.dist(
+                (pcb.ToMM(matched[0].GetPosition().x),
+                 pcb.ToMM(matched[0].GetPosition().y)),
+                (v["x_mm"],v["y_mm"]))>.015:
+                raise ValueError("GD2 via is not attached to real terminal "+v["ref"])
+        via(board,v,net_obj[v["net"]],annulus=.70,drill=.30)
+    for route in gd_model["routes"]:
+        layer={"F.Cu":pcb.F_Cu,"B.Cu":pcb.B_Cu}[route["layer"]]
+        for a,b in route["segments"]:
+            segment(board,net_obj[route["net"]],layer,a,b,route["width_mm"])
+    # Five short, independent source-locked local primary driver/FET
+    # links. The remaining high-side drive and 48-V SW/VIN power loop
+    # are deliberately *unconnected*, never faked by skinny traces.
+    gate_model=loadjson(LOCAL_GATE)
+    gate_shas={"source_v15_sha":sha(SOURCE),
+               "source_v17_sha":sha(LAYOUT),
+               "source_pgnd_sha":sha(COPPER),
+               "source_signal_sha":sha(SIGNAL),
+               "source_bcu_sha":sha(BRIDGE),
+               "source_gd_sha":sha(GD_ESCAPE)}
+    if any(gate_model.get(k)!=v for k,v in gate_shas.items()):
+        raise ValueError("Local gate candidate stale relative to native PAD or GD escape")
+    expected_gate_routes=[("GL_DRV","U2.10","R5.1"),
+                          ("GH","R4.2","QH.4"),
+                          ("GL","R5.2","QL.4"),
+                          ("GL","R5.2","R19.1"),
+                          ("HB","C5.1","D_BT.1")]
+    if [(r["net"],r["from"],r["to"]) for r in gate_model["routes"]] != expected_gate_routes:
+        raise ValueError("Local primary gate route identity drift")
+    def actual_pad_xy(spec,net):
+        ref,num=spec.rsplit(".",1)
+        pads=[pad for fp in board.GetFootprints() if fp.GetReference()==ref
+              for pad in fp.Pads()
+              if pad.GetNumber()==num and pad.GetNetname()==net]
+        if len(pads)!=1:raise ValueError("Missing gate terminal "+spec)
+        point=pads[0].GetPosition()
+        return (pcb.ToMM(point.x),pcb.ToMM(point.y))
+    for route in gate_model["routes"]:
+        if route["layer"]!="F.Cu" or route["length_mm"]>8:
+            raise ValueError("Unqualified long/multilayer primary gate path")
+        a=route["segments"][0][0]
+        b=route["segments"][-1][1]
+        if (math.dist(actual_pad_xy(route["from"],route["net"]),a)>.015
+            or math.dist(actual_pad_xy(route["to"],route["net"]),b)>.015):
+            raise ValueError("Primary gate track lost real PAD attachment")
+        for start,end in route["segments"]:
+            segment(board,net_obj[route["net"]],pcb.F_Cu,start,end,route["width_mm"])
     # Keep gate drive and CS/OC Kelvin trunks out of main return copper:
     # ground high frequency plane pair for Cout+SR, local primary input,
     # and discrete top/bottom PGND overlay islands. Zones are real KiCad.
@@ -322,6 +392,8 @@ def build():
     real={
         "status":"ACTUAL_KICAD_EDITABLE_BUT_NOT_FOR_FAB",
         "pcb_source_native_Sha256":sha(SOURCE),
+        "source_U2_GD_escape_sha256":sha(GD_ESCAPE),
+        "source_local_primary_gate_sha256":sha(LOCAL_GATE),
         "kicad_version":pcb.Version(),
         "saved_board":OUTPUT.name,
         "saved_board_sha256":hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
@@ -343,6 +415,11 @@ def build():
         "short_BCu_control_bridge_count":len(bridge_model["bridges"]),
         "short_BCu_control_via_count":sum(len(b["via_sites"]) for b in bridge_model["bridges"]),
         "auxiliary_pgnd_return_via_count":len(ground_model["auxiliary_pgnd_return_via_sites"]),
+        "control_U1_VCC12_feed_via_count":len(ground_model["control_U1_VCC12_feed_via_sites"]),
+        "U2_GD1_GD2_fine_escape_segments":sum(len(r["segments"]) for r in gd_model["routes"]),
+        "U2_GD1_GD2_fine_escape_via_count":len(gd_model["via_sites"]),
+        "local_primary_gate_route_count":len(gate_model["routes"]),
+        "local_primary_gate_track_segments":sum(len(r["segments"]) for r in gate_model["routes"]),
         "native_extra_pgnd_stitches":extra_ground_sites,
         "critical_missing":[
            "FOUR 3:1:1 physical PCB winding footprints T1..T4, and CT winding",
@@ -350,6 +427,8 @@ def build():
            "actual 12L copper winding and unverified window thickness",
            "Real part library footprint / U2 irregular thermal polygon approximated by bbox",
            "Via-in-pad fill/cap process with 0.30mm trial mechanical drill (including short B.Cu signal bridges)",
+           "U2 fine-pitch GD1/GD2 real escape requires signal-integrity, return loop and manufacturer review",
+           "Primary GH_DRV and full VIN_P/SW/HB remain unclosed; no gate-loop inductance or EMC signoff",
            "Actual 100A external/embedded two-pole copper bar; original J_OUT inadequate",
            "Remaining circuitry nets and all P1 schematic parity",
            "Native board full DRC/EMI/thermal, import parity to EasyEDA"

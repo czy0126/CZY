@@ -38,7 +38,8 @@ def generate():
                      "additional_local_driver_reg_pgnd_and_Cout_stitches",
                      "control_U1_U2_PGND_via_sites",
                      "auxiliary_12V_S_and_12V_via_sites",
-                     "auxiliary_pgnd_return_via_sites")
+                     "auxiliary_pgnd_return_via_sites",
+                     "control_U1_VCC12_feed_via_sites")
        for v in copper[field]]
     # B.Cu only: back-side pads and through-hole pads are physical blockers.
     obstacles=[(q["net"],q["geom"],1) for q in pads if q["layer"] in (2,12)]

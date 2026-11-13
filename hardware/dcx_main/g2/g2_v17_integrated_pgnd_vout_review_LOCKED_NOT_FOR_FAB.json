@@ -3263,6 +3263,15 @@
       "drill_mm": 0.3
     },
     {
+      "ref": "R9",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 69.75426,
+      "y_mm": 16.00012,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
       "ref": "R10",
       "pad": "2",
       "net": "PGND",
@@ -3272,6 +3281,19 @@
       "drill_mm": 0.3
     }
   ],
+  "control_U1_VCC12_feed_via_sites": [
+    {
+      "ref": "U1",
+      "pad": "7",
+      "net": "VCC12",
+      "x_mm": 75.36376,
+      "y_mm": 8.29608,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    }
+  ],
+  "control_U1_VCC12_feed_crossnet_pad_failures": [],
+  "control_U1_VCC12_feed_crossnet_via_failures": [],
   "auxiliary_pgnd_return_crossnet_pad_failures": [],
   "auxiliary_pgnd_return_crossnet_via_failures": [],
   "auxiliary_12V_supply_via_othernet_conflicts": [],

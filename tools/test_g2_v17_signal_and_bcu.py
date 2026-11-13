@@ -53,9 +53,14 @@ def test_native_kicad_pcb_was_rebuilt_from_locked_source_and_drc_is_not_masked()
     assert hashlib.sha256(board.read_bytes()).hexdigest()==meta["saved_board_sha256"]
     assert meta["native_actual_footprints"]==149
     assert meta["native_actual_footprint_pads"]==419
-    assert meta["native_actual_vias"]==355
-    assert meta["auxiliary_pgnd_return_via_count"]==13
-    assert meta["native_actual_tracks"]==122
+    assert meta["native_actual_vias"]==359
+    assert meta["auxiliary_pgnd_return_via_count"]==14
+    assert meta["control_U1_VCC12_feed_via_count"]==1
+    assert meta["U2_GD1_GD2_fine_escape_via_count"]==2
+    assert meta["U2_GD1_GD2_fine_escape_segments"]==6
+    assert meta["native_actual_tracks"]==135
+    assert meta["local_primary_gate_route_count"]==5
+    assert meta["local_primary_gate_track_segments"]==7
     assert meta["short_BCu_control_bridge_count"]==3
     assert meta["short_BCu_control_via_count"]==6
     assert meta["native_actual_copper_zones"]==7
@@ -66,6 +71,6 @@ def test_native_kicad_pcb_was_rebuilt_from_locked_source_and_drc_is_not_masked()
     assert all(x["type"]=="clearance" and
                any("U2" in q.get("description","") for q in x["items"])
                for x in native["violations"])
-    assert len(native["unconnected_items"])<=32
+    assert len(native["unconnected_items"])<=24
     assert not any("[PGND]" in item.get("description","")
                    for entry in native["unconnected_items"] for item in entry["items"])

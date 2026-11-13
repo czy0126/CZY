@@ -686,9 +686,10 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - **事实与边界**：本 worktree 的 `hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb`
   是实际可打开的 KiCad 10 PCB，不是只有老鼠线的画面，也不代表制造就绪。冻结 V15 数据源
   的 149 个器件、419 个实际焊盘、12 层定义、已填充的 7 个铜区保持不变；
-  本轮重新生成后是 355 个通孔过孔、122 段走线。
+  本轮重新生成后是 359 个通孔过孔、135 段走线。
 - **原生 DRC 对比（必须带版本）**：2026-11-13 原版 42 条 unconnected、2 条 clearance；
-  2026-11-14 本轮结果 **32 条 unconnected、2 条 clearance**，未出现新违规；其中 **PGND 未连接 0 条**。
+  2026-11-14 本轮继续实布 U1 供电、U2 GD1/GD2 扇出及五条主桥本地门极/自举支路，
+  当前最终结果 **24 条 unconnected、2 条 clearance**，未出现新违规；其中 **PGND 未连接 0 条**。
   这只证明当前 KiCad 计算的网表/铜区连续性，不代表高频回路、铜排承载或 EMC 已签核。
   余下的两项全部来自 **U2** 原生导入的 0.5 mm 邻脚（0.2000 mm 规则，
   实际 0.1981 mm），不可通过降低 DRC 阈值来“修复”；必须核对真实 OEM 封装。
@@ -702,24 +703,42 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
   只允许 RT、CS2、OCM 三条低电流信号使用 6 颗通孔 via-in-pad 与 B.Cu 的
   3 段短铜（8.98 / 12.04 / 5.95 mm），每一颗必须通过 F.Cu/B.Cu 原生
   异网焊盘、已有 F.Cu 走线和全部预留过孔的间距检查，然后由 KiCad 再做 DRC。
-  长距离敏感故障信号 OC、U2 细间距 GD1/GD2 **没有**以跨板 B.Cu 捷径或未核实的盲埋孔硬接；
+  长距离敏感故障信号 OC 仍未强行使用跨板 B.Cu 捷径；U2 细间距 GD1/GD2 另用单独的短扇出约束（下节）。
   SR Kelvin/gate 已有部分顶层候选走线，但尚需与开关电流、回流路径和 EMC 共同复核，
   不得以导通判定为设计完成；仍应优先缩短其环路并核对驱动返回路径。
   via-in-pad 填孔盖帽、焊点热工艺未确认，**不可直接制造**。
 - **PGND 铜岛已作实际回流修正**：C101–C112 的 12 个去耦电容 PGND 焊盘均增加真实
-  0.30 mm 机械钻径 / 0.70 mm 环径的接地返回过孔；另在真实 R10.2 PGND 焊盘加 1 颗接内层的
-  局部过孔，连接被信号铜区分割的顶部 PGND 岛。原生 DRC 的 PGND 开路 2→0，
+  0.30 mm 机械钻径 / 0.70 mm 环径的接地返回过孔；真实 R9.2、R10.2 PGND 焊盘另各加 1 颗接内层的
+  局部过孔，连接 GD1/GD2 顶层走线分割的两块 PGND 岛。原生 DRC 的 PGND 开路保持 0，
   没有跨网短接。R1.2 / R10.2 采用局部 solid zone，消除 2 项 `starved_thermal`；
   未全局放宽 DRC。所有 via-in-pad 填孔盖帽和焊盘工艺必须经厂家确认。
+- **本轮控制器实布增量**：`U1.7[VCC12]` 增加 1 颗与现有 `In4.Cu` 供电平面接通的真实通孔过孔；
+  `tools/g2_v17_u2_fine_escape.py` 通过冻结 PAD 编号和 V15/V17/SIGNAL/BCU/PGND SHA 独立校验
+  `U2.7[GD1]` 的 F.Cu 三段扇出、`U2.8[GD2]` 的顶层两段短扇出及底层一段联络。
+  GD2 的 0.70 mm 通孔**放在 U2.8 焊盘以外**，另一颗在真实 `R10.1`，避免在 0.5 mm pitch
+  上强塞通孔；均沿已有 PGND 返回层约束网络及 DRC 检查，未改全局设计间距。
+  当下 GD1/GD2 和 VCC12 原生 unconnected 均为 0；尚未通过 EMC、厂家工艺和主板整体制造闸门。
+- **真实主桥门极及自举局部走线**：`tools/g2_v17_local_primary_gate_routes.py` 只承认真实位号/引脚、
+  且短于 8 mm 的五条 F.Cu 低/中电流支路：`U2.10→R5.1[GL_DRV]`（4.80 mm）、
+  `R4.2→QH.4[GH]`（4.76 mm）、`R5.2→QL.4[GL]`（4.63 mm）、
+  `R5.2→R19.1[GL]`（5.40 mm）和 `C5.1→D_BT.1[HB]`（6.87 mm）。
+  门极铜宽 0.35 mm，GL_DRV 细引脚出口 0.20 mm；所有线按 PAD、已布铜、过孔和 0.20 mm
+  名义间距预筛后写入原生板，再经 KiCad 原生 DRC。**GH_DRV** 高侧驱动 U2→R4，
+  以及 `U2.3→C5.1[HB]` 仍然阻塞；不能称高侧驱动完成。
+  本轮未因减少老鼠线而让 SW/VIN_P 高电流走线改为细线，也未计算门极回路寄生电感。
 - **复现顺序（不能拿规划 JSON 当签核）**：
   `D:\\anaconda3\\python.exe tools/g2_v17_pgnd_power_route_screen.py --write` →
   `D:\\anaconda3\\python.exe tools/g2_v17_route_conservative_signal.py` →
   `D:\\anaconda3\\python.exe tools/g2_v17_bcu_short_control_bridges.py` →
+  `D:\\anaconda3\\python.exe tools/g2_v17_u2_fine_escape.py` →
+  `D:\\anaconda3\\python.exe tools/g2_v17_local_primary_gate_routes.py` →
   KiCad 10 自带 `python.exe tools/g2_v17_generate_kicad.py` →
   KiCad 10 的 `kicad-cli pcb drc --format json -o hardware/dcx_main/g2/g2_v17_KICAD_NATIVE_DRC_NOT_FOR_FAB.json hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb` →
-  `python -m pytest tools/test_g2_v17_signal_and_bcu.py -q`。
+  `python -m pytest tools/test_g2_v17_signal_and_bcu.py tools/test_g2_v17_u2_fine_escape.py tools/test_g2_v17_local_primary_gate.py tools/test_g2_v17_native_kicad_drc.py -q`。
   生成器强制验证冻结源、摆放与信号规划 SHA，过孔所在的真实 KiCad 焊盘编号和 XY 必须对应。
 - **制造闸门**：T1–T4/CT 的 3:1:1 物理绕组与真实 DOT、100 A 双极铜排与
   多触点输出、12 层磁件制程、过孔填盖、原理图↔PCB parity、全网 DRC
-  与 EMC/热测量都未签核。不能将本轮 32 条未连接误写为 0，也不能导出作为放行 Gerber。
+  与 EMC/热测量都未签核。剩余 24 条主要是 SW 7、SECx A/B 8、VIN_P 2、
+  GH/R18、GH_DRV、HB/U2、OC 长距离故障链与 3 条 VD_B 感测；
+  不应为减少计数而拉长高 dv/dt 或 Kelvin 回路，更不能将这 24 条未连接误写为 0 或导出放行 Gerber。
 

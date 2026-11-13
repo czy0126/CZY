@@ -119,14 +119,29 @@ def _aux_supply_vias(pads):
                          "radius_mm":VIA_R_MM,"drill_mm":VIA_DRILL_MM})
     return plan
 
+def _control_vcc12_feed(pads):
+    """Direct U1.7 to its *existing* VCC12 inner layer, avoiding a long
+    F.Cu supply stub across GD1/GD2 and their PGND return. The native
+    footprint pad identity must agree, and via clearance is checked below.
+    """
+    matches=[p for p in pads if p["ref"]=="U1" and p["number"]=="7"
+             and p["net"]=="VCC12" and p["layer"]==1]
+    if len(matches)!=1 or matches[0]["geom"].area<.30:
+        raise ValueError("U1.7 VCC12 pad identity or via land is invalid")
+    cx,cy=_centre(matches[0])
+    if not (2<cx<153 and 2<cy<24):
+        raise ValueError("U1.7 does not overlap the declared VCC12 supply plane")
+    return [{"ref":"U1","pad":"7","net":"VCC12","x_mm":round(cx,5),
+             "y_mm":round(cy,5),"radius_mm":VIA_R_MM,"drill_mm":VIA_DRILL_MM}]
+
 def _aux_pgnd_return_vias(pads):
     """Complete the *return* side of each 12-V local decoupling pair.
 
     A supply via without a nearby PGND return leaves the narrow top F.Cu
     islands floating after conservative signal routing. Use native
     C101..C112 pad-2 PGND centres, not arbitrary island polygon centres,
-    to keep the 12-V HF current loop local. R10.2 anchors the remaining
-    physically isolated top-side PGND zone to the inner PGND return.
+    to keep the 12-V HF current loop local. R9.2 and R10.2 anchor
+    physically isolated top-side PGND islands to the inner return.
     """
     plan=[]
     for i in range(101,113):
@@ -140,17 +155,18 @@ def _aux_pgnd_return_vias(pads):
         plan.append({"ref":ref,"pad":"2","net":"PGND",
                      "x_mm":round(cx,5),"y_mm":round(cy,5),
                      "radius_mm":VIA_R_MM,"drill_mm":VIA_DRILL_MM})
-    # R10.2 is the only PGND pad in the small signal-separated F.Cu
-    # polygon (x≈68.8..82.7, y≈13.4..19.7) after zone refill. Stitch
-    # that existing REAL pad to In1.Cu, never bridge other-net signals.
-    candidate=[p for p in pads if p["ref"]=="R10" and p["number"]=="2"
-               and p["net"]=="PGND" and p["layer"]==1]
-    if len(candidate)!=1 or candidate[0]["geom"].area<.30:
-        raise ValueError("R10.2 PGND return landing is not trustworthy")
-    cx,cy=_centre(candidate[0])
-    plan.append({"ref":"R10","pad":"2","net":"PGND",
-                 "x_mm":round(cx,5),"y_mm":round(cy,5),
-                 "radius_mm":VIA_R_MM,"drill_mm":VIA_DRILL_MM})
+    # R9.2 is the only attached pad in the GD1-created F.Cu island
+    # around x55.8..76.5/y8.3..19.7. R10.2 previously fixed the
+    # adjacent GD2 island. Stitch both named PGND landing pads to In1.Cu.
+    for ref in ("R9","R10"):
+        candidate=[p for p in pads if p["ref"]==ref and p["number"]=="2"
+                   and p["net"]=="PGND" and p["layer"]==1]
+        if len(candidate)!=1 or candidate[0]["geom"].area<.30:
+            raise ValueError(ref+".2 PGND return landing is not trustworthy")
+        cx,cy=_centre(candidate[0])
+        plan.append({"ref":ref,"pad":"2","net":"PGND",
+                     "x_mm":round(cx,5),"y_mm":round(cy,5),
+                     "radius_mm":VIA_R_MM,"drill_mm":VIA_DRILL_MM})
     return plan
 
 def _via_cross_net_errors(vias,pads):
@@ -210,7 +226,7 @@ def generate():
     if local_stitch_conflicts:raise ValueError("Local U3/C7 REG/PGND or Cout via conflicts "+str(local_stitch_conflicts))
     if len(local_stitches)!=10:raise ValueError("Unexpected local stitch plan count")
     aux_returns=_aux_pgnd_return_vias(pads)
-    if len(aux_returns)!=13:raise ValueError("PGND decoupler + R10 island return via count drift")
+    if len(aux_returns)!=14:raise ValueError("PGND decoupler + R9/R10 island return via count drift")
     return_conflicts=_via_cross_net_errors(aux_returns,pads)
     if return_conflicts:raise ValueError("PGND decoupler via overlaps unlike-net pad "+str(return_conflicts))
     other_vias=vias+local_stitches+ctrl_stitches+aux_vias
@@ -222,6 +238,18 @@ def generate():
             < a["radius_mm"]+b["radius_mm"]+PAD_TO_OTHER_NET_MIN_MM]
     if return_via_conflicts:
         raise ValueError("PGND decoupler return vias touch unlike-net vias "+str(return_via_conflicts))
+    controller_supply=_control_vcc12_feed(pads)
+    supply_pad_conflicts=_via_cross_net_errors(controller_supply,pads)
+    if supply_pad_conflicts:
+        raise ValueError("U1 VCC12 through-via overlaps native other-net pad "+str(supply_pad_conflicts))
+    supply_via_conflicts=[
+        (a["ref"],b["ref"],b["net"])
+        for a in controller_supply for b in other_vias+aux_returns
+        if b["net"]!="VCC12"
+        and Point(a["x_mm"],a["y_mm"]).distance(Point(b["x_mm"],b["y_mm"]))
+        < a["radius_mm"]+b["radius_mm"]+PAD_TO_OTHER_NET_MIN_MM]
+    if supply_via_conflicts:
+        raise ValueError("U1 VCC12 via collides with an unlike-net return "+str(supply_via_conflicts))
     if len(vias)!=312 or net_counts!=Counter({"PGND":168,"VOUT":144}):
         raise ValueError("PGND/VOUT via inventory unexpected "+str((len(vias),net_counts)))
     # Full 12-layer plane source model, not an EDA layer definition.
@@ -312,6 +340,9 @@ def generate():
         "control_U1_U2_PGND_via_sites":ctrl_stitches,
         "auxiliary_12V_S_and_12V_via_sites":aux_vias,
         "auxiliary_pgnd_return_via_sites":aux_returns,
+        "control_U1_VCC12_feed_via_sites":controller_supply,
+        "control_U1_VCC12_feed_crossnet_pad_failures":supply_pad_conflicts,
+        "control_U1_VCC12_feed_crossnet_via_failures":supply_via_conflicts,
         "auxiliary_pgnd_return_crossnet_pad_failures":return_conflicts,
         "auxiliary_pgnd_return_crossnet_via_failures":return_via_conflicts,
         "auxiliary_12V_supply_via_othernet_conflicts":aux_conflicts,

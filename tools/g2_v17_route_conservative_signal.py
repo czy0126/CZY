@@ -175,7 +175,8 @@ def plan():
       generated_ground["additional_local_driver_reg_pgnd_and_Cout_stitches"]+
       generated_ground["control_U1_U2_PGND_via_sites"]+
       generated_ground["auxiliary_12V_S_and_12V_via_sites"]+
-      generated_ground["auxiliary_pgnd_return_via_sites"]]
+      generated_ground["auxiliary_pgnd_return_via_sites"]+
+      generated_ground["control_U1_VCC12_feed_via_sites"]]
     # All relocated physical magnet core voids and NPTH slots are no-go.
     core=[]
     for cx in base.CORE_X:

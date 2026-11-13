@@ -1,0 +1,117 @@
+{
+  "status": "U2_GD1_GD2_SOURCE_LOCKED_FINE_PITCH_TRIAL_NOT_FOR_FAB",
+  "source_native_sha": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+  "source_layout_sha": "c36711c1d65de29f6d32d79be8cabdd938b6c24e1520acd134df409caf0bc63b",
+  "source_signal_sha": "d6f0ef3d7caf4b7a5ac83ef8c5b95cdb48cb77d03b7864d7a065fc9fcdfca962",
+  "source_bcu_sha": "11299dd14317e99f1c6e839b951663f13b222f9d4108438571c41279faf99fc5",
+  "source_pgnd_sha": "30e32c48349ada8aca41b1e484c9e73e0d9fbcbd091994f7888249cf114c4553",
+  "pad_pitch_mm": 0.5,
+  "nominal_clearance_mm": 0.2,
+  "gd2_through_via_in_U2_pad": false,
+  "routes": [
+    {
+      "net": "GD1",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "segments": [
+        [
+          [
+            55.498998779999994,
+            18.499239539999998
+          ],
+          [
+            61.17,
+            18.499239539999998
+          ]
+        ],
+        [
+          [
+            61.17,
+            18.499239539999998
+          ],
+          [
+            61.17,
+            16.000119379999987
+          ]
+        ],
+        [
+          [
+            61.17,
+            16.000119379999987
+          ],
+          [
+            68.24550061999999,
+            16.000119379999987
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "GD2",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "segments": [
+        [
+          [
+            55.498998779999994,
+            17.998859540000005
+          ],
+          [
+            57.2,
+            17.998859540000005
+          ]
+        ],
+        [
+          [
+            57.2,
+            17.998859540000005
+          ],
+          [
+            58.5,
+            17.4
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "GD2",
+      "layer": "B.Cu",
+      "width_mm": 0.2,
+      "segments": [
+        [
+          [
+            58.5,
+            17.4
+          ],
+          [
+            68.24550061999999,
+            19.001140459999988
+          ]
+        ]
+      ]
+    }
+  ],
+  "via_sites": [
+    {
+      "ref": "U2_ESC_GD2",
+      "pad": "FANOUT",
+      "net": "GD2",
+      "x_mm": 58.5,
+      "y_mm": 17.4,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "R10",
+      "pad": "1",
+      "net": "GD2",
+      "x_mm": 68.245501,
+      "y_mm": 19.00114,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    }
+  ],
+  "native_drc_verified": false,
+  "emc_signoff": false,
+  "fab_release": false
+}

@@ -1,0 +1,152 @@
+{
+  "status": "V17_LOCAL_GATE_PILOT_NATIVE_DRC_REQUIRED_NOT_FOR_FAB",
+  "source_v15_sha": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+  "source_v17_sha": "c36711c1d65de29f6d32d79be8cabdd938b6c24e1520acd134df409caf0bc63b",
+  "source_pgnd_sha": "30e32c48349ada8aca41b1e484c9e73e0d9fbcbd091994f7888249cf114c4553",
+  "source_signal_sha": "d6f0ef3d7caf4b7a5ac83ef8c5b95cdb48cb77d03b7864d7a065fc9fcdfca962",
+  "source_bcu_sha": "11299dd14317e99f1c6e839b951663f13b222f9d4108438571c41279faf99fc5",
+  "source_gd_sha": "109127a7ebefd36bcf9c299e88f6334837f1c2379235962516bed83a3cd95512",
+  "route_count": 5,
+  "excluded_power_and_high_side_blocked_nets": [
+    "GH_DRV",
+    "PGND",
+    "SEC1_A",
+    "SEC1_B",
+    "SEC2_A",
+    "SEC2_B",
+    "SEC3_A",
+    "SEC3_B",
+    "SEC4_A",
+    "SEC4_B",
+    "SW",
+    "VIN_P",
+    "VOUT"
+  ],
+  "net_route_preview_only": true,
+  "gate_loop_parasitics_extracted": false,
+  "physical_emc_qualified": false,
+  "native_drc_verified": false,
+  "fab_release": false,
+  "routes": [
+    {
+      "net": "GL_DRV",
+      "from": "U2.10",
+      "to": "R5.1",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "length_mm": 4.80018,
+      "segments": [
+        [
+          [
+            55.498998779999994,
+            17.00063954
+          ],
+          [
+            59.24612799999999,
+            14.000507999999998
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "GH",
+      "from": "R4.2",
+      "to": "QH.4",
+      "layer": "F.Cu",
+      "width_mm": 0.35,
+      "length_mm": 4.76281,
+      "segments": [
+        [
+          [
+            47.75310999999999,
+            14.000507999999998
+          ],
+          [
+            49.90337440000001,
+            9.750718400000004
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "GL",
+      "from": "R5.2",
+      "to": "QL.4",
+      "layer": "F.Cu",
+      "width_mm": 0.35,
+      "length_mm": 4.63489,
+      "segments": [
+        [
+          [
+            60.752348,
+            14.000507999999998
+          ],
+          [
+            58.90261240000001,
+            9.750718400000004
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "GL",
+      "from": "R5.2",
+      "to": "R19.1",
+      "layer": "F.Cu",
+      "width_mm": 0.25,
+      "length_mm": 5.40312,
+      "segments": [
+        [
+          [
+            60.752348,
+            14.000507999999998
+          ],
+          [
+            65.24651916,
+            11.00116078
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "HB",
+      "from": "C5.1",
+      "to": "D_BT.1",
+      "layer": "F.Cu",
+      "width_mm": 0.25,
+      "length_mm": 6.87294,
+      "segments": [
+        [
+          [
+            44.29962040000001,
+            17.99988062
+          ],
+          [
+            44.29962040000001,
+            17.299370080000003
+          ]
+        ],
+        [
+          [
+            44.29962040000001,
+            17.299370080000003
+          ],
+          [
+            38.82668002,
+            17.299370080000003
+          ]
+        ],
+        [
+          [
+            38.82668002,
+            17.299370080000003
+          ],
+          [
+            38.82668002,
+            17.998859540000005
+          ]
+        ]
+      ]
+    }
+  ]
+}
