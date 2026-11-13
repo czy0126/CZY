@@ -1,0 +1,186 @@
+{
+  "source_real_native_eprj2": "dcx_main_board_g2_V14_EILP32_12NPTH_OC_OCM_OCD_REG4_BOTTOM_WIP_NOT_FOR_FAB.eprj2",
+  "source_sha256": "7dd77910bcf7ff3fd0e2be1e4194439a22189aaf353f105bbe1280c104e4f6fc",
+  "source_readback_sha256": "ce66757903c0b99169225e458a2530585dbf0dc8a594d2c00cbf1511e9c77cf1",
+  "source_DRC_sha256": "8f1a00d4c6461f1b33e0d7255ce9119daf4f4554d9820ee904233c9bce42576e",
+  "source_live_pour_sha256": "0e44db1ae50210cdfbfaa0a282b62feb47cfe11d67183091d02d9358c6c6632d",
+  "status": "EMC_NOT_DEMONSTRATED_NOT_COMPACT_NOT_FOR_FAB",
+  "PCB_count": {
+    "components": 149,
+    "pads": 423,
+    "lines": 484,
+    "vias": 104
+  },
+  "PCB_XY_mm": [
+    155.0,
+    131.0
+  ],
+  "area_mm2": 20305,
+  "envelope_max_z_mm": 16,
+  "200W_envelope_volume_L": 0.32488,
+  "200W_envelope_density_kW_per_L": 0.616,
+  "QH_QL_centers_mm": 9.0,
+  "input_Cin_VIN_to_QH_VIN_nearest_pads_mm": 42.006,
+  "input_Cin_PGND_to_QL_PGND_nearest_pads_mm": 36.785,
+  "Lr_to_Cr_centers_mm": 46.098,
+  "Lr_to_CT_LR_anonymous_pad_mm": 49.51,
+  "controller_U1_to_gate_driver_U2_centers_mm": 60.44,
+  "driver_U2_to_QH_centers_mm": 13.416,
+  "driver_U2_to_QL_centers_mm": 12.369,
+  "Cout_to_J_OUT_centers_mm": 99.005,
+  "CHB_output_cap_count": 72,
+  "CHB_cap_center_x_range_mm": [
+    7.5,
+    145.5
+  ],
+  "CHB_cap_center_y_range_mm": [
+    99.0,
+    124.6
+  ],
+  "native_12_layer_enables": [
+    1,
+    2,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "trace_counts_by_active_layer": {
+    "1": 409,
+    "2": 75
+  },
+  "active_inner_layers_without_winding_tracks": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "native_copper_Pour_Poured_Region_Fill": {
+    "pours": 0,
+    "poured": 0,
+    "regions": 0,
+    "fills": 0
+  },
+  "native_DRC_rule_name": "JLCPCB Capability(Two Layers Board)",
+  "native_DRC_Connection_Error_count": 111,
+  "native_DRC_Netlist_Error_count": 0,
+  "native_DRC_Physical_Error_reported_count_on_two_layer_rule": 0,
+  "open_connections_per_net": {
+    "PGND": 42,
+    "VCC12_S": 7,
+    "SW": 5,
+    "GD1": 3,
+    "GD2": 3,
+    "VIN_P": 3,
+    "CR_CT": 2,
+    "CT_LR": 2,
+    "SEC1_A": 2,
+    "SEC1_B": 2,
+    "SEC2_A": 2,
+    "SEC2_B": 2,
+    "SEC3_A": 2,
+    "SEC3_B": 2,
+    "SEC4_A": 2,
+    "SEC4_B": 2,
+    "VCC12": 2,
+    "VD1_B": 2,
+    "VD2_B": 2,
+    "VD3_B": 2,
+    "VD4_B": 2,
+    "VG1_A": 2,
+    "VG1_B": 2,
+    "VG2_A": 2,
+    "VG2_B": 2,
+    "VG3_A": 2,
+    "VG3_B": 2,
+    "VG4_A": 2,
+    "VG4_B": 2,
+    "VOUT": 2
+  },
+  "VIN_P_top_and_bottom_track_count": 0,
+  "VIN_P_via_count": 0,
+  "PGND_track_count": 174,
+  "PGND_via_count": 8,
+  "VOUT_track_count": 129,
+  "VOUT_via_count": 74,
+  "total_net_track_lengths_mm": {
+    "PGND": 891.19,
+    "VOUT": 1351.4,
+    "SW": 15.824,
+    "VCC12_S": 31.144,
+    "OC": 54.559,
+    "OCD": 69.895,
+    "OCM": 88.472,
+    "VIN_P": 0
+  },
+  "core_to_SR_spacing": [
+    {
+      "core": "T1",
+      "sr": "SR1A",
+      "min_vertical_core_slot_end_y31_to_SR_power_pad_mm": 48.179,
+      "core_center_to_SR_center_mm": 62.29,
+      "driver_center_to_SR_center_mm": 11.18
+    },
+    {
+      "core": "T2",
+      "sr": "SR2A",
+      "min_vertical_core_slot_end_y31_to_SR_power_pad_mm": 48.179,
+      "core_center_to_SR_center_mm": 62.29,
+      "driver_center_to_SR_center_mm": 11.18
+    },
+    {
+      "core": "T3",
+      "sr": "SR3A",
+      "min_vertical_core_slot_end_y31_to_SR_power_pad_mm": 48.179,
+      "core_center_to_SR_center_mm": 62.29,
+      "driver_center_to_SR_center_mm": 11.18
+    },
+    {
+      "core": "T4",
+      "sr": "SR4A",
+      "min_vertical_core_slot_end_y31_to_SR_power_pad_mm": 48.179,
+      "core_center_to_SR_center_mm": 62.29,
+      "driver_center_to_SR_center_mm": 11.18
+    }
+  ],
+  "actual_four_bottom_REG_caps": [
+    {
+      "cap": "C7",
+      "driver": "U3",
+      "REG_pin_projected_gap_mm": 0.401
+    },
+    {
+      "cap": "C8",
+      "driver": "U4",
+      "REG_pin_projected_gap_mm": 0.401
+    },
+    {
+      "cap": "C9",
+      "driver": "U5",
+      "REG_pin_projected_gap_mm": 0.401
+    },
+    {
+      "cap": "C10",
+      "driver": "U6",
+      "REG_pin_projected_gap_mm": 0.401
+    }
+  ],
+  "native_T1_to_T4_and_CT_actual_device_count": 0,
+  "native_anonymous_CT_pads": 4,
+  "routing_complete": false,
+  "EMC_measured_and_passed": false,
+  "vendor_12layer_3oz_DFM_approved": false,
+  "manufacturing_release": false
+}
