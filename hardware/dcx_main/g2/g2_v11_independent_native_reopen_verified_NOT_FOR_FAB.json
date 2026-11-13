@@ -1,0 +1,42 @@
+{
+  "status": "V11_INDEPENDENT_NATIVE_GUI_REOPEN_AND_DRC_PASSED_NOT_FOR_FAB",
+  "saved_V11_native_sha256": "d90ca22079ad7245e8c3904eb8369da58c705ae39b56574bf7843dad34cad89b",
+  "source_V10_native_sha256": "8dede88bf7b3cea52ff6f752b6ca573f7a3b9e7c7a3f665ca071dae8376f8c0c",
+  "fabrication_approved": false,
+  "100A_qualified": false,
+  "independent_session_id": "7bb9589d-e0bf-4ad7-82f5-e8f8866cc2ed",
+  "native_counts": {
+    "components": 149,
+    "pads": 443,
+    "lines": 465,
+    "vias": 93,
+    "nets": 65
+  },
+  "real_native_DRC": {
+    "Connection Error": 149,
+    "Netlist Error": 1
+  },
+  "gate_nets_closed": [
+    "GA1",
+    "GA2",
+    "GA3",
+    "GA4",
+    "GB1",
+    "GB2",
+    "GB3",
+    "GB4"
+  ],
+  "ground_islands_before_and_after": [
+    37,
+    37
+  ],
+  "COUT72_native_144_pinwire_parity": true,
+  "32_added_native_trace_ids_preserved": true,
+  "8_original_ground_spine_ids_removed": true,
+  "own_verification_GUI_closed": true,
+  "all_original_gui_sessions_preserved": true,
+  "V11_original_source_unchanged": true,
+  "V10_parent_source_unchanged": true,
+  "V11_clone_source_unchanged": true,
+  "temporary_clone_cleaned": false
+}

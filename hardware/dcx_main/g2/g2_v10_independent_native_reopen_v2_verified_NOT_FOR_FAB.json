@@ -1,0 +1,41 @@
+{
+  "status": "INDEPENDENT_V10_NATIVE_REOPEN_WITH_DRC_PASSED_NOT_FOR_FAB",
+  "candidate_sha256": "8dede88bf7b3cea52ff6f752b6ca573f7a3b9e7c7a3f665ca071dae8376f8c0c",
+  "fabrication_approved": false,
+  "100A_power_path_qualified": false,
+  "independent_gui_session": "047b5c43-4cc9-4a82-9f72-99cbc5168440",
+  "native_counts": {
+    "components": 149,
+    "pads": 443,
+    "lines": 435,
+    "vias": 93,
+    "nets": 65
+  },
+  "source_to_saved_native_island_counts": {
+    "VOUT": [
+      1,
+      1
+    ],
+    "PGND": [
+      39,
+      37
+    ],
+    "SW": [
+      6,
+      4
+    ]
+  },
+  "native_drc_api_ok": true,
+  "native_drc": {
+    "Connection Error": 165,
+    "Netlist Error": 1
+  },
+  "cout_native_72_device_and_144_wire_parity": true,
+  "only_verification_gui_closed": true,
+  "original_gui_sessions_all_preserved": true,
+  "candidate_file_unchanged": true,
+  "clone_file_unchanged": true,
+  "source_v9_file_unchanged": true,
+  "source_sha256_after": "8dede88bf7b3cea52ff6f752b6ca573f7a3b9e7c7a3f665ca071dae8376f8c0c",
+  "scratch_cleaned": false
+}
