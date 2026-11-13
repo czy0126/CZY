@@ -1,7 +1,7 @@
 """Source-locked physical KiCad V17 DRC audit, never a manufacturing signoff.
 
 Must fail if the board drifts from the recorded DRC: rerun KiCad 10 CLI and
-record a new board hash after legitimate changes. 42 unconnected is NOT passed.
+record a new board hash after legitimate changes. Outstanding unconnected nets are NOT passed.
 """
 import hashlib
 import json
@@ -21,7 +21,9 @@ def test_native_kicad_board_binary_tracks_and_pad_inventory():
     assert m["native_actual_footprints"]==149
     assert m["native_actual_footprint_pads"]==419
     assert m["native_actual_copper_zones"]==7
-    assert m["native_actual_vias"]==336
+    assert m["native_actual_vias"]==355
+    assert m["auxiliary_pgnd_return_via_count"]==13
+    assert m["short_BCu_control_bridge_count"]==3
     assert m["native_actual_tracks"]>70
     assert m["native_edge_cut_shapes"]==13
     assert m["board_12_layers_real"] is True
@@ -33,7 +35,7 @@ def test_actual_kicad_native_drc_zero_shorts_but_not_zero_unconnected():
     assert r["kicad_version"]=="10.0.6"
     counts=Counter(v["type"] for v in r["violations"])
     assert counts=={"clearance":2}
-    assert len(r["unconnected_items"])==42
+    assert len(r["unconnected_items"])==32
     desc=" ".join(x["description"] for v in r["unconnected_items"] for x in v["items"])
     assert " [PGND]" not in desc
     assert " [VOUT]" not in desc
