@@ -28,6 +28,7 @@ SLOTS=G/"g2_v14_through_board_three_leg_slot_DFM_screen_NOT_FOR_FAB.json"
 LAYOUT=G/"g2_v17_compact_emc_first_screen_LOCKED_NOT_FOR_FAB.json"
 COPPER=G/"g2_v17_integrated_pgnd_vout_review_LOCKED_NOT_FOR_FAB.json"
 SIGNAL=G/"g2_v17_signal_legal_route_plan_NOT_FOR_FAB.json"
+BRIDGE=G/"g2_v17_bcu_short_control_bridges_NOT_FOR_FAB.json"
 SOURCE_SHA="02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75"
 CORE_X=(20.,58.,96.,134.)
 
@@ -115,6 +116,13 @@ def add_native_footprint(board,comp,rec,site,net_objs):
         net=q["Net"]
         if net:
             pad.SetNet(net_objs[net])
+        # With the revised narrow signal channels, two local low-current
+        # PGND reference resistors have only one viable F.Cu thermal spoke.
+        # Join THESE pads solidly to their existing PGND zone instead of
+        # weakening the DRC thermal-spoke rule for the whole board. Assembly
+        # solderability and thermal wicking still require OEM review.
+        if net=="PGND" and (ref,str(q["PadNumber"])) in {("R1","2"),("R10","2")}:
+            pad.SetLocalZoneConnection(pcb.ZONE_CONNECTION_FULL)
         f.Add(pad)
         local_shapes.append((x,y,w,h))
     # Trial courtyard from PAD envelope plus .45mm; not 3D/OEM.
@@ -229,7 +237,8 @@ def build():
     all_critical=(ground_model["planned_via_in_pad_sites"]+
                   ground_model["additional_local_driver_reg_pgnd_and_Cout_stitches"]+
                   ground_model["control_U1_U2_PGND_via_sites"]+
-                  ground_model["auxiliary_12V_S_and_12V_via_sites"])
+                  ground_model["auxiliary_12V_S_and_12V_via_sites"]+
+                  ground_model["auxiliary_pgnd_return_via_sites"])
     for v in all_critical:
         via(board,v,net_obj[v["net"]])
     # Trial isolated primary decoupling PGND to QL: actually routed segment.
@@ -249,6 +258,34 @@ def build():
         if route["net"] not in net_obj:raise ValueError("unknown routed network")
         for points in route["segments"]:
             segment(board,net_obj[route["net"]],pcb.F_Cu,points[0],points[1],route["width_mm"])
+    # Three source-locked short low-current bridges, reserved exclusively
+    # for B.Cu and screened independently against both sides' real pads,
+    # front signal tracks, and already reserved PGND/VOUT vias. This does
+    # NOT authorize long OC/fast-GD control routes or bypass native DRC.
+    bridge_model=loadjson(BRIDGE)
+    if (bridge_model["source_v15_sha"]!=sha(SOURCE)
+        or bridge_model["source_v17_sha"]!=sha(LAYOUT)
+        or bridge_model["source_signal_sha"]!=sha(SIGNAL)):
+        raise ValueError("B.Cu bridge source/signal drift")
+    for bridge in bridge_model["bridges"]:
+        net=bridge["net"]
+        if net not in ("RT","CS2","OCM"):
+            raise ValueError("Unauthorized B.Cu bridge net "+net)
+        for v in bridge["via_sites"]:
+            found=[pad for footprint in board.GetFootprints()
+                   if footprint.GetReference()==v["ref"]
+                   for pad in footprint.Pads()
+                   if pad.GetNumber()==v["pad"] and pad.GetNetname()==net]
+            if len(found)!=1:
+                raise ValueError("Ambiguous real pad for B.Cu via "+v["ref"]+"."+v["pad"])
+            real=found[0].GetPosition()
+            if math.dist((pcb.ToMM(real.x),pcb.ToMM(real.y)),
+                         (v["x_mm"],v["y_mm"]))>.015:
+                raise ValueError("B.Cu via site drifted off native pad "+v["ref"])
+            via(board,v,net_obj[net],annulus=.70,drill=.30)
+        for points in bridge["segments"]:
+            segment(board,net_obj[net],pcb.B_Cu,points[0],points[1],
+                    bridge["width_mm"])
     # Keep gate drive and CS/OC Kelvin trunks out of main return copper:
     # ground high frequency plane pair for Cout+SR, local primary input,
     # and discrete top/bottom PGND overlay islands. Zones are real KiCad.
@@ -303,13 +340,16 @@ def build():
         "native_extra_pgnd_via_candidate_count":len(extra_ground_sites),
         "conservative_signal_route_count":signal_model["routed_signal_edge_count"],
         "conservative_signal_segment_count":signal_model["segments_count"],
+        "short_BCu_control_bridge_count":len(bridge_model["bridges"]),
+        "short_BCu_control_via_count":sum(len(b["via_sites"]) for b in bridge_model["bridges"]),
+        "auxiliary_pgnd_return_via_count":len(ground_model["auxiliary_pgnd_return_via_sites"]),
         "native_extra_pgnd_stitches":extra_ground_sites,
         "critical_missing":[
            "FOUR 3:1:1 physical PCB winding footprints T1..T4, and CT winding",
            "OEM mechanical sizes and production pad map including DOT polarity",
            "actual 12L copper winding and unverified window thickness",
            "Real part library footprint / U2 irregular thermal polygon approximated by bbox",
-           "Via-in-pad fill/cap process with 0.30mm trial mechanical drill",
+           "Via-in-pad fill/cap process with 0.30mm trial mechanical drill (including short B.Cu signal bridges)",
            "Actual 100A external/embedded two-pole copper bar; original J_OUT inadequate",
            "Remaining circuitry nets and all P1 schematic parity",
            "Native board full DRC/EMI/thermal, import parity to EasyEDA"

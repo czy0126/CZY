@@ -681,3 +681,45 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - `pcb render` 只画**有 3D model** 的封装。生成的占位封装没有 model，所以磁件在 PNG 里
   只剩焊盘——要看轮廓用 1:1 SVG，不要以为渲染图里的空白是漏画。
 
+### G2 V17（2026-11-14 Agent-A 信号布线，KiCad 原生工程，仍非制造版）
+
+- **事实与边界**：本 worktree 的 `hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb`
+  是实际可打开的 KiCad 10 PCB，不是只有老鼠线的画面，也不代表制造就绪。冻结 V15 数据源
+  的 149 个器件、419 个实际焊盘、12 层定义、已填充的 7 个铜区保持不变；
+  本轮重新生成后是 355 个通孔过孔、122 段走线。
+- **原生 DRC 对比（必须带版本）**：2026-11-13 原版 42 条 unconnected、2 条 clearance；
+  2026-11-14 本轮结果 **32 条 unconnected、2 条 clearance**，未出现新违规；其中 **PGND 未连接 0 条**。
+  这只证明当前 KiCad 计算的网表/铜区连续性，不代表高频回路、铜排承载或 EMC 已签核。
+  余下的两项全部来自 **U2** 原生导入的 0.5 mm 邻脚（0.2000 mm 规则，
+  实际 0.1981 mm），不可通过降低 DRC 阈值来“修复”；必须核对真实 OEM 封装。
+  `schematic_parity: []` **不证明**与原理图匹配，仍需独立 parity 回读。
+- **F.Cu 两阶段信号路由**：`tools/g2_v17_route_conservative_signal.py` 先保留原始
+  38 条短折线路由（含 SS / OCD 与两个 12 V 的明确本地支路），再尝试使用有界 45° A*
+  规避其它网铜焊盘和已有信号线；当前生成 45 条规划连接。寻路是铜几何预筛，
+  **原生 DRC 才是实际连接判据**。PGND、VOUT、SW、VIN_P、SEC、原边门驱功率回路
+  不在该算法的自动布线权限中。
+- **短 B.Cu 桥（本轮真实写板）**：`tools/g2_v17_bcu_short_control_bridges.py`
+  只允许 RT、CS2、OCM 三条低电流信号使用 6 颗通孔 via-in-pad 与 B.Cu 的
+  3 段短铜（8.98 / 12.04 / 5.95 mm），每一颗必须通过 F.Cu/B.Cu 原生
+  异网焊盘、已有 F.Cu 走线和全部预留过孔的间距检查，然后由 KiCad 再做 DRC。
+  长距离敏感故障信号 OC、U2 细间距 GD1/GD2 **没有**以跨板 B.Cu 捷径或未核实的盲埋孔硬接；
+  SR Kelvin/gate 已有部分顶层候选走线，但尚需与开关电流、回流路径和 EMC 共同复核，
+  不得以导通判定为设计完成；仍应优先缩短其环路并核对驱动返回路径。
+  via-in-pad 填孔盖帽、焊点热工艺未确认，**不可直接制造**。
+- **PGND 铜岛已作实际回流修正**：C101–C112 的 12 个去耦电容 PGND 焊盘均增加真实
+  0.30 mm 机械钻径 / 0.70 mm 环径的接地返回过孔；另在真实 R10.2 PGND 焊盘加 1 颗接内层的
+  局部过孔，连接被信号铜区分割的顶部 PGND 岛。原生 DRC 的 PGND 开路 2→0，
+  没有跨网短接。R1.2 / R10.2 采用局部 solid zone，消除 2 项 `starved_thermal`；
+  未全局放宽 DRC。所有 via-in-pad 填孔盖帽和焊盘工艺必须经厂家确认。
+- **复现顺序（不能拿规划 JSON 当签核）**：
+  `D:\\anaconda3\\python.exe tools/g2_v17_pgnd_power_route_screen.py --write` →
+  `D:\\anaconda3\\python.exe tools/g2_v17_route_conservative_signal.py` →
+  `D:\\anaconda3\\python.exe tools/g2_v17_bcu_short_control_bridges.py` →
+  KiCad 10 自带 `python.exe tools/g2_v17_generate_kicad.py` →
+  KiCad 10 的 `kicad-cli pcb drc --format json -o hardware/dcx_main/g2/g2_v17_KICAD_NATIVE_DRC_NOT_FOR_FAB.json hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb` →
+  `python -m pytest tools/test_g2_v17_signal_and_bcu.py -q`。
+  生成器强制验证冻结源、摆放与信号规划 SHA，过孔所在的真实 KiCad 焊盘编号和 XY 必须对应。
+- **制造闸门**：T1–T4/CT 的 3:1:1 物理绕组与真实 DOT、100 A 双极铜排与
+  多触点输出、12 层磁件制程、过孔填盖、原理图↔PCB parity、全网 DRC
+  与 EMC/热测量都未签核。不能将本轮 32 条未连接误写为 0，也不能导出作为放行 Gerber。
+

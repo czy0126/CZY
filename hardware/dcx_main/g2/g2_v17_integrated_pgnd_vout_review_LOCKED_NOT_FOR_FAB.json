@@ -3153,6 +3153,127 @@
       "drill_mm": 0.3
     }
   ],
+  "auxiliary_pgnd_return_via_sites": [
+    {
+      "ref": "C101",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 49.6989,
+      "y_mm": 19.8009,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C102",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 105.69904,
+      "y_mm": 5.99992,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C103",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 75.70118,
+      "y_mm": 19.00114,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C104",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 80.70118,
+      "y_mm": 19.00012,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C105",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 25.69948,
+      "y_mm": 52.00012,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C106",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 63.6989,
+      "y_mm": 52.00012,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C107",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 101.69882,
+      "y_mm": 52.00012,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C108",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 139.69976,
+      "y_mm": 52.00018,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C109",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 25.69921,
+      "y_mm": 46.99966,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C110",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 63.69916,
+      "y_mm": 46.99966,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C111",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 101.69911,
+      "y_mm": 46.99966,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "C112",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 139.69903,
+      "y_mm": 46.99966,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    },
+    {
+      "ref": "R10",
+      "pad": "2",
+      "net": "PGND",
+      "x_mm": 69.75426,
+      "y_mm": 19.00114,
+      "radius_mm": 0.35,
+      "drill_mm": 0.3
+    }
+  ],
+  "auxiliary_pgnd_return_crossnet_pad_failures": [],
+  "auxiliary_pgnd_return_crossnet_via_failures": [],
   "auxiliary_12V_supply_via_othernet_conflicts": [],
   "control_U2_pgnd9_to_exposed_pgnd11_link": {
     "from": "U2.9",
