@@ -1,0 +1,31 @@
+{
+  "schema": "G2_V12_SAVED_NATIVE_TRACK_OVERWIDTH_STOPLINE_V1",
+  "status": "NATIVE_V12_HAS_PHYSICAL_ERROR_1_MUST_NOT_RELEASE",
+  "saved_native_V12_sha256": "527280764de6121b3a6f3eb5bbc1bac7ee72f8714e0c4be4f7a7a1f8087d1a4e",
+  "last_physically_clean_independently_reopened_native_V11_sha256": "d90ca22079ad7245e8c3904eb8369da58c705ae39b56574bf7843dad34cad89b",
+  "native_DRC": {
+    "Physical Error": 1,
+    "Connection Error": 145,
+    "Netlist Error": 1
+  },
+  "connection_error_decrease_from_V11": 4,
+  "actual_two_native_tracks_created": true,
+  "offending_native_trace_id": "25fcbfaa23a768e3",
+  "offending_net": "PRI_T1",
+  "width_current_mm": 3.0,
+  "width_rule_max_mm": 2.54,
+  "width_rule_max_mil": 100,
+  "width_proposed_mm": 2.5,
+  "proposed_solution_method": "Modify ONLY existing trace UUID's lineWidth via pcb_PrimitiveLine.modify; do not recreate other traces; use already-alive V12 GUI, require exact old net/geometry and readback",
+  "unperformed_native_modify_attempt_proven": false,
+  "source_V12_final_DRC_qualified": false,
+  "required_release_conditions": [
+    "Native lineWidth of PRI_T1 trace set to 2.5mm and real EasyEDA get readback",
+    "Fresh V12 native DRC Physical Error 0, Connection Error <=145 and Netlist Error <=1",
+    "Saved V12 source hash changes without modifying V11/V10 originals",
+    "Independent fresh GUI reopen checks actual PCB and COUT72 schematic, original sessions preserved",
+    "Manufacturer magnetics 24 physical terminal/DOT and 100A copper/thermal/16mm/DFM and D0 protection remain separate"
+  ],
+  "fab_release": "NOT_FOR_FAB",
+  "fabrication_approved": false
+}
