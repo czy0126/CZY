@@ -1,0 +1,206 @@
+{
+  "schema": "D1_100A_MAGNETIC_100C_121A_FAULT_AND_16MM_DFM_GATE_V1",
+  "status": "NO_STOCK_CORE_PASSES_D1_FAULT_FLUX_AND_MECHANICAL_RESERVE",
+  "source_sha256_lf": {
+    "design/v3/bom/lr_design.json": "a29d678793ba34b20e6c7f381d3697d1c421d49425677ed85b3d403256ff79e8",
+    "design/v3/magnetics/magnetics_design.json": "7828fb42838eb1c1e5f80e1ebd65e8cd33de1be2413b01774f19b5a052a436cd",
+    "design/v3/power_priority/lr_tdk_catalog_core_source.json": "b0ba36f5fc3937b0946c91e806f6425cd585fe080a2cb2cffd165a520609b019",
+    "design/v3/power_priority/d1_staged_target_policy.json": "7168d31deac23fc714d248136ad4b89edc846070eed1a9277e56c61846f299b4",
+    "design/v3/maxwell/elp38_lr_maxwell_contract.json": "95d8bcac0b09d9d1c39258eab96106ace43816e0c91e2d3a808271d4cfdc2f60",
+    "design/v3/bom/ct_design.json": "f8c991fe2a5ab61d8e912aac9f7b356d42c6753e1767dbf6b8d488e2a780d62d"
+  },
+  "requirements": {
+    "D1_load_current_A": 100,
+    "height_limit_mm": 16,
+    "provisional_noncore_margin_mm": 2.0,
+    "Lr_tank_total_uH": 1.0,
+    "Lr_leakage_prior_model_uH": 0.08,
+    "Lr_external_target_from_unmeasured_leakage_uH": 0.92,
+    "tank_nominal_frequency_kHz": 202.12697985378801,
+    "max_RFQ_current_A": 121.515,
+    "max_deck_fault_peak_A": 104.17,
+    "optional_high_conservatism_B_limit_T": 0.248,
+    "prior_90pct_Bsat_limit_T": 0.279,
+    "N97_nominal_100C_Bsat_T": 0.31,
+    "a_100A_output_is_not_100A_in_Lr": true
+  },
+  "transformer_T1_to_T4": {
+    "quantity": 4,
+    "original_design_core": "TDK EILP32 N97 B66287G0000X197 + B66287K0000X197",
+    "original_core_Ae_mm2": 130.0,
+    "primary_turns": 3,
+    "two_secondary_half_turns_each": 1,
+    "each_Lm_uH": 10.0,
+    "original_gap_analytic_mm": 0.1211,
+    "reported_48V_Bpp_mT": 38.342,
+    "original_loss_model_100A_total_copper_W": 2.1345,
+    "original_loss_model_core_per_set_50v_W": 0.0883,
+    "actual_all_four_vendor_3D_terminal_DOT_verified": false,
+    "Maxwell_N97_100C_and_AC_loss_final_verified": false
+  },
+  "Lr_original_design": {
+    "core": "TDK EILP38 N97, B66459G0000X197 ELP + B66459K0000X197 I",
+    "catalogue_Ae_mm2": 194,
+    "catalogue_Amin_mm2": 192,
+    "ungapped_AL_nH_per_turn2": 8400,
+    "nominal_core_plate_height_mm": 12.05,
+    "worst_known_stack_including_glue_label_mm": 12.49,
+    "Z_remaining_mm": 3.51,
+    "recommended_first_article_branch": "2turn_0p92uH_only_if_protection_or_custom_BH_passes",
+    "prototype_1uH_RfQ_sizing_gap_mm": 0.94613,
+    "net_external_0p92uH_gap_analytic_mm": 1.03092,
+    "oversized_1uH_when_0p08uH_leakage_is_added_total_uH": 1.08,
+    "estimated_tank_frequency_ratio_for_1p08_vs_1p00": 0.96225,
+    "airgap_must_be_measured_after_actual_transformer_leakage": true,
+    "tdk_gap_curve_published_for_N87_not_N97": true,
+    "candidate_cases": [
+      {
+        "turns": 2,
+        "target_Lr_uH": 0.92,
+        "reluctance_estimated_total_airgap_mm": 1.03092,
+        "inside_TDK_N87_empirical_example_range_NOT_an_N97_proof": true,
+        "linear_B_at_121p515A_T": 0.29113,
+        "passes_optional_conservative_80pct_Bsat": false,
+        "passes_existing_design_90pct_Bsat": false,
+        "N97_100C_nonlin_BH_highbias_verified": false,
+        "physical_machined_gap_verified": false
+      },
+      {
+        "turns": 2,
+        "target_Lr_uH": 1.0,
+        "reluctance_estimated_total_airgap_mm": 0.94613,
+        "inside_TDK_N87_empirical_example_range_NOT_an_N97_proof": true,
+        "linear_B_at_121p515A_T": 0.316445,
+        "passes_optional_conservative_80pct_Bsat": false,
+        "passes_existing_design_90pct_Bsat": false,
+        "N97_100C_nonlin_BH_highbias_verified": false,
+        "physical_machined_gap_verified": false
+      },
+      {
+        "turns": 3,
+        "target_Lr_uH": 0.92,
+        "reluctance_estimated_total_airgap_mm": 2.35586,
+        "inside_TDK_N87_empirical_example_range_NOT_an_N97_proof": false,
+        "linear_B_at_121p515A_T": 0.194086,
+        "passes_optional_conservative_80pct_Bsat": true,
+        "passes_existing_design_90pct_Bsat": true,
+        "N97_100C_nonlin_BH_highbias_verified": false,
+        "physical_machined_gap_verified": false
+      },
+      {
+        "turns": 3,
+        "target_Lr_uH": 1.0,
+        "reluctance_estimated_total_airgap_mm": 2.16507,
+        "inside_TDK_N87_empirical_example_range_NOT_an_N97_proof": false,
+        "linear_B_at_121p515A_T": 0.210964,
+        "passes_optional_conservative_80pct_Bsat": true,
+        "passes_existing_design_90pct_Bsat": true,
+        "N97_100C_nonlin_BH_highbias_verified": false,
+        "physical_machined_gap_verified": false
+      }
+    ],
+    "vendor_real_100C_N97_BH_LI_and_AC_200kHz_loss_passed": false
+  },
+  "catalogue_eilp_candidate_screen": [
+    {
+      "id": "ELP32_I32",
+      "name": "ELP 32/6/20 + I 32/3/20",
+      "Amin_mm2": 128,
+      "two_turn_B_at_max_Rfq_T": 0.436695,
+      "passes_0p248T_arithmetic": false,
+      "known_worst_stack_mm": 9.94,
+      "remaining_Z_for_TIM_coldplate_screws_mm": 6.06,
+      "passes_assumed_2mm_remaining_Z": true,
+      "passes_joint_fault_flux_and_Z_reserve": false,
+      "oem_hotbias_verified": false
+    },
+    {
+      "id": "ELP38_I38",
+      "name": "ELP 38/8/25 + I 38/4/25",
+      "Amin_mm2": 192,
+      "two_turn_B_at_max_Rfq_T": 0.29113,
+      "passes_0p248T_arithmetic": false,
+      "known_worst_stack_mm": 12.49,
+      "remaining_Z_for_TIM_coldplate_screws_mm": 3.51,
+      "passes_assumed_2mm_remaining_Z": true,
+      "passes_joint_fault_flux_and_Z_reserve": false,
+      "oem_hotbias_verified": false
+    },
+    {
+      "id": "ELP43_I43",
+      "name": "ELP 43/10/28 + I 43/4/28",
+      "Amin_mm2": 217,
+      "two_turn_B_at_max_Rfq_T": 0.257589,
+      "passes_0p248T_arithmetic": false,
+      "known_worst_stack_mm": 14.04,
+      "remaining_Z_for_TIM_coldplate_screws_mm": 1.96,
+      "passes_assumed_2mm_remaining_Z": false,
+      "passes_joint_fault_flux_and_Z_reserve": false,
+      "oem_hotbias_verified": false
+    },
+    {
+      "id": "ELP58_I58",
+      "name": "ELP 58/11/38 + I 58/4/38",
+      "Amin_mm2": 308,
+      "two_turn_B_at_max_Rfq_T": 0.181483,
+      "passes_0p248T_arithmetic": true,
+      "known_worst_stack_mm": 15.04,
+      "remaining_Z_for_TIM_coldplate_screws_mm": 0.96,
+      "passes_assumed_2mm_remaining_Z": false,
+      "passes_joint_fault_flux_and_Z_reserve": false,
+      "oem_hotbias_verified": false
+    },
+    {
+      "id": "ELP64_I64",
+      "name": "ELP 64/10/50 + I 64/5/50",
+      "Amin_mm2": 518,
+      "two_turn_B_at_max_Rfq_T": 0.107909,
+      "passes_0p248T_arithmetic": true,
+      "known_worst_stack_mm": 15.74,
+      "remaining_Z_for_TIM_coldplate_screws_mm": 0.26,
+      "passes_assumed_2mm_remaining_Z": false,
+      "passes_joint_fault_flux_and_Z_reserve": false,
+      "oem_hotbias_verified": false
+    }
+  ],
+  "design_resolution_options": {
+    "A_2turn_keep_ELP38": {
+      "need_limit_Lr_fault_peak_A_at_0p248T": 103.513,
+      "compared_to_current_121p515A_rfq_A": 121.515,
+      "requires_true_fast_D0_protection_timing_and_cold_fault_real_data": true,
+      "accept_before_fast_OC_measured": false
+    },
+    "B_custom_enlarged_low_Z_N97_core": {
+      "min_Amin_mm2_for_2turn_0p92uH_at_121p515A": 225.391,
+      "increase_vs_stock_ELP38_Amin_percent": 17.39,
+      "custom_geometry_must_keep_verified_16mm_full_assembly": true,
+      "manufacturer_quote_and_hot_bias_Maxwell_pending": true
+    },
+    "C_custom_gap_3turn": {
+      "gap_analytic_mm": 2.35586,
+      "outside_published_N87_empirical_2mm_range": true,
+      "new_Cu_ac_fringe_and_gap_tolerance_FEA_required": true
+    }
+  },
+  "CT_primary_current_sensing": {
+    "sensed_primary_peak_model_A": 13.88141992151438,
+    "primary_secondary_turns_ratio": 100,
+    "burden_ohm": 10.0,
+    "concept_Ae_mm2": 20.1,
+    "concept_Bsat_T": 0.34,
+    "material_MPN_3D_footprint_vendor_DOT_verified": false,
+    "independent_fault_hardware_D0_verified": false
+  },
+  "hardware_fab_gates": {
+    "native_magnetic_24_pad_schematic_footprint_component_linked": false,
+    "all_5_physical_3D_core_clamps_and_DOT_manufacturer_signed": false,
+    "N97_100C_nonlinear_L_of_I_to_121p515A_passed": false,
+    "Maxwell_1A_generic_ferrite_cannot_satisfy_material_or_bias_gate": true,
+    "200kHz_core_Cu_loss_hot_and_fringing_FEM_passed": false,
+    "D0_10channel_fault_shutdown_physical_passed": false,
+    "real_100A_voltage_temperature_and_4wire_interconnect_tested": false,
+    "manufacturer_DFM_16mm_Z_and_assembly_approved": false,
+    "release_approved": false
+  },
+  "fab_release": "NOT_FOR_FAB"
+}

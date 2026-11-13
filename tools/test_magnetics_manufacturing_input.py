@@ -156,6 +156,21 @@ def test_the_lr_page_says_which_number_to_wind(pages):
     assert "0.920" in lr or "0.92" in lr
 
 
+def test_lr_supplier_page_separates_1uH_sizing_from_real_external_target(pages):
+    lr=section(pages["Lr"], "冻结候选")
+    assert "筛选上限 AL（非量产目标）" in lr
+    assert "250.0 nH/T^2" in lr
+    assert "0.92 uH 模型外置目标 AL（待漏感首件修正）" in lr
+    assert "230.0 nH/T^2" in lr
+    assert "筛选上限1.00 uH 对应解析气隙（不可直接加工）" in lr
+    assert "0.9461 mm" in lr
+    assert "0.92 uH 预估外置气隙（待漏感测量和厂家标定）" in lr
+    assert "1.0309 mm" in lr
+    assert "121.515 A 高偏磁止损门槛" in lr
+    assert "103.513 A" in lr and "225.391 mm²" in lr
+    assert "不能直接加工" in lr or "不可直接加工" in lr
+
+
 def test_the_ct_page_rejects_the_two_pad_footprint(pages):
     ct = pages["CT"]
     assert "4 个独立" in ct or "四个独立" in ct
