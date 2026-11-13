@@ -49,9 +49,23 @@ def test_real_footprint_matches_manufacturer_derived_land_geometry():
     assert P.S == 3.87 and P.V1 == 9.12 and P.V2 == 5.10
 
 
+def _canonical_native_footprint_sha256(source_bytes: bytes) -> str:
+    """Hash Git's LF-canonical source, not platform-specific checkout newlines.
+
+    EasyEDA's archived .efoo evidence is textual. Git on Windows can expand
+    every LF to CRLF without modifying any CAD primitive or its meaning.
+    Reject NUL/bare-CR so this exception cannot silently canonicalize binary
+    CAD or unrelated byte corruption.
+    """
+    assert b"\x00" not in source_bytes
+    normalized = source_bytes.replace(b"\r\n", b"\n")
+    assert b"\r" not in normalized
+    return hashlib.sha256(normalized).hexdigest()
+
+
 def test_native_footprint_evidence_is_source_hash_locked_not_release():
     report = json.loads(RECORD.read_text(encoding="utf8"))
-    assert hashlib.sha256(SOURCE.read_bytes()).hexdigest() == report["footprint_sha256"]
+    assert _canonical_native_footprint_sha256(SOURCE.read_bytes()) == report["footprint_sha256"]
     assert report["footprint_uuid"] == "c9bdf53e779d4dd6a2eee1e6cecd4462"
     assert report["library_uuid"] == "G1_R34_REC10K_v3_TEST"
     assert report["native_editor_save_acknowledged"] is True
@@ -60,6 +74,21 @@ def test_native_footprint_evidence_is_source_hash_locked_not_release():
     assert report["72_native_components_instantiated"] is False
     assert report["library_courtyard_and_polarity_review_approved"] is False
     assert report["fabrication_approved"] is False
+
+
+def test_footprint_evidence_hash_accepts_only_line_endings_not_content_changes():
+    native = SOURCE.read_bytes()
+    lf = native.replace(b"\r\n", b"\n")
+    assert _canonical_native_footprint_sha256(lf) == _canonical_native_footprint_sha256(
+        lf.replace(b"\n", b"\r\n")
+    )
+    assert _canonical_native_footprint_sha256(lf + b"extra") != _canonical_native_footprint_sha256(lf)
+
+
+def test_git_keeps_native_footprint_exact_bytes_on_all_checkout_platforms():
+    assert "hardware/dcx_main/g2/*.efoo -text" in (
+        ROOT / ".gitattributes"
+    ).read_text(encoding="utf8").splitlines()
 
 
 def test_positive_and_negative_land_numbering_matches_existing_72_site_plan():
