@@ -118,6 +118,8 @@
 - **Lr 页只写 `L_external = L_tank_target − L_leak_measured`（0.920 µH 是模型漏感的预估），
   1.000 µH 是筛选上限**，不是要绕的值；页面同时写出对 D3 的余量是 **−2.49 mm**（ELP38 只能用在
   D1 的 16 mm，D3 的 10 mm 需要更矮的套件）。
+- **D1磁芯与高偏磁/高度必须共同通过**：[`tools/d1_magnetic_core_release_gate.py`](../../tools/d1_magnetic_core_release_gate.py) 使用原始 `lr_design.json`、TDK目录源、D1阶段高度及Maxwell激励约束生成[100°C/121.515A/16mm双约束放行审查](../../hardware/dcx_main/manufacturing/d1_magnetic_hotbias_and_Z_release_gate_NOT_FOR_FAB.json)。严守“每极约2mm非磁性件预留”只是临时设计预算而非冷板实测；保守0.248T线性筛查下五个标准磁芯均不能同时满足峰值磁密与此预算。ELP38 2匝0.92µH对应上限约103.513A的**条件**，否则必须定制增加有效面积或通过真正D0保护证明故障峰值；3匝解析气隙已超目录经验区间而不能免除厂家验证。
+- **Lr制造输入双AL修正**：此前`Lr.md`只印筛选上限1.000µH对应的250nH/匝²、0.9461mm解析气隙，易被误当量产要求。现同页区分根据80nH**模型漏感**推算的0.920µH外置目标：230nH/匝²、1.0309mm**预估气隙**；首件漏感和100°C的实测 L(I) 之前仍不允许下单磨气隙。脚本和回归锁定这两个口径。
 - **物理端子一律写「待商家提供」**：T1–T4/CT 来自 `vendor_terminal_request.json` 的 null 物理号，
   Lr 来自 `board_netlist.csv` 的两个端子（该文件里没有 Lr，因为它只有两端）。**不编焊盘号**，
   `test_every_logical_terminal_has_a_requirement_row` 逐端比对且禁止出现 `physical_pad`。

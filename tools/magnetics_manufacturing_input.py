@@ -31,6 +31,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import magnetics_rfq_package as rfq
+import d1_magnetic_core_release_gate as magnetic_gate
 from magnetics_design import core_gap_m
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -212,7 +213,12 @@ def inductor() -> dict:
     turn = frozen["turn"]
     turns = turn["turns"]
     external = tank["external_target_h"]
+    gate = magnetic_gate.build()
+    if gate["requirements"]["Lr_external_target_from_unmeasured_leakage_uH"] != round(external * 1e6, 5):
+        raise ValueError("Lr page target not aligned with 100C physical release gate")
     al_nh = tank["total_target_h"] / turns**2 * 1e9
+    al_expected_nh = external / turns**2 * 1e9
+    gap_expected_mm = core_gap_m(external,turns,design["ae_mm2"] * 1e-6,design["al_ungapped_nh"]) * 1e3
     low, high = gap_window_mm(external, 0.10, turns, design["ae_mm2"] * 1e-6, design["al_ungapped_nh"])
     core_row = next(r for r in candidates["rows"] if r["id"] == preferred)
     return {
@@ -230,9 +236,19 @@ def inductor() -> dict:
                 f"{_num(external * 1e6, 3)} uH）", "lr_design.json:tank"),
             row("筛选上限", f"{_num(tank['total_target_h'] * 1e6, 3)} uH——这是筛选上限，不是要绕的值",
                 "lr_design.json:tank.note"),
-            row("目标 AL", f"{_num(al_nh, 1)} nH/T^2", f"= {_num(tank['total_target_h'] * 1e6, 3)} uH / {turns}^2"),
-            row("气隙（按 AL 算）", f"{_num(turn['gap_mm'], 4)} mm",
-                "lr_design.json:catalogue_cores（ELP38 自己的 AL，不是 ELP32 的 1.4443 mm）"),
+            row("筛选上限 AL（非量产目标）", f"{_num(al_nh, 1)} nH/T^2",
+                f"= {_num(tank['total_target_h'] * 1e6, 3)} uH / {turns}^2；只供高电感工况筛选"),
+            row("0.92 uH 模型外置目标 AL（待漏感首件修正）", f"{_num(al_expected_nh, 1)} nH/T^2",
+                "lr_design.json:tank.external_target_h / N^2"),
+            row("筛选上限1.00 uH 对应解析气隙（不可直接加工）", f"{_num(turn['gap_mm'], 4)} mm",
+                "lr_design.json:catalogue_cores；这个值来自保守筛选上限，不是实际外置目标"),
+            row("0.92 uH 预估外置气隙（待漏感测量和厂家标定）", f"{_num(gap_expected_mm, 4)} mm",
+                "由模型外置目标 + ELP38自身AL经 core_gap_m() 解析推导，非厂家加工签核"),
+            row("121.515 A 高偏磁止损门槛", "原生设计不可直接放行：2匝ELP38须证明 D0 保护峰值≤"
+                f"{_num(gate['design_resolution_options']['A_2turn_keep_ELP38']['need_limit_Lr_fault_peak_A_at_0p248T'], 3)} A，"
+                "或定制 Amin≥"
+                f"{_num(gate['design_resolution_options']['B_custom_enlarged_low_Z_N97_core']['min_Amin_mm2_for_2turn_0p92uH_at_121p515A'], 3)} mm²",
+                "d1_magnetic_core_release_gate.py，0.248T线性磁密筛选，不是N97非线性实证"),
             row("气隙窗口", f"{_num(low, 4)} - {_num(high, 4)} mm",
                 "由外置件 ±10 % 用 core_gap_m() 反算"),
             row("厂家气隙有效区间", f"{_num(design['gapping_validity_s_mm'][0], 2)} - "
@@ -284,7 +300,8 @@ def inductor() -> dict:
         "open_items": [
             "ELP38 上 N97 的气隙计算常数 TDK 未公布，所以气隙仍是解析值，需厂家按 AL 公差确认。",
             "0 - 121.5 A、100 °C 的增量电感 L(I)：验收窗口沿用外置件 ±10 %。",
-            "外置件与变压器漏感的分配：首件实测漏感后才定，0.920 uH 只是按模型漏感的预估值。",
+            "外置件与变压器漏感的分配：首件实测漏感后才定，0.920 uH 只是按模型漏感的预估值；1.000 uH筛选上限与0.920 uH目标不可互当成量产气隙。",
+            "高偏磁0.248T筛选在121.515A不通过：要么保护电路实际将Lr峰值限制在计算门槛内，要么换定制更大磁芯；1A普通铁氧体Maxwell不能充当100°C N97非线性L(I)验证。",
             "独立 Lr 的物理端子、焊盘与机械定义：现在只有电感、匝数与气隙。",
         ],
         "sources": [
