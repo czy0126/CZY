@@ -45,3 +45,7 @@ CT仍为待厂家确认的1:100四脚独立检测磁件，不随四只变压器�
 ## EI 与 UT型磁芯的选型决定
 
 在目前四变压器原边串联、每只3:1:1、200kHz/约50V输入的**均压方波示例**下，TDK ELP32 + I32 N97的有效磁截面积Ae=130mm²、le=35.1mm；ACME UT20的Ae=13mm²、le=53mm，UT30的Ae=27mm²、le=77mm。若均压每变压器原边约12.5V，方波估算 `Bpk≈(50/4)/(4×200000×3×Ae)`：EI约0.040T，UT30约0.193T，UT20约0.401T。不同厂家的UT材料和气隙/损耗不能直接用N97的Bs代替；但这表明标准UT20/30若保持3匝将大幅增磁通。UT减少单磁件穿板孔（三腿→常见两腿）有吸引力，却可能需要提高匝数（UT30接近15匝原边才达到EI同等通量水平），使 PCB 层数/绕组铜损和100A低压副边接线更复杂。**V14四只主变压器保持EI ELP32+I32，UT仅保留对照，不直接替换。**来源：[TDK EILP32/I32 Ae=130](https://jm.pl/gfx-base/s_1/orgs/18/B66287G400X187.pdf)（EILP32数据页）与[ACME UT型Ae与尺寸](https://www.acme-ferrite.com.tw/img/MnCorePDF/ut.pdf)。实际激励/磁通均需Maxwell/示波验真。
+
+## 实际信号DRC清除与四路背面REG去耦（2026-11-13完成）
+
+现有V14复制板上真实完成**OC、OCM、OCD低电流故障检测网络**布线，分别新增2/2/2个PTH与3/3/4段铜线。四路REG1–4在原布板中C7–C10与U3–U6位于不同区域且大幅拉长，已通过原生API实际移动到驱动器背面 **layer2/180°**（每颗2个过孔+4段铜线，总8Via/16Track），电容焊盘在下层，两个PCB网络经由顶底线/过孔独立相连。结果[真实原生V14双面工程](../g2/dcx_main_board_g2_V14_EILP32_12NPTH_OC_OCM_OCD_REG4_BOTTOM_WIP_NOT_FOR_FAB.eprj2) SHA256 `7dd77910bcf7ff3fd0e2be1e4194439a22189aaf353f105bbe1280c104e4f6fc`，149组件/423Pad/484Track/104Via。原生DRC真实回执[独立第二次复查](../g2/g2_v14_after_REG4_independent_second_native_DRC_bottom_four_NOT_FOR_FAB.json) **111 Connection/0 Netlist/0 Physical**；首个149→124同时包含删除旧磁件焊盘后的重算，不能伪称单OC线路修好了25个错误。V14尚有111开路和四只PCB绕组欠缺。**原生DRC使用的仍是两层板规则，而本主板启用了12铜层，需12层板厂真实叠层/设计规则与DFM签核。当前NOT_FOR_FAB。**

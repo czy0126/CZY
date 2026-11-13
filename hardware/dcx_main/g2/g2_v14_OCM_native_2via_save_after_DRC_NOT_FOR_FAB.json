@@ -1,0 +1,28 @@
+{
+  "status": "OCM_NATIVE_DRC_DECREASED",
+  "source_sha256": "706808f923f60da263ea77ed30236762bc7cf0b3cd58a0db029676e71247c0b8",
+  "native_result": {
+    "ok": true,
+    "value": {
+      "status": "REAL_NATIVE_OCM_FIXED",
+      "categories": {
+        "Connection Error": 122
+      },
+      "saved": true,
+      "viaIds": [
+        "0803e58181523733",
+        "4e39567001171c42"
+      ],
+      "lineIds": [
+        "f87579cf2948a86f",
+        "547c0c1bcc040506",
+        "5b898d5285188638"
+      ],
+      "lineCount": 464,
+      "viaCount": 94
+    },
+    "logs": [],
+    "durationMs": 11928
+  },
+  "fabrication_approved": false
+}

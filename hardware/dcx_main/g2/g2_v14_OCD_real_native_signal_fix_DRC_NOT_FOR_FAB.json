@@ -1,0 +1,29 @@
+{
+  "status": "OCD_DRC_REDUCED_NATIVE_CAD_NOT_FOR_FAB",
+  "native_response": {
+    "ok": true,
+    "value": {
+      "status": "OCD_NATIVE_ROUTE_SAVED_DRC_IMPROVED",
+      "categories": {
+        "Connection Error": 120
+      },
+      "saved": true,
+      "viaIds": [
+        "4594352aecea6cf8",
+        "d0bcb25dc9def85a"
+      ],
+      "lineIds": [
+        "60df2557db9265f5",
+        "80361484c11054ca",
+        "3e8ac5656c6743b1",
+        "51ff9c47b43b27b7"
+      ],
+      "linesAfter": 468,
+      "viasAfter": 96
+    },
+    "logs": [],
+    "durationMs": 7210
+  },
+  "base_sha256": "80381f0bb00b781dfc635298020638e3757e9ddc99e2987cd8838c10ee4b0260",
+  "fabrication_approved": false
+}

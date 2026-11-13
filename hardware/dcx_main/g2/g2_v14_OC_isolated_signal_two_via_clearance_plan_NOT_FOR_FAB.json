@@ -1,0 +1,73 @@
+{
+  "schema": "D1_V14_OC_REAL_NATIVE_TWO_PTH_AND_THREE_SHORT_SEGMENTS_V1",
+  "status": "OC_SIGNAL_TWO_VIA_NATIVE_TRACE_PRECHECK_PASS_NOT_YET_DRAWN",
+  "base_native_V14_file_sha256": "1e76e6865a746a49bea8a9fb87037b0301213faa386f5fdd2d6bdf5550ffbac6",
+  "native_423pad_readback_sha256": "0e311a728ccab6bc608dafa7f9a58c49ed1825b8f71054462efd9b912c9b8c74",
+  "native_149_1_DRC_readback_sha256": "585fbeffd04a669803a634b326c78fd33d03addc7551bee9147a03a8c899de59",
+  "PCB_copy_target_uuid": "8c496410b2877d3c",
+  "source_original_PCB_untouched": true,
+  "net": "OC",
+  "pin_endpoints": {
+    "R17.1": [
+      139.24788,
+      62.40018
+    ],
+    "C12.1": [
+      147.29968,
+      62.40018
+    ]
+  },
+  "via_diameter_mm": 0.8,
+  "via_hole_mm": 0.4,
+  "width_mm": 0.2,
+  "minimum_unlike_net_clearance_mm": 0.2,
+  "via_positions_mm": [
+    [
+      139.24788,
+      64.0
+    ],
+    [
+      147.29968,
+      64.0
+    ]
+  ],
+  "new_native_segments": [
+    {
+      "layer": 1,
+      "from": [
+        139.24788,
+        62.40018
+      ],
+      "to": [
+        139.24788,
+        64.0
+      ]
+    },
+    {
+      "layer": 2,
+      "from": [
+        139.24788,
+        64.0
+      ],
+      "to": [
+        147.29968,
+        64.0
+      ]
+    },
+    {
+      "layer": 1,
+      "from": [
+        147.29968,
+        64.0
+      ],
+      "to": [
+        147.29968,
+        62.40018
+      ]
+    }
+  ],
+  "uses_actual_top_and_bottom_layers_only": true,
+  "native_DRC_must_decrease_without_any_physical_error": true,
+  "not_manufacturer_approved": true,
+  "fabrication_approved": false
+}

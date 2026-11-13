@@ -1,0 +1,361 @@
+{
+  "schema": "D1_G2_V14_NATIVE_REG1_REG4_BOTTOM_CAPACITORS_V1",
+  "status": "FOUR_CAPS_8_VIAS_16_TRACKS_BOTTOM_PRECHECK_PASS_NOT_YET_APPLIED",
+  "source_saved_native_SHA256": "3e279574988af011883dd36ef5565cb50e7f72966020c1fa606a54542e1a62de",
+  "actual_423Pad_468Line_96Via_readback_SHA256": "1b6e1444d17dc94af93beffc598fd1e33751c75b254614bfbe34f0551fdda25c",
+  "corrected_C7_bottom_180deg_native_verification_SHA256": "5d84e162fe4f73436880a45bbd2543d3a67afa9fbbe308bea94044bc0ef1e14b",
+  "before_native_DRC": {
+    "Connection Error": 120
+  },
+  "candidate_backside_parts": [
+    {
+      "ref": "C7",
+      "driver": "U3",
+      "component_origin_x_mm": 18.93346,
+      "component_origin_y_mm": 75.0,
+      "layer": 2,
+      "rotation": 180,
+      "original_component_origin_mil": [
+        3094.4880000000003,
+        -1692.9134
+      ],
+      "original_rotation": 0,
+      "pins": [
+        {
+          "net": "REG1",
+          "x_mm": 19.6342,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 19.6342,
+          "top_pin_y_mm": 74.5998
+        },
+        {
+          "net": "PGND",
+          "x_mm": 18.23466,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 18.3642,
+          "top_pin_y_mm": 74.5998
+        }
+      ]
+    },
+    {
+      "ref": "C8",
+      "driver": "U4",
+      "component_origin_x_mm": 56.93433,
+      "component_origin_y_mm": 75.0,
+      "layer": 2,
+      "rotation": 180,
+      "original_component_origin_mil": [
+        3275.591,
+        -1692.9134
+      ],
+      "original_rotation": 0,
+      "pins": [
+        {
+          "net": "REG2",
+          "x_mm": 57.63514,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 57.63514,
+          "top_pin_y_mm": 74.5998
+        },
+        {
+          "net": "PGND",
+          "x_mm": 56.23306,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 56.36514,
+          "top_pin_y_mm": 74.5998
+        }
+      ]
+    },
+    {
+      "ref": "C9",
+      "driver": "U5",
+      "component_origin_x_mm": 94.93522,
+      "component_origin_y_mm": 75.0,
+      "layer": 2,
+      "rotation": 180,
+      "original_component_origin_mil": [
+        3456.693,
+        -1692.9134
+      ],
+      "original_rotation": 0,
+      "pins": [
+        {
+          "net": "REG3",
+          "x_mm": 95.63608,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 95.63608,
+          "top_pin_y_mm": 74.5998
+        },
+        {
+          "net": "PGND",
+          "x_mm": 94.234,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 94.36608,
+          "top_pin_y_mm": 74.5998
+        }
+      ]
+    },
+    {
+      "ref": "C10",
+      "driver": "U6",
+      "component_origin_x_mm": 132.93471,
+      "component_origin_y_mm": 75.0,
+      "layer": 2,
+      "rotation": 180,
+      "original_component_origin_mil": [
+        196.85,
+        -1692.9134
+      ],
+      "original_rotation": 0,
+      "pins": [
+        {
+          "net": "REG4",
+          "x_mm": 133.63448,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 133.63448,
+          "top_pin_y_mm": 74.5998
+        },
+        {
+          "net": "PGND",
+          "x_mm": 132.23494,
+          "cap_y_mm": 75.0,
+          "top_pin_x_mm": 132.36448,
+          "top_pin_y_mm": 74.5998
+        }
+      ]
+    }
+  ],
+  "eight_PTH_sites_and_sixteen_routes": [
+    {
+      "ref": "C7",
+      "net": "REG1",
+      "via_mm": [
+        19.6342,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          19.6342,
+          74.5998
+        ],
+        [
+          19.6342,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          19.6342,
+          75.0
+        ],
+        [
+          19.6342,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C7",
+      "net": "PGND",
+      "via_mm": [
+        18.23466,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          18.3642,
+          74.5998
+        ],
+        [
+          18.23466,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          18.23466,
+          75.0
+        ],
+        [
+          18.23466,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C8",
+      "net": "REG2",
+      "via_mm": [
+        57.63514,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          57.63514,
+          74.5998
+        ],
+        [
+          57.63514,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          57.63514,
+          75.0
+        ],
+        [
+          57.63514,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C8",
+      "net": "PGND",
+      "via_mm": [
+        56.23306,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          56.36514,
+          74.5998
+        ],
+        [
+          56.23306,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          56.23306,
+          75.0
+        ],
+        [
+          56.23306,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C9",
+      "net": "REG3",
+      "via_mm": [
+        95.63608,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          95.63608,
+          74.5998
+        ],
+        [
+          95.63608,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          95.63608,
+          75.0
+        ],
+        [
+          95.63608,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C9",
+      "net": "PGND",
+      "via_mm": [
+        94.234,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          94.36608,
+          74.5998
+        ],
+        [
+          94.234,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          94.234,
+          75.0
+        ],
+        [
+          94.234,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C10",
+      "net": "REG4",
+      "via_mm": [
+        133.63448,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          133.63448,
+          74.5998
+        ],
+        [
+          133.63448,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          133.63448,
+          75.0
+        ],
+        [
+          133.63448,
+          76.0
+        ]
+      ]
+    },
+    {
+      "ref": "C10",
+      "net": "PGND",
+      "via_mm": [
+        132.23494,
+        76.0
+      ],
+      "top_segment_mm": [
+        [
+          132.36448,
+          74.5998
+        ],
+        [
+          132.23494,
+          76.0
+        ]
+      ],
+      "bottom_segment_mm": [
+        [
+          132.23494,
+          75.0
+        ],
+        [
+          132.23494,
+          76.0
+        ]
+      ]
+    }
+  ],
+  "via_hole_mm": 0.4,
+  "via_outer_mm": 0.8,
+  "routing_copper_width_mm": 0.2,
+  "native_board_to_modify": "8c496410b2877d3c",
+  "guaranteed_bottom_side_clearance_mm": 0.2,
+  "ferrite_window_and_full_PCB_stackup_supplier_approved": false,
+  "fabrication_approved": false
+}

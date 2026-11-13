@@ -1,0 +1,42 @@
+{
+  "status": "C7_BOTTOM_MIRROR_PINOUT_VERIFIED_UNSAVED",
+  "native": {
+    "status": "C7_BOTTOM_180_ROTATION_NATIVE_POSITION_MATCH_UNSAVED",
+    "old": {
+      "id": "9fb79facc0be915d",
+      "x": 3094.4880000000003,
+      "y": -1692.9134,
+      "rotation": 0,
+      "layer": 1
+    },
+    "delta": {
+      "REG_dx": 0,
+      "REG_dy": -0.8991600000000023,
+      "PGND_dx": -0.12954000000000057,
+      "PGND_dy": -0.8991600000000023
+    },
+    "now": {
+      "x": 745.4119999999998,
+      "y": -2972.433070866142,
+      "rotation": 180,
+      "layer": 2
+    },
+    "pads": [
+      {
+        "number": "2",
+        "net": "PGND",
+        "x": 717.9,
+        "y": -2972.4,
+        "layer": 2
+      },
+      {
+        "number": "1",
+        "net": "REG1",
+        "x": 773,
+        "y": -2972.4,
+        "layer": 2
+      }
+    ]
+  },
+  "fabrication_approved": false
+}

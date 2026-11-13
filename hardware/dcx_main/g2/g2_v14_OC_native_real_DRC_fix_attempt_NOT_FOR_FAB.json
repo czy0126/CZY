@@ -1,0 +1,28 @@
+{
+  "status": "NATIVE_OC_SIGNAL_REPAIRED_AND_DRC_IMPROVED_NOT_FOR_FAB",
+  "api": {
+    "ok": true,
+    "value": {
+      "status": "REAL_NATIVE_OC_CONNECTED_DRC_IMPROVED_NOT_FOR_FAB",
+      "categories": {
+        "Connection Error": 124
+      },
+      "newVia": [
+        "b2ab95825dfb518e",
+        "c5c2f342b09157de"
+      ],
+      "newLines": [
+        "7d90462c72536bea",
+        "458e2b217f3d4468",
+        "78f6401759112550"
+      ],
+      "saved": true,
+      "current_lines": 461,
+      "current_vias": 92
+    },
+    "logs": [],
+    "durationMs": 11380
+  },
+  "source_SHA256": "1e76e6865a746a49bea8a9fb87037b0301213faa386f5fdd2d6bdf5550ffbac6",
+  "fabrication_approved": false
+}

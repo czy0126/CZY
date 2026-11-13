@@ -1,0 +1,69 @@
+{
+  "status": "FOUR_BOTTOM_REG_CAPACITORS_REAL_DRC_REDUCED_NOT_FOR_FAB",
+  "native_result": {
+    "ok": true,
+    "value": {
+      "status": "REG1_REG4_BOTTOM_CAPS_AND_8PTH_NATIVE_SAVED_DRC_IMPROVED",
+      "DRC": {
+        "Connection Error": 111
+      },
+      "saved": true,
+      "moved": [
+        {
+          "ref": "C10",
+          "layer": 2,
+          "rot": 180
+        },
+        {
+          "ref": "C7",
+          "layer": 2,
+          "rot": 180
+        },
+        {
+          "ref": "C8",
+          "layer": 2,
+          "rot": 180
+        },
+        {
+          "ref": "C9",
+          "layer": 2,
+          "rot": 180
+        }
+      ],
+      "viaIds": [
+        "675dd640a3938b19",
+        "57beb440e7ae1c4c",
+        "4332c3f4dcdc303d",
+        "683985f049d0b394",
+        "fbeb2abb8bc15496",
+        "ca6b79275f965b0f",
+        "82b3626aea28af1a",
+        "4754ac6e3413c4bd"
+      ],
+      "lineIds": [
+        "e210cb05b303f973",
+        "0021009eb1681ca0",
+        "9d46962d656551e1",
+        "a048c72b343bb712",
+        "1f098f481d77bfc0",
+        "6a871448c875ad21",
+        "e40207f6a46933e9",
+        "551fab05b20f645b",
+        "af844bfea9283960",
+        "e170bcc6eee8d237",
+        "551a3c23247e88ed",
+        "528f9467a7b49289",
+        "0e9461d160f7d644",
+        "1534a4aaddfaaeee",
+        "45e3e649e7174057",
+        "76153b04288a8bc8"
+      ],
+      "lineCount": 484,
+      "viaCount": 104
+    },
+    "logs": [],
+    "durationMs": 10698
+  },
+  "source_unchanged_V11_sha": "3e279574988af011883dd36ef5565cb50e7f72966020c1fa606a54542e1a62de",
+  "fabrication_approved": false
+}
