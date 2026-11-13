@@ -1,0 +1,1333 @@
+{
+  "schema": "G2_D1_24PIN_VENDOR_NET_AND_DOT_AUTHORITY_SPLIT_V1",
+  "status": "24_OF_24_NATIVE_SCHEMATIC_AND_RAW_PCB_LANDING_NETS_MATCH_VENDOR_REQUEST_NOT_FOR_FAB",
+  "source_sha256": {
+    "native_V11_saved_eprj2": "d90ca22079ad7245e8c3904eb8369da58c705ae39b56574bf7843dad34cad89b",
+    "native_V11_independent_full_readback": "6992dd37339d034d6b35083fa924c9d741a60d5425da000ae5ffeaed4846c0b4",
+    "native_V12_saved_eprj2": "527280764de6121b3a6f3eb5bbc1bac7ee72f8714e0c4be4f7a7a1f8087d1a4e",
+    "native_V12_actual_P1_280wire_readback": "33cf891f56a80b96392a73b9ce0f40815cf0933e387ba61bdca14d0674004597",
+    "vendor_terminal_request": "869bc582e6cdacb246154af4179953a74539c85b74ab588db3215e1b4674eef9",
+    "native_capacitor_footprint_template": "b8bfd5bf7bad70ea57211022df6533fd43f474665b45e54b3c2b498cac5e153e"
+  },
+  "native_schematic_page": "P1",
+  "schematic_component_count": 83,
+  "schematic_wire_count": 280,
+  "real_electrical_pin_count": 24,
+  "real_PCB_unassociated_magnetic_landing_pads": 24,
+  "logical_polarity_defined_by_electrical_designer_only": true,
+  "vendor_mechanical_pin_numbers_confirmed": 0,
+  "vendor_winding_DOT_confirmed": 0,
+  "prototype_footprint_and_pad_numbering_are_LOGICAL_not_manufacturer_PINs": true,
+  "devices": {
+    "T1": {
+      "footprint_origin_mm": [
+        20.0,
+        20.0
+      ],
+      "design_logical_pins": [
+        {
+          "reference": "T1",
+          "logical_terminal": "PRI_A",
+          "schematic_pin_number": "PRI_A",
+          "native_schematic_net": "PRI_T1",
+          "native_PCB_raw_pad_number": "PRI_A",
+          "native_PCB_raw_pad_net": "PRI_T1",
+          "PCB_global_center_mm": [
+            2.9997,
+            28.001
+          ],
+          "trial_footprint_origin_mm": [
+            20.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -17.0003,
+            8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T1",
+          "logical_terminal": "PRI_B",
+          "schematic_pin_number": "PRI_B",
+          "native_schematic_net": "PRI_12",
+          "native_PCB_raw_pad_number": "PRI_B",
+          "native_PCB_raw_pad_net": "PRI_12",
+          "PCB_global_center_mm": [
+            2.9997,
+            11.999
+          ],
+          "trial_footprint_origin_mm": [
+            20.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -17.0003,
+            -8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T1",
+          "logical_terminal": "SEC_A",
+          "schematic_pin_number": "SEC_A",
+          "native_schematic_net": "SEC1_A",
+          "native_PCB_raw_pad_number": "SEC_A",
+          "native_PCB_raw_pad_net": "SEC1_A",
+          "PCB_global_center_mm": [
+            37.0002,
+            27.0002
+          ],
+          "trial_footprint_origin_mm": [
+            20.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0002,
+            7.0002
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T1",
+          "logical_terminal": "CTAP",
+          "schematic_pin_number": "CTAP",
+          "native_schematic_net": "VOUT",
+          "native_PCB_raw_pad_number": "CTAP",
+          "native_PCB_raw_pad_net": "VOUT",
+          "PCB_global_center_mm": [
+            37.0002,
+            20.0
+          ],
+          "trial_footprint_origin_mm": [
+            20.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0002,
+            0.0
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T1",
+          "logical_terminal": "SEC_B",
+          "schematic_pin_number": "SEC_B",
+          "native_schematic_net": "SEC1_B",
+          "native_PCB_raw_pad_number": "SEC_B",
+          "native_PCB_raw_pad_net": "SEC1_B",
+          "PCB_global_center_mm": [
+            37.0002,
+            12.9997
+          ],
+          "trial_footprint_origin_mm": [
+            20.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0002,
+            -7.0003
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        }
+      ],
+      "schematic_symbol_uuid": "f32975949cf4cf97",
+      "native_schematic_has_no_footprint_association": true
+    },
+    "T2": {
+      "footprint_origin_mm": [
+        58.0,
+        20.0
+      ],
+      "design_logical_pins": [
+        {
+          "reference": "T2",
+          "logical_terminal": "PRI_A",
+          "schematic_pin_number": "PRI_A",
+          "native_schematic_net": "PRI_12",
+          "native_PCB_raw_pad_number": "PRI_A",
+          "native_PCB_raw_pad_net": "PRI_12",
+          "PCB_global_center_mm": [
+            41.0007,
+            28.001
+          ],
+          "trial_footprint_origin_mm": [
+            58.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -16.9993,
+            8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T2",
+          "logical_terminal": "PRI_B",
+          "schematic_pin_number": "PRI_B",
+          "native_schematic_net": "PRI_23",
+          "native_PCB_raw_pad_number": "PRI_B",
+          "native_PCB_raw_pad_net": "PRI_23",
+          "PCB_global_center_mm": [
+            41.0007,
+            11.999
+          ],
+          "trial_footprint_origin_mm": [
+            58.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -16.9993,
+            -8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T2",
+          "logical_terminal": "SEC_A",
+          "schematic_pin_number": "SEC_A",
+          "native_schematic_net": "SEC2_A",
+          "native_PCB_raw_pad_number": "SEC_A",
+          "native_PCB_raw_pad_net": "SEC2_A",
+          "PCB_global_center_mm": [
+            75.0011,
+            27.0002
+          ],
+          "trial_footprint_origin_mm": [
+            58.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0011,
+            7.0002
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T2",
+          "logical_terminal": "CTAP",
+          "schematic_pin_number": "CTAP",
+          "native_schematic_net": "VOUT",
+          "native_PCB_raw_pad_number": "CTAP",
+          "native_PCB_raw_pad_net": "VOUT",
+          "PCB_global_center_mm": [
+            75.0011,
+            20.0
+          ],
+          "trial_footprint_origin_mm": [
+            58.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0011,
+            0.0
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T2",
+          "logical_terminal": "SEC_B",
+          "schematic_pin_number": "SEC_B",
+          "native_schematic_net": "SEC2_B",
+          "native_PCB_raw_pad_number": "SEC_B",
+          "native_PCB_raw_pad_net": "SEC2_B",
+          "PCB_global_center_mm": [
+            75.0011,
+            12.9997
+          ],
+          "trial_footprint_origin_mm": [
+            58.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0011,
+            -7.0003
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        }
+      ],
+      "schematic_symbol_uuid": "f32975949cf4cf97",
+      "native_schematic_has_no_footprint_association": true
+    },
+    "T3": {
+      "footprint_origin_mm": [
+        96.0,
+        20.0
+      ],
+      "design_logical_pins": [
+        {
+          "reference": "T3",
+          "logical_terminal": "PRI_A",
+          "schematic_pin_number": "PRI_A",
+          "native_schematic_net": "PRI_23",
+          "native_PCB_raw_pad_number": "PRI_A",
+          "native_PCB_raw_pad_net": "PRI_23",
+          "PCB_global_center_mm": [
+            78.9991,
+            28.001
+          ],
+          "trial_footprint_origin_mm": [
+            96.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -17.0009,
+            8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T3",
+          "logical_terminal": "PRI_B",
+          "schematic_pin_number": "PRI_B",
+          "native_schematic_net": "PRI_34",
+          "native_PCB_raw_pad_number": "PRI_B",
+          "native_PCB_raw_pad_net": "PRI_34",
+          "PCB_global_center_mm": [
+            78.9991,
+            11.999
+          ],
+          "trial_footprint_origin_mm": [
+            96.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -17.0009,
+            -8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T3",
+          "logical_terminal": "SEC_A",
+          "schematic_pin_number": "SEC_A",
+          "native_schematic_net": "SEC3_A",
+          "native_PCB_raw_pad_number": "SEC_A",
+          "native_PCB_raw_pad_net": "SEC3_A",
+          "PCB_global_center_mm": [
+            112.9995,
+            27.0002
+          ],
+          "trial_footprint_origin_mm": [
+            96.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            16.9995,
+            7.0002
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T3",
+          "logical_terminal": "CTAP",
+          "schematic_pin_number": "CTAP",
+          "native_schematic_net": "VOUT",
+          "native_PCB_raw_pad_number": "CTAP",
+          "native_PCB_raw_pad_net": "VOUT",
+          "PCB_global_center_mm": [
+            112.9995,
+            20.0
+          ],
+          "trial_footprint_origin_mm": [
+            96.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            16.9995,
+            0.0
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T3",
+          "logical_terminal": "SEC_B",
+          "schematic_pin_number": "SEC_B",
+          "native_schematic_net": "SEC3_B",
+          "native_PCB_raw_pad_number": "SEC_B",
+          "native_PCB_raw_pad_net": "SEC3_B",
+          "PCB_global_center_mm": [
+            112.9995,
+            12.9997
+          ],
+          "trial_footprint_origin_mm": [
+            96.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            16.9995,
+            -7.0003
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        }
+      ],
+      "schematic_symbol_uuid": "f32975949cf4cf97",
+      "native_schematic_has_no_footprint_association": true
+    },
+    "T4": {
+      "footprint_origin_mm": [
+        134.0,
+        20.0
+      ],
+      "design_logical_pins": [
+        {
+          "reference": "T4",
+          "logical_terminal": "PRI_A",
+          "schematic_pin_number": "PRI_A",
+          "native_schematic_net": "PRI_34",
+          "native_PCB_raw_pad_number": "PRI_A",
+          "native_PCB_raw_pad_net": "PRI_34",
+          "PCB_global_center_mm": [
+            117.0,
+            28.001
+          ],
+          "trial_footprint_origin_mm": [
+            134.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -17.0,
+            8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T4",
+          "logical_terminal": "PRI_B",
+          "schematic_pin_number": "PRI_B",
+          "native_schematic_net": "PGND",
+          "native_PCB_raw_pad_number": "PRI_B",
+          "native_PCB_raw_pad_net": "PGND",
+          "PCB_global_center_mm": [
+            117.0,
+            11.999
+          ],
+          "trial_footprint_origin_mm": [
+            134.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            -17.0,
+            -8.001
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T4",
+          "logical_terminal": "SEC_A",
+          "schematic_pin_number": "SEC_A",
+          "native_schematic_net": "SEC4_A",
+          "native_PCB_raw_pad_number": "SEC_A",
+          "native_PCB_raw_pad_net": "SEC4_A",
+          "PCB_global_center_mm": [
+            151.0005,
+            27.0002
+          ],
+          "trial_footprint_origin_mm": [
+            134.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0005,
+            7.0002
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T4",
+          "logical_terminal": "CTAP",
+          "schematic_pin_number": "CTAP",
+          "native_schematic_net": "VOUT",
+          "native_PCB_raw_pad_number": "CTAP",
+          "native_PCB_raw_pad_net": "VOUT",
+          "PCB_global_center_mm": [
+            151.0005,
+            20.0
+          ],
+          "trial_footprint_origin_mm": [
+            134.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0005,
+            0.0
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "T4",
+          "logical_terminal": "SEC_B",
+          "schematic_pin_number": "SEC_B",
+          "native_schematic_net": "SEC4_B",
+          "native_PCB_raw_pad_number": "SEC_B",
+          "native_PCB_raw_pad_net": "SEC4_B",
+          "PCB_global_center_mm": [
+            151.0005,
+            12.9997
+          ],
+          "trial_footprint_origin_mm": [
+            134.0,
+            20.0
+          ],
+          "trial_pad_local_center_mm": [
+            17.0005,
+            -7.0003
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "DOT",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        }
+      ],
+      "schematic_symbol_uuid": "f32975949cf4cf97",
+      "native_schematic_has_no_footprint_association": true
+    },
+    "CT": {
+      "footprint_origin_mm": [
+        92.0,
+        52.0
+      ],
+      "design_logical_pins": [
+        {
+          "reference": "CT",
+          "logical_terminal": "PRI_A",
+          "schematic_pin_number": "PRI_A",
+          "native_schematic_net": "CR_CT",
+          "native_PCB_raw_pad_number": "PRI_A",
+          "native_PCB_raw_pad_net": "CR_CT",
+          "PCB_global_center_mm": [
+            79.9998,
+            55.9994
+          ],
+          "trial_footprint_origin_mm": [
+            92.0,
+            52.0
+          ],
+          "trial_pad_local_center_mm": [
+            -12.0002,
+            3.9994
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "CT",
+          "logical_terminal": "PRI_B",
+          "schematic_pin_number": "PRI_B",
+          "native_schematic_net": "CT_LR",
+          "native_PCB_raw_pad_number": "PRI_B",
+          "native_PCB_raw_pad_net": "CT_LR",
+          "PCB_global_center_mm": [
+            79.9998,
+            48.0009
+          ],
+          "trial_footprint_origin_mm": [
+            92.0,
+            52.0
+          ],
+          "trial_pad_local_center_mm": [
+            -12.0002,
+            -3.9991
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "CT",
+          "logical_terminal": "SEC_A",
+          "schematic_pin_number": "SEC_A",
+          "native_schematic_net": "CS1",
+          "native_PCB_raw_pad_number": "SEC_A",
+          "native_PCB_raw_pad_net": "CS1",
+          "PCB_global_center_mm": [
+            104.0003,
+            55.9994
+          ],
+          "trial_footprint_origin_mm": [
+            92.0,
+            52.0
+          ],
+          "trial_pad_local_center_mm": [
+            12.0003,
+            3.9994
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        },
+        {
+          "reference": "CT",
+          "logical_terminal": "SEC_B",
+          "schematic_pin_number": "SEC_B",
+          "native_schematic_net": "CS2",
+          "native_PCB_raw_pad_number": "SEC_B",
+          "native_PCB_raw_pad_net": "CS2",
+          "PCB_global_center_mm": [
+            104.0003,
+            48.0009
+          ],
+          "trial_footprint_origin_mm": [
+            92.0,
+            52.0
+          ],
+          "trial_pad_local_center_mm": [
+            12.0003,
+            -3.9991
+          ],
+          "trial_pad_diameter_mm": 1.999,
+          "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+          "vendor_physical_pin_number": null,
+          "vendor_terminal_drawing_revision": null,
+          "manufacturer_pinout_signed": false,
+          "winding_first_article_polarity_passed": false
+        }
+      ],
+      "schematic_symbol_uuid": "fdce72c89ac1ae47",
+      "native_schematic_has_no_footprint_association": true
+    }
+  },
+  "pin_rows": [
+    {
+      "reference": "T1",
+      "logical_terminal": "PRI_A",
+      "schematic_pin_number": "PRI_A",
+      "native_schematic_net": "PRI_T1",
+      "native_PCB_raw_pad_number": "PRI_A",
+      "native_PCB_raw_pad_net": "PRI_T1",
+      "PCB_global_center_mm": [
+        2.9997,
+        28.001
+      ],
+      "trial_footprint_origin_mm": [
+        20.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -17.0003,
+        8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T1",
+      "logical_terminal": "PRI_B",
+      "schematic_pin_number": "PRI_B",
+      "native_schematic_net": "PRI_12",
+      "native_PCB_raw_pad_number": "PRI_B",
+      "native_PCB_raw_pad_net": "PRI_12",
+      "PCB_global_center_mm": [
+        2.9997,
+        11.999
+      ],
+      "trial_footprint_origin_mm": [
+        20.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -17.0003,
+        -8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T1",
+      "logical_terminal": "SEC_A",
+      "schematic_pin_number": "SEC_A",
+      "native_schematic_net": "SEC1_A",
+      "native_PCB_raw_pad_number": "SEC_A",
+      "native_PCB_raw_pad_net": "SEC1_A",
+      "PCB_global_center_mm": [
+        37.0002,
+        27.0002
+      ],
+      "trial_footprint_origin_mm": [
+        20.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0002,
+        7.0002
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T1",
+      "logical_terminal": "CTAP",
+      "schematic_pin_number": "CTAP",
+      "native_schematic_net": "VOUT",
+      "native_PCB_raw_pad_number": "CTAP",
+      "native_PCB_raw_pad_net": "VOUT",
+      "PCB_global_center_mm": [
+        37.0002,
+        20.0
+      ],
+      "trial_footprint_origin_mm": [
+        20.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0002,
+        0.0
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T1",
+      "logical_terminal": "SEC_B",
+      "schematic_pin_number": "SEC_B",
+      "native_schematic_net": "SEC1_B",
+      "native_PCB_raw_pad_number": "SEC_B",
+      "native_PCB_raw_pad_net": "SEC1_B",
+      "PCB_global_center_mm": [
+        37.0002,
+        12.9997
+      ],
+      "trial_footprint_origin_mm": [
+        20.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0002,
+        -7.0003
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T2",
+      "logical_terminal": "PRI_A",
+      "schematic_pin_number": "PRI_A",
+      "native_schematic_net": "PRI_12",
+      "native_PCB_raw_pad_number": "PRI_A",
+      "native_PCB_raw_pad_net": "PRI_12",
+      "PCB_global_center_mm": [
+        41.0007,
+        28.001
+      ],
+      "trial_footprint_origin_mm": [
+        58.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -16.9993,
+        8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T2",
+      "logical_terminal": "PRI_B",
+      "schematic_pin_number": "PRI_B",
+      "native_schematic_net": "PRI_23",
+      "native_PCB_raw_pad_number": "PRI_B",
+      "native_PCB_raw_pad_net": "PRI_23",
+      "PCB_global_center_mm": [
+        41.0007,
+        11.999
+      ],
+      "trial_footprint_origin_mm": [
+        58.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -16.9993,
+        -8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T2",
+      "logical_terminal": "SEC_A",
+      "schematic_pin_number": "SEC_A",
+      "native_schematic_net": "SEC2_A",
+      "native_PCB_raw_pad_number": "SEC_A",
+      "native_PCB_raw_pad_net": "SEC2_A",
+      "PCB_global_center_mm": [
+        75.0011,
+        27.0002
+      ],
+      "trial_footprint_origin_mm": [
+        58.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0011,
+        7.0002
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T2",
+      "logical_terminal": "CTAP",
+      "schematic_pin_number": "CTAP",
+      "native_schematic_net": "VOUT",
+      "native_PCB_raw_pad_number": "CTAP",
+      "native_PCB_raw_pad_net": "VOUT",
+      "PCB_global_center_mm": [
+        75.0011,
+        20.0
+      ],
+      "trial_footprint_origin_mm": [
+        58.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0011,
+        0.0
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T2",
+      "logical_terminal": "SEC_B",
+      "schematic_pin_number": "SEC_B",
+      "native_schematic_net": "SEC2_B",
+      "native_PCB_raw_pad_number": "SEC_B",
+      "native_PCB_raw_pad_net": "SEC2_B",
+      "PCB_global_center_mm": [
+        75.0011,
+        12.9997
+      ],
+      "trial_footprint_origin_mm": [
+        58.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0011,
+        -7.0003
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T3",
+      "logical_terminal": "PRI_A",
+      "schematic_pin_number": "PRI_A",
+      "native_schematic_net": "PRI_23",
+      "native_PCB_raw_pad_number": "PRI_A",
+      "native_PCB_raw_pad_net": "PRI_23",
+      "PCB_global_center_mm": [
+        78.9991,
+        28.001
+      ],
+      "trial_footprint_origin_mm": [
+        96.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -17.0009,
+        8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T3",
+      "logical_terminal": "PRI_B",
+      "schematic_pin_number": "PRI_B",
+      "native_schematic_net": "PRI_34",
+      "native_PCB_raw_pad_number": "PRI_B",
+      "native_PCB_raw_pad_net": "PRI_34",
+      "PCB_global_center_mm": [
+        78.9991,
+        11.999
+      ],
+      "trial_footprint_origin_mm": [
+        96.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -17.0009,
+        -8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T3",
+      "logical_terminal": "SEC_A",
+      "schematic_pin_number": "SEC_A",
+      "native_schematic_net": "SEC3_A",
+      "native_PCB_raw_pad_number": "SEC_A",
+      "native_PCB_raw_pad_net": "SEC3_A",
+      "PCB_global_center_mm": [
+        112.9995,
+        27.0002
+      ],
+      "trial_footprint_origin_mm": [
+        96.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        16.9995,
+        7.0002
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T3",
+      "logical_terminal": "CTAP",
+      "schematic_pin_number": "CTAP",
+      "native_schematic_net": "VOUT",
+      "native_PCB_raw_pad_number": "CTAP",
+      "native_PCB_raw_pad_net": "VOUT",
+      "PCB_global_center_mm": [
+        112.9995,
+        20.0
+      ],
+      "trial_footprint_origin_mm": [
+        96.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        16.9995,
+        0.0
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T3",
+      "logical_terminal": "SEC_B",
+      "schematic_pin_number": "SEC_B",
+      "native_schematic_net": "SEC3_B",
+      "native_PCB_raw_pad_number": "SEC_B",
+      "native_PCB_raw_pad_net": "SEC3_B",
+      "PCB_global_center_mm": [
+        112.9995,
+        12.9997
+      ],
+      "trial_footprint_origin_mm": [
+        96.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        16.9995,
+        -7.0003
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T4",
+      "logical_terminal": "PRI_A",
+      "schematic_pin_number": "PRI_A",
+      "native_schematic_net": "PRI_34",
+      "native_PCB_raw_pad_number": "PRI_A",
+      "native_PCB_raw_pad_net": "PRI_34",
+      "PCB_global_center_mm": [
+        117.0,
+        28.001
+      ],
+      "trial_footprint_origin_mm": [
+        134.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -17.0,
+        8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T4",
+      "logical_terminal": "PRI_B",
+      "schematic_pin_number": "PRI_B",
+      "native_schematic_net": "PGND",
+      "native_PCB_raw_pad_number": "PRI_B",
+      "native_PCB_raw_pad_net": "PGND",
+      "PCB_global_center_mm": [
+        117.0,
+        11.999
+      ],
+      "trial_footprint_origin_mm": [
+        134.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        -17.0,
+        -8.001
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T4",
+      "logical_terminal": "SEC_A",
+      "schematic_pin_number": "SEC_A",
+      "native_schematic_net": "SEC4_A",
+      "native_PCB_raw_pad_number": "SEC_A",
+      "native_PCB_raw_pad_net": "SEC4_A",
+      "PCB_global_center_mm": [
+        151.0005,
+        27.0002
+      ],
+      "trial_footprint_origin_mm": [
+        134.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0005,
+        7.0002
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T4",
+      "logical_terminal": "CTAP",
+      "schematic_pin_number": "CTAP",
+      "native_schematic_net": "VOUT",
+      "native_PCB_raw_pad_number": "CTAP",
+      "native_PCB_raw_pad_net": "VOUT",
+      "PCB_global_center_mm": [
+        151.0005,
+        20.0
+      ],
+      "trial_footprint_origin_mm": [
+        134.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0005,
+        0.0
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "S_A_DOT_AND_S_B_NON_DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "T4",
+      "logical_terminal": "SEC_B",
+      "schematic_pin_number": "SEC_B",
+      "native_schematic_net": "SEC4_B",
+      "native_PCB_raw_pad_number": "SEC_B",
+      "native_PCB_raw_pad_net": "SEC4_B",
+      "PCB_global_center_mm": [
+        151.0005,
+        12.9997
+      ],
+      "trial_footprint_origin_mm": [
+        134.0,
+        20.0
+      ],
+      "trial_pad_local_center_mm": [
+        17.0005,
+        -7.0003
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "DOT",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "CT",
+      "logical_terminal": "PRI_A",
+      "schematic_pin_number": "PRI_A",
+      "native_schematic_net": "CR_CT",
+      "native_PCB_raw_pad_number": "PRI_A",
+      "native_PCB_raw_pad_net": "CR_CT",
+      "PCB_global_center_mm": [
+        79.9998,
+        55.9994
+      ],
+      "trial_footprint_origin_mm": [
+        92.0,
+        52.0
+      ],
+      "trial_pad_local_center_mm": [
+        -12.0002,
+        3.9994
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "CT",
+      "logical_terminal": "PRI_B",
+      "schematic_pin_number": "PRI_B",
+      "native_schematic_net": "CT_LR",
+      "native_PCB_raw_pad_number": "PRI_B",
+      "native_PCB_raw_pad_net": "CT_LR",
+      "PCB_global_center_mm": [
+        79.9998,
+        48.0009
+      ],
+      "trial_footprint_origin_mm": [
+        92.0,
+        52.0
+      ],
+      "trial_pad_local_center_mm": [
+        -12.0002,
+        -3.9991
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "CT",
+      "logical_terminal": "SEC_A",
+      "schematic_pin_number": "SEC_A",
+      "native_schematic_net": "CS1",
+      "native_PCB_raw_pad_number": "SEC_A",
+      "native_PCB_raw_pad_net": "CS1",
+      "PCB_global_center_mm": [
+        104.0003,
+        55.9994
+      ],
+      "trial_footprint_origin_mm": [
+        92.0,
+        52.0
+      ],
+      "trial_pad_local_center_mm": [
+        12.0003,
+        3.9994
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    },
+    {
+      "reference": "CT",
+      "logical_terminal": "SEC_B",
+      "schematic_pin_number": "SEC_B",
+      "native_schematic_net": "CS2",
+      "native_PCB_raw_pad_number": "SEC_B",
+      "native_PCB_raw_pad_net": "CS2",
+      "PCB_global_center_mm": [
+        104.0003,
+        48.0009
+      ],
+      "trial_footprint_origin_mm": [
+        92.0,
+        52.0
+      ],
+      "trial_pad_local_center_mm": [
+        12.0003,
+        -3.9991
+      ],
+      "trial_pad_diameter_mm": 1.999,
+      "design_DOT_convention": "UNVERIFIED_FROM_CT_VENDOR",
+      "vendor_physical_pin_number": null,
+      "vendor_terminal_drawing_revision": null,
+      "manufacturer_pinout_signed": false,
+      "winding_first_article_polarity_passed": false
+    }
+  ],
+  "next_hard_dependencies": [
+    "OEM manufacturer mechanical terminal drawing & unique numbered physical terminal plan for T1..T4 and CT",
+    "Engineer-approved physical pin number ↔ PRI_A/PRI_B/SEC_A/CTAP/SEC_B or CT PRI/SEC mapping",
+    "First-article transformer turns ratio 3:1:1 and independently verified winding DOT",
+    "CT selected physical core, 1:100 orientation, burden/secondary phase and galvanic isolation",
+    "Use approved physical footprints to replace twenty-four raw native PCB pads with five linked native devices",
+    "Native P1 schematic↔PCB netlist reconciliation, then independent PCB DRC with physical+connection+netlist errors zero"
+  ],
+  "fabrication_approved": false,
+  "not_a_supplier_signed_pinout": true
+}
