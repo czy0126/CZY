@@ -1,0 +1,36 @@
+{
+  "status": "V15_NATIVE_COPY_CREATED_IN_EXISTING_VISIBLE_GUI",
+  "native": {
+    "ok": true,
+    "value": {
+      "original_PCB1": "2f6fa2d508d3f9a8",
+      "original_V14": "8c496410b2877d3c",
+      "NEW_V15_uuid": "9b212da9a255a2af",
+      "inventory": {
+        "comp": 149,
+        "pads": 423,
+        "lines": 484,
+        "vias": 104
+      },
+      "board_list": [
+        {
+          "uuid": "2f6fa2d508d3f9a8",
+          "name": "PCB1"
+        },
+        {
+          "uuid": "8c496410b2877d3c",
+          "name": "PCB1_1"
+        },
+        {
+          "uuid": "9b212da9a255a2af",
+          "name": "PCB1_2"
+        }
+      ]
+    },
+    "logs": [],
+    "durationMs": 1113
+  },
+  "input_V14_sha256": "7dd77910bcf7ff3fd0e2be1e4194439a22189aaf353f105bbe1280c104e4f6fc",
+  "originals_untouched": true,
+  "fabrication_approved": false
+}

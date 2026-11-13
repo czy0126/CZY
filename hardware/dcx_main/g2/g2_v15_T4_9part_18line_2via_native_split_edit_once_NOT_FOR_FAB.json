@@ -1,0 +1,183 @@
+{
+  "status": "V15_T4_NATIVE_REAL_LAYOUT_SAVED_DRC_STILL_PENDING",
+  "native_api": {
+    "ok": true,
+    "value": {
+      "status": "V15_T4_NATIVE_9COMP_18LINES_2VIAS_REAL_MOVED_AND_SAVED_WIP",
+      "saved": true,
+      "changes": {
+        "components": [
+          "C10",
+          "C108",
+          "R26",
+          "R27",
+          "R34",
+          "R35",
+          "SR4A",
+          "SR4B",
+          "U6"
+        ],
+        "lines": [
+          {
+            "id": "07dd95ca03dfd5d6",
+            "net": "VCC12_S"
+          },
+          {
+            "id": "a44303f3fbf3ff18",
+            "net": "VD4_A"
+          },
+          {
+            "id": "8aa65a727e0baefb",
+            "net": "SEC4_A"
+          },
+          {
+            "id": "c9b1e4aab6659dee",
+            "net": "SEC4_A"
+          },
+          {
+            "id": "a5acaa1f3a84d51b",
+            "net": "SEC4_A"
+          },
+          {
+            "id": "304cbbf03e77de68",
+            "net": "SEC4_B"
+          },
+          {
+            "id": "6369117540e16e95",
+            "net": "SEC4_B"
+          },
+          {
+            "id": "194671d6c845c812",
+            "net": "SEC4_B"
+          },
+          {
+            "id": "8820f8cac9452980",
+            "net": "GA4"
+          },
+          {
+            "id": "f48d1ea80459c1ca",
+            "net": "GA4"
+          },
+          {
+            "id": "321d675a6c09a20d",
+            "net": "GA4"
+          },
+          {
+            "id": "af6375343e0752de",
+            "net": "GB4"
+          },
+          {
+            "id": "f3fc2a83943b28e2",
+            "net": "GB4"
+          },
+          {
+            "id": "480c403a2ecc701b",
+            "net": "GB4"
+          },
+          {
+            "id": "0e9461d160f7d644",
+            "net": "REG4"
+          },
+          {
+            "id": "1534a4aaddfaaeee",
+            "net": "REG4"
+          },
+          {
+            "id": "45e3e649e7174057",
+            "net": "PGND"
+          },
+          {
+            "id": "76153b04288a8bc8",
+            "net": "PGND"
+          }
+        ],
+        "vias": [
+          {
+            "id": "82b3626aea28af1a",
+            "net": "REG4"
+          },
+          {
+            "id": "4754ac6e3413c4bd",
+            "net": "PGND"
+          }
+        ]
+      },
+      "actualPositions": [
+        {
+          "ref": "C10",
+          "x": 5233.65,
+          "y": -1771.6535433070874,
+          "layer": 2,
+          "rotation": 180
+        },
+        {
+          "ref": "C108",
+          "x": 5196.850400000001,
+          "y": -1456.6929377952758,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "R26",
+          "x": 4896.752,
+          "y": -2283.464637795276,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "R27",
+          "x": 5290.4529999999995,
+          "y": -2283.464637795276,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "R34",
+          "x": 5099.311,
+          "y": -2283.464637795276,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "R35",
+          "x": 5493.012,
+          "y": -2283.464637795276,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "SR4A",
+          "x": 5039.37,
+          "y": -2047.243637795276,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "SR4B",
+          "x": 5433.071,
+          "y": -2047.243637795276,
+          "layer": 1,
+          "rotation": 0
+        },
+        {
+          "ref": "U6",
+          "x": 5236.220000000001,
+          "y": -1653.5436377952758,
+          "layer": 1,
+          "rotation": 0
+        }
+      ],
+      "counts": {
+        "components": 149,
+        "pads": 423,
+        "lines": 484,
+        "vias": 104
+      }
+    },
+    "logs": [],
+    "durationMs": 3081
+  },
+  "immutable_V14_SHA": "7dd77910bcf7ff3fd0e2be1e4194439a22189aaf353f105bbe1280c104e4f6fc",
+  "plan_sha256": "19c17eada8f5c3aeb520829becd16fe8de5db0267e11c8e3db290a0990e37150",
+  "fabrication_approved": false
+}
