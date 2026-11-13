@@ -1,0 +1,57 @@
+{
+  "status": "V18_TEMPORARY_NATIVE_CLEARANCE_CAUSE_PROBE_NO_SAVE",
+  "native": {
+    "ok": true,
+    "value": {
+      "status": "TEMP_DIAGNOSTIC_FULLY_REVERTED",
+      "cats": {
+        "Clearance Error": 1,
+        "Connection Error": 102
+      },
+      "collision": [
+        {
+          "type": "Clearance Error",
+          "obj1": {
+            "typeName": "Track",
+            "suffix": "(VIN_P): e686"
+          },
+          "obj2": {
+            "typeName": "SMD Pad",
+            "suffix": "(PGND): Cin_2"
+          },
+          "explanation": {
+            "globalIndex": "err417",
+            "position": {
+              "x": 170.07875417582784,
+              "y": -175.4602891377149
+            },
+            "name": "copperThickness1oz",
+            "obj1": "d1bbc55a7f3f3f77",
+            "obj1Type": "Track",
+            "obj2": "cf4357569f22457ae14",
+            "obj2Type": "SMD Pad",
+            "minDistance": 0,
+            "clearance": 0.59843,
+            "errorType": "Safe Spacing",
+            "isInSameComponent": false,
+            "layerIds": [
+              1
+            ],
+            "obj1Suffix": "(VIN_P): e686",
+            "obj2Suffix": "(PGND): Cin_2"
+          },
+          "position": {
+            "x": 170.07875417582784,
+            "y": -175.4602891377149
+          },
+          "rule": "copperThickness1oz"
+        }
+      ],
+      "undoLines": true,
+      "undoVias": true,
+      "undoCin": true
+    },
+    "logs": [],
+    "durationMs": 16377
+  }
+}
