@@ -1,0 +1,105 @@
+{
+  "status": "REAL_NATIVE_V14_BOARD_12_NPTH_CONTOURS_CREATED_NOT_FOR_FAB",
+  "native": {
+    "ok": true,
+    "value": {
+      "requested": 12,
+      "created": [
+        {
+          "slot": "T1_LEFT",
+          "id": "e56c8c4cf1d03dd7",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T1_CENTRE",
+          "id": "3d664698fbafea91",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T1_RIGHT",
+          "id": "c000bdd7d9f5ebee",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T2_LEFT",
+          "id": "1116a763c1aef125",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T2_CENTRE",
+          "id": "f4343daa83d872dd",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T2_RIGHT",
+          "id": "5ce11bf42ef0d751",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T3_LEFT",
+          "id": "c5ea47d88b2c5453",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T3_CENTRE",
+          "id": "20c5ef30df8a3353",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T3_RIGHT",
+          "id": "ac0c7917e6c6d2d1",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T4_LEFT",
+          "id": "6d631781ff0e5ba9",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T4_CENTRE",
+          "id": "273e72b52737a3ee",
+          "layer": 11,
+          "source_length": 75
+        },
+        {
+          "slot": "T4_RIGHT",
+          "id": "979de5c947e1b55e",
+          "layer": 11,
+          "source_length": 75
+        }
+      ],
+      "all_on_board": [
+        "5fdb24ff8dbb44d9",
+        "e56c8c4cf1d03dd7",
+        "3d664698fbafea91",
+        "c000bdd7d9f5ebee",
+        "1116a763c1aef125",
+        "f4343daa83d872dd",
+        "5ce11bf42ef0d751",
+        "c5ea47d88b2c5453",
+        "20c5ef30df8a3353",
+        "ac0c7917e6c6d2d1",
+        "6d631781ff0e5ba9",
+        "273e72b52737a3ee",
+        "979de5c947e1b55e"
+      ],
+      "original_outline_present": true,
+      "board_layer_contour_count": 13,
+      "total_polyline_count": 50
+    },
+    "logs": [],
+    "durationMs": 629
+  },
+  "source_plan_sha256": "ddefc64e216d9fa431223e557e7d25c697682c36d29516eedeba61a6a2871c7a",
+  "fabrication_approved": false
+}

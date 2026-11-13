@@ -81,7 +81,14 @@ def test_actual_native_footprint_created_saved_and_reopened_without_new_GUI():
         for a,b in zip(x,y):
             if isinstance(a,str): assert a==b
             else: assert abs(a-b)<.0001  # native 0.0001mil quantization
-    assert V.sha(G2/"dcx_main_board_g2_V13_FIVE_MAGNETICS_LOGICAL_LANDING_TRIAL_NOT_FOR_FAB.eprj2")==V.SOURCE_SHA
+    # Later, V14 was cloned as a SECOND REAL PCB inside this same visible V13
+    # project to avoid starting another EDA GUI. V13 project container SHA
+    # therefore changes, but the original PCB1 remains preserved, alongside
+    # the new V14 candidate. Only independently verified V11 stays immutable.
+    assert V.sha(V.V11)==V.SOURCE_SHA
+    native=json.loads((G2/"g2_v14_real_native_12NPTH_saved_binary_snapshot_NOT_FOR_FAB.json").read_text("utf8"))
+    assert native["original_PCB1_uuid"]=="2f6fa2d508d3f9a8"
+    assert native["new_V14_actual_PCB_uuid"]=="8c496410b2877d3c"
 
 
 def test_tampered_12slot_source_blocks_window_model(monkeypatch,tmp_path):
