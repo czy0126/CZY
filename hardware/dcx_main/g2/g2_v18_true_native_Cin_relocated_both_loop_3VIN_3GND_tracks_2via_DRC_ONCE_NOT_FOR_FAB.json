@@ -1,0 +1,57 @@
+{
+  "status": "REAL_NATIVE_V18_CIN_VIN_P_PGND_ROUTING_RESULT",
+  "native": {
+    "ok": true,
+    "value": {
+      "status": "TRUE_V18_CIN_CLOSED_VIN_AND_PGND_ROUTED",
+      "saved": true,
+      "before": {
+        "Connection Error": 103
+      },
+      "after": {
+        "Connection Error": 102
+      },
+      "newCin": {
+        "x": 1692.9133858267717,
+        "y": -1732.2834645669293
+      },
+      "VIN_pin": {
+        "x": 1665.4,
+        "y": -1732.3
+      },
+      "QH_pin": {
+        "x": 1814.9,
+        "y": -1860.2
+      },
+      "PGND_pin": {
+        "x": 1720.5,
+        "y": -1732.3
+      },
+      "QL_pin": {
+        "x": 2169,
+        "y": -2076.8
+      },
+      "newNativeTrackIDs": [
+        "467ad90dbc8089d5",
+        "817e1b6c9eabf9ab",
+        "991b17d7cd8d9b13",
+        "bdd1eebd0e57943f",
+        "0dfef3ddd667f4ff",
+        "d25cc4e05661d6b0"
+      ],
+      "newNativeViaIDs": [
+        "3d0b92ed27b55477",
+        "dc0aa6abb35c30b6"
+      ],
+      "counts": {
+        "parts": 149,
+        "pads": 423,
+        "lines": 508,
+        "vias": 106
+      }
+    },
+    "logs": [],
+    "durationMs": 28450
+  },
+  "fabrication_approved": false
+}

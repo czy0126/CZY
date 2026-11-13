@@ -1,0 +1,43 @@
+{
+  "status": "T1_LR_NATIVE_LOCAL_COPPER_RELOCATED_PENDING_DRC",
+  "native": {
+    "ok": true,
+    "value": {
+      "status": "T1_NATIVE_TWENTY_TRACKS_TWO_VIAS_MOVED",
+      "done": {
+        "lines": [
+          "0f8de973c28693b9",
+          "b7dc603a746c2bd8",
+          "310acf60107f68a1",
+          "c802bc655c44a4f8",
+          "224aba7e03995d89",
+          "f7b076e0b201a9c1",
+          "a4a4b4c64e43b205",
+          "807c2d75d0f2ea33",
+          "bebbe541efe90288",
+          "b7574136dc8d1be4",
+          "4e713bd0fbe56517",
+          "4a141c8836471bb7",
+          "9cd661ad4663737e",
+          "ac7dd73af57b1302",
+          "e210cb05b303f973",
+          "0021009eb1681ca0",
+          "9d46962d656551e1",
+          "a048c72b343bb712",
+          "bb68b542f4388bd5",
+          "c11a48227d4c069a"
+        ],
+        "vias": [
+          "675dd640a3938b19",
+          "57beb440e7ae1c4c"
+        ]
+      },
+      "parts": 149,
+      "traces": 508,
+      "viaCount": 106
+    },
+    "logs": [],
+    "durationMs": 1273
+  },
+  "not_for_fab": true
+}

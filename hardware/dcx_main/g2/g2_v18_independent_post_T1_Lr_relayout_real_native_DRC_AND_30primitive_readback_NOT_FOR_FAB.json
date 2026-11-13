@@ -1,0 +1,204 @@
+{
+  "status": "V18_SECOND_REAL_NATIVE_DRC_AND_COMPONENT_POSITION_RECHECK",
+  "native": {
+    "ok": true,
+    "value": {
+      "status": "INDEPENDENT_SECOND_T1_LR_NATIVE_DRC",
+      "count": {
+        "parts": 149,
+        "pads": 423,
+        "lines": 508,
+        "vias": 106
+      },
+      "moved": [
+        {
+          "ref": "Cin",
+          "x": 1692.9134,
+          "y": -1732.2835,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "Lr",
+          "x": 1023.6220000000001,
+          "y": -3110.2363000000005,
+          "rotation": 180,
+          "layer": 1
+        },
+        {
+          "ref": "C7",
+          "x": 745.4118,
+          "y": -1771.6535,
+          "rotation": 180,
+          "layer": 2
+        },
+        {
+          "ref": "C105",
+          "x": 708.6614,
+          "y": -1456.6929,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "R20",
+          "x": 408.563,
+          "y": -2283.4646,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "R21",
+          "x": 802.264,
+          "y": -2283.4646,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "R28",
+          "x": 611.122,
+          "y": -2283.4646,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "R29",
+          "x": 1004.823,
+          "y": -2283.4646,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "SR1A",
+          "x": 551.181,
+          "y": -2047.2435999999998,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "SR1B",
+          "x": 944.882,
+          "y": -2047.2435999999998,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "U3",
+          "x": 748.031,
+          "y": -1653.5436,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "SR2A",
+          "x": 2047.2440000000001,
+          "y": -3228.3460000000005,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "SR3A",
+          "x": 3543.307,
+          "y": -3228.3460000000005,
+          "rotation": 0,
+          "layer": 1
+        },
+        {
+          "ref": "SR4A",
+          "x": 5039.37,
+          "y": -2047.2435999999998,
+          "rotation": 0,
+          "layer": 1
+        }
+      ],
+      "errors": {
+        "Connection Error": 106
+      },
+      "topNets": [
+        {
+          "net": "PGND",
+          "n": 38
+        },
+        {
+          "net": "VCC12_S",
+          "n": 7
+        },
+        {
+          "net": "SW",
+          "n": 5
+        },
+        {
+          "net": "GD2",
+          "n": 3
+        },
+        {
+          "net": "GD1",
+          "n": 3
+        },
+        {
+          "net": "VCC12",
+          "n": 2
+        },
+        {
+          "net": "VOUT",
+          "n": 2
+        },
+        {
+          "net": "SEC1_A",
+          "n": 2
+        },
+        {
+          "net": "SEC1_B",
+          "n": 2
+        },
+        {
+          "net": "SEC2_A",
+          "n": 2
+        },
+        {
+          "net": "SEC2_B",
+          "n": 2
+        },
+        {
+          "net": "SEC3_A",
+          "n": 2
+        },
+        {
+          "net": "SEC3_B",
+          "n": 2
+        },
+        {
+          "net": "SEC4_A",
+          "n": 2
+        },
+        {
+          "net": "SEC4_B",
+          "n": 2
+        },
+        {
+          "net": "CR_CT",
+          "n": 2
+        },
+        {
+          "net": "CT_LR",
+          "n": 2
+        },
+        {
+          "net": "VIN_P",
+          "n": 2
+        },
+        {
+          "net": "VG1_A",
+          "n": 2
+        },
+        {
+          "net": "VG1_B",
+          "n": 2
+        }
+      ],
+      "rule": "JLCPCB Capability(Two Layers Board)"
+    },
+    "logs": [],
+    "durationMs": 29729
+  },
+  "fabrication_approved": false
+}
