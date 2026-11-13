@@ -482,6 +482,13 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - **第二次独立新副本真正完成所有只读验收**：针对首次失败时先切到 SCH 再切回 PCB 运行 DRC 的顺序，V2 改为**原生 PCB 图元→DRC→72颗原理图**，所有 API 调用成功。唯一新会话实际 readback **149/443/407/93/65**、72颗原生PIN1/PIN2 与一份COUT_T530_72第二页72器件/144线、VOUT一个铜岛，**原生DRC在独立会话返回168 Connection/1 Netlist**（调用耗时13.672s）。SHA前后完全一致，旧三GUI仍alive，新验证GUI已关闭，`g2_v9_independent_gui_reopen_v2_verified_NOT_FOR_FAB.json` 的状态是 `INDEPENDENT_NATIVE_GUI_REOPEN_VERIFIED_NOT_FOR_FAB`。历史V1失败回执保持原样不可覆盖。V2只证明可独立重开和当前DRC可执行，**168/1不合格、无100A资格**。
 - 原生两焊盘 `.efoo` 与 CAP `.esym` 在默认 Windows `core.autocrlf` 下会变为CRLF而不改变电路图元；`-text` Git属性和 LF 正规化SHA 校验解决平台误报，但真正内容篡改仍然触发失败。完整72颗的原生器件与原理图已存在，不应再重复添加，未闭合的是其他原理图/PCB网表和真正100A双极实体载流连接。保持 `NOT_FOR_FAB`。
 
+### G2 V11：八路SR栅极连接真实修补并经独立 GUI 重开（2026-11-13）
+
+- 在单独分支复制源锁定、已独立重开DRC的V10真二进制（SHA `8dede88bf7b3cea52ff6f752b6ca573f7a3b9e7c7a3f665ca071dae8376f8c0c`）作为新V11，**不修改现有V5/V8/V9/V10用户窗口**。V10真实149/443/435/93/65，DRC=165 Connection/1 Netlist。`g2_v11_eight_sr_gate_escape.py` 基于真实图元为GA1–GA4、GB1–GB4的8条门极网提出**8段PGND纵线各移0.5mm**，32段新Native走线（8段新PGND纵线、24段0.15mm门极信号），全局几何异网名义间距0.18mm，离线全网预检查0异网冲突；每路门极原2铜岛→1，PGND 37岛保持。
+- 原生 `pcb_PrimitiveLine.delete(8 ids)` 确认八段旧铜均消失，32次真实 `pcb_PrimitiveLine.create` 全部返回原生UUID，编辑器在PGND纵线与横向母线相交时自动将另**9段旧横线拆分为15段**，真实465线，不是简单 `435−8+32=459`。最初写入脚本因此按459判断失败并停止，并**未盲目重复写入**；实时只读盘点确认旧8段全消失、新32段全存在、编辑器原生 DRC=149 Connection/1 Netlist（不新增其他物理错误）。编辑器随后自动持久化V11，SHA `d90ca22079ad7245e8c3904eb8369da58c705ae39b56574bf7843dad34cad89b`；脚本现已修订预期465并保留首次历史失败回执。
+- **独立保存文件重开真的通过**：`g2_v11_independent_native_reopen.py` 在另一个**新会话**对拷贝独立读回149/443/465/93/65、实际八路门极闭合和PGND不恶化、旧8线消失/新32线UUID存在、72颗T530 PIN1 VOUT/PIN2 PGND及原生原理图第二页72件144线；按`PCB→DRC→SCH`顺序执行真实嘉立创DRC，**149/1**。完整回执[`g2_v11_independent_native_reopen_verified_NOT_FOR_FAB.json`](../../hardware/dcx_main/g2/g2_v11_independent_native_reopen_verified_NOT_FOR_FAB.json)。用户原有所有GUI均保留，仅独立验证GUI已关闭；临时验证拷贝因Windows文件锁未清，**不为清理而结束用户窗口**。
+- **制造限制未消失**：0.15mm线宽/0.18mm几何屏障未取得厂家的蚀刻/阻焊DFM签核。GA/GB连通不等于栅极稳定性、保护真实可靠或功率母排100A载流；仍有149 Connection、1 Netlist（五磁件缺实体关联）、真实铜柱与绝缘、16mm叠层、N97 100°C磁件、电流温升、D0十路快速关断等。所有V10/V11都是`NOT_FOR_FAB`。
+
 ## KiCad 10.0 CLI（headless，与 LCEDA 互补）
 
 本机路径 `C:\Users\27792\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe`（10.0.6）。

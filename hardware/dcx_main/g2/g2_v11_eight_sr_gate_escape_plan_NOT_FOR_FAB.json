@@ -1,0 +1,1101 @@
+{
+  "schema": "G2_V11_NATIVE_EIGHT_SR_GATE_ESCAPE_AND_GROUND_SPINE_PLAN_V1",
+  "source_V10_native_sha256": "8dede88bf7b3cea52ff6f752b6ca573f7a3b9e7c7a3f665ca071dae8376f8c0c",
+  "source_V10_native_counts": {
+    "components": 149,
+    "pads": 443,
+    "lines": 435,
+    "vias": 93,
+    "nets": 65
+  },
+  "source_V10_native_DRC": {
+    "Connection Error": 165,
+    "Netlist Error": 1
+  },
+  "geometry_screen_clearance_mm": 0.18,
+  "gate_trace_width_mm": 0.15,
+  "ground_spine_width_mm": 1.0,
+  "real_old_ground_spine_to_delete_ids": [
+    "9b8c4af0ce21d2ff",
+    "8b0efdc5d7fdf30d",
+    "fe67ea77e9fcefa7",
+    "1121badf66e6aa88",
+    "58f7dad6c7406d8e",
+    "a76096c80bb6b48f",
+    "7dba35e56c8507e8",
+    "e82d12c3d25654fd"
+  ],
+  "relocated_ground_spines": [
+    {
+      "ref": "SR1A",
+      "for_gate_net": "GA1",
+      "old_id": "9b8c4af0ce21d2ff",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        13.40099,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        12.90099,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        12.90099,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR1B",
+      "for_gate_net": "GB1",
+      "old_id": "8b0efdc5d7fdf30d",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        23.40099,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        22.90099,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        22.90099,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR2A",
+      "for_gate_net": "GA2",
+      "old_id": "fe67ea77e9fcefa7",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        51.39901,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        50.89901,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        50.89901,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR2B",
+      "for_gate_net": "GB2",
+      "old_id": "1121badf66e6aa88",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        61.39899,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        60.89899,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        60.89899,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR3A",
+      "for_gate_net": "GA3",
+      "old_id": "58f7dad6c7406d8e",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        89.4,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        88.9,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        88.9,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR3B",
+      "for_gate_net": "GB3",
+      "old_id": "a76096c80bb6b48f",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        99.4,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        98.9,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        98.9,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR4A",
+      "for_gate_net": "GA4",
+      "old_id": "7dba35e56c8507e8",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        127.40099,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        126.90099,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        126.90099,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR4B",
+      "for_gate_net": "GB4",
+      "old_id": "e82d12c3d25654fd",
+      "new_net": "PGND",
+      "layer": 1,
+      "old_start_xy_mm": [
+        137.401,
+        84.47001
+      ],
+      "new_start_xy_mm": [
+        136.901,
+        85.1
+      ],
+      "new_end_xy_mm": [
+        136.901,
+        94.0
+      ],
+      "width_mm": 1.0
+    }
+  ],
+  "gate_escape_traces": [
+    {
+      "ref": "SR1A",
+      "gate_net": "GA1",
+      "segment": 1,
+      "net": "GA1",
+      "layer": 1,
+      "a_mm": [
+        11.13028,
+        88.00084
+      ],
+      "b_mm": [
+        11.13028,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1A",
+      "gate_net": "GA1",
+      "segment": 2,
+      "net": "GA1",
+      "layer": 1,
+      "a_mm": [
+        11.13028,
+        83.89
+      ],
+      "b_mm": [
+        15.90548,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1A",
+      "gate_net": "GA1",
+      "segment": 3,
+      "net": "GA1",
+      "layer": 1,
+      "a_mm": [
+        15.90548,
+        83.89
+      ],
+      "b_mm": [
+        15.90548,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1B",
+      "gate_net": "GB1",
+      "segment": 1,
+      "net": "GB1",
+      "layer": 1,
+      "a_mm": [
+        21.13026,
+        88.00084
+      ],
+      "b_mm": [
+        21.13026,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1B",
+      "gate_net": "GB1",
+      "segment": 2,
+      "net": "GB1",
+      "layer": 1,
+      "a_mm": [
+        21.13026,
+        83.89
+      ],
+      "b_mm": [
+        25.90546,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1B",
+      "gate_net": "GB1",
+      "segment": 3,
+      "net": "GB1",
+      "layer": 1,
+      "a_mm": [
+        25.90546,
+        83.89
+      ],
+      "b_mm": [
+        25.90546,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2A",
+      "gate_net": "GA2",
+      "segment": 1,
+      "net": "GA2",
+      "layer": 1,
+      "a_mm": [
+        49.13122,
+        88.00084
+      ],
+      "b_mm": [
+        49.13122,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2A",
+      "gate_net": "GA2",
+      "segment": 2,
+      "net": "GA2",
+      "layer": 1,
+      "a_mm": [
+        49.13122,
+        83.89
+      ],
+      "b_mm": [
+        53.90388,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2A",
+      "gate_net": "GA2",
+      "segment": 3,
+      "net": "GA2",
+      "layer": 1,
+      "a_mm": [
+        53.90388,
+        83.89
+      ],
+      "b_mm": [
+        53.90388,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2B",
+      "gate_net": "GB2",
+      "segment": 1,
+      "net": "GB2",
+      "layer": 1,
+      "a_mm": [
+        59.1312,
+        88.00084
+      ],
+      "b_mm": [
+        59.1312,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2B",
+      "gate_net": "GB2",
+      "segment": 2,
+      "net": "GB2",
+      "layer": 1,
+      "a_mm": [
+        59.1312,
+        83.89
+      ],
+      "b_mm": [
+        63.90386,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2B",
+      "gate_net": "GB2",
+      "segment": 3,
+      "net": "GB2",
+      "layer": 1,
+      "a_mm": [
+        63.90386,
+        83.89
+      ],
+      "b_mm": [
+        63.90386,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3A",
+      "gate_net": "GA3",
+      "segment": 1,
+      "net": "GA3",
+      "layer": 1,
+      "a_mm": [
+        87.12962,
+        88.00084
+      ],
+      "b_mm": [
+        87.12962,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3A",
+      "gate_net": "GA3",
+      "segment": 2,
+      "net": "GA3",
+      "layer": 1,
+      "a_mm": [
+        87.12962,
+        83.89
+      ],
+      "b_mm": [
+        91.90482,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3A",
+      "gate_net": "GA3",
+      "segment": 3,
+      "net": "GA3",
+      "layer": 1,
+      "a_mm": [
+        91.90482,
+        83.89
+      ],
+      "b_mm": [
+        91.90482,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3B",
+      "gate_net": "GB3",
+      "segment": 1,
+      "net": "GB3",
+      "layer": 1,
+      "a_mm": [
+        97.13214,
+        88.00084
+      ],
+      "b_mm": [
+        97.13214,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3B",
+      "gate_net": "GB3",
+      "segment": 2,
+      "net": "GB3",
+      "layer": 1,
+      "a_mm": [
+        97.13214,
+        83.89
+      ],
+      "b_mm": [
+        101.9048,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3B",
+      "gate_net": "GB3",
+      "segment": 3,
+      "net": "GB3",
+      "layer": 1,
+      "a_mm": [
+        101.9048,
+        83.89
+      ],
+      "b_mm": [
+        101.9048,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4A",
+      "gate_net": "GA4",
+      "segment": 1,
+      "net": "GA4",
+      "layer": 1,
+      "a_mm": [
+        125.13056,
+        88.00084
+      ],
+      "b_mm": [
+        125.13056,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4A",
+      "gate_net": "GA4",
+      "segment": 2,
+      "net": "GA4",
+      "layer": 1,
+      "a_mm": [
+        125.13056,
+        83.89
+      ],
+      "b_mm": [
+        129.90576,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4A",
+      "gate_net": "GA4",
+      "segment": 3,
+      "net": "GA4",
+      "layer": 1,
+      "a_mm": [
+        129.90576,
+        83.89
+      ],
+      "b_mm": [
+        129.90576,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4B",
+      "gate_net": "GB4",
+      "segment": 1,
+      "net": "GB4",
+      "layer": 1,
+      "a_mm": [
+        135.13054,
+        88.00084
+      ],
+      "b_mm": [
+        135.13054,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4B",
+      "gate_net": "GB4",
+      "segment": 2,
+      "net": "GB4",
+      "layer": 1,
+      "a_mm": [
+        135.13054,
+        83.89
+      ],
+      "b_mm": [
+        139.90574,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4B",
+      "gate_net": "GB4",
+      "segment": 3,
+      "net": "GB4",
+      "layer": 1,
+      "a_mm": [
+        139.90574,
+        83.89
+      ],
+      "b_mm": [
+        139.90574,
+        84.81822
+      ],
+      "width_mm": 0.15
+    }
+  ],
+  "native_new_lines": [
+    {
+      "ref": "SR1A",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        12.90099,
+        85.1
+      ],
+      "b_mm": [
+        12.90099,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR1B",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        22.90099,
+        85.1
+      ],
+      "b_mm": [
+        22.90099,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR2A",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        50.89901,
+        85.1
+      ],
+      "b_mm": [
+        50.89901,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR2B",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        60.89899,
+        85.1
+      ],
+      "b_mm": [
+        60.89899,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR3A",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        88.9,
+        85.1
+      ],
+      "b_mm": [
+        88.9,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR3B",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        98.9,
+        85.1
+      ],
+      "b_mm": [
+        98.9,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR4A",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        126.90099,
+        85.1
+      ],
+      "b_mm": [
+        126.90099,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR4B",
+      "net": "PGND",
+      "layer": 1,
+      "a_mm": [
+        136.901,
+        85.1
+      ],
+      "b_mm": [
+        136.901,
+        94.0
+      ],
+      "width_mm": 1.0
+    },
+    {
+      "ref": "SR1A",
+      "gate_net": "GA1",
+      "segment": 1,
+      "net": "GA1",
+      "layer": 1,
+      "a_mm": [
+        11.13028,
+        88.00084
+      ],
+      "b_mm": [
+        11.13028,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1A",
+      "gate_net": "GA1",
+      "segment": 2,
+      "net": "GA1",
+      "layer": 1,
+      "a_mm": [
+        11.13028,
+        83.89
+      ],
+      "b_mm": [
+        15.90548,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1A",
+      "gate_net": "GA1",
+      "segment": 3,
+      "net": "GA1",
+      "layer": 1,
+      "a_mm": [
+        15.90548,
+        83.89
+      ],
+      "b_mm": [
+        15.90548,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1B",
+      "gate_net": "GB1",
+      "segment": 1,
+      "net": "GB1",
+      "layer": 1,
+      "a_mm": [
+        21.13026,
+        88.00084
+      ],
+      "b_mm": [
+        21.13026,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1B",
+      "gate_net": "GB1",
+      "segment": 2,
+      "net": "GB1",
+      "layer": 1,
+      "a_mm": [
+        21.13026,
+        83.89
+      ],
+      "b_mm": [
+        25.90546,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR1B",
+      "gate_net": "GB1",
+      "segment": 3,
+      "net": "GB1",
+      "layer": 1,
+      "a_mm": [
+        25.90546,
+        83.89
+      ],
+      "b_mm": [
+        25.90546,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2A",
+      "gate_net": "GA2",
+      "segment": 1,
+      "net": "GA2",
+      "layer": 1,
+      "a_mm": [
+        49.13122,
+        88.00084
+      ],
+      "b_mm": [
+        49.13122,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2A",
+      "gate_net": "GA2",
+      "segment": 2,
+      "net": "GA2",
+      "layer": 1,
+      "a_mm": [
+        49.13122,
+        83.89
+      ],
+      "b_mm": [
+        53.90388,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2A",
+      "gate_net": "GA2",
+      "segment": 3,
+      "net": "GA2",
+      "layer": 1,
+      "a_mm": [
+        53.90388,
+        83.89
+      ],
+      "b_mm": [
+        53.90388,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2B",
+      "gate_net": "GB2",
+      "segment": 1,
+      "net": "GB2",
+      "layer": 1,
+      "a_mm": [
+        59.1312,
+        88.00084
+      ],
+      "b_mm": [
+        59.1312,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2B",
+      "gate_net": "GB2",
+      "segment": 2,
+      "net": "GB2",
+      "layer": 1,
+      "a_mm": [
+        59.1312,
+        83.89
+      ],
+      "b_mm": [
+        63.90386,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR2B",
+      "gate_net": "GB2",
+      "segment": 3,
+      "net": "GB2",
+      "layer": 1,
+      "a_mm": [
+        63.90386,
+        83.89
+      ],
+      "b_mm": [
+        63.90386,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3A",
+      "gate_net": "GA3",
+      "segment": 1,
+      "net": "GA3",
+      "layer": 1,
+      "a_mm": [
+        87.12962,
+        88.00084
+      ],
+      "b_mm": [
+        87.12962,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3A",
+      "gate_net": "GA3",
+      "segment": 2,
+      "net": "GA3",
+      "layer": 1,
+      "a_mm": [
+        87.12962,
+        83.89
+      ],
+      "b_mm": [
+        91.90482,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3A",
+      "gate_net": "GA3",
+      "segment": 3,
+      "net": "GA3",
+      "layer": 1,
+      "a_mm": [
+        91.90482,
+        83.89
+      ],
+      "b_mm": [
+        91.90482,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3B",
+      "gate_net": "GB3",
+      "segment": 1,
+      "net": "GB3",
+      "layer": 1,
+      "a_mm": [
+        97.13214,
+        88.00084
+      ],
+      "b_mm": [
+        97.13214,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3B",
+      "gate_net": "GB3",
+      "segment": 2,
+      "net": "GB3",
+      "layer": 1,
+      "a_mm": [
+        97.13214,
+        83.89
+      ],
+      "b_mm": [
+        101.9048,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR3B",
+      "gate_net": "GB3",
+      "segment": 3,
+      "net": "GB3",
+      "layer": 1,
+      "a_mm": [
+        101.9048,
+        83.89
+      ],
+      "b_mm": [
+        101.9048,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4A",
+      "gate_net": "GA4",
+      "segment": 1,
+      "net": "GA4",
+      "layer": 1,
+      "a_mm": [
+        125.13056,
+        88.00084
+      ],
+      "b_mm": [
+        125.13056,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4A",
+      "gate_net": "GA4",
+      "segment": 2,
+      "net": "GA4",
+      "layer": 1,
+      "a_mm": [
+        125.13056,
+        83.89
+      ],
+      "b_mm": [
+        129.90576,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4A",
+      "gate_net": "GA4",
+      "segment": 3,
+      "net": "GA4",
+      "layer": 1,
+      "a_mm": [
+        129.90576,
+        83.89
+      ],
+      "b_mm": [
+        129.90576,
+        84.81822
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4B",
+      "gate_net": "GB4",
+      "segment": 1,
+      "net": "GB4",
+      "layer": 1,
+      "a_mm": [
+        135.13054,
+        88.00084
+      ],
+      "b_mm": [
+        135.13054,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4B",
+      "gate_net": "GB4",
+      "segment": 2,
+      "net": "GB4",
+      "layer": 1,
+      "a_mm": [
+        135.13054,
+        83.89
+      ],
+      "b_mm": [
+        139.90574,
+        83.89
+      ],
+      "width_mm": 0.15
+    },
+    {
+      "ref": "SR4B",
+      "gate_net": "GB4",
+      "segment": 3,
+      "net": "GB4",
+      "layer": 1,
+      "a_mm": [
+        139.90574,
+        83.89
+      ],
+      "b_mm": [
+        139.90574,
+        84.81822
+      ],
+      "width_mm": 0.15
+    }
+  ],
+  "geometric_issues": [],
+  "before_real_native_islands": {
+    "GA1": 2,
+    "GA2": 2,
+    "GA3": 2,
+    "GA4": 2,
+    "GB1": 2,
+    "GB2": 2,
+    "GB3": 2,
+    "GB4": 2,
+    "PGND": 37
+  },
+  "after_simulated_islands": {
+    "GA1": 1,
+    "GA2": 1,
+    "GA3": 1,
+    "GA4": 1,
+    "GB1": 1,
+    "GB2": 1,
+    "GB3": 1,
+    "GB4": 1,
+    "PGND": 37
+  },
+  "preserves_original_V9_V10_and_all_GUI_sessions": true,
+  "released_for_100A": false,
+  "vendor_magnetics_footprint_signed": false,
+  "fabrication_approved": false
+}
