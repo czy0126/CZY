@@ -20,6 +20,11 @@ DECK=D/(STEM+".cir")
 LOG=D/(STEM+".log")
 RAWGZ=D/(STEM+".raw.gz")
 REPORT=D/"d1_lane_c_uvlo_holdup_receipt_NOT_FOR_FAB.json"
+# These identify the earlier KiCad candidate against which the *original*
+# model was submitted. Preserve this evidence anchor after unrelated hardware
+# interface revisions; never silently retarget prior raw data to new CAD.
+MODELED_NATIVE_SCHEMATIC_SHA="665eeea9b9dd230978921f24a39289d8d9f98cfde910661b3b0c7405917b1856"
+MODELED_NATIVE_BOM_SHA="ddcb8f73237e1786ff0743f544414aa76f660860373f1819ab9d6f4c049f49e2"
 sys.path.insert(0,str(ROOT/"tools"))
 import d1_lane_c_hs_candidate as hw
 import d1_lane_c_sim_evidence as shared
@@ -78,8 +83,17 @@ def build():
         "raw_sha256":hash_bytes(raw),
         "raw_gzip_sha256":hash_bytes(rawgz),
         "raw_bytes":len(raw),"raw_gzip_bytes":len(rawgz),
-        "native_candidate_schematic_sha256":native["output_schematic_sha256"],
-        "native_candidate_bom_sha256":native["output_bom_sha256"],
+        # Prior raw/log run is tied to the original electrical candidate,
+        # NOT automatically to U20's newly added emergency-stop/HS interlock.
+        "native_candidate_schematic_sha256":MODELED_NATIVE_SCHEMATIC_SHA,
+        "native_candidate_bom_sha256":MODELED_NATIVE_BOM_SHA,
+        "current_candidate_schematic_sha256":native["output_schematic_sha256"],
+        "current_candidate_bom_sha256":native["output_bom_sha256"],
+        "candidate_matches_original_simulation_snapshot":
+            native["output_schematic_sha256"]==MODELED_NATIVE_SCHEMATIC_SHA and
+            native["output_bom_sha256"]==MODELED_NATIVE_BOM_SHA,
+        "model_includes_new_external_estop_and_hs_monitor_gate":False,
+        "simulation_must_not_be_claimed_for_latest_full_enable_chain":True,
         "uvlo_trip_model_time_s":trip,
         "gate_threshold_model_time_s":gate,
         "ideal_switch_gate_delay_after_uvlo_s":gate-trip,

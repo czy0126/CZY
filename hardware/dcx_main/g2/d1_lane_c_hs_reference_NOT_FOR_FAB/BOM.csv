@@ -193,6 +193,14 @@ C114,22uF/25V,Capacitor_SMD:C_1210_3225Metric,"25V nominal, DC derating not qual
 R110,1M,Resistor_SMD:R_0603_1608Metric,,Comparator positive feedback for 11.1/10.6V nominal UVLO,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 C115,22uF/25V,Capacitor_SMD:C_1210_3225Metric,"25V nominal, DC derating not qualified","Post-diode hold-up capacitor for driver shutdown, transient validation pending",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 R111,1M,Resistor_SMD:R_0603_1608Metric,,Comparator positive feedback for 11.1/10.6V nominal UVLO,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J11,EXT_ESTOP_NC_LOOP,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,External series NC emergency stop contacts; open line forces OFF; not the required power disconnect,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J12,EXT_HS_DIAG_CONTACT,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,Qualified externally isolated high-side monitor contact; absent sensor forces OFF,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R112,10k,Resistor_SMD:R_0603_1608Metric,,External E-stop contact/open wire default-off pulldown,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R113,10k,Resistor_SMD:R_0603_1608Metric,,Missing floating gate monitor defaults permit low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R114,10k,Resistor_SMD:R_0603_1608Metric,,Final output inhibit default low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U20,CD4081BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP20,DIFF_PROBE_SW,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP21,DIFF_PROBE_GH1,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
 TP22,DIFF_PROBE_HB,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP23,DIFF_PROBE_ESTOP_OK,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP24,DIFF_PROBE_HS_MON_OK,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1

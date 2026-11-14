@@ -40,6 +40,8 @@ REWIRE={
     ("C40","2"):("PGND","SW"),
     ("R20","1"):("V12P","V12P_F"),
     ("R22","1"):("V12S","V12S_F"),
+    # U8 internal request must not drive the permit transistor directly.
+    ("U8","10"):("PERMIT","PERMIT_INTERNAL"),
 }
 # Ground-referenced detector is invalid for a 48V floating high-side gate.
 # Keep the pads in the engineering schematic, but never populate that path.
@@ -56,7 +58,7 @@ def candidate_parts(base=None):
     for part in parts:
         net=dict(part.nets)
         for (ref,pin),(prior,after) in REWIRE.items():
-            if ref!=part.ref:
+            if ref!=part.ref or pin not in net:
                 continue
             if net.get(pin)!=prior:
                 raise ValueError(f"source pin shifted {ref}.{pin}: {net.get(pin)}")
@@ -99,8 +101,46 @@ def candidate_parts(base=None):
             "Resistor_SMD:R_0603_1608Metric",510,310+14*i,
             {"1":ok,"2":sense},
             note="Comparator positive feedback for 11.1/10.6V nominal UVLO"))
+    # U20 AND interlock is in the hardware enable path, after the latch/
+    # operator/fault logic. The external loops are normally open by default:
+    # an absent cable, broken NC emergency-stop chain or missing HS monitor
+    # means no PERMIT, independent of any software/MCU command.
+    # This is only a bench inhibit: a certified independent input-energy
+    # disconnect, a real HS monitor and safe gate turn-off remain required.
+    logic="Package_DIP:DIP-14_W7.62mm"
+    result += [
+        d0.Part("J11","Connector_Generic:Conn_01x02","EXT_ESTOP_NC_LOOP",
+            "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+            515,180,{"1":"V5","2":"ESTOP_OK"},
+            note="External series NC emergency stop contacts; open line forces OFF; not the required power disconnect"),
+        d0.Part("J12","Connector_Generic:Conn_01x02","EXT_HS_DIAG_CONTACT",
+            "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+            535,180,{"1":"V5","2":"HS_MON_OK"},
+            note="Qualified externally isolated high-side monitor contact; absent sensor forces OFF"),
+        d0.Part("R112","Device:R","10k",
+            "Resistor_SMD:R_0603_1608Metric",515,202,
+            {"1":"ESTOP_OK","2":"PGND"},
+            note="External E-stop contact/open wire default-off pulldown"),
+        d0.Part("R113","Device:R","10k",
+            "Resistor_SMD:R_0603_1608Metric",535,202,
+            {"1":"HS_MON_OK","2":"PGND"},
+            note="Missing floating gate monitor defaults permit low"),
+        d0.Part("R114","Device:R","10k",
+            "Resistor_SMD:R_0603_1608Metric",555,202,
+            {"1":"PERMIT","2":"PGND"},note="Final output inhibit default low"),
+        d0.Part("U20","4xxx:4081","CD4081BE",logic,530,250,
+            {"1":"PERMIT_INTERNAL","2":"ESTOP_OK","3":"PERMIT_ESTOP"},unit=1),
+        d0.Part("U20","4xxx:4081","CD4081BE",logic,530,250,
+            {"4":"PERMIT","5":"PERMIT_ESTOP","6":"HS_MON_OK"},unit=2),
+        d0.Part("U20","4xxx:4081","CD4081BE",logic,530,250,
+            {"8":"PGND","9":"PGND","10":d0.NC},unit=3),
+        d0.Part("U20","4xxx:4081","CD4081BE",logic,530,250,
+            {"11":d0.NC,"12":"PGND","13":"PGND"},unit=4),
+        d0.Part("U20","4xxx:4081","CD4081BE",logic,530,250,
+            {"7":"PGND","14":"V5"},unit=5),
+    ]
     tp="TestPoint:TestPoint_Pad_D1.0mm"
-    for i,net in enumerate(("SW","GH1","HB")):
+    for i,net in enumerate(("SW","GH1","HB","ESTOP_OK","HS_MON_OK")):
         result.append(d0.Part(f"TP{20+i}","Connector:TestPoint",
             f"DIFF_PROBE_{net}",tp,540,345+i*12,{"1":net},
             note="Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW"))
@@ -138,6 +178,33 @@ def verify_candidate(part_instances):
         raise ValueError("HB bootstrap high terminal missing")
     if parts["R45"].dnp is not True:
         raise ValueError("unsafe unconditional permit installed")
+    # Do not permit bypassing this last, physical enable stage with a jumper
+    # or a software flag. This is an *interface* contract, NOT validation of
+    # the external contacts, an isolated HS monitor, or the 48V disconnect.
+    u8_permit=[p.nets["10"] for p in part_instances if p.ref=="U8" and "10" in p.nets]
+    if u8_permit!=["PERMIT_INTERNAL"]:
+        raise ValueError("internal permit bypasses external safety gate")
+    u20={p.unit:p.nets for p in part_instances if p.ref=="U20"}
+    expected={
+        1:{"1":"PERMIT_INTERNAL","2":"ESTOP_OK","3":"PERMIT_ESTOP"},
+        2:{"4":"PERMIT","5":"PERMIT_ESTOP","6":"HS_MON_OK"},
+        3:{"8":"PGND","9":"PGND","10":d0.NC},
+        4:{"11":d0.NC,"12":"PGND","13":"PGND"},
+        5:{"7":"PGND","14":"V5"},
+    }
+    if u20!=expected:
+        raise ValueError("final two-condition permit gate disconnected")
+    for ref,signal in (("J11","ESTOP_OK"),("J12","HS_MON_OK")):
+        if parts[ref].nets!={"1":"V5","2":signal} or parts[ref].dnp:
+            raise ValueError("external permit loop missing: "+ref)
+    for ref,signal in (("R112","ESTOP_OK"),("R113","HS_MON_OK"),("R114","PERMIT")):
+        if parts[ref].nets!={"1":signal,"2":"PGND"} or parts[ref].value!="10k" or parts[ref].dnp:
+            raise ValueError("external permit default low missing: "+ref)
+    for i,net in enumerate(("ESTOP_OK","HS_MON_OK"),start=23):
+        if parts[f"TP{i}"].nets!={"1":net}:
+            raise ValueError("missing safety test point: TP"+str(i))
+    if parts["R33"].nets["1"]!="PERMIT":
+        raise ValueError("final enable gate bypassed on Q1 base")
     for i,up in enumerate(("P","S")):
         top=parts[f"R{20+2*i}"]
         bottom=parts[f"R{21+2*i}"]
@@ -157,11 +224,13 @@ def verify_candidate(part_instances):
 
 def build_report(parts, erc_json=None, native_pins=0):
     verify_candidate(parts)
-    orig={p.ref:p for p in d0.parts()}
-    new={p.ref:p for p in parts}
+    # Multiple KiCad units share a reference: compare every (ref,pin), not
+    # a last-unit-only dictionary that silently drops U8.10.
+    orig={(p.ref,pin):net for p in d0.parts() for pin,net in p.nets.items()}
+    new={(p.ref,pin):net for p in parts for pin,net in p.nets.items()}
     changed=[]
     for (ref,pin),(old,net) in REWIRE.items():
-        assert orig[ref].nets[pin]==old and new[ref].nets[pin]==net
+        assert orig[(ref,pin)]==old and new[(ref,pin)]==net
         changed.append({"ref":ref,"pin":pin,"from":old,"to":net})
     if erc_json is None:
         erc_json={}
@@ -187,9 +256,25 @@ def build_report(parts, erc_json=None, native_pins=0):
                         "actual_max_fault_shutdown_delay_proven":False},
         "gate_diff_probe_pairs":{"high_side_VGS":["GH1","SW"],"boot":["HB","SW"],
                                 "low_side_VGS":["GL1","PGND"]},
+        "final_hardware_permit_interlock":{
+            "logic":"PERMIT=PERMIT_INTERNAL & ESTOP_OK & HS_MON_OK",
+            "input_default_off_resistors":{"ESTOP_OK":"R112 10k to PGND",
+                "HS_MON_OK":"R113 10k to PGND","PERMIT":"R114 10k to PGND"},
+            "external_interfaces":{"J11":"V5-ESTOP_OK series NC emergency-stop contact",
+                "J12":"V5-HS_MON_OK qualified floating-gate monitor contact"},
+            "interlock_stage":"U20 CD4081BE AND logic, independent of MCU",
+            "open_wire_must_disable":True,
+            "external_estop_contact_physically_tested":False,
+            "external_hs_monitor_physically_tested":False,
+            "power_stage_hardware_disconnect_verified":False,
+            "off_time_and_cmos_power_down_proven":False,
+            "warning":"This interface is not an external safety relay, not a verified floating VGS monitor, and not proof of power disconnection"
+        },
         "ucc27282_drc_pin_map":{"1":"V12P","3":"HB","4":"HO","5":"SW","6":"PERMIT_RAIL",
                                  "7":"TG_HI","8":"TG_LO","9":"PGND","10":"LO","11":"PGND"},
-        "not_proven":["Real primary high-side VGS threshold via source-referenced comparator",
+        "not_proven":["External NC E-stop contact and 48V physical disconnect action (not fitted or measured)",
+                      "External isolated floating HS monitor validity and fault detection (not fitted or measured)",
+                      "Real primary high-side VGS threshold via source-referenced comparator",
                       "Actual switching source SW injection, boot diode qualification and 220n MLCC tolerance",
                       "External V12P/V12S isolated sources, hardware UVLO and fast E-stop disconnect",
                       "Eight real UCC24624 SR gate dynamics vs candidate TTL substitute",
@@ -236,7 +321,7 @@ def check_native(parts, text):
     erc=json.loads(ERC.read_text("utf-8"))
     if any(s.get("violations") for s in erc.get("sheets",[])):
         raise ValueError("native KiCad candidate ERC has violations")
-    refs={"U18","C29","R64","C40","R74","D17","R45","TP20","TP21","TP22","R20","R22","R110","R111","C114","C115"}
+    refs={"U18","C29","R64","C40","R74","D17","R45","TP20","TP21","TP22","TP23","TP24","J11","J12","U20","R112","R113","R114","R20","R22","R110","R111","C114","C115"}
     pins=audit.verify_exported_netlist(parts,refs,NET.read_text("utf-8"))
     # All candidate connections must be checked against the native exported netlist.
     allrefs={part.ref for part in parts if not part.ref.startswith("#")}
@@ -247,7 +332,7 @@ def check_native(parts, text):
     for ref in DO_NOT_POPULATE|{"R45"}:
         if rows.get(ref,{}).get("DNP")!="yes":
             raise ValueError(f"critical DNP missing from assembly BOM: {ref}")
-    for ref in ("R21","R23","C14","C15","R110","R111","C114","C115"):
+    for ref in ("R21","R23","C14","C15","R110","R111","R112","R113","R114","C114","C115"):
         if rows.get(ref,{}).get("Value")!={p.ref:p.value for p in parts}[ref]:
             raise ValueError(f"UVLO/hold-up BOM value incorrect: {ref}")
     rep=build_report(parts,erc,pins)

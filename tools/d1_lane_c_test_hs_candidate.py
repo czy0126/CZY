@@ -54,3 +54,37 @@ def test_actual_native_kicad_export_matches_all_declared_pins():
     assert r["output_bom_sha256"]
     assert r["g0_approved"] is False
     assert r["energization_allowed"] is False
+    assert r["final_hardware_permit_interlock"]["external_estop_contact_physically_tested"] is False
+
+
+def test_final_and_gate_requires_both_external_permissions():
+    parts=c.candidate_parts()
+    c.verify_candidate(parts)
+    units={p.unit:p.nets for p in parts if p.ref=="U20"}
+    assert units[1]=={"1":"PERMIT_INTERNAL","2":"ESTOP_OK","3":"PERMIT_ESTOP"}
+    assert units[2]=={"4":"PERMIT","5":"PERMIT_ESTOP","6":"HS_MON_OK"}
+    for internal in (0,1):
+        for estop in (0,1):
+            for monitor in (0,1):
+                assert (internal & estop & monitor)==(1 if internal and estop and monitor else 0)
+    ps={p.ref:p for p in parts}
+    for ref in ("R112","R113","R114"):
+        assert ps[ref].nets["2"]=="PGND" and ps[ref].value=="10k"
+
+
+@pytest.mark.parametrize("ref,pin,net",[
+    ("U20","2","V5"),("U20","6","V5"),("J11","2","V5"),
+    ("J12","2","V5"),("R112","2","V5"),("R113","2","V5"),
+    ("R114","2","V5"),("R33","1","PERMIT_INTERNAL")])
+def test_external_interlock_bypass_is_rejected(ref,pin,net):
+    parts=c.candidate_parts()
+    modified=[replace(p,nets={**p.nets,pin:net}) if p.ref==ref and pin in p.nets else p for p in parts]
+    with pytest.raises(ValueError):
+        c.verify_candidate(modified)
+
+
+def test_legacy_u8_direct_permit_is_rejected():
+    parts=c.candidate_parts()
+    modified=[replace(p,nets={**p.nets,"10":"PERMIT"}) if p.ref=="U8" and "10" in p.nets else p for p in parts]
+    with pytest.raises(ValueError,match="internal permit"):
+        c.verify_candidate(modified)

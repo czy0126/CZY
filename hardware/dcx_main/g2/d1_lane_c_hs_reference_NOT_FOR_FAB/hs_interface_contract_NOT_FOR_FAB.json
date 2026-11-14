@@ -40,6 +40,12 @@
       "pin": "1",
       "from": "V12S",
       "to": "V12S_F"
+    },
+    {
+      "ref": "U8",
+      "pin": "10",
+      "from": "PERMIT",
+      "to": "PERMIT_INTERNAL"
     }
   ],
   "dnp": [
@@ -75,6 +81,25 @@
       "PGND"
     ]
   },
+  "final_hardware_permit_interlock": {
+    "logic": "PERMIT=PERMIT_INTERNAL & ESTOP_OK & HS_MON_OK",
+    "input_default_off_resistors": {
+      "ESTOP_OK": "R112 10k to PGND",
+      "HS_MON_OK": "R113 10k to PGND",
+      "PERMIT": "R114 10k to PGND"
+    },
+    "external_interfaces": {
+      "J11": "V5-ESTOP_OK series NC emergency-stop contact",
+      "J12": "V5-HS_MON_OK qualified floating-gate monitor contact"
+    },
+    "interlock_stage": "U20 CD4081BE AND logic, independent of MCU",
+    "open_wire_must_disable": true,
+    "external_estop_contact_physically_tested": false,
+    "external_hs_monitor_physically_tested": false,
+    "power_stage_hardware_disconnect_verified": false,
+    "off_time_and_cmos_power_down_proven": false,
+    "warning": "This interface is not an external safety relay, not a verified floating VGS monitor, and not proof of power disconnection"
+  },
   "ucc27282_drc_pin_map": {
     "1": "V12P",
     "3": "HB",
@@ -88,6 +113,8 @@
     "11": "PGND"
   },
   "not_proven": [
+    "External NC E-stop contact and 48V physical disconnect action (not fitted or measured)",
+    "External isolated floating HS monitor validity and fault detection (not fitted or measured)",
     "Real primary high-side VGS threshold via source-referenced comparator",
     "Actual switching source SW injection, boot diode qualification and 220n MLCC tolerance",
     "External V12P/V12S isolated sources, hardware UVLO and fast E-stop disconnect",
@@ -101,10 +128,10 @@
     "simulation_model_issue",
     "footprint_filter"
   ],
-  "netlist_pins_checked": 539,
-  "output_schematic_sha256": "665eeea9b9dd230978921f24a39289d8d9f98cfde910661b3b0c7405917b1856",
-  "output_netlist_sha256": "19589003d89d43ab2573a1b43de9a412016e861cee683299bd195dc7fa4df730",
-  "output_bom_sha256": "ddcb8f73237e1786ff0743f544414aa76f660860373f1819ab9d6f4c049f49e2",
+  "netlist_pins_checked": 565,
+  "output_schematic_sha256": "3a6bb671fdafde0221d4293baae07cc574ad7c0c21171abed7e1d9e017744040",
+  "output_netlist_sha256": "00a16b498741fd47b6cb3a520592d9cd99b2718fb121ba5bda05b88d9aa15f57",
+  "output_bom_sha256": "956e21770967e22334f111122ee4aca7b958763d8bd2d873b79fa3d483a008ab",
   "bench_primary_secondary_bias_ground_tied": true,
   "isolated_production_bias_power_verified": false,
   "output_pcb_sha256": null,

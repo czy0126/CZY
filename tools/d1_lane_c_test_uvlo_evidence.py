@@ -15,6 +15,11 @@ def test_uvlo_native_source_and_raw_integrity():
     assert r["g0_approved"] is False and r["energization_allowed"] is False
     assert r["bench_primary_secondary_bias_isolated"] is False
     assert r["real_48v_12v_converter_specified"] is False
+    assert r["native_candidate_schematic_sha256"]==u.MODELED_NATIVE_SCHEMATIC_SHA
+    assert r["native_candidate_bom_sha256"]==u.MODELED_NATIVE_BOM_SHA
+    assert r["candidate_matches_original_simulation_snapshot"] is False
+    assert r["model_includes_new_external_estop_and_hs_monitor_gate"] is False
+    assert r["simulation_must_not_be_claimed_for_latest_full_enable_chain"] is True
 
 def test_incomplete_log_measurement_is_rejected():
     assert "Total elapsed time:" in u.LOG.read_text("utf-8")
