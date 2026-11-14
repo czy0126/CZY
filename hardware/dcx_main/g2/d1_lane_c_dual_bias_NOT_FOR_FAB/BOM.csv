@@ -1,0 +1,11 @@
+Reference,Value,Footprint,Rating,Note,DNP,Provenance,Source,Qty
+J1,48V_INPUT,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,,External current-limited 48V with physical E-stop disconnect REQUIRED,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+F1,DC_FUSE_TBD,Fuse:Fuse_1206_3216Metric,,"DC interrupt, I2t, inrush and temperature NOT qualified",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+F2,DC_FUSE_TBD,Fuse:Fuse_1206_3216Metric,,Independent secondary module input fuse candidate,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U1,THN 30-4812,,,Primary output return intentionally bonded to PGND; footprint/remote pin pending,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U2,THN 30-4812,,,Isolated secondary return MUST stay separate from PGND; not the old shared-GND D0,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J2,PRIMARY_12V,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,,Connect actual primary driver return,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J3,SECONDARY_12V,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,,Secondary source-reference return; not PGND,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C1,1uF/100V,Capacitor_SMD:C_1206_3216Metric,,"Input bypass candidate, EMC unqualified",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C2,22uF/25V,Capacitor_SMD:C_1206_3216Metric,,Output capacitance provisional,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C3,22uF/25V,Capacitor_SMD:C_1206_3216Metric,,Isolated output capacitance provisional,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1

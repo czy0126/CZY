@@ -1,0 +1,46 @@
+{
+  "kind": "D1_G0_TWO_DOMAIN_BIAS_KICAD_CONCEPT",
+  "status": "ISOLATED_12V_DOMAINS_SKETCHED_NOT_FOR_FAB",
+  "module": "Traco Power THN 30-4812 (not THN 30WIR)",
+  "datasheet": "https://www.tracopower.com/overview/thn30",
+  "vendor_pin_map": {
+    "1": "+Vin",
+    "2": "-Vin",
+    "3": "+Vout",
+    "4": "Trim",
+    "5": "-Vout",
+    "6": "Remote"
+  },
+  "input_range_v": [
+    36,
+    75
+  ],
+  "nominal_12v_output_each_a": 2.5,
+  "nominal_12v_power_each_w": 30,
+  "module_count": 2,
+  "primary_output_return": "PGND",
+  "secondary_output_return": "SR_SOURCE_RETURN",
+  "secondary_supply_ground_separate_in_native_netlist": true,
+  "native_pin_parity": 28,
+  "native_erc_violations": 0,
+  "native_erc_ignored": [
+    "single_global_label",
+    "four_way_junction",
+    "simulation_model_issue",
+    "footprint_filter"
+  ],
+  "sch_sha256": "46e26b99c54cde64dd1410dd060d3bb92594aa6fd0c4669e8b6762a3a182dc84",
+  "net_sha256": "90be82d18f3e45da607cd714fadd0a9530f2eb89ace81576fb5d8ed5319d2c0d",
+  "bom_sha256": "23c9894817f6b15ed7f50ff3bc4de6e6807b7e77742dd0fca0160d1de1535577",
+  "module_footprint_qualified": false,
+  "remote_pin_qualified": false,
+  "power_vs_actual_gate_charge_and_frequency_qualified": false,
+  "input_fuse_inrush_and_dc_interrupt_qualified": false,
+  "isolation_creepage_and_clearance_qualified": false,
+  "common_mode_emc_and_thermal_qualified": false,
+  "48v_power_disconnect_integrated": false,
+  "physical_bias_fault_test_completed": false,
+  "g0_approved": false,
+  "energization_allowed": false,
+  "fabrication_approved": false
+}

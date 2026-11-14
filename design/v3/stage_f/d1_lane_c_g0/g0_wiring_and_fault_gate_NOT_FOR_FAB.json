@@ -1,0 +1,287 @@
+{
+  "kind": "D1_LANE_C_ISSUE_133_G0_G1",
+  "status": "NOT_FOR_FAB_G0_BLOCKED_G1_PENDING",
+  "base_commit": "27b101c1e7e4135f0fd6e2f016ca5a4ae32dc018",
+  "input_pcb_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "input_schematic_sha256": "fcb0450966ae1a365d940e51e31465c6835a5233cacb0bfbadacb9ba9d78b08f",
+  "input_netlist_sha256": "78607763014a033566cf00b809ee9d9ddb0e9ff71374ac58576335773eae1fcd",
+  "output_pcb_sha256": null,
+  "pcb_modified": false,
+  "changed_nets": [],
+  "native_drc_before_after": {
+    "baseline_unconnected_reported": 7,
+    "baseline_ignored_native_drc_checks": [
+      "missing_courtyard",
+      "track_not_centered_on_via",
+      "tuning_profile_track_geometries",
+      "footprint_filters_mismatch",
+      "footprint_type_mismatch"
+    ],
+    "original_aggregate_receipt_fresh": false,
+    "lane_c_after": null,
+    "native_drc_rerun": "PENDING"
+  },
+  "copper_thickness_and_RMS_assumptions": "UNKNOWN; no 100 A thermal qualification",
+  "structure_audit": {
+    "ten_gate_channels_present": true,
+    "sr_driver_channels": 8,
+    "primary_driver_channels": 2,
+    "individual_gate_wiring_checked": true,
+    "selected_pins_exported_kicad_netlist_checked": 152,
+    "cached_export_is_live_erc": false,
+    "enable_pulldowns": 8,
+    "r45_v12p_to_permit": "DNP_REQUIRED",
+    "bench_bootstrap_c29_to_pgnd": "NOT_VALIDATED_FOR_REAL_HS",
+    "main_board_pin_parity_proven": false,
+    "d0_original_sr_controller_parity_proven": false
+  },
+  "channels": [
+    {
+      "index": 1,
+      "kind": "SR",
+      "driver_ref": "U14",
+      "driver_output": "SOA0",
+      "gate_net": "GA1",
+      "series_resistor": "R48",
+      "bleed_resistor": "R56",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R66",
+      "sense_diode": "D9",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 2,
+      "kind": "SR",
+      "driver_ref": "U14",
+      "driver_output": "SOB0",
+      "gate_net": "GA2",
+      "series_resistor": "R49",
+      "bleed_resistor": "R57",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R67",
+      "sense_diode": "D10",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 3,
+      "kind": "SR",
+      "driver_ref": "U15",
+      "driver_output": "SOA1",
+      "gate_net": "GA3",
+      "series_resistor": "R50",
+      "bleed_resistor": "R58",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R68",
+      "sense_diode": "D11",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 4,
+      "kind": "SR",
+      "driver_ref": "U15",
+      "driver_output": "SOB1",
+      "gate_net": "GA4",
+      "series_resistor": "R51",
+      "bleed_resistor": "R59",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R69",
+      "sense_diode": "D12",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 5,
+      "kind": "SR",
+      "driver_ref": "U16",
+      "driver_output": "SOA2",
+      "gate_net": "GA5",
+      "series_resistor": "R52",
+      "bleed_resistor": "R60",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R70",
+      "sense_diode": "D13",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 6,
+      "kind": "SR",
+      "driver_ref": "U16",
+      "driver_output": "SOB2",
+      "gate_net": "GA6",
+      "series_resistor": "R53",
+      "bleed_resistor": "R61",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R71",
+      "sense_diode": "D14",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 7,
+      "kind": "SR",
+      "driver_ref": "U17",
+      "driver_output": "SOA3",
+      "gate_net": "GA7",
+      "series_resistor": "R54",
+      "bleed_resistor": "R62",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R72",
+      "sense_diode": "D15",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 8,
+      "kind": "SR",
+      "driver_ref": "U17",
+      "driver_output": "SOB3",
+      "gate_net": "GA8",
+      "series_resistor": "R55",
+      "bleed_resistor": "R63",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R73",
+      "sense_diode": "D16",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 9,
+      "kind": "PRIMARY",
+      "driver_ref": "U18",
+      "driver_output": "HO",
+      "gate_net": "GH1",
+      "series_resistor": "R46",
+      "bleed_resistor": "R64",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R74",
+      "sense_diode": "D17",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    },
+    {
+      "index": 10,
+      "kind": "PRIMARY",
+      "driver_ref": "U18",
+      "driver_output": "LO",
+      "gate_net": "GL1",
+      "series_resistor": "R47",
+      "bleed_resistor": "R65",
+      "bleed_ohm": 10000,
+      "sense_resistor": "R75",
+      "sense_diode": "D18",
+      "measurement": "PENDING",
+      "off_time_max_verified": false
+    }
+  ],
+  "physical_high_side_reference_audit": {
+    "status": "PHYSICAL_HIGH_SIDE_REFERENCE_NOT_QUALIFIED",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/ucc27282.pdf",
+    "package": "DRC VSON-10",
+    "hs_pin": "5",
+    "vss_pin": "9",
+    "observed_hs_net": "PGND",
+    "observed_vss_net": "PGND",
+    "c29_negative_net": "PGND",
+    "r64_return_net": "PGND",
+    "checks": {
+      "ucc27282_hs_pin5_not_short_to_vss_pin9": false,
+      "c29_bootstrap_negative_to_hs_not_vss": false,
+      "r64_high_side_gate_bleed_to_hs_not_vss": false,
+      "high_side_actual_source_referenced_vgs_capture_proven": false
+    },
+    "failed_checks": [
+      "ucc27282_hs_pin5_not_short_to_vss_pin9",
+      "c29_bootstrap_negative_to_hs_not_vss",
+      "r64_high_side_gate_bleed_to_hs_not_vss",
+      "high_side_actual_source_referenced_vgs_capture_proven"
+    ],
+    "physical_high_side_approved": false,
+    "remediation": [
+      "Connect U18 pin 5 HS to the real half-bridge switch/source Kelvin node, NEVER VSS",
+      "Connect C29 negative and high-side gate-to-source bleed to U18 HS, not PGND",
+      "Provide a differential/source-referenced GH1-HS measurement; do not use GSMAX as VGS proof",
+      "Re-export actual KiCad netlist, check DRC/ERC and compare against the assembled device footprint",
+      "Verify bootstrap HB-HS startup/UVLO and turn-off on the unenergized bench before G0 signoff"
+    ]
+  },
+  "existing_evidence": {
+    "analog_review": "ANALOG_SAFETY_NOT_QUALIFIED",
+    "timing_review": "RESPONSE_BUDGET_INCOMPLETE",
+    "timing_worst_case": false,
+    "timing_lm393_max": null,
+    "hardware_protection_approved": false
+  },
+  "fault_injections": [
+    {
+      "mode": "COLD_START_HARD_FAULT",
+      "status": "PENDING",
+      "raw_waveforms": null,
+      "actual_vgs_all_10_verified": false
+    },
+    {
+      "mode": "STEADY_RUN_HARD_FAULT",
+      "status": "PENDING",
+      "raw_waveforms": null,
+      "actual_vgs_all_10_verified": false
+    },
+    {
+      "mode": "PRIMARY_BIAS_LOSS",
+      "status": "PENDING",
+      "raw_waveforms": null,
+      "actual_vgs_all_10_verified": false
+    },
+    {
+      "mode": "SECONDARY_BIAS_LOSS",
+      "status": "PENDING",
+      "raw_waveforms": null,
+      "actual_vgs_all_10_verified": false
+    },
+    {
+      "mode": "CT_SIGNAL_MISSING",
+      "status": "PENDING",
+      "raw_waveforms": null,
+      "actual_vgs_all_10_verified": false
+    },
+    {
+      "mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+      "status": "PENDING",
+      "raw_waveforms": null,
+      "actual_vgs_all_10_verified": false
+    }
+  ],
+  "g0_blockers": [
+    "Complete A-Lane primary nets and true physical CT/T1-T4 pin/DOT mapping not integrated",
+    "Real 48V-to-12V primary/secondary driver bias supply, isolation and startup/UVLO limits not established",
+    "D0 is a bench replacement with eight UCC27524ADR outputs, not pin-equivalent to original UCC24624 SR system",
+    "U18 DRC pin 5 HS is physically tied to pin 9 VSS/PGND in the D0 bench; C29 negative and R64 return also use PGND. Correct the real floating-high-side source reference before power-on",
+    "Loss of V12S leaves ten-kilohm passive SR gate discharge; no worst-case safe-off time/overlap proof",
+    "Independent hardware supply-loss AND E-stop interlock and power-stage disconnection not demonstrated",
+    "LM393 and logic response have unbounded timing corners; per-gate safe-off limits and device SOA unqualified",
+    "D17/GSMAX is ground-referred indication, not a differential GH1-to-HS VGS safety measurement",
+    "Board source still has seven unconnected items and five ignored DRC checks; no independent native parity/DRC closure",
+    "Original V17 consolidated receipt freshness must be restored by integrator (Lane C does not rewrite shared evidence)",
+    "No signed BOM, ERC, real hardware inspection, raw fault captures, or effective temporary cooling verification"
+  ],
+  "g1_blockers": [
+    "G0 not accepted",
+    "No measured cold startup/steady output polarity, voltage, current, primary and secondary VGS",
+    "No ten-channel bias-loss and fault-injection records",
+    "No temperature/supply current/overcurrent and emergency-stop oscilloscope evidence"
+  ],
+  "gate_0_approved": false,
+  "gate_1_measured_success": false,
+  "fab_approved": false,
+  "energization_allowed": false,
+  "incomplete_claims_must_remain_pending": true,
+  "validation_commands": [
+    "python tools/d1_lane_c_g0_gate.py --check",
+    "python -m pytest tools/d1_lane_c_test_g0_gate.py -q",
+    "python tools/d1_v17_oem_copper_gate.py --check",
+    "python -m pytest tools/test_d1_v17_oem_copper_gate.py -q"
+  ],
+  "commit": "PENDING"
+}
