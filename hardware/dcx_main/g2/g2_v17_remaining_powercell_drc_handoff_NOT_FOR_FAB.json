@@ -1,0 +1,334 @@
+{
+  "status": "SOURCE_LOCKED_NATIVE_DRC_REMAINING_ISSUES_NOT_FOR_FAB",
+  "audit_local_date": "2026-11-14",
+  "owner_assignment": "UNASSIGNED_REQUIRES_USER_COORDINATION",
+  "project_branch": "feat/d1-v17-agent-a-signals-20261113",
+  "board_relative_path": "hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb",
+  "native_board_sha256": "4b66f051fd256ab6821c5a4b315042f613bfd8d0005f244725b5dfd99e5d4772",
+  "native_drc_sha256": "02a468ed324f2e178910fdc5fcd353558e1dba0ea73bd224c2465d5adb27d8a0",
+  "native_meta_sha256": "baf2dda50bd1234da134b24069f5554b2638fed869ba59740f29eec520fbc7e6",
+  "kicad_version": "10.0.6",
+  "unconnected_total": 13,
+  "by_net": {
+    "GH": 1,
+    "GH_DRV": 1,
+    "HB": 1,
+    "OC": 1,
+    "SW": 7,
+    "VIN_P": 2
+  },
+  "net_endpoints": {
+    "OC": [
+      [
+        {
+          "description": "F.Cu 上 U1 的焊盘 3 [OC]",
+          "position_mm": {
+            "x": 76.633755,
+            "y": 13.706281
+          }
+        },
+        {
+          "description": "走线 [OC] (F.Cu), 长度: 4.4943 mm",
+          "position_mm": {
+            "x": 134.24788,
+            "y": 17.00018
+          }
+        }
+      ]
+    ],
+    "SW": [
+      [
+        {
+          "description": "F.Cu 上 R18 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 43.753518,
+            "y": 12.00116
+          }
+        },
+        {
+          "description": "F.Cu 上 C5 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 45.69916,
+            "y": 17.99988
+          }
+        }
+      ],
+      [
+        {
+          "description": "F.Cu 上 R18 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 43.753518,
+            "y": 12.00116
+          }
+        },
+        {
+          "description": "F.Cu 上 Cr 的焊盘 1 [SW]",
+          "position_mm": {
+            "x": 39.300331,
+            "y": 6.998882
+          }
+        }
+      ],
+      [
+        {
+          "description": "F.Cu 上 C5 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 45.69916,
+            "y": 17.99988
+          }
+        },
+        {
+          "description": "F.Cu 上 U2 的焊盘 5 [SW]",
+          "position_mm": {
+            "x": 52.499258,
+            "y": 18.999619
+          }
+        }
+      ],
+      [
+        {
+          "description": "F.Cu 上 QH 的焊盘 1 [SW]",
+          "position_mm": {
+            "x": 46.093374,
+            "y": 9.750718
+          }
+        },
+        {
+          "description": "F.Cu 上 R18 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 43.753518,
+            "y": 12.00116
+          }
+        }
+      ],
+      [
+        {
+          "description": "F.Cu 上 QH 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 47.363374,
+            "y": 9.750718
+          }
+        },
+        {
+          "description": "F.Cu 上 QH 的焊盘 1 [SW]",
+          "position_mm": {
+            "x": 46.093374,
+            "y": 9.750718
+          }
+        }
+      ],
+      [
+        {
+          "description": "F.Cu 上 QH 的焊盘 3 [SW]",
+          "position_mm": {
+            "x": 48.633374,
+            "y": 9.750718
+          }
+        },
+        {
+          "description": "F.Cu 上 QH 的焊盘 2 [SW]",
+          "position_mm": {
+            "x": 47.363374,
+            "y": 9.750718
+          }
+        }
+      ],
+      [
+        {
+          "description": "F.Cu 上 QH 的焊盘 3 [SW]",
+          "position_mm": {
+            "x": 48.633374,
+            "y": 9.750718
+          }
+        },
+        {
+          "description": "F.Cu 上 QL 的焊盘 8 [SW]",
+          "position_mm": {
+            "x": 55.097692,
+            "y": 4.249078
+          }
+        }
+      ]
+    ],
+    "HB": [
+      [
+        {
+          "description": "走线 [HB] (F.Cu), 长度: 0.7005 mm",
+          "position_mm": {
+            "x": 44.29962,
+            "y": 17.99988
+          }
+        },
+        {
+          "description": "F.Cu 上 U2 的焊盘 3 [HB]",
+          "position_mm": {
+            "x": 52.499258,
+            "y": 17.998859
+          }
+        }
+      ]
+    ],
+    "GH_DRV": [
+      [
+        {
+          "description": "F.Cu 上 R4 的焊盘 1 [GH_DRV]",
+          "position_mm": {
+            "x": 46.246889,
+            "y": 14.000507
+          }
+        },
+        {
+          "description": "F.Cu 上 U2 的焊盘 4 [GH_DRV]",
+          "position_mm": {
+            "x": 52.499258,
+            "y": 18.499239
+          }
+        }
+      ]
+    ],
+    "GH": [
+      [
+        {
+          "description": "F.Cu 上 R18 的焊盘 1 [GH]",
+          "position_mm": {
+            "x": 42.247298,
+            "y": 12.00116
+          }
+        },
+        {
+          "description": "走线 [GH] (F.Cu), 长度: 4.7628 mm",
+          "position_mm": {
+            "x": 47.753109,
+            "y": 14.000507
+          }
+        }
+      ]
+    ],
+    "VIN_P": [
+      [
+        {
+          "description": "F.Cu 上 QH 的焊盘 9 [VIN_P]",
+          "position_mm": {
+            "x": 48.000914,
+            "y": 6.354738
+          }
+        },
+        {
+          "description": "F.Cu 上 Cin 的焊盘 1 [VIN_P]",
+          "position_mm": {
+            "x": 50.799086,
+            "y": 13.499659
+          }
+        }
+      ],
+      [
+        {
+          "description": "J_IN 的PTH 焊盘 1 [VIN_P]",
+          "position_mm": {
+            "x": 65.458755,
+            "y": 6.998882
+          }
+        },
+        {
+          "description": "F.Cu 上 QH 的焊盘 5 [VIN_P]",
+          "position_mm": {
+            "x": 49.908454,
+            "y": 4.249078
+          }
+        }
+      ]
+    ]
+  },
+  "remaining_violation_types": {
+    "clearance": 2
+  },
+  "remaining_native_U2_violations": [
+    {
+      "description": "间距违规 ( 间距 0.2000 mm; 实际 0.1981 mm)",
+      "items": [
+        "F.Cu 上 U2 的焊盘 2 [<no net>]",
+        "F.Cu 上 U2 的焊盘 3 [HB]"
+      ]
+    },
+    {
+      "description": "间距违规 ( 间距 0.2000 mm; 实际 0.1981 mm)",
+      "items": [
+        "F.Cu 上 U2 的焊盘 8 [GD2]",
+        "F.Cu 上 U2 的焊盘 9 [PGND]"
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "group": "primary_switch_node",
+      "nets": [
+        "SW"
+      ],
+      "priority": "P0_before_board_release",
+      "proposed_action": "Review 48V half-bridge QH/QL, Cr, C5, R18 and U2 switch-node geometry. Draw SHORT, current-qualified local F.Cu shapes and dedicated low-current SW sense pickup; preserve limited SW copper area and creepage.",
+      "must_validate": [
+        "Native QH/Q L copper and actual OEM drain/source pin mapping",
+        "Hot-loop geometry and commutation inductance / gate return",
+        "Actual 48V input/ripple current, copper thickness, copper temperature",
+        "KiCad native DRC after zone refill and full current-path continuity"
+      ],
+      "do_not": "Do not join 7 SW ratsnest items with 0.2mm signal traces."
+    },
+    {
+      "group": "primary_input_path",
+      "nets": [
+        "VIN_P"
+      ],
+      "priority": "P0_before_board_release",
+      "proposed_action": "Review J_IN.1 to QH high-side input pins and Cin.1 bypass loop. Use a current-qualified short copper polygon/plane with verified input connector pad geometry and input return.",
+      "must_validate": [
+        "Actual connector current/contact ratings",
+        "Cin-to-QH/QL high-frequency current-loop impedance",
+        "VIN_P-to-SW/PGND copper clearances and creepage",
+        "Return-path connectivity and thermal/copper cross-section"
+      ],
+      "do_not": "Do not declare VIN_P complete based on a thin scenic trace."
+    },
+    {
+      "group": "high_side_gate_bootstrap",
+      "nets": [
+        "GH",
+        "GH_DRV",
+        "HB"
+      ],
+      "priority": "P0_before_power_up",
+      "proposed_action": "Jointly optimize local U2, R4, R18, C5, D_BT, QH placements. Keep GH_DRV and HB bootstrap loops compact and pair their SW return; evaluate a physical relayout before routing across other nets.",
+      "must_validate": [
+        "Real U2 OEM 0.5mm pitch pad/courtyard before moving",
+        "Gate-loop inductance and turn-off loop overshoot",
+        "Bootstrap charging/return current and nearest physical switch-node pickup",
+        "No fine-pitch via-in-pad, no uncontrolled through-layer gate path"
+      ],
+      "do_not": "Do not consume a B.Cu multi-via detour to make DRC green without parasitic verification."
+    },
+    {
+      "group": "fault_sense_control",
+      "nets": [
+        "OC"
+      ],
+      "priority": "P0_before_power_up",
+      "proposed_action": "Source and pickup are approximately 58mm apart. Re-evaluate physical OC comparator/control placement, controlled return and shielding, noise immunity and propagation delay rather than auto-connecting a long unguarded switching-adjacent signal.",
+      "must_validate": [
+        "Protection latency and open-circuit fault behavior",
+        "Kelvin/PGND reference, false-trigger immunity",
+        "Measurement-filter/time-constant and loss-of-signal safe response"
+      ],
+      "do_not": "Do not substitute a long unverified digital/analog OC trace for a local fault chain."
+    }
+  ],
+  "additional_hard_gates": [
+    "T1-T4/CT 3:1:1 real PCB windings and OEM DOTs, not placeholder rectangles",
+    "100A paired copper busbar, output multi-contact terminal and parasitic thermal verification",
+    "Schematic-to-native-pad parity (empty reported parity != authenticated parity)",
+    "Actual 12-layer stackup and via-in-pad filled/capped vendor process",
+    "Maxwell extraction/mesh independence, SR recovery/current sharing and real EMI/thermal validation"
+  ],
+  "fab_release": false,
+  "whole_board_drc_green": false,
+  "simulated_power_electronics_verified": false
+}

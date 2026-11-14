@@ -31,6 +31,8 @@ SIGNAL=G/"g2_v17_signal_legal_route_plan_NOT_FOR_FAB.json"
 BRIDGE=G/"g2_v17_bcu_short_control_bridges_NOT_FOR_FAB.json"
 GD_ESCAPE=G/"g2_v17_u2_gd1_gd2_layer_escape_NOT_FOR_FAB.json"
 LOCAL_GATE=G/"g2_v17_local_primary_gate_routes_NOT_FOR_FAB.json"
+SR_KELVIN=G/"g2_v17_short_sr_drain_kelvin_NOT_FOR_FAB.json"
+VD_B_SENSE=G/"g2_v17_remaining_VD_B_short_sense_NOT_FOR_FAB.json"
 SOURCE_SHA="02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75"
 CORE_X=(20.,58.,96.,134.)
 
@@ -356,6 +358,61 @@ def build():
             raise ValueError("Primary gate track lost real PAD attachment")
         for start,end in route["segments"]:
             segment(board,net_obj[route["net"]],pcb.F_Cu,start,end,route["width_mm"])
+    # Eight local switch-node sense stubs: after moving the actual
+    # R28..R35 resistors to y=54.5 mm, each SEC source pad is now
+    # reachable within 2.7 mm from the respective 0.20-mm trace.
+    # These are NOT bulk switch-power copper or magnetic windings.
+    sr_model=loadjson(SR_KELVIN)
+    sr_sources={"source_v15_sha":sha(SOURCE),
+                "source_layout_sha":sha(LAYOUT),
+                "source_pgnd_sha":sha(COPPER),
+                "source_signal_sha":sha(SIGNAL),
+                "source_bcu_sha":sha(BRIDGE),
+                "source_gd_sha":sha(GD_ESCAPE),
+                "source_gate_sha":sha(LOCAL_GATE)}
+    if any(sr_model.get(k)!=v for k,v in sr_sources.items()):
+        raise ValueError("SR sense source/placement/route history drift")
+    expected_sr=[(f"SEC{i}_{bank}",
+                   f"R{28+2*(i-1)+(bank=='B')}.1",f"SR{i}{bank}.6")
+                 for i in range(1,5) for bank in ("A","B")]
+    if [(r["net"],r["from"],r["to"]) for r in sr_model["routes"]]!=expected_sr:
+        raise ValueError("SR drain Kelvin native ref/pin roster drift")
+    for route in sr_model["routes"]:
+        if (route["layer"]!="F.Cu" or route["width_mm"]!=.20
+            or route["actual_length_mm"]>3.2 or len(route["segments"])!=1):
+            raise ValueError("Unqualified long SR drain sense path")
+        a,b=route["segments"][0]
+        if (math.dist(a,actual_pad_xy(route["from"],route["net"]))>.015
+            or math.dist(b,actual_pad_xy(route["to"],route["net"]))>.015):
+            raise ValueError("SR Kelvin candidate detached from physical pad")
+        segment(board,net_obj[route["net"]],pcb.F_Cu,a,b,route["width_mm"])
+    # Two remaining local VD_B driver-sense tracks. VD3_B/VD4_B are
+    # independently covered by the upstream conservative signal planner.
+    vd_b_model=loadjson(VD_B_SENSE)
+    vd_b_sources={"source_v15_sha":sha(SOURCE),
+                  "source_layout_sha":sha(LAYOUT),
+                  "source_pgnd_sha":sha(COPPER),
+                  "source_signal_sha":sha(SIGNAL),
+                  "source_bcu_sha":sha(BRIDGE),
+                  "source_fine_sha":sha(GD_ESCAPE),
+                  "source_gate_sha":sha(LOCAL_GATE),
+                  "source_sr_sha":sha(SR_KELVIN)}
+    if any(vd_b_model.get(k)!=v for k,v in vd_b_sources.items()):
+        raise ValueError("VD_B pilot not generated against current source model")
+    vd_b_expect=[("VD1_B","U3.6","R29.2"),
+                 ("VD2_B","U4.6","R31.2")]
+    if [(r["net"],r["from"],r["to"]) for r in vd_b_model["routes"]]!=vd_b_expect:
+        raise ValueError("VD_B pilot ref/pin roster drift")
+    for route in vd_b_model["routes"]:
+        if route["layer"]!="F.Cu" or route["width_mm"]!=.20 or route["length_mm"]>17.5:
+            raise ValueError("Unqualified VD_B sense route")
+        a=route["segments"][0][0]
+        b=route["segments"][-1][1]
+        if (math.dist(a,actual_pad_xy(route["from"],route["net"]))>.015
+            or math.dist(b,actual_pad_xy(route["to"],route["net"]))>.015):
+            raise ValueError("VD_B route detached from real pad")
+        for start,end in route["segments"]:
+            segment(board,net_obj[route["net"]],pcb.F_Cu,start,end,route["width_mm"])
     # Keep gate drive and CS/OC Kelvin trunks out of main return copper:
     # ground high frequency plane pair for Cout+SR, local primary input,
     # and discrete top/bottom PGND overlay islands. Zones are real KiCad.
@@ -394,6 +451,8 @@ def build():
         "pcb_source_native_Sha256":sha(SOURCE),
         "source_U2_GD_escape_sha256":sha(GD_ESCAPE),
         "source_local_primary_gate_sha256":sha(LOCAL_GATE),
+        "source_SR_drain_kelvin_sha256":sha(SR_KELVIN),
+        "source_remaining_VD_B_sha256":sha(VD_B_SENSE),
         "kicad_version":pcb.Version(),
         "saved_board":OUTPUT.name,
         "saved_board_sha256":hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
@@ -420,6 +479,9 @@ def build():
         "U2_GD1_GD2_fine_escape_via_count":len(gd_model["via_sites"]),
         "local_primary_gate_route_count":len(gate_model["routes"]),
         "local_primary_gate_track_segments":sum(len(r["segments"]) for r in gate_model["routes"]),
+        "short_SR_drain_Kelvin_track_count":len(sr_model["routes"]),
+        "short_SR_drain_Kelvin_longest_mm":max(r["actual_length_mm"] for r in sr_model["routes"]),
+        "completed_remaining_VD_B_track_count":sum(len(r["segments"]) for r in vd_b_model["routes"]),
         "native_extra_pgnd_stitches":extra_ground_sites,
         "critical_missing":[
            "FOUR 3:1:1 physical PCB winding footprints T1..T4, and CT winding",
@@ -429,6 +491,8 @@ def build():
            "Via-in-pad fill/cap process with 0.30mm trial mechanical drill (including short B.Cu signal bridges)",
            "U2 fine-pitch GD1/GD2 real escape requires signal-integrity, return loop and manufacturer review",
            "Primary GH_DRV and full VIN_P/SW/HB remain unclosed; no gate-loop inductance or EMC signoff",
+           "Eight near-pad SR Kelvin leads require OEM drain pinout, EMC/switch overshoot and current-sharing review",
+           "VD_B low-current sense routes require full Kelvin return and EMI immunity signoff",
            "Actual 100A external/embedded two-pole copper bar; original J_OUT inadequate",
            "Remaining circuitry nets and all P1 schematic parity",
            "Native board full DRC/EMI/thermal, import parity to EasyEDA"

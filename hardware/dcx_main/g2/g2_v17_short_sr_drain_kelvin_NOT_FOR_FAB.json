@@ -1,0 +1,179 @@
+{
+  "status": "V17_SHORT_SR_KELVIN_NATIVE_DRC_REQUIRED_NOT_FOR_FAB",
+  "source_v15_sha": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+  "source_layout_sha": "c9cb8ed1754ae07ecc5bf8cf84ecb9ca30fe52cfc4e3ae863fefdc8548a75829",
+  "source_pgnd_sha": "e9dac278514223a6c0bec3ad1e90a0349a50794a291ded47d47093d080b5b679",
+  "source_signal_sha": "37f0ba9fc3c4d8bf5020accbce9734e88a51d537fb16ffe25946bf36855dbd62",
+  "source_bcu_sha": "a088823f379b16473d46af4975e1c6d2353a7a89fbb1a275f507ef9ffe255905",
+  "source_gd_sha": "c1455eb1ba1d04aa125e6493f3698e9140d1c5326fb1b6fbfe90fda9924f95a8",
+  "source_gate_sha": "8b8d684d49144adcefa07a8bcc2f5770f3797a558e565d7b2aac7f3e202256eb",
+  "routes": [
+    {
+      "net": "SEC1_A",
+      "from": "R28.1",
+      "to": "SR1A.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            14.7701,
+            54.500838200000004
+          ],
+          [
+            14.635480000000001,
+            57.17943160000001
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC1_B",
+      "from": "R29.1",
+      "to": "SR1B.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            24.770079999999997,
+            54.500838200000004
+          ],
+          [
+            24.635459999999995,
+            57.17943160000001
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC2_A",
+      "from": "R30.1",
+      "to": "SR2A.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            52.768499999999996,
+            54.500838200000004
+          ],
+          [
+            52.63387999999999,
+            57.17943160000001
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC2_B",
+      "from": "R31.1",
+      "to": "SR2B.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            62.76847999999999,
+            54.500838200000004
+          ],
+          [
+            62.63385999999999,
+            57.17943160000001
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC3_A",
+      "from": "R32.1",
+      "to": "SR3A.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            90.76944,
+            54.500838200000004
+          ],
+          [
+            90.63482,
+            57.17943160000001
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC3_B",
+      "from": "R33.1",
+      "to": "SR3B.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            100.76942000000001,
+            54.500838200000004
+          ],
+          [
+            100.6348,
+            57.17943160000001
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC4_A",
+      "from": "R34.1",
+      "to": "SR4A.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            128.77038,
+            54.50089819999999
+          ],
+          [
+            128.63575999999998,
+            57.179491599999984
+          ]
+        ]
+      ]
+    },
+    {
+      "net": "SEC4_B",
+      "from": "R35.1",
+      "to": "SR4B.6",
+      "layer": "F.Cu",
+      "width_mm": 0.2,
+      "actual_length_mm": 2.68197,
+      "segments": [
+        [
+          [
+            138.77036,
+            54.50089819999999
+          ],
+          [
+            138.63574,
+            57.179491599999984
+          ]
+        ]
+      ]
+    }
+  ],
+  "control_signal_only": true,
+  "kelvin_loop_inductance_extracted": false,
+  "real_sr_oem_pinout_confirmed": false,
+  "short_circuit_risk_passed": false,
+  "native_drc_verified": false,
+  "emc_approved": false,
+  "fab_release": false
+}

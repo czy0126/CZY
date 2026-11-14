@@ -28,7 +28,10 @@ def test_native_kicad_board_binary_tracks_and_pad_inventory():
     assert m["short_BCu_control_bridge_count"]==3
     assert m["local_primary_gate_route_count"]==5
     assert m["local_primary_gate_track_segments"]==7
-    assert m["native_actual_tracks"]==135
+    assert m["native_actual_tracks"]==161
+    assert m["short_SR_drain_Kelvin_track_count"]==8
+    assert m["short_SR_drain_Kelvin_longest_mm"]<3.2
+    assert m["completed_remaining_VD_B_track_count"]==8
     assert m["native_actual_tracks"]>70
     assert m["native_edge_cut_shapes"]==13
     assert m["board_12_layers_real"] is True
@@ -40,7 +43,7 @@ def test_actual_kicad_native_drc_zero_shorts_but_not_zero_unconnected():
     assert r["kicad_version"]=="10.0.6"
     counts=Counter(v["type"] for v in r["violations"])
     assert counts=={"clearance":2}
-    assert len(r["unconnected_items"])==24
+    assert len(r["unconnected_items"])==13
     desc=" ".join(x["description"] for v in r["unconnected_items"] for x in v["items"])
     assert " [PGND]" not in desc
     assert " [VOUT]" not in desc
@@ -49,6 +52,9 @@ def test_actual_kicad_native_drc_zero_shorts_but_not_zero_unconnected():
     assert " [GD1]" not in desc and " [GD2]" not in desc
     assert " [VCC12]" not in desc
     assert " [GL]" not in desc and " [GL_DRV]" not in desc
+    assert not any(" [SEC"+str(n)+"_"+side+"]" in desc
+                   for n in range(1,5) for side in ("A","B"))
+    assert not any(" [VD"+str(n)+"_B]" in desc for n in range(1,5))
 
 def test_actual_unresolved_U2_is_not_silenced():
     r=json.loads(D.read_text("utf8"))

@@ -46,7 +46,13 @@ def layout(native):
         elif ref in {f"R{k}" for k in range(20,28)}:
             yy = 66.
         elif ref in {f"R{k}" for k in range(28,36)}:
-            yy = 68.
+            # Relocate eight SR drain-sense series resistors on the DRIVER
+            # side of each FET, opposite the 66mm gate-row. The previous
+            # y=68mm locations forced 11-14mm SEC sense detours around the
+            # PGND/source pad row and needlessly lengthened VD_B stubs.
+            # y=54.5mm passed native pad and proxy assembly clearance
+            # screens; actual DRC and switch-node coupling remain required.
+            yy = 54.5
         elif ref == "J_IN":
             yy = 8.
         elif y < 30.:
