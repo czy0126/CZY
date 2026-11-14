@@ -17,17 +17,17 @@ PCB=G/"dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb"
 DRC=G/"g2_v17_KICAD_NATIVE_DRC_NOT_FOR_FAB.json"
 META=G/"g2_v17_real_kicad_native_build_NOT_FOR_FAB.json"
 OUT=G/"g2_v17_remaining_powercell_drc_handoff_NOT_FOR_FAB.json"
-EXPECTED={"SW":7,"VIN_P":2,"GH":1,"GH_DRV":1,"HB":1,"OC":1}
+EXPECTED={"SW":3,"VIN_P":2,"GH":1,"GH_DRV":1,"HB":1,"OC":1}
 
 GROUPS=(
     {"group":"primary_switch_node","nets":["SW"],
      "priority":"P0_before_board_release",
-     "proposed_action":"Review 48V half-bridge QH/QL, Cr, C5, R18 and U2 switch-node geometry. Draw SHORT, current-qualified local F.Cu shapes and dedicated low-current SW sense pickup; preserve limited SW copper area and creepage.",
+     "proposed_action":"Same-device QH SW finger ties and R18/C5 low-current references are now short local copper. Still open: QH/QL rated power link, resonant Cr and U2 SW pickup. Design broad current-qualified local half-bridge conductor and separate low-current SW sense pickup, preserving bounded dv/dt copper footprint and clearance.",
      "must_validate":["Native QH/Q L copper and actual OEM drain/source pin mapping",
                       "Hot-loop geometry and commutation inductance / gate return",
                       "Actual 48V input/ripple current, copper thickness, copper temperature",
                       "KiCad native DRC after zone refill and full current-path continuity"],
-     "do_not":"Do not join 7 SW ratsnest items with 0.2mm signal traces."},
+     "do_not":"Do not join the remaining 3 SW high-current and SW-sense ratsnest items with 0.2mm power traces; the two 0.75mm local finger straps are NOT power-loop signoff."},
     {"group":"primary_input_path","nets":["VIN_P"],
      "priority":"P0_before_board_release",
      "proposed_action":"Review J_IN.1 to QH high-side input pins and Cin.1 bypass loop. Use a current-qualified short copper polygon/plane with verified input connector pad geometry and input return.",
@@ -88,6 +88,7 @@ def generate():
         "audit_local_date":"2026-11-14",
         "owner_assignment":"UNASSIGNED_REQUIRES_USER_COORDINATION",
         "project_branch":"feat/d1-v17-agent-a-signals-20261113",
+        "local_SW_finger_source_sha256":sha(G/"g2_v17_local_SW_finger_reference_NOT_FOR_FAB.json"),
         "board_relative_path":PCB.relative_to(ROOT).as_posix(),
         "native_board_sha256":sha(PCB),
         "native_drc_sha256":sha(DRC),

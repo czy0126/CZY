@@ -13,9 +13,9 @@ def test_remaining_unconnected_are_grounded_in_current_KiCad_drc():
     assert d["native_drc_sha256"]==report.sha(report.DRC)
     assert d["native_meta_sha256"]==report.sha(report.META)
     assert d["status"]=="SOURCE_LOCKED_NATIVE_DRC_REMAINING_ISSUES_NOT_FOR_FAB"
-    assert d["unconnected_total"]==13
+    assert d["unconnected_total"]==9
     assert d["by_net"]=={
-        "GH":1,"GH_DRV":1,"HB":1,"OC":1,"SW":7,"VIN_P":2}
+        "GH":1,"GH_DRV":1,"HB":1,"OC":1,"SW":3,"VIN_P":2}
     assert all(len(d["net_endpoints"][n])==num
                for n,num in d["by_net"].items())
     assert d["remaining_violation_types"]=={"clearance":2}

@@ -1,0 +1,107 @@
+{
+  "status": "V17_LOCAL_SW_FINGERS_AND_SENSE_NOT_FOR_FAB",
+  "source_v15_sha": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+  "source_layout_sha": "c9cb8ed1754ae07ecc5bf8cf84ecb9ca30fe52cfc4e3ae863fefdc8548a75829",
+  "source_pgnd_sha": "e9dac278514223a6c0bec3ad1e90a0349a50794a291ded47d47093d080b5b679",
+  "source_signal_sha": "37f0ba9fc3c4d8bf5020accbce9734e88a51d537fb16ffe25946bf36855dbd62",
+  "source_bcu_sha": "a088823f379b16473d46af4975e1c6d2353a7a89fbb1a275f507ef9ffe255905",
+  "source_fine_sha": "c1455eb1ba1d04aa125e6493f3698e9140d1c5326fb1b6fbfe90fda9924f95a8",
+  "source_gate_sha": "8b8d684d49144adcefa07a8bcc2f5770f3797a558e565d7b2aac7f3e202256eb",
+  "source_sr_sha": "1e6e30fc7006bf3c4b7ae199b388f8e0e81aef3fa426f158a30e3ea07f37cc12",
+  "source_vdb_sha": "34809615b0933e24e78253c8fc34301283debd84393c6e10fc04620fa5d118d5",
+  "routes": [
+    {
+      "net": "SW",
+      "from": "QH.1",
+      "to": "QH.2",
+      "function": "same_device_finger_strap",
+      "width_mm": 0.75,
+      "length_mm": 1.27,
+      "layer": "F.Cu",
+      "segments": [
+        [
+          [
+            46.0933744,
+            9.750718400000004
+          ],
+          [
+            47.363374400000005,
+            9.750718400000004
+          ]
+        ]
+      ],
+      "current_rating_verified": false
+    },
+    {
+      "net": "SW",
+      "from": "QH.2",
+      "to": "QH.3",
+      "function": "same_device_finger_strap",
+      "width_mm": 0.75,
+      "length_mm": 1.27,
+      "layer": "F.Cu",
+      "segments": [
+        [
+          [
+            47.363374400000005,
+            9.750718400000004
+          ],
+          [
+            48.63337440000001,
+            9.750718400000004
+          ]
+        ]
+      ],
+      "current_rating_verified": false
+    },
+    {
+      "net": "SW",
+      "from": "QH.1",
+      "to": "R18.2",
+      "function": "low_current_sw_reference",
+      "width_mm": 0.3,
+      "length_mm": 3.24645,
+      "layer": "F.Cu",
+      "segments": [
+        [
+          [
+            46.0933744,
+            9.750718400000004
+          ],
+          [
+            43.75351894,
+            12.00116078
+          ]
+        ]
+      ],
+      "current_rating_verified": false
+    },
+    {
+      "net": "SW",
+      "from": "R18.2",
+      "to": "C5.2",
+      "function": "bootstrap_sw_reference",
+      "width_mm": 0.2,
+      "length_mm": 6.30636,
+      "layer": "F.Cu",
+      "segments": [
+        [
+          [
+            43.75351894,
+            12.00116078
+          ],
+          [
+            45.69916040000001,
+            17.99988062
+          ]
+        ]
+      ],
+      "current_rating_verified": false
+    }
+  ],
+  "QH_to_QL_power_continuity_complete": false,
+  "half_bridge_hot_loop_current_qualified": false,
+  "bootstrap_sw_reference_emc_approved": false,
+  "native_drc_passed": false,
+  "fab_release": false
+}

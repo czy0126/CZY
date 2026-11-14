@@ -58,7 +58,7 @@ def test_native_kicad_pcb_was_rebuilt_from_locked_source_and_drc_is_not_masked()
     assert meta["control_U1_VCC12_feed_via_count"]==1
     assert meta["U2_GD1_GD2_fine_escape_via_count"]==2
     assert meta["U2_GD1_GD2_fine_escape_segments"]==6
-    assert meta["native_actual_tracks"]==161
+    assert meta["native_actual_tracks"]==165
     assert meta["short_SR_drain_Kelvin_track_count"]==8
     assert meta["completed_remaining_VD_B_track_count"]==8
     assert meta["local_primary_gate_route_count"]==5
@@ -73,6 +73,6 @@ def test_native_kicad_pcb_was_rebuilt_from_locked_source_and_drc_is_not_masked()
     assert all(x["type"]=="clearance" and
                any("U2" in q.get("description","") for q in x["items"])
                for x in native["violations"])
-    assert len(native["unconnected_items"])<=13
+    assert len(native["unconnected_items"])<=9
     assert not any("[PGND]" in item.get("description","")
                    for entry in native["unconnected_items"] for item in entry["items"])

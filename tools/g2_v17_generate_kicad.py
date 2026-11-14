@@ -33,6 +33,7 @@ GD_ESCAPE=G/"g2_v17_u2_gd1_gd2_layer_escape_NOT_FOR_FAB.json"
 LOCAL_GATE=G/"g2_v17_local_primary_gate_routes_NOT_FOR_FAB.json"
 SR_KELVIN=G/"g2_v17_short_sr_drain_kelvin_NOT_FOR_FAB.json"
 VD_B_SENSE=G/"g2_v17_remaining_VD_B_short_sense_NOT_FOR_FAB.json"
+SW_LOCAL=G/"g2_v17_local_SW_finger_reference_NOT_FOR_FAB.json"
 SOURCE_SHA="02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75"
 CORE_X=(20.,58.,96.,134.)
 
@@ -413,6 +414,36 @@ def build():
             raise ValueError("VD_B route detached from real pad")
         for start,end in route["segments"]:
             segment(board,net_obj[route["net"]],pcb.F_Cu,start,end,route["width_mm"])
+    # The same-device QH SW fingers require local copper to form a native
+    # net; additional R18/C5 connections are low-current SW sense / boot
+    # references, NOT the QH-to-QL rated inter-device half-bridge bus.
+    sw_model=loadjson(SW_LOCAL)
+    sw_sources={"source_v15_sha":sha(SOURCE),
+                "source_layout_sha":sha(LAYOUT),
+                "source_pgnd_sha":sha(COPPER),
+                "source_signal_sha":sha(SIGNAL),
+                "source_bcu_sha":sha(BRIDGE),
+                "source_fine_sha":sha(GD_ESCAPE),
+                "source_gate_sha":sha(LOCAL_GATE),
+                "source_sr_sha":sha(SR_KELVIN),
+                "source_vdb_sha":sha(VD_B_SENSE)}
+    if any(sw_model.get(k)!=v for k,v in sw_sources.items()):
+        raise ValueError("Local SW copper evidence detached from native inputs")
+    sw_expected=[("QH.1","QH.2",.75),("QH.2","QH.3",.75),
+                 ("QH.1","R18.2",.30),("R18.2","C5.2",.20)]
+    if [(r["from"],r["to"],r["width_mm"]) for r in sw_model["routes"]]!=sw_expected:
+        raise ValueError("Unapproved SW copper added to local pilot")
+    if sw_model["QH_to_QL_power_continuity_complete"] or sw_model["fab_release"]:
+        raise ValueError("Unjustified switching-power release flag")
+    for route in sw_model["routes"]:
+        if (route["net"]!="SW" or route["layer"]!="F.Cu" or len(route["segments"])!=1
+            or route["length_mm"]>6.7 or route["current_rating_verified"]):
+            raise ValueError("Unapproved wide/power SW path")
+        a,b=route["segments"][0]
+        if (math.dist(a,actual_pad_xy(route["from"],"SW"))>.015
+            or math.dist(b,actual_pad_xy(route["to"],"SW"))>.015):
+            raise ValueError("SW local copper not on real PCB pad")
+        segment(board,net_obj["SW"],pcb.F_Cu,a,b,route["width_mm"])
     # Keep gate drive and CS/OC Kelvin trunks out of main return copper:
     # ground high frequency plane pair for Cout+SR, local primary input,
     # and discrete top/bottom PGND overlay islands. Zones are real KiCad.
@@ -453,6 +484,7 @@ def build():
         "source_local_primary_gate_sha256":sha(LOCAL_GATE),
         "source_SR_drain_kelvin_sha256":sha(SR_KELVIN),
         "source_remaining_VD_B_sha256":sha(VD_B_SENSE),
+        "source_SW_local_fingers_sha256":sha(SW_LOCAL),
         "kicad_version":pcb.Version(),
         "saved_board":OUTPUT.name,
         "saved_board_sha256":hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
@@ -482,6 +514,7 @@ def build():
         "short_SR_drain_Kelvin_track_count":len(sr_model["routes"]),
         "short_SR_drain_Kelvin_longest_mm":max(r["actual_length_mm"] for r in sr_model["routes"]),
         "completed_remaining_VD_B_track_count":sum(len(r["segments"]) for r in vd_b_model["routes"]),
+        "local_SW_same_device_fingers_and_reference_tracks":len(sw_model["routes"]),
         "native_extra_pgnd_stitches":extra_ground_sites,
         "critical_missing":[
            "FOUR 3:1:1 physical PCB winding footprints T1..T4, and CT winding",
@@ -493,6 +526,7 @@ def build():
            "Primary GH_DRV and full VIN_P/SW/HB remain unclosed; no gate-loop inductance or EMC signoff",
            "Eight near-pad SR Kelvin leads require OEM drain pinout, EMC/switch overshoot and current-sharing review",
            "VD_B low-current sense routes require full Kelvin return and EMI immunity signoff",
+           "QH same-device SW fingers and low-current SW reference stubs are not a current-rated complete QH/QL resonant hot loop",
            "Actual 100A external/embedded two-pole copper bar; original J_OUT inadequate",
            "Remaining circuitry nets and all P1 schematic parity",
            "Native board full DRC/EMI/thermal, import parity to EasyEDA"

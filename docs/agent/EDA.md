@@ -686,11 +686,12 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
 - **事实与边界**：本 worktree 的 `hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb`
   是实际可打开的 KiCad 10 PCB，不是只有老鼠线的画面，也不代表制造就绪。冻结 V15 数据源
   的 149 个器件、419 个实际焊盘、12 层定义、已填充的 7 个铜区保持不变；
-  本轮经 R28–R35 实际重摆和 SR Kelvin 布线后是 359 个通孔过孔、161 段走线。
+  本轮经 R28–R35 重摆、SR Kelvin 布线及 SW 本机指状焊盘短接后是 359 个通孔过孔、165 段走线。
 - **原生 DRC 对比（必须带版本）**：2026-11-13 原版 42 条 unconnected、2 条 clearance；
   2026-11-14 本轮继续实布 U1 供电、U2 GD1/GD2 扇出及五条主桥本地门极/自举支路，
   初期为 24 条 unconnected、2 条 clearance；SR 阶段真实重摆和复检后为
-  **13 条 unconnected、2 条 clearance**，未新增短路/违规；其中 **PGND 未连接 0 条**。
+  初轮为 **13 条 unconnected、2 条 clearance**，追加局部 SW 铜线并重新铺铜后
+  **最终 9 条 unconnected、2 条 clearance**，未新增短路/违规；其中 **PGND 未连接 0 条**。
   这只证明当前 KiCad 计算的网表/铜区连续性，不代表高频回路、铜排承载或 EMC 已签核。
   余下的两项全部来自 **U2** 原生导入的 0.5 mm 邻脚（0.2000 mm 规则，
   实际 0.1981 mm），不可通过降低 DRC 阈值来“修复”；必须核对真实 OEM 封装。
@@ -743,6 +744,16 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
   仍由原保守信号布线器管理。四路 B 输入在 KiCad 原生 DRC 均连通。
   **这些线只是对应真实 NET 的电流检测引线，绝非可承受 25 A 的 SEC 功率铜**，
   不构成 OEM SR 漏极引脚映射、Kelvin 回流、电感提取、环路干扰与器件 SOA 的签核。
+- **SW 本机短铜与两条低电流参考线（同日 V17 再增量）**：
+  `tools/g2_v17_local_sw_fingers.py` 仅允许 `QH.1→QH.2`、
+  `QH.2→QH.3` 这两段 1.27 mm、0.75 mm F.Cu 的**同一 MOSFET 相邻 SW 焊盘短接**；
+  将 `QH.1→R18.2`（3.25 mm、0.30 mm）和 `R18.2→C5.2`（6.31 mm、0.20 mm）
+  明确标记为 **SW 参考/自举低电流铜线**，不允许计入半桥的额定电流承载截面。
+  四条均与被冻结 V15 的真实 PAD 编号、所有既有走线/过孔/磁件开槽检查绑定，
+  写入 KiCad、重新填铜后 SW 未连接由 7→3，主板总未连接由 13→9，
+  PGND 未连接仍为 0，已有 2 项 U2 间距未掩盖。
+  **QH→QL、Cr 功率连接仍未完成；**这些小段铜不构成 48 V 半桥高电流的完整
+  功率路径、开关节点 dv/dt/EMC、器件 SOA 或过渡区载流认证。
 - **复现顺序（不能拿规划 JSON 当签核）**：
   `D:\\anaconda3\\python.exe tools/g2_v17_compact_emc_screen.py --write` →
   `D:\\anaconda3\\python.exe tools/g2_v17_pgnd_power_route_screen.py --write` →
@@ -752,21 +763,22 @@ close 协议，只读、不保存，输出 `driver_rules_raw.json`）。G1 的 `
   `D:\\anaconda3\\python.exe tools/g2_v17_local_primary_gate_routes.py` →
   `D:\\anaconda3\\python.exe tools/g2_v17_short_sr_drain_kelvin.py` →
   `D:\\anaconda3\\python.exe tools/g2_v17_remaining_vdb.py` →
+  `D:\\anaconda3\\python.exe tools/g2_v17_local_sw_fingers.py` →
   KiCad 10 自带 `python.exe tools/g2_v17_generate_kicad.py` →
   KiCad 10 的 `kicad-cli pcb drc --format json -o hardware/dcx_main/g2/g2_v17_KICAD_NATIVE_DRC_NOT_FOR_FAB.json hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb` →
   `D:\\anaconda3\\python.exe tools/g2_v17_remaining_powercell_handoff.py` →
-  `python -m pytest tools/test_g2_v17_signal_and_bcu.py tools/test_g2_v17_u2_fine_escape.py tools/test_g2_v17_local_primary_gate.py tools/test_g2_v17_sr_repack_kelvin.py tools/test_g2_v17_remaining_handoff.py tools/test_g2_v17_native_kicad_drc.py -q`。
+  `python -m pytest tools/test_g2_v17_signal_and_bcu.py tools/test_g2_v17_u2_fine_escape.py tools/test_g2_v17_local_primary_gate.py tools/test_g2_v17_sr_repack_kelvin.py tools/test_g2_v17_local_sw_fingers.py tools/test_g2_v17_remaining_handoff.py tools/test_g2_v17_native_kicad_drc.py -q`。
   生成器强制验证冻结源、摆放与信号规划 SHA，过孔所在的真实 KiCad 焊盘编号和 XY 必须对应。
 - **制造闸门**：T1–T4/CT 的 3:1:1 物理绕组与真实 DOT、100 A 双极铜排与
   多触点输出、12 层磁件制程、过孔填盖、原理图↔PCB parity、全网 DRC
-  与 EMC/热测量都未签核。剩余 **13 条**分布：SW 7、VIN_P 2、GH/R18 1、
+  与 EMC/热测量都未签核。剩余 **9 条**分布：SW 3（QH→QL、Cr、U2 SW 检测）、VIN_P 2、GH/R18 1、
   GH_DRV 1、HB/U2 1、OC 长距离故障链 1。SR 八条 SEC 检测支路与 VD_B 四条已实际连通，
   但需物理器件 SOA/EMC、厂家铜厚与可靠性确认；高电流 SW/VIN_P 应按完整半桥热回路与
-  宽铜/铜排/绝缘设计，不能用细线凑 DRC 计数，更不能把 13 条未连接误写为 0。
+  宽铜/铜排/绝缘设计，不能用细线凑 DRC 计数，更不能把 9 条未连接误写为 0。
 - **下一轮机器可校验的阻塞交接**：`tools/g2_v17_remaining_powercell_handoff.py` 从刚运行的 KiCad
   DRC、实际 PCB SHA256 和生成元数据自动生成
   `hardware/dcx_main/g2/g2_v17_remaining_powercell_drc_handoff_NOT_FOR_FAB.json`；
-  固定 13 条实际剩余端点和两条 U2 邻脚间距、按 *SW 功率铜 / VIN_P 输入 / GH-GH_DRV-HB
+  固定 9 条实际剩余端点和两条 U2 邻脚间距、按 *SW 功率铜 / VIN_P 输入 / GH-GH_DRV-HB
   高侧驱动 / OC 保护信号* 四个工作域组织后续核查，缺/多一条均强制失败。
   P0：先完成全电流半桥 VIN/SW 铜路径与旁路热回路；高侧驱动电阻和自举电容联合布局，
   再抽取门极回路寄生与 OC 保护延迟；最后与实际磁件、100 A 双极铜排、冷板机械约束

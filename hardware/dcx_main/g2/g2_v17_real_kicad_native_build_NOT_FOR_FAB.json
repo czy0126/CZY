@@ -5,9 +5,10 @@
   "source_local_primary_gate_sha256": "8b8d684d49144adcefa07a8bcc2f5770f3797a558e565d7b2aac7f3e202256eb",
   "source_SR_drain_kelvin_sha256": "1e6e30fc7006bf3c4b7ae199b388f8e0e81aef3fa426f158a30e3ea07f37cc12",
   "source_remaining_VD_B_sha256": "34809615b0933e24e78253c8fc34301283debd84393c6e10fc04620fa5d118d5",
+  "source_SW_local_fingers_sha256": "58bc69a8530da127ee53cc6b4afeae2f9a328a65583d3153f115ef615e049860",
   "kicad_version": "10.0.6",
   "saved_board": "dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb",
-  "saved_board_sha256": "4b66f051fd256ab6821c5a4b315042f613bfd8d0005f244725b5dfd99e5d4772",
+  "saved_board_sha256": "03ff237151e14e182be71f92acced8ddab79b04bd0676024acc41c0a4696b097",
   "board_mm": [
     155,
     113
@@ -17,7 +18,7 @@
   "native_actual_footprints": 149,
   "native_actual_footprint_pads": 419,
   "native_actual_vias": 359,
-  "native_actual_tracks": 161,
+  "native_actual_tracks": 165,
   "native_actual_copper_zones": 7,
   "saved_zones_filled": true,
   "zone_fill_error": null,
@@ -39,6 +40,7 @@
   "short_SR_drain_Kelvin_track_count": 8,
   "short_SR_drain_Kelvin_longest_mm": 2.68197,
   "completed_remaining_VD_B_track_count": 8,
+  "local_SW_same_device_fingers_and_reference_tracks": 4,
   "native_extra_pgnd_stitches": [],
   "critical_missing": [
     "FOUR 3:1:1 physical PCB winding footprints T1..T4, and CT winding",
@@ -50,6 +52,7 @@
     "Primary GH_DRV and full VIN_P/SW/HB remain unclosed; no gate-loop inductance or EMC signoff",
     "Eight near-pad SR Kelvin leads require OEM drain pinout, EMC/switch overshoot and current-sharing review",
     "VD_B low-current sense routes require full Kelvin return and EMI immunity signoff",
+    "QH same-device SW fingers and low-current SW reference stubs are not a current-rated complete QH/QL resonant hot loop",
     "Actual 100A external/embedded two-pole copper bar; original J_OUT inadequate",
     "Remaining circuitry nets and all P1 schematic parity",
     "Native board full DRC/EMI/thermal, import parity to EasyEDA"
