@@ -1,0 +1,35 @@
+{
+  "status": "NATIVE_VIN_P_3_TRACK_CANDIDATE_PENDING_DRC_NOT_FOR_FAB",
+  "parent": "dcx_main_board_g2_V17_OEM_T530_72_INTEGRATED_NOT_FOR_FAB.kicad_pcb",
+  "parent_sha256": "059ef9222714c9e8da262629381fce48a11ec64f9bd7ca60460e40bd3ceccabb",
+  "candidate": "dcx_main_board_g2_V17_OEM_T530_72_VIN_INPUT_CANDIDATE_NOT_FOR_FAB.kicad_pcb",
+  "candidate_sha256": "4a0390fcb492df27b178d398f4697b528fa81c9a9f7fe1bb2d0ce45f7aef8e5a",
+  "net": "VIN_P",
+  "endpoint_a": "J_IN.1",
+  "endpoint_b": "QH.5",
+  "width_mm": 1.8,
+  "waypoints_mm": [
+    [
+      65.458755,
+      6.998882
+    ],
+    [
+      65.458755,
+      2.25
+    ],
+    [
+      49.908454,
+      2.25
+    ],
+    [
+      49.908454,
+      4.249078
+    ]
+  ],
+  "actual_tracks_added": 3,
+  "source_track_count": 524,
+  "saved_readback_track_count": 527,
+  "input_Cin_VIN_P_connection_verified": false,
+  "full_primary_hot_loop_emc_verified": false,
+  "fabrication_approved": false
+}

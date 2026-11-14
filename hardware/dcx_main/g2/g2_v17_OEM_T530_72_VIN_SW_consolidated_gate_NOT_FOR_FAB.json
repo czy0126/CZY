@@ -1,0 +1,99 @@
+{
+  "schema": "d1_v17_oem72_partial_copper_gate/1",
+  "status": "WIP_NOT_FOR_FAB",
+  "parent_board_sha256": "2cbf559bd7fd67c1673d54cb36048dda7cbcf7e742a2fedb6930ed9c7553986f",
+  "oem_land_sha256": "edddfa63c335de77b9f4c9a09d800bf67a89a9b15a92984e778fe88861b96257",
+  "replaced_oem_footprints": 72,
+  "rotated_180_for_net_polarity": 36,
+  "stages": [
+    {
+      "name": "oem",
+      "board_file": "dcx_main_board_g2_V17_OEM_T530_72_INTEGRATED_NOT_FOR_FAB.kicad_pcb",
+      "board_sha256": "059ef9222714c9e8da262629381fce48a11ec64f9bd7ca60460e40bd3ceccabb",
+      "drc_file": "g2_v17_OEM_T530_72_integrated_native_DRC_NOT_FOR_FAB.json",
+      "drc_sha256": "2b45c54bb9dc53a8f70a2e21b1e55d0b00360e577b55c52ef72d980b7fd51837",
+      "rule_violations": 0,
+      "unconnected": 9,
+      "unconnected_by_net": {
+        "GH": 1,
+        "GH_DRV": 1,
+        "HB": 1,
+        "OC": 1,
+        "SW": 3,
+        "VIN_P": 2
+      },
+      "ignored_drc_checks": [
+        "missing_courtyard",
+        "track_not_centered_on_via",
+        "tuning_profile_track_geometries",
+        "footprint_filters_mismatch",
+        "footprint_type_mismatch"
+      ]
+    },
+    {
+      "name": "vin",
+      "board_file": "dcx_main_board_g2_V17_OEM_T530_72_VIN_INPUT_CANDIDATE_NOT_FOR_FAB.kicad_pcb",
+      "board_sha256": "4a0390fcb492df27b178d398f4697b528fa81c9a9f7fe1bb2d0ce45f7aef8e5a",
+      "drc_file": "g2_v17_OEM_T530_72_VIN_input_native_DRC_NOT_FOR_FAB.json",
+      "drc_sha256": "69947aa76ae163196e8fc0a4614ee0da1a372992393ee5eef1adf53fadfa37ba",
+      "rule_violations": 0,
+      "unconnected": 8,
+      "unconnected_by_net": {
+        "GH": 1,
+        "GH_DRV": 1,
+        "HB": 1,
+        "OC": 1,
+        "SW": 3,
+        "VIN_P": 1
+      },
+      "ignored_drc_checks": [
+        "missing_courtyard",
+        "track_not_centered_on_via",
+        "tuning_profile_track_geometries",
+        "footprint_filters_mismatch",
+        "footprint_type_mismatch"
+      ]
+    },
+    {
+      "name": "sw",
+      "board_file": "dcx_main_board_g2_V17_OEM_T530_72_VIN_SW_CANDIDATE_NOT_FOR_FAB.kicad_pcb",
+      "board_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+      "drc_file": "g2_v17_OEM_T530_72_VIN_SW_native_DRC_NOT_FOR_FAB.json",
+      "drc_sha256": "90d9fc6c0b507547aa8b43a78985a52084f098253c1904fc3daa2f141672fb96",
+      "rule_violations": 0,
+      "unconnected": 7,
+      "unconnected_by_net": {
+        "GH": 1,
+        "GH_DRV": 1,
+        "HB": 1,
+        "OC": 1,
+        "SW": 2,
+        "VIN_P": 1
+      },
+      "ignored_drc_checks": [
+        "missing_courtyard",
+        "track_not_centered_on_via",
+        "tuning_profile_track_geometries",
+        "footprint_filters_mismatch",
+        "footprint_type_mismatch"
+      ]
+    }
+  ],
+  "remaining_current_candidate_unconnected": 7,
+  "remaining_missing_magnetics": [
+    "CT",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "remaining_blockers": [
+    "Full source schematic-to-PBC parity and physical magnetic windings not verified",
+    "Cin positive and complete QH/QL SW hot loop are not closed",
+    "SW Cr 0.8mm pad transition current and thermal rating not verified",
+    "Five KiCad DRC checks remain ignored, OEM Courtyard and 12-layer fab rules require review",
+    "Full 100A dual-pole bus, current sharing, transient protection, EMC and cooling unqualified",
+    "Complete-product density at or above 2W/cm3 not demonstrated"
+  ],
+  "fab_release": false
+}
