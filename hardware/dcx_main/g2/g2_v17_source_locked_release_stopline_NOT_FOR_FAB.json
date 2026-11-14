@@ -1,0 +1,72 @@
+{
+  "schema": "d1_v17_release_stopline/1",
+  "basis": "V17 KiCad independent physical PCB candidate, NOT EasyEDA manufacturing release",
+  "evidence_sha256": {
+    "pcb": "2cbf559bd7fd67c1673d54cb36048dda7cbcf7e742a2fedb6930ed9c7553986f",
+    "native_v15": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+    "drc_checkout_bytes": "d296ae05c7fb52d26ca2d9fc97789ec3d35994a31974c46524fb7f0d3ba40161",
+    "drc_archived_crlf": "3c7d6873b45949b463cfa891c6ceb1150213a0adfc3a6a4bb5165a42e9555ea7",
+    "build": "e7a4cca90cf751b64c9082a021c9ddb4e4366db639c710b37c4e70352f6bad2a",
+    "parity": "4d7b7736ebd1fb6ac54b778396024f5c6d5c614e8d0985139d07468b5d4d19be",
+    "magnetics_terminal_contract": "1c6ccbf922e62c801bea17cf1234583fd262fb5f9d0df12d809f65e4f62dd123"
+  },
+  "observed": {
+    "rule_violations": 0,
+    "unconnected_total": 9,
+    "unconnected_by_net": {
+      "GH": 1,
+      "GH_DRV": 1,
+      "HB": 1,
+      "OC": 1,
+      "SW": 3,
+      "VIN_P": 2
+    },
+    "ignored_drc_checks": [
+      "missing_courtyard",
+      "track_not_centered_on_via",
+      "tuning_profile_track_geometries",
+      "footprint_filters_mismatch",
+      "footprint_type_mismatch"
+    ],
+    "missing_magnetic_refs": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "design_logical_magnetic_terminals": 24,
+    "vendor_terminals_signed": false
+  },
+  "checks": {
+    "pcb_sha_matches_native_build": true,
+    "v15_native_source_sha_matches": true,
+    "pcb_sha_matches_pin_parity": true,
+    "drc_sha_matches_pin_parity": true,
+    "drc_source_is_this_pcb": true,
+    "drc_zero_rule_violations": true,
+    "drc_zero_unconnected": false,
+    "drc_no_ignored_checks": false,
+    "pgnd_and_vout_continuity_recorded": true,
+    "five_physical_magnetics_present": false,
+    "all_24_magnetics_vendor_pins_and_dot_signed": false,
+    "full_schematic_pcb_pin_parity": false,
+    "oem_footprint_release": false,
+    "rated_100a_output_and_coldplate": false,
+    "thermal_emi_and_100a_evidence": false,
+    "native_cad_release_flag": false
+  },
+  "blocking_checks": [
+    "drc_zero_unconnected",
+    "drc_no_ignored_checks",
+    "five_physical_magnetics_present",
+    "all_24_magnetics_vendor_pins_and_dot_signed",
+    "full_schematic_pcb_pin_parity",
+    "oem_footprint_release",
+    "rated_100a_output_and_coldplate",
+    "thermal_emi_and_100a_evidence",
+    "native_cad_release_flag"
+  ],
+  "can_fabricate": false,
+  "status": "NOT_FOR_FAB"
+}

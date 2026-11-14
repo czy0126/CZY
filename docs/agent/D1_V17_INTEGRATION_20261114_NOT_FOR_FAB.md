@@ -1,6 +1,8 @@
 # D1 / V17 集成版：原生 KiCad PCB 与 PGND/VOUT 制造门禁（2026-11-14）
 
 **结论：已生成可重复的 KiCad 10.0.6 PCB 与真实连接/铜层，仍为 \`NOT_FOR_FAB\`。** 
+**并行复核与硬门禁**：新建 [三工作包可执行交接](D1_V17_PARALLEL_HANDOFF_20261114_NOT_FOR_FAB.md) 和 [源绑定制造阻断审计](../../hardware/dcx_main/g2/g2_v17_source_locked_release_stopline_NOT_FOR_FAB.json)；两者是本集成基线的附加检查，不代表更多实体铜线已连接。
+
 本分支从 Agent-A 已通过 KiCad DRC 的 \`46844814e2eb473d2b69570b00a59c636cf60a13\` 开始，绝不覆盖用户原目录及 Agent B/C/D 并行成果。独立重新生成与DRC不再被 Windows CRLF/Git LF 转换阻断。
 
 ## 1. 当前被独立验证的实际板
