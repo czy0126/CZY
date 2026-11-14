@@ -1,0 +1,42 @@
+{
+  "status": "NATIVE_VIN_AND_PARTIAL_SW_POWER_COPPER_DRC_PENDING_NOT_FOR_FAB",
+  "parent": "dcx_main_board_g2_V17_OEM_T530_72_VIN_INPUT_CANDIDATE_NOT_FOR_FAB.kicad_pcb",
+  "parent_sha256": "4a0390fcb492df27b178d398f4697b528fa81c9a9f7fe1bb2d0ce45f7aef8e5a",
+  "candidate": "dcx_main_board_g2_V17_OEM_T530_72_VIN_SW_CANDIDATE_NOT_FOR_FAB.kicad_pcb",
+  "candidate_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "net": "SW",
+  "endpoints": [
+    "QH.1",
+    "Cr.1"
+  ],
+  "physical_top_copper_segments": [
+    {
+      "start": [
+        46.089682,
+        9.750718
+      ],
+      "end": [
+        39.300331,
+        9.750718
+      ],
+      "width_mm": 1.8
+    },
+    {
+      "start": [
+        39.300331,
+        9.750718
+      ],
+      "end": [
+        39.300331,
+        6.998882
+      ],
+      "width_mm": 0.8
+    }
+  ],
+  "source_track_and_via_count": 527,
+  "new_track_and_via_count": 529,
+  "QH_QL_SW_full_copper_verified": false,
+  "Cr_terminal_current_rated": false,
+  "hot_loop_losses_and_emc_verified": false,
+  "factory_approved": false
+}
