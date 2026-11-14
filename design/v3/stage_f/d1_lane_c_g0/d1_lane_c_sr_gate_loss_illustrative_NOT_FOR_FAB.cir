@@ -1,0 +1,19 @@
+* D1 Lane C issue #133: SR gate loss-of-bias RC screen. NOT_FOR_FAB.
+* THIS IS NOT A UCC27524A transistor-level model nor a hardware qualification.
+* 6.7 nF dummy SR gate load, 10k physical bleeder, 3.1 ohm
+* idealized driven pull-down (0.9 typ UCC27524A + 2.2 series).
+* Both nodes initialized to 12 V. Driven case assumes healthy powered driver
+* sinking low; passive case assumes driver becomes HIGH-Z on 12V supply loss.
+* All secondary gate traces require real source-Kelvin measurement.
+Cpassive GA_PASS 0 6.7n IC=12
+Rpassive GA_PASS 0 10k
+Cdriven GA_DRIVEN 0 6.7n IC=12
+Rdriven_bleed GA_DRIVEN 0 10k
+Rdriver_sink_typ GA_DRIVEN 0 3.1
+.tran 0 350u 0 5n uic
+.meas tran passive_to_1p3 WHEN V(GA_PASS)=1.3 FALL=1
+.meas tran driven_typ_to_1p3 WHEN V(GA_DRIVEN)=1.3 FALL=1
+.meas tran passive_at_10us FIND V(GA_PASS) AT=10u
+.meas tran passive_at_100us FIND V(GA_PASS) AT=100u
+.save V(GA_PASS) V(GA_DRIVEN)
+.end

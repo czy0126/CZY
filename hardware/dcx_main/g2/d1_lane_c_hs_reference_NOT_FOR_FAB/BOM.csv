@@ -1,0 +1,206 @@
+Reference,Value,Footprint,Rating,Note,DNP,Provenance,Source,Qty
+J1,VBIAS 12V,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,,"primary-side bias, polarity marked",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J2,VCC12_S,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,,"secondary-side bias, polarity marked",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+F1,0.5A,Fuse:Fuse_1206_3216Metric,0.5 A,bias fuse,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+F2,0.5A,Fuse:Fuse_1206_3216Metric,0.5 A,bias fuse,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D1,SS34,Diode_SMD:D_SMA,40 V 3 A,reverse-polarity block; V12P = 12 V - 0.5 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D2,SS34,Diode_SMD:D_SMA,40 V 3 A,reverse-polarity block; V12S = 12 V - 0.5 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D3,SMBJ15A,Diode_SMD:D_SMB,15 V standoff,clamp,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D4,SMBJ15A,Diode_SMD:D_SMB,15 V standoff,clamp,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U1,L7805,Package_TO_SOT_SMD:TO-252-2,"1 A, 2 V dropout",5 V logic rail; V12P - 0.5 V reverse block still >= 10 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C1,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,L7805 input,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C2,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,L7805 input,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C3,1uF/16V,Capacitor_SMD:C_1206_3216Metric,16 V X7R,L7805 output,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C4,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,L7805 output,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C5,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,secondary bias,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C6,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,secondary bias,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U2,TL431LP,Package_TO_SOT_THT:TO-92_Inline,2.5 V shunt,"TI LP is TO-92: K=1, A=2, REF=3; K/REF are shorted only in this 2.500 V design",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R1,1k,Resistor_SMD:R_0603_1608Metric,,"TL431 cathode bias, 2.5 mA",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C7,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,reference bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R2,15k,Resistor_SMD:R_0603_1608Metric,,divider top: 2.5 V * 10/25 = 1.000 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R3,10k,Resistor_SMD:R_0603_1608Metric,,divider bottom,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C8,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,trip threshold bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R4,6.2k,Resistor_SMD:R_0603_1608Metric,,2.5 V * 15/21.2 = 1.769 V; fast threshold on the filtered node,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R5,15k,Resistor_SMD:R_0603_1608Metric,,divider bottom,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C9,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,threshold bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R6,23k,Resistor_SMD:R_0603_1608Metric,,2.5 V * 2/25 = 0.200 V; gate-sum threshold,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R7,2k,Resistor_SMD:R_0603_1608Metric,,divider bottom,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C10,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,threshold bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J3,CT secondary,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm,<=20 V peak,CT 24/35-turn secondary; this board IS the burden path,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D5,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S1 -> cathode OCD (deck D1),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:112,1
+D6,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode CT_S2 -> cathode OCD (deck D2),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:113,1
+D7,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S1 (deck D3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:114,1
+D8,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,bridge: anode OCM -> cathode CT_S2 (deck D4),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:115,1
+R8,10R 1%,Resistor_SMD:R_0805_2012Metric,0.25 W,burden Rbur (main R3),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:118,1
+R9,1k,Resistor_SMD:R_0603_1608Metric,,Rf (main R15),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:119,1
+C11,47nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Cf (main C11),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:120,1
+R10,10k,Resistor_SMD:R_0603_1608Metric,,Rd1 (main R16),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:121,1
+R11,24k,Resistor_SMD:R_0603_1608Metric,,Rd2: divider gain 24/35 = 0.6857 (main R17),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:122,1
+C12,10nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,Coc (main C12),,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:123,1
+R12,10k,Resistor_SMD:R_0603_1608Metric,,"fast-channel filter, 10 us with C13",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C13,1nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,fast-channel filter,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R13,0R,Resistor_SMD:R_0603_1608Metric,,single-point return tie; no isolation,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U3,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,36 V,"U3A trip, U3B fast trip; open collector, low = below threshold",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R14,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R15,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U4,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,36 V,rail-good: output high only while the divider exceeds 1.000 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R16,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R17,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R20,100k,Resistor_SMD:R_0603_1608Metric,,"UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R21,10k,Resistor_SMD:R_0603_1608Metric,,"UVLO source input: 11.1V rising, 10.6V falling with 1M feedback nominal",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C14,1nF/50V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,"UVLO raw-rail RC filter, nominal ~9.1us before hysteresis; real timing pending",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R22,100k,Resistor_SMD:R_0603_1608Metric,,"UVLO divider: trip at 7.80 V, 1.54 V at 12 V (inside the 3.5 V CM limit)",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R23,10k,Resistor_SMD:R_0603_1608Metric,,"UVLO source input: 11.1V rising, 10.6V falling with 1M feedback nominal",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C15,1nF/50V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,"UVLO raw-rail RC filter, nominal ~9.1us before hysteresis; real timing pending",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U5,LM393,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,36 V,V5_OK is also comparator_bias_good; U5B watches the gate maximum,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R18,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R19,10k,Resistor_SMD:R_0603_1608Metric,,open-collector pull-up,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R24,100k,Resistor_SMD:R_0603_1608Metric,,5 V supervisor: trip at 3.13 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R25,47k,Resistor_SMD:R_0603_1608Metric,,1.0 V * 147/47 = 3.13 V,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C16,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,divider bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J5,CT_OK strap,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,shunt = CT considered valid; open wire = invalid,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R26,10k,Resistor_SMD:R_0603_1608Metric,,default invalid,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J6,SS_READY strap,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,start_sequence_ready from the main board,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R27,10k,Resistor_SMD:R_0603_1608Metric,,default not ready,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J7,FAST_ARMED strap,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,armed; separate from SS_READY,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R28,10k,Resistor_SMD:R_0603_1608Metric,,default unarmed,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J8,OPERATOR_RUN strap,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,operator run,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R29,10k,Resistor_SMD:R_0603_1608Metric,,default run low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J9,ACK button,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,press = ACK high; release = low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R30,100k,Resistor_SMD:R_0603_1608Metric,,ACK pull-down; release decay in ACK_TIMING_UNQUALIFIED,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C17,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,contact debounce,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R31,100k,Resistor_SMD:R_0603_1608Metric,,edge-detect lag; window in ACK_TIMING_UNQUALIFIED,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C18,10nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,edge-detect lag,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R32,100k,Resistor_SMD:R_0603_1608Metric,,"power-on reset, 8 ms to VT+ with C19",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C19,100nF/16V,Capacitor_SMD:C_0603_1608Metric,16 V X7R,power-on reset,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U6,CD4081BE,Package_DIP:DIP-14_W7.62mm,,HEALTHY = four rail/CT supervisors ANDed,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U7,CD4081BE,Package_DIP:DIP-14_W7.62mm,,READY also needs every gate measured off,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U8,CD4081BE,Package_DIP:DIP-14_W7.62mm,,PERMIT: same terms as the contract's permits product,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U9,CD4081BE,Package_DIP:DIP-14_W7.62mm,,RST_EFF also ANDs LATCHED: the model's reset_valid term,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U10,CD4071BE,Package_DIP:DIP-14_W7.62mm,,fault = hard trip OR armed fast trip OR any supervisor down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U11,CD4069UBE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U19,CD4071BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U12,CD4013BE,Package_DIP:DIP-14_W7.62mm,,"FF1: SET=FLT, RESET=RST_EFF, clock static; ~Q is the permit term",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U13,HEF4093BT,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,,Schmitt on the RC node: the delayed copy for edge detection,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R33,10k,Resistor_SMD:R_0603_1608Metric,,Q1 base resistor,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+Q1,MMBT3904,Package_TO_SOT_SMD:SOT-23,40 V,opens PDRV only while PERMIT is high,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R34,100k,Resistor_SMD:R_0603_1608Metric,,PDRV pull-up: default high = PMOS off,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+Q2,BSS84,Package_TO_SOT_SMD:SOT-23,50 V,"high-side PMOS: pin 2 is the source, so source=V5 and drain=rail keep the body diode reverse-biased while off",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R35,100k,Resistor_SMD:R_0603_1608Metric,,defines the rail low whenever the PMOS is off,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U14,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R36,4.7k,Resistor_SMD:R_0603_1608Metric,,U14 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R37,4.7k,Resistor_SMD:R_0603_1608Metric,,U14 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C20,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U14 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C21,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U14 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U15,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R38,4.7k,Resistor_SMD:R_0603_1608Metric,,U15 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R39,4.7k,Resistor_SMD:R_0603_1608Metric,,U15 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C22,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U15 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C23,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U15 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U16,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R40,4.7k,Resistor_SMD:R_0603_1608Metric,,U16 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R41,4.7k,Resistor_SMD:R_0603_1608Metric,,U16 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C24,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U16 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C25,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U16 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U17,UCC27524ADR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,dual 5 A,ENA/ENB must be pulled low externally: internal 200 k pulls HIGH,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R42,4.7k,Resistor_SMD:R_0603_1608Metric,,U17 ENA default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R43,4.7k,Resistor_SMD:R_0603_1608Metric,,U17 ENB default-off pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C26,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U17 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C27,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U17 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U18,UCC27282DRCR,Package_SON:Texas_S-PVSON-N10,120 V,EN is pin 6 on the DRC 10-pin; the D 8-pin has no EN,,SOURCED,design/v1/pin_connections.csv:10-20,1
+R44,10k,Resistor_SMD:R_0603_1608Metric,,main board R7: EN default-off,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:native_primary,1
+C28,1nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,main board C13: EN noise filter,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:native_primary,1
+R45,1k,Resistor_SMD:R_0603_1608Metric,,main board R8: fitted only to demonstrate the floating-EN hazard,yes,SOURCED,hardware/dcx_main/protection_interface_candidate.json:native_primary,1
+C29,220nF/25V,Capacitor_SMD:C_0603_1608Metric,25 V X7R,"Cboot between HB and HS(SW), conceptual 220n candidate; MLCC bias/ESR unqualified",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C30,1uF/25V,Capacitor_SMD:C_1206_3216Metric,25 V X7R,U18 VDD bulk,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C31,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U18 VDD decoupling,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R46,2.2R,Resistor_SMD:R_0603_1608Metric,,primary high-side gate resistor,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R47,2.2R,Resistor_SMD:R_0603_1608Metric,,primary low-side gate resistor,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R48,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R56,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C32,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R66,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D9,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R49,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R57,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C33,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R67,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D10,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R50,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R58,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C34,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R68,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D11,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R51,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R59,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C35,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R69,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D12,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R52,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R60,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C36,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R70,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D13,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R53,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R61,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C37,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R71,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D14,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R54,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R62,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C38,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R72,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D15,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R55,2.2R,Resistor_SMD:R_0603_1608Metric,,SR gate resistor,,SOURCED,hardware/dcx_main/protection_interface_candidate.json:proposed_sr_channels,1
+R63,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down: default off if the driver is unpowered,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C39,6.7nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = Cgate 6.7 nF,,SOURCED,models/sr_timing_v3.lib:106,1
+R73,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch: in series with D so the diode drop is set by a current this 1k fixes, and so ten gate nodes never share copper",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D16,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"anode on the gate branch, cathode on GSMAX: only the highest gate forward-biases its diode",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R64,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C40,4nF,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = 4 nF,,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:Cgh,1
+R74,1k,Resistor_SMD:R_0603_1608Metric,,DNP: floating HS VGS cannot be sensed relative to PGND,yes,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D17,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,DNP: floating HS VGS cannot be sensed relative to PGND,yes,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R65,10k,Resistor_SMD:R_0603_1608Metric,,gate-source pull-down,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C41,4nF,Capacitor_SMD:C_0603_1608Metric,50 V,dummy gate load = 4 nF,,SOURCED,sim/v3/sr_tank_dual_v33_ss_1ms_100a.cir:Cgh,1
+R75,1k,Resistor_SMD:R_0603_1608Metric,,"gate-max branch, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+D18,BAT54ZFILM,Diode_SMD:D_SOD-123,30 V 200 mA,"gate max detector, primary pair",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R76,22k,Resistor_SMD:R_0603_1608Metric,,"divider top.  With the ten 1k branches this bounds the comparator input by a ratio, not by a knee voltage: at most 2.629 V at 12 V and 3.286 V at the 15 V TVS standoff",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R77,6.2k,Resistor_SMD:R_0603_1608Metric,,divider bottom: 3.5 V * 28.3k / 6.2k = 15.98 V of gate rail before the LM393 input reaches its common-mode limit,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J4,TG_HI/TG_LO/TG_SR,TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-04P_1x04_P5.00mm,,bench gate drive; all eight SR channels share TG_SR as in the deck,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP1,V12P,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP2,V12S,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP3,V5,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP4,REF_2V5,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP5,OC,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP6,OC_FILT,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP7,HARD_TRIP,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP8,FAST_TRIP,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP9,HEALTHY,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP10,READY,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP11,LATCHED,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP12,ACK_LOW_OK,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP13,ACK_RISE,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP14,FLT,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP15,PERMIT,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP16,PERMIT_RAIL,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP17,GSMAX,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP18,ANY_ON,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP19,GATE_SENSE,TestPoint:TestPoint_Pad_D1.0mm,1 mm pad,scope probe point,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J10,FAST_OC_MODULE,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,,Only connect fast_oc J1 here. Never bridge FAST_EXT_N to FAST_TRIP.,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R100,100k,Resistor_SMD:R_0603_1608Metric,,Open signal wire requests fault while armed; not a backfeed guarantee.,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C100,100nF/50V,Capacitor_SMD:C_0603_1608Metric,50 V X7R,U19 local bypass,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C114,22uF/25V,Capacitor_SMD:C_1210_3225Metric,"25V nominal, DC derating not qualified","Post-diode hold-up capacitor for driver shutdown, transient validation pending",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R110,1M,Resistor_SMD:R_0603_1608Metric,,Comparator positive feedback for 11.1/10.6V nominal UVLO,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+C115,22uF/25V,Capacitor_SMD:C_1210_3225Metric,"25V nominal, DC derating not qualified","Post-diode hold-up capacitor for driver shutdown, transient validation pending",,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R111,1M,Resistor_SMD:R_0603_1608Metric,,Comparator positive feedback for 11.1/10.6V nominal UVLO,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J11,EXT_ESTOP_NC_LOOP,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,External series NC emergency stop contacts; open line forces OFF; not the required power disconnect,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+J12,EXT_HS_DIAG_CONTACT,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,Qualified externally isolated high-side monitor contact; absent sensor forces OFF,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R112,10k,Resistor_SMD:R_0603_1608Metric,,External E-stop contact/open wire default-off pulldown,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R113,10k,Resistor_SMD:R_0603_1608Metric,,Missing floating gate monitor defaults permit low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+R114,10k,Resistor_SMD:R_0603_1608Metric,,Final output inhibit default low,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+U20,CD4081BE,Package_DIP:DIP-14_W7.62mm,,,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP20,DIFF_PROBE_SW,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP21,DIFF_PROBE_GH1,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP22,DIFF_PROBE_HB,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP23,DIFF_PROBE_ESTOP_OK,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1
+TP24,DIFF_PROBE_HS_MON_OK,TestPoint:TestPoint_Pad_D1.0mm,,Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW,,DESIGN_PROPOSAL,DESIGN_PROPOSAL,1

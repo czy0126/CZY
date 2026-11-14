@@ -1,0 +1,144 @@
+{
+  "kind": "D1_LANE_C_HS_KICAD_ELECTRICAL_CANDIDATE",
+  "status": "HS_NET_REFERENCE_REPAIRED_BUT_PROTECTION_INCOMPLETE_NOT_FOR_FAB",
+  "base_commit": "27b101c1e7e4135f0fd6e2f016ca5a4ae32dc018",
+  "input_pcb_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "input_d0_schematic_sha256": "fcb0450966ae1a365d940e51e31465c6835a5233cacb0bfbadacb9ba9d78b08f",
+  "changed_nets": [
+    {
+      "ref": "U18",
+      "pin": "5",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "C29",
+      "pin": "2",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "R64",
+      "pin": "2",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "C40",
+      "pin": "2",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "R20",
+      "pin": "1",
+      "from": "V12P",
+      "to": "V12P_F"
+    },
+    {
+      "ref": "R22",
+      "pin": "1",
+      "from": "V12S",
+      "to": "V12S_F"
+    },
+    {
+      "ref": "U8",
+      "pin": "10",
+      "from": "PERMIT",
+      "to": "PERMIT_INTERNAL"
+    }
+  ],
+  "dnp": [
+    "D17",
+    "R45",
+    "R74"
+  ],
+  "uvlo_nominal": {
+    "raw_sense_before_or_diodes": true,
+    "divider_top_ohm": 100000,
+    "divider_bottom_ohm": 10000,
+    "hysteresis_feedback_ohm": 1000000,
+    "comparator_reference_v": 1.0,
+    "comparator_pullup_v": 5.0,
+    "rising_threshold_v": 11.1,
+    "falling_threshold_v": 10.6,
+    "filter_nominal_tau_us": 9.00900900900901,
+    "post_diode_hold_up_each_f": 2.2e-05,
+    "hold_up_dc_bias_and_esr_verified": false,
+    "actual_max_fault_shutdown_delay_proven": false
+  },
+  "gate_diff_probe_pairs": {
+    "high_side_VGS": [
+      "GH1",
+      "SW"
+    ],
+    "boot": [
+      "HB",
+      "SW"
+    ],
+    "low_side_VGS": [
+      "GL1",
+      "PGND"
+    ]
+  },
+  "final_hardware_permit_interlock": {
+    "logic": "PERMIT=PERMIT_INTERNAL & ESTOP_OK & HS_MON_OK",
+    "input_default_off_resistors": {
+      "ESTOP_OK": "R112 10k to PGND",
+      "HS_MON_OK": "R113 10k to PGND",
+      "PERMIT": "R114 10k to PGND"
+    },
+    "external_interfaces": {
+      "J11": "V5-ESTOP_OK series NC emergency-stop contact",
+      "J12": "V5-HS_MON_OK qualified floating-gate monitor contact"
+    },
+    "interlock_stage": "U20 CD4081BE AND logic, independent of MCU",
+    "open_wire_must_disable": true,
+    "external_estop_contact_physically_tested": false,
+    "external_hs_monitor_physically_tested": false,
+    "power_stage_hardware_disconnect_verified": false,
+    "off_time_and_cmos_power_down_proven": false,
+    "warning": "This interface is not an external safety relay, not a verified floating VGS monitor, and not proof of power disconnection"
+  },
+  "ucc27282_drc_pin_map": {
+    "1": "V12P",
+    "3": "HB",
+    "4": "HO",
+    "5": "SW",
+    "6": "PERMIT_RAIL",
+    "7": "TG_HI",
+    "8": "TG_LO",
+    "9": "PGND",
+    "10": "LO",
+    "11": "PGND"
+  },
+  "not_proven": [
+    "External NC E-stop contact and 48V physical disconnect action (not fitted or measured)",
+    "External isolated floating HS monitor validity and fault detection (not fitted or measured)",
+    "Real primary high-side VGS threshold via source-referenced comparator",
+    "Actual switching source SW injection, boot diode qualification and 220n MLCC tolerance",
+    "External V12P/V12S isolated sources, hardware UVLO and fast E-stop disconnect",
+    "Eight real UCC24624 SR gate dynamics vs candidate TTL substitute",
+    "Thermal SOA, ESD/surge, 100A PCB and independent physical fault capture"
+  ],
+  "native_erc_violations": 0,
+  "native_erc_ignored_checks": [
+    "single_global_label",
+    "four_way_junction",
+    "simulation_model_issue",
+    "footprint_filter"
+  ],
+  "netlist_pins_checked": 565,
+  "output_schematic_sha256": "3a6bb671fdafde0221d4293baae07cc574ad7c0c21171abed7e1d9e017744040",
+  "output_netlist_sha256": "00a16b498741fd47b6cb3a520592d9cd99b2718fb121ba5bda05b88d9aa15f57",
+  "output_bom_sha256": "956e21770967e22334f111122ee4aca7b958763d8bd2d873b79fa3d483a008ab",
+  "bench_primary_secondary_bias_ground_tied": true,
+  "isolated_production_bias_power_verified": false,
+  "output_pcb_sha256": null,
+  "hardware_built": false,
+  "g0_approved": false,
+  "g1_approved": false,
+  "energization_allowed": false,
+  "fabrication_approved": false,
+  "integration_handoff_only": true
+}

@@ -1,0 +1,19 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\work\d1_lane_c_issue133\d1_lane_c_sr_gate_loss_illustrative_NOT_FOR_FAB.cir
+Start Time: Sat Nov 14 22:40:54 2026
+solver = Normal
+Maximum thread count: 64
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.696 seconds.
+
+Files loaded:
+C:\work\d1_lane_c_issue133\d1_lane_c_sr_gate_loss_illustrative_NOT_FOR_FAB.cir
+
+passive_to_1p3: V(GA_PASS)=1.3  AT 0.000148910339781
+driven_typ_to_1p3: V(GA_DRIVEN)=1.3  AT 4.60104537983e-08
+passive_at_10us: V(GA_PASS) =10.3362064319 at 1e-05
+passive_at_100us: V(GA_PASS) =2.69761847169 at 0.0001
