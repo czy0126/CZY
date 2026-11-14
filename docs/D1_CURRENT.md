@@ -1,5 +1,7 @@
 # D1 当前交接面板（唯一日常入口）
 
+> **2026-11-14 功能优先级修订（覆盖旧冷板前置排序）**：**G0 完整电气/磁件/驱动保护可上电准备→G1 低功率可重复运行的真实波形→G2 分级提高至100 A→G3 3 LPM液冷冷板与高密度产品化**。首要阻塞是整板7个未连、5套物理磁件及真实安全关断；3 LPM接口/≤16mm热设计**不再阻塞G0/G1**，但首次上电仍须电流限制和必要的临时散热。责任与通过条件见[更新后的并行工作包](agent/D1_V17_OEM72_ACTIVE_PARALLEL_20261114_NOT_FOR_FAB.md)。
+
 > **2026-11-14实体进展与并行任务（V17 KiCad WIP）**：[72颗正式T530与部分原边铜路、三工作包独立交付](agent/D1_V17_OEM72_ACTIVE_PARALLEL_20261114_NOT_FOR_FAB.md)；[7项剩余连接的源绑定门禁](../hardware/dcx_main/g2/g2_v17_OEM_T530_72_VIN_SW_consolidated_gate_NOT_FOR_FAB.json)。该WIP的KiCad规则违规0项、未连接7项；5磁件物理端子、完整母板原生嘉立创等缺口**没有因此消失**。仍 NOT_FOR_FAB。
 
 > **2026-11-14 V17 KiCad集成分支的并行执行入口：** [A/B/C 隔离工作包、接口和合并验收](agent/D1_V17_PARALLEL_HANDOFF_20261114_NOT_FOR_FAB.md) · [源绑定制造阻断结果](../hardware/dcx_main/g2/g2_v17_source_locked_release_stopline_NOT_FOR_FAB.json)。这只关联 `59da269` 的V17 KiCad重建候选，**不改变下文G1/G2原生嘉立创历史基线或PR #130 V18的证据链**；原始本机目录中的在途修改保持独立、NOT_FOR_FAB。
