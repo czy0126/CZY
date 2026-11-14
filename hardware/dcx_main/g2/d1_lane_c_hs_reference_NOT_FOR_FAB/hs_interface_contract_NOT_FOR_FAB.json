@@ -1,0 +1,117 @@
+{
+  "kind": "D1_LANE_C_HS_KICAD_ELECTRICAL_CANDIDATE",
+  "status": "HS_NET_REFERENCE_REPAIRED_BUT_PROTECTION_INCOMPLETE_NOT_FOR_FAB",
+  "base_commit": "27b101c1e7e4135f0fd6e2f016ca5a4ae32dc018",
+  "input_pcb_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "input_d0_schematic_sha256": "fcb0450966ae1a365d940e51e31465c6835a5233cacb0bfbadacb9ba9d78b08f",
+  "changed_nets": [
+    {
+      "ref": "U18",
+      "pin": "5",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "C29",
+      "pin": "2",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "R64",
+      "pin": "2",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "C40",
+      "pin": "2",
+      "from": "PGND",
+      "to": "SW"
+    },
+    {
+      "ref": "R20",
+      "pin": "1",
+      "from": "V12P",
+      "to": "V12P_F"
+    },
+    {
+      "ref": "R22",
+      "pin": "1",
+      "from": "V12S",
+      "to": "V12S_F"
+    }
+  ],
+  "dnp": [
+    "D17",
+    "R45",
+    "R74"
+  ],
+  "uvlo_nominal": {
+    "raw_sense_before_or_diodes": true,
+    "divider_top_ohm": 100000,
+    "divider_bottom_ohm": 10000,
+    "hysteresis_feedback_ohm": 1000000,
+    "comparator_reference_v": 1.0,
+    "comparator_pullup_v": 5.0,
+    "rising_threshold_v": 11.1,
+    "falling_threshold_v": 10.6,
+    "filter_nominal_tau_us": 9.00900900900901,
+    "post_diode_hold_up_each_f": 2.2e-05,
+    "hold_up_dc_bias_and_esr_verified": false,
+    "actual_max_fault_shutdown_delay_proven": false
+  },
+  "gate_diff_probe_pairs": {
+    "high_side_VGS": [
+      "GH1",
+      "SW"
+    ],
+    "boot": [
+      "HB",
+      "SW"
+    ],
+    "low_side_VGS": [
+      "GL1",
+      "PGND"
+    ]
+  },
+  "ucc27282_drc_pin_map": {
+    "1": "V12P",
+    "3": "HB",
+    "4": "HO",
+    "5": "SW",
+    "6": "PERMIT_RAIL",
+    "7": "TG_HI",
+    "8": "TG_LO",
+    "9": "PGND",
+    "10": "LO",
+    "11": "PGND"
+  },
+  "not_proven": [
+    "Real primary high-side VGS threshold via source-referenced comparator",
+    "Actual switching source SW injection, boot diode qualification and 220n MLCC tolerance",
+    "External V12P/V12S isolated sources, hardware UVLO and fast E-stop disconnect",
+    "Eight real UCC24624 SR gate dynamics vs candidate TTL substitute",
+    "Thermal SOA, ESD/surge, 100A PCB and independent physical fault capture"
+  ],
+  "native_erc_violations": 0,
+  "native_erc_ignored_checks": [
+    "single_global_label",
+    "four_way_junction",
+    "simulation_model_issue",
+    "footprint_filter"
+  ],
+  "netlist_pins_checked": 539,
+  "output_schematic_sha256": "665eeea9b9dd230978921f24a39289d8d9f98cfde910661b3b0c7405917b1856",
+  "output_netlist_sha256": "19589003d89d43ab2573a1b43de9a412016e861cee683299bd195dc7fa4df730",
+  "output_bom_sha256": "ddcb8f73237e1786ff0743f544414aa76f660860373f1819ab9d6f4c049f49e2",
+  "bench_primary_secondary_bias_ground_tied": true,
+  "isolated_production_bias_power_verified": false,
+  "output_pcb_sha256": null,
+  "hardware_built": false,
+  "g0_approved": false,
+  "g1_approved": false,
+  "energization_allowed": false,
+  "fabrication_approved": false,
+  "integration_handoff_only": true
+}

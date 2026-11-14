@@ -1,0 +1,277 @@
+"""Lane C independently generated KiCad HS-referenced D0 *interface candidate*.
+
+This is a non-energizable engineering model, not the full D0 protection board
+for the real 48V LLC: the SR algorithm remains a non-equivalent TTL replacement,
+the high-side VGS detector is DNP, and external 12V rails/relay are not closed.
+The generator changes no common D0 source artifact or A/B lane file.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+from dataclasses import replace
+import hashlib
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/"tools"))
+import make_d0_protection_board as d0
+import d1_lane_c_g0_gate as audit
+
+DEST=ROOT/"hardware/dcx_main/g2/d1_lane_c_hs_reference_NOT_FOR_FAB"
+STEM="d0_lane_c_hs_reference_NOT_FOR_FAB"
+SCH=DEST/(STEM+".kicad_sch")
+PRO=DEST/(STEM+".kicad_pro")
+NET=DEST/(STEM+".net")
+ERC=DEST/(STEM+"_erc.json")
+BOM=DEST/"BOM.csv"
+REPORT=DEST/"hs_interface_contract_NOT_FOR_FAB.json"
+
+# This table is a *delta* on the separately locked reference D0; never mask a
+# future source drift. The physical UCC27282 DRC pin 5 is HS, not ground.
+REWIRE={
+    ("U18","5"):("PGND","SW"),
+    ("C29","2"):("PGND","SW"),
+    ("R64","2"):("PGND","SW"),
+    ("C40","2"):("PGND","SW"),
+    ("R20","1"):("V12P","V12P_F"),
+    ("R22","1"):("V12S","V12S_F"),
+}
+# Ground-referenced detector is invalid for a 48V floating high-side gate.
+# Keep the pads in the engineering schematic, but never populate that path.
+DO_NOT_POPULATE={"R74","D17"}
+REFERENCE_SHA=audit.BASELINE_SHA
+
+def sha(raw:bytes)->str:
+    return hashlib.sha256(raw).hexdigest()
+
+def candidate_parts(base=None):
+    parts=list(d0.parts() if base is None else base)
+    seen=set()
+    result=[]
+    for part in parts:
+        net=dict(part.nets)
+        for (ref,pin),(prior,after) in REWIRE.items():
+            if ref!=part.ref:
+                continue
+            if net.get(pin)!=prior:
+                raise ValueError(f"source pin shifted {ref}.{pin}: {net.get(pin)}")
+            net[pin]=after
+            seen.add((ref,pin))
+        if part.ref in DO_NOT_POPULATE:
+            if part.dnp:
+                raise ValueError(f"source DNP state shifted {part.ref}")
+            result.append(replace(part,nets=net,dnp=True,
+                note="DNP: floating HS VGS cannot be sensed relative to PGND"))
+        elif part.ref=="C29":
+            if part.value!="100nF/25V":
+                raise ValueError("source bootstrap value unexpectedly changed")
+            result.append(replace(part,nets=net,value="220nF/25V",
+                note="Cboot between HB and HS(SW), conceptual 220n candidate; MLCC bias/ESR unqualified"))
+        elif part.ref in ("R21","R23"):
+            if part.value!="14.7k":
+                raise ValueError(f"{part.ref} source UVLO bottom resistor drifted")
+            result.append(replace(part,nets=net,value="10k",
+                note="UVLO source input: 11.1V rising, 10.6V falling with 1M feedback nominal"))
+        elif part.ref in ("C14","C15"):
+            if part.value!="100nF/16V":
+                raise ValueError(f"{part.ref} source UVLO filtering drifted")
+            result.append(replace(part,nets=net,value="1nF/50V",
+                note="UVLO raw-rail RC filter, nominal ~9.1us before hysteresis; real timing pending"))
+        else:
+            result.append(replace(part,nets=net))
+    if seen!=set(REWIRE):
+        raise ValueError("missing required HS rewiring")
+    # Separate 12V post-ORing hold-up from pre-diode rail-loss sensing.
+    # These are prototype values, NOT component or hold-up qualifications.
+    for i,(net,sense,ok) in enumerate((
+            ("V12P","V12P_SNS","V12P_OK"),
+            ("V12S","V12S_SNS","V12S_OK"))):
+        result.append(d0.Part(f"C{114+i}","Device:C","22uF/25V",
+            "Capacitor_SMD:C_1210_3225Metric",512,230+16*i,
+            {"1":net,"2":"PGND"},rating="25V nominal, DC derating not qualified",
+            note="Post-diode hold-up capacitor for driver shutdown, transient validation pending"))
+        result.append(d0.Part(f"R{110+i}","Device:R","1M",
+            "Resistor_SMD:R_0603_1608Metric",510,310+14*i,
+            {"1":ok,"2":sense},
+            note="Comparator positive feedback for 11.1/10.6V nominal UVLO"))
+    tp="TestPoint:TestPoint_Pad_D1.0mm"
+    for i,net in enumerate(("SW","GH1","HB")):
+        result.append(d0.Part(f"TP{20+i}","Connector:TestPoint",
+            f"DIFF_PROBE_{net}",tp,540,345+i*12,{"1":net},
+            note="Measure high-side VGS: GH1-SW; bootstrap voltage HB-SW"))
+    return result
+
+def expected_text():
+    if audit.sha(audit.BASELINE)!=REFERENCE_SHA:
+        raise ValueError("shared V17 baseline SHA changed")
+    parts=[d0.snap(p) for p in candidate_parts()]
+    symbols=d0.build_symbols()
+    d0.validate(parts,symbols)
+    text=d0.schematic(symbols,parts)
+    text=text.replace('D0 ten-gate protection logic bench board',
+                      'Lane C HS-referenced D0 interface NOT FOR FAB')
+    text=text.replace('Generated by tools/make_d0_protection_board.py; the part table is the source of truth.',
+                      'HS delta generated by tools/d1_lane_c_hs_candidate.py; input D0 is read-only.')
+    text=text.replace('Bench logic board. NOT for fabrication. Not a power stage, not thermal, not timing.',
+                      'HS SW corrected; floating GH1 gate-sense DNP. Not a complete protection circuit.')
+    return parts,symbols,text
+
+def verify_candidate(part_instances):
+    parts={p.ref:p for p in part_instances}
+    if parts["U18"].nets["5"]!="SW":
+        raise ValueError("floating HS is not SW")
+    for ref in ("C29","R64","C40"):
+        if parts[ref].nets["2"]!="SW":
+            raise ValueError(ref+" gate reference is not SW")
+    if not all(parts[r].dnp for r in DO_NOT_POPULATE):
+        raise ValueError("floating gate absolute-V sensing wrongly fitted")
+    if any(parts[r].nets["1"]!="GH1" for r in ("R64","C40","R74")):
+        raise ValueError("high-side gate source mismatch")
+    if parts["U18"].nets["9"]!="PGND" or parts["U18"].nets["11"]!="PGND":
+        raise ValueError("U18 VSS/thermal pad ground missing")
+    if parts["C29"].nets["1"]!="HB":
+        raise ValueError("HB bootstrap high terminal missing")
+    if parts["R45"].dnp is not True:
+        raise ValueError("unsafe unconditional permit installed")
+    for i,up in enumerate(("P","S")):
+        top=parts[f"R{20+2*i}"]
+        bottom=parts[f"R{21+2*i}"]
+        rc=parts[f"C{14+i}"]
+        feedback=parts[f"R{110+i}"]
+        hold=parts[f"C{114+i}"]
+        if top.nets["1"]!=f"V12{up}_F" or top.nets["2"]!=f"V12{up}_SNS":
+            raise ValueError("raw rail must be UVLO monitored ahead of hold-up diode")
+        if bottom.nets!={"1":f"V12{up}_SNS","2":"PGND"} or bottom.value!="10k":
+            raise ValueError("UVLO threshold drift")
+        if rc.nets!={"1":f"V12{up}_SNS","2":"PGND"} or rc.value!="1nF/50V":
+            raise ValueError("UVLO filter not isolated")
+        if feedback.nets!={"1":f"V12{up}_OK","2":f"V12{up}_SNS"} or feedback.value!="1M":
+            raise ValueError("hysteresis feedback misconnected")
+        if hold.nets!={"1":f"V12{up}","2":"PGND"} or hold.value!="22uF/25V":
+            raise ValueError("driver shutdown hold-up capacitor missing")
+
+def build_report(parts, erc_json=None, native_pins=0):
+    verify_candidate(parts)
+    orig={p.ref:p for p in d0.parts()}
+    new={p.ref:p for p in parts}
+    changed=[]
+    for (ref,pin),(old,net) in REWIRE.items():
+        assert orig[ref].nets[pin]==old and new[ref].nets[pin]==net
+        changed.append({"ref":ref,"pin":pin,"from":old,"to":net})
+    if erc_json is None:
+        erc_json={}
+    sheets=erc_json.get("sheets",[])
+    bad=sum(len(s.get("violations",[])) for s in sheets)
+    return {
+        "kind":"D1_LANE_C_HS_KICAD_ELECTRICAL_CANDIDATE",
+        "status":"HS_NET_REFERENCE_REPAIRED_BUT_PROTECTION_INCOMPLETE_NOT_FOR_FAB",
+        "base_commit":"27b101c1e7e4135f0fd6e2f016ca5a4ae32dc018",
+        "input_pcb_sha256":REFERENCE_SHA,
+        "input_d0_schematic_sha256":audit.sha(audit.D0_SCH),
+        "changed_nets":changed,
+        "dnp":sorted(DO_NOT_POPULATE|{"R45"}),
+        "uvlo_nominal":{"raw_sense_before_or_diodes":True,
+                        "divider_top_ohm":100000,"divider_bottom_ohm":10000,
+                        "hysteresis_feedback_ohm":1000000,
+                        "comparator_reference_v":1.0,
+                        "comparator_pullup_v":5.0,
+                        "rising_threshold_v":11.1,"falling_threshold_v":10.6,
+                        "filter_nominal_tau_us":9.00900900900901,
+                        "post_diode_hold_up_each_f":22e-6,
+                        "hold_up_dc_bias_and_esr_verified":False,
+                        "actual_max_fault_shutdown_delay_proven":False},
+        "gate_diff_probe_pairs":{"high_side_VGS":["GH1","SW"],"boot":["HB","SW"],
+                                "low_side_VGS":["GL1","PGND"]},
+        "ucc27282_drc_pin_map":{"1":"V12P","3":"HB","4":"HO","5":"SW","6":"PERMIT_RAIL",
+                                 "7":"TG_HI","8":"TG_LO","9":"PGND","10":"LO","11":"PGND"},
+        "not_proven":["Real primary high-side VGS threshold via source-referenced comparator",
+                      "Actual switching source SW injection, boot diode qualification and 220n MLCC tolerance",
+                      "External V12P/V12S isolated sources, hardware UVLO and fast E-stop disconnect",
+                      "Eight real UCC24624 SR gate dynamics vs candidate TTL substitute",
+                      "Thermal SOA, ESD/surge, 100A PCB and independent physical fault capture"],
+        "native_erc_violations":bad if erc_json else None,
+        "native_erc_ignored_checks":[k.get("key") for k in erc_json.get("ignored_checks",[])],
+        "netlist_pins_checked":native_pins,
+        "output_schematic_sha256":audit.sha(SCH) if SCH.exists() else None,
+        "output_netlist_sha256":audit.sha(NET) if NET.exists() else None,
+        "output_bom_sha256":audit.sha(BOM) if BOM.exists() else None,
+        "bench_primary_secondary_bias_ground_tied":True,
+        "isolated_production_bias_power_verified":False,
+        "output_pcb_sha256":None,
+        "hardware_built":False,"g0_approved":False,"g1_approved":False,
+        "energization_allowed":False,"fabrication_approved":False,
+        "integration_handoff_only":True,
+    }
+
+def refresh_kicad(parts, symbols, text):
+    DEST.mkdir(parents=True,exist_ok=True)
+    SCH.write_text(text,encoding="utf-8")
+    PRO.write_text(d0.project_file().replace('d0_protection.kicad_pro',PRO.name),encoding="utf-8")
+    # Reuse original library symbol content, but emit exclusively under private dir.
+    old=d0.OUT
+    try:
+        d0.OUT=DEST
+        d0.write_libs(symbols)
+        d0.bom(parts)
+    finally:
+        d0.OUT=old
+    cli=d0.kicad_cli()
+    if cli is None:
+        raise RuntimeError("KiCad 10 CLI missing")
+    subprocess.run([str(cli),"sch","export","netlist","-o",str(NET),str(SCH)],check=True)
+    subprocess.run([str(cli),"sch","erc","--severity-all","--format","json",
+                    "-o",str(ERC),str(SCH)],check=True)
+    return json.loads(ERC.read_text("utf-8"))
+
+def check_native(parts, text):
+    if not all(p.is_file() for p in (SCH,PRO,NET,ERC,REPORT,BOM)):
+        raise ValueError("native candidate output files missing")
+    if SCH.read_text("utf-8")!=text:
+        raise ValueError("saved KiCad candidate schematic stale")
+    erc=json.loads(ERC.read_text("utf-8"))
+    if any(s.get("violations") for s in erc.get("sheets",[])):
+        raise ValueError("native KiCad candidate ERC has violations")
+    refs={"U18","C29","R64","C40","R74","D17","R45","TP20","TP21","TP22","R20","R22","R110","R111","C114","C115"}
+    pins=audit.verify_exported_netlist(parts,refs,NET.read_text("utf-8"))
+    # All candidate connections must be checked against the native exported netlist.
+    allrefs={part.ref for part in parts if not part.ref.startswith("#")}
+    pins=audit.verify_exported_netlist(parts,allrefs,NET.read_text("utf-8"))
+    # Physical assembly export, not just the drawn schematic, must preserve DNP.
+    with BOM.open(newline="",encoding="utf-8") as f:
+        rows={row["Reference"]:row for row in csv.DictReader(f)}
+    for ref in DO_NOT_POPULATE|{"R45"}:
+        if rows.get(ref,{}).get("DNP")!="yes":
+            raise ValueError(f"critical DNP missing from assembly BOM: {ref}")
+    for ref in ("R21","R23","C14","C15","R110","R111","C114","C115"):
+        if rows.get(ref,{}).get("Value")!={p.ref:p.value for p in parts}[ref]:
+            raise ValueError(f"UVLO/hold-up BOM value incorrect: {ref}")
+    rep=build_report(parts,erc,pins)
+    if json.loads(REPORT.read_text("utf-8"))!=rep:
+        raise ValueError("native candidate contract stale")
+    return rep
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    g=ap.add_mutually_exclusive_group(required=True)
+    g.add_argument("--write",action="store_true")
+    g.add_argument("--check",action="store_true")
+    args=ap.parse_args()
+    parts,symbols,text=expected_text()
+    verify_candidate(parts)
+    if args.write:
+        erc=refresh_kicad(parts,symbols,text)
+        allrefs={part.ref for part in parts if not part.ref.startswith("#")}
+        pins=audit.verify_exported_netlist(parts,allrefs,NET.read_text("utf-8"))
+        if any(s.get("violations") for s in erc.get("sheets",[])):
+            raise ValueError("generated KiCad candidate ERC violations")
+        REPORT.write_text(json.dumps(build_report(parts,erc,pins),indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+    result=check_native(parts,text)
+    print(result["status"],"netlist_pins_checked",result["netlist_pins_checked"],
+          "native_erc_violations",result["native_erc_violations"])
+if __name__=="__main__":
+    main()

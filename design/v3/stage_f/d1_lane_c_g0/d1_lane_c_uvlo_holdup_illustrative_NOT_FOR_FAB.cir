@@ -1,0 +1,31 @@
+* Issue #133 Lane C: preliminary UVLO and post-diode driver hold-up (not hardware)
+* Fault-injection simulation from initialized steady-state, NOT cold startup.
+* Derived from proposed independent KiCad candidate R20=100k R21=10k
+* C14=1n R110=1Meg, D1 SS34 concept, C114=22uF (NOMINAL, NOT DERATED).
+* 20mA housekeeping load is an illustration, NOT guaranteed driver supply current.
+* Ideal 0/5V behavioral comparator and switch; real LM393 delays/hysteresis/
+* thresholds, USB/EMI, capacitor dc-bias, gate Miller and external FET absent.
+Vraw VRAW 0 PWL(0 12 100u 12 100.01u 0 300u 0)
+Rsource VRAW RAW 0.2
+Rtop RAW SNS 100k
+Rbottom SNS 0 10k
+Cfilter SNS 0 1n
+Rfeedback GOOD SNS 1Meg
+Bcomp GOOD 0 V=if(V(SNS)>1,5,0)
+Dhold RAW HOLD DS
+.model DS D(Is=1u Rs=0.05 N=1.1)
+Chold HOLD 0 22u
+Ihouse HOLD 0 0.02
+Cgate GATE 0 6.7n
+Rbleed GATE 0 10k
+Bshutdown SHDN 0 V=if((V(GOOD)<2.5)*(V(HOLD)>8),5,0)
+Sdrain GATE 0 SHDN 0 SWD
+.model SWD SW(Ron=3.1 Roff=1e10 Vt=2.5 Vh=0.1)
+.ic V(SNS)=1.09 V(GOOD)=5 V(HOLD)=11.5 V(GATE)=12
+.tran 0 300u 0 5n uic
+.meas tran uvlo_fall_time WHEN V(GOOD)=2.5 FALL=1
+.meas tran gate_cross_1p3 WHEN V(GATE)=1.3 FALL=1
+.meas tran hold_at_130u FIND V(HOLD) AT=130u
+.meas tran hold_at_200u FIND V(HOLD) AT=200u
+.save V(RAW) V(SNS) V(GOOD) V(HOLD) V(GATE) V(SHDN)
+.end
