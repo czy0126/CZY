@@ -31,14 +31,14 @@ SUBMISSION = OUT / "g0_external_witnesses.json"
 # They do not turn G1 load testing or G3 coldplate requirements into blockers.
 OBLIGATIONS = (
     ("G0-01", "Lane A / electrical integrator", "Actual primary input, half-bridge, Lr/Cr and SW/Kelvin closed on ONE native board; native ERC/DRC and source-net parity", "native_board_and_pin_parity"),
-    ("G0-02", "Lane B / magnetics integrator", "T1-T4 and CT physical 24-terminal mapping, DOT polarity, 12-layer stack, insulation, continuity and magnetic measurements", "magnetics_pin_dot_and_inspection"),
+    ("G0-02", "Lane B / magnetics integrator", "Lr, CT and the 3:1:1 transformer winding(s) actually required by the selected FIRST low-power circuit, with physical pin/DOT, insulation, continuity, Lm/leakage and saturation evidence; T1-T4 24-terminal/12-layer scope only if used in this G0 circuit", "magnetics_pin_dot_and_inspection"),
     ("G0-03", "Lane C / electrical integrator", "Independent primary and secondary 12V bias sources with correct different ground domains, UVLO, initial start and hold-up measurements", "bias_isolation_uvlo"),
     ("G0-04", "Lane C / hardware integrator", "External NC E-stop + independent 48V input power interruption including cable loss and welded contact fault tests", "estop_power_disconnection"),
     ("G0-05", "Lane C / hardware integrator", "Isolated high-side GH1-SW monitor and HB-SW bootstrap voltage validity; sensor absent or unpowered must inhibit enable", "floating_vgs_monitor"),
     ("G0-06", "Lane C / bench test operator", "Ten source-referenced VGS captures for six listed fault modes; bias collapse and permit/relay state, off-time and overlap", "all_gate_fault_waveforms"),
     ("G0-07", "Lane C / electrical integrator", "Worst-case driver/supervisor delay, effective 12V hold-up at VDDmin, MOSFET gate charge, shorted bias and SOA review", "gate_safety_timing_and_soa"),
     ("G0-08", "A/B/C integrator", "Physical low-energy bench: pre-power polarity/short/insulation checks, temporary cooling, independent current limit, instrument serials", "unpowered_preflight_and_cooling"),
-    ("G0-09", "A/B integrator", "Zero unconnected native tracks and no ignored safety-critical ERC/DRC checks on FINAL assembled PCB (not the D0 bench)", "final_native_erc_drc"),
+    ("G0-09", "A/B integrator", "Zero open connections on the selected complete G0 power circuit and no ignored safety-critical native ERC/DRC checks; optional G2/G3 hardware is not required for G0", "final_native_erc_drc"),
 )
 
 CHANNELS = tuple(f"GA{i}" for i in range(1, 9)) + ("GH1", "GL1")

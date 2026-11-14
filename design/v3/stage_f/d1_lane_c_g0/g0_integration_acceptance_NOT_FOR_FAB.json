@@ -57,7 +57,7 @@
     {
       "id": "G0-02",
       "owner_role": "Lane B / magnetics integrator",
-      "required": "T1-T4 and CT physical 24-terminal mapping, DOT polarity, 12-layer stack, insulation, continuity and magnetic measurements",
+      "required": "Lr, CT and the 3:1:1 transformer winding(s) actually required by the selected FIRST low-power circuit, with physical pin/DOT, insulation, continuity, Lm/leakage and saturation evidence; T1-T4 24-terminal/12-layer scope only if used in this G0 circuit",
       "artifact_class": "magnetics_pin_dot_and_inspection",
       "status": "PENDING",
       "raw_hardware_witness": null
@@ -113,7 +113,7 @@
     {
       "id": "G0-09",
       "owner_role": "A/B integrator",
-      "required": "Zero unconnected native tracks and no ignored safety-critical ERC/DRC checks on FINAL assembled PCB (not the D0 bench)",
+      "required": "Zero open connections on the selected complete G0 power circuit and no ignored safety-critical native ERC/DRC checks; optional G2/G3 hardware is not required for G0",
       "artifact_class": "final_native_erc_drc",
       "status": "PENDING",
       "raw_hardware_witness": null
