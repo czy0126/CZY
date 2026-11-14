@@ -40,6 +40,12 @@
 
 验证：`python tools/d1_lane_c_g0_gate.py --check`; `python tools/d1_lane_c_sim_evidence.py --check`; `python -m pytest tools/d1_lane_c_test_g0_gate.py tools/d1_lane_c_test_sim_evidence.py -q`。原生 `kicad-cli sch erc --severity-all` 对 D0 台架原理图重新运行报告 **0 条违规，但保留 4 类忽略检查**（见 `d0_bench_erc_readback_NOT_FOR_FAB.json`）；这是台架原理图 ERC 而非真实主板 DRC。上游 `python tools/d1_v17_oem_copper_gate.py --check` 与配套 1 项测试因现有汇总证据 stale 而失败，需集成者在公共范围按实际 DRC 重生成并复核。软件审查和台架原理图 ERC 不能证明 G0/G1 实物通过。
 
+## 新增高侧参考电位硬缺陷（必须在主板集成时修复）
+
+已逐项对照 TI [UCC27282 数据手册 SNVSAQ5B，Fig. 5-1 / Table 5-1](https://www.ti.com/lit/ds/symlink/ucc27282.pdf)：**DRC VSON-10 的 U18 引脚 5 是 HS，9 是 VSS**；HS 必须到实际高侧 MOSFET 的源极（半桥开关节点），C29 自举电容负极必须返回 HS。当前 D0 台架网表把 U18.5 和 U18.9 都接 **PGND**，并把 C29 负极、R64 高侧门极泄放返回 PGND；所以即便 KiCad ERC 为 0，也**不具备真实浮地高侧驱动的电气连法**。此外 D17→GSMAX 仅为地参考的门极指示，不能替代实际差分 V(GH1)-V(HS) 测量。
+
+`python tools/d1_lane_c_g0_gate.py --check` 现在输出 `physical_high_side_reference_audit`，逐项拒绝上述错误作为 G0 成功证据。集成方需在实际主板闭合 HS/SW Kelvin、HB-HS 电容及高侧 G-S 泄放路径，重导原理图网表和 PCB DRC，针对真实实装型号核对封装与失偏置状态，并以安全差分探头记录高侧 VGS 波形。**本 Lane 只有报告/防误放行，不曾越过路径权限更改源 D0 台架或实际 PCB，更未给出实体安全放行。**
+
 ## 远端实际模型运行结果（独立可重放，不能替代实测）
 
 已将`d1_lane_c_sr_gate_loss_illustrative_NOT_FOR_FAB.cir`传到`winsrv`，按项目规定的`D:\ADI\LTspice-26.0.2\LTspice.exe`仿真并取回原始`.log`和压缩原始`.raw.gz`。模型只对比**驱动仍有偏置的理想下拉**与**驱动完全高阻时靠10k泄放**，不是原理图连接的完整动态模型，不会自动证明SR关断。

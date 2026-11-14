@@ -57,3 +57,30 @@ def test_bootstrap_to_pgnd_is_never_accepted_as_a_real_halfbridge():
     report = gate.build()
     assert report["structure_audit"]["bench_bootstrap_c29_to_pgnd"] == "NOT_VALIDATED_FOR_REAL_HS"
     assert "U18" in str(report["g0_blockers"])
+
+
+def test_ti_drc_high_side_pin5_is_actually_short_to_vss_on_bench():
+    audit = gate.audit_high_side_reference(d0.parts())
+    assert audit["package"] == "DRC VSON-10"
+    assert audit["observed_hs_net"] == audit["observed_vss_net"] == "PGND"
+    assert not audit["checks"]["ucc27282_hs_pin5_not_short_to_vss_pin9"]
+    assert not audit["checks"]["c29_bootstrap_negative_to_hs_not_vss"]
+    assert not audit["checks"]["r64_high_side_gate_bleed_to_hs_not_vss"]
+    assert audit["physical_high_side_approved"] is False
+    assert len(audit["failed_checks"]) == 4
+
+
+def test_correcting_three_high_side_reference_nets_does_not_fake_measured_vgs():
+    parts = []
+    for item in d0.parts():
+        if item.ref == "U18":
+            parts.append(replace(item, nets={**item.nets, "5": "SW_KELVIN"}))
+        elif item.ref in {"C29", "R64"}:
+            parts.append(replace(item, nets={**item.nets, "2": "SW_KELVIN"}))
+        else:
+            parts.append(item)
+    audit = gate.audit_high_side_reference(parts)
+    assert all(list(audit["checks"].values())[:3])
+    assert audit["checks"]["high_side_actual_source_referenced_vgs_capture_proven"] is False
+    assert audit["physical_high_side_approved"] is False
+    assert audit["failed_checks"] == ["high_side_actual_source_referenced_vgs_capture_proven"]

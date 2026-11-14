@@ -104,6 +104,46 @@ def inspect_wiring(part_instances=None):
     return channels
 
 
+def audit_high_side_reference(part_instances) -> dict:
+    """DRC-package pin/domain audit, separate from bench netlist self-consistency.
+
+    TI UCC27282 SNVSAQ5B Fig. 5-1/Table 5-1: pin 5=HS, pin 9=VSS.
+    Matching the bench's own exported netlist is NOT sufficient to validate
+    high-side source-referenced drive, bootstrap or VGS measurement.
+    """
+    parts = {p.ref: p for p in part_instances}
+    u18, c29, r64 = (parts[ref] for ref in ("U18", "C29", "R64"))
+    hs, vss = u18.nets["5"], u18.nets["9"]
+    checks = {
+        "ucc27282_hs_pin5_not_short_to_vss_pin9": hs != vss,
+        "c29_bootstrap_negative_to_hs_not_vss":
+            c29.nets["2"] == hs and c29.nets["2"] != vss,
+        "r64_high_side_gate_bleed_to_hs_not_vss":
+            r64.nets["2"] == hs and r64.nets["2"] != vss,
+        # The bench detector D17/GSMAX only observes a PGND-referred
+        # gate node, NOT the actual high-side V(GH1)-V(HS).
+        "high_side_actual_source_referenced_vgs_capture_proven": False,
+    }
+    return {
+        "status": "PHYSICAL_HIGH_SIDE_REFERENCE_NOT_QUALIFIED",
+        "datasheet": "https://www.ti.com/lit/ds/symlink/ucc27282.pdf",
+        "package": "DRC VSON-10", "hs_pin": "5", "vss_pin": "9",
+        "observed_hs_net": hs, "observed_vss_net": vss,
+        "c29_negative_net": c29.nets["2"],
+        "r64_return_net": r64.nets["2"],
+        "checks": checks,
+        "failed_checks": [key for key, passed in checks.items() if not passed],
+        "physical_high_side_approved": False,
+        "remediation": [
+            "Connect U18 pin 5 HS to the real half-bridge switch/source Kelvin node, NEVER VSS",
+            "Connect C29 negative and high-side gate-to-source bleed to U18 HS, not PGND",
+            "Provide a differential/source-referenced GH1-HS measurement; do not use GSMAX as VGS proof",
+            "Re-export actual KiCad netlist, check DRC/ERC and compare against the assembled device footprint",
+            "Verify bootstrap HB-HS startup/UVLO and turn-off on the unenergized bench before G0 signoff",
+        ],
+    }
+
+
 def verify_exported_netlist(part_instances, refs: set[str], netlist_text: str) -> int:
     """Cross-check selected D0 table pins against exported KiCad netlist.
 
@@ -152,6 +192,7 @@ def build(part_instances=None) -> dict:
     if sha(BASELINE) != BASELINE_SHA:
         raise ValueError("shared immutable V17 PCB SHA mismatch")
     channels = inspect_wiring(part_instances)
+    physical_reference = audit_high_side_reference(d0.parts() if part_instances is None else part_instances)
     selected = {"Q2", "R35", "R44", "R45", "C28", "C29", "U18"}
     selected.update(f"U{i}" for i in range(14, 18))
     selected.update(f"R{i}" for i in range(36, 44))
@@ -198,6 +239,7 @@ def build(part_instances=None) -> dict:
                             "main_board_pin_parity_proven": False,
                             "d0_original_sr_controller_parity_proven": False},
         "channels": channels,
+        "physical_high_side_reference_audit": physical_reference,
         "existing_evidence": {
             "analog_review": a["status"],
             "timing_review": t["status"],
@@ -214,10 +256,11 @@ def build(part_instances=None) -> dict:
             "Complete A-Lane primary nets and true physical CT/T1-T4 pin/DOT mapping not integrated",
             "Real 48V-to-12V primary/secondary driver bias supply, isolation and startup/UVLO limits not established",
             "D0 is a bench replacement with eight UCC27524ADR outputs, not pin-equivalent to original UCC24624 SR system",
-            "U18 high-side HB/HS bootstrap and C29 return need a real switching-node implementation and pin-by-pin review",
+            "U18 DRC pin 5 HS is physically tied to pin 9 VSS/PGND in the D0 bench; C29 negative and R64 return also use PGND. Correct the real floating-high-side source reference before power-on",
             "Loss of V12S leaves ten-kilohm passive SR gate discharge; no worst-case safe-off time/overlap proof",
             "Independent hardware supply-loss AND E-stop interlock and power-stage disconnection not demonstrated",
             "LM393 and logic response have unbounded timing corners; per-gate safe-off limits and device SOA unqualified",
+            "D17/GSMAX is ground-referred indication, not a differential GH1-to-HS VGS safety measurement",
             "Board source still has seven unconnected items and five ignored DRC checks; no independent native parity/DRC closure",
             "Original V17 consolidated receipt freshness must be restored by integrator (Lane C does not rewrite shared evidence)",
             "No signed BOM, ERC, real hardware inspection, raw fault captures, or effective temporary cooling verification",
