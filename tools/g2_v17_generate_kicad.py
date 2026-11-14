@@ -19,6 +19,7 @@ from collections import Counter
 from pathlib import Path
 
 import pcbnew as pcb
+from g2_v17_source_digest import source_sha256
 
 ROOT=Path(__file__).resolve().parents[1]
 G=ROOT/"hardware/dcx_main/g2"
@@ -37,7 +38,7 @@ SW_LOCAL=G/"g2_v17_local_SW_finger_reference_NOT_FOR_FAB.json"
 SOURCE_SHA="02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75"
 CORE_X=(20.,58.,96.,134.)
 
-def sha(file):return hashlib.sha256(file.read_bytes()).hexdigest()
+def sha(file):return source_sha256(file)
 def loadjson(file):return json.loads(file.read_text("utf8"))
 def initial_xy(c):return (c["X"]*.0254,-c["Y"]*.0254)
 
@@ -100,6 +101,17 @@ def add_native_footprint(board,comp,rec,site,net_objs):
             x,y=native_pad(ref,q,old,site)
             w=q["Pad"][1]*.0254
             h=(q["Pad"][2]*.0254 if len(q["Pad"])>2 else w)
+        # EasyEDA V15 export rounds TI UCC27282 DRC0010J's nominal 0.5 mm
+        # U2 pad pitch to multiples of 0.1 mil (two 0.49784-mm intervals).
+        # Restore the manufacturer-defined mechanical 0.5-mm pitch without
+        # narrowing the real pad or weakening KiCad's 0.20-mm clearance.
+        # Never displace a source pad by more than 5 um.
+        if ref=="U2" and shape!="POLYGON" and str(q["PadNumber"]) in map(str,range(1,11)):
+            pin=int(q["PadNumber"])
+            actual_y=site[1]+(pin-3 if pin<=5 else 8-pin)*.5
+            if abs(actual_y-y)>.005:
+                raise ValueError("U2 source pin pitch is not the TI nominal footprint")
+            y=actual_y
         pad.SetPosition(xy(x,y))
         pad.SetSize(xy(w,h))
         if shape!="POLYGON":pad.SetOrientationDegrees(float(q.get("Rotation",0)))
@@ -147,6 +159,56 @@ def add_native_footprint(board,comp,rec,site,net_objs):
     edge.SetLayer(pcb.B_CrtYd if backside else pcb.F_CrtYd)
     edge.SetWidth(PU(.05))
     f.Add(edge)
+    board.Add(f)
+    return f
+
+
+# Agent-D's 100-A terminal screening found the original one small PTH per
+# pole cannot provide a defensible current interface. This is an *experimental*
+# KiCad contact array, NOT a rated connector or an OEM-approved busbar.
+OUTPUT_CONTACTS={"VOUT":((70.,78.),(70.,87.),(70.,96.),(70.,105.)),
+                 "PGND":((82.,78.),(82.,87.),(82.,96.),(82.,105.))}
+OUTPUT_CONTACT_PAD_DIAMETER_MM=5.5
+OUTPUT_CONTACT_DRILL_MM=3.2
+
+def add_output_multicontact_trial(board,site,net_obj):
+    if site!=(76.,100.):
+        raise ValueError("V17 J_OUT changed: re-review the full 100A contact map")
+    f=pcb.FOOTPRINT(board)
+    f.SetReference("J_OUT")
+    f.SetValue("EIGHT_PLATED_CONTACTS_VENDOR_UNRATED_NOT_FOR_FAB")
+    f.SetPosition(xy(*site))
+    f.SetLayer(pcb.F_Cu)
+    f.Reference().SetVisible(False)
+    f.Value().SetVisible(False)
+    expected_names={"VOUT":"1","PGND":"2"}
+    for net,positions in OUTPUT_CONTACTS.items():
+        for x,y in positions:
+            q=pcb.PAD(f)
+            q.SetNumber(expected_names[net])  # preserve schematic PAD identity
+            q.SetAttribute(pcb.PAD_ATTRIB_PTH)
+            q.SetShape(pcb.PAD_SHAPE_CIRCLE)
+            q.SetPosition(xy(x,y))
+            q.SetSize(xy(OUTPUT_CONTACT_PAD_DIAMETER_MM,OUTPUT_CONTACT_PAD_DIAMETER_MM))
+            q.SetDrillSize(xy(OUTPUT_CONTACT_DRILL_MM,OUTPUT_CONTACT_DRILL_MM))
+            mask=pcb.LSET.AllCuMask()
+            mask.AddLayer(pcb.F_Mask);mask.AddLayer(pcb.B_Mask)
+            q.SetLayerSet(mask)
+            q.SetNet(net_obj[net])
+            q.SetLocalZoneConnection(pcb.ZONE_CONNECTION_FULL)
+            f.Add(q)
+    # Only a drawing trial; OEM mechanics/coldplate, torque, fasteners,
+    # electrical via barrel/current capacity and assembly are NOT verified.
+    outline=pcb.PCB_SHAPE(f)
+    outline.SetShape(pcb.SHAPE_T_RECT)
+    # Fit the two-pole land envelope inside the narrow x66..86 throat;
+    # shift the first mounting hole away from Cout near y72. OEM body
+    # is still unknown, so this is a DRC-screened provisional envelope.
+    outline.SetStart(xy(66.65,74.5))
+    outline.SetEnd(xy(85.35,108.5))
+    outline.SetLayer(pcb.F_CrtYd)
+    outline.SetWidth(PU(.05))
+    f.Add(outline)
     board.Add(f)
     return f
 
@@ -226,7 +288,12 @@ def build():
     nets=sorted({r["Net"] for r in native["pads"] if r["Net"]})
     net_obj={n:addnet(board,n) for n in nets}
     for ref in sorted(part_by_ref):
-        add_native_footprint(board,part_by_ref[ref],grouped[ref],placement[ref],net_obj)
+        if ref=="J_OUT":
+            # Agent-D audited multi-contact trial; never reuse the old
+            # 0.7mm-drill per-pole input/output placeholder as a 100A terminal.
+            add_output_multicontact_trial(board,placement[ref],net_obj)
+        else:
+            add_native_footprint(board,part_by_ref[ref],grouped[ref],placement[ref],net_obj)
     rect(board,pcb.Edge_Cuts,(0,0),(155,113),.05)
     for s in slot_model["slots"]:
         rect(board,pcb.Edge_Cuts,
@@ -236,7 +303,7 @@ def build():
         rect(board,pcb.Dwgs_User,(x-16.525,33-10.575),(x+16.525,33+10.575),.1)
         message(board,ref+" - WINDING NOT DESIGNED",(x,33),.95)
     message(board,"V17 PROVISIONAL PAD RECONSTRUCTION - NOT FOR FAB",(81,2),1.12)
-    message(board,"PGND/VOUT INNER HF PLANES ONLY; 100A COPPER BAR NOT DESIGNED",(85,110),.83)
+    message(board,"TRIAL PTH OUTPUT ARRAY / BAR & CONTACT STILL NOT RATED",(110,111),.78)
     # Native KiCad copper layers - front/inner plane/back. No fabricated
     # T1-T4 3:1:1 windings, no false mapping of OEM DOT.
     all_critical=(ground_model["planned_via_in_pad_sites"]+
@@ -453,6 +520,14 @@ def build():
     # adjacent PGND return rather than sharing a broad noisy switch copper.
     zone(board,net_obj["VCC12_S"],pcb.In3_Cu,(2.,44.,153.,64.))
     zone(board,net_obj["VCC12"],pcb.In4_Cu,(2.,2.,153.,24.))
+    # Agent-D electrically screened two extra alternating VOUT/PGND
+    # output-plane pairs on the real 12-copper-layer KiCad stack.
+    # Their *copper thickness*, interlayer distances and via plating
+    # remain vendor UNSIGNED. These zones are not a replacement for
+    # actual PTH joint, contact and external/embedded power bus rating.
+    for layer,net in ((pcb.In5_Cu,"VOUT"),(pcb.In6_Cu,"PGND"),
+                      (pcb.In7_Cu,"VOUT"),(pcb.In8_Cu,"PGND")):
+        zone(board,net_obj[net],layer,(1.,70.,154.,112.))
     zone(board,net_obj["PGND"],pcb.F_Cu,(1.,44.,154.,112.))
     zone(board,net_obj["PGND"],pcb.F_Cu,(1.,1.,154.,25.))
     zone(board,net_obj["PGND"],pcb.B_Cu,(1.,44.,154.,112.))
@@ -492,6 +567,11 @@ def build():
         "board_12_layers_real":reopened.GetCopperLayerCount()==12,
         "native_actual_footprints":len(reopened.GetFootprints()),
         "native_actual_footprint_pads":sum(len(fp.Pads()) for fp in reopened.GetFootprints()),
+        "native_J_OUT_multi_contact_trial_per_pole":4,
+        "native_J_OUT_contact_pad_diameter_mm":OUTPUT_CONTACT_PAD_DIAMETER_MM,
+        "native_J_OUT_contact_drill_mm":OUTPUT_CONTACT_DRILL_MM,
+        "native_added_bipolar_power_plane_pairs":2,
+        "output_interface_manufacturer_and_100A_qualified":False,
         "native_actual_vias":sum(isinstance(q,pcb.PCB_VIA) for q in reopened.GetTracks()),
         "native_actual_tracks":sum(isinstance(q,pcb.PCB_TRACK) and not isinstance(q,pcb.PCB_VIA) for q in reopened.GetTracks()),
         "native_actual_copper_zones":len(reopened.Zones()),
@@ -527,7 +607,8 @@ def build():
            "Eight near-pad SR Kelvin leads require OEM drain pinout, EMC/switch overshoot and current-sharing review",
            "VD_B low-current sense routes require full Kelvin return and EMI immunity signoff",
            "QH same-device SW fingers and low-current SW reference stubs are not a current-rated complete QH/QL resonant hot loop",
-           "Actual 100A external/embedded two-pole copper bar; original J_OUT inadequate",
+           "Eight PTH (four/pole) J_OUT contacts are only a provisional current-sharing trial: vendor barrel, joint, torque and busbar unqualified",
+           "Actual 100A external/embedded two-pole copper bar and full 3LPM coldplate assembly not approved",
            "Remaining circuitry nets and all P1 schematic parity",
            "Native board full DRC/EMI/thermal, import parity to EasyEDA"
         ],

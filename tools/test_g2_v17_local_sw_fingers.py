@@ -40,7 +40,7 @@ def test_local_SW_physical_board_native_drc_progress_no_pgnd_regression():
     assert meta["native_actual_tracks"]==165
     assert meta["native_actual_vias"]==359
     assert len(drc["unconnected_items"])==9
-    assert Counter(v["type"] for v in drc["violations"])=={"clearance":2}
+    assert Counter(v["type"] for v in drc["violations"])=={}
     desc=" ".join(q["description"] for e in drc["unconnected_items"] for q in e["items"])
     assert "[PGND]" not in desc
     assert "[SW]" in desc and "[VIN_P]" in desc and "[GH_DRV]" in desc

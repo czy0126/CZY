@@ -19,8 +19,8 @@ def test_native_kicad_board_binary_tracks_and_pad_inventory():
     m=json.loads(META.read_text("utf8"))
     assert m["saved_board_sha256"]==hashlib.sha256(BOARD.read_bytes()).hexdigest()
     assert m["native_actual_footprints"]==149
-    assert m["native_actual_footprint_pads"]==419
-    assert m["native_actual_copper_zones"]==7
+    assert m["native_actual_footprint_pads"]==425
+    assert m["native_actual_copper_zones"]==11
     assert m["native_actual_vias"]==359
     assert m["auxiliary_pgnd_return_via_count"]==14
     assert m["control_U1_VCC12_feed_via_count"]==1
@@ -43,7 +43,7 @@ def test_actual_kicad_native_drc_zero_shorts_but_not_zero_unconnected():
     r=json.loads(D.read_text("utf8"))
     assert r["kicad_version"]=="10.0.6"
     counts=Counter(v["type"] for v in r["violations"])
-    assert counts=={"clearance":2}
+    assert counts=={}
     assert len(r["unconnected_items"])==9
     desc=" ".join(x["description"] for v in r["unconnected_items"] for x in v["items"])
     assert " [PGND]" not in desc
@@ -57,12 +57,14 @@ def test_actual_kicad_native_drc_zero_shorts_but_not_zero_unconnected():
                    for n in range(1,5) for side in ("A","B"))
     assert not any(" [VD"+str(n)+"_B]" in desc for n in range(1,5))
 
-def test_actual_unresolved_U2_is_not_silenced():
+def test_u2_manufacturer_pitch_clears_original_two_pad_spacing_faults():
     r=json.loads(D.read_text("utf8"))
-    for violation in r["violations"]:
-        assert violation["type"]=="clearance"
-        names=" ".join(p["description"] for p in violation["items"])
-        assert "U2" in names
+    assert r["violations"]==[]
+    assert len(r["unconnected_items"])==9
+    m=json.loads(META.read_text("utf8"))
+    assert m["native_J_OUT_multi_contact_trial_per_pole"]==4
+    assert m["native_added_bipolar_power_plane_pairs"]==2
+    assert m["output_interface_manufacturer_and_100A_qualified"] is False
     assert all(not k for k in [
         json.loads(META.read_text("utf8"))["real_fabrication_release"],
         json.loads((G/"g2_v17_integrated_pgnd_vout_review_LOCKED_NOT_FOR_FAB.json").read_text("utf8"))["fab_release"]

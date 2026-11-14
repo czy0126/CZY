@@ -46,11 +46,11 @@ def test_actual_board_gate_increment_did_not_disconnect_pgnd_or_silence_manufact
     assert meta["local_primary_gate_route_count"]==5
     assert meta["local_primary_gate_track_segments"]==7
     assert meta["native_actual_footprints"]==149
-    assert meta["native_actual_footprint_pads"]==419
+    assert meta["native_actual_footprint_pads"]==425
     assert meta["native_actual_tracks"]==165
     assert meta["native_actual_vias"]==359
     assert len(drc["unconnected_items"])==9
-    assert len(drc["violations"])==2
+    assert len(drc["violations"])==0
     desc=" ".join(i["description"] for row in drc["unconnected_items"] for i in row["items"])
     for net in ("PGND","GL","GL_DRV","GD1","GD2","VCC12"):
         assert "["+net+"]" not in desc

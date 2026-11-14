@@ -86,7 +86,7 @@ def test_real_KiCad_pcb_and_current_DRC_all_SEC_and_VDB_connected_but_not_releas
     drc=json.loads((G/"g2_v17_KICAD_NATIVE_DRC_NOT_FOR_FAB.json").read_text("utf8"))
     assert hashlib.sha256(BOARD.read_bytes()).hexdigest()==meta["saved_board_sha256"]
     assert meta["native_actual_footprints"]==149
-    assert meta["native_actual_footprint_pads"]==419
+    assert meta["native_actual_footprint_pads"]==425
     assert meta["native_actual_tracks"]==165
     assert meta["native_actual_vias"]==359
     assert meta["short_SR_drain_Kelvin_track_count"]==8
@@ -94,7 +94,7 @@ def test_real_KiCad_pcb_and_current_DRC_all_SEC_and_VDB_connected_but_not_releas
     assert meta["completed_remaining_VD_B_track_count"]==8
     assert len(drc["unconnected_items"])==9
     c=Counter(x["type"] for x in drc["violations"])
-    assert c=={"clearance":2}
+    assert c=={}
     remain=" ".join(x["description"] for row in drc["unconnected_items"] for x in row["items"])
     assert not any("["+net+"]" in remain for net in
         ([f"SEC{i}_{side}" for i in range(1,5) for side in ("A","B")] +

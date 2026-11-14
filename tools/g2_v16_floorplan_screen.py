@@ -12,6 +12,7 @@ import math
 from pathlib import Path
 from shapely.geometry import box, Point
 from shapely.affinity import scale
+from g2_v17_source_digest import source_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 G = ROOT / "hardware" / "dcx_main" / "g2"
@@ -28,7 +29,7 @@ CORE_X = (20., 58., 96., 134.)
 CORE_Y = 40.
 
 def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return source_sha256(path)
 
 def load():
     if sha(NATIVE) != EXPECTED_V15_SHA256:

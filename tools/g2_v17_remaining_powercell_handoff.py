@@ -76,18 +76,17 @@ def generate():
             for x in row["items"]])
     if dict(count)!=EXPECTED:
         raise ValueError("Native DRC remaining nets drift: "+str(dict(count)))
-    if Counter(v["type"] for v in drc["violations"])!=Counter({"clearance":2}):
+    if Counter(v["type"] for v in drc["violations"])!=Counter():
         raise ValueError("Native DRC has new unscreened violations")
-    if any(not any("U2" in item["description"] for item in v["items"])
-           for v in drc["violations"]):
-        raise ValueError("Native violations no longer confined to U2")
+    # U2 nominal pitch is now exact 0.5 mm, no native DRC violations.
+    # An empty violation roster is required; open connectivity remains gated.
     if meta["real_fabrication_release"]:
         raise ValueError("Cannot generate provisional blockers for released PCB")
     result={
         "status":"SOURCE_LOCKED_NATIVE_DRC_REMAINING_ISSUES_NOT_FOR_FAB",
         "audit_local_date":"2026-11-14",
         "owner_assignment":"UNASSIGNED_REQUIRES_USER_COORDINATION",
-        "project_branch":"feat/d1-v17-agent-a-signals-20261113",
+        "project_branch":"feat/d1-v17-integration-20261114",
         "local_SW_finger_source_sha256":sha(G/"g2_v17_local_SW_finger_reference_NOT_FOR_FAB.json"),
         "board_relative_path":PCB.relative_to(ROOT).as_posix(),
         "native_board_sha256":sha(PCB),

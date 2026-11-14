@@ -2,12 +2,12 @@
   "status": "SOURCE_LOCKED_NATIVE_DRC_REMAINING_ISSUES_NOT_FOR_FAB",
   "audit_local_date": "2026-11-14",
   "owner_assignment": "UNASSIGNED_REQUIRES_USER_COORDINATION",
-  "project_branch": "feat/d1-v17-agent-a-signals-20261113",
+  "project_branch": "feat/d1-v17-integration-20261114",
   "local_SW_finger_source_sha256": "58bc69a8530da127ee53cc6b4afeae2f9a328a65583d3153f115ef615e049860",
   "board_relative_path": "hardware/dcx_main/g2/dcx_main_board_g2_V17_KICAD_PGND_VOUT_WIP_NOT_FOR_FAB.kicad_pcb",
-  "native_board_sha256": "03ff237151e14e182be71f92acced8ddab79b04bd0676024acc41c0a4696b097",
-  "native_drc_sha256": "7ac0a06d623a31ffdfb5302b818b40eaed9518be635607f3b49a447e4b12d081",
-  "native_meta_sha256": "5976288df63f31c14a7a2f07a01f19ab87d691b1d6c3ff07043e8078c4776074",
+  "native_board_sha256": "2cbf559bd7fd67c1673d54cb36048dda7cbcf7e742a2fedb6930ed9c7553986f",
+  "native_drc_sha256": "3c7d6873b45949b463cfa891c6ceb1150213a0adfc3a6a4bb5165a42e9555ea7",
+  "native_meta_sha256": "35713b727f4cdba5b8bf0b6e96db07423e0f22cdcc9b598258f217ca85d639c6",
   "kicad_version": "10.0.6",
   "unconnected_total": 9,
   "by_net": {
@@ -19,20 +19,20 @@
     "VIN_P": 2
   },
   "net_endpoints": {
-    "OC": [
+    "HB": [
       [
         {
-          "description": "F.Cu 上 U1 的焊盘 3 [OC]",
+          "description": "走线 [HB] (F.Cu), 长度: 0.7005 mm",
           "position_mm": {
-            "x": 76.633755,
-            "y": 13.706281
+            "x": 44.29962,
+            "y": 17.99988
           }
         },
         {
-          "description": "走线 [OC] (F.Cu), 长度: 4.4943 mm",
+          "description": "F.Cu 上 U2 的焊盘 3 [HB]",
           "position_mm": {
-            "x": 134.24788,
-            "y": 17.00018
+            "x": 52.499258,
+            "y": 18.0
           }
         }
       ]
@@ -40,10 +40,10 @@
     "SW": [
       [
         {
-          "description": "走线 [SW] (F.Cu), 长度: 3.2464 mm",
+          "description": "走线 [SW] (F.Cu), 长度: 6.3064 mm",
           "position_mm": {
-            "x": 46.093374,
-            "y": 9.750718
+            "x": 43.753518,
+            "y": 12.00116
           }
         },
         {
@@ -66,7 +66,7 @@
           "description": "F.Cu 上 U2 的焊盘 5 [SW]",
           "position_mm": {
             "x": 52.499258,
-            "y": 18.999619
+            "y": 19.0
           }
         }
       ],
@@ -83,24 +83,6 @@
           "position_mm": {
             "x": 47.363374,
             "y": 9.750718
-          }
-        }
-      ]
-    ],
-    "GH": [
-      [
-        {
-          "description": "F.Cu 上 R18 的焊盘 1 [GH]",
-          "position_mm": {
-            "x": 42.247298,
-            "y": 12.00116
-          }
-        },
-        {
-          "description": "走线 [GH] (F.Cu), 长度: 4.7628 mm",
-          "position_mm": {
-            "x": 47.753109,
-            "y": 14.000507
           }
         }
       ]
@@ -139,24 +121,6 @@
         }
       ]
     ],
-    "HB": [
-      [
-        {
-          "description": "F.Cu 上 C5 的焊盘 1 [HB]",
-          "position_mm": {
-            "x": 44.29962,
-            "y": 17.99988
-          }
-        },
-        {
-          "description": "F.Cu 上 U2 的焊盘 3 [HB]",
-          "position_mm": {
-            "x": 52.499258,
-            "y": 17.998859
-          }
-        }
-      ]
-    ],
     "GH_DRV": [
       [
         {
@@ -170,31 +134,50 @@
           "description": "F.Cu 上 U2 的焊盘 4 [GH_DRV]",
           "position_mm": {
             "x": 52.499258,
-            "y": 18.499239
+            "y": 18.5
+          }
+        }
+      ]
+    ],
+    "GH": [
+      [
+        {
+          "description": "F.Cu 上 R18 的焊盘 1 [GH]",
+          "position_mm": {
+            "x": 42.247298,
+            "y": 12.00116
+          }
+        },
+        {
+          "description": "走线 [GH] (F.Cu), 长度: 4.7628 mm",
+          "position_mm": {
+            "x": 47.753109,
+            "y": 14.000507
+          }
+        }
+      ]
+    ],
+    "OC": [
+      [
+        {
+          "description": "F.Cu 上 U1 的焊盘 3 [OC]",
+          "position_mm": {
+            "x": 76.633755,
+            "y": 13.706281
+          }
+        },
+        {
+          "description": "走线 [OC] (F.Cu), 长度: 4.4943 mm",
+          "position_mm": {
+            "x": 134.24788,
+            "y": 17.00018
           }
         }
       ]
     ]
   },
-  "remaining_violation_types": {
-    "clearance": 2
-  },
-  "remaining_native_U2_violations": [
-    {
-      "description": "间距违规 ( 间距 0.2000 mm; 实际 0.1981 mm)",
-      "items": [
-        "F.Cu 上 U2 的焊盘 2 [<no net>]",
-        "F.Cu 上 U2 的焊盘 3 [HB]"
-      ]
-    },
-    {
-      "description": "间距违规 ( 间距 0.2000 mm; 实际 0.1981 mm)",
-      "items": [
-        "F.Cu 上 U2 的焊盘 9 [PGND]",
-        "F.Cu 上 U2 的焊盘 8 [GD2]"
-      ]
-    }
-  ],
+  "remaining_violation_types": {},
+  "remaining_native_U2_violations": [],
   "groups": [
     {
       "group": "primary_switch_node",

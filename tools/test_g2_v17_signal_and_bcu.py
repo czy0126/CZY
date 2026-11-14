@@ -52,7 +52,7 @@ def test_native_kicad_pcb_was_rebuilt_from_locked_source_and_drc_is_not_masked()
     native=json.loads((G/"g2_v17_KICAD_NATIVE_DRC_NOT_FOR_FAB.json").read_text("utf8"))
     assert hashlib.sha256(board.read_bytes()).hexdigest()==meta["saved_board_sha256"]
     assert meta["native_actual_footprints"]==149
-    assert meta["native_actual_footprint_pads"]==419
+    assert meta["native_actual_footprint_pads"]==425
     assert meta["native_actual_vias"]==359
     assert meta["auxiliary_pgnd_return_via_count"]==14
     assert meta["control_U1_VCC12_feed_via_count"]==1
@@ -65,10 +65,10 @@ def test_native_kicad_pcb_was_rebuilt_from_locked_source_and_drc_is_not_masked()
     assert meta["local_primary_gate_track_segments"]==7
     assert meta["short_BCu_control_bridge_count"]==3
     assert meta["short_BCu_control_via_count"]==6
-    assert meta["native_actual_copper_zones"]==7
+    assert meta["native_actual_copper_zones"]==11
     assert meta["saved_zones_filled"] and not meta["real_fabrication_release"]
-    # A physically present 2um pad-clearance issue in the imported U2 footprint
-    # remains open. Do not lower nominal design clearance or misstate DRC green.
+    # Source U2 grid-rounding was corrected to the OEM nominal 0.5mm pitch;
+    # do not waive real mechanical clearances or remaining electrical opens.
     assert len(native["violations"])<=2
     assert all(x["type"]=="clearance" and
                any("U2" in q.get("description","") for q in x["items"])

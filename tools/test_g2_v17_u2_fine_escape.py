@@ -71,7 +71,7 @@ def test_kicad_native_drc_has_no_new_gd_or_pgnd_open_items():
     netdescs=" ".join(i["description"] for x in d["unconnected_items"] for i in x["items"])
     assert all("["+net+"]" not in netdescs for net in ("GD1","GD2","VCC12","PGND"))
     assert len(d["unconnected_items"])==9
-    assert len(d["violations"])==2
+    assert len(d["violations"])==0
     assert m["native_actual_vias"]==359
     assert m["native_actual_tracks"]==165
     assert m["control_U1_VCC12_feed_via_count"]==1

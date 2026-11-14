@@ -18,8 +18,8 @@ def test_remaining_unconnected_are_grounded_in_current_KiCad_drc():
         "GH":1,"GH_DRV":1,"HB":1,"OC":1,"SW":3,"VIN_P":2}
     assert all(len(d["net_endpoints"][n])==num
                for n,num in d["by_net"].items())
-    assert d["remaining_violation_types"]=={"clearance":2}
-    assert len(d["remaining_native_U2_violations"])==2
+    assert d["remaining_violation_types"]=={}
+    assert len(d["remaining_native_U2_violations"])==0
     assert all("U2" in " ".join(x["items"]) for x in d["remaining_native_U2_violations"])
     assert not d["fab_release"]
     assert not d["whole_board_drc_green"]

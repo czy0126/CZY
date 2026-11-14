@@ -1,0 +1,76 @@
+{
+  "status": "NATIVE_RECONSTRUCTED_V15_PAD_IDENTITIES_AND_J_OUT_TRIAL_VERIFIED_NOT_FOR_FAB",
+  "native_v15_sha256": "02d59c63c747678849466cc62565c1522bc50586a7dadc06b0829016ab601e75",
+  "native_V17_kicad_sha256": "2cbf559bd7fd67c1673d54cb36048dda7cbcf7e742a2fedb6930ed9c7553986f",
+  "native_V17_drc_sha256": "3c7d6873b45949b463cfa891c6ceb1150213a0adfc3a6a4bb5165a42e9555ea7",
+  "kicad_version": "10.0.6",
+  "preserved_source_component_refs": 149,
+  "all_148_unchanged_footprints_identical_pin_number_and_net_multiset": true,
+  "original_archived_pad_count": 419,
+  "actual_KiCad_pad_count": 425,
+  "J_OUT_old_per_pole_pads": 1,
+  "J_OUT_new_per_pole_pads": 4,
+  "J_OUT_contacts_xy_mm": {
+    "VOUT": [
+      [
+        70.0,
+        78.0
+      ],
+      [
+        70.0,
+        87.0
+      ],
+      [
+        70.0,
+        96.0
+      ],
+      [
+        70.0,
+        105.0
+      ]
+    ],
+    "PGND": [
+      [
+        82.0,
+        78.0
+      ],
+      [
+        82.0,
+        87.0
+      ],
+      [
+        82.0,
+        96.0
+      ],
+      [
+        82.0,
+        105.0
+      ]
+    ]
+  },
+  "unlike_net_short_DRC": 0,
+  "native_DRC_rule_violations": 0,
+  "native_unconnected_items": 9,
+  "kicad_real_copper_layer_count": 12,
+  "copper_zone_count": 11,
+  "critical_paired_power_planes": {
+    "VOUT@In5.Cu": 1,
+    "PGND@In6.Cu": 1,
+    "VOUT@In7.Cu": 1,
+    "PGND@In8.Cu": 1
+  },
+  "missing_real_physical_magnetics": [
+    "CT",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "unverified_missing_magnetic_logical_pin_count": 24,
+  "source_U2_nominal_pitch_verified": true,
+  "real_full_P1_SCH_to_PCB_netlist_parity_verified": false,
+  "OEM_manufacturing_footprints_signed": false,
+  "8_contact_current_rating_and_coldplate_mount_verified": false,
+  "thermal_EMI_3D_and_100A_verified": false,
+  "board_release": false
+}
