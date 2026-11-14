@@ -1,0 +1,130 @@
+{
+  "kind": "D1_G0_PHYSICAL_ACCEPTANCE_STOPLINE",
+  "status": "NOT_FOR_FAB_G0_BLOCKED_PHYSICAL_WITNESS_REQUIRED",
+  "issue": 133,
+  "scope": "G0 first safe 48V->2V low-power startup only; G2/G3 excluded",
+  "baseline_pcb_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "baseline_unconnected": 7,
+  "baseline_ignored_drc_checks": [
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries",
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch"
+  ],
+  "native_bench_erc_violations": 0,
+  "native_bench_netlist_pins_checked": 565,
+  "native_bench_schematic_sha256": "3a6bb671fdafde0221d4293baae07cc574ad7c0c21171abed7e1d9e017744040",
+  "native_bench_bom_sha256": "956e21770967e22334f111122ee4aca7b958763d8bd2d873b79fa3d483a008ab",
+  "native_bench_not_production_isolated": true,
+  "independent_dual_bias_candidate_erc_violations": 0,
+  "independent_dual_bias_candidate_pins_checked": 28,
+  "independent_dual_bias_candidate_schematic_sha256": "46e26b99c54cde64dd1410dd060d3bb92594aa6fd0c4669e8b6762a3a182dc84",
+  "independent_dual_bias_candidate_secondary_ground_separate": true,
+  "dual_bias_candidate_is_not_integrated_or_fab_ready": true,
+  "prior_uvlo_simulation_is_not_current_interlock_proof": true,
+  "illustrative_passive_gate_decay_is_not_hardware_proof": true,
+  "fault_modes": [
+    "COLD_START_HARD_FAULT",
+    "STEADY_RUN_HARD_FAULT",
+    "PRIMARY_BIAS_LOSS",
+    "SECONDARY_BIAS_LOSS",
+    "CT_SIGNAL_MISSING",
+    "HELD_HIGH_ACK_FAULT_RECOVERY"
+  ],
+  "gate_channels": [
+    "GA1",
+    "GA2",
+    "GA3",
+    "GA4",
+    "GA5",
+    "GA6",
+    "GA7",
+    "GA8",
+    "GH1",
+    "GL1"
+  ],
+  "required_scope_captures": 60,
+  "obligations": [
+    {
+      "id": "G0-01",
+      "owner_role": "Lane A / electrical integrator",
+      "required": "Actual primary input, half-bridge, Lr/Cr and SW/Kelvin closed on ONE native board; native ERC/DRC and source-net parity",
+      "artifact_class": "native_board_and_pin_parity",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-02",
+      "owner_role": "Lane B / magnetics integrator",
+      "required": "T1-T4 and CT physical 24-terminal mapping, DOT polarity, 12-layer stack, insulation, continuity and magnetic measurements",
+      "artifact_class": "magnetics_pin_dot_and_inspection",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-03",
+      "owner_role": "Lane C / electrical integrator",
+      "required": "Independent primary and secondary 12V bias sources with correct different ground domains, UVLO, initial start and hold-up measurements",
+      "artifact_class": "bias_isolation_uvlo",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-04",
+      "owner_role": "Lane C / hardware integrator",
+      "required": "External NC E-stop + independent 48V input power interruption including cable loss and welded contact fault tests",
+      "artifact_class": "estop_power_disconnection",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-05",
+      "owner_role": "Lane C / hardware integrator",
+      "required": "Isolated high-side GH1-SW monitor and HB-SW bootstrap voltage validity; sensor absent or unpowered must inhibit enable",
+      "artifact_class": "floating_vgs_monitor",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-06",
+      "owner_role": "Lane C / bench test operator",
+      "required": "Ten source-referenced VGS captures for six listed fault modes; bias collapse and permit/relay state, off-time and overlap",
+      "artifact_class": "all_gate_fault_waveforms",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-07",
+      "owner_role": "Lane C / electrical integrator",
+      "required": "Worst-case driver/supervisor delay, effective 12V hold-up at VDDmin, MOSFET gate charge, shorted bias and SOA review",
+      "artifact_class": "gate_safety_timing_and_soa",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-08",
+      "owner_role": "A/B/C integrator",
+      "required": "Physical low-energy bench: pre-power polarity/short/insulation checks, temporary cooling, independent current limit, instrument serials",
+      "artifact_class": "unpowered_preflight_and_cooling",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    },
+    {
+      "id": "G0-09",
+      "owner_role": "A/B integrator",
+      "required": "Zero unconnected native tracks and no ignored safety-critical ERC/DRC checks on FINAL assembled PCB (not the D0 bench)",
+      "artifact_class": "final_native_erc_drc",
+      "status": "PENDING",
+      "raw_hardware_witness": null
+    }
+  ],
+  "all_evidence_submitted_for_independent_review": false,
+  "independent_hardware_signoff": "NOT_OBTAINED",
+  "energization_allowed": false,
+  "gate_0_approved": false,
+  "gate_1_measured_success": false,
+  "fabrication_approved": false,
+  "approval_never_inferred_from_cad_sim_or_witness_json": true,
+  "next_action": "Integrate final A/B/C board then collect original bench traces/physical inspections and independent human G0 signoff"
+}
