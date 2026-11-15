@@ -1,0 +1,422 @@
+{
+  "kind": "D1_G0_NINE_PHYSICAL_WITNESS_READINESS_NOT_A_POWER_PERMIT",
+  "source_g0_integration_sha256": "a625305fc84e81409bb290c3cab8ddce271514f6265fc2fd339895396300b536",
+  "source_capture_matrix_sha256": "4f849bf809b5934935a7ca3917b88ef4e899ca5c63a4cbc8f4d2747d22af0d3f",
+  "physical_signoff_obligations_total": 9,
+  "physical_signed_approved": 0,
+  "not_signed_and_still_requires_hardware": 9,
+  "status": "PHYSICAL_SIGNOFF_NOT_OBTAINED_DO_NOT_POWER",
+  "central_gate_approval": false,
+  "V5_mainboard_CAD": {
+    "footprints": 161,
+    "pin_parity": 441,
+    "drc": 0,
+    "erc": 0,
+    "opens": 0,
+    "not_an_assembled_G0": true
+  },
+  "V6_bias_CAD": {
+    "footprints": 30,
+    "pin_parity": 80,
+    "drc": 0,
+    "erc": 0,
+    "opens": 0,
+    "uvlo_not_wired_to_actual_estop_or_RUN": true
+  },
+  "unreviewed_power_mainboard_drc_categories": [
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries",
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch"
+  ],
+  "capture_matrix": {
+    "required": 60,
+    "raw_present_unverified": 0,
+    "missing_raw": 60,
+    "rejected": 0,
+    "original_raw_files": [],
+    "missing_pairs": [
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA1",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA2",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA3",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA4",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA5",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA6",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA7",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GA8",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GH1",
+        "negative_probe": "SW"
+      },
+      {
+        "fault_mode": "COLD_START_HARD_FAULT",
+        "gate": "GL1",
+        "negative_probe": "PGND"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA1",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA2",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA3",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA4",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA5",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA6",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA7",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GA8",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GH1",
+        "negative_probe": "SW"
+      },
+      {
+        "fault_mode": "STEADY_RUN_HARD_FAULT",
+        "gate": "GL1",
+        "negative_probe": "PGND"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA1",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA2",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA3",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA4",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA5",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA6",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA7",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GA8",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GH1",
+        "negative_probe": "SW"
+      },
+      {
+        "fault_mode": "PRIMARY_BIAS_LOSS",
+        "gate": "GL1",
+        "negative_probe": "PGND"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA1",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA2",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA3",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA4",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA5",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA6",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA7",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GA8",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GH1",
+        "negative_probe": "SW"
+      },
+      {
+        "fault_mode": "SECONDARY_BIAS_LOSS",
+        "gate": "GL1",
+        "negative_probe": "PGND"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA1",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA2",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA3",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA4",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA5",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA6",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA7",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GA8",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GH1",
+        "negative_probe": "SW"
+      },
+      {
+        "fault_mode": "CT_SIGNAL_MISSING",
+        "gate": "GL1",
+        "negative_probe": "PGND"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA1",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA2",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA3",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA4",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA5",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA6",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA7",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GA8",
+        "negative_probe": "SR_SOURCE_RETURN"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GH1",
+        "negative_probe": "SW"
+      },
+      {
+        "fault_mode": "HELD_HIGH_ACK_FAULT_RECOVERY",
+        "gate": "GL1",
+        "negative_probe": "PGND"
+      }
+    ],
+    "rejected_pairs": [],
+    "physical_waveform_approval": "NOT_OBTAINED"
+  },
+  "physical_obligations": [
+    {
+      "id": "G0-01",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "native_mainboard_netlist_and_assembled_serial",
+      "next_verifiable_hardware_requirement": "CAD source checks exist; assembled closed power loop, signed native schematic/PCB and board identity still require inspection",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-02",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "physical_transformer_CTs_windings_AND_verified_DOT",
+      "next_verifiable_hardware_requirement": "Obtain actual T/CT winding pad numbers, dot polarity, insulation and signed physical magnetics test sheet",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-03",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "built_dual_bias_uvlo_startup_AND_holdup_scope",
+      "next_verifiable_hardware_requirement": "Bench measure both domains' rail rise, UVLO action, hold-up and return isolation",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-04",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "NC_ESTOP_and_independent_48V_break_with_weld_check",
+      "next_verifiable_hardware_requirement": "Bench test NC E-stop, external DC-rated contactor, de-energized state and welded-contact diagnostic",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-05",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "true_high_side_HO_SW_and_HB_SW_monitored",
+      "next_verifiable_hardware_requirement": "Independent floating high-side VGS and bootstrap sensor, sensor-lost default-off",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-06",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "60_original_scope_waveforms_AND_independent_review",
+      "next_verifiable_hardware_requirement": "Acquire all 6 faults x 10 source-referenced gate VGS traces and raw timing captures",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-07",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "worst_case_safety_timing_SOA_AND_actual_caps",
+      "next_verifiable_hardware_requirement": "Verify actual coil, gate, supply hold-up, supervisor and turn-off timing plus MOSFET SOA",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-08",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "unpowered_preflight_insulation_cooling_instruments",
+      "next_verifiable_hardware_requirement": "Signed pre-power polarity, shorts, insulation, cooling, independent current limit and instrument serials",
+      "requires_human_and_actual_hardware": true
+    },
+    {
+      "id": "G0-09",
+      "status": "PENDING",
+      "claimed_or_signed_physical_PASS": false,
+      "evidence_class": "complete_assembled_G0_board_AND_no_ignored_safety_DRC",
+      "next_verifiable_hardware_requirement": "Physical G0 selection, full CAD, all nets closed, all safety-critical ignored DRC cases reviewed",
+      "requires_human_and_actual_hardware": true
+    }
+  ],
+  "instrumentation_note": "Physical bench instruments and power interruption are never operated by this script",
+  "G0_approved": false,
+  "energization_allowed": false,
+  "fabrication_approved": false
+}
