@@ -1,6 +1,6 @@
 # D1 / 48V→约2V LLC-DCX — G0 154 器件整合主板 KiCad 工程（2026-11-15，NOT_FOR_FAB）
 
-**本页属于历史 V1 试验记录；最新推荐是 V4 的 157 器件、433 引脚、已分离主副边回流且具有独立设计来源SCH的 KiCad工程，详情见 docs/agent/D1_G0_V4_INDEPENDENT_SOURCE_ISOLATED_RETURN_20261115_NOT_FOR_FAB.md。V1 共 PGND 问题在 V4 CAD 内已有修复，但真实磁件、偏置模块及安全保护还没有完成。**
+**本页属于历史 V1 试验记录；目前最新为 V5 的 161 器件、441 引脚、四路UCC24624 Kelvin铜路及另外一块两只THN30的独立隔离12V偏置PCB，详情见 docs/agent/D1_G0_V5_KELVIN_THN30_DUAL_BIAS_20261115_NOT_FOR_FAB.md。尽管原副边共地与VSS回流问题已有CAD修复，真实磁件、硬件急停、UVLO和实测仍未完成，NOT_FOR_FAB。**
 
 ## 交付与使用
 

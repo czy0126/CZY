@@ -24,6 +24,17 @@ def test_current_g0_release_is_hard_blocked():
     assert v4["secondary_return_pads_reassigned"]==129
     assert v4["actual_bias_regulation_and_uvlo_not_integrated"] is True
     assert v4["g0_remains_blocked"] is True
+    v5=r["latest_native_mainboard_G0_V5"]
+    assert v5["pcb_footprints"]==161
+    assert v5["independent_schematic_pins"]==441
+    assert v5["native_drc"]==v5["native_erc"]==v5["native_unconnected"]==0
+    assert v5["effective_REG_c_and_SR_noise_not_signed"] is True
+    bias=r["new_dual_Traco_48v_12v_bias_carrier_CAD"]
+    assert bias["modules_30w_each"]==2
+    assert bias["native_pcb_parts"]==13 and bias["native_schematic_pins"]==34
+    assert bias["native_erc"]==bias["native_pcb_drc"]==bias["native_pcb_unconnected"]==0
+    assert bias["physically_assembled_and_verified"] is False
+    assert bias["g0_still_blocked"] is True
     assert r["baseline_unconnected"] > 0
     assert r["required_scope_captures"] == 60
     assert len(r["obligations"]) == 9

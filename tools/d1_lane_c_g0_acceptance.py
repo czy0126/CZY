@@ -28,6 +28,10 @@ TEMPLATE = OUT / "g0_witness_template_NOT_FOR_FAB.json"
 SUBMISSION = OUT / "g0_external_witnesses.json"
 V4_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_INDEPENDENT_SOURCE_V4_MAINBOARD_NOT_FOR_FAB"
 V4_REPORT = V4_DIR / "V4_mainboard_acceptance_NOT_FOR_FAB.json"
+V5_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_UCC24624_KELVIN_V5_INTEGRATED_MAINBOARD_NOT_FOR_FAB"
+V5_REPORT = V5_DIR / "V5_integrated_KiCad_ERC_DRC_isolation_gate_NOT_FOR_FAB.json"
+BIAS_OEM_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_dual_THN30_bias_carrier_NOT_FOR_FAB"
+BIAS_OEM_REPORT = BIAS_OEM_DIR / "G0_dual_30W_isolated_bias_CAD_acceptance_NOT_FOR_FAB.json"
 
 # Source of truth for scope and ownership: these obligations describe G0 only.
 # They do not turn G1 load testing or G3 coldplate requirements into blockers.
@@ -141,12 +145,65 @@ def current_v4_mainboard_evidence() -> dict:
         raise ValueError("V4 evidence package incomplete")
     return data
 
+def latest_v5_native_mainboard() -> dict:
+    if not V5_REPORT.is_file():
+        raise ValueError("latest V5 native mainboard not generated")
+    data=json.loads(V5_REPORT.read_text("utf-8"))
+    required=(
+        data.get("PCB_footprints")==161,
+        data.get("schematic_independent_ref_pin_net_parity")==441,
+        data.get("native_pcb_DRC_violations")==0,
+        data.get("native_pcb_unconnected")==0,
+        data.get("native_schematic_ERC_violations")==0,
+        data.get("primary_secondary_copper_returns_separate") is True,
+        data.get("four_controller_VSS_kelvin_separate_from_gate_current_return") is True,
+        data.get("R8_default_DNP") is True,
+        data.get("G0_approved") is False,
+        data.get("energization_allowed") is False,
+        data.get("fabrication_approved") is False,
+    )
+    if not all(required):raise ValueError("unsafe V5 CAD metadata regression")
+    files=data.get("sha256",{})
+    if len(files)<12:raise ValueError("V5 CAD files incomplete")
+    for name,expected in files.items():
+        file=V5_DIR/name
+        if not file.is_file() or digest(file)!=expected:
+            raise ValueError("V5 native CAD SHA stale "+name)
+    return data
+
+def latest_oem_dual_bias_carrier() -> dict:
+    if not BIAS_OEM_REPORT.is_file():raise ValueError("G0 Traco carrier board missing")
+    data=json.loads(BIAS_OEM_REPORT.read_text("utf-8"))
+    valid=(data.get("native_board_footprints")==13 and
+        data.get("native_schematic_independent_pin_parity")==34 and
+        data.get("native_PCB_DRC_violations")==0 and
+        data.get("native_PCB_unconnected")==0 and
+        data.get("native_ERC_violations")==0 and
+        data.get("module_PN")=="THN 30-4812" and
+        data.get("THN30_S_plusV12_return")=="SR_SOURCE_RETURN" and
+        data.get("Traco_remote_NC_opencircuit_defaults_ON") is True and
+        data.get("fuses_recommended_2A_slow_but_MPN_breaking_inrush_QUALIFIED") is False and
+        data.get("physical_48v_main_power_contact_ESTOP_present") is False and
+        data.get("G0_approved") is False and
+        data.get("fabrication_approved") is False and
+        data.get("energization_allowed") is False)
+    if not valid:raise ValueError("unsafe or stale dual THN30 CAD evidence")
+    files=data.get("native_data_SHA256",{})
+    if len(files)<10:raise ValueError("THN30 CAD evidence files incomplete")
+    for name,expected in files.items():
+        file=BIAS_OEM_DIR/name
+        if not file.is_file() or digest(file)!=expected:
+            raise ValueError("THN30 CAD SHA stale "+name)
+    return data
+
 def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     base = g0.build()  # Re-check locked source SHA and D0 structural wiring.
     parts, _, sch_text = cad.expected_text()
     native = cad.check_native(parts, sch_text)  # exported netlist, BOM, ERC
     bp, _, bs = bias.expected()
     v4 = current_v4_mainboard_evidence()
+    v5 = latest_v5_native_mainboard()
+    oem_bias = latest_oem_dual_bias_carrier()
     independent_bias = bias.check(bp, bs)  # separate physical return domains, NOT integrated
     if independent_bias["native_erc_violations"] != 0:
         raise ValueError("native two-domain bias candidate ERC regressed")
@@ -220,6 +277,30 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
            "actual_bias_regulation_and_uvlo_not_integrated": True,
            "physical_magnetics_not_vendor_approved": True,
            "g0_remains_blocked": True,
+        },
+        "latest_native_mainboard_G0_V5": {
+           "pcb_footprints":v5["PCB_footprints"],
+           "independent_schematic_pins":v5["schematic_independent_ref_pin_net_parity"],
+           "native_drc":v5["native_pcb_DRC_violations"],
+           "native_unconnected":v5["native_pcb_unconnected"],
+           "native_erc":v5["native_schematic_ERC_violations"],
+           "source_kelvin_four_UCC24624_pin5_nets":True,
+           "C7_C10_nominal_2u2_25v_vendor_selected":True,
+           "effective_REG_c_and_SR_noise_not_signed":True,
+           "real_power_safety_not_completed":True,
+        },
+        "new_dual_Traco_48v_12v_bias_carrier_CAD": {
+           "modules_30w_each":2,
+           "native_pcb_parts":oem_bias["native_board_footprints"],
+           "native_schematic_pins":oem_bias["native_schematic_independent_pin_parity"],
+           "native_erc":oem_bias["native_ERC_violations"],
+           "native_pcb_drc":oem_bias["native_PCB_DRC_violations"],
+           "native_pcb_unconnected":oem_bias["native_PCB_unconnected"],
+           "real_oem_6pin_thn30_footprint":True,
+           "single_second_output_return_separate":True,
+           "physically_assembled_and_verified":False,
+           "real_main_48v_estop_and_UVLO_not_completed":True,
+           "g0_still_blocked":True,
         },
         "prior_uvlo_simulation_is_not_current_interlock_proof":
             model["simulation_must_not_be_claimed_for_latest_full_enable_chain"],

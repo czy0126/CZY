@@ -1,5 +1,7 @@
 # D1 G0 V4 主板：独立设计源、分离回流、双偏置接口交付（2026-11-15）
 
+**本页是历史 V4 阶段记录；主板已进入 V5，增加实际 UCC24624 VSS Kelvin 和 REG 去耦元件选型，并新增两只 THN30 的独立偏置子板。最新版见 docs/agent/D1_G0_V5_KELVIN_THN30_DUAL_BIAS_20261115_NOT_FOR_FAB.md。G0 仍未完成实物验收，NOT_FOR_FAB。**
+
 首选工程：hardware/dcx_main/g2/d1_g0_INDEPENDENT_SOURCE_V4_MAINBOARD_NOT_FOR_FAB
 
 下载 GitHub 中的 G0_V4_157_PART_INDEPENDENT_SCHEMATIC_EDITABLE_KICAD_NOT_FOR_FAB.zip，解压后在 KiCad 10 打开 d1_g0_157_PART_INDEPENDENT_SOURCE_MAINBOARD_NOT_FOR_FAB.kicad_pro。包含原生 PCB、独立来源 SCH、项目符号、ERC/DRC 报告、原生 netlist、BOM、修改说明、SHA证据及129个副边端子改线表。
