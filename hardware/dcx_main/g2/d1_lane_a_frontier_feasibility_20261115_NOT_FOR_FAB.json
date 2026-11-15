@@ -1,0 +1,221 @@
+{
+  "schema": "d1_frontier_feasibility/1",
+  "status": "DESIGN_FEASIBILITY_ONLY_NO_PERFORMANCE_DEMONSTRATED",
+  "source_pcb_sha256": "85fff295c2c8bd594266881b711584be02b40b2158e266e8df4a2ba77d6bb76c",
+  "source_path": "hardware/dcx_main/g2/d1_lane_a_connectivity/six_net_trial_04_NOT_FOR_FAB.kicad_pcb",
+  "reference_48_to_2v": {
+    "Vin_nominal_V": 48.0,
+    "Vout_nominal_V": 2.0,
+    "Iout_reference_A": 100.0,
+    "Pout_reference_W": 200.0,
+    "ratio_reference": 24.0,
+    "ratio_requires_real_schematic_circuit_verification": true
+  },
+  "existing_legacy_verification_platform": {
+    "board_mm": [
+      155.05,
+      113.05
+    ],
+    "board_area_mm2": 17528.4,
+    "reference_height_mm": 16.0,
+    "envelope_volume_cm3": 280.454,
+    "density_at_reference_200W_w_in3": 11.69,
+    "density_at_reference_200W_w_cm3": 0.7131,
+    "footprints": 149,
+    "layers_declared": 12,
+    "zones": 11,
+    "missing_real_magnetics": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "actual_full_module_density_measured": false
+  },
+  "capacitor_blocker": {
+    "oem_units": 72,
+    "oem_B_one_courtyard_mm": [
+      9.12,
+      5.1
+    ],
+    "nominal_courtyard_total_mm2": 3348.864,
+    "courtyard_area_over_4000_w_in3_max_module_area_factor": 16.35,
+    "interpretation": "Even the summed planar capacitor courtyards cannot fit the entire target-module 2D footprint; 72-COUT product BOM architecture must change. This is area arithmetic, not a packing proof.",
+    "no_unverified_replacement_capacitance_claim": true
+  },
+  "targets_not_achieved": {
+    "primary_48v_2v_density_challenge": {
+      "density_w_in3": 4000.0,
+      "density_w_cm3": 244.095,
+      "max_module_volume_cm3": 0.8194,
+      "height_assumed_mm": 4.0,
+      "max_footprint_area_mm2": 204.838,
+      "square_equivalent_edge_mm": 14.312
+    },
+    "broader_all_ratio_exploratory_challenge": {
+      "density_w_in3": 6500.0,
+      "density_w_cm3": 396.654,
+      "max_module_volume_cm3": 0.5042,
+      "height_assumed_mm": 4.0,
+      "max_footprint_area_mm2": 126.054,
+      "square_equivalent_edge_mm": 11.227
+    },
+    "density_includes": "required onboard capacitors, controls, drivers, switches, magnetics, electrical terminals, insulation and necessary packaging in actual bounding box",
+    "coolplate_reporting": "module-only and coldplate-inclusive density must be stated separately; cannot omit required onboard cooling for continuous operation",
+    "actual_power_density_qualified": false
+  },
+  "published_frontier_operating_points_not_directly_comparable": [
+    {
+      "name": "48V/1.8V integrated magnetic converter, IEEE TIE 2024",
+      "density_w_in3": 1037.0,
+      "voltage_output_v": 1.8,
+      "note": "120A continuous; 93.1% peak efficiency",
+      "doi": "10.1109/TIE.2023.3310020"
+    },
+    {
+      "name": "48V/1.8V matrix LLC bus converter APEC 2024",
+      "density_w_in3": 2400.0,
+      "voltage_output_v": 1.8,
+      "note": "840W design, estimated/projected density; NOT a directly comparable fully measured efficiency point",
+      "doi": "10.1109/APEC48139.2024.10509453"
+    },
+    {
+      "name": "48V/1V 405A GaN SBC, APEC 2025",
+      "density_w_in3": 3048.0,
+      "voltage_output_v": 1.0,
+      "note": "measured 405A; different output voltage and topology",
+      "doi": "10.1109/APEC48143.2025.10977131"
+    },
+    {
+      "name": "10:1 LLC DCX CPSS TPEA 2026",
+      "density_w_in3": 3548.0,
+      "voltage_output_v": 6.0,
+      "note": "density measured/reported at 60V in, 10:1 =6V out; at 48V 85A and 98.8% peak efficiency are separate operating points",
+      "doi": "10.24295/CPSSTPEA.2026.00024"
+    },
+    {
+      "name": "48V/12V 10MHz autotransformer DCX APEC 2026",
+      "density_w_in3": 6100.0,
+      "voltage_output_v": 12.0,
+      "note": "436W 48/12V; not a 24:1 converter; 94.2% peak efficiency",
+      "doi": "10.1109/APEC51134.2026.11517110"
+    }
+  ],
+  "exploratory_150A_product_envelope_NOT_A_CAD": {
+    "voltage_v": 2.0,
+    "current_a": 150.0,
+    "power_w": 300.0,
+    "bounding_dimensions_assumed_mm": [
+      18.0,
+      16.0,
+      4.2
+    ],
+    "bounding_volume_cm3": 1.2096,
+    "conditional_density_w_in3": 4064.3,
+    "conditional_footprint_current_density_a_mm2": 0.5208,
+    "full_load_97pct_total_loss_budget_w": 9.278,
+    "full_load_98pct_total_loss_budget_w": 6.122,
+    "output_pair_hot_resistance_target_microohm": 50,
+    "output_pair_drop_at_150A_mV": 7.5,
+    "output_pair_loss_at_150A_w": 1.125,
+    "geometry_placement_thermal_and_current_fabrication_validated": false,
+    "status": "BOUNDING_BOX_MATH_ONLY_NOT_LAYOUT_OR_MODEL_VALIDATION"
+  },
+  "loss_budget_at_reference_point": {
+    "full_load_95pct": {
+      "loss_watts": 10.526,
+      "loss_budgets_are_target_not_test_results": true
+    },
+    "full_load_96pct": {
+      "loss_watts": 8.333,
+      "loss_budgets_are_target_not_test_results": true
+    },
+    "full_load_97pct": {
+      "loss_watts": 6.186,
+      "loss_budgets_are_target_not_test_results": true
+    },
+    "full_load_98pct": {
+      "loss_watts": 4.082,
+      "loss_budgets_are_target_not_test_results": true
+    }
+  },
+  "actual_selected_net_geometry": {
+    "notes": "Summed copper segment lengths are not one point-to-point conduction loop length.",
+    "nets": {
+      "VIN_P": {
+        "pad_count": 7,
+        "track_length_mm": 29.12,
+        "via_count": 0,
+        "track_count": 7
+      },
+      "SW": {
+        "pad_count": 12,
+        "track_length_mm": 59.138,
+        "via_count": 6,
+        "track_count": 20
+      },
+      "CR_CT": {
+        "pad_count": 1,
+        "track_length_mm": 0.0,
+        "via_count": 0,
+        "track_count": 0
+      },
+      "CT_LR": {
+        "pad_count": 1,
+        "track_length_mm": 0.0,
+        "via_count": 0,
+        "track_count": 0
+      },
+      "PRI_T1": {
+        "pad_count": 1,
+        "track_length_mm": 0.0,
+        "via_count": 0,
+        "track_count": 0
+      },
+      "VOUT": {
+        "pad_count": 77,
+        "track_length_mm": 0.0,
+        "via_count": 145,
+        "track_count": 0
+      },
+      "PGND": {
+        "pad_count": 149,
+        "track_length_mm": 6.232,
+        "via_count": 189,
+        "track_count": 2
+      },
+      "GH": {
+        "pad_count": 3,
+        "track_length_mm": 21.57,
+        "via_count": 2,
+        "track_count": 7
+      },
+      "GH_DRV": {
+        "pad_count": 2,
+        "track_length_mm": 9.023,
+        "via_count": 2,
+        "track_count": 3
+      },
+      "OC": {
+        "pad_count": 4,
+        "track_length_mm": 76.806,
+        "via_count": 2,
+        "track_count": 6
+      }
+    },
+    "no_full_EMI_or_current_rating_from_KiCad_DRC": true
+  },
+  "G0_G1_functional_witness": "PENDING full CT,T1-T4 24-terminal 12-layer winding and real SCH/ERC/driver/UVLO/D0 tests",
+  "research_direction": [
+    "Keep present 0/0 PCB only for functionality + model validation; do not shrink it by affine scaling.",
+    "Investigate a NEW single-power-cell compact planar matrix transformer with shared core and short side-contact SR, not four far separated core groups.",
+    "Use physically complete 24:1 mapping (series primary / parallel low-voltage secondaries) and validate actual startup, circulating currents and polarity before CAD freeze.",
+    "Exploit fractional-turn or integrated-leakage winding options only after Maxwell matrix and thermal/SOA prove they are viable.",
+    "Abandon unqualified 72 x large T530 for product SKU: derive required output capacitance from transient charge, ripple and current stress, then design close-coupled small-cap arrays + explicit system load decoupling boundary.",
+    "Route positive AND return output metal as co-designed low-ESL pair with multiple symmetric SR cells and plated output terminations; prohibit skinny 100A traces/via bottlenecks.",
+    "Co-package high-side/low-side gate drivers adjacent to switching bridge with local return loops; optimize OC noise path and Kelvin source.",
+    "After working G1, freeze native CAD and optimize via frequency, device loss, core geometry, output termination, packaging and heat extraction as a co-design rather than decorative DRC zero."
+  ],
+  "release_permission": false
+}
