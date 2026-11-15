@@ -1,0 +1,183 @@
+{
+  "kind": "D1_G0_NATIVE_INTEGRATED_149_TO_154_PCB_CANDIDATE",
+  "status": "NATIVE_TRIAL_FULL_BOARD_NOT_FOR_FAB",
+  "source_board_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "new_board_sha256": "dd3b237cbe914d02bf34424d81979d4bd1f1942f24219be2796f5bc306278a1e",
+  "source_pcb_footprints": 149,
+  "candidate_footprints": 154,
+  "source_magnetics_manifest_sha256": "1c6ccbf922e62c801bea17cf1234583fd262fb5f9d0df12d809f65e4f62dd123",
+  "engineering_trial_magnetics": {
+    "T1": {
+      "position_mm": [
+        20.0,
+        20.0
+      ],
+      "pin_count": 5
+    },
+    "T2": {
+      "position_mm": [
+        58.0,
+        20.0
+      ],
+      "pin_count": 5
+    },
+    "T3": {
+      "position_mm": [
+        96.0,
+        20.0
+      ],
+      "pin_count": 5
+    },
+    "T4": {
+      "position_mm": [
+        134.0,
+        20.0
+      ],
+      "pin_count": 5
+    },
+    "CT": {
+      "position_mm": [
+        92.0,
+        52.0
+      ],
+      "pin_count": 4
+    }
+  },
+  "trial_magnetics_logical_landings": 24,
+  "engineering_trial_pad_sites_mm": {
+    "T1": {
+      "PRI_A": [
+        3.0,
+        46.75
+      ],
+      "PRI_B": [
+        6.0,
+        46.75
+      ],
+      "SEC_A": [
+        31.0,
+        46.75
+      ],
+      "CTAP": [
+        34.0,
+        46.75
+      ],
+      "SEC_B": [
+        37.0,
+        46.75
+      ]
+    },
+    "T2": {
+      "PRI_A": [
+        41.0,
+        46.75
+      ],
+      "PRI_B": [
+        44.0,
+        46.75
+      ],
+      "SEC_A": [
+        69.0,
+        46.75
+      ],
+      "CTAP": [
+        72.0,
+        46.75
+      ],
+      "SEC_B": [
+        75.0,
+        46.75
+      ]
+    },
+    "T3": {
+      "PRI_A": [
+        79.0,
+        46.75
+      ],
+      "PRI_B": [
+        82.0,
+        46.75
+      ],
+      "SEC_A": [
+        107.0,
+        46.75
+      ],
+      "CTAP": [
+        110.0,
+        46.75
+      ],
+      "SEC_B": [
+        113.0,
+        46.75
+      ]
+    },
+    "T4": {
+      "PRI_A": [
+        117.0,
+        46.75
+      ],
+      "PRI_B": [
+        120.0,
+        46.75
+      ],
+      "SEC_A": [
+        145.0,
+        46.75
+      ],
+      "CTAP": [
+        148.0,
+        46.75
+      ],
+      "SEC_B": [
+        151.0,
+        46.75
+      ]
+    },
+    "CT": {
+      "PRI_A": [
+        87.0,
+        33.0
+      ],
+      "PRI_B": [
+        87.0,
+        37.0
+      ],
+      "SEC_A": [
+        103.0,
+        33.0
+      ],
+      "SEC_B": [
+        103.0,
+        37.0
+      ]
+    }
+  },
+  "trial_landing_positions_are_NOT_original_native_pad_positions": true,
+  "trial_landing_sites_are_vendor_qualified": false,
+  "manufacturer_magnetics_terminal_pinout_verified": false,
+  "manufacturer_magnetics_footprints_validated": false,
+  "resonant_transformer_ratio_dot_physically_verified": false,
+  "new_routes": [],
+  "new_route_geometry_manufacturing_rated": false,
+  "native_drc": {
+    "physical_rule_violations": 0,
+    "unconnected_items": 27,
+    "ignored_check_keys": [
+      "missing_courtyard",
+      "track_not_centered_on_via",
+      "tuning_profile_track_geometries",
+      "footprint_filters_mismatch",
+      "footprint_type_mismatch"
+    ]
+  },
+  "native_drc_report_sha256": "72dba32bc1fa93f12d129cc35fb86a47d402ae8b44e0d97999261d7d00d50f02",
+  "native_drc_exit_code": 0,
+  "integrated_schematic_independently_verified": false,
+  "native_erc_full_board_verified": false,
+  "isolated_12v_bias_integrated": false,
+  "physical_estop_and_hs_monitors_integrated": false,
+  "cold_start_closed_loop_llc_tested": false,
+  "gate0_approved": false,
+  "fabrication_approved": false,
+  "energization_allowed": false
+}
