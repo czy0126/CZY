@@ -179,6 +179,7 @@ def evaluate():
              baseline="conventional internally paralleled planar secondary, vias collecting on surfaces, externally cooled",
              candidate="12-16layer copper winding with local side SR plus paired output collectors and thermally co-designed plate",
              primary_metric="maximum 30min continuous I at same max device/core temp and specified voltage/EMI",
+             minimum_research_effect_pct_Icont_at_equal_hotspot=15,
              novelty_gate="must show statistically repeatable increase vs baseline with all devices in bounding box"),
         dict(id="N2",
              hypothesis="Co-optimizing winding copper, magnetic fringing regions and coolant impingement/hotspot paths may reduce layer-to-layer RMS-current imbalance, total AC winding loss and hotspot temp at identical net heat flux.",
@@ -186,6 +187,7 @@ def evaluate():
              baseline="layout-only thermal plate under SR and transformer; no joint magnetics/cooling layout",
              candidate="sealed electrically insulated coldplate selectively below inner-copper exit/rectifier hot-spots",
              primary_metric="Rac/rdc, branch Irms spread, max hotspot at 600A, Δp and pump W",
+             minimum_research_hotspot_reduction_kelvin_at_same_power_current_pump=10,
              novelty_gate="Maxwell losses -> CFD -> measured 3D thermal map cross-validated; no claim of first liquid-cooled transformer"),
         dict(id="N3",
              hypothesis="A co-designed short positive+negative output metal pair/side-plated terminal may improve *total* VOUT+PGND hot I2R compared with wide-DC PCB via-only routing at 400-600A.",
@@ -193,6 +195,7 @@ def evaluate():
              baseline="via-collected VOUT/PGND breakout",
              candidate="local rectification and adjacent wide/edge collector rails with short symmetric return",
              primary_metric="four-wire total hot VOUT+PGND microohm and I2R/area",
+             research_target_real_hot_pair_with_terminals_microohm=20,
              novelty_gate="copper+contact+spreading/thermal real measurements not only ideal rho L/A"),
       ],
       "comparison_A_B_C_D_design_of_experiments":[

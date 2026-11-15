@@ -64,6 +64,10 @@ def test_novelty_ablation_groups_and_physical_state():
     d=m.evaluate()
     assert [x["group"] for x in d["comparison_A_B_C_D_design_of_experiments"]]==list("ABCD")
     assert len(d["novelty_hypotheses_not_unpublished_claims"])==3
+    n=d["novelty_hypotheses_not_unpublished_claims"]
+    assert n[0]["minimum_research_effect_pct_Icont_at_equal_hotspot"]==15
+    assert n[1]["minimum_research_hotspot_reduction_kelvin_at_same_power_current_pump"]==10
+    assert n[2]["research_target_real_hot_pair_with_terminals_microohm"]==20
     assert d["engineering_state"]["new_physical_PCB_completed"] is False
     assert d["engineering_state"]["microchannel_CFD_completed"] is False
     assert d["engineering_state"]["coolant_inlet_to_junction_Rtheta_measured"] is False
