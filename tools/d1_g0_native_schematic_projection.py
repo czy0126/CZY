@@ -29,15 +29,17 @@ def pin_name(ref, pad):
     name=pad.GetNumber()
     return name
 
-def state_parts():
-    if not router.BOARD.is_file():raise ValueError("G0 fully routed trial PCB missing")
-    r=router.check()
-    if r["violations"]!=0 or r["unconnected"]!=0:
-        raise ValueError("Native full G0 trial must have zero DRC and zero open nets before projection")
-    b=pcb.LoadBoard(str(router.BOARD))
+def state_parts(source_board=None, expected_parts=154):
+    path=router.BOARD if source_board is None else Path(source_board)
+    if not path.is_file():raise ValueError("G0 native trial PCB missing")
+    if source_board is None:
+        r=router.check()
+        if r["violations"]!=0 or r["unconnected"]!=0:
+            raise ValueError("Native full G0 trial must have zero DRC and zero open nets before projection")
+    b=pcb.LoadBoard(str(path))
     original={f.GetReference():f for f in b.GetFootprints()}
-    if len(original)!=154 or len(original)!=len(b.GetFootprints()):
-        raise ValueError("expected 154 unique PCB footprint references")
+    if len(original)!=expected_parts or len(original)!=len(b.GetFootprints()):
+        raise ValueError(f"expected {expected_parts} unique PCB footprint references")
     ordered=sorted(original, key=lambda x:(0 if x in ("J_IN","Cin","QH","QL","Cr","Lr","CT","T1","T2","T3","T4",
                                                   "U1","U2","U3","U4","U5","U6","J_OUT","Cout") else 1,x))
     parts=[]; symbols={}; native={}
@@ -85,7 +87,9 @@ def instance_any(part, symbols, labels, no_connects):
       f'\t\t(lib_id "{part.lib}")',
       f"\t\t(at {x:g} {y:g} 0)",
       f"\t\t(unit {part.unit}) (body_style 1)",
-      "\t\t(exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes)",
+      ("\t\t(exclude_from_sim no) (in_bom no) (dnp yes) (on_board yes) (in_pos_files no)"
+        if part.ref=="R8" else
+        "\t\t(exclude_from_sim no) (in_bom yes) (on_board yes) (in_pos_files yes)"),
       f'\t\t(uuid "{k.uid(part.ref,str(part.unit),"symbol")}")',
       f'\t\t(property "Reference" "{part.ref}" (at {x:g} {y-12:g} 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))',
       f'\t\t(property "Value" "{esc(part.value)}" (at {x:g} {y+12:g} 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))',

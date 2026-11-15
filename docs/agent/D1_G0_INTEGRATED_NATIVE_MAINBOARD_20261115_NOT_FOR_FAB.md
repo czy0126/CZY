@@ -1,5 +1,7 @@
 # D1 / 48V→约2V LLC-DCX — G0 154 器件整合主板 KiCad 工程（2026-11-15，NOT_FOR_FAB）
 
+**本页属于历史 V1 试验记录；最新推荐是 V4 的 157 器件、433 引脚、已分离主副边回流且具有独立设计来源SCH的 KiCad工程，详情见 docs/agent/D1_G0_V4_INDEPENDENT_SOURCE_ISOLATED_RETURN_20261115_NOT_FOR_FAB.md。V1 共 PGND 问题在 V4 CAD 内已有修复，但真实磁件、偏置模块及安全保护还没有完成。**
+
 ## 交付与使用
 
 本阶段交付 **可编辑的 KiCad 10 原生 PCB+原生原理图校对视图**，以及 BOM、每个封装针脚的网表证据和原生 EDA 报告。工作树：`feat/d1-g0-integrated-mainboard-20261115`。**不是已经完成物理安全验证的可制板产品，不允许直接上 48 V 或送厂**。

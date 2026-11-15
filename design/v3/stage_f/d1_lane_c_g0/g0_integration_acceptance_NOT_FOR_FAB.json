@@ -22,6 +22,19 @@
   "independent_dual_bias_candidate_schematic_sha256": "46e26b99c54cde64dd1410dd060d3bb92594aa6fd0c4669e8b6762a3a182dc84",
   "independent_dual_bias_candidate_secondary_ground_separate": true,
   "dual_bias_candidate_is_not_integrated_or_fab_ready": true,
+  "latest_native_mainboard_G0_V4": {
+    "pcb_footprints": 157,
+    "independent_ref_pin_net_parity": 433,
+    "pcb_drc_violations": 0,
+    "pcb_unconnected": 0,
+    "schematic_erc_violations": 0,
+    "secondary_return_pads_reassigned": 129,
+    "two_external_bias_input_ports": 2,
+    "independent_design_schematic_not_reverse_pcb": true,
+    "actual_bias_regulation_and_uvlo_not_integrated": true,
+    "physical_magnetics_not_vendor_approved": true,
+    "g0_remains_blocked": true
+  },
   "prior_uvlo_simulation_is_not_current_interlock_proof": true,
   "illustrative_passive_gate_decay_is_not_hardware_proof": true,
   "fault_modes": [

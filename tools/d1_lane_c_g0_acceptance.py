@@ -26,6 +26,8 @@ REPORT = OUT / "g0_integration_acceptance_NOT_FOR_FAB.json"
 CAPTURES = OUT / "g0_gate_fault_capture_matrix_NOT_FOR_FAB.csv"
 TEMPLATE = OUT / "g0_witness_template_NOT_FOR_FAB.json"
 SUBMISSION = OUT / "g0_external_witnesses.json"
+V4_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_INDEPENDENT_SOURCE_V4_MAINBOARD_NOT_FOR_FAB"
+V4_REPORT = V4_DIR / "V4_mainboard_acceptance_NOT_FOR_FAB.json"
 
 # Source of truth for scope and ownership: these obligations describe G0 only.
 # They do not turn G1 load testing or G3 coldplate requirements into blockers.
@@ -101,7 +103,7 @@ def capture_csv(faults: tuple[str, ...]) -> str:
     writer.writerow(CAPTURE_COLUMNS)
     for mode in faults:
         for gate in CHANNELS:
-            ret = "SW" if gate == "GH1" else "PGND_OR_ACTUAL_SR_SOURCE"
+            ret = "SW" if gate == "GH1" else ("PGND" if gate == "GL1" else "SR_SOURCE_RETURN")
             writer.writerow((mode, gate, gate, ret, "YES", "PENDING", "PENDING",
                              "PENDING", "PENDING"))
     return buffer.getvalue()
@@ -115,11 +117,36 @@ def template() -> dict:
                 "test_procedure": None, "measurement_summary": None,
                 "artifacts": []} for ident, _, _, _ in OBLIGATIONS}}
 
+def current_v4_mainboard_evidence() -> dict:
+    """Hash-verify native CAD receipts without equating them to G0 approval."""
+    if not V4_REPORT.is_file():
+        raise ValueError("latest integrated V4 motherboard acceptance missing")
+    data = json.loads(V4_REPORT.read_text("utf-8"))
+    if not isinstance(data, dict) or data.get("PCB_footprints") != 157 or (
+        data.get("independent_schematic_ref_pin_net_parity") != 433 or
+        data.get("native_PCB_DRC_violations") != 0 or
+        data.get("native_PCB_unconnected") != 0 or
+        data.get("native_PCB_ERC_violations") != 0 or
+        data.get("secondary_physically_reassigned_pads") != 129 or
+        data.get("external_isolated_12v_input_ports") != 2 or
+        data.get("independent_SCH_generated_from_PCB") is not False or
+        data.get("fab_release") is not False or
+        data.get("energization_allowed") is not False):
+        raise ValueError("V4 native CAD metadata drift or unsafe release flag")
+    for name, expected in data.get("package_sha256", {}).items():
+        path=V4_DIR / name
+        if not path.is_file() or digest(path) != expected:
+            raise ValueError("V4 source-hashed native CAD file mismatch: " + name)
+    if len(data.get("package_sha256", {})) < 12:
+        raise ValueError("V4 evidence package incomplete")
+    return data
+
 def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     base = g0.build()  # Re-check locked source SHA and D0 structural wiring.
     parts, _, sch_text = cad.expected_text()
     native = cad.check_native(parts, sch_text)  # exported netlist, BOM, ERC
     bp, _, bs = bias.expected()
+    v4 = current_v4_mainboard_evidence()
     independent_bias = bias.check(bp, bs)  # separate physical return domains, NOT integrated
     if independent_bias["native_erc_violations"] != 0:
         raise ValueError("native two-domain bias candidate ERC regressed")
@@ -181,6 +208,19 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
         "independent_dual_bias_candidate_schematic_sha256": independent_bias["sch_sha256"],
         "independent_dual_bias_candidate_secondary_ground_separate": independent_bias["secondary_supply_ground_separate_in_native_netlist"],
         "dual_bias_candidate_is_not_integrated_or_fab_ready": True,
+        "latest_native_mainboard_G0_V4": {
+           "pcb_footprints": v4["PCB_footprints"],
+           "independent_ref_pin_net_parity": v4["independent_schematic_ref_pin_net_parity"],
+           "pcb_drc_violations": v4["native_PCB_DRC_violations"],
+           "pcb_unconnected": v4["native_PCB_unconnected"],
+           "schematic_erc_violations": v4["native_PCB_ERC_violations"],
+           "secondary_return_pads_reassigned": v4["secondary_physically_reassigned_pads"],
+           "two_external_bias_input_ports": v4["external_isolated_12v_input_ports"],
+           "independent_design_schematic_not_reverse_pcb": True,
+           "actual_bias_regulation_and_uvlo_not_integrated": True,
+           "physical_magnetics_not_vendor_approved": True,
+           "g0_remains_blocked": True,
+        },
         "prior_uvlo_simulation_is_not_current_interlock_proof":
             model["simulation_must_not_be_claimed_for_latest_full_enable_chain"],
         "illustrative_passive_gate_decay_is_not_hardware_proof":

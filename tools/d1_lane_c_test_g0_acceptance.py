@@ -17,6 +17,13 @@ def test_current_g0_release_is_hard_blocked():
     assert r["independent_dual_bias_candidate_pins_checked"] == 28
     assert r["independent_dual_bias_candidate_secondary_ground_separate"] is True
     assert r["dual_bias_candidate_is_not_integrated_or_fab_ready"] is True
+    v4=r["latest_native_mainboard_G0_V4"]
+    assert v4["pcb_footprints"]==157
+    assert v4["independent_ref_pin_net_parity"]==433
+    assert v4["pcb_unconnected"]==v4["pcb_drc_violations"]==v4["schematic_erc_violations"]==0
+    assert v4["secondary_return_pads_reassigned"]==129
+    assert v4["actual_bias_regulation_and_uvlo_not_integrated"] is True
+    assert v4["g0_remains_blocked"] is True
     assert r["baseline_unconnected"] > 0
     assert r["required_scope_captures"] == 60
     assert len(r["obligations"]) == 9
@@ -32,6 +39,8 @@ def test_every_gate_and_fault_has_a_unique_raw_capture_request():
     assert len(rows) == 60
     assert len({(x["gate"], x["fault_mode"]) for x in rows}) == 60
     assert {x["vgs_negative_probe"] for x in rows if x["gate"] == "GH1"} == {"SW"}
+    assert {x["vgs_negative_probe"] for x in rows if x["gate"] == "GL1"} == {"PGND"}
+    assert {x["vgs_negative_probe"] for x in rows if x["gate"].startswith("GA")} == {"SR_SOURCE_RETURN"}
     assert all(x["raw_scope_artifact"] == "PENDING" for x in rows)
 
 def test_fake_green_or_unknown_witness_is_rejected():
