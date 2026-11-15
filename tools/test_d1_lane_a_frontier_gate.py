@@ -24,6 +24,9 @@ def test_legacy_cout_configuration_cannot_fit_challenge():
     assert c["oem_units"]==72
     assert math.isclose(c["nominal_courtyard_total_mm2"],72*9.12*5.10,abs_tol=.002)
     assert c["nominal_courtyard_total_mm2"]>15*m["max_footprint_area_mm2"]
+    assert c["nominal_parallel_array_capacitance_mF"]==33.84
+    assert c["manufacturer_max_seated_height_mm"]==4.3
+    assert c["product_4mm_research_envelope_has_single_cap_height_violation_without_recess"] is True
 
 def test_4000_and_6500_are_research_targets_not_results():
     t=d["targets_not_achieved"]

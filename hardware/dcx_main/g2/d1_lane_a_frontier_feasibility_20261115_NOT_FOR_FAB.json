@@ -40,6 +40,11 @@
       5.1
     ],
     "nominal_courtyard_total_mm2": 3348.864,
+    "manufacturer_per_cap_nominal_uF": 470.0,
+    "nominal_parallel_array_capacitance_mF": 33.84,
+    "manufacturer_max_seated_height_mm": 4.3,
+    "product_4mm_research_envelope_has_single_cap_height_violation_without_recess": true,
+    "manufacturer_datasheet_uri": "https://search.kemet.com/download/specsheet/T530X477M006ATE004",
     "courtyard_area_over_4000_w_in3_max_module_area_factor": 16.35,
     "interpretation": "Even the summed planar capacitor courtyards cannot fit the entire target-module 2D footprint; 72-COUT product BOM architecture must change. This is area arithmetic, not a packing proof.",
     "no_unverified_replacement_capacitance_claim": true

@@ -23,6 +23,9 @@ I_OUT_A = 100.0
 HEIGHT_RESEARCH_MM = 4.0
 HEIGHT_LEGACY_MM = 16.0
 T530_OEM_B_COURTYARD_MM = (9.12, 5.10)
+T530_BODY_SEATED_HEIGHT_MAX_MM = 4.3  # official KEMET 470uF X 7343 package
+T530_CAPACITANCE_UF = 470.0  # T530X477M006ATE004 official part
+T530_EXPECTED_VALUE = 'T530X477M006ATE004'
 W_PER_IN3_PER_W_PER_CM3 = 16.387064
 FOCUS_DENSITY = 4000.0
 BROADER_STRETCH_DENSITY = 6500.0
@@ -68,6 +71,8 @@ def calculate():
     t530=[q for q in f if q.startswith("CHB")]
     if len(t530)!=72:
         raise ValueError("Unexpected OEM T530 BOM count")
+    if any(f[ref].GetValue()!=T530_EXPECTED_VALUE for ref in t530):
+        raise ValueError("One or more product T530 footprints changed")
     outlines=[]
     for sh in b.GetDrawings():
         if sh.GetLayer()!=k.Edge_Cuts:continue
@@ -133,6 +138,11 @@ def calculate():
          "oem_units":len(t530),
          "oem_B_one_courtyard_mm":list(T530_OEM_B_COURTYARD_MM),
          "nominal_courtyard_total_mm2":rounded(cap_area,3),
+         "manufacturer_per_cap_nominal_uF":T530_CAPACITANCE_UF,
+         "nominal_parallel_array_capacitance_mF":rounded(len(t530)*T530_CAPACITANCE_UF/1000,3),
+         "manufacturer_max_seated_height_mm":T530_BODY_SEATED_HEIGHT_MAX_MM,
+         "product_4mm_research_envelope_has_single_cap_height_violation_without_recess":T530_BODY_SEATED_HEIGHT_MAX_MM>HEIGHT_RESEARCH_MM,
+         "manufacturer_datasheet_uri":"https://search.kemet.com/download/specsheet/T530X477M006ATE004",
          "courtyard_area_over_4000_w_in3_max_module_area_factor":rounded(cap_area/product_tgt["max_footprint_area_mm2"],2),
          "interpretation":"Even the summed planar capacitor courtyards cannot fit the entire target-module 2D footprint; 72-COUT product BOM architecture must change. This is area arithmetic, not a packing proof.",
          "no_unverified_replacement_capacitance_claim":True,
