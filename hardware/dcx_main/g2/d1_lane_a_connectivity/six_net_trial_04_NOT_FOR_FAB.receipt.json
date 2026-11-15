@@ -1,0 +1,28 @@
+{
+  "source": "hardware/dcx_main/g2/dcx_main_board_g2_V17_OEM_T530_72_VIN_SW_CANDIDATE_NOT_FOR_FAB.kicad_pcb",
+  "source_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "output": "hardware/dcx_main/g2/d1_lane_a_connectivity/six_net_trial_04_NOT_FOR_FAB.kicad_pcb",
+  "output_sha256": "85fff295c2c8bd594266881b711584be02b40b2158e266e8df4a2ba77d6bb76c",
+  "nets": [
+    "VIN_P",
+    "GH",
+    "GH_DRV",
+    "HB",
+    "SW",
+    "OC"
+  ],
+  "added_copper": {
+    "VIN_P": 4,
+    "GH": 8,
+    "GH_DRV": 5,
+    "HB": 9,
+    "SW": 20,
+    "OC": 4,
+    "RT": 2
+  },
+  "kicad_version": "10.0.6",
+  "reopened": true,
+  "original_pin_nets_preserved": true,
+  "current_rated": false,
+  "fabrication_approved": false
+}
