@@ -1,0 +1,50 @@
+{
+  "kind": "D1_G0_NATIVE_EDITABLE_INTEGRATED_MAINBOARD_TRIAL",
+  "status": "154_DEVICE_PCB_DRC0_UNCONNECTED0_SCH_ERC0_NOT_FOR_FAB",
+  "pcb_device_count": 154,
+  "pcb_physical_pad_objects": 449,
+  "schematic_unique_ref_pin_net_checked": 427,
+  "pcb_unconnected": 0,
+  "pcb_drc_violations": 0,
+  "schematic_erc_violations": 0,
+  "ignored_native_drc_checks": [
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries",
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch"
+  ],
+  "source_v17_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "native_route_trial_sha256": "238fe6c42123e3dcbaea6d634cfc1bd47244c703feee338d6522de79944e0be9",
+  "project_file_sha256": {
+    "d1_g0_integrated_mainboard_ELECTRICAL_NOT_FOR_FAB.kicad_pcb": "238fe6c42123e3dcbaea6d634cfc1bd47244c703feee338d6522de79944e0be9",
+    "d1_g0_integrated_mainboard_ELECTRICAL_NOT_FOR_FAB.kicad_sch": "825539379aa5014049467980ddc821993c7a46fc2440ab835bc2b34fcd08400a",
+    "d1_g0_integrated_mainboard_ELECTRICAL_NOT_FOR_FAB.kicad_pro": "6454ec24e19e90181f788177eada5e44ed4e8b4b7e9022158184a09aa52d1307",
+    "d1_g0_integrated_mainboard_ELECTRICAL_NOT_FOR_FAB.net": "65ed9b30406934175550a8b6f295afd8761a2d3100c7c1a1644f4305c71a7e0d",
+    "d1_g0_integrated_mainboard_ELECTRICAL_NOT_FOR_FAB_native_drc.json": "25c310aaecbe2097a38051b4bfea206233d54c14170fb3446361b4c0e0505415",
+    "d1_g0_integrated_mainboard_ELECTRICAL_NOT_FOR_FAB_native_erc.json": "2f82a5f1e5d08fe73299a25c94bfce6b7f63428377fd3746d17cc937df6c9c7b",
+    "d1_g0_integrated_trial_bom_UNQUALIFIED.csv": "0ec3e414018706a591d6094bc4c0dfd0c53168ed3aca0102a03d755063032eaf",
+    "G0LogicalMainboard.kicad_sym": "28a4e84f2273cba714cf1faecc8711bf280d3982d9cf64249cf6bf424e5f9a4b",
+    "sym-lib-table": "4bd1964321774a1eb6b1915de3ef27923b3554def7d51d73af29aadb15d139e8"
+  },
+  "logical_magnetics": [
+    "T1",
+    "T2",
+    "T3",
+    "T4",
+    "CT"
+  ],
+  "magnetics_vendor_pinout_and_DOT_verified": false,
+  "magnetics_footprints_manufacturing_approved": false,
+  "schematic_independently_authored": false,
+  "scheme_uses_pcb_native_pad_mirror_not_vendor_symbols": true,
+  "real_12v_isolated_bias_uvlo_integrated": false,
+  "real_independent_48v_estop_and_hs_monitor_integrated": false,
+  "via_in_pad_12layer_filled_capped_vendor_signed": false,
+  "traces_current_density_emc_thermal_verified": false,
+  "real_48v_coldstart_and_fault_waveforms_verified": false,
+  "g0_approved": false,
+  "g1_approved": false,
+  "fabrication_approved": false,
+  "energization_allowed": false
+}

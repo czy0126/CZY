@@ -1,0 +1,30 @@
+{
+  "kind": "D1_G0_NATIVE_EXTERNAL_TWO_12V_PORTS_CANDIDATE",
+  "status": "PRIMARY_SECONDARY_BIAS_CONNECTORS_PINNED_DRC0_UNCONNECTED0_NOT_FOR_FAB",
+  "source_split_board_sha256": "7c764e24bdfbfcae22f7f2f3fa71f503b0b7b060bbe426dc965576efeff2c17f",
+  "candidate_board_sha256": "29fea436ff01963b28e0baebabda3944aa18e0ec744451125ce217fd0158c953",
+  "native_drc_sha256": "e753bdbdea185ffd7bcbc664f4626f84e38cba61923c536860a0a468d690f784",
+  "physical_board_footprints": 157,
+  "port_ref_pad_net": {
+    "J_BIAS_P": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "J_BIAS_S": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    }
+  },
+  "primary_12v_return": "PGND",
+  "secondary_12v_return": "SR_SOURCE_RETURN",
+  "source_12v_supply_modules_integrated": false,
+  "independent_12v_supplies_present_for_actual_bench": false,
+  "primary_secondary_return_nets_shared": false,
+  "native_rule_violations": 0,
+  "native_unconnected": 0,
+  "port_vendor_qualified": false,
+  "input_fuses_and_UVLO_implemented": false,
+  "hardware_ESTOP_and_HS_gate_monitor_implemented": false,
+  "physical_power_48v_energization_allowed": false,
+  "fab_release": false
+}

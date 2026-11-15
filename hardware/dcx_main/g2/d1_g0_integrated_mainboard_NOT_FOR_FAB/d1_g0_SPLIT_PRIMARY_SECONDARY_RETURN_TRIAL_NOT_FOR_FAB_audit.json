@@ -1,0 +1,82 @@
+{
+  "source_sha256": "10a9568ed4a7f8b2972e485bd5854cb5011fe404c38671f908acd712181840c2",
+  "new_board_sha256": "7c764e24bdfbfcae22f7f2f3fa71f503b0b7b060bbe426dc965576efeff2c17f",
+  "converted_physical_pads": 129,
+  "converted_pgnd_secondary_tracks_or_vias": 181,
+  "changed_or_added_zones": [
+    {
+      "layer": "F.Cu",
+      "new_net": "SR_SOURCE_RETURN",
+      "area": "secondary",
+      "region": [
+        1.0,
+        44.0
+      ]
+    },
+    {
+      "layer": "B.Cu",
+      "new_net": "SR_SOURCE_RETURN",
+      "area": "secondary",
+      "region": [
+        1.0,
+        44.0
+      ]
+    },
+    {
+      "layer": "In1.Cu",
+      "new_net": "PGND",
+      "area": "primary",
+      "region": [
+        1.0,
+        1.0,
+        154.0,
+        44.0
+      ]
+    },
+    {
+      "layer": "In6.Cu",
+      "new_net": "SR_SOURCE_RETURN",
+      "area": "secondary",
+      "region": [
+        1.0,
+        70.0
+      ]
+    },
+    {
+      "layer": "In8.Cu",
+      "new_net": "SR_SOURCE_RETURN",
+      "area": "secondary",
+      "region": [
+        1.0,
+        70.0
+      ]
+    },
+    {
+      "layer": "In1.Cu",
+      "new_net": "SR_SOURCE_RETURN",
+      "area": "secondary",
+      "region": [
+        1.0,
+        45.0,
+        154.0,
+        112.0
+      ]
+    }
+  ],
+  "primary_return_T4_path": "T4 PRI_B to (125,46.75), (125,43.6) via to In1 PGND",
+  "made_isolated_bias_complete": false,
+  "real_vendor_magnetics_isolation_approved": false,
+  "status": "ISOLATED_OUTPUT_RETURN_PCB_ECO_PROTOTYPE_NOT_FOR_FAB",
+  "physical_pads_SRET": 129,
+  "pad_level_primary_secondary_return_net_common": false,
+  "PCB_copper_zones_primary_secondary_split": true,
+  "native_drc_report_sha256": "0e06a4c211c814357875db7add873f4ad835b43d8121ba0794c1c41be2e9412a",
+  "native_DRC_violations": 0,
+  "native_DRC_unconnected": 0,
+  "native_DRC_violation_types": [],
+  "real_isolation_clearance_qualification": false,
+  "bias_supply_uvlo_and_48v_disconnect_implemented": false,
+  "factory_approved": false,
+  "G0_approved": false,
+  "energization_allowed": false
+}

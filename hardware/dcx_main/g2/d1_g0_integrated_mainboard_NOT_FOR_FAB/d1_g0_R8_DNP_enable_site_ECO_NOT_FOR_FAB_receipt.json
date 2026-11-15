@@ -1,0 +1,28 @@
+{
+  "kind": "G0_PHYSICAL_R8_DNP_ENABLE_ECO",
+  "status": "R8_KICAD_POPULATED_AS_DNP_ONLY_NOT_FOR_FAB",
+  "parent_board_sha256": "238fe6c42123e3dcbaea6d634cfc1bd47244c703feee338d6522de79944e0be9",
+  "native_board_sha256": "10a9568ed4a7f8b2972e485bd5854cb5011fe404c38671f908acd712181840c2",
+  "native_drc_sha256": "d2a3578ba75419b7bf9997afd0958dbf9215e0caddcadbb7b6880deaab6804c0",
+  "pcb_device_count": 155,
+  "r8_native_pads": {
+    "1": "VCC12",
+    "2": "RUN"
+  },
+  "r8_dnp": true,
+  "actual_schematic_design_pin_differences": 0,
+  "expected_unverified_72_COUT_footprints": 72,
+  "native_kicad_drc_violations": 0,
+  "native_kicad_unconnected": 0,
+  "native_drc_ignored": [
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries",
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch"
+  ],
+  "external_enable_permit_integrated": false,
+  "isolated_SR_RETURN_integrated": false,
+  "board_fab_release": false,
+  "hardware_powerup_allowed": false
+}

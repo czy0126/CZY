@@ -1,0 +1,192 @@
+{
+  "kind": "D1_G0_V8_ACTUAL_ISOLATED_AMC1311B_HS_FRONTEND_NATIVE_PCB",
+  "status": "MONITOR_COMPONENTS_NATIVELY_PLACED_ROUTING_PENDING_NOT_FOR_FAB",
+  "integrated_native_footprint_count": 58,
+  "monitor_added_footprint_count": 31,
+  "monitor_real_pad_net_contract": {
+    "C_HS_COMP": {
+      "1": "PRI5V",
+      "2": "PGND"
+    },
+    "R_HS_RELEASE": {
+      "1": "HB_VALID",
+      "2": "HS_OK_IN"
+    },
+    "J_HS_FLAGS": {
+      "1": "HB_VALID",
+      "2": "GH_GATE_OFF",
+      "3": "PGND"
+    },
+    "J_HS_DIFF": {
+      "1": "GH_OUTP",
+      "2": "GH_OUTN",
+      "3": "HB_OUTP",
+      "4": "HB_OUTN"
+    },
+    "R_GH_PULL": {
+      "1": "PRI5V",
+      "2": "GH_GATE_OFF"
+    },
+    "R_HB_PULL": {
+      "1": "PRI5V",
+      "2": "HB_VALID"
+    },
+    "R_GH_RBOT": {
+      "1": "GH_REF",
+      "2": "PGND"
+    },
+    "R_GH_RTOP": {
+      "1": "PRI5V",
+      "2": "GH_REF"
+    },
+    "R_HB_RBOT": {
+      "1": "HB_REF",
+      "2": "PGND"
+    },
+    "R_HB_RTOP": {
+      "1": "PRI5V",
+      "2": "HB_REF"
+    },
+    "U_HS_COMP": {
+      "1": "HB_VALID",
+      "2": "HB_REF",
+      "3": "HB_OUTP",
+      "4": "PGND",
+      "5": "GH_REF",
+      "6": "GH_OUTP",
+      "7": "GH_GATE_OFF",
+      "8": "PRI5V"
+    },
+    "C_HB_L": {
+      "1": "PRI5V",
+      "2": "PGND"
+    },
+    "C_HB_H": {
+      "1": "HS5V",
+      "2": "HS_SW"
+    },
+    "C_GH_L": {
+      "1": "PRI5V",
+      "2": "PGND"
+    },
+    "C_GH_H": {
+      "1": "HS5V",
+      "2": "HS_SW"
+    },
+    "U_HB_SENSE": {
+      "1": "HS5V",
+      "2": "HB_DIV",
+      "3": "HS_SW",
+      "4": "HS_SW",
+      "5": "PGND",
+      "6": "HB_OUTN",
+      "7": "HB_OUTP",
+      "8": "PRI5V"
+    },
+    "U_GH_SENSE": {
+      "1": "HS5V",
+      "2": "GH_DIV",
+      "3": "HS_SW",
+      "4": "HS_SW",
+      "5": "PGND",
+      "6": "GH_OUTN",
+      "7": "GH_OUTP",
+      "8": "PRI5V"
+    },
+    "R_HB_BOT": {
+      "1": "HB_DIV",
+      "2": "HS_SW"
+    },
+    "R_HB_TOP": {
+      "1": "HB_RAW",
+      "2": "HB_DIV"
+    },
+    "R_GH_BOT": {
+      "1": "GH_DIV",
+      "2": "HS_SW"
+    },
+    "R_GH_TOP": {
+      "1": "GH_RAW",
+      "2": "GH_DIV"
+    },
+    "J_HS_FLOAT_BIAS": {
+      "1": "HS_VB",
+      "2": "HS_SW"
+    },
+    "J_HS_SENSE": {
+      "1": "GH_RAW",
+      "2": "HB_RAW",
+      "3": "HS_SW"
+    },
+    "C_PRI5": {
+      "1": "PRI5V",
+      "2": "PGND"
+    },
+    "U_LDO_P": {
+      "1": "VCC12",
+      "2": "PGND",
+      "3": "PRI5V"
+    },
+    "C_HS5": {
+      "1": "HS5V",
+      "2": "HS_SW"
+    },
+    "U_LDO_HS": {
+      "1": "HS_VB",
+      "2": "HS_SW",
+      "3": "HS5V"
+    },
+    "C_HS_OUT": {
+      "1": "HS_VB",
+      "2": "HS_SW"
+    },
+    "C_HS_IN": {
+      "1": "VIN48_HS_F",
+      "2": "PGND"
+    },
+    "U_HS12": {
+      "1": "VIN48_HS_F",
+      "2": "PGND",
+      "3": "HS_VB",
+      "4": "",
+      "5": "HS_SW",
+      "6": ""
+    },
+    "F_HS12": {
+      "1": "VIN48_AUX",
+      "2": "VIN48_HS_F"
+    }
+  },
+  "native_DRC_violations": 0,
+  "native_unconnected": 60,
+  "nominal_12v_input_voltage_ratio": 0.09090909090909091,
+  "nominal_12v_ADC_highside_input_v": 1.0909090909090908,
+  "reference_HB_valid_typical_v": 1.9230769230769231,
+  "nominal_HB_SW_input_trip_v": 10.62769230769231,
+  "AMC1311B_output_common_mode_data_min_v": 1.39,
+  "AMC1311B_output_common_mode_data_max_v": 1.49,
+  "HB_valid_comparator_is_diagnostic_only_not_signed_UVLO": true,
+  "HB_and_GH_diag_outputs_pull_to_PRI5V_not_primary_12V": true,
+  "no_5V_to_12V_logic_level_translation_approved": true,
+  "reference_GH_off_typical_v": 1.5625,
+  "actual_GH_MINUS_SW_and_HB_MINUS_SW_reinforced_isolation_device_pads": true,
+  "high_side_12v_independent_precharge_module_native_pads": true,
+  "GH_static_OFF_must_NOT_be_used_as_PWM_runtime_permission": true,
+  "R_HS_RELEASE_DNP_unpopulated": true,
+  "true_HS_OK_IN_to_run_gate_closed": false,
+  "real_isolated_power_modules_assembled": false,
+  "actual_isolation_barrier_tested": false,
+  "G0_05_physical_approval": false,
+  "fab_approved": false,
+  "energization_allowed": false,
+  "vendor_datasheets": {
+    "U_HS12": "https://www.tracopower.com/products/thn30.pdf",
+    "U_GH_SENSE": "https://www.ti.com/lit/ds/symlink/amc1311.pdf",
+    "U_HB_SENSE": "https://www.ti.com/lit/ds/symlink/amc1311.pdf",
+    "U_HS_COMP": "https://www.ti.com/lit/ds/symlink/lm393b.pdf",
+    "U_LDO_HS": "https://www.onsemi.com/download/data-sheet/pdf/mc7800-d.pdf",
+    "U_LDO_P": "https://www.onsemi.com/download/data-sheet/pdf/mc7800-d.pdf"
+  },
+  "native_board_sha256": "232946d37eabd222b291396cbf6da62c9d9065050ce86de8563a85545e19bd15",
+  "native_drc_sha256": "1d0cf2cff5f41c1e8bdb6771e7125e45496f92f5854037e63161a68e5629dcd3"
+}

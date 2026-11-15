@@ -1,0 +1,27 @@
+{
+  "kind": "G0_INDEPENDENT_SPICE_AND_PERIPHERAL_NATIVE_SCHEMATIC",
+  "status": "INDEPENDENTLY_AUTHORED_LOGICAL_NET_SOURCE_MATCHES_NATIVE_157_PART_PCB_NOT_FOR_FAB",
+  "independent_data_sources": {
+    "spice_golden_sha256": "418be5b373987d574ebd91c65e9763e84ba26662ba5de4f48d1c7e0552f6bf09",
+    "measured_library_pins_sha256": "a1b0385bec130fb0f51398abca802e477cd0af0abd7753f5f9f5f52c51fafbb7",
+    "source_peripheral_mapping_module_sha256": "2dba245e9ea1aa54cfbbd53e4437050d472d9427ee552c6830311f97fc5f10df",
+    "secondary_ground_ECO_module_sha256": "2fe459d5f8d9a6bb08c318ca21b27680a7735d3d804550bee6f10474665c4cbe",
+    "external_bias_port_source_module_sha256": "65fbea59b7433dde5fe784648bb46e611c37119dccd25b1fa379f7340413ab73"
+  },
+  "device_count": 157,
+  "independent_ref_pin_net_count": 433,
+  "native_erc_violations": 0,
+  "PCB_source_sha256": "29fea436ff01963b28e0baebabda3944aa18e0ec744451125ce217fd0158c953",
+  "sch_sha256": "5e98c1e14bdf1538551fa55725c0049384e82b7fc3ec8a8ebdbfc83bf37bec7e",
+  "net_sha256": "e51b19bca6d16d724b19ce0b2bb585dc49f631b2eef115710858a226d9873654",
+  "sym_sha256": "cb3eef47172a8995076e306b5c9157f728369c441a09b70dc48b51d305d45006",
+  "has_independent_electrical_net_basis_NOT_mirrored_from_PCB": true,
+  "uses_neutral_not_vendor_approved_symbols": true,
+  "real_functional_schematic_hardware_signed_off": false,
+  "SR_source_referenced_to_isolated_return": true,
+  "R8_DNP_to_avoid_auto_enable": true,
+  "vendor_magnetic_pins_and_DOT_qualified": false,
+  "UVLO_interlock_emergency_disconnect_realized": false,
+  "manufacturing_approved": false,
+  "energization_allowed": false
+}

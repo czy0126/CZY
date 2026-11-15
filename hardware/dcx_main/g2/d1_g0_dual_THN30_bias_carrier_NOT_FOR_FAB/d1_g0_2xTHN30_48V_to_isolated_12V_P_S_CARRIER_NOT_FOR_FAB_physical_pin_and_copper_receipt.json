@@ -1,0 +1,122 @@
+{
+  "kind": "G0_TWO_OEM_TRACO_THN30_4812_ACTUAL_KICAD_DAUGHTERBOARD",
+  "status": "REAL_THN30_PIN_FOOTPRINT_PCB_DRC0_OPEN0_WITH_FUSE_AND_SPLIT_RETURNS_NOT_FOR_FAB",
+  "native_footprints": 13,
+  "independent_ref_pin_net": {
+    "U2": {
+      "1": "VIN48S_F",
+      "2": "PGND",
+      "3": "VCC12_S",
+      "4": "",
+      "5": "SR_SOURCE_RETURN",
+      "6": ""
+    },
+    "J_IN": {
+      "1": "VIN48_PRE",
+      "2": "PGND"
+    },
+    "U1": {
+      "1": "VIN48P_F",
+      "2": "PGND",
+      "3": "VCC12",
+      "4": "",
+      "5": "PGND",
+      "6": ""
+    },
+    "C_INS": {
+      "1": "VIN48S_F",
+      "2": "PGND"
+    },
+    "J_S": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "C_P1": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "F2": {
+      "1": "VIN48_PRE",
+      "2": "VIN48S_F"
+    },
+    "C_S2": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "C_INP": {
+      "1": "VIN48P_F",
+      "2": "PGND"
+    },
+    "F1": {
+      "1": "VIN48_PRE",
+      "2": "VIN48P_F"
+    },
+    "J_P": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "C_S1": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "C_P2": {
+      "1": "VCC12",
+      "2": "PGND"
+    }
+  },
+  "native_pad_objects": 34,
+  "OEM_module_pin_layout": {
+    "1": [
+      0.0,
+      0.0
+    ],
+    "2": [
+      5.08,
+      0.0
+    ],
+    "3": [
+      -7.62,
+      20.32
+    ],
+    "4": [
+      2.54,
+      20.32
+    ],
+    "5": [
+      12.7,
+      20.32
+    ],
+    "6": [
+      12.7,
+      0.0
+    ]
+  },
+  "OEM_THN30_datasheet": "https://www.tracopower.com/products/thn30.pdf",
+  "module_P_N": "THN 30-4812",
+  "modules": 2,
+  "input_48v_range": [
+    36,
+    75
+  ],
+  "two_individual_input_fuses_2A_slow_recommended": true,
+  "fuse_MPN_DC_breaking_capacity_and_I2t_qualified": false,
+  "two_output_caps_22uF_25V_each_module": true,
+  "cap_effective_bias_and_surge_EMC_qualified": false,
+  "two_12V_power_outputs_both_2p5A_nominal": true,
+  "primary_output_ground": "PGND",
+  "secondary_output_return": "SR_SOURCE_RETURN",
+  "secondary_output_is_separate_from_module_48v_input_ground": true,
+  "module_remote_NC_default_ON_because_vendor_open_means_on": true,
+  "real_hardware_estop_or_permit_implemented": false,
+  "module_footprint_manufacturer_drawing_orientation_verified": true,
+  "connector_MPN_and_polarity_keying_qualified": false,
+  "pcb_creepage_insulation_stackup_certified": false,
+  "EMI_surges_and_case_thermal_certified": false,
+  "native_KiCad_DRC_violations": 0,
+  "native_KiCad_unconnected": 0,
+  "native_board_sha256": "321fac4aea969708d6394c8a62e9e435fca149d67ad13cfa65da4d9a60cd0067",
+  "native_drc_sha256": "88f7595dd811c3f0a161bb8a102c3c99485ec1d07292249d0383029363c55229",
+  "G0_approved": false,
+  "energization_allowed": false,
+  "fabrication_approved": false
+}

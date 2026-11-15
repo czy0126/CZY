@@ -1,0 +1,89 @@
+{
+  "kind": "D1_G0_V5_UCC24624_REAL_NATIVE_KELVIN_VSS_ECO",
+  "status": "NATIVE_SR_SENSE_KELVIN_REG_CAPS_CANDIDATE_NOT_FOR_FAB",
+  "source_V4_SHA256": "29fea436ff01963b28e0baebabda3944aa18e0ec744451125ce217fd0158c953",
+  "current_native_board_sha256": "0ee122570140881be70fc73ea663b08874a29a28116b150c9fd91cc9e213cfd4",
+  "KiCad_drc_sha256": "b8aed4a404487eba284025ac34c2553d5ce8151b9494620e3c4f6d7db3faf64c",
+  "actual_native_device_count": 161,
+  "four_SR_VSS_Kelvin_nets_present": true,
+  "four_0R_kicad_resistor_footprints_present": true,
+  "SR_REG_bypass_four_0603_MPN": "GRM188C71E225KE11",
+  "C7_C10_nominal_cap_uF": 2.2,
+  "DC_bias_effective_cap_and_noise_signoff": false,
+  "source_SOA_and_SR_off_threshold_review": false,
+  "TI_datasheet": "https://www.ti.com/lit/ds/symlink/ucc24624.pdf",
+  "Murata_datasheet": "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM188C71E225KE11-01A.pdf",
+  "physical_layout": [
+    {
+      "control_ref": "U3",
+      "gate_current_return_pin2": "SR_SOURCE_RETURN",
+      "VSS_sense_pin5": "SR_KELVIN_1",
+      "kelvin_net": "SR_KELVIN_1",
+      "source_reference_region": "SR1A/B local source return plane",
+      "source_star_connection_physical_qualification": false,
+      "RK0R": "RK1",
+      "resistor_return_pad_mm": [
+        16.25,
+        68.6
+      ],
+      "new_Kelvin_route_layer": "In9.Cu",
+      "C_REG_ref": "C7",
+      "C_REG_part": "GRM188C71E225KE11"
+    },
+    {
+      "control_ref": "U4",
+      "gate_current_return_pin2": "SR_SOURCE_RETURN",
+      "VSS_sense_pin5": "SR_KELVIN_2",
+      "kelvin_net": "SR_KELVIN_2",
+      "source_reference_region": "SR2A/B local source return plane",
+      "source_star_connection_physical_qualification": false,
+      "RK0R": "RK2",
+      "resistor_return_pad_mm": [
+        54.25,
+        68.6
+      ],
+      "new_Kelvin_route_layer": "In9.Cu",
+      "C_REG_ref": "C8",
+      "C_REG_part": "GRM188C71E225KE11"
+    },
+    {
+      "control_ref": "U5",
+      "gate_current_return_pin2": "SR_SOURCE_RETURN",
+      "VSS_sense_pin5": "SR_KELVIN_3",
+      "kelvin_net": "SR_KELVIN_3",
+      "source_reference_region": "SR3A/B local source return plane",
+      "source_star_connection_physical_qualification": false,
+      "RK0R": "RK3",
+      "resistor_return_pad_mm": [
+        92.25,
+        68.6
+      ],
+      "new_Kelvin_route_layer": "In9.Cu",
+      "C_REG_ref": "C9",
+      "C_REG_part": "GRM188C71E225KE11"
+    },
+    {
+      "control_ref": "U6",
+      "gate_current_return_pin2": "SR_SOURCE_RETURN",
+      "VSS_sense_pin5": "SR_KELVIN_4",
+      "kelvin_net": "SR_KELVIN_4",
+      "source_reference_region": "SR4A/B local source return plane",
+      "source_star_connection_physical_qualification": false,
+      "RK0R": "RK4",
+      "resistor_return_pad_mm": [
+        130.25,
+        68.6
+      ],
+      "new_Kelvin_route_layer": "In9.Cu",
+      "C_REG_ref": "C10",
+      "C_REG_part": "GRM188C71E225KE11"
+    }
+  ],
+  "KiCad_native_DRC_violations": 0,
+  "KiCad_native_unconnected": 0,
+  "via_in_copper_and_manufacturing_qualified": false,
+  "floating_VSS_vs_power_return_tested": false,
+  "G0_approved": false,
+  "energization_allowed": false,
+  "fabrication_approved": false
+}

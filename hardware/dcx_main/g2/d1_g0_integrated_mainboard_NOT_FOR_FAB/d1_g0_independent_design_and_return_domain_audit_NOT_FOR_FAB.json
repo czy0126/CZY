@@ -1,0 +1,178 @@
+{
+  "kind": "D1_G0_INDEPENDENT_GOLDEN_NET_AND_GALVANIC_RETURN_AUDIT",
+  "status": "G0_BLOCKED_BY_COMMON_PRIMARY_SECONDARY_GROUND",
+  "board_sha256": "238fe6c42123e3dcbaea6d634cfc1bd47244c703feee338d6522de79944e0be9",
+  "pcb_drc_violations_reported_by_native": 0,
+  "pcb_unconnected_reported_by_native": 0,
+  "independent_circuit": {
+    "basis": "design/v3/pcb/board_netlist.csv + separately defined peripheral pin plan; NOT reverse PCB schematic",
+    "golden_source_sha256": "418be5b373987d574ebd91c65e9763e84ba26662ba5de4f48d1c7e0552f6bf09",
+    "golden_refs_checked": 66,
+    "golden_original_pins": 245,
+    "auxiliary_peripheral_pads_checked": 32,
+    "missing_required_peripheral": [
+      "R8"
+    ],
+    "R8_intended_nets": {
+      "1": "VCC12",
+      "2": "RUN"
+    },
+    "R8_must_be_DNP_until_hardware_permit_validated": true,
+    "intentionally_extra_output_bulk_capacitors": 72,
+    "unverified_vendor_magnetics": [
+      "CT",
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ]
+  },
+  "physical_return_domains": {
+    "primary_net_set": [
+      "PGND"
+    ],
+    "secondary_net_set": [
+      "PGND"
+    ],
+    "shared_primary_secondary_return_nets": [
+      "PGND"
+    ],
+    "isolation_domain_split_complete": false,
+    "required_secondary_unique_package_pins": 118,
+    "required_primary_unique_package_pins": 13
+  },
+  "zones": [
+    {
+      "net": "PGND",
+      "copper_layer": "F.Cu",
+      "bbox_mm": [
+        1.0,
+        44.0,
+        153.0,
+        68.0
+      ]
+    },
+    {
+      "net": "PGND",
+      "copper_layer": "F.Cu",
+      "bbox_mm": [
+        1.0,
+        1.0,
+        153.0,
+        24.0
+      ]
+    },
+    {
+      "net": "PGND",
+      "copper_layer": "B.Cu",
+      "bbox_mm": [
+        1.0,
+        44.0,
+        153.0,
+        68.0
+      ]
+    },
+    {
+      "net": "PGND",
+      "copper_layer": "In1.Cu",
+      "bbox_mm": [
+        1.0,
+        1.0,
+        153.0,
+        111.0
+      ]
+    },
+    {
+      "net": "VOUT",
+      "copper_layer": "In2.Cu",
+      "bbox_mm": [
+        1.0,
+        51.0,
+        153.0,
+        61.0
+      ]
+    },
+    {
+      "net": "VCC12_S",
+      "copper_layer": "In3.Cu",
+      "bbox_mm": [
+        2.0,
+        44.0,
+        151.0,
+        20.0
+      ]
+    },
+    {
+      "net": "VCC12",
+      "copper_layer": "In4.Cu",
+      "bbox_mm": [
+        2.0,
+        2.0,
+        151.0,
+        22.0
+      ]
+    },
+    {
+      "net": "VOUT",
+      "copper_layer": "In5.Cu",
+      "bbox_mm": [
+        1.0,
+        70.0,
+        153.0,
+        42.0
+      ]
+    },
+    {
+      "net": "PGND",
+      "copper_layer": "In6.Cu",
+      "bbox_mm": [
+        1.0,
+        70.0,
+        153.0,
+        42.0
+      ]
+    },
+    {
+      "net": "VOUT",
+      "copper_layer": "In7.Cu",
+      "bbox_mm": [
+        1.0,
+        70.0,
+        153.0,
+        42.0
+      ]
+    },
+    {
+      "net": "PGND",
+      "copper_layer": "In8.Cu",
+      "bbox_mm": [
+        1.0,
+        70.0,
+        153.0,
+        42.0
+      ]
+    }
+  ],
+  "shared_pgnd_plane_evidence": [
+    {
+      "net": "PGND",
+      "copper_layer": "In1.Cu",
+      "bbox_mm": [
+        1.0,
+        1.0,
+        153.0,
+        111.0
+      ]
+    }
+  ],
+  "secondary_pin_eco_rows": 129,
+  "secondary_unique_pin_pairs": 118,
+  "primary_T4_PRI_B_must_STAY_primary_return": true,
+  "physical_12v_isolation_certificate_present": false,
+  "actual_48v_power_disconnect_on_product_board": false,
+  "SR_driver_supply_bonded_to_primary_pgnd": true,
+  "zero_drc_is_NOT_isolation_evidence": true,
+  "hardware_48v_powerup_allowed": false,
+  "fabrication_approved": false,
+  "secondary_eco_csv_sha256": "3d885caf9ca00dea0276cd77a48757b0e564e824b32f1734b7d77196de156451"
+}

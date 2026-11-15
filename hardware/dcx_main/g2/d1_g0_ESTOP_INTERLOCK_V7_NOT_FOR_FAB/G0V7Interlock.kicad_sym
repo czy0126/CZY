@@ -1,0 +1,488 @@
+(kicad_symbol_lib (version 20241209) (generator "G0V7ManuallyWiredNCStop")
+		(symbol "J_AUX48"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_AUX48" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_AUX48_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_AUX48_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "F_COIL"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "F_COIL" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "F_COIL_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "F_COIL_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "IN" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "OUT" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_ESTOP_PWR"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_ESTOP_PWR" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_ESTOP_PWR_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_ESTOP_PWR_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_GX14COIL"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_GX14COIL" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_GX14COIL_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_GX14COIL_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "Q_COIL"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "Q" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "Q_COIL" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "Q_COIL_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "Q_COIL_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "G" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "D" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "S" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_BIAS"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_BIAS" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_BIAS_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_BIAS_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_HEALTH"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_HEALTH" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_HEALTH_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_HEALTH_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "P_OK" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "S_OK" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "PGND" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_HS_OK"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_HS_OK" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_HS_OK_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_HS_OK_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_ESTOP_MON"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_ESTOP_MON" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_ESTOP_MON_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_ESTOP_MON_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_ARM"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_ARM" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_ARM_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_ARM_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "U_AND"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "U_AND" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "U_AND_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "U_AND_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "A1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "B1" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "Y1" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 2.540 0) (length 2.54) (name "Y2" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 0.000 0) (length 2.54) (name "A2" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 -2.540 0) (length 2.54) (name "B2" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 -5.080 0) (length 2.54) (name "VSS" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "A3" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B3" (effects (font (size 1.27 1.27)))) (number "9" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 5.080 180) (length 2.54) (name "Y3" (effects (font (size 1.27 1.27)))) (number "10" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 2.540 180) (length 2.54) (name "Y4" (effects (font (size 1.27 1.27)))) (number "11" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 0.000 180) (length 2.54) (name "A4" (effects (font (size 1.27 1.27)))) (number "12" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 -2.540 180) (length 2.54) (name "B4" (effects (font (size 1.27 1.27)))) (number "13" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 -5.080 180) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "14" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "U_LATCH"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "U_LATCH" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "U_LATCH_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "U_LATCH_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "Q1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "QBAR1" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "CLOCK1" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 2.540 0) (length 2.54) (name "RESET1" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 0.000 0) (length 2.54) (name "D1" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 -2.540 0) (length 2.54) (name "SET1" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 -5.080 0) (length 2.54) (name "VSS" (effects (font (size 1.27 1.27)))) (number "7" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "SET2" (effects (font (size 1.27 1.27)))) (number "8" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "D2" (effects (font (size 1.27 1.27)))) (number "9" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 5.080 180) (length 2.54) (name "RESET2" (effects (font (size 1.27 1.27)))) (number "10" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 2.540 180) (length 2.54) (name "CLOCK2" (effects (font (size 1.27 1.27)))) (number "11" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 0.000 180) (length 2.54) (name "QBAR2" (effects (font (size 1.27 1.27)))) (number "12" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 -2.540 180) (length 2.54) (name "Q2" (effects (font (size 1.27 1.27)))) (number "13" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 -5.080 180) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "14" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "Q_RESET"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "Q_RESET" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "Q_RESET_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "Q_RESET_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "E" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "C" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_RESET_B"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_RESET_B" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_RESET_B_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_RESET_B_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_RESET_PULL"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_RESET_PULL" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_RESET_PULL_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_RESET_PULL_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_GATE"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_GATE" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_GATE_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_GATE_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_GATE_OFF"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_GATE_OFF" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_GATE_OFF_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_GATE_OFF_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "D_GS"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "D_GS" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "D_GS_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "D_GS_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "K" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "C_AND"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "C_AND" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "C_AND_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "C_AND_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "C_LATCH"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "C_LATCH" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "C_LATCH_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "C_LATCH_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_P_DN"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_P_DN" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_P_DN_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_P_DN_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_S_DN"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_S_DN" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_S_DN_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_S_DN_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_HS_DN"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_HS_DN" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_HS_DN_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_HS_DN_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_ESTOP_DN"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_ESTOP_DN" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_ESTOP_DN_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_ESTOP_DN_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_ARM_DN"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_ARM_DN" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_ARM_DN_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_ARM_DN_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "R_ARM_SER"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "R_ARM_SER" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "R_ARM_SER_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "R_ARM_SER_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "C_ARM"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "C_ARM" (at 0 -17.780 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "C_ARM_0_1"
+				(rectangle (start -11.430 15.240) (end 11.430 -15.240) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "C_ARM_1_1"
+				(pin passive line (at -13.970 10.160 0) (length 2.54) (name "1" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 10.160 180) (length 2.54) (name "2" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+)

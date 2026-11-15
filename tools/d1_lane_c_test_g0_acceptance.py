@@ -17,6 +17,48 @@ def test_current_g0_release_is_hard_blocked():
     assert r["independent_dual_bias_candidate_pins_checked"] == 28
     assert r["independent_dual_bias_candidate_secondary_ground_separate"] is True
     assert r["dual_bias_candidate_is_not_integrated_or_fab_ready"] is True
+    v4=r["latest_native_mainboard_G0_V4"]
+    assert v4["pcb_footprints"]==157
+    assert v4["independent_ref_pin_net_parity"]==433
+    assert v4["pcb_unconnected"]==v4["pcb_drc_violations"]==v4["schematic_erc_violations"]==0
+    assert v4["secondary_return_pads_reassigned"]==129
+    assert v4["actual_bias_regulation_and_uvlo_not_integrated"] is True
+    assert v4["g0_remains_blocked"] is True
+    v5=r["latest_native_mainboard_G0_V5"]
+    assert v5["pcb_footprints"]==161
+    assert v5["independent_schematic_pins"]==441
+    assert v5["native_drc"]==v5["native_erc"]==v5["native_unconnected"]==0
+    assert v5["effective_REG_c_and_SR_noise_not_signed"] is True
+    bias=r["new_dual_Traco_48v_12v_bias_carrier_CAD"]
+    assert bias["modules_30w_each"]==2
+    assert bias["native_pcb_parts"]==13 and bias["native_schematic_pins"]==34
+    assert bias["native_erc"]==bias["native_pcb_drc"]==bias["native_pcb_unconnected"]==0
+    assert bias["physically_assembled_and_verified"] is False
+    assert bias["g0_still_blocked"] is True
+    v6=r["new_V6_dual_rail_UVLO_real_KiCad_bias_carrier"]
+    assert v6["native_pcb_devices"]==30
+    assert v6["independently_exported_pin_parity"]==80
+    assert v6["native_drc"]==v6["native_open"]==v6["native_erc"]==0
+    assert v6["secondary_to_primary_status_opto_isolated"] is True
+    assert v6["UVLO_status_closes_actual_primary_power_contactor_or_RUN"] is False
+    assert v6["main_G0_still_blocked"] is True
+    v7=r["new_V7_external_NC_ESTOP_and_manual_rearm_CAD_NOT_CONNECTED"]
+    assert v7["native_pcb_footprints"]==27
+    assert v7["source_authored_pin_parity"]==81
+    assert v7["native_pcb_drc"]==v7["native_schematic_erc"]==0
+    assert v7["native_pcb_unconnected"]>0
+    assert v7["true_series_NC_stop_48V_coil_copper_present"] is True
+    assert v7["actual_signal_copper_all_routed"] is False
+    assert v7["G0_04_physical_approved"] is False
+    assert v7["G0_continues_BLOCKED"] is True
+    v8=r["new_V8_58part_zero_open_AMC1311_GH_HB_MONITOR_CAD"]
+    assert v8["actual_native_footprints"]==58
+    assert v8["independent_schematic_pin_parity"]==171
+    assert v8["native_ERC_errors"]==v8["native_PCB_DRC"]==v8["native_PCB_unconnected"]==0
+    assert v8["native_R_HS_RELEASE_0R_is_DNP"] is True
+    assert v8["actual_phase_aware_self_check_watchdog_present"] is False
+    assert v8["G0_power_permission"] is False
+    assert v8["real_DUT_physical_G0_05_witness"] is False
     assert r["baseline_unconnected"] > 0
     assert r["required_scope_captures"] == 60
     assert len(r["obligations"]) == 9
@@ -32,6 +74,8 @@ def test_every_gate_and_fault_has_a_unique_raw_capture_request():
     assert len(rows) == 60
     assert len({(x["gate"], x["fault_mode"]) for x in rows}) == 60
     assert {x["vgs_negative_probe"] for x in rows if x["gate"] == "GH1"} == {"SW"}
+    assert {x["vgs_negative_probe"] for x in rows if x["gate"] == "GL1"} == {"PGND"}
+    assert {x["vgs_negative_probe"] for x in rows if x["gate"].startswith("GA")} == {"SR_SOURCE_RETURN"}
     assert all(x["raw_scope_artifact"] == "PENDING" for x in rows)
 
 def test_fake_green_or_unknown_witness_is_rejected():
