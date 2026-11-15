@@ -1,0 +1,166 @@
+{
+  "kind": "D1_G0_V7_NC_ESTOP_RESTART_LATCH_REAL_NATIVE_PCB_CANDIDATE",
+  "status": "V7_NC_ESTOP_48V_COIL_PATH_WITH_FAIL_CLOSED_LOGIC_NOT_FOR_FAB",
+  "native_footprints": 27,
+  "pin_map": {
+    "R_P_DN": {
+      "1": "UVLO_P_OK",
+      "2": "PGND"
+    },
+    "J_HEALTH": {
+      "1": "UVLO_P_OK",
+      "2": "UVLO_S_PRIMARY_OK",
+      "3": "PGND"
+    },
+    "R_RESET_B": {
+      "1": "ALL_HEALTHY",
+      "2": "RESET_BASE"
+    },
+    "R_GATE_OFF": {
+      "1": "MOS_GATE",
+      "2": "PGND"
+    },
+    "C_AND": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "R_GATE": {
+      "1": "COIL_ENABLE",
+      "2": "MOS_GATE"
+    },
+    "R_ESTOP_DN": {
+      "1": "ESTOP_MON_OK",
+      "2": "PGND"
+    },
+    "Q_COIL": {
+      "1": "MOS_GATE",
+      "2": "COIL_DRAIN",
+      "3": "PGND"
+    },
+    "R_HS_DN": {
+      "1": "HS_OK_IN",
+      "2": "PGND"
+    },
+    "C_LATCH": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "J_AUX48": {
+      "1": "VIN48_AUX",
+      "2": "PGND"
+    },
+    "J_ARM": {
+      "1": "VCC12",
+      "2": "ARM_RAW"
+    },
+    "J_BIAS": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "R_RESET_PULL": {
+      "1": "VCC12",
+      "2": "RESET_ACTIVE"
+    },
+    "J_ESTOP_MON": {
+      "1": "VCC12",
+      "2": "ESTOP_MON_OK"
+    },
+    "Q_RESET": {
+      "1": "RESET_BASE",
+      "2": "PGND",
+      "3": "RESET_ACTIVE"
+    },
+    "U_AND": {
+      "1": "UVLO_P_OK",
+      "2": "UVLO_S_PRIMARY_OK",
+      "3": "BIAS_BOTH_OK",
+      "4": "EXT_BOTH_OK",
+      "5": "HS_OK_IN",
+      "6": "ESTOP_MON_OK",
+      "7": "PGND",
+      "8": "BIAS_BOTH_OK",
+      "9": "EXT_BOTH_OK",
+      "10": "ALL_HEALTHY",
+      "11": "COIL_ENABLE",
+      "12": "LATCH_Q",
+      "13": "ALL_HEALTHY",
+      "14": "VCC12"
+    },
+    "J_GX14COIL": {
+      "1": "48V_AFTER_ESTOP",
+      "2": "COIL_DRAIN"
+    },
+    "F_COIL": {
+      "1": "VIN48_AUX",
+      "2": "48V_FUSED"
+    },
+    "J_HS_OK": {
+      "1": "HS_OK_IN",
+      "2": "PGND"
+    },
+    "R_ARM_DN": {
+      "1": "ARM_RAW",
+      "2": "PGND"
+    },
+    "R_ARM_SER": {
+      "1": "ARM_RAW",
+      "2": "ARM_CLOCK"
+    },
+    "D_GS": {
+      "1": "MOS_GATE",
+      "2": "PGND"
+    },
+    "R_S_DN": {
+      "1": "UVLO_S_PRIMARY_OK",
+      "2": "PGND"
+    },
+    "C_ARM": {
+      "1": "ARM_CLOCK",
+      "2": "PGND"
+    },
+    "J_ESTOP_PWR": {
+      "1": "48V_FUSED",
+      "2": "48V_AFTER_ESTOP"
+    },
+    "U_LATCH": {
+      "1": "LATCH_Q",
+      "2": "",
+      "3": "ARM_CLOCK",
+      "4": "RESET_ACTIVE",
+      "5": "VCC12",
+      "6": "PGND",
+      "7": "PGND",
+      "8": "PGND",
+      "9": "PGND",
+      "10": "PGND",
+      "11": "PGND",
+      "12": "",
+      "13": "",
+      "14": "VCC12"
+    }
+  },
+  "native_DRC_violations": 0,
+  "native_unconnected": 24,
+  "operator_required_to_start_after_fault_ideal_logic_only": true,
+  "no_autostart_when_fault_clears_logic_contract": true,
+  "coil_supply_plus_series_NC_ESTOP_hardware_connector_present": true,
+  "second_NC_ESTOP_sensing_channel_required": true,
+  "high_side_monitor_missing_defaults_off_only_in_UNROUTED_logic_spec": true,
+  "48V_GX14FAC_internal_transorb_no_external_diode_in_design": true,
+  "actual_GX14_contactor_and_2NC_emergency_stop_switch_integrated_on_board": false,
+  "actual_high_side_monitor_installed": false,
+  "DC_fuse_MPN_and_short_circuit_interrupt_rating_qualified": false,
+  "welded_contact_fault_test_completed": false,
+  "main_V5_power_board_enable_actually_wired": false,
+  "physical_signoff_g0": false,
+  "energization_allowed": false,
+  "fabrication_approved": false,
+  "source_url": {
+    "GX14": "https://www.sensata.com/sites/default/files/a/sensata-gigavac-gx14-series-open-contactors-datasheet.pdf",
+    "IRL540N": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irl540n-datasheet-en.pdf",
+    "CD4081": "https://www.ti.com/lit/ds/symlink/cd4081b-mil.pdf",
+    "CD4013": "https://www.ti.com/lit/ds/symlink/cd4013b.pdf"
+  },
+  "board_sha256": "6e6b88c7341a9a298f3f1db65a103fa78721626a99356393b47e80ae407d8fd8",
+  "drc_sha256": "8858404fecadcc8b7a6e439b8398be0863634883fe5968b47090fdeab94adca6"
+}

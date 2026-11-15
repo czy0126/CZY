@@ -42,6 +42,15 @@ def test_current_g0_release_is_hard_blocked():
     assert v6["secondary_to_primary_status_opto_isolated"] is True
     assert v6["UVLO_status_closes_actual_primary_power_contactor_or_RUN"] is False
     assert v6["main_G0_still_blocked"] is True
+    v7=r["new_V7_external_NC_ESTOP_and_manual_rearm_CAD_NOT_CONNECTED"]
+    assert v7["native_pcb_footprints"]==27
+    assert v7["source_authored_pin_parity"]==81
+    assert v7["native_pcb_drc"]==v7["native_schematic_erc"]==0
+    assert v7["native_pcb_unconnected"]>0
+    assert v7["true_series_NC_stop_48V_coil_copper_present"] is True
+    assert v7["actual_signal_copper_all_routed"] is False
+    assert v7["G0_04_physical_approved"] is False
+    assert v7["G0_continues_BLOCKED"] is True
     assert r["baseline_unconnected"] > 0
     assert r["required_scope_captures"] == 60
     assert len(r["obligations"]) == 9

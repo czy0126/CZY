@@ -73,6 +73,20 @@
     "UVLO_status_closes_actual_primary_power_contactor_or_RUN": false,
     "main_G0_still_blocked": true
   },
+  "new_V7_external_NC_ESTOP_and_manual_rearm_CAD_NOT_CONNECTED": {
+    "native_pcb_footprints": 27,
+    "source_authored_pin_parity": 81,
+    "native_schematic_erc": 0,
+    "native_pcb_drc": 0,
+    "native_pcb_unconnected": 24,
+    "true_series_NC_stop_48V_coil_copper_present": true,
+    "CD4013_manual_rearm_only_source_logic": true,
+    "actual_signal_copper_all_routed": false,
+    "real_HS_GH_SW_sensor_present": false,
+    "real_GX14_main_contactor_and_2NC_switch_wired": false,
+    "G0_04_physical_approved": false,
+    "G0_continues_BLOCKED": true
+  },
   "prior_uvlo_simulation_is_not_current_interlock_proof": true,
   "illustrative_passive_gate_decay_is_not_hardware_proof": true,
   "fault_modes": [

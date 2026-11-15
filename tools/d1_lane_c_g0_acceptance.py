@@ -34,6 +34,8 @@ BIAS_OEM_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_dual_THN30_bias_carrier_NOT_FO
 BIAS_OEM_REPORT = BIAS_OEM_DIR / "G0_dual_30W_isolated_bias_CAD_acceptance_NOT_FOR_FAB.json"
 BIAS_V6_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_THN30_UVLO_OPTO_V6_NOT_FOR_FAB"
 BIAS_V6_REPORT = BIAS_V6_DIR / "V6_30part_native_UVLO_iso_schematic_receipt_NOT_FOR_FAB.json"
+INTERLOCK_V7_DIR=ROOT/"hardware/dcx_main/g2/d1_g0_ESTOP_INTERLOCK_V7_NOT_FOR_FAB"
+INTERLOCK_V7_REPORT=INTERLOCK_V7_DIR/"V7_KICAD_INTERLOCK_INCOMPLETE_NOT_FOR_FAB_ACCEPTANCE.json"
 
 # Source of truth for scope and ownership: these obligations describe G0 only.
 # They do not turn G1 load testing or G3 coldplate requirements into blockers.
@@ -225,6 +227,31 @@ def current_v6_dual_uvlo_evidence() -> dict:
             raise ValueError("V6 dual UVLO native SHA drift "+fname)
     return data
 
+def latest_v7_estop_interlock_candidate() -> dict:
+    """V7 is vendor-pin-source CAD with a real NC coil-path but OPEN signal copper."""
+    if not INTERLOCK_V7_REPORT.is_file():
+        raise ValueError("V7 external NC interlock CAD package missing")
+    data=json.loads(INTERLOCK_V7_REPORT.read_text("utf-8"))
+    if not (data.get("native_physical_footprint_count")==27 and
+       data.get("native_schematic_independent_pin_parity")==81 and
+       data.get("native_KiCad_ERC_violations")==0 and
+       data.get("native_KiCad_DRC_violations")==0 and
+       data.get("native_KiCad_unconnected",0)>0 and
+       data.get("manual_rearm_copper_closed") is False and
+       data.get("actual_GX14_contactor_and_2NC_emergency_stop_switch_integrated_on_board",False) is False and
+       data.get("physical_48v_main_bus_contact_opening_proven") is False and
+       data.get("G0_04_physical_approved") is False and
+       data.get("fabrication_approved") is False and
+       data.get("energization_allowed") is False):
+       raise ValueError("unsafe V7 interlock status; manual independent re-review required")
+    files=data.get("native_source_files_sha256",{})
+    if len(files)<10:raise ValueError("V7 native CAD evidence incomplete")
+    for file,digest_value in files.items():
+        path=INTERLOCK_V7_DIR/file
+        if not path.is_file() or digest(path)!=digest_value:
+            raise ValueError("V7 native source file SHA mismatch: "+file)
+    return data
+
 def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     base = g0.build()  # Re-check locked source SHA and D0 structural wiring.
     parts, _, sch_text = cad.expected_text()
@@ -234,6 +261,7 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     v5 = latest_v5_native_mainboard()
     oem_bias = latest_oem_dual_bias_carrier()
     uvlo_v6 = current_v6_dual_uvlo_evidence()
+    estop_v7 = latest_v7_estop_interlock_candidate()
     independent_bias = bias.check(bp, bs)  # separate physical return domains, NOT integrated
     if independent_bias["native_erc_violations"] != 0:
         raise ValueError("native two-domain bias candidate ERC regressed")
@@ -345,6 +373,20 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
            "physical_hardware_assembled_or_measured": False,
            "UVLO_status_closes_actual_primary_power_contactor_or_RUN": False,
            "main_G0_still_blocked": True,
+        },
+        "new_V7_external_NC_ESTOP_and_manual_rearm_CAD_NOT_CONNECTED": {
+           "native_pcb_footprints":estop_v7["native_physical_footprint_count"],
+           "source_authored_pin_parity":estop_v7["native_schematic_independent_pin_parity"],
+           "native_schematic_erc":estop_v7["native_KiCad_ERC_violations"],
+           "native_pcb_drc":estop_v7["native_KiCad_DRC_violations"],
+           "native_pcb_unconnected":estop_v7["native_KiCad_unconnected"],
+           "true_series_NC_stop_48V_coil_copper_present":True,
+           "CD4013_manual_rearm_only_source_logic":True,
+           "actual_signal_copper_all_routed":False,
+           "real_HS_GH_SW_sensor_present":False,
+           "real_GX14_main_contactor_and_2NC_switch_wired":False,
+           "G0_04_physical_approved":False,
+           "G0_continues_BLOCKED":True,
         },
         "prior_uvlo_simulation_is_not_current_interlock_proof":
             model["simulation_must_not_be_claimed_for_latest_full_enable_chain"],
