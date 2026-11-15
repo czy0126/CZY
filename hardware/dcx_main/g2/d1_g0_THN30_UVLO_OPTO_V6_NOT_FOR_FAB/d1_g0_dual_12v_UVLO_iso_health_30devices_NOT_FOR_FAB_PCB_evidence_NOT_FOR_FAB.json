@@ -1,0 +1,181 @@
+{
+  "kind": "D1_G0_TWO_OEM_THN30_AND_TWO_TPS3710_OPTIC_UVLO_NATIVE_V6",
+  "status": "V6_UVLO_FOOTPRINT_AND_COPPER_CANDIDATE_NOT_FOR_FAB",
+  "device_count": 30,
+  "native_pin_map": {
+    "J_HEALTH": {
+      "1": "UVLO_P_OK",
+      "2": "UVLO_S_PRIMARY_OK",
+      "3": "PGND"
+    },
+    "RP_BOT": {
+      "1": "P_SENSE",
+      "2": "PGND"
+    },
+    "RS_BOT": {
+      "1": "S_SENSE",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "UP": {
+      "1": "UVLO_P_OK",
+      "2": "PGND",
+      "3": "P_SENSE",
+      "4": "PGND",
+      "5": "VCC12",
+      "6": "PGND"
+    },
+    "RP_PULL": {
+      "1": "VCC12",
+      "2": "UVLO_P_OK"
+    },
+    "U2": {
+      "1": "VIN48S_F",
+      "2": "PGND",
+      "3": "VCC12_S",
+      "4": "",
+      "5": "SR_SOURCE_RETURN",
+      "6": ""
+    },
+    "J_IN": {
+      "1": "VIN48_PRE",
+      "2": "PGND"
+    },
+    "U1": {
+      "1": "VIN48P_F",
+      "2": "PGND",
+      "3": "VCC12",
+      "4": "",
+      "5": "PGND",
+      "6": ""
+    },
+    "C_INS": {
+      "1": "VIN48S_F",
+      "2": "PGND"
+    },
+    "J_S": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "C_P1": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "F2": {
+      "1": "VIN48_PRE",
+      "2": "VIN48S_F"
+    },
+    "C_S2": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "RP_OPTO": {
+      "1": "VCC12",
+      "2": "OPT_COL_N"
+    },
+    "RS_PULL": {
+      "1": "VCC12_S",
+      "2": "UVLO_S_OK"
+    },
+    "C_INP": {
+      "1": "VIN48P_F",
+      "2": "PGND"
+    },
+    "CS_100N": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "ISO1": {
+      "1": "OPT_LED_P",
+      "2": "SR_SOURCE_RETURN",
+      "3": "PGND",
+      "4": "OPT_COL_N"
+    },
+    "F1": {
+      "1": "VIN48_PRE",
+      "2": "VIN48P_F"
+    },
+    "QINV": {
+      "1": "QBASE",
+      "2": "PGND",
+      "3": "UVLO_S_PRIMARY_OK"
+    },
+    "RS_LED": {
+      "1": "UVLO_S_OK",
+      "2": "OPT_LED_P"
+    },
+    "RBASE": {
+      "1": "OPT_COL_N",
+      "2": "QBASE"
+    },
+    "J_P": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "C_S1": {
+      "1": "VCC12_S",
+      "2": "SR_SOURCE_RETURN"
+    },
+    "CP_100N": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "US": {
+      "1": "UVLO_S_OK",
+      "2": "SR_SOURCE_RETURN",
+      "3": "S_SENSE",
+      "4": "SR_SOURCE_RETURN",
+      "5": "VCC12_S",
+      "6": "SR_SOURCE_RETURN"
+    },
+    "RP_TOP": {
+      "1": "VCC12",
+      "2": "P_SENSE"
+    },
+    "RINV": {
+      "1": "VCC12",
+      "2": "UVLO_S_PRIMARY_OK"
+    },
+    "C_P2": {
+      "1": "VCC12",
+      "2": "PGND"
+    },
+    "RS_TOP": {
+      "1": "VCC12_S",
+      "2": "S_SENSE"
+    }
+  },
+  "independent_primary_secondary_uvlo_sense": true,
+  "TPS3710_SOT6_top_pin_map": {
+    "1": "OUT",
+    "2": "GND",
+    "3": "SENSE",
+    "4": "GND",
+    "5": "VDD",
+    "6": "GND"
+  },
+  "TPS3710_nominal_12v_trip_rising_v": 10.84,
+  "TPS3710_nominal_12v_trip_falling_v": 10.69095,
+  "divider_top_ohm": 261000,
+  "divider_bottom_ohm": 10000,
+  "sense_ref_tolerance_temperature_measured": false,
+  "optocoupler_VO617A3_ctr_when_led_about_5mA_tested": false,
+  "primary_secondary_copper_returns_directly_joined": false,
+  "UVLO_S_primary_status_physically_opto_isolated": true,
+  "hardware_estop_closed_contact_and_48v_coil_driver_integrated": false,
+  "UVLO_to_actual_power_switch_and_gate_enable_integrated": false,
+  "bias_hold_up_and_power_off_timing_measured": false,
+  "mainboard_R8_DNP": true,
+  "vendor_datasheets": {
+    "TPS3710": "https://www.ti.com/lit/ds/symlink/tps3710.pdf",
+    "VO617A": "https://www.vishay.com/docs/83430/vo617a.pdf",
+    "MMBT3904LT1G": "https://www.onsemi.com/download/data-sheet/pdf/mmbt3904lt1-d.pdf"
+  },
+  "origin_2xTraco_bias_board_SHA": "321fac4aea969708d6394c8a62e9e435fca149d67ad13cfa65da4d9a60cd0067",
+  "PCB_SHA": "1f7caa712fcc2830f4494406fc043904b5185f04a2a4ed427d7b45b2d91150b5",
+  "KiCad_DRC_SHA": "c703ac07ef53d777a6e8789a762549e5fe965817685c09924558c8f1bd478ee7",
+  "native_drc_rules": 0,
+  "native_unconnected": 0,
+  "energization_allowed": false,
+  "fabrication_approved": false,
+  "g0_approved": false
+}

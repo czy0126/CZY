@@ -1,0 +1,303 @@
+(kicad_symbol_lib (version 20241209) (generator "g0_v6_uvlo_vendor_pinmap")
+		(symbol "UP"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "UP" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "UP_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "UP_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "OUT" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 2.540 0) (length 2.54) (name "SENSE" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 5.080 180) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 2.540 180) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "US"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "US" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "US_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "US_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "OUT" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 2.540 0) (length 2.54) (name "SENSE" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 5.080 180) (length 2.54) (name "VDD" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 2.540 180) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "6" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RP_TOP"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RP_TOP" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RP_TOP_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RP_TOP_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RP_BOT"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RP_BOT" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RP_BOT_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RP_BOT_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RP_PULL"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RP_PULL" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RP_PULL_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RP_PULL_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "CP_100N"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "C" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "CP_100N" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "CP_100N_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "CP_100N_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RS_TOP"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RS_TOP" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RS_TOP_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RS_TOP_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RS_BOT"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RS_BOT" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RS_BOT_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RS_BOT_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RS_PULL"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RS_PULL" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RS_PULL_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RS_PULL_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "CS_100N"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "C" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "CS_100N" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "CS_100N_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "CS_100N_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "ISO1"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "ISO1" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "ISO1_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "ISO1_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "ANODE" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "CATHODE" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "EMITTER" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 5.080 180) (length 2.54) (name "COLLECTOR" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RS_LED"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RS_LED" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RS_LED_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RS_LED_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RP_OPTO"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RP_OPTO" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RP_OPTO_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RP_OPTO_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "QINV"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "Q" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "QINV" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "QINV_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "QINV_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "BASE" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "EMITTER" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "COLLECTOR" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RBASE"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RBASE" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RBASE_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RBASE_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "RINV"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "RINV" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "RINV_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "RINV_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "A" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "B" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+		(symbol "J_HEALTH"
+			(pin_names (offset 0.508))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "J" (at 0 15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Value" "J_HEALTH" (at 0 -15.240 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Datasheet" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(property "Description" "" (at 0 0 0) (hide yes) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+			(symbol "J_HEALTH_0_1"
+				(rectangle (start -11.430 12.700) (end 11.430 -12.700) (stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "J_HEALTH_1_1"
+				(pin passive line (at -13.970 7.620 0) (length 2.54) (name "P_UV_OK" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at -13.970 5.080 0) (length 2.54) (name "S_UV_OK" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 13.970 7.620 180) (length 2.54) (name "PRIMARY_GND" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
+			)
+		)
+
+)

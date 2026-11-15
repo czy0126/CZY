@@ -59,6 +59,20 @@
     "real_main_48v_estop_and_UVLO_not_completed": true,
     "g0_still_blocked": true
   },
+  "new_V6_dual_rail_UVLO_real_KiCad_bias_carrier": {
+    "native_pcb_devices": 30,
+    "independently_exported_pin_parity": 80,
+    "native_drc": 0,
+    "native_open": 0,
+    "native_erc": 0,
+    "nominal_UVLO_trip_rising_v": 10.84,
+    "nominal_UVLO_trip_falling_v": 10.69095,
+    "separate_primary_secondary_rail_sense": true,
+    "secondary_to_primary_status_opto_isolated": true,
+    "physical_hardware_assembled_or_measured": false,
+    "UVLO_status_closes_actual_primary_power_contactor_or_RUN": false,
+    "main_G0_still_blocked": true
+  },
   "prior_uvlo_simulation_is_not_current_interlock_proof": true,
   "illustrative_passive_gate_decay_is_not_hardware_proof": true,
   "fault_modes": [

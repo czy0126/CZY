@@ -1,5 +1,7 @@
 # D1 G0 V5 — 四路 SR Kelvin 实体 PCB ECO + 两路 Traco 48V→12V 偏置子板
 
+**主板仍以V5为最新；偏置子板已继续迭代至V6，加入两只TPS3710及隔离光耦健康信号和可编辑30器件原生KiCad。最新子板参考 docs/agent/D1_G0_V6_UVLO_GX14_CONTACTOR_HANDOFF_20261115_NOT_FOR_FAB.md。两版均为NOT_FOR_FAB且G0未获实体批准。**
+
 日期：2026-11-15。**状态：G0 BLOCKED / G1 PENDING / NOT_FOR_FAB；不可直接制造或上 48V。**
 
 ## 推荐的两个 KiCad 10 可编辑交付包

@@ -32,6 +32,8 @@ V5_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_UCC24624_KELVIN_V5_INTEGRATED_MAINBO
 V5_REPORT = V5_DIR / "V5_integrated_KiCad_ERC_DRC_isolation_gate_NOT_FOR_FAB.json"
 BIAS_OEM_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_dual_THN30_bias_carrier_NOT_FOR_FAB"
 BIAS_OEM_REPORT = BIAS_OEM_DIR / "G0_dual_30W_isolated_bias_CAD_acceptance_NOT_FOR_FAB.json"
+BIAS_V6_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_THN30_UVLO_OPTO_V6_NOT_FOR_FAB"
+BIAS_V6_REPORT = BIAS_V6_DIR / "V6_30part_native_UVLO_iso_schematic_receipt_NOT_FOR_FAB.json"
 
 # Source of truth for scope and ownership: these obligations describe G0 only.
 # They do not turn G1 load testing or G3 coldplate requirements into blockers.
@@ -196,6 +198,33 @@ def latest_oem_dual_bias_carrier() -> dict:
             raise ValueError("THN30 CAD SHA stale "+name)
     return data
 
+def current_v6_dual_uvlo_evidence() -> dict:
+    """Read source-hashed UVLO voltage-valid CAD, never release 48V."""
+    if not BIAS_V6_REPORT.is_file():
+        raise ValueError("V6 actual dual rail UVLO daughterboard missing")
+    data=json.loads(BIAS_V6_REPORT.read_text("utf-8"))
+    if not (
+        data.get("device_count")==30 and
+        data.get("unique_ref_pin_net_parity")==80 and
+        data.get("native_KiCad_ERC_violations")==0 and
+        data.get("native_KiCad_DRC_violations")==0 and
+        data.get("native_KiCad_unconnected")==0 and
+        data.get("secondary_to_primary_status_opto_isolated") is True and
+        data.get("status_3pin_is_a_power_stage_enable") is False and
+        data.get("UVLO_status_to_physical_ESTOP_and_RUN_closed_loop") is False and
+        data.get("g0_approved") is False and
+        data.get("energization_allowed") is False and
+        data.get("fabrication_approved") is False):
+        raise ValueError("unsafe V6 UVLO status or native EDA regression")
+    sha=data.get("sha256",{})
+    if len(sha)<11:
+        raise ValueError("V6 dual UVLO source receipt incomplete")
+    for fname,expected in sha.items():
+        path=BIAS_V6_DIR/fname
+        if not path.is_file() or digest(path)!=expected:
+            raise ValueError("V6 dual UVLO native SHA drift "+fname)
+    return data
+
 def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     base = g0.build()  # Re-check locked source SHA and D0 structural wiring.
     parts, _, sch_text = cad.expected_text()
@@ -204,6 +233,7 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     v4 = current_v4_mainboard_evidence()
     v5 = latest_v5_native_mainboard()
     oem_bias = latest_oem_dual_bias_carrier()
+    uvlo_v6 = current_v6_dual_uvlo_evidence()
     independent_bias = bias.check(bp, bs)  # separate physical return domains, NOT integrated
     if independent_bias["native_erc_violations"] != 0:
         raise ValueError("native two-domain bias candidate ERC regressed")
@@ -301,6 +331,20 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
            "physically_assembled_and_verified":False,
            "real_main_48v_estop_and_UVLO_not_completed":True,
            "g0_still_blocked":True,
+        },
+        "new_V6_dual_rail_UVLO_real_KiCad_bias_carrier": {
+           "native_pcb_devices": uvlo_v6["device_count"],
+           "independently_exported_pin_parity": uvlo_v6["unique_ref_pin_net_parity"],
+           "native_drc": uvlo_v6["native_KiCad_DRC_violations"],
+           "native_open": uvlo_v6["native_KiCad_unconnected"],
+           "native_erc": uvlo_v6["native_KiCad_ERC_violations"],
+           "nominal_UVLO_trip_rising_v": uvlo_v6["12v_rising_threshold_typical"],
+           "nominal_UVLO_trip_falling_v": uvlo_v6["12v_falling_threshold_typical"],
+           "separate_primary_secondary_rail_sense": True,
+           "secondary_to_primary_status_opto_isolated": True,
+           "physical_hardware_assembled_or_measured": False,
+           "UVLO_status_closes_actual_primary_power_contactor_or_RUN": False,
+           "main_G0_still_blocked": True,
         },
         "prior_uvlo_simulation_is_not_current_interlock_proof":
             model["simulation_must_not_be_claimed_for_latest_full_enable_chain"],

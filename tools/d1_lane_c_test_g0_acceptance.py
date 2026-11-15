@@ -35,6 +35,13 @@ def test_current_g0_release_is_hard_blocked():
     assert bias["native_erc"]==bias["native_pcb_drc"]==bias["native_pcb_unconnected"]==0
     assert bias["physically_assembled_and_verified"] is False
     assert bias["g0_still_blocked"] is True
+    v6=r["new_V6_dual_rail_UVLO_real_KiCad_bias_carrier"]
+    assert v6["native_pcb_devices"]==30
+    assert v6["independently_exported_pin_parity"]==80
+    assert v6["native_drc"]==v6["native_open"]==v6["native_erc"]==0
+    assert v6["secondary_to_primary_status_opto_isolated"] is True
+    assert v6["UVLO_status_closes_actual_primary_power_contactor_or_RUN"] is False
+    assert v6["main_G0_still_blocked"] is True
     assert r["baseline_unconnected"] > 0
     assert r["required_scope_captures"] == 60
     assert len(r["obligations"]) == 9
