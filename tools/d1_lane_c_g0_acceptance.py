@@ -36,6 +36,8 @@ BIAS_V6_DIR = ROOT / "hardware/dcx_main/g2/d1_g0_THN30_UVLO_OPTO_V6_NOT_FOR_FAB"
 BIAS_V6_REPORT = BIAS_V6_DIR / "V6_30part_native_UVLO_iso_schematic_receipt_NOT_FOR_FAB.json"
 INTERLOCK_V7_DIR=ROOT/"hardware/dcx_main/g2/d1_g0_ESTOP_INTERLOCK_V7_NOT_FOR_FAB"
 INTERLOCK_V7_REPORT=INTERLOCK_V7_DIR/"V7_KICAD_INTERLOCK_INCOMPLETE_NOT_FOR_FAB_ACCEPTANCE.json"
+INTERLOCK_V8_DIR=ROOT/"hardware/dcx_main/g2/d1_g0_V8_MONITORED_INTERLOCK_NOT_FOR_FAB"
+INTERLOCK_V8_REPORT=INTERLOCK_V8_DIR/"V8_58part_source_authored_schematic_native_KiCad_receipt_NOT_FOR_FAB.json"
 
 # Source of truth for scope and ownership: these obligations describe G0 only.
 # They do not turn G1 load testing or G3 coldplate requirements into blockers.
@@ -252,6 +254,33 @@ def latest_v7_estop_interlock_candidate() -> dict:
             raise ValueError("V7 native source file SHA mismatch: "+file)
     return data
 
+def latest_v8_native_GH_HB_monitored_interlock() -> dict:
+    """Read exact SHA-hashed V8 full routed PCB/SCH; never physical safety PASS."""
+    if not INTERLOCK_V8_REPORT.is_file():
+        raise ValueError("V8 native isolated high-side interlock CAD missing")
+    data=json.loads(INTERLOCK_V8_REPORT.read_text("utf-8"))
+    if not (data.get("native_footprints")==58 and
+       data.get("independent_ref_pin_net_parity")==171 and
+       data.get("native_ERC_errors")==0 and
+       data.get("native_DRC_errors")==0 and
+       data.get("native_unconnected")==0 and
+       data.get("V7_original_control_connections_physically_routed")==24 and
+       data.get("extra_float_isolated_analog_frontend_footprints")==31 and
+       data.get("true_AMC1311B_highside_analog_measurement_connected_in_native_CAD") is True and
+       data.get("HS_OK_gate_connection_is_DNP_and_NOT_power_permission") is True and
+       data.get("independent_phase_aware_HS_watchdog_present") is False and
+       data.get("g0_physical_signoff") is False and
+       data.get("fabrication_approved") is False and
+       data.get("energization_allowed") is False):
+        raise ValueError("unsafe/stale V8 CAD success being misused as physical G0 PASS")
+    files=data.get("data_files_sha256",{})
+    if len(files)<12:raise ValueError("V8 source SHA receipts incomplete")
+    for name,expected in files.items():
+        p=INTERLOCK_V8_DIR/name
+        if not p.is_file() or digest(p)!=expected:
+            raise ValueError("V8 independent schematic/PCB receipt SHA drift "+name)
+    return data
+
 def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     base = g0.build()  # Re-check locked source SHA and D0 structural wiring.
     parts, _, sch_text = cad.expected_text()
@@ -262,6 +291,7 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
     oem_bias = latest_oem_dual_bias_carrier()
     uvlo_v6 = current_v6_dual_uvlo_evidence()
     estop_v7 = latest_v7_estop_interlock_candidate()
+    interlock_v8 = latest_v8_native_GH_HB_monitored_interlock()
     independent_bias = bias.check(bp, bs)  # separate physical return domains, NOT integrated
     if independent_bias["native_erc_violations"] != 0:
         raise ValueError("native two-domain bias candidate ERC regressed")
@@ -387,6 +417,22 @@ def build(witness_data: dict | None = None, evidence_root: Path = ROOT) -> dict:
            "real_GX14_main_contactor_and_2NC_switch_wired":False,
            "G0_04_physical_approved":False,
            "G0_continues_BLOCKED":True,
+        },
+        "new_V8_58part_zero_open_AMC1311_GH_HB_MONITOR_CAD": {
+           "actual_native_footprints":interlock_v8["native_footprints"],
+           "independent_schematic_pin_parity":interlock_v8["independent_ref_pin_net_parity"],
+           "native_ERC_errors":interlock_v8["native_ERC_errors"],
+           "native_PCB_DRC":interlock_v8["native_DRC_errors"],
+           "native_PCB_unconnected":interlock_v8["native_unconnected"],
+           "prior_24_V7_copper_connections_closed":True,
+           "AMC1311B_GH_minus_SW_HB_minus_SW_native_analog_copper_present":True,
+           "separate_floating_HS_12V_power_module_candidate":True,
+           "GH_gate_off_is_diagnostic_not_runtime_comparator":True,
+           "native_R_HS_RELEASE_0R_is_DNP":True,
+           "actual_phase_aware_self_check_watchdog_present":False,
+           "real_DUT_physical_G0_05_witness":False,
+           "G0_power_permission":False,
+           "NOT_FOR_FAB":True,
         },
         "prior_uvlo_simulation_is_not_current_interlock_proof":
             model["simulation_must_not_be_claimed_for_latest_full_enable_chain"],

@@ -87,6 +87,22 @@
     "G0_04_physical_approved": false,
     "G0_continues_BLOCKED": true
   },
+  "new_V8_58part_zero_open_AMC1311_GH_HB_MONITOR_CAD": {
+    "actual_native_footprints": 58,
+    "independent_schematic_pin_parity": 171,
+    "native_ERC_errors": 0,
+    "native_PCB_DRC": 0,
+    "native_PCB_unconnected": 0,
+    "prior_24_V7_copper_connections_closed": true,
+    "AMC1311B_GH_minus_SW_HB_minus_SW_native_analog_copper_present": true,
+    "separate_floating_HS_12V_power_module_candidate": true,
+    "GH_gate_off_is_diagnostic_not_runtime_comparator": true,
+    "native_R_HS_RELEASE_0R_is_DNP": true,
+    "actual_phase_aware_self_check_watchdog_present": false,
+    "real_DUT_physical_G0_05_witness": false,
+    "G0_power_permission": false,
+    "NOT_FOR_FAB": true
+  },
   "prior_uvlo_simulation_is_not_current_interlock_proof": true,
   "illustrative_passive_gate_decay_is_not_hardware_proof": true,
   "fault_modes": [

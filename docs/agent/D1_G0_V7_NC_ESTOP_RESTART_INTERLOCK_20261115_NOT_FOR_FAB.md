@@ -1,4 +1,6 @@
-# D1 G0 V7：常闭物理急停 + 故障后人工重新启动锁存（原生 KiCad）
+# D1 G0 V7：常闭物理急停 + 故障后人工重新启动锁存（历史阶段）
+
+**本页仅是历史V7阶段内容，24项信号未连接已在V8六层控制板中全部布通，新增GH−SW/HB−SW隔离模拟监测和独立来源原生SCH。最新版详见 docs/agent/D1_G0_V8_ZERO_OPEN_DUAL_AMC1311_HS_MONITOR_20261115_NOT_FOR_FAB.md。G0实物安全验收仍未完成。**
 
 2026-11-15，PR #136，工程位于 hardware/dcx_main/g2/d1_g0_ESTOP_INTERLOCK_V7_NOT_FOR_FAB/。
 

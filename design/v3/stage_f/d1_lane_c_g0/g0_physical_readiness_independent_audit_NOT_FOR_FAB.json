@@ -1,6 +1,6 @@
 {
   "kind": "D1_G0_NINE_PHYSICAL_WITNESS_READINESS_NOT_A_POWER_PERMIT",
-  "source_g0_integration_sha256": "6630ab034e60ea425f41891f7fa993311a22989e48723d4e9dd2d19304300942",
+  "source_g0_integration_sha256": "e2b01cf10253052c6e5a0d334380a766ef3dacbcf62a7f64e37f4cfbafa9040d",
   "source_capture_matrix_sha256": "4f849bf809b5934935a7ca3917b88ef4e899ca5c63a4cbc8f4d2747d22af0d3f",
   "physical_signoff_obligations_total": 9,
   "physical_signed_approved": 0,
@@ -22,6 +22,16 @@
     "erc": 0,
     "opens": 0,
     "uvlo_not_wired_to_actual_estop_or_RUN": true
+  },
+  "V8_control_and_HS_CAD": {
+    "native_parts": 58,
+    "source_pin_parity": 171,
+    "native_DRC": 0,
+    "native_ERC": 0,
+    "native_open": 0,
+    "HS_runtime_phase_aware_protection_installed": false,
+    "diagnostic_to_safety_enable_resistor_DNP": true,
+    "physical_hardware_assembled_or_signed": false
   },
   "unreviewed_power_mainboard_drc_categories": [
     "missing_courtyard",

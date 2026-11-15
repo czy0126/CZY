@@ -51,6 +51,14 @@ def test_current_g0_release_is_hard_blocked():
     assert v7["actual_signal_copper_all_routed"] is False
     assert v7["G0_04_physical_approved"] is False
     assert v7["G0_continues_BLOCKED"] is True
+    v8=r["new_V8_58part_zero_open_AMC1311_GH_HB_MONITOR_CAD"]
+    assert v8["actual_native_footprints"]==58
+    assert v8["independent_schematic_pin_parity"]==171
+    assert v8["native_ERC_errors"]==v8["native_PCB_DRC"]==v8["native_PCB_unconnected"]==0
+    assert v8["native_R_HS_RELEASE_0R_is_DNP"] is True
+    assert v8["actual_phase_aware_self_check_watchdog_present"] is False
+    assert v8["G0_power_permission"] is False
+    assert v8["real_DUT_physical_G0_05_witness"] is False
     assert r["baseline_unconnected"] > 0
     assert r["required_scope_captures"] == 60
     assert len(r["obligations"]) == 9
