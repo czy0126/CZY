@@ -1,0 +1,53 @@
+{
+  "schema": "d1_v17_lane_a_electrical_connectivity/1",
+  "status": "DRC_ZERO_ZERO_FOR_PRESENT_V17_KICAD_MODEL_NOT_FOR_FAB",
+  "base_sha256": "4bdb3492959aa08e70716a0f6ca020fe8cf98da66f08c795b72f8172b5ab50f9",
+  "board_sha256": "85fff295c2c8bd594266881b711584be02b40b2158e266e8df4a2ba77d6bb76c",
+  "native_drc_sha256": "53a8655f17712561035c024274944debf4ce7888c41123fda98f87d269a08d2b",
+  "native_drc_canonical_lf_sha256": "47430c409cc6af1df90c403871c3ecb837cbf62c532034c33864adc43407135f",
+  "tool": "KiCad 10.0.6 kicad-cli pcb drc --severity-all --format json",
+  "source_native_counts": {
+    "footprints": 149,
+    "pads": 425,
+    "copper_layers": 12,
+    "track_and_via_objects": 529
+  },
+  "candidate_native_counts": {
+    "footprints": 149,
+    "pads": 425,
+    "copper_layers": 12,
+    "track_and_via_objects": 580
+  },
+  "routed_net_names": [
+    "VIN_P",
+    "GH",
+    "GH_DRV",
+    "HB",
+    "SW",
+    "OC"
+  ],
+  "low_current_rt_bottom_layer_rerouted": true,
+  "enabled_rule_violations": 0,
+  "unconnected_in_current_partial_model": 0,
+  "ignored_drc_checks": [
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch",
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries"
+  ],
+  "magnetics_missing": [
+    "CT",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "schematic_full_parity_signed": false,
+  "easyeda_g1_native_146_connection_errors_resolved": false,
+  "U1_3_OC_via_in_pad_filled_capped_process_signed": false,
+  "power_swich_loop_rms_copper_current_qualified": false,
+  "SR_default_off_and_bench_fault_test_signed": false,
+  "fabrication_approved": false,
+  "power_on_approved": false
+}

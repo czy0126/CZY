@@ -1,0 +1,378 @@
+{
+  "schema": "d1_e1_reuse_copper_coupon/1",
+  "status": "REAL_NATIVE_KICAD_COPPER_COUPON_NOT_FOR_FAB_NOT_FULL_CONVERTER",
+  "source_reusable_V17_sha256": "85fff295c2c8bd594266881b711584be02b40b2158e266e8df4a2ba77d6bb76c",
+  "source_reusable_ELP38_4via_sha256": "00f930a8ece84ac43e3661b47d82853fc8d219d34787cabd126a3463e5bef9a2",
+  "output_native_pcb": "hardware/dcx_main/g2/d1_lane_a_e1_reuse_coupon/e1_4cell_200A_pair_collector_copper_coldplate_interface_NOT_FOR_FAB.kicad_pcb",
+  "output_native_pcb_sha256": "2661c4fca9b4706d240aa8ef565b085cc1e2dbc385d0996ed4a5d9e25de9c01c",
+  "copper_layers": 12,
+  "footprints": 22,
+  "primitive_tracks": 16,
+  "filled_copper_zones": 2,
+  "board_mm": [
+    102.0,
+    50.0
+  ],
+  "physical_SR_source_pin_maps": {
+    "SR1A": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GA1"
+      ],
+      [
+        "5",
+        "SEC1_A"
+      ],
+      [
+        "6",
+        "SEC1_A"
+      ],
+      [
+        "7",
+        "SEC1_A"
+      ],
+      [
+        "8",
+        "SEC1_A"
+      ],
+      [
+        "8",
+        "SEC1_A"
+      ]
+    ],
+    "SR1B": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GB1"
+      ],
+      [
+        "5",
+        "SEC1_B"
+      ],
+      [
+        "6",
+        "SEC1_B"
+      ],
+      [
+        "7",
+        "SEC1_B"
+      ],
+      [
+        "8",
+        "SEC1_B"
+      ],
+      [
+        "8",
+        "SEC1_B"
+      ]
+    ],
+    "SR2A": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GA2"
+      ],
+      [
+        "5",
+        "SEC2_A"
+      ],
+      [
+        "6",
+        "SEC2_A"
+      ],
+      [
+        "7",
+        "SEC2_A"
+      ],
+      [
+        "8",
+        "SEC2_A"
+      ],
+      [
+        "8",
+        "SEC2_A"
+      ]
+    ],
+    "SR2B": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GB2"
+      ],
+      [
+        "5",
+        "SEC2_B"
+      ],
+      [
+        "6",
+        "SEC2_B"
+      ],
+      [
+        "7",
+        "SEC2_B"
+      ],
+      [
+        "8",
+        "SEC2_B"
+      ],
+      [
+        "8",
+        "SEC2_B"
+      ]
+    ],
+    "SR3A": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GA3"
+      ],
+      [
+        "5",
+        "SEC3_A"
+      ],
+      [
+        "6",
+        "SEC3_A"
+      ],
+      [
+        "7",
+        "SEC3_A"
+      ],
+      [
+        "8",
+        "SEC3_A"
+      ],
+      [
+        "8",
+        "SEC3_A"
+      ]
+    ],
+    "SR3B": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GB3"
+      ],
+      [
+        "5",
+        "SEC3_B"
+      ],
+      [
+        "6",
+        "SEC3_B"
+      ],
+      [
+        "7",
+        "SEC3_B"
+      ],
+      [
+        "8",
+        "SEC3_B"
+      ],
+      [
+        "8",
+        "SEC3_B"
+      ]
+    ],
+    "SR4A": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GA4"
+      ],
+      [
+        "5",
+        "SEC4_A"
+      ],
+      [
+        "6",
+        "SEC4_A"
+      ],
+      [
+        "7",
+        "SEC4_A"
+      ],
+      [
+        "8",
+        "SEC4_A"
+      ],
+      [
+        "8",
+        "SEC4_A"
+      ]
+    ],
+    "SR4B": [
+      [
+        "1",
+        "PGND"
+      ],
+      [
+        "2",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "3",
+        "PGND"
+      ],
+      [
+        "4",
+        "GB4"
+      ],
+      [
+        "5",
+        "SEC4_B"
+      ],
+      [
+        "6",
+        "SEC4_B"
+      ],
+      [
+        "7",
+        "SEC4_B"
+      ],
+      [
+        "8",
+        "SEC4_B"
+      ],
+      [
+        "8",
+        "SEC4_B"
+      ]
+    ]
+  },
+  "cell_count": 4,
+  "rectifiers_per_cell": 2,
+  "output_target_total_a": 200,
+  "per_cell_output_design_intent_a": 50,
+  "SR_footprint_vendor_part_and_current_rating_verified": false,
+  "magnetic_24to1_really_implemented": false,
+  "current_carrying_200A_copper_full_stack_and_pth_manufacturer_qualified": false,
+  "coldplate_contact_sketch_on_Dwgs_User_x_mm": [
+    4,
+    98
+  ],
+  "coldplate_contact_sketch_on_Dwgs_User_y_mm": [
+    30,
+    45
+  ],
+  "coldplate_assumed_mm": 2.5,
+  "coldplate_actual_geometry_machined": false,
+  "hot_I2R_and_200A_continuous_proven": false,
+  "sch_erc_or_drivers_included": false,
+  "fixture_current_path": "front PGND collector and backside VOUT collector for geometric/4-terminal resistance comparison; separate polarity clamp fixtures must be supplier designed",
+  "input_pads": "eight distinct secondary-lead PROXY injection lands; NOT real 4-transformer center tap or a signed 24:1 physical winding",
+  "fabrication_approved": false,
+  "power_on_approved": false,
+  "intent": "Reuse V17 physical SR footprints, preserve per-pin nets, validate four-cell placement and opposing F/B collectors, then hand to B magnetic and C output/thermal teams for complete schematic and metal contact DFM."
+}
