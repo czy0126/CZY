@@ -1,0 +1,229 @@
+{
+  "schema": "d1_e1_native_A_B_bipolar_collector_screen/1",
+  "status": "TWO_NATIVE_KICAD_DRC_0_0_COUPONS_BUT_200A_POWER_RATING_NOT_QUALIFIED",
+  "actual_existing_reused_SR_footprints_from_V17": [
+    "SR1A",
+    "SR1B",
+    "SR2A",
+    "SR2B",
+    "SR3A",
+    "SR3B",
+    "SR4A",
+    "SR4B"
+  ],
+  "physical_KiCad_A_native_verification": {
+    "board_sha256": "2661c4fca9b4706d240aa8ef565b085cc1e2dbc385d0996ed4a5d9e25de9c01c",
+    "drc_sha256": "ccaee2c9864e3c1b6aa30d800eaf930ebc350c8bc8778586e7f15a5ff49b8a6e",
+    "native_violations": 0,
+    "native_unconnected": 0,
+    "inherited_ignored_checks": [
+      "footprint_filters_mismatch",
+      "footprint_type_mismatch",
+      "missing_courtyard",
+      "track_not_centered_on_via",
+      "tuning_profile_track_geometries"
+    ]
+  },
+  "physical_KiCad_B_native_verification": {
+    "board_sha256": "9332eaa7af7aae955a273ac03cec01b1e043d9c0524ff96ed232c674d4e03042",
+    "drc_sha256": "0c85421f041fc15a738be5e55f72421a1a15a3b5e078fb2a4081f5b9b36b75a7",
+    "native_violations": 0,
+    "native_unconnected": 0,
+    "inherited_ignored_checks": [
+      "footprint_filters_mismatch",
+      "footprint_type_mismatch",
+      "missing_courtyard",
+      "track_not_centered_on_via",
+      "tuning_profile_track_geometries"
+    ]
+  },
+  "geometry_A_end_vs_B_center_mm": {
+    "edge_output_x": 95.0,
+    "center_output_x": 50.0,
+    "all_SR_locations_and_broadside_F_B_copper_planes_identical": true,
+    "positive_negative_output_contacts_moved_together": true
+  },
+  "assumed_four_local_50A_DC_injections_x_mm": [
+    20,
+    40,
+    60,
+    80
+  ],
+  "output_voltage_v": 2.0,
+  "design_current_A": 200.0,
+  "total_power_W": 400,
+  "total_allowable_loss_for_95pct_eff_W": 21.0526,
+  "output_pair_copper_20pct_budget_W": 4.2105,
+  "real_bus_routing_on_surface": {
+    "PGND": "F.Cu",
+    "VOUT": "B.Cu",
+    "current_carrying_layers_at_zone_as_modeled": 1,
+    "board_12_copper_layers_defined_but_not_all_parallel_current_carrying": true,
+    "actual_200A_continuous_copper_stackup_qualified": false
+  },
+  "conditional_DConly_100C_copper_results": [
+    {
+      "A_edge_terminal": {
+        "output_x_mm": 95,
+        "copper_per_polarity_thickness_mm": 0.07,
+        "ideal_P_DConly_W": 61.43552,
+        "segments": [
+          {
+            "x0_mm": 20,
+            "x1_mm": 40,
+            "absolute_I_A": 50,
+            "ideal_pair_hot_R_microohm": 945.162,
+            "ideal_pair_hot_copper_P_W": 2.3629
+          },
+          {
+            "x0_mm": 40,
+            "x1_mm": 60,
+            "absolute_I_A": 100,
+            "ideal_pair_hot_R_microohm": 945.162,
+            "ideal_pair_hot_copper_P_W": 9.45162
+          },
+          {
+            "x0_mm": 60,
+            "x1_mm": 80,
+            "absolute_I_A": 150,
+            "ideal_pair_hot_R_microohm": 945.162,
+            "ideal_pair_hot_copper_P_W": 21.26614
+          },
+          {
+            "x0_mm": 80,
+            "x1_mm": 95,
+            "absolute_I_A": 200,
+            "ideal_pair_hot_R_microohm": 708.871,
+            "ideal_pair_hot_copper_P_W": 28.35486
+          }
+        ],
+        "not_full_2D_thermal_current_model": true
+      },
+      "B_center_terminal": {
+        "output_x_mm": 50,
+        "copper_per_polarity_thickness_mm": 0.07,
+        "ideal_P_DConly_W": 14.17743,
+        "segments": [
+          {
+            "x0_mm": 20,
+            "x1_mm": 40,
+            "absolute_I_A": 50,
+            "ideal_pair_hot_R_microohm": 945.162,
+            "ideal_pair_hot_copper_P_W": 2.3629
+          },
+          {
+            "x0_mm": 40,
+            "x1_mm": 50,
+            "absolute_I_A": 100,
+            "ideal_pair_hot_R_microohm": 472.581,
+            "ideal_pair_hot_copper_P_W": 4.72581
+          },
+          {
+            "x0_mm": 50,
+            "x1_mm": 60,
+            "absolute_I_A": 100,
+            "ideal_pair_hot_R_microohm": 472.581,
+            "ideal_pair_hot_copper_P_W": 4.72581
+          },
+          {
+            "x0_mm": 60,
+            "x1_mm": 80,
+            "absolute_I_A": 50,
+            "ideal_pair_hot_R_microohm": 945.162,
+            "ideal_pair_hot_copper_P_W": 2.3629
+          }
+        ],
+        "not_full_2D_thermal_current_model": true
+      },
+      "idealized_loss_improvement_percent": 76.92
+    },
+    {
+      "A_edge_terminal": {
+        "output_x_mm": 95,
+        "copper_per_polarity_thickness_mm": 0.8,
+        "ideal_P_DConly_W": 5.37561,
+        "segments": [
+          {
+            "x0_mm": 20,
+            "x1_mm": 40,
+            "absolute_I_A": 50,
+            "ideal_pair_hot_R_microohm": 82.702,
+            "ideal_pair_hot_copper_P_W": 0.20675
+          },
+          {
+            "x0_mm": 40,
+            "x1_mm": 60,
+            "absolute_I_A": 100,
+            "ideal_pair_hot_R_microohm": 82.702,
+            "ideal_pair_hot_copper_P_W": 0.82702
+          },
+          {
+            "x0_mm": 60,
+            "x1_mm": 80,
+            "absolute_I_A": 150,
+            "ideal_pair_hot_R_microohm": 82.702,
+            "ideal_pair_hot_copper_P_W": 1.86079
+          },
+          {
+            "x0_mm": 80,
+            "x1_mm": 95,
+            "absolute_I_A": 200,
+            "ideal_pair_hot_R_microohm": 62.026,
+            "ideal_pair_hot_copper_P_W": 2.48105
+          }
+        ],
+        "not_full_2D_thermal_current_model": true
+      },
+      "B_center_terminal": {
+        "output_x_mm": 50,
+        "copper_per_polarity_thickness_mm": 0.8,
+        "ideal_P_DConly_W": 1.24052,
+        "segments": [
+          {
+            "x0_mm": 20,
+            "x1_mm": 40,
+            "absolute_I_A": 50,
+            "ideal_pair_hot_R_microohm": 82.702,
+            "ideal_pair_hot_copper_P_W": 0.20675
+          },
+          {
+            "x0_mm": 40,
+            "x1_mm": 50,
+            "absolute_I_A": 100,
+            "ideal_pair_hot_R_microohm": 41.351,
+            "ideal_pair_hot_copper_P_W": 0.41351
+          },
+          {
+            "x0_mm": 50,
+            "x1_mm": 60,
+            "absolute_I_A": 100,
+            "ideal_pair_hot_R_microohm": 41.351,
+            "ideal_pair_hot_copper_P_W": 0.41351
+          },
+          {
+            "x0_mm": 60,
+            "x1_mm": 80,
+            "absolute_I_A": 50,
+            "ideal_pair_hot_R_microohm": 82.702,
+            "ideal_pair_hot_copper_P_W": 0.20675
+          }
+        ],
+        "not_full_2D_thermal_current_model": true
+      },
+      "idealized_loss_improvement_percent": 76.92
+    }
+  ],
+  "B_center_70um_copper_still_exceeds_20pct_loss_target": true,
+  "B_center_0p8mm_foil_potentially_below_20pct_loss_target_but_not_a_real_component": true,
+  "thermal_qualification": "Rho(T)*L/A, 4x50A ideal equal feed, uniform copper width/thickness, 100C material only; ignores skin, current spreading, contact, pad, inductance and local hot zones",
+  "why_not_overclaim": "A and B both lack true PCB transformer/ferrite, split-phase drive/bias, control/protection/schematic, rated output connectors and cooled full-assembly CAD. 0/0 is only their incomplete diagnostic netlist.",
+  "release_allowed": false,
+  "power_on_allowed": false,
+  "next_iteration_hard_actions": [
+    "Replace long equal-width surface planes with per-cell side collector close to SR and true paired busbar in actual mechanical CAD",
+    "Recalculate 200A actual winding+4 rectifier cells with 12/16-layer OEM stackup and commissioned ferrite slot mechanical dimensions",
+    "Attach existing T1 5-terminal native Maxwell model as guarded geometry source; do NOT inherit material/saturation/AC loss signoff",
+    "Integrate existing Lane C isolated bias/HS UVLO/D0 fail-off logic after pin-net/ERC parity; do not merge dirty root",
+    "Test hot 4-wire VOUT+PGND resistance, current balance, surface TIM insulation, coldplate CFD & pressure + heat"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "d1_e1_reuse_coupon_gate/1",
+  "status": "NATIVE_E1_COUPON_PASS_BUT_200A_CURRENT_RATING_FAILS_DC_SCREEN_NOT_FOR_FAB",
+  "physical_kicad_source": "hardware/dcx_main/g2/d1_lane_a_e1_reuse_coupon/e1_4cell_200A_pair_collector_copper_coldplate_interface_NOT_FOR_FAB.kicad_pcb",
+  "physical_kicad_sha256": "2661c4fca9b4706d240aa8ef565b085cc1e2dbc385d0996ed4a5d9e25de9c01c",
+  "native_drc_sha256": "ccaee2c9864e3c1b6aa30d800eaf930ebc350c8bc8778586e7f15a5ff49b8a6e",
+  "actual_native_drc_report_violations": 0,
+  "actual_native_drc_report_unconnected": 0,
+  "inherited_five_native_ignored_check_types_not_claimed_full_manufacturing_DRC": [
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch",
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries"
+  ],
+  "native_board_12_layers_and_22_footprints_confirmed": true,
+  "eight_V17_SR_real_physical_pin_maps_preserved": true,
+  "paired_FCu_PGND_BCu_VOUT_actual_copper_zones": [
+    [
+      "B.Cu",
+      "VOUT"
+    ],
+    [
+      "F.Cu",
+      "PGND"
+    ]
+  ],
+  "output_pair_surface_contacts_validated": true,
+  "nominal_4x50A_cells_and_no_actual_windings": true,
+  "200A_95pct_efficiency_total_loss_budget_w": 21.053,
+  "hypothetical_70um_two_polarity_collector_dc_loss": {
+    "copper_thickness_assumed_per_polarity_mm": 0.07,
+    "width_assumed_mm": 13.7,
+    "material_temperature_c": 100.0,
+    "all_4_cells_50A_each_same_direction": true,
+    "approximate_equal_cell_incremental_current_assumption": true,
+    "ideal_loss_w_two_polarities": 61.436,
+    "intervals": [
+      {
+        "segment_from_x_mm": 20,
+        "to_x_mm": 40,
+        "conditional_current_a": 50.0,
+        "ideal_pair_R_microohm": 945.162,
+        "ideal_pair_P_w": 2.363
+      },
+      {
+        "segment_from_x_mm": 40,
+        "to_x_mm": 60,
+        "conditional_current_a": 100.0,
+        "ideal_pair_R_microohm": 945.162,
+        "ideal_pair_P_w": 9.452
+      },
+      {
+        "segment_from_x_mm": 60,
+        "to_x_mm": 80,
+        "conditional_current_a": 150.0,
+        "ideal_pair_R_microohm": 945.162,
+        "ideal_pair_P_w": 21.266
+      },
+      {
+        "segment_from_x_mm": 80,
+        "to_x_mm": 95,
+        "conditional_current_a": 200.0,
+        "ideal_pair_R_microohm": 708.871,
+        "ideal_pair_P_w": 28.355
+      }
+    ],
+    "pad_and_contact_spreading_AC_losses_included": false,
+    "actual_2D_power_copper_field_solved": false
+  },
+  "hypothetical_0p8mm_TWO_bonded_copper_straps_dc_loss": {
+    "copper_thickness_assumed_per_polarity_mm": 0.8,
+    "width_assumed_mm": 13.7,
+    "material_temperature_c": 100.0,
+    "all_4_cells_50A_each_same_direction": true,
+    "approximate_equal_cell_incremental_current_assumption": true,
+    "ideal_loss_w_two_polarities": 5.376,
+    "intervals": [
+      {
+        "segment_from_x_mm": 20,
+        "to_x_mm": 40,
+        "conditional_current_a": 50.0,
+        "ideal_pair_R_microohm": 82.702,
+        "ideal_pair_P_w": 0.207
+      },
+      {
+        "segment_from_x_mm": 40,
+        "to_x_mm": 60,
+        "conditional_current_a": 100.0,
+        "ideal_pair_R_microohm": 82.702,
+        "ideal_pair_P_w": 0.827
+      },
+      {
+        "segment_from_x_mm": 60,
+        "to_x_mm": 80,
+        "conditional_current_a": 150.0,
+        "ideal_pair_R_microohm": 82.702,
+        "ideal_pair_P_w": 1.861
+      },
+      {
+        "segment_from_x_mm": 80,
+        "to_x_mm": 95,
+        "conditional_current_a": 200.0,
+        "ideal_pair_R_microohm": 62.026,
+        "ideal_pair_P_w": 2.481
+      }
+    ],
+    "pad_and_contact_spreading_AC_losses_included": false,
+    "actual_2D_power_copper_field_solved": false
+  },
+  "80percent_of_total_loss_is_other_blocks_reserve_required": true,
+  "output_copper_fails_200A_continuous_design_requirement": true,
+  "external_straps_real_CAD_and_factory_solder_metal_current_rating_verified": false,
+  "MAXWELL_actual_per_layer_AC_loss_completed": false,
+  "manufacturer_12Cu_stackup_thermal_and_solder_verified": false,
+  "coldplate_fluid_CFD_done": false,
+  "complete_primary_magnetics_24to1_CT_protection_available": false,
+  "fabrication_allowed": false,
+  "energization_allowed": false,
+  "recommendation": "Stop this long 4x50A edge-collector as final high-current layout; shorten per-cell output path to few mm and integrate low-resistance positive/negative side metal + ferrite/side SR/coldplate; treat this CAD as reusable geometric/DRC/control A/B measurement coupon only.",
+  "reusable_model_sources": {
+    "V17_KiCad_12layer_SRs": "85fff295c2c8bd594266881b711584be02b40b2158e266e8df4a2ba77d6bb76c",
+    "ELP38_6layer_4vias_rounded_window_copper": "00f930a8ece84ac43e3661b47d82853fc8d219d34787cabd126a3463e5bef9a2",
+    "external_root_T1_native_fem_partial_sha_canonical": "9692cf53bdd1e30f5c29bf18baed8c8abc69afff65858a141f7db2655b8d62ba",
+    "external_root_T1_saturation_stop_sha_canonical": "a614dca727edc8f0ee4194b862a7110915866a162791bda3ab7fde9c2f79d49c",
+    "external_root_CT_real_100turn_partial_sha_canonical": "abca015781fdb85910c6ea5451cd6ba2a7263568b8f2647ef0bcbefefdb800b3"
+  },
+  "external_root_results_checked_read_only_not_imported_to_branch": true
+}
